@@ -1,0 +1,16 @@
+<export>
+</export>
+<library   file="*.cc" name="BoostedProducer_plugins">
+  <use   name="FWCore/Framework"/>
+  <use   name="FWCore/PluginManager"/>
+  <use   name="FWCore/ParameterSet"/>
+  <use   name="DataFormats/JetReco"/>
+  <use   name="DataFormats/PatCandidates"/>
+  <use   name="CommonTools/UtilAlgos"/>
+  <use   name="CondFormats/JetMETObjects"/>
+  <use   name="JetMETCorrections/Objects"/>
+  <use   name="fastjet"/>
+  <use   name="RecoJets/JetProducers"/>
+  <use   name="BoostedTTH/BoostedProducer"/>
+  <use   name="BoostedTTH/BoostedObjects"/>
+</library>
