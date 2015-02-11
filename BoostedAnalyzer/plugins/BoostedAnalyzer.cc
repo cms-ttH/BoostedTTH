@@ -33,6 +33,10 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+#include "DataFormats/METReco/interface/HcalNoiseSummary.h"
+
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
@@ -67,7 +71,10 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       virtual void beginJob() override;
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
-
+      
+      boosted::Event FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const int& nPV, const reco::VertexCollection& selectedPVs, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo);
+      map<string,float> GetWeights(const boosted::Event& event, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles);
+      
       // ----------member data ---------------------------
       
       /** the beanhelper is used for selections and reweighting */
@@ -88,33 +95,51 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** selections that are applied */
       vector<Selection*> selections;
       
+      /** sample ID */
+      int sampleID;
+      
       /** stops the time needed */
       TStopwatch watch;
       
       /** events to be analyzed */
       int maxEvents;
       
-      /** total number of events in input file(s) */
-      int totalMCevents;
-     
+      /** data luminosity */
+      float luminosity;
+      
       /** sample cross section*/
       float xs;
       
-      /** jet systematic that is applied (the outher systematics are done at a different place with reweighting)*/
-      sysType::sysType jsystype;
+      /** total number of events in input file(s) */
+      int totalMCevents;
+     
+      /** Event counter */
+      int eventcount;
+      
+       /** is analyzed sample data? */
+      bool isData;
       
       /** calculate and store systematic weights? */
       bool doSystematics;
       
-      /** is analyzed sample data? */
-      bool isData;
-      int eventcount;
+      /** jet systematic that is applied (the outher systematics are done at a different place with reweighting)*/
+      sysType::sysType jsystype;
+      
+      
+      /** pu summary data access token **/
+      edm::EDGetTokenT< std::vector<PileupSummaryInfo> > EDMPUInfoToken;
+      
+      /** hcal noise data access token **/
+      edm::EDGetTokenT< HcalNoiseSummary > EDMHcalNoiseToken;
       
       /** selected trigger data access token **/
       edm::EDGetTokenT< pat::TriggerObjectStandAloneCollection > EDMSelectedTriggerToken;
       
       /** trigger results data access token **/
       edm::EDGetTokenT< edm::TriggerResults > EDMTriggerResultToken;
+      
+      /** beam spot data access token **/
+      edm::EDGetTokenT< reco::BeamSpot > EDMBeamSpotToken;
       
       /** vertex data access token **/
       edm::EDGetTokenT< reco::VertexCollection > EDMVertexToken;
@@ -136,6 +161,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** subjet filterjets data access token **/
       edm::EDGetTokenT< boosted::SubFilterJetCollection > EDMSubFilterJetsToken;
+      
+      /** gen info data access token **/
+      edm::EDGetTokenT< GenEventInfoProduct > EDMGenInfoToken;
       
       /** gen particles data access token **/
       edm::EDGetTokenT< std::vector<reco::GenParticle> > EDMGenParticlesToken;
@@ -159,9 +187,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
 {
 
   std::string era = iConfig.getParameter<std::string>("era");
-  int sampleID = iConfig.getParameter<int>("sampleID");
-  isData = iConfig.getParameter<bool>("isData");
-  
   string analysisType = iConfig.getParameter<std::string>("analysisType");
   analysisType::analysisType iAnalysisType = analysisType::LJ;
   if(analysisType == "LJ") iAnalysisType = analysisType::LJ;
@@ -170,11 +195,20 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   else if(analysisType == "TauDIL") iAnalysisType = analysisType::TauDIL;
   else cerr << "No matching analysis type found for: " << analysisType << endl;
   
+  luminosity = iConfig.getParameter<double>("luminostiy");
+  sampleID = iConfig.getParameter<int>("sampleID");
+  xs = iConfig.getParameter<double>("xs");
+  totalMCevents = iConfig.getParameter<int>("nMCEvents");
+  isData = iConfig.getParameter<bool>("isData");
+  
   string outfileName = iConfig.getParameter<std::string>("outfileName");
   
   // REGISTER DATA ACCESS
+  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","","HLT"));
+  EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","","RECO"));
   EDMSelectedTriggerToken = consumes< pat::TriggerObjectStandAloneCollection > (edm::InputTag("selectedPatTrigger","","PAT"));
   EDMTriggerResultToken   = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","PAT"));
+  EDMBeamSpotToken        = consumes< reco::BeamSpot > (edm::InputTag("offlineBeamSpot","","RECO"));
   EDMVertexToken          = consumes< reco::VertexCollection > (edm::InputTag("offlineSlimmedPrimaryVertices","","PAT"));
   EDMMuonsToken           = consumes< std::vector<pat::Muon> >(edm::InputTag("slimmedMuons","","PAT"));
   EDMElectronsToken       = consumes< std::vector<pat::Electron> >(edm::InputTag("slimmedElectrons","","PAT"));
@@ -182,6 +216,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   EDMMETsToken            = consumes< std::vector<pat::MET> >(edm::InputTag("slimmedMETs","","PAT"));
   EDMHEPTopJetsToken      = consumes< boosted::HEPTopJetCollection >(edm::InputTag("HEPTopJetsPFMatcher","heptopjets","p"));
   EDMSubFilterJetsToken   = consumes< boosted::SubFilterJetCollection >(edm::InputTag("CA12JetsCA3FilterjetsPFMatcher","subfilterjets","p"));
+  EDMGenInfoToken         = consumes< GenEventInfoProduct >(edm::InputTag("generator","","SIM"));
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","","PAT"));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","","PAT"));
   
@@ -237,9 +272,15 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   }
   
   eventcount++;
-    
-  /**** GET EVENT ****/
-
+  
+  /**** GET PILEUPSUMMARYINFO ****/
+  edm::Handle< std::vector<PileupSummaryInfo> >  h_puinfosummary;
+  iEvent.getByToken( EDMPUInfoToken, h_puinfosummary);
+  
+  /**** GET HCALNOISESUMMARY ****/
+  edm::Handle<HcalNoiseSummary> h_hcalnoisesummary;
+  iEvent.getByToken( EDMHcalNoiseToken,h_hcalnoisesummary );
+  
   /**** GET TRIGGER ****/
   edm::Handle<pat::TriggerObjectStandAloneCollection> h_selectedtrigger;
   iEvent.getByToken( EDMSelectedTriggerToken,h_selectedtrigger );
@@ -248,6 +289,10 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   edm::Handle<edm::TriggerResults> h_triggerresults;
   iEvent.getByToken( EDMTriggerResultToken,h_triggerresults );
   edm::TriggerResults const &triggerResults = *h_triggerresults;
+  
+  /**** GET BEAMSPOT ****/
+  edm::Handle<reco::BeamSpot> h_beamspot;
+  iEvent.getByToken( EDMBeamSpotToken,h_beamspot );
   
   /**** GET PRIMARY VERTICES ****/
   edm::Handle< reco::VertexCollection > h_vtxs;
@@ -338,7 +383,11 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   boosted::SubFilterJetCollection const &subfilterjets_unsorted = *h_subfilterjet;
   boosted::SubFilterJetCollection subfilterjets = BoostedUtils::GetSortedByPt(subfilterjets_unsorted);
   
-  /**** GET GENPARTICLES****/
+  /**** GET GENEVENTINFO ****/
+  edm::Handle<GenEventInfoProduct> h_geneventinfo;
+  iEvent.getByToken( EDMGenInfoToken, h_geneventinfo );
+  
+  /**** GET GENPARTICLES ****/
   edm::Handle< std::vector<reco::GenParticle> > h_genParticles;
   iEvent.getByToken( EDMGenParticlesToken,h_genParticles );
   std::vector<reco::GenParticle> const &genParticles = *h_genParticles;
@@ -353,26 +402,29 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       selectedGenJets.push_back(genjets[i]);
   }
   
+  // Fill Boosted Event Object
+  boosted::Event event = FillEvent(iEvent,h_geneventinfo,h_beamspot,vtxs.size(),selectedPVs,h_hcalnoisesummary,h_puinfosummary);
+  
   // FIGURE OUT SAMPLE
   SampleType sampleType;
   if(isData)
-    sampleType=SampleType::data;
+    sampleType = SampleType::data;
   else if(BoostedUtils::MCContainsTTbar(genParticles) && BoostedUtils::MCContainsHiggs(genParticles)){
-    sampleType=SampleType::tth;
+    sampleType = SampleType::tth;
   }
   else if(BoostedUtils::MCContainsTTbar(genParticles)){
-    sampleType=SampleType::tt;
+    sampleType = SampleType::tt;
   }
   else{
-    sampleType=SampleType::nonttbkg;
+    sampleType = SampleType::nonttbkg;
   }
 
   // DO REWEIGHTING
-  map<string,float> weights;
-  //    map<string,float> weights=GetWeights(isData,doSystematics,jsystype,events,selectedPVs,selectedJets,selectedElectrons,selectedMuons,genParticles);
+  map<string,float> weights=GetWeights(event,selectedPVs,selectedJets,selectedElectrons,selectedMuons,genParticles);
 
   // DEFINE INPUT
-  InputCollections input( selectedTrigger,
+  InputCollections input( event,
+                          selectedTrigger,
                           triggerResults,
                           selectedPVs,
                           selectedMuons,
@@ -419,20 +471,169 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 }
 
 
+boosted::Event BoostedAnalyzer::FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const int& numPV, const reco::VertexCollection& selectedPVs, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo){
+ 
+  boosted::Event event = boosted::Event();
+  
+  event.evt         = iEvent.id().event();
+  event.run         = iEvent.id().run();
+  event.sample      = sampleID;
+  event.lumiBlock   = iEvent.luminosityBlock();
+  
+  
+  if(genEvtInfo.isValid()){
+    std::vector<double> genWeights = genEvtInfo->weights();
+    for(size_t i=0;i<genWeights.size();i++){
+      event.weight *= genWeights[i];
+    }
+
+    event.qScale = genEvtInfo->qScale();
+    event.alphaQCD = genEvtInfo->alphaQCD();
+    event.alphaQED = genEvtInfo->alphaQED();
+    event.pthat = ( genEvtInfo->hasBinningValues() ? (genEvtInfo->binningValues())[0] : 0.0);
+    event.scalePDF = genEvtInfo->pdf()->scalePDF;
+    event.x1 = genEvtInfo->pdf()->x.first;
+    event.x2 = genEvtInfo->pdf()->x.second;
+    event.xPDF1 = genEvtInfo->pdf()->xPDF.first;
+    event.xPDF2 = genEvtInfo->pdf()->xPDF.second;
+    event.id1 = genEvtInfo->pdf()->id.first;
+    event.id2 = genEvtInfo->pdf()->id.second;
+  }
+  
+  if(beamSpot.isValid()){
+    event.BSx = beamSpot->x0();
+    event.BSy = beamSpot->y0();
+    event.BSz = beamSpot->z0();
+  }
+  
+  event.numPV = numPV;
+  if(selectedPVs.size()>0){
+    event.GoodVertex = true;
+    event.PVx = selectedPVs[0].x();
+	  event.PVy = selectedPVs[0].y();
+	  event.PVz = selectedPVs[0].z();
+  }
+  
+  if( hcalNoiseSummary.isValid() ){
+    event.hcalnoiseLoose = hcalNoiseSummary->passLooseNoiseFilter();
+    event.hcalnoiseTight = hcalNoiseSummary->passTightNoiseFilter();
+  }
+  
+  if( puSummaryInfo.isValid() ){
+    for(std::vector<PileupSummaryInfo>::const_iterator PVI = puSummaryInfo->begin(); PVI != puSummaryInfo->end(); ++PVI) {
+
+      int BX = PVI->getBunchCrossing();
+
+      event.sumNVtx  += float(PVI->getPU_NumInteractions());
+      event.sumTrueNVtx += float(PVI->getTrueNumInteractions());
+
+      if( BX==0 ){
+	      event.numGenPV = PVI->getPU_NumInteractions();
+	      event.numTruePV = PVI->getTrueNumInteractions();
+      }
+
+      if(BX == -1) { 
+	      event.nm1 = PVI->getPU_NumInteractions();
+	      event.nm1_true = PVI->getTrueNumInteractions();
+      }
+      else if(BX == 0) { 
+	      event.n0 = PVI->getPU_NumInteractions();
+	      event.n0_true = PVI->getTrueNumInteractions();
+      }
+      else if(BX == 1) { 
+	      event.np1 = PVI->getPU_NumInteractions();
+	      event.np1_true = PVI->getTrueNumInteractions();
+      }
+    }
+  }
+  
+  return event;
+}
+
+
+map<string,float> BoostedAnalyzer::GetWeights(const boosted::Event& event, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles){
+  map<string,float> weights;
+  
+  if(isData){
+    weights["Weight"] = 1.0;
+    weights["Weight_XS"] = 1.0;
+    weights["Weight_CSV"] = 1.0;
+    weights["Weight_PU"] = 1.0;
+    weights["Weight_TopPt"] = 1.0;
+    return weights;
+  }
+
+  // not sure why the BNevent weight is !=+-1 but we dont want it that way
+  float weight=event.weight;
+  
+  /*
+  if(weight>0){
+    weight=1.;
+  }
+  if(weight<0) {
+    weight=-1.;
+  }
+  */
+  
+  float xsweight = xs*luminosity/totalMCevents;
+  float csvweight = 1.;
+  float puweight = 1.;
+  float topptweight = 1.;
+  //float csvweight = beanHelper.GetCSVweight(selectedJets,jsystype);
+  //float puweight = beanHelper.GetPUweight(event[0].numTruePV);
+  //float topptweight = beanHelper.GetTopPtweight(mcparticlesStatus3);
+  //float q2scaleweight = beanHelper.GetQ2ScaleUp(const BNevent&);
+  
+  //NA, JERup, JERdown, JESup, JESdown, hfSFup, hfSFdown, lfSFdown, lfSFup, TESup, TESdown, 
+  //CSVLFup, CSVLFdown, CSVHFup, CSVHFdown, CSVHFStats1up, CSVHFStats1down, CSVLFStats1up, CSVLFStats1down, CSVHFStats2up, CSVHFStats2down, CSVLFStats2up, CSVLFStats2down, CSVCErr1up, CSVCErr1down, CSVCErr2up, CSVCErr2down
+  
+  weight *= xsweight*csvweight*puweight*topptweight;
+  weights["Weight"] = weight;
+  weights["Weight_XS"] = xsweight;
+  weights["Weight_CSV"] = csvweight;
+  weights["Weight_PU"] = puweight;
+  weights["Weight_TopPt"] = topptweight;
+  
+  /*
+  if(doSystematics && jsystype != sysType::JESup && jsystype != sysType::JESup){
+    weights["Weight_TopPtup"] = beanHelper.GetTopPtweightUp(mcparticlesStatus3)/topptweight;
+    weights["Weight_TopPtdown"] = beanHelper.GetTopPtweightDown(mcparticlesStatus3)/topptweight;
+
+    weights["Weight_CSVLFup"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVLFup)/csvweight;
+    weights["Weight_CSVLFdown"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVLFdown)/csvweight;
+    weights["Weight_CSVHFup"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVHFup)/csvweight;
+    weights["Weight_CSVHFdown"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVHFdown)/csvweight;
+    weights["Weight_CSVHFStats1up"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVHFStats1up)/csvweight;
+    weights["Weight_CSVHFStats1down"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVHFStats1down)/csvweight;
+    weights["Weight_CSVLFStats1up"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVLFStats1up)/csvweight;
+    weights["Weight_CSVLFStats1down"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVLFStats1down)/csvweight;
+    weights["Weight_CSVHFStats2up"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVHFStats2up)/csvweight;
+    weights["Weight_CSVHFStats2down"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVHFStats2down)/csvweight;
+    weights["Weight_CSVLFStats2up"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVLFStats2up)/csvweight;
+    weights["Weight_CSVLFStats2down"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVLFStats2down)/csvweight;
+    weights["Weight_CSVCErr1up"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVCErr1up)/csvweight;
+    weights["Weight_CSVCErr1down"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVCErr1down)/csvweight;
+    weights["Weight_CSVCErr2up"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVCErr2up)/csvweight;
+    weights["Weight_CSVCErr2down"] = beanHelper.GetCSVweight(selectedJets,sysType::CSVCErr2down)/csvweight;
+    weights["Weight_Q2up"] = beanHelper.GetQ2ScaleUp(event[0]);
+    weights["Weight_Q2down"] = beanHelper.GetQ2ScaleDown(event[0]);
+
+  }
+  */
+  
+  return weights;
+}
+
+
 // ------------ method called once each job just before starting event loop  ------------
 void 
 BoostedAnalyzer::beginJob()
 {
   eventcount=0;
-  // INITIALIZE Selections
-
-  /*  cutflow.AddStep("all");
-  for(size_t i=0; i<selections.size(); i++){
-    selections.at(i)->Init(cutflow);
-    }*/
 
   watch.Start();
 }
+
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
@@ -441,37 +642,6 @@ BoostedAnalyzer::endJob()
   cutflow.Print();
 }
 
-// ------------ method called when starting to processes a run  ------------
-/*
-void 
-BoostedAnalyzer::beginRun(edm::Run const&, edm::EventSetup const&)
-{
-}
-*/
-
-// ------------ method called when ending the processing of a run  ------------
-/*
-void 
-BoostedAnalyzer::endRun(edm::Run const&, edm::EventSetup const&)
-{
-}
-*/
-
-// ------------ method called when starting to processes a luminosity block  ------------
-/*
-void 
-BoostedAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
-
-// ------------ method called when ending the processing of a luminosity block  ------------
-/*
-void 
-BoostedAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void

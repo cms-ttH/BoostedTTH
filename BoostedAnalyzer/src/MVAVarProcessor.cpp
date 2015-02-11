@@ -7,6 +7,7 @@ MVAVarProcessor::~MVAVarProcessor(){}
 
 
 void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
+  
   vars.InitVar( "N_Jets","I" );
   vars.InitVar( "N_LooseJets","I" );
   vars.InitVar( "N_TightLeptons","I" );

@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 
+#include "BoostedTTH/BoostedObjects/interface/Event.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -15,7 +16,8 @@
 enum SampleType{data,tth,tt,nonttbkg};
 
 struct InputCollections{
-  InputCollections( const pat::TriggerObjectStandAloneCollection& selectedTrigger_,
+  InputCollections( const boosted::Event&                         event_,
+                    const pat::TriggerObjectStandAloneCollection& selectedTrigger_,
                     const edm::TriggerResults&                    triggerResults_,
                     const reco::VertexCollection&                 selectedPVs_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
@@ -32,6 +34,7 @@ struct InputCollections{
                     const SampleType                              sampleType_,
                     const std::map<std::string,float>&            weights_
                   ):
+                    event(event_),
                     selectedTrigger(selectedTrigger_),
                     triggerResults(triggerResults_),
                     selectedPVs(selectedPVs_),
@@ -49,6 +52,7 @@ struct InputCollections{
                     sampleType(sampleType_),
                     weights(weights_){}
   
+  const boosted::Event&                         event;
   const pat::TriggerObjectStandAloneCollection& selectedTrigger;
   const edm::TriggerResults&                    triggerResults;
   const reco::VertexCollection&                 selectedPVs;
