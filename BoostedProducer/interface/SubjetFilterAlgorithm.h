@@ -23,7 +23,7 @@
 #include <fastjet/AreaDefinition.hh>
 #include <fastjet/PseudoJet.hh>
 
-
+#include <boost/shared_ptr.hpp>
 class SubjetFilterAlgorithm
 {
 	//

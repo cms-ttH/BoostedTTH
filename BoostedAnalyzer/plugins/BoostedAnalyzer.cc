@@ -118,6 +118,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
        /** is analyzed sample data? */
       bool isData;
+
+       /** use fat jets? this is only possible if the miniAOD contains them */
+      bool useFatJets;
       
       /** calculate and store systematic weights? */
       bool doSystematics;
@@ -200,6 +203,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   xs = iConfig.getParameter<double>("xs");
   totalMCevents = iConfig.getParameter<int>("nMCEvents");
   isData = iConfig.getParameter<bool>("isData");
+  useFatJets = iConfig.getParameter<bool>("useFatJets");
   
   string outfileName = iConfig.getParameter<std::string>("outfileName");
   
@@ -350,8 +354,8 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   iEvent.getByToken( EDMJetsToken,h_pfjets );
   std::vector<pat::Jet> const &pfjets = *h_pfjets;
   
-  const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );   
-  helper.SetJetCorrector(corrector);
+  //  const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );   
+  //  helper.SetJetCorrector(corrector);
   
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(pfjets);
@@ -360,11 +364,11 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   // Clean electrons from jets
   std::vector<pat::Jet> jetsNoEle = helper.RemoveOverlaps(selectedElectronsLoose, jetsNoMu);
   // Apply jet corrections
-  std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
+  //  std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
   // Get jet Collection which pass selection
-  std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(correctedJets, 30., 2.4, jetID::jetLoose, '-' );
+  std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(jetsNoEle, 30., 2.4, jetID::jetLoose, '-' );
   // Get jet Collection which pass loose selection
-  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(correctedJets, 20., 2.5, jetID::jetLoose, '-' );
+  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(jetsNoEle, 20., 2.5, jetID::jetLoose, '-' );
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
@@ -373,15 +377,21 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
   /**** GET TOPJETS ****/
   edm::Handle<boosted::HEPTopJetCollection> h_heptopjet;
-  iEvent.getByToken( EDMHEPTopJetsToken,h_heptopjet);
-  boosted::HEPTopJetCollection const &heptopjets_unsorted = *h_heptopjet;
-  boosted::HEPTopJetCollection heptopjets = BoostedUtils::GetSortedByPt(heptopjets_unsorted);
+  boosted::HEPTopJetCollection heptopjets;
+  if(useFatJets){
+    iEvent.getByToken( EDMHEPTopJetsToken,h_heptopjet);
+    boosted::HEPTopJetCollection const &heptopjets_unsorted = *h_heptopjet;
+    heptopjets = BoostedUtils::GetSortedByPt(heptopjets_unsorted);
+  }
   
   /**** GET SUBFILTERJETS ****/
   edm::Handle<boosted::SubFilterJetCollection> h_subfilterjet;                   
-  iEvent.getByToken( EDMSubFilterJetsToken,h_subfilterjet );
-  boosted::SubFilterJetCollection const &subfilterjets_unsorted = *h_subfilterjet;
-  boosted::SubFilterJetCollection subfilterjets = BoostedUtils::GetSortedByPt(subfilterjets_unsorted);
+  boosted::SubFilterJetCollection subfilterjets;
+  if(useFatJets){
+    iEvent.getByToken( EDMSubFilterJetsToken,h_subfilterjet );
+    boosted::SubFilterJetCollection const &subfilterjets_unsorted = *h_subfilterjet;
+    subfilterjets = BoostedUtils::GetSortedByPt(subfilterjets_unsorted);
+  }
   
   /**** GET GENEVENTINFO ****/
   edm::Handle<GenEventInfoProduct> h_geneventinfo;
@@ -442,7 +452,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                           weights
                         );
   
-  /*
+  /*  
   cout << "Number of primary Vertices: " << selectedPVs.size() << endl;
   cout << "Number of selected Muons: " << selectedMuons.size() << endl;
   cout << "Number of selected Muons (Loose): " << selectedMuonsLoose.size() << endl;

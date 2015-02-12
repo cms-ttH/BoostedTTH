@@ -31,6 +31,7 @@
 #include <fastjet/PseudoJet.hh>
 
 #include "BoostedTTH/BoostedProducer/interface/HEPTopTagger.h"
+#include <boost/shared_ptr.hpp>
 
 class HEPTopTaggerAlgorithm
 {
