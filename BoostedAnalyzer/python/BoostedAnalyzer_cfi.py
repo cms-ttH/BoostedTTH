@@ -13,5 +13,5 @@ BoostedAnalyzer = cms.EDAnalyzer('BoostedAnalyzer',
   isData = cms.bool(True),
   outfileName = cms.string("test"),
   selectionNames = cms.vstring("LeptonSelection","JetTagSelection"),
-  processorNames = cms.vstring("MVAVarProcessor")
+  processorNames = cms.vstring("MVAVarProcessor","BoostedJetVarProcessor")
 )

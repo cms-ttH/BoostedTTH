@@ -54,6 +54,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 
 //
 // class declaration
@@ -243,6 +244,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   for(vector<string>::const_iterator itPro = processorNames.begin();itPro != processorNames.end();++itPro) {
     
     if(*itPro == "MVAVarProcessor") treewriter.AddTreeProcessor(new MVAVarProcessor());
+    else if(*itPro == "BoostedJetVarProcessor") treewriter.AddTreeProcessor(new BoostedJetVarProcessor());
     else cout << "No matching processor found for: " << *itPro << endl;    
   }
 }

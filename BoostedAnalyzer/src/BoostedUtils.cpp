@@ -423,16 +423,85 @@ void BoostedUtils::GetAplanaritySphericity(math::XYZTLorentzVector leptonVec, ma
 }
 
 
-std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::SubFilterJet& higgsJet){
+bool BoostedUtils::GetTopTag(const boosted::HEPTopJet& topJet,const double& fW, const double& mTopMin, const bool& altConf){
+  vector<pat::Jet> subjets;
+  subjets.push_back(topJet.nonW);
+  subjets.push_back(topJet.W1);
+  subjets.push_back(topJet.W2);
+  
+  if(subjets.size()!=3) return false;
+  
+  if(!altConf)  std::sort(subjets.begin(), subjets.end(),FirstJetIsHarder);
+  else          TopSubjetCSVDef(subjets);
+  
+  vector<math::XYZTLorentzVector> subjetVecs = GetJetVecs(subjets);
+    
+  float m12=-999;
+  float m23=-999;
+  float m13=-999;
+  float m123=-999;
+  
+  m12=(subjetVecs[0]+subjetVecs[1]).M();
+  m13=(subjetVecs[0]+subjetVecs[2]).M();
+  m23=(subjetVecs[1]+subjetVecs[2]).M();
+  m123=(subjetVecs[0]+subjetVecs[1]+subjetVecs[2]).M();
+
+  if(m123<mTopMin) return false;
+  
+  float mT = 172.3;
+  float mW = 80.4;
+  
+  float Rmin = (1-fW)*mW/mT;
+  float Rmax = (1+fW)*mW/mT;
+  
+  if(!altConf){
+    float y1 = 1+pow(m13/m12,2);
+    float y2 = 1+pow(m12/m13,2);
+    float x = 1-pow(m23/m123,2);  
+  
+    if(((0.2<atan(m23/m123)) && (atan(m23/m123)<1.3)) && ((Rmin<m23/m123) && (m23/m123<Rmax))) return true;
+    if(((x>pow(Rmin,2)*y1) && (x<pow(Rmax,2)*y1)) && (m23/m123>0.35)) return true;
+    if(((x>pow(Rmin,2)*y2) && (x<pow(Rmax,2)*y2)) && (m23/m123>0.35)) return true;
+  }
+  else{
+    if(Rmin<m23/m123 && m23/m123<Rmax && 0.2<m12/m13 && 0.2<m13/m12 ) return true;
+  }
+  
+  return false;
+}
+
+void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
+  std::sort(subjets.begin(), subjets.end(),BoostedUtils::FirstHasHigherCSV);
+  
+  pat::Jet Bsubjet = subjets[0];
+  pat::Jet W1subjet, W2subjet;
+  
+  if(subjets[1].pt()>subjets[2].pt()){
+    W1subjet = subjets[1];
+    W2subjet = subjets[2];
+  }
+  else{
+    W1subjet = subjets[2];
+    W2subjet = subjets[1];
+  }
+  
+  subjets.clear();
+  subjets.push_back(Bsubjet);
+  subjets.push_back(W1subjet);
+  subjets.push_back(W2subjet);
+}
+
+
+std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::SubFilterJet& higgsJet, const int& nCSVJets){
 
   std::vector<pat::Jet> filterJets = higgsJet.filterjets;
   
   std::sort(filterJets.begin(), filterJets.end(),BoostedUtils::FirstHasHigherCSV);
   
-  if(filterJets.size()>3){
-    std::vector<pat::Jet> HighCSVFJets(filterJets.begin(),filterJets.begin()+2);
+  if(filterJets.size()>((size_t) nCSVJets+1)){
+    std::vector<pat::Jet> HighCSVFJets(filterJets.begin(),filterJets.begin()+nCSVJets);
 
-    filterJets.erase(filterJets.begin(),filterJets.begin()+2);
+    filterJets.erase(filterJets.begin(),filterJets.begin()+nCSVJets);
 
     std::sort(filterJets.begin(), filterJets.end(),BoostedUtils::FirstJetIsHarder);
 
@@ -440,6 +509,28 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::SubFilterJ
   }
   
   return filterJets;
+}
+
+
+float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const int& nFilterJets, const int& nBTags, const float& csvWP){
+  
+  if(nFilterJets<2 || nBTags>nFilterJets) return -1.;
+  if(((int)higgsJet.filterjets.size())<nFilterJets || ((int)higgsJet.filterjets.size())<nBTags) return -1.;
+  
+  std::vector<pat::Jet> filterJets = GetHiggsFilterJets(higgsJet,nBTags);
+  
+  if(nBTags>0){
+    if(filterJets[nBTags-1].bDiscriminator("combinedSecondaryVertexBJetTags")<csvWP) return -1.;
+  }
+  
+  vector<math::XYZTLorentzVector> filterJetVecs = GetJetVecs(filterJets);
+  math::XYZTLorentzVector sumVec = filterJetVecs[0];
+  
+  for(std::vector<math::XYZTLorentzVector>::const_iterator itFiltJet = filterJetVecs.begin()+1; itFiltJet-filterJetVecs.begin() < nFilterJets; ++itFiltJet){
+    sumVec += *itFiltJet;
+  }
+  
+  return sumVec.M();
 }
 
 
@@ -951,106 +1042,10 @@ vector<TLorentzVector> BEANUtils::GetLepVecs(BNelectronCollection selectedElectr
 
 
 
-void BEANUtils::TopSubjetCSVDef(vector<BNjet> &subjets){
-  std::sort(subjets.begin(), subjets.end(),FirstHasHigherCSV);
-  
-  BNjet Bsubjet = subjets[0];
-  BNjet W1subjet, W2subjet;
-  
-  if(subjets[1].pt>subjets[2].pt){
-    W1subjet = subjets[1];
-    W2subjet = subjets[2];
-  }
-  else{
-    W1subjet = subjets[2];
-    W2subjet = subjets[1];
-  }
-  
-  subjets.clear();
-  subjets.push_back(Bsubjet);
-  subjets.push_back(W1subjet);
-  subjets.push_back(W2subjet);
-}
 
 
-bool BEANUtils::GetTopTag(const BNtoptagjet& top_jet){
-  vector<TLorentzVector> topvecs;
-  
-  topvecs.push_back( GetJetVec(top_jet.W1) );
-  topvecs.push_back( GetJetVec(top_jet.W2) );
-  topvecs.push_back( GetJetVec(top_jet.nonW) );
-  
-  std::sort(topvecs.begin(), topvecs.end(),FirstIsHarder);
-    
-  float m12=-999;
-  float m23=-999;
-  float m13=-999;
-  float m123=-999;
-  
-  if(topvecs.size()==3){
-    m12=(topvecs[0]+topvecs[1]).M();
-    m13=(topvecs[0]+topvecs[2]).M();
-    m23=(topvecs[1]+topvecs[2]).M();
-    m123=(topvecs[0]+topvecs[1]+topvecs[2]).M();
-  }
-  else return false;
 
-  if (m123<120) return false;
-  
-  float fW = 0.15;
-  float mT = 172.3;
-  float mW = 80.4;
-  
-  float Rmin = (1-fW)*mW/mT;
-  float Rmax = (1+fW)*mW/mT;
-  
-  float y1 = 1+pow(m13/m12,2);
-  float y2 = 1+pow(m12/m13,2);
-  float x = 1-pow(m23/m123,2);
-  
-  if(((0.2<atan(m23/m123)) && (atan(m23/m123)<1.3)) && ((Rmin<m23/m123) && (m23/m123<Rmax))) return true;
-  if(((x>pow(Rmin,2)*y1) && (x<pow(Rmax,2)*y1)) && (m23/m123>0.35)) return true;
-  if(((x>pow(Rmin,2)*y2) && (x<pow(Rmax,2)*y2)) && (m23/m123>0.35)) return true;
-  
-  return false;
-}
 
-bool BEANUtils::GetTopTagB(const BNtoptagjet& topjet){
-  vector<BNjet> subjets;
-  subjets.push_back(topjet.nonW);
-  subjets.push_back(topjet.W1);
-  subjets.push_back(topjet.W2);
-  
-  TopSubjetCSVDef(subjets);
-  std::sort(subjets.begin(), subjets.end(),FirstHasHigherCSV);
-  
-  vector<TLorentzVector> topvecs = GetJetVecs(subjets);
-  float m12=-999;
-  float m23=-999;
-  float m13=-999;
-  float m123=-999;
-  
-  if(topvecs.size()==3){
-    m12=(topvecs[0]+topvecs[1]).M();
-    m13=(topvecs[0]+topvecs[2]).M();
-    m23=(topvecs[1]+topvecs[2]).M();
-    m123=(topvecs[0]+topvecs[1]+topvecs[2]).M();
-  }
-  else return false;
-
-  if (m123<120) return false;
-
-  float fW = 0.2;
-  float mT = 173;
-  float mW = 80.4;
-  
-  float Rmin = (1-fW)*mW/mT;
-  float Rmax = (1+fW)*mW/mT;
-  
-  if(Rmin<m23/m123 && m23/m123<Rmax && 0.2<m12/m13 && 0.2<m13/m12 ) return true;
-
-  return false;
-}
 vector<BNjet> BEANUtils::GetJetsByDr(TLorentzVector vec,const vector<BNjet>& jets){
   closerToVec closer;
   closer.vec=vec;
@@ -1083,85 +1078,6 @@ void BEANUtils::GetHiggsJetDistanceVars(const BNsubfilterjet& jet,const vector<B
   deltaR4_=dr4;
 }
 
-
-void BEANUtils::GetFilterJetVars(const BNsubfilterjet& jet,TLorentzVector& vec1_,TLorentzVector& vec2_,TLorentzVector& vec3_,TLorentzVector& vec4_,float& csvfj1_,float& csvfj2_,float& csvfj3_,float& csvfj4_){
-  TLorentzVector vec1;
-  TLorentzVector vec2;
-  TLorentzVector v3;
-  TLorentzVector v4;
-  
-  float csvec1 = -.1;
-  float csvec2 = -.1;
-  float csv3 = -.1;
-  float csv4 = -.1;
-  
-  if(jet.filterjets.size()>0){
-    vec1 = BEANUtils::GetJetVec(jet.filterjets[0]);
-    csvec1 = fmax(jet.filterjets[0].btagCombinedSecVertex,-.1);
-  }
-  if(jet.filterjets.size()>1){
-    vec2 = BEANUtils::GetJetVec(jet.filterjets[1]);
-    csvec2 = fmax(jet.filterjets[1].btagCombinedSecVertex,-.1);
-  }
-  if(jet.filterjets.size()>2){
-    v3 = BEANUtils::GetJetVec(jet.filterjets[2]);
-    csv3 = fmax(jet.filterjets[2].btagCombinedSecVertex,-.1);
-  }
-  if(jet.filterjets.size()>3){
-    v4 = BEANUtils::GetJetVec(jet.filterjets[4]);
-    csv4 = fmax(jet.filterjets[3].btagCombinedSecVertex,-.1);
-  }
-  
-  vec1_ = vec1;
-  vec2_ = vec2;
-  vec3_ = v3;
-  vec4_ = v4;
-  csvfj1_ = csvec1;
-  csvfj2_ = csvec2;
-  csvfj3_ = csv3;
-  csvfj4_ = csv4; 
-}
-
-
-void BEANUtils::GetHiggsJetCSVVars(const BNsubfilterjet& jet,float& csvec1_,float& csvec2_,float& csv3_,float& csv4_){
-  float csvec1 = -.1;
-  float csvec2 = -.1;
-  float csv3 = -.1;
-  float csv4 = -.1;
-  
-  int fjindex1 = -1;
-  int fjindex2 = -1;
-  int fjindex3 = -1;
-  
-  for(size_t i=0;i<jet.filterjets.size();i++){
-    if(jet.filterjets[i].pt>20&&jet.filterjets[i].btagCombinedSecVertex>csvec1){
-      csvec1 = fmax(jet.filterjets[i].btagCombinedSecVertex,-.1);
-      fjindex1 = i;
-    }
-  }
-  for(size_t i=0;i<jet.filterjets.size();i++){
-    if(jet.filterjets[i].pt>20&&jet.filterjets[i].btagCombinedSecVertex>csvec2&&i!=fjindex1){
-      csvec2 = fmax(jet.filterjets[i].btagCombinedSecVertex,-.1);
-      fjindex2 = i;
-    }
-  }
-  for(size_t i=0;i<jet.filterjets.size();i++){
-    if(jet.filterjets[i].pt>20&&jet.filterjets[i].btagCombinedSecVertex>csv3&&i!=fjindex1&&i!=fjindex2){
-      csv3 = fmax(jet.filterjets[i].btagCombinedSecVertex,-.1);
-      fjindex3 = i;
-    }
-  }
-  for(size_t i=0;i<jet.filterjets.size();i++){
-    if(jet.filterjets[i].pt>20&&jet.filterjets[i].btagCombinedSecVertex>csv4&&i!=fjindex1&&i!=fjindex2&&i!=fjindex3){
-      csv4 = fmax(jet.filterjets[i].btagCombinedSecVertex,-.1);
-    }
-  }
-  
-  csvec1_ = csvec1;
-  csvec2_ = csvec2;
-  csv3_ = csv3;
-  csv4_ = csv4;
-}
 
 void BEANUtils::GetHiggsJetCSVVarsDr(const BNsubfilterjet& jet, BNjet& csvec1_fjet_,BNjet& csvec2_fjet_){
   float csvec1 = -.1;

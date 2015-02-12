@@ -62,13 +62,21 @@ void VariableContainer::FillVar( TString name, float value ) {
 }
 
 
-void VariableContainer::InitVars( TString name,TString nEntryVariable, int maxentries){
-  if(intMap.count(name)>0||floatMap.count(name)>0||arrayMap.count(name)>0){
+void VariableContainer::InitVars( TString name, float defaultValue, TString nEntryVariable, int maxentries ){
+  if(intMap.count(name)>0 || floatMap.count(name)>0 || arrayMap.count(name)>0){
     cerr << name << " already initialized!" << endl;
   }
 
   arrayMap[name] = new float[maxentries];
+  arrayMapDefaults[name] = defaultValue;
+  arrayMapFilled[name] = false;
+  maxEntriesArrays[name] = maxentries;
   entryVariableOf[name] = nEntryVariable;
+}
+
+
+void VariableContainer::InitVars( TString name, TString nEntryVariable, int maxentries ){
+  InitVars(name,-1.,nEntryVariable,maxentries);
 }
 
 
@@ -81,6 +89,7 @@ void VariableContainer::FillVars( TString name, int index, float value ) {
 
 
 void VariableContainer::SetDefaultValues(){
+  
   auto itF= floatMap.begin();
   auto itFdefault = floatMapDefaults.begin();
   auto itFfilled = floatMapFilled.begin();
@@ -91,6 +100,7 @@ void VariableContainer::SetDefaultValues(){
     ++itFdefault;
     ++itFfilled;
   }
+  
   auto itI= intMap.begin();
   auto itIdefault = intMapDefaults.begin();
   auto itIfilled = intMapFilled.begin();
@@ -101,6 +111,22 @@ void VariableContainer::SetDefaultValues(){
     ++itIdefault;
     ++itIfilled;
   }
+  
+  auto itA = arrayMap.begin();
+  auto itAdefault = arrayMapDefaults.begin();
+  auto itAmaxEntriesArrays = maxEntriesArrays.begin();
+  auto itAfilled = arrayMapFilled.begin();
+  while (itA != arrayMap.end()) {    
+    for(int i=0;i<itAmaxEntriesArrays->second;++i)
+      itA->second[i] = itAdefault->second;
+    
+    itAfilled->second=false;
+    ++itA;
+    ++itAdefault;
+    ++itAmaxEntriesArrays;
+    ++itAfilled;
+  }
+  
 }
 
 
@@ -119,6 +145,17 @@ void VariableContainer::ConnectTree(TTree* tree){
   while (itA != arrayMap.end()) {
     tree->Branch(itA->first,itA->second , itA->first+"["+entryVariableOf[itA->first]+"]/F" );
     itA++;
+  }
+}
+
+void VariableContainer::PrintArrayValue(TString name){
+  
+  float* printArray = arrayMap[name];
+  int nEntries = intMap[entryVariableOf[name]];
+  
+  
+  for(int i=0;i<nEntries;++i){
+    cout << name+"[" << i << "] : " << printArray[i] << std::endl;
   }
 }
 
