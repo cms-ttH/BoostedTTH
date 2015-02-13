@@ -14,11 +14,13 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source(  "PoolSource",
-                              fileNames = cms.untracked.vstring( 'file:/home/mildner/CMSSW_7_2_3/src/input.root' )
+#                              fileNames = cms.untracked.vstring( 'file:/storage/9/mildner/ttbar_miniAODtest.root' )
+                              fileNames = cms.untracked.vstring( 'file:/storage/9/mildner/BoostedMiniAOD.root' )
                               #fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
 )
 
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+process.BoostedAnalyzer.useFatJets=True
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 #process.p = cms.Path(process.content*process.BoostedAnalyzer)
