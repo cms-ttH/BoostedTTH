@@ -7,7 +7,7 @@ MVAVarProcessor::~MVAVarProcessor(){}
 
 
 void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
-  
+ 
   vars.InitVar( "N_Jets","I" );
   vars.InitVar( "N_LooseJets","I" );
   vars.InitVar( "N_TightLeptons","I" );
@@ -213,9 +213,9 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 }
 
 void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
-  
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
+  const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
@@ -255,7 +255,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "Pt_Jet",iJet,itJet->pt() );
     vars.FillVars( "Eta_Jet",iJet,itJet->eta() );
     vars.FillVars( "Phi_Jet",iJet,itJet->phi() );
-    vars.FillVars( "CSV_Jet",iJet,fmax(itJet->bDiscriminator("combinedSecondaryVertexBJetTags"),-.1) );        
+    vars.FillVars( "CSV_Jet",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );        
     vars.FillVars( "Flav_Jet",iJet,itJet->partonFlavour() );        
   }
   
@@ -330,7 +330,6 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     }
   }
   vars.FillVar("M3",m3);
-  
   float m3tagged = -1.;
   float maxpttagged=-1.;
   for(std::vector<pat::Jet>::iterator itJetUntagged1 = selectedUntaggedJets.begin() ; itJetUntagged1 != selectedUntaggedJets.end(); ++itJetUntagged1){
@@ -404,7 +403,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // All Jets
   std::vector<float> csvJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
-    csvJets.push_back(fmax(itJet->bDiscriminator("combinedSecondaryVertexBJetTags"),-.1));
+    csvJets.push_back(fmax(itJet->bDiscriminator(btagger),-.1));
   }
   
   std::sort(csvJets.begin(),csvJets.end(),BoostedUtils::FirstIsLarger);
@@ -432,7 +431,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // Tagged Jets
   vector<float> csvTaggedJets;
   for(std::vector<pat::Jet>::iterator itTaggedJet = selectedTaggedJets.begin() ; itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet){
-    csvTaggedJets.push_back(fmax(itTaggedJet->bDiscriminator("combinedSecondaryVertexBJetTags"),-.1));
+    csvTaggedJets.push_back(fmax(itTaggedJet->bDiscriminator( btagger),-.1));
   }
   sort(csvTaggedJets.begin(),csvTaggedJets.end(),BoostedUtils::FirstIsLarger);
   vars.FillVar("CSV_Min_Tagged",csvTaggedJets.size()>0 ? csvTaggedJets.back() : -.1);
@@ -454,8 +453,6 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     csvDevTagged=-1.;
     
   vars.FillVar("CSV_Dev_Tagged",csvDevTagged);
-  
-  
   // Fill Variables for closest ak5 Jets
   // All Jets
   if(input.selectedJets.size()>1){
@@ -468,7 +465,6 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVar("Dr_MinDeltaRJets",minDrJets);
     vars.FillVar("Pt_MinDeltaRJets",(closestJetVec1+closestJetVec2).Pt());
   }
-  
   // Tagged Jets
   if(selectedTaggedJets.size()>1){
     int idClosestTaggedJet1 = -1;
@@ -480,19 +476,17 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVar("Dr_MinDeltaRTaggedJets",minDrTaggedJets);
     vars.FillVar("Pt_MinDeltaRTaggedJets",(closestTaggedJetVec1+closestTaggedJetVec2).Pt());
   }
-  
   // Untagged Jets
   if(selectedUntaggedJets.size()>1){
     int idClosestUntaggedJet1 = -1;
     int idClosestUntaggedJet2 = -1;
-    float minDrUntaggedJets = BoostedUtils::GetClosestJetIDs(idClosestUntaggedJet1,idClosestUntaggedJet2,selectedTaggedJets);
-    math::XYZTLorentzVector closestUntaggedJetVec1 = selectedTaggedJets[idClosestUntaggedJet1].p4();
-    math::XYZTLorentzVector closestUntaggedJetVec2 = selectedTaggedJets[idClosestUntaggedJet2].p4();
+    float minDrUntaggedJets = BoostedUtils::GetClosestJetIDs(idClosestUntaggedJet1,idClosestUntaggedJet2,selectedUntaggedJets);
+    math::XYZTLorentzVector closestUntaggedJetVec1 = selectedUntaggedJets[idClosestUntaggedJet1].p4();
+    math::XYZTLorentzVector closestUntaggedJetVec2 = selectedUntaggedJets[idClosestUntaggedJet2].p4();
     vars.FillVar("M_MinDeltaRUntaggedJets",(closestUntaggedJetVec1+closestUntaggedJetVec2).M());
     vars.FillVar("Dr_MinDeltaRUntaggedJets",minDrUntaggedJets);
     vars.FillVar("Pt_MinDeltaRUntaggedJets",(closestUntaggedJetVec1+closestUntaggedJetVec2).Pt());
   }
-  
   // Jet and Lepton
   if(input.selectedJets.size()>1&&(input.selectedElectrons.size()>0||input.selectedMuons.size()>0)){
     int idClosestJet = -1;
@@ -606,7 +600,6 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vars.FillVar("Deta_TaggedJetsAverage",detaTaggedJetsAverage);
   vars.FillVar("Dr_TaggedJetsAverage",drTaggedJetsAverage);
   vars.FillVar("Dkt_TaggedJetsAverage",dktTaggedJetsAverage);
-  
   // Untagged Jets
   float mUntaggedJetsAverage = 0;
   float etaUntaggedJetsAverage = 0;
@@ -768,9 +761,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   float detamax_j2j=-1;
   float detamax_j3j=-1;
   float detamax_j4j=-1;
-  
   float costhetamax_jcm=-1;
-  
   for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin();itJetVec != jetvecs.end();++itJetVec){
     int iJetVec = itJetVec - jetvecs.begin();
     
@@ -911,5 +902,5 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vars.FillVar("Best_Higgs_Mass_Ohio",best_higgs_mass);
   vars.FillVar("Deta_Fn_Ohio",dEta_fn);
   vars.FillVar("Dr_BB_Ohio",dRbb);
-  
+
 }

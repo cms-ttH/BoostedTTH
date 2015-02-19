@@ -51,7 +51,7 @@ bool BoostedUtils::FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2){
 
 
 bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
-  return jet1.bDiscriminator("combinedSecondaryVertexBJetTags") > jet2.bDiscriminator("combinedSecondaryVertexBJetTags");
+  return jet1.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") > jet2.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
 }
 
 
@@ -160,7 +160,7 @@ float BoostedUtils::CosThetaCM(const math::XYZTLorentzVector& vec,const math::XY
   TLorentzVector vec_ = GetTLorentzVector(vec);
   TLorentzVector boostVec_ = GetTLorentzVector(boostVec);
   
-  TVector3 zBoost = -boostVec_.BoostVector().Pz();
+  TVector3 zBoost = TVector3(0,0,-boostVec_.BoostVector().Pz());
   TLorentzVector boostedVec = vec_;
   boostedVec.Boost(zBoost);
   float theta = boostedVec.Theta();
@@ -271,7 +271,7 @@ bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   float CSVMwp = 0.679;
   float CSVTwp = 0.898;
   
-  float csvValue = jet.bDiscriminator("combinedSecondaryVertexBJetTags");
+  float csvValue = jet.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
   
   switch(workingPoint){
     case 'L': if(csvValue > CSVLwp){ return true; } break;
@@ -948,12 +948,12 @@ void BoostedUtils::TTHRecoVarsOhio(const std::vector<pat::Jet>& selectedJets,con
     ajet.push_back(itJet->pz());
     ajet.push_back(itJet->energy());
     fjets.push_back(ajet);
-    btag.push_back(itJet->bDiscriminator("combinedSecondaryVertexBJetTags"));
+    btag.push_back(itJet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
   }
   std::vector<math::XYZTLorentzVector> jetsLoose = GetJetVecs(selectedJetsLoose);
   std::vector<double> btagLoose;
   for(std::vector<pat::Jet>::const_iterator itJetLoose = selectedJetsLoose.begin(); itJetLoose != selectedJetsLoose.end(); ++itJetLoose){
-    btagLoose.push_back(itJetLoose->bDiscriminator("combinedSecondaryVertexBJetTags"));
+    btagLoose.push_back(itJetLoose->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
   }  
   std::vector<double> lep;
   lep.push_back(lepton.Px());

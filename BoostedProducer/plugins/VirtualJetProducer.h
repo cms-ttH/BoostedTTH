@@ -1,8 +1,9 @@
 #ifndef RecoJets_JetProducers_plugins_VirtualJetProducer_h
 #define RecoJets_JetProducers_plugins_VirtualJetProducer_h
 
+#include "RecoJets/JetProducers/interface/JetSpecific.h"
 
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Candidate/interface/CandidateFwd.h"
@@ -26,7 +27,7 @@
 #include <boost/shared_ptr.hpp>
 
 
-class VirtualJetProducer : public edm::EDProducer
+class dso_hidden VirtualJetProducer : public edm::stream::EDProducer<>
 {
 protected:
   //
@@ -200,8 +201,17 @@ protected:
 
   int                   verbosity_;                 // flag to enable/disable debug output
 
-private:
+ private:
+
   std::auto_ptr<AnomalousTower>   anomalousTowerDef_;  // anomalous tower definition
+
+  // tokens for the data access
+  edm::EDGetTokenT<reco::CandidateView> input_candidateview_token_;
+  edm::EDGetTokenT<std::vector<edm::FwdPtr<reco::PFCandidate> > > input_candidatefwdptr_token_;
+
+ protected:
+  edm::EDGetTokenT<reco::VertexCollection> input_vertex_token_;
+  
 };
 
 

@@ -1,5 +1,5 @@
-#ifndef RECOJETS_JETALGORITHMS_HEPTOPTAGGERALGORITHM_H
-#define RECOJETS_JETALGORITHMS_HEPTOPTAGGERALGORITHM_H 1
+#ifndef BOOSTEDTTH_BOOSTEDBOOSTEDPRODUCERS_HEPTOPTAGGERALGORITHM_H
+#define BOOSTEDTTH_BOOSTEDBOOSTEDPRODUCERS_HEPTOPTAGGERALGORITHM_H 1
 
 // Copyright (c) 2011 Christopher Vermilion
 //
@@ -31,6 +31,7 @@
 #include <fastjet/PseudoJet.hh>
 
 #include "BoostedTTH/BoostedProducer/interface/HEPTopTagger.h"
+#include <boost/shared_ptr.hpp>
 
 class HEPTopTaggerAlgorithm
 {

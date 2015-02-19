@@ -6,7 +6,7 @@
   The plugin produces the output of the Subjet/Filter jet reconstruction
   algorithm which was first proposed here: http://arXiv.org/abs/0802.2470
   
-  The real work is done in RecoJets/JetAlgorithms/src/SubjetFilterAlgorithm.cc
+  The real work is done in RecoJets/JetAlgorithms/src/SubjetFilterjetAlgorithm.cc
   
   CMSSW implementation by David Lopes-Pegna           <david.lopes-pegna@cern.ch>
                       and Philipp Schieferdecker <philipp.schieferdecker@cern.ch>
@@ -19,7 +19,7 @@
 #include "RecoJets/JetAlgorithms/interface/CompoundPseudoJet.h"
 
 #include "BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.h"
-#include "BoostedTTH/BoostedProducer/interface/SubjetFilterAlgorithm.h"
+#include "BoostedTTH/BoostedProducer/interface/SubjetFilterjetAlgorithm.h"
 #include "BoostedTTH/BoostedProducer/interface/Nsubjettiness.h"
 
 class SubjetFilterJetProducer : public VirtualJetProducer
@@ -29,7 +29,7 @@ class SubjetFilterJetProducer : public VirtualJetProducer
 	//
 	public:
 		SubjetFilterJetProducer(const edm::ParameterSet& ps);
-		virtual ~SubjetFilterJetProducer();
+		~SubjetFilterJetProducer();
 
 	//
 	// member functions
@@ -47,7 +47,7 @@ class SubjetFilterJetProducer : public VirtualJetProducer
 	// member data
 	//
 	private:
-		SubjetFilterAlgorithm				alg_;
+		SubjetFilterjetAlgorithm				alg_;
 		fastjet::Nsubjettiness nSubJetAlgo1_;
 		fastjet::Nsubjettiness nSubJetAlgo2_;
 		fastjet::Nsubjettiness nSubJetAlgo3_;

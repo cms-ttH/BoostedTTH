@@ -1,16 +1,16 @@
 import FWCore.ParameterSet.Config as cms
-from Configuration.AlCa.GlobalTag import GlobalTag
 from PhysicsTools.PatAlgos.tools.jetTools import addJetCollection
 
 process = cms.Process("p")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(100)
 )
 
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
-    fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
+    #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
+    fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttH_Phys14_miniAOD.root')
 )
 
 
@@ -21,9 +21,9 @@ process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff")
 process.load("Configuration.EventContent.EventContent_cff")
-process.GlobalTag = GlobalTag(process.GlobalTag, 'PLS170_V7AN1::All', '')
+process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 process.MessageLogger.suppressWarning = cms.untracked.vstring('ecalLaserCorrFilter','manystripclus53X','toomanystripclus53X')
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
@@ -45,7 +45,7 @@ pfIsolationR04().sumPhotonEt-
 (isPFMuon && (isGlobalMuon || isTrackerMuon) )'''))
 process.selectedElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>20. &&
 gsfTrack.isAvailable() &&
-gsfTrack.trackerExpectedHitsInner.numberOfLostHits<2 &&
+gsfTrack.hitPattern().numberOfLostHits(\'MISSING_INNER_HITS\') < 2 &&
 (pfIsolationVariables().sumChargedHadronPt+
 max(0.,pfIsolationVariables().sumNeutralHadronEt+
 pfIsolationVariables().sumPhotonEt-
@@ -74,6 +74,7 @@ addJetCollection(
     process,
     postfix="",
     jetSource=    cms.InputTag('CA12JetsCA3FilterjetsPF','fatjet'),
+    pfCandidates = cms.InputTag('packedPFCandidates'), 
     labelName = 'CA12PF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
@@ -87,6 +88,7 @@ addJetCollection(
     process,
     postfix="",
     jetSource=    cms.InputTag('CA12JetsCA3FilterjetsPF','subjets'),
+    pfCandidates = cms.InputTag('packedPFCandidates'), 
     labelName = 'CA3SubPF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
@@ -100,6 +102,7 @@ addJetCollection(
     process,
     postfix="",
     jetSource=    cms.InputTag('CA12JetsCA3FilterjetsPF','filterjets'),
+    pfCandidates = cms.InputTag('packedPFCandidates'), 
     labelName = 'CA3FiltPF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
@@ -113,6 +116,7 @@ addJetCollection(
     process,
     postfix="",
     jetSource=     cms.InputTag('HEPTopJetsPF', 'fatjet'),
+    pfCandidates = cms.InputTag('packedPFCandidates'), 
     labelName = 'HEPTopFatPF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
@@ -126,6 +130,7 @@ addJetCollection(
     process,
     postfix="",
     jetSource= cms.InputTag('HEPTopJetsPF', 'subjets'),
+    pfCandidates = cms.InputTag('packedPFCandidates'), 
     labelName = 'HEPTopSubPF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
@@ -163,7 +168,7 @@ process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
 process.out = cms.OutputModule("PoolOutputModule",
     fileName = cms.untracked.string('BoostedMiniAOD.root'),
-    outputCommands = cms.untracked.vstring(['keep *','drop *_*CA12*_*_*','drop *_*CA3*_*_*','drop *_*HEP*_*_*','keep *_*Matcher_*_*'])
+#    outputCommands = cms.untracked.vstring(['keep *','drop *_pfCHS_*','drop *_selectedMuons_*','drop *_selectedElectrons_*','drop *_pfNoElectronsCHS_*','drop *_pfNoMuonCHS_*','drop *_*CA12*_*_*','drop *_*CA3*_*_*','drop *_*HEP*_*_*','keep *_*Matcher_*_*'])
 )
 
 process.patJetsCA12PF.addGenJetMatch=False
@@ -174,7 +179,7 @@ process.endpath= cms.EndPath(
     process.pfCHS
     *process.selectedMuons
     *process.selectedElectrons
-    *process.pfNoMuonCHS 
+    *process.pfNoMuonCHS
     *process.pfNoElectronsCHS
     *process.unpackedTracksAndVertices
     *process.filtjet_gen_seq
