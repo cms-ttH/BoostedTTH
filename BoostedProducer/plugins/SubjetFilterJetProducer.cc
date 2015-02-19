@@ -16,7 +16,7 @@
 // of them daughters of the fatjet, such that the first two daughter jets always
 // correspond to the subjets, while all remaining correspond to the filterjets.
 //
-// The real work is done in RecoJets/JetAlgorithms/src/SubjetFilterAlgorithm.cc
+// The real work is done in RecoJets/JetAlgorithms/src/SubjetFilterjetAlgorithm.cc
 //       
 // see: https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideSubjetFilterJetProducer
 //

@@ -1,5 +1,5 @@
-#ifndef __HEPTOPTAGGER_HH__
-#define __HEPTOPTAGGER_HH__
+#ifndef BOOSTEDTTH_BOOSTEDBOOSTEDPRODUCERS_HEPTOPTAGGER_H
+#define BOOSTEDTTH_BOOSTEDBOOSTEDPRODUCERS_HEPTOPTAGGER_H 1
 
 #include <fastjet/ClusterSequence.hh>
 #include <fastjet/PseudoJet.hh>

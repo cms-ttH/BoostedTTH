@@ -4,12 +4,13 @@ from PhysicsTools.PatAlgos.tools.jetTools import addJetCollection
 process = cms.Process("p")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(100)
 )
 
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
-    fileNames = cms.untracked.vstring('file:/storage/9/mildner/ttbar_miniAODtest.root')
+    #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
+    fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttH_Phys14_miniAOD.root')
 )
 
 
@@ -22,7 +23,7 @@ process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff")
 process.load("Configuration.EventContent.EventContent_cff")
 process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 process.MessageLogger.suppressWarning = cms.untracked.vstring('ecalLaserCorrFilter','manystripclus53X','toomanystripclus53X')
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
