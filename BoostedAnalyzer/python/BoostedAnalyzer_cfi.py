@@ -12,7 +12,7 @@ BoostedAnalyzer = cms.EDAnalyzer('BoostedAnalyzer',
   nMCEvents = cms.int32(25000000),
   isData = cms.bool(True),
   useFatJets = cms.bool(False),
-  outfileName = cms.string("test2"),
+  outfileName = cms.string("test"),
   selectionNames = cms.vstring("LeptonSelection"),
   processorNames = cms.vstring("MVAVarProcessor","BoostedJetVarProcessor","ttHVarProcessor")
 )
