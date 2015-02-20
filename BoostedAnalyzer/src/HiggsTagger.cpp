@@ -55,8 +55,8 @@ float HiggsTagger::GetSecondCSV(const boosted::SubFilterJet& higgsJet, bool verb
   std::vector<pat::Jet> subjets = higgsJet.subjets;
   std::sort(subjets.begin(),subjets.end(),BoostedUtils::FirstHasHigherCSV); 
   
-  return subjets[1].bDiscriminator("combinedSecondaryVertexBJetTags");
-  
+  return subjets[1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+
 }
 
 
@@ -78,8 +78,8 @@ float HiggsTagger::GetBDTOutput(const boosted::SubFilterJet& higgsJet, bool verb
   BDTVars["Pt_HiggsJet"]                      = higgsJet.fatjet.pt();
   BDTVars["M2_HiggsJet"]                      = M2;
   BDTVars["M3_HiggsJet"]                      = M3;
-  BDTVars["CSV1_HiggsJet"]                    = filterjets[0].bDiscriminator("combinedSecondaryVertexBJetTags");
-  BDTVars["CSV2_HiggsJet"]                    = filterjets[1].bDiscriminator("combinedSecondaryVertexBJetTags");
+  BDTVars["CSV1_HiggsJet"]                    = filterjets[0].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  BDTVars["CSV2_HiggsJet"]                    = filterjets[1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
   BDTVars["NSubjettiness_12_Ratio_HiggsJet"]  = higgsJet.subjettiness2/higgsJet.subjettiness1;
   BDTVars["NSubjettiness_23_Ratio_HiggsJet"]  = higgsJet.subjettiness3/higgsJet.subjettiness2;
   BDTVars["NSubjettiness_13_Ratio_HiggsJet"]  = higgsJet.subjettiness3/higgsJet.subjettiness1;

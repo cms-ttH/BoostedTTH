@@ -267,16 +267,16 @@ boosted::HEPTopJetCollection BoostedUtils::GetSortedByPt(boosted::HEPTopJetColle
 
 bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   
-  float CSVLwp = 0.244;
-  float CSVMwp = 0.679;
-  float CSVTwp = 0.898;
+  float CSVLv2wp = 0.423;
+  float CSVMv2wp = 0.814;
+  float CSVTv2wp = 0.941;
   
   float csvValue = jet.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
   
   switch(workingPoint){
-    case 'L': if(csvValue > CSVLwp){ return true; } break;
-    case 'M': if(csvValue > CSVMwp){ return true; } break;
-    case 'T': if(csvValue > CSVTwp){ return true; } break;
+    case 'L': if(csvValue > CSVLv2wp){ return true; } break;
+    case 'M': if(csvValue > CSVMv2wp){ return true; } break;
+    case 'T': if(csvValue > CSVTv2wp){ return true; } break;
     case '-': return true; break;
   }
   
@@ -520,7 +520,7 @@ float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const in
   std::vector<pat::Jet> filterJets = GetHiggsFilterJets(higgsJet,nBTags);
   
   if(nBTags>0){
-    if(filterJets[nBTags-1].bDiscriminator("combinedSecondaryVertexBJetTags")<csvWP) return -1.;
+    if(filterJets[nBTags-1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags")<csvWP) return -1.;
   }
   
   vector<math::XYZTLorentzVector> filterJetVecs = GetJetVecs(filterJets);
@@ -546,7 +546,7 @@ double BoostedUtils::GetBestHiggsMassOhio(math::XYZTLorentzVector lepton, math::
   double chi_W_had=10000;
   minChi = 1000000;
   dRbb = 1000000;
-  double btagCut = 0.679;
+  double btagCut = 0.814;
   double W_mass = 80.0;
   double top_mass = 172.5;
   //double H_mass=120.0;
@@ -692,7 +692,7 @@ float BoostedUtils::GetBestHiggsMassOhio2(math::XYZTLorentzVector lepton, math::
   double chi_W_had=10000;
   minChi = 1000000;
   dRbb = 1000000;
-  double btagCut = 0.679;
+  double btagCut = 0.814;
   double W_mass = 80.0;
   double top_mass = 172.5;
   //double H_mass=120.0;
@@ -1308,7 +1308,7 @@ bool BEANUtils::GetSelected_HiggsJets(const BNsubfilterjetCollection& subfilterj
     BNjet csvec1_fjet;
     BNjet csvec2_fjet;
     BEANUtils::GetHiggsJetCSVVarsDr(subfilterjets[i],csvec1_fjet,csvec2_fjet);    
-    if(csvec2_fjet.btagCombinedSecVertex>0.679&&subfilterjets[i].fatjet.pt>200 and BEANUtils::DeltaR(topHadCand.fatjet,subfilterjets[i].fatjet)>1.5 and fabs(subfilterjets[i].fatjet.eta)<=2.0) {
+    if(csvec2_fjet.btagCombinedSecVertex>0.814&&subfilterjets[i].fatjet.pt>200 and BEANUtils::DeltaR(topHadCand.fatjet,subfilterjets[i].fatjet)>1.5 and fabs(subfilterjets[i].fatjet.eta)<=2.0) {
       //std::cout<<"test"<<std::endl;
            
       if(check_subjet_overlap){
@@ -1319,7 +1319,7 @@ bool BEANUtils::GetSelected_HiggsJets(const BNsubfilterjetCollection& subfilterj
           if(BEANUtils::DeltaR(topHadCand.nonW,subfilterjets[i].filterjets[j])<0.2) clean=false;
           }
          if(!clean) continue;
-        }//0.679 or 0.244
+        }//0.814 or 0.244
         
       selected_higgsjets.push_back(subfilterjets[i]);
       foundHiggsJet=true;
