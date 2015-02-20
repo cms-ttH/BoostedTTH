@@ -13,7 +13,7 @@ std::string BoostedUtils::GetAnalyzerPath(){
     return path;
   }
   else
-    return path+"BoostedTTH/BoostedAnalyzer";
+    return path+"/src/BoostedTTH/BoostedAnalyzer";
 }
 
 
