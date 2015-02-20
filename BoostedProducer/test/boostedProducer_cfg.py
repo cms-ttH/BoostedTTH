@@ -4,7 +4,7 @@ from PhysicsTools.PatAlgos.tools.jetTools import addJetCollection
 process = cms.Process("p")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(1000000000)
 )
 
 process.source = cms.Source("PoolSource",

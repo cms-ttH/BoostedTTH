@@ -11,11 +11,11 @@ process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000000) )
 
 process.source = cms.Source(  "PoolSource",
 #                              fileNames = cms.untracked.vstring( 'file:/storage/9/mildner/ttbar_miniAODtest.root' )
-                              fileNames = cms.untracked.vstring( 'file:/storage/9/mildner/BoostedMiniAOD.root' )
+                              fileNames = cms.untracked.vstring( 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/crab_MC_aMCatNLO_TTbarH_M-125_13TeV_PHYS14/150220_085611/0000/BoostedMiniAOD_4.root' )
                               #fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
 )
 

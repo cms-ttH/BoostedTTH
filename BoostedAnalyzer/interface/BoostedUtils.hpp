@@ -1,5 +1,5 @@
-#ifndef BOOSTEDUTILS_HPP
-#define BOOSTEDUTILS_HPP
+#ifndef BOOSTEDTTH_BOOSTEDANALYZER_BOOSTEDUTILS_HPP
+#define BOOSTEDTTH_BOOSTEDANALYZER_BOOSTEDUTILS_HPP
 
 #include <vector>
 
@@ -54,11 +54,14 @@ class BoostedUtils{
     
     static bool MCContainsTTbar(const std::vector<reco::GenParticle>& genParticles);
     static bool MCContainsHiggs(const std::vector<reco::GenParticle>& genParticles);
+    static void GetttHMCVecs(const std::vector<reco::GenParticle>& genParticles, std::vector<math::XYZTLorentzVector>& bhadvec, std::vector<math::XYZTLorentzVector>& q1vec, std::vector<math::XYZTLorentzVector>& q2vec, std::vector<math::XYZTLorentzVector>& blepvec, std::vector<math::XYZTLorentzVector>& lepvec, std::vector<math::XYZTLorentzVector>& nuvec, math::XYZTLorentzVector& b1vec, math::XYZTLorentzVector& b2vec);
     
     static bool IsAnyTriggerBitFired(const std::vector<std::string>& targetTriggers, const edm::TriggerResults& triggerResults);
     
     static std::vector<math::XYZTLorentzVector> GetLepVecs(const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon> selectedMuons);
     static math::XYZTLorentzVector GetPrimLepVec(const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon> selectedMuons);
+    
+    static void GetNuVecs(const math::XYZTLorentzVector& lepvec, const TVector2& metvec, math::XYZTLorentzVector& nu1, math::XYZTLorentzVector& nu2);
     
     static std::vector<math::XYZTLorentzVector> GetJetVecs(const std::vector<pat::Jet>& jets);
     
@@ -79,6 +82,7 @@ class BoostedUtils{
     static void TopSubjetCSVDef(std::vector<pat::Jet> &subjets);
     
     static std::vector<pat::Jet> GetHiggsFilterJets(const boosted::SubFilterJet& higgsJet, const int& nCSVJets = 2);
+    static std::vector<pat::Jet> GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets = 2);
     static float GetHiggsMass(const boosted::SubFilterJet& higgsJet, const int& nFilterJets = 2, const int& nBTags = 2, const float& csvWP = 0.679);
     
     static double GetBestHiggsMassOhio(math::XYZTLorentzVector lepton, math::XYZTLorentzVector met, std::vector<math::XYZTLorentzVector> jets, std::vector<double> btag, double &minChi, double &dRbb, math::XYZTLorentzVector &bjet1, math::XYZTLorentzVector &bjet2, std::vector<math::XYZTLorentzVector> loose_jets, std::vector<double> loose_btag);

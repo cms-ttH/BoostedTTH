@@ -1,5 +1,5 @@
-#ifndef MVAVARPROCESSOR_HPP
-#define MVAVARPROCESSOR_HPP
+#ifndef BOOSTEDTTH_BOOSTEDANALYZER_MVAVARPROCESSOR_HPP
+#define BOOSTEDTTH_BOOSTEDANALYZER_MVAVARPROCESSOR_HPP
 
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"

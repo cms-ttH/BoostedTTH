@@ -1,5 +1,5 @@
-#ifndef INPUTCOLLECTIONS_HPP
-#define INPUTCOLLECTIONS_HPP
+#ifndef BOOSTEDTTH_BOOSTEDANALYZER_INPUTCOLLECTIONS_HPP
+#define BOOSTEDTTH_BOOSTEDANALYZER_INPUTCOLLECTIONS_HPP
 
 #include <vector>
 #include <map>
@@ -29,7 +29,7 @@ struct InputCollections{
                     const std::vector<pat::MET>&                  pfMets_,
                     const boosted::HEPTopJetCollection&           selectedHEPTopJets_,
                     const boosted::SubFilterJetCollection&        selectedSubFilterJets_,
-                    const std::vector<reco::GenParticle>&         mcParticles_,
+                    const std::vector<reco::GenParticle>&         genParticles_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
                     const std::map<std::string,float>&            weights_
@@ -47,7 +47,7 @@ struct InputCollections{
                     pfMets(pfMets_),
                     selectedHEPTopJets(selectedHEPTopJets_),
                     selectedSubFilterJets(selectedSubFilterJets_),
-                    mcParticles(mcParticles_),
+                    genParticles(genParticles_),
                     selectedGenJets(selectedGenJets_),
                     sampleType(sampleType_),
                     weights(weights_){}
@@ -65,7 +65,7 @@ struct InputCollections{
   const std::vector<pat::MET>&                  pfMets;
   const boosted::HEPTopJetCollection&           selectedHEPTopJets;
   const boosted::SubFilterJetCollection&        selectedSubFilterJets;
-  const std::vector<reco::GenParticle>&         mcParticles;
+  const std::vector<reco::GenParticle>&         genParticles;
   const std::vector<reco::GenJet>&              selectedGenJets;
   const SampleType                              sampleType;
   const std::map<std::string,float>&            weights;

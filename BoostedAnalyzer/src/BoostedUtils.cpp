@@ -13,7 +13,7 @@ std::string BoostedUtils::GetAnalyzerPath(){
     return path;
   }
   else
-    return path+"BoostedTTH/BoostedAnalyzer";
+    return path+"/src/BoostedTTH/BoostedAnalyzer";
 }
 
 
@@ -187,6 +187,91 @@ bool BoostedUtils::MCContainsHiggs(const std::vector<reco::GenParticle>& genPart
 }
 
 
+void BoostedUtils::GetttHMCVecs(const std::vector<reco::GenParticle>& genParticles, vector<math::XYZTLorentzVector>& bhadvec, vector<math::XYZTLorentzVector>& q1vec, vector<math::XYZTLorentzVector>& q2vec, vector<math::XYZTLorentzVector>& blepvec, vector<math::XYZTLorentzVector>& lepvec, vector<math::XYZTLorentzVector>& nuvec, math::XYZTLorentzVector& b1vec, math::XYZTLorentzVector& b2vec){
+  std::vector<reco::GenParticle> leptonsFromWplus;
+  std::vector<reco::GenParticle> leptonsFromWminus;
+  std::vector<reco::GenParticle> quarksFromWplus;
+  std::vector<reco::GenParticle> quarksFromWminus;
+  std::vector<reco::GenParticle> quarksFromT;
+  std::vector<reco::GenParticle> quarksFromTbar;
+  std::vector<reco::GenParticle> bquarksFromHiggs;
+  reco::GenParticle top;
+  reco::GenParticle topbar;
+  reco::GenParticle higgs;
+  
+  for(std::vector<reco::GenParticle>::const_iterator itPart = genParticles.begin();itPart != genParticles.end();itPart++) {
+    if(itPart->numberOfMothers()==0) continue;
+    if(itPart->mother()->pdgId()==6    && abs(itPart->pdgId())<6) quarksFromT.push_back(*itPart);
+    if(itPart->mother()->pdgId()==-6   && abs(itPart->pdgId())<6) quarksFromTbar.push_back(*itPart);
+    if(itPart->mother()->pdgId()==24   && abs(itPart->pdgId())<6) quarksFromWplus.push_back(*itPart);
+    if(itPart->mother()->pdgId()==-24  && abs(itPart->pdgId())<6) quarksFromWminus.push_back(*itPart);
+    if(itPart->mother()->pdgId()==24   && abs(itPart->pdgId())>=11&&abs(itPart->pdgId())<=16) leptonsFromWplus.push_back(*itPart);
+    if(itPart->mother()->pdgId()==-24  && abs(itPart->pdgId())>=11&&abs(itPart->pdgId())<=16) leptonsFromWminus.push_back(*itPart);
+    if(itPart->mother()->pdgId()==25   && abs(itPart->pdgId())==5) bquarksFromHiggs.push_back(*itPart);
+    if(itPart->mother()->pdgId()!=25   && itPart->pdgId()==25) higgs = *itPart;
+    if(itPart->mother()->pdgId()!=6    && itPart->pdgId()==6) top = *itPart;
+    if(itPart->mother()->pdgId()!=-6   && itPart->pdgId()==-6) topbar = *itPart;
+  }
+  
+  math::XYZTLorentzVector topvec = top.p4();
+  math::XYZTLorentzVector topbarvec = topbar.p4();
+  
+  std::vector<reco::GenParticle> tophad;
+  std::vector<reco::GenParticle> toplep;
+  std::vector<math::XYZTLorentzVector> tophadvec;
+  std::vector<math::XYZTLorentzVector> toplepvec;
+  
+  if(leptonsFromWplus.size()==2 && quarksFromT.size()>=1){
+    toplep.push_back(top);
+    toplepvec.push_back(topvec);
+    blepvec.push_back(quarksFromT[0].p4());
+    if(leptonsFromWplus[0].pdgId()%2!=0){
+      lepvec.push_back(leptonsFromWplus[0].p4());
+      nuvec.push_back(leptonsFromWplus[1].p4());
+    }
+    else{
+      lepvec.push_back(leptonsFromWplus[1].p4());
+      nuvec.push_back(leptonsFromWplus[0].p4());
+    }
+  }
+  
+  if(leptonsFromWminus.size()==2 && quarksFromTbar.size()>=1){
+    toplep.push_back(topbar);
+    toplepvec.push_back(topbarvec);
+    blepvec.push_back(quarksFromTbar[0].p4());
+    if(leptonsFromWminus[0].pdgId()%2!=0){
+      lepvec.push_back(leptonsFromWminus[0].p4());
+      nuvec.push_back(leptonsFromWminus[1].p4());
+    }
+    else{
+      lepvec.push_back(leptonsFromWminus[1].p4());
+      nuvec.push_back(leptonsFromWminus[0].p4());
+    }
+  }
+  
+  if(quarksFromWplus.size()==2 && quarksFromT.size()>=1){
+    tophad.push_back(top);
+    tophadvec.push_back(topvec);
+    bhadvec.push_back(quarksFromT[0].p4());
+    q1vec.push_back(quarksFromWplus[0].p4());
+    q2vec.push_back(quarksFromWplus[1].p4());
+  }
+  
+  if(quarksFromWminus.size()==2 && quarksFromTbar.size()>=1){
+    tophad.push_back(topbar);
+    tophadvec.push_back(topbarvec);
+    bhadvec.push_back(quarksFromTbar[0].p4());
+    q1vec.push_back(quarksFromWminus[0].p4());
+    q2vec.push_back(quarksFromWminus[1].p4());
+  }
+
+  if(bquarksFromHiggs.size()==2){
+    b1vec = bquarksFromHiggs[0].p4();
+    b2vec = bquarksFromHiggs[1].p4();
+  }
+}
+
+
 bool BoostedUtils::IsAnyTriggerBitFired(const std::vector<string> & targetTriggers, const edm::TriggerResults& triggerResults){
   
   // check to see if you passed the trigger by looping over the bits
@@ -237,6 +322,28 @@ math::XYZTLorentzVector BoostedUtils::GetPrimLepVec(const std::vector<pat::Elect
   }
   
   return leptonVecs[0];
+}
+
+
+void BoostedUtils::GetNuVecs(const math::XYZTLorentzVector& lepvec, const TVector2& metvec, math::XYZTLorentzVector& nu1, math::XYZTLorentzVector& nu2){
+  
+  double mu = (80.4*80.4)/2 + metvec.Px()*lepvec.Px() + metvec.Py()*lepvec.Py();
+  double a = (mu*lepvec.Pz())/(lepvec.E()*lepvec.E() - lepvec.Pz()*lepvec.Pz());
+  double a2 = TMath::Power(a, 2);
+  double b = (TMath::Power(lepvec.E(), 2.)*metvec.Mod() - TMath::Power(mu, 2.)) / (TMath::Power(lepvec.E(), 2)- TMath::Power(lepvec.Pz(), 2));
+  float pz1,pz2;
+  
+  if (a2-b < 0) { 
+    pz1 = a;
+    pz2 = a;
+  } else {
+    double root = sqrt(a2-b);
+    pz1 = a + root;
+    pz2 = a - root;
+  }
+  
+  nu1.SetPxPyPzE(metvec.Px(),metvec.Py(),pz1,sqrt(metvec.Mod2()+pz1*pz1));
+  nu2.SetPxPyPzE(metvec.Px(),metvec.Py(),pz2,sqrt(metvec.Mod2()+pz2*pz2));
 }
 
 
@@ -509,6 +616,26 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::SubFilterJ
   }
   
   return filterJets;
+}
+
+
+std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets){
+
+  std::vector<pat::Jet> subJets = higgsDecayJets;
+  
+  std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstHasHigherCSV);
+  
+  if(subJets.size()>((size_t) nCSVJets+1)){
+    std::vector<pat::Jet> HighCSVFJets(subJets.begin(),subJets.begin()+nCSVJets);
+
+    subJets.erase(subJets.begin(),subJets.begin()+nCSVJets);
+
+    std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstJetIsHarder);
+
+    subJets.insert(subJets.begin(),HighCSVFJets.begin(),HighCSVFJets.end());
+  }
+  
+  return subJets;
 }
 
 
@@ -1165,24 +1292,7 @@ float BEANUtils::GetHiggsMass(const BNsubfilterjet& higgs_jet, const int n_filte
   return vec.M();
 }
 
-void BEANUtils::GetNuVecs(const TLorentzVector & lepvec, const TVector2 & metvec, TLorentzVector & nu1, TLorentzVector & nu2){
-  double metvec2 = metvec.Px()*metvec.Px() + metvec.Py()*metvec.Py();
-  double mu = (80.4*80.4)/2 + metvec.Px()*lepvec.Px() + metvec.Py()*lepvec.Py();
-  double a = (mu*lepvec.Pz())/(lepvec.E()*lepvec.E() - lepvec.Pz()*lepvec.Pz());
-  double a2 = TMath::Power(a, 2);
-  double b = (TMath::Power(lepvec.E(), 2.)*metvec2 - TMath::Power(mu, 2.)) / (TMath::Power(lepvec.E(), 2)- TMath::Power(lepvec.Pz(), 2));
-  float pz1,pz2;
-  if (a2-b < 0) { 
-    pz1 = a;
-    pz2 = a;
-  } else {
-    double root = sqrt(a2-b);
-    pz1 = a + root;
-    pz2 = a - root;
-  }
-  nu1.SetPxPyPzE(metvec.Px(),metvec.Py(),pz1,sqrt(metvec.Mod2()+pz1*pz1));
-  nu2.SetPxPyPzE(metvec.Px(),metvec.Py(),pz2,sqrt(metvec.Mod2()+pz2*pz2));
-}
+
 
 BNjet BEANUtils::GetTopLepBjet(const BNsubfilterjet& sfjet,const BNtoptagjet& topjet, const vector<BNjet>& ak5jets){
   vector<BNjet> sortedJets=ak5jets;
@@ -1202,103 +1312,6 @@ BNjet BEANUtils::GetTopLepBjet(const BNsubfilterjet& sfjet,const BNtoptagjet& to
   return bjet;
 }
   
-void BEANUtils::GetSemiLeptMCVecs(const BNmcparticleCollection& mcparticlesStatus3,TLorentzVector& bhad_mc,TLorentzVector& q1_mc,TLorentzVector& q2_mc,TLorentzVector& blep_mc,TLorentzVector& lep_mc,TLorentzVector& nu_mc,TLorentzVector& b1_mc,TLorentzVector& b2_mc){
-
-  BNmcparticleCollection leptonsFromWplus;
-  BNmcparticleCollection leptonsFromWminus;
-  BNmcparticleCollection quarksFromWplus;
-  BNmcparticleCollection quarksFromWminus;
-  BNmcparticleCollection quarksFromT;
-  BNmcparticleCollection quarksFromTbar;
-  BNmcparticleCollection bquarksFromHiggs;
-  BNmcparticle top;
-  BNmcparticle topbar;
-  BNmcparticle higgs;
-  
-  for(size_t i=0; i<mcparticlesStatus3.size();i++){
-    if(mcparticlesStatus3[i].motherId==6&&abs(mcparticlesStatus3[i].id)<6) quarksFromT.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==-6&&abs(mcparticlesStatus3[i].id)<6) quarksFromTbar.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==24&&abs(mcparticlesStatus3[i].id)<6) quarksFromWplus.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==-24&&abs(mcparticlesStatus3[i].id)<6) quarksFromWminus.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==24&&abs(mcparticlesStatus3[i].id)>=11&&abs(mcparticlesStatus3[i].id)<=16) leptonsFromWplus.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==-24&&abs(mcparticlesStatus3[i].id)>=11&&abs(mcparticlesStatus3[i].id)<=16) leptonsFromWminus.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==25&&abs(mcparticlesStatus3[i].id)==5) bquarksFromHiggs.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId!=25&&mcparticlesStatus3[i].id==25) higgs = mcparticlesStatus3[i];
-    if(mcparticlesStatus3[i].motherId!=6&&mcparticlesStatus3[i].id==6) top = mcparticlesStatus3[i];
-    if(mcparticlesStatus3[i].motherId!=-6&&mcparticlesStatus3[i].id==-6) topbar = mcparticlesStatus3[i];
-  }
-  TLorentzVector topvec=TLorentzVector(top.px,top.py,top.pz,top.energy);
-  TLorentzVector topbarvec=TLorentzVector(topbar.px,topbar.py,topbar.pz,topbar.energy);
-  TLorentzVector higgsvec=TLorentzVector(higgs.px,higgs.py,higgs.pz,higgs.energy);
-
-  BNmcparticleCollection tophad;
-  BNmcparticleCollection toplep;
-  vector<TLorentzVector> bhadvec;
-  vector<TLorentzVector> q1vec;
-  vector<TLorentzVector> q2vec;
-  vector<TLorentzVector> blepvec;
-  vector<TLorentzVector> lepvec;
-  vector<TLorentzVector> nuvec;
-  vector<TLorentzVector> tophadvec;
-  vector<TLorentzVector> toplepvec;
-  
-  if(leptonsFromWplus.size()==2 && quarksFromT.size()>=1){
-    toplep.push_back(top);
-    toplepvec.push_back(topvec);
-    blepvec.push_back(BEANUtils::GetMCVec(quarksFromT[0]));
-    if(leptonsFromWplus[0].id%2!=0){
-      lepvec.push_back(BEANUtils::GetMCVec(leptonsFromWplus[0]));
-      nuvec.push_back(BEANUtils::GetMCVec(leptonsFromWplus[1]));
-    }
-    else{
-      lepvec.push_back(BEANUtils::GetMCVec(leptonsFromWplus[1]));
-      nuvec.push_back(BEANUtils::GetMCVec(leptonsFromWplus[0]));
-    }
-  }
-  if(leptonsFromWminus.size()==2 && quarksFromTbar.size()>=1){
-    toplep.push_back(topbar);
-    toplepvec.push_back(topbarvec);
-    blepvec.push_back(BEANUtils::GetMCVec(quarksFromTbar[0]));
-    if(leptonsFromWminus[0].id%2!=0){
-      lepvec.push_back(BEANUtils::GetMCVec(leptonsFromWminus[0]));
-      nuvec.push_back(BEANUtils::GetMCVec(leptonsFromWminus[1]));
-    }
-    else{
-      lepvec.push_back(BEANUtils::GetMCVec(leptonsFromWminus[1]));
-      nuvec.push_back(BEANUtils::GetMCVec(leptonsFromWminus[0]));
-    }
-  }
-  if(quarksFromWplus.size()==2 && quarksFromT.size()>=1){
-    tophad.push_back(top);
-    tophadvec.push_back(topvec);
-    bhadvec.push_back(BEANUtils::GetMCVec(quarksFromT[0]));
-    q1vec.push_back(BEANUtils::GetMCVec(quarksFromWplus[0]));
-    q2vec.push_back(BEANUtils::GetMCVec(quarksFromWplus[1]));
-  }
-  if(quarksFromWminus.size()==2 && quarksFromTbar.size()>=1){
-    tophad.push_back(topbar);
-    tophadvec.push_back(topbarvec);
-    bhadvec.push_back(BEANUtils::GetMCVec(quarksFromTbar[0]));
-    q1vec.push_back(BEANUtils::GetMCVec(quarksFromWminus[0]));
-    q2vec.push_back(BEANUtils::GetMCVec(quarksFromWminus[1]));
-  }
-
-  // set
-  if(bhadvec.size()==1&&q1vec.size()==1&&q2vec.size()==1&&blepvec.size()==1&&lepvec.size()==1&&nuvec.size()==1&&tophadvec.size()==1){
-    bhad_mc=bhadvec[0];
-    q1_mc=q1vec[0];
-    q2_mc=q2vec[0];
-    blep_mc=blepvec[0];
-    lep_mc=lepvec[0];
-    nu_mc=nuvec[0];
-    if(bquarksFromHiggs.size()==2){
-      b1_mc=BEANUtils::GetMCVec(bquarksFromHiggs[0]);
-      b2_mc=BEANUtils::GetMCVec(bquarksFromHiggs[1]);
-    }
-  }
-
-}
-
 
 
 bool BEANUtils::GetSelected_HiggsJets(const BNsubfilterjetCollection& subfilterjets, BNsubfilterjetCollection& selected_higgsjets, BNtoptagjet& topHadCand, BNsubfilterjet& higgsCand, bool check_subjet_overlap=true){
@@ -1360,87 +1373,7 @@ bool BEANUtils::MCContainsHiggs(const BNmcparticleCollection& mcparticlesStatus3
 }
 
 
-void BEANUtils::GetttHMCVecs(const BNmcparticleCollection& mcparticlesStatus3,vector<TLorentzVector>& bhadvec,vector<TLorentzVector>& q1vec,vector<TLorentzVector>& q2vec,vector<TLorentzVector>& blepvec,vector<TLorentzVector>& lepvec,vector<TLorentzVector>& nuvec,TLorentzVector& b1vec,TLorentzVector& b2vec){
 
-  BNmcparticleCollection leptonsFromWplus;
-  BNmcparticleCollection leptonsFromWminus;
-  BNmcparticleCollection quarksFromWplus;
-  BNmcparticleCollection quarksFromWminus;
-  BNmcparticleCollection quarksFromT;
-  BNmcparticleCollection quarksFromTbar;
-  BNmcparticleCollection bquarksFromHiggs;
-  BNmcparticle top;
-  BNmcparticle topbar;
-  BNmcparticle higgs;
-  
-  for(size_t i=0; i<mcparticlesStatus3.size();i++){
-    if(mcparticlesStatus3[i].motherId==6&&abs(mcparticlesStatus3[i].id)<6) quarksFromT.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==-6&&abs(mcparticlesStatus3[i].id)<6) quarksFromTbar.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==24&&abs(mcparticlesStatus3[i].id)<6) quarksFromWplus.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==-24&&abs(mcparticlesStatus3[i].id)<6) quarksFromWminus.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==24&&abs(mcparticlesStatus3[i].id)>=11&&abs(mcparticlesStatus3[i].id)<=16) leptonsFromWplus.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==-24&&abs(mcparticlesStatus3[i].id)>=11&&abs(mcparticlesStatus3[i].id)<=16) leptonsFromWminus.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId==25&&abs(mcparticlesStatus3[i].id)==5) bquarksFromHiggs.push_back(mcparticlesStatus3[i]);
-    if(mcparticlesStatus3[i].motherId!=25&&mcparticlesStatus3[i].id==25) higgs = mcparticlesStatus3[i];
-    if(mcparticlesStatus3[i].motherId!=6&&mcparticlesStatus3[i].id==6) top = mcparticlesStatus3[i];
-    if(mcparticlesStatus3[i].motherId!=-6&&mcparticlesStatus3[i].id==-6) topbar = mcparticlesStatus3[i];
-  }
-  TLorentzVector topvec=TLorentzVector(top.px,top.py,top.pz,top.energy);
-  TLorentzVector topbarvec=TLorentzVector(topbar.px,topbar.py,topbar.pz,topbar.energy);
-  TLorentzVector higgsvec=TLorentzVector(higgs.px,higgs.py,higgs.pz,higgs.energy);
-
-  BNmcparticleCollection tophad;
-  BNmcparticleCollection toplep;
-  vector<TLorentzVector> tophadvec;
-  vector<TLorentzVector> toplepvec;
-  
-  if(leptonsFromWplus.size()==2 && quarksFromT.size()>=1){
-    toplep.push_back(top);
-    toplepvec.push_back(topvec);
-    blepvec.push_back(BEANUtils::GetMCVec(quarksFromT[0]));
-    if(leptonsFromWplus[0].id%2!=0){
-      lepvec.push_back(BEANUtils::GetMCVec(leptonsFromWplus[0]));
-      nuvec.push_back(BEANUtils::GetMCVec(leptonsFromWplus[1]));
-    }
-    else{
-      lepvec.push_back(BEANUtils::GetMCVec(leptonsFromWplus[1]));
-      nuvec.push_back(BEANUtils::GetMCVec(leptonsFromWplus[0]));
-    }
-  }
-  if(leptonsFromWminus.size()==2 && quarksFromTbar.size()>=1){
-    toplep.push_back(topbar);
-    toplepvec.push_back(topbarvec);
-    blepvec.push_back(BEANUtils::GetMCVec(quarksFromTbar[0]));
-    if(leptonsFromWminus[0].id%2!=0){
-      lepvec.push_back(BEANUtils::GetMCVec(leptonsFromWminus[0]));
-      nuvec.push_back(BEANUtils::GetMCVec(leptonsFromWminus[1]));
-    }
-    else{
-      lepvec.push_back(BEANUtils::GetMCVec(leptonsFromWminus[1]));
-      nuvec.push_back(BEANUtils::GetMCVec(leptonsFromWminus[0]));
-    }
-  }
-  if(quarksFromWplus.size()==2 && quarksFromT.size()>=1){
-    tophad.push_back(top);
-    tophadvec.push_back(topvec);
-    bhadvec.push_back(BEANUtils::GetMCVec(quarksFromT[0]));
-    q1vec.push_back(BEANUtils::GetMCVec(quarksFromWplus[0]));
-    q2vec.push_back(BEANUtils::GetMCVec(quarksFromWplus[1]));
-  }
-  if(quarksFromWminus.size()==2 && quarksFromTbar.size()>=1){
-    tophad.push_back(topbar);
-    tophadvec.push_back(topbarvec);
-    bhadvec.push_back(BEANUtils::GetMCVec(quarksFromTbar[0]));
-    q1vec.push_back(BEANUtils::GetMCVec(quarksFromWminus[0]));
-    q2vec.push_back(BEANUtils::GetMCVec(quarksFromWminus[1]));
-  }
-
-  
-  if(bquarksFromHiggs.size()==2){
-    b1vec=BEANUtils::GetMCVec(bquarksFromHiggs[0]);
-    b2vec=BEANUtils::GetMCVec(bquarksFromHiggs[1]);
-  }
-}
 
 
 // parses input file names

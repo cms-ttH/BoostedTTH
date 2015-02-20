@@ -1,5 +1,5 @@
-#ifndef TOPTAGGER_HPP
-#define TOPTAGGER_HPP
+#ifndef BOOSTEDTTH_BOOSTEDANALYZER_TOPTAGGER_HPP
+#define BOOSTEDTTH_BOOSTEDANALYZER_TOPTAGGER_HPP
 
 #include <map>
 
@@ -15,7 +15,7 @@ class TopTagger{
 public:
   
   TopTagger();
-  TopTagger(std::string name, std::string histosPath);
+  TopTagger(std::string name, std::string histosPath = "toptaggerhistos.root");
   TopTagger(std::string name, std::vector<std::string> BDTVarNames, std::string weightsPath = "");
   float GetTopTag(const boosted::HEPTopJet& topJet, bool verbose = false);
   bool FirstHasHigherTopTaggerOutput(boosted::HEPTopJet jet1, boosted::HEPTopJet jet2);

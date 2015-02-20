@@ -12,7 +12,7 @@ TopTagger::TopTagger(){
 
 TopTagger::TopTagger(std::string name_, std::string histosPath_): name(name_) {
   
-  file = new TFile((BoostedUtils::GetAnalyzerPath()+"/data/"+histosPath_).c_str());
+  file = new TFile((BoostedUtils::GetAnalyzerPath()+"/data/TopTagger/"+histosPath_).c_str());
 
   mtop_top_histo=(TH1F*)file->Get("mtop_top");
   mtop_nottop_histo=(TH1F*)file->Get("mtop_nottop");

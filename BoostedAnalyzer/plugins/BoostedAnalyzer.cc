@@ -55,6 +55,7 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 
 //
 // class declaration
@@ -249,6 +250,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     
     if(*itPro == "MVAVarProcessor") treewriter.AddTreeProcessor(new MVAVarProcessor());
     else if(*itPro == "BoostedJetVarProcessor") treewriter.AddTreeProcessor(new BoostedJetVarProcessor());
+    else if(*itPro == "ttHVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,"TopLikelihood","HiggsCSV","_BoostedTopHiggs"));
     else cout << "No matching processor found for: " << *itPro << endl;    
   }
 }
