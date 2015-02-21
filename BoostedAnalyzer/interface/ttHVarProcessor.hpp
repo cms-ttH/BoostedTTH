@@ -14,7 +14,7 @@ class ttHVarProcessor: public TreeProcessor{
   
 public:
   
-  ttHVarProcessor(BoostedRecoType recotype=BoostedRecoType::BoostedTopHiggs,std::string taggername="TopLikelihood",std::string higgstaggername="HiggsCSV", std::string suffix="_BoostedttHReco");
+  ttHVarProcessor(BoostedRecoType recotype=BoostedRecoType::BoostedTopHiggs,std::string taggername="TopLikelihood",std::string higgstaggername="HiggsCSV", std::string prefix="BoostedttHReco");
     ~ttHVarProcessor();
     
     void Init(const InputCollections& input,VariableContainer& var);
@@ -39,7 +39,7 @@ public:
     
 private:
     BoostedRecoType recotype;
-    std::string   suffix;   
+    std::string   prefix;   
     TopTagger     toptagger;
     HiggsTagger* higgstagger;
 };

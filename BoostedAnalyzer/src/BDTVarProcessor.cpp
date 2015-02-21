@@ -6,53 +6,53 @@ BDTVarProcessor::~BDTVarProcessor(){}
 
 
 void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
-  vars.InitVar("FinalBDT",-3);
-  vars.InitVar("ttbbBDT",-3);
+  vars.InitVar("Evt_FinalBDT",-3);
+  vars.InitVar("Evt_ttbbBDT",-3);
 
   map<TString,float*> pointto;
   
-  pointto["abs(dEta_hadtop_bb)"]=vars.GetFloatVarPointer("Deta_TopHad_BB_Ohio");
-  pointto["abs(dEta_leptop_bb)"]=vars.GetFloatVarPointer("Deta_TopLep_BB_Ohio");
-  pointto["all_sum_pt_with_met"]=vars.GetFloatVarPointer("HT");
-  pointto["aplanarity"]=vars.GetFloatVarPointer("Aplanarity");
-  pointto["avg_btag_disc_btags"]=vars.GetFloatVarPointer("CSV_Average");
-  pointto["avg_dr_tagged_jets"]=vars.GetFloatVarPointer("Dr_TaggedJetsAverage");
-  pointto["best_higgs_mass"]=vars.GetFloatVarPointer("Best_Higgs_Mass_Ohio");
-  pointto["closest_tagged_dijet_mass"]=vars.GetFloatVarPointer("M_MinDeltaRTaggedJets");
-  pointto["dEta_fn"]=vars.GetFloatVarPointer("Deta_Fn_Ohio");
-  pointto["dev_from_avg_disc_btags"]=vars.GetFloatVarPointer("CSV_Dev");
-  pointto["dr_between_lep_and_closest_jet"]=vars.GetFloatVarPointer("M_MinDeltaRLeptonJet");
-  pointto["dRbb"]=vars.GetFloatVarPointer("Dr_BB_Ohio");
-  pointto["first_jet_pt"]=vars.GetArrayVarPointer("Pt_Jet",0);
+  pointto["abs(dEta_hadtop_bb)"]=vars.GetFloatVarPointer("Evt_Deta_TopHad_BB_Ohio");
+  pointto["abs(dEta_leptop_bb)"]=vars.GetFloatVarPointer("Evt_Deta_TopLep_BB_Ohio");
+  pointto["all_sum_pt_with_met"]=vars.GetFloatVarPointer("Evt_HT");
+  pointto["aplanarity"]=vars.GetFloatVarPointer("Evt_Aplanarity");
+  pointto["avg_btag_disc_btags"]=vars.GetFloatVarPointer("Evt_CSV_Average");
+  pointto["avg_dr_tagged_jets"]=vars.GetFloatVarPointer("Evt_Dr_TaggedJetsAverage");
+  pointto["best_higgs_mass"]=vars.GetFloatVarPointer("Evt_Best_Higgs_Mass_Ohio");
+  pointto["closest_tagged_dijet_mass"]=vars.GetFloatVarPointer("Evt_M_MinDeltaRTaggedJets");
+  pointto["dEta_fn"]=vars.GetFloatVarPointer("Evt_Deta_Fn_Ohio");
+  pointto["dev_from_avg_disc_btags"]=vars.GetFloatVarPointer("Evt_CSV_Dev");
+  pointto["dr_between_lep_and_closest_jet"]=vars.GetFloatVarPointer("Evt_M_MinDeltaRLeptonJet");
+  pointto["dRbb"]=vars.GetFloatVarPointer("Evt_Dr_BB_Ohio");
+  pointto["first_jet_pt"]=vars.GetArrayVarPointer("Jet_Pt",0);
   pointto["fourth_highest_btag"]=vars.GetArrayVarPointer("CSV",3);
-  pointto["fourth_jet_pt"]=vars.GetArrayVarPointer("Pt_Jet",3);
-  pointto["h0"]=vars.GetFloatVarPointer("H0");
-  pointto["h1"]=vars.GetFloatVarPointer("H1");
-  pointto["h2"]=vars.GetFloatVarPointer("H2");
-  pointto["h3"]=vars.GetFloatVarPointer("H3");
-  pointto["HT"]=vars.GetFloatVarPointer("HT_Jets");
-  pointto["invariant_mass_of_everything"]=vars.GetFloatVarPointer("M_Total");
-  pointto["lowest_btag"]=vars.GetFloatVarPointer("CSV_Min");
-  pointto["M3"]=vars.GetFloatVarPointer("M3");
-  pointto["maxeta_jet_jet"]=vars.GetFloatVarPointer("MaxDeta_Jets_Jet");
-  pointto["maxeta_jet_tag"]=vars.GetFloatVarPointer("MaxDeta_Jets_TaggedJet");
-  pointto["maxeta_tag_tag"]=vars.GetFloatVarPointer("MaxDeta_TaggedJets_TaggedJet");
-  pointto["median_bb_mass"]=vars.GetFloatVarPointer("M_MedianTaggedJets");
-  pointto["MET"]=vars.GetFloatVarPointer("Pt_MET");
-  pointto["MHT"]=vars.GetFloatVarPointer("MHT");
-  pointto["min_dr_tagged_jets"]=vars.GetFloatVarPointer("Dr_MinDeltaRJets");
-  pointto["Mlb"]=vars.GetFloatVarPointer("M_MinDeltaRLeptonTaggedJet");
-  pointto["pt_all_jets_over_E_all_jets"]=vars.GetFloatVarPointer("JetPtOverJetE");
+  pointto["fourth_jet_pt"]=vars.GetArrayVarPointer("Jet_Pt",3);
+  pointto["h0"]=vars.GetFloatVarPointer("Evt_H0");
+  pointto["h1"]=vars.GetFloatVarPointer("Evt_H1");
+  pointto["h2"]=vars.GetFloatVarPointer("Evt_H2");
+  pointto["h3"]=vars.GetFloatVarPointer("Evt_H3");
+  pointto["HT"]=vars.GetFloatVarPointer("Evt_HT_Jets");
+  pointto["invariant_mass_of_everything"]=vars.GetFloatVarPointer("Evt_M_Total");
+  pointto["lowest_btag"]=vars.GetFloatVarPointer("Evt_CSV_Min");
+  pointto["M3"]=vars.GetFloatVarPointer("Evt_M3");
+  pointto["maxeta_jet_jet"]=vars.GetFloatVarPointer("Evt_MaxDeta_Jets_Jet");
+  pointto["maxeta_jet_tag"]=vars.GetFloatVarPointer("Evt_MaxDeta_Jets_TaggedJet");
+  pointto["maxeta_tag_tag"]=vars.GetFloatVarPointer("Evt_MaxDeta_TaggedJets_TaggedJet");
+  pointto["median_bb_mass"]=vars.GetFloatVarPointer("Evt_M_MedianTaggedJets");
+  pointto["MET"]=vars.GetFloatVarPointer("Evt_Pt_MET");
+  pointto["MHT"]=vars.GetFloatVarPointer("Evt_MHT");
+  pointto["min_dr_tagged_jets"]=vars.GetFloatVarPointer("Evt_Dr_MinDeltaRJets");
+  pointto["Mlb"]=vars.GetFloatVarPointer("Evt_M_MinDeltaRLeptonTaggedJet");
+  pointto["pt_all_jets_over_E_all_jets"]=vars.GetFloatVarPointer("Evt_JetPtOverJetE");
   pointto["second_highest_btag"]=vars.GetArrayVarPointer("CSV",1);
-  pointto["second_jet_pt"]=vars.GetArrayVarPointer("Pt_Jet",1);
-  pointto["sphericity"]=vars.GetFloatVarPointer("Sphericity");
-  pointto["tagged_dijet_mass_closest_to_125"]=vars.GetFloatVarPointer("M_TaggedJetsClosestTo125");
+  pointto["second_jet_pt"]=vars.GetArrayVarPointer("Jet_Pt",1);
+  pointto["sphericity"]=vars.GetFloatVarPointer("Evt_Sphericity");
+  pointto["tagged_dijet_mass_closest_to_125"]=vars.GetFloatVarPointer("Evt_M_TaggedJetsClosestTo125");
   pointto["third_highest_btag"]=vars.GetArrayVarPointer("CSV",2);
-  pointto["third_jet_pt"]=vars.GetArrayVarPointer("Pt_Jet",2);
+  pointto["third_jet_pt"]=vars.GetArrayVarPointer("Jet_Pt",2);
 
-  pointto["ttbb_tth_MVA_output_5j4t"]=vars.GetFloatVarPointer("ttbbBDT");
-  pointto["ttbb_tth_MVA_output_6j3t"]=vars.GetFloatVarPointer("ttbbBDT");
-  pointto["ttbb_tth_ANN_output"]=vars.GetFloatVarPointer("ttbbBDT");
+  pointto["ttbb_tth_MVA_output_5j4t"]=vars.GetFloatVarPointer("Evt_ttbbBDT");
+  pointto["ttbb_tth_MVA_output_6j3t"]=vars.GetFloatVarPointer("Evt_ttbbBDT");
+  pointto["ttbb_tth_ANN_output"]=vars.GetFloatVarPointer("Evt_ttbbBDT");
 
   TString weightPath=  BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights/";
 
@@ -212,7 +212,7 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
   if(njets>=6&&ntags>=4) ttbbbdt=readerMap["ttbb64"]->EvaluateMVA("BDT");
 
   //order is important! first ttbb, then final BDT
-  vars.FillVar("ttbbBDT",ttbbbdt);
+  vars.FillVar("Evt_ttbbBDT",ttbbbdt);
   if(njets==4&&ntags==3) finalbdt=readerMap["final43"]->EvaluateMVA("BDT");
   if(njets==4&&ntags>=4) finalbdt=readerMap["final44"]->EvaluateMVA("BDT");
   if(njets==5&&ntags==3) finalbdt=readerMap["final53"]->EvaluateMVA("BDT");
@@ -220,7 +220,7 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
   if(njets>=6&&ntags==2) finalbdt=readerMap["final62"]->EvaluateMVA("BDT");
   if(njets>=6&&ntags==3) finalbdt=readerMap["final63"]->EvaluateMVA("BDT");
   if(njets>=6&&ntags>=4) finalbdt=readerMap["final64"]->EvaluateMVA("BDT");
-  vars.FillVar("FinalBDT",finalbdt);
+  vars.FillVar("Evt_FinalBDT",finalbdt);
 
 
 }

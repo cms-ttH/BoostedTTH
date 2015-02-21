@@ -20,14 +20,14 @@ HiggsTagger::HiggsTagger(std::string name_, std::vector<std::string> BDTVarNames
   
   BDTReader = new TMVA::Reader();
 
-  BDTVars["Pt_HiggsJet"]                      = -999;
-  BDTVars["M2_HiggsJet"]                      = -999;
-  BDTVars["M3_HiggsJet"]                      = -999;
-  BDTVars["CSV1_HiggsJet"]                    = -999;
-  BDTVars["CSV2_HiggsJet"]                    = -999;
-  BDTVars["NSubjettiness_12_Ratio_HiggsJet"]  = -999;
-  BDTVars["NSubjettiness_23_Ratio_HiggsJet"]  = -999;
-  BDTVars["NSubjettiness_13_Ratio_HiggsJet"]  = -999;
+  BDTVars["HiggsJet_Pt"]                      = -999;
+  BDTVars["HiggsJet_M2"]                      = -999;
+  BDTVars["HiggsJet_M3"]                      = -999;
+  BDTVars["HiggsJet_CSV1"]                    = -999;
+  BDTVars["HiggsJet_CSV2"]                    = -999;
+  BDTVars["HiggsJet_NSubjettiness_12_Ratio"]  = -999;
+  BDTVars["HiggsJet_NSubjettiness_23_Ratio"]  = -999;
+  BDTVars["HiggsJet_NSubjettiness_13_Ratio"]  = -999;
   
 
   for(size_t iBDTVars=0;iBDTVars<BDTVarNames_.size();iBDTVars++){
@@ -75,14 +75,14 @@ float HiggsTagger::GetBDTOutput(const boosted::SubFilterJet& higgsJet, bool verb
     
   ResetBDTVars();
   
-  BDTVars["Pt_HiggsJet"]                      = higgsJet.fatjet.pt();
-  BDTVars["M2_HiggsJet"]                      = M2;
-  BDTVars["M3_HiggsJet"]                      = M3;
-  BDTVars["CSV1_HiggsJet"]                    = filterjets[0].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
-  BDTVars["CSV2_HiggsJet"]                    = filterjets[1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
-  BDTVars["NSubjettiness_12_Ratio_HiggsJet"]  = higgsJet.subjettiness2/higgsJet.subjettiness1;
-  BDTVars["NSubjettiness_23_Ratio_HiggsJet"]  = higgsJet.subjettiness3/higgsJet.subjettiness2;
-  BDTVars["NSubjettiness_13_Ratio_HiggsJet"]  = higgsJet.subjettiness3/higgsJet.subjettiness1;
+  BDTVars["HiggsJet_Pt"]                      = higgsJet.fatjet.pt();
+  BDTVars["HiggsJet_M2"]                      = M2;
+  BDTVars["HiggsJet_M3"]                      = M3;
+  BDTVars["HiggsJet_CSV1"]                    = filterjets[0].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  BDTVars["HiggsJet_CSV2"]                    = filterjets[1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  BDTVars["HiggsJet_NSubjettiness_12_Ratio"]  = higgsJet.subjettiness2/higgsJet.subjettiness1;
+  BDTVars["HiggsJet_NSubjettiness_23_Ratio"]  = higgsJet.subjettiness3/higgsJet.subjettiness2;
+  BDTVars["HiggsJet_NSubjettiness_13_Ratio"]  = higgsJet.subjettiness3/higgsJet.subjettiness1;
   
   if(verbose){
     std::cout << "Higgs Tagger Variables:" << std::endl;

@@ -21,193 +21,193 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVar( "N_BTagsL" ,"I");
   vars.InitVar( "N_PrimaryVertices","I" );
   
-  vars.InitVars( "E_Jet","N_Jets" );
-  vars.InitVars( "M_Jet","N_Jets" );
-  vars.InitVars( "Pt_Jet","N_Jets" );
-  vars.InitVars( "Phi_Jet","N_Jets" );
-  vars.InitVars( "Eta_Jet","N_Jets" );
-  vars.InitVars( "CSV_Jet","N_Jets" );
-  vars.InitVars( "Flav_Jet","N_Jets" );
+  vars.InitVars( "Jet_E","N_Jets" );
+  vars.InitVars( "Jet_M","N_Jets" );
+  vars.InitVars( "Jet_Pt","N_Jets" );
+  vars.InitVars( "Jet_Phi","N_Jets" );
+  vars.InitVars( "Jet_Eta","N_Jets" );
+  vars.InitVars( "Jet_CSV","N_Jets" );
+  vars.InitVars( "Jet_Flav","N_Jets" );
   
-  vars.InitVars( "E_TaggedJet","N_BTagsM" );
-  vars.InitVars( "M_TaggedJet","N_BTagsM" );
-  vars.InitVars( "Pt_TaggedJet","N_BTagsM" );
-  vars.InitVars( "Phi_TaggedJet","N_BTagsM" );
-  vars.InitVars( "Eta_TaggedJet","N_BTagsM" );
+  vars.InitVars( "TaggedJet_E","N_BTagsM" );
+  vars.InitVars( "TaggedJet_M","N_BTagsM" );
+  vars.InitVars( "TaggedJet_Pt","N_BTagsM" );
+  vars.InitVars( "TaggedJet_Phi","N_BTagsM" );
+  vars.InitVars( "TaggedJet_Eta","N_BTagsM" );
   
-  vars.InitVar( "E_PrimaryLepton" );
-  vars.InitVar( "M_PrimaryLepton" );
-  vars.InitVar( "Pt_PrimaryLepton" );
-  vars.InitVar( "Eta_PrimaryLepton" );
-  vars.InitVar( "Phi_PrimaryLepton" );
+  vars.InitVar( "Evt_E_PrimaryLepton" );
+  vars.InitVar( "Evt_M_PrimaryLepton" );
+  vars.InitVar( "Evt_Pt_PrimaryLepton" );
+  vars.InitVar( "Evt_Eta_PrimaryLepton" );
+  vars.InitVar( "Evt_Phi_PrimaryLepton" );
   
-  vars.InitVars( "E_LooseLepton","N_LooseLeptons" );
-  vars.InitVars( "M_LooseLepton","N_LooseLeptons" );
-  vars.InitVars( "Pt_LooseLepton","N_LooseLeptons" );
-  vars.InitVars( "Eta_LooseLepton","N_LooseLeptons" );
-  vars.InitVars( "Phi_LooseLepton","N_LooseLeptons" );
+  vars.InitVars( "LooseLepton_E","N_LooseLeptons" );
+  vars.InitVars( "LooseLepton_M","N_LooseLeptons" );
+  vars.InitVars( "LooseLepton_Pt","N_LooseLeptons" );
+  vars.InitVars( "LooseLepton_Eta","N_LooseLeptons" );
+  vars.InitVars( "LooseLepton_Phi","N_LooseLeptons" );
   
-  vars.InitVars( "E_Muon","N_LooseMuons" );
-  vars.InitVars( "M_Muon","N_LooseMuons" );
-  vars.InitVars( "Pt_Muon","N_LooseMuons" );
-  vars.InitVars( "Eta_Muon","N_LooseMuons" );
-  vars.InitVars( "Phi_Muon","N_LooseMuons" );
+  vars.InitVars( "Muon_E","N_LooseMuons" );
+  vars.InitVars( "Muon_M","N_LooseMuons" );
+  vars.InitVars( "Muon_Pt","N_LooseMuons" );
+  vars.InitVars( "Muon_Eta","N_LooseMuons" );
+  vars.InitVars( "Muon_Phi","N_LooseMuons" );
   
-  vars.InitVars( "E_Electron","N_LooseElectrons" );
-  vars.InitVars( "M_Electron","N_LooseElectrons" );
-  vars.InitVars( "Pt_Electron","N_LooseElectrons" );
-  vars.InitVars( "Eta_Electron","N_LooseElectrons" );
-  vars.InitVars( "Phi_Electron","N_LooseElectrons" );
+  vars.InitVars( "Electron_E","N_LooseElectrons" );
+  vars.InitVars( "Electron_M","N_LooseElectrons" );
+  vars.InitVars( "Electron_Pt","N_LooseElectrons" );
+  vars.InitVars( "Electron_Eta","N_LooseElectrons" );
+  vars.InitVars( "Electron_Phi","N_LooseElectrons" );
   
-  vars.InitVar( "Pt_MET" );
-  vars.InitVar( "Phi_MET" );
+  vars.InitVar( "Evt_Pt_MET" );
+  vars.InitVar( "Evt_Phi_MET" );
 
-  vars.InitVar("M3");
-  vars.InitVar("M3_OneJetTagged");
-  vars.InitVar("MTW");
-  vars.InitVar("HT");
-  vars.InitVar("HT_Jets");
-  vars.InitVar("M_Total");
-  vars.InitVar("MHT");
+  vars.InitVar("Evt_M3");
+  vars.InitVar("Evt_M3_OneJetTagged");
+  vars.InitVar("Evt_MTW");
+  vars.InitVar("Evt_HT");
+  vars.InitVar("Evt_HT_Jets");
+  vars.InitVar("Evt_M_Total");
+  vars.InitVar("Evt_MHT");
   
   vars.InitVars( "CSV","N_Jets" );
-  vars.InitVar( "CSV_Average" );
-  vars.InitVar( "CSV_Min" );
-  vars.InitVar( "CSV_Dev" );
-  vars.InitVar( "CSV_Average_Tagged" );
-  vars.InitVar( "CSV_Min_Tagged" );
-  vars.InitVar( "CSV_Dev_Tagged" );
+  vars.InitVar( "Evt_CSV_Average" );
+  vars.InitVar( "Evt_CSV_Min" );
+  vars.InitVar( "Evt_CSV_Dev" );
+  vars.InitVar( "Evt_CSV_Average_Tagged" );
+  vars.InitVar( "Evt_CSV_Min_Tagged" );
+  vars.InitVar( "Evt_CSV_Dev_Tagged" );
 
-  vars.InitVar( "M_MinDeltaRJets" );    
-  vars.InitVar( "M_MinDeltaRTaggedJets" );
-  vars.InitVar( "M_MinDeltaRUntaggedJets" );
-  vars.InitVar( "M_MinDeltaRLeptonTaggedJet" );
-  vars.InitVar( "M_MinDeltaRLeptonJet" );
+  vars.InitVar( "Evt_M_MinDeltaRJets" );    
+  vars.InitVar( "Evt_M_MinDeltaRTaggedJets" );
+  vars.InitVar( "Evt_M_MinDeltaRUntaggedJets" );
+  vars.InitVar( "Evt_M_MinDeltaRLeptonTaggedJet" );
+  vars.InitVar( "Evt_M_MinDeltaRLeptonJet" );
 
-  vars.InitVar( "Dr_MinDeltaRJets" );    
-  vars.InitVar( "Dr_MinDeltaRTaggedJets" );
-  vars.InitVar( "Dr_MinDeltaRUntaggedJets" );
-  vars.InitVar( "Dr_MinDeltaRLeptonTaggedJet" );
-  vars.InitVar( "Dr_MinDeltaRLeptonJet" );
+  vars.InitVar( "Evt_Dr_MinDeltaRJets" );    
+  vars.InitVar( "Evt_Dr_MinDeltaRTaggedJets" );
+  vars.InitVar( "Evt_Dr_MinDeltaRUntaggedJets" );
+  vars.InitVar( "Evt_Dr_MinDeltaRLeptonTaggedJet" );
+  vars.InitVar( "Evt_Dr_MinDeltaRLeptonJet" );
 
-  vars.InitVar( "Pt_MinDeltaRJets" );    
-  vars.InitVar( "Pt_MinDeltaRTaggedJets" );
-  vars.InitVar( "Pt_MinDeltaRUntaggedJets" );
+  vars.InitVar( "Evt_Pt_MinDeltaRJets" );    
+  vars.InitVar( "Evt_Pt_MinDeltaRTaggedJets" );
+  vars.InitVar( "Evt_Pt_MinDeltaRUntaggedJets" );
 
-  vars.InitVar( "M_JetsAverage" );
-  vars.InitVar( "M_TaggedJetsAverage" );
-  vars.InitVar( "M_UntaggedJetsAverage" );
+  vars.InitVar( "Evt_M_JetsAverage" );
+  vars.InitVar( "Evt_M_TaggedJetsAverage" );
+  vars.InitVar( "Evt_M_UntaggedJetsAverage" );
   
-  vars.InitVar( "Eta_JetsAverage" );
-  vars.InitVar( "Eta_TaggedJetsAverage" );
-  vars.InitVar( "Eta_UntaggedJetsAverage" );
+  vars.InitVar( "Evt_Eta_JetsAverage" );
+  vars.InitVar( "Evt_Eta_TaggedJetsAverage" );
+  vars.InitVar( "Evt_Eta_UntaggedJetsAverage" );
   
-  vars.InitVar( "M2_JetsAverage" );
-  vars.InitVar( "M2_TaggedJetsAverage" );
-  vars.InitVar( "M2_UntaggedJetsAverage" );
-  vars.InitVar( "M2_2JetsAverage" );
-  vars.InitVar( "M2_3JetsAverage" );
-  vars.InitVar( "M2_4JetsAverage" );
-  vars.InitVar( "M2_5JetsAverage" );
-  vars.InitVar( "M2_6JetsAverage" );
-  vars.InitVar( "M2_2TaggedJetsAverage" );
-  vars.InitVar( "M2_3TaggedJetsAverage" );
-  vars.InitVar( "M2_4TaggedJetsAverage" );
+  vars.InitVar( "Evt_M2_JetsAverage" );
+  vars.InitVar( "Evt_M2_TaggedJetsAverage" );
+  vars.InitVar( "Evt_M2_UntaggedJetsAverage" );
+  vars.InitVar( "Evt_M2_2JetsAverage" );
+  vars.InitVar( "Evt_M2_3JetsAverage" );
+  vars.InitVar( "Evt_M2_4JetsAverage" );
+  vars.InitVar( "Evt_M2_5JetsAverage" );
+  vars.InitVar( "Evt_M2_6JetsAverage" );
+  vars.InitVar( "Evt_M2_2TaggedJetsAverage" );
+  vars.InitVar( "Evt_M2_3TaggedJetsAverage" );
+  vars.InitVar( "Evt_M2_4TaggedJetsAverage" );
   
-  vars.InitVar( "Deta_JetsAverage" );
-  vars.InitVar( "Deta_TaggedJetsAverage" );
-  vars.InitVar( "Deta_UntaggedJetsAverage" );
-  vars.InitVar( "Deta_2JetsAverage" );
-  vars.InitVar( "Deta_3JetsAverage" );
-  vars.InitVar( "Deta_4JetsAverage" );
-  vars.InitVar( "Deta_5JetsAverage" );
-  vars.InitVar( "Deta_6JetsAverage" );
-  vars.InitVar( "Deta_2TaggedJetsAverage" );
-  vars.InitVar( "Deta_3TaggedJetsAverage" );
-  vars.InitVar( "Deta_4TaggedJetsAverage" );
+  vars.InitVar( "Evt_Deta_JetsAverage" );
+  vars.InitVar( "Evt_Deta_TaggedJetsAverage" );
+  vars.InitVar( "Evt_Deta_UntaggedJetsAverage" );
+  vars.InitVar( "Evt_Deta_2JetsAverage" );
+  vars.InitVar( "Evt_Deta_3JetsAverage" );
+  vars.InitVar( "Evt_Deta_4JetsAverage" );
+  vars.InitVar( "Evt_Deta_5JetsAverage" );
+  vars.InitVar( "Evt_Deta_6JetsAverage" );
+  vars.InitVar( "Evt_Deta_2TaggedJetsAverage" );
+  vars.InitVar( "Evt_Deta_3TaggedJetsAverage" );
+  vars.InitVar( "Evt_Deta_4TaggedJetsAverage" );
   
-  vars.InitVar( "Dr_JetsAverage" );
-  vars.InitVar( "Dr_TaggedJetsAverage" );
-  vars.InitVar( "Dr_UntaggedJetsAverage" );
-  vars.InitVar( "Dr_2JetsAverage" );
-  vars.InitVar( "Dr_3JetsAverage" );
-  vars.InitVar( "Dr_4JetsAverage" );
-  vars.InitVar( "Dr_5JetsAverage" );
-  vars.InitVar( "Dr_6JetsAverage" );
-  vars.InitVar( "Dr_2TaggedJetsAverage" );
-  vars.InitVar( "Dr_3TaggedJetsAverage" );
-  vars.InitVar( "Dr_4TaggedJetsAverage" );
+  vars.InitVar( "Evt_Dr_JetsAverage" );
+  vars.InitVar( "Evt_Dr_TaggedJetsAverage" );
+  vars.InitVar( "Evt_Dr_UntaggedJetsAverage" );
+  vars.InitVar( "Evt_Dr_2JetsAverage" );
+  vars.InitVar( "Evt_Dr_3JetsAverage" );
+  vars.InitVar( "Evt_Dr_4JetsAverage" );
+  vars.InitVar( "Evt_Dr_5JetsAverage" );
+  vars.InitVar( "Evt_Dr_6JetsAverage" );
+  vars.InitVar( "Evt_Dr_2TaggedJetsAverage" );
+  vars.InitVar( "Evt_Dr_3TaggedJetsAverage" );
+  vars.InitVar( "Evt_Dr_4TaggedJetsAverage" );
   
-  vars.InitVar( "Dkt_JetsAverage" );
-  vars.InitVar( "Dkt_TaggedJetsAverage" );
-  vars.InitVar( "Dkt_UntaggedJetsAverage" );
-  vars.InitVar( "Dkt_2JetsAverage" );
-  vars.InitVar( "Dkt_3JetsAverage" );
-  vars.InitVar( "Dkt_4JetsAverage" );
-  vars.InitVar( "Dkt_5JetsAverage" );
-  vars.InitVar( "Dkt_6JetsAverage" );
-  vars.InitVar( "Dkt_2TaggedJetsAverage" );
-  vars.InitVar( "Dkt_3TaggedJetsAverage" );
-  vars.InitVar( "Dkt_4TaggedJetsAverage" );
+  vars.InitVar( "Evt_Dkt_JetsAverage" );
+  vars.InitVar( "Evt_Dkt_TaggedJetsAverage" );
+  vars.InitVar( "Evt_Dkt_UntaggedJetsAverage" );
+  vars.InitVar( "Evt_Dkt_2JetsAverage" );
+  vars.InitVar( "Evt_Dkt_3JetsAverage" );
+  vars.InitVar( "Evt_Dkt_4JetsAverage" );
+  vars.InitVar( "Evt_Dkt_5JetsAverage" );
+  vars.InitVar( "Evt_Dkt_6JetsAverage" );
+  vars.InitVar( "Evt_Dkt_2TaggedJetsAverage" );
+  vars.InitVar( "Evt_Dkt_3TaggedJetsAverage" );
+  vars.InitVar( "Evt_Dkt_4TaggedJetsAverage" );
   
-  vars.InitVar( "M_TaggedJetsClosestTo125" );
+  vars.InitVar( "Evt_M_TaggedJetsClosestTo125" );
   
-  vars.InitVar( "JetPtOverJetE" );
+  vars.InitVar( "Evt_JetPtOverJetE" );
   
-  vars.InitVar( "Aplanarity" );
-  vars.InitVar( "Sphericity" );
+  vars.InitVar( "Evt_Aplanarity" );
+  vars.InitVar( "Evt_Sphericity" );
     
-  vars.InitVar( "H0" );
-  vars.InitVar( "H1" );
-  vars.InitVar( "H2" );
-  vars.InitVar( "H3" );
-  vars.InitVar( "H4" );
+  vars.InitVar( "Evt_H0" );
+  vars.InitVar( "Evt_H1" );
+  vars.InitVar( "Evt_H2" );
+  vars.InitVar( "Evt_H3" );
+  vars.InitVar( "Evt_H4" );
 
-  vars.InitVar( "MaxDeta_Jets_Jet" );
-  vars.InitVar( "MaxDeta_Jets_TaggedJet" );
-  vars.InitVar( "MaxDeta_TaggedJets_TaggedJet" );
+  vars.InitVar( "Evt_Jet_MaxDeta_Jets" );
+  vars.InitVar( "Evt_TaggedJet_MaxDeta_Jets" );
+  vars.InitVar( "Evt_TaggedJet_MaxDeta_TaggedJets" );
 
-  vars.InitVar( "M_MedianTaggedJets" );
+  vars.InitVar( "Evt_M_MedianTaggedJets" );
   
-  vars.InitVar( "Drmax_Lepton_Jet" );
-  vars.InitVar( "Detamax_Lepton_Jet" );
+  vars.InitVar( "Evt_Jet_Drmax_Lepton" );
+  vars.InitVar( "Evt_Jet_Detamax_Lepton" );
   
-  vars.InitVars( "CosTheta_cm_Jet","N_Jets" );
-  vars.InitVar( "CosThetamax_cm_Jet" );
+  vars.InitVars( "Jet_CosTheta_cm","N_Jets" );
+  vars.InitVar( "Evt_Jet_CosThetamax_cm" );
 
-  vars.InitVar( "Drmax_Jet1_Jet" );
+  vars.InitVar( "Evt_Jet_Drmax_Jet1" );
     
-  vars.InitVar( "Detamax_Jet1_Jet" );
+  vars.InitVar( "Evt_Jet_Detamax_Jet1" );
 
-  vars.InitVars("CosThetaStar_Lepton_Jet","N_Jets");
-  vars.InitVars("CosThetaStar_Jet1_Jet","N_Jets");
-  vars.InitVars("CosThetaStar_Jet2_Jet","N_Jets");
-  vars.InitVars("CosThetaStar_Jet3_Jet","N_Jets");
-  vars.InitVars("CosThetaStar_Jet4_Jet","N_Jets");
+  vars.InitVars("Jet_CosThetaStar_Lepton","N_Jets");
+  vars.InitVars("Jet_CosThetaStar_Jet1","N_Jets");
+  vars.InitVars("Jet_CosThetaStar_Jet2","N_Jets");
+  vars.InitVars("Jet_CosThetaStar_Jet3","N_Jets");
+  vars.InitVars("Jet_CosThetaStar_Jet4","N_Jets");
 
-  vars.InitVars("Dr_Lepton_Jet","N_Jets");
-  vars.InitVars("Dr_Jet1_Jet","N_Jets");
-  vars.InitVars("Dr_Jet2_Jet","N_Jets");
-  vars.InitVars("Dr_Jet3_Jet","N_Jets");
-  vars.InitVars("Dr_Jet4_Jet","N_Jets");
+  vars.InitVars("Jet_Dr_Lepton","N_Jets");
+  vars.InitVars("Jet_Dr_Jet1","N_Jets");
+  vars.InitVars("Jet_Dr_Jet2","N_Jets");
+  vars.InitVars("Jet_Dr_Jet3","N_Jets");
+  vars.InitVars("Jet_Dr_Jet4","N_Jets");
 
-  vars.InitVars("Dkt_Lepton_Jet","N_Jets");
-  vars.InitVars("Dkt_Jet1_Jet","N_Jets");
-  vars.InitVars("Dkt_Jet2_Jet","N_Jets");
-  vars.InitVars("Dkt_Jet3_Jet","N_Jets");
-  vars.InitVars("Dkt_Jet4_Jet","N_Jets");
+  vars.InitVars("Jet_Dkt_Lepton","N_Jets");
+  vars.InitVars("Jet_Dkt_Jet1","N_Jets");
+  vars.InitVars("Jet_Dkt_Jet2","N_Jets");
+  vars.InitVars("Jet_Dkt_Jet3","N_Jets");
+  vars.InitVars("Jet_Dkt_Jet4","N_Jets");
 
-  vars.InitVars("Deta_Lepton_Jet","N_Jets");
-  vars.InitVars("Deta_Jet1_Jet","N_Jets");
-  vars.InitVars("Deta_Jet2_Jet","N_Jets");
-  vars.InitVars("Deta_Jet3_Jet","N_Jets");
-  vars.InitVars("Deta_Jet4_Jet","N_Jets");
+  vars.InitVars("Jet_Deta_Lepton","N_Jets");
+  vars.InitVars("Jet_Deta_Jet1","N_Jets");
+  vars.InitVars("Jet_Deta_Jet2","N_Jets");
+  vars.InitVars("Jet_Deta_Jet3","N_Jets");
+  vars.InitVars("Jet_Deta_Jet4","N_Jets");
   
-  vars.InitVar("Deta_TopLep_BB_Ohio");
-  vars.InitVar("Deta_TopHad_BB_Ohio");
-  vars.InitVar("Best_Higgs_Mass_Ohio");
-  vars.InitVar("Deta_Fn_Ohio");
-  vars.InitVar("Dr_BB_Ohio");
+  vars.InitVar("Evt_Deta_TopLep_BB_Ohio");
+  vars.InitVar("Evt_Deta_TopHad_BB_Ohio");
+  vars.InitVar("Evt_Best_Higgs_Mass_Ohio");
+  vars.InitVar("Evt_Deta_Fn_Ohio");
+  vars.InitVar("Evt_Dr_BB_Ohio");
 
   initialized=true;
 }
@@ -250,65 +250,65 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // All Jets
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
     int iJet = itJet - input.selectedJets.begin();
-    vars.FillVars( "E_Jet",iJet,itJet->energy() );
-    vars.FillVars( "M_Jet",iJet,itJet->mass() );
-    vars.FillVars( "Pt_Jet",iJet,itJet->pt() );
-    vars.FillVars( "Eta_Jet",iJet,itJet->eta() );
-    vars.FillVars( "Phi_Jet",iJet,itJet->phi() );
-    vars.FillVars( "CSV_Jet",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );        
-    vars.FillVars( "Flav_Jet",iJet,itJet->partonFlavour() );        
+    vars.FillVars( "Jet_E",iJet,itJet->energy() );
+    vars.FillVars( "Jet_M",iJet,itJet->mass() );
+    vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
+    vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
+    vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
+    vars.FillVars( "Jet_CSV",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );        
+    vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );        
   }
   
   // Tagged Jets
   for(std::vector<pat::Jet>::iterator itTaggedJet = selectedTaggedJets.begin() ; itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet){
     int iTaggedJet = itTaggedJet - selectedTaggedJets.begin();
-    vars.FillVars( "E_TaggedJet",iTaggedJet,itTaggedJet->energy() );
-    vars.FillVars( "M_TaggedJet",iTaggedJet,itTaggedJet->mass() );
-    vars.FillVars( "Pt_TaggedJet",iTaggedJet,itTaggedJet->pt() );
-    vars.FillVars( "Eta_TaggedJet",iTaggedJet,itTaggedJet->eta() );
-    vars.FillVars( "Phi_TaggedJet",iTaggedJet,itTaggedJet->phi() );
+    vars.FillVars( "TaggedJet_E",iTaggedJet,itTaggedJet->energy() );
+    vars.FillVars( "TaggedJet_M",iTaggedJet,itTaggedJet->mass() );
+    vars.FillVars( "TaggedJet_Pt",iTaggedJet,itTaggedJet->pt() );
+    vars.FillVars( "TaggedJet_Eta",iTaggedJet,itTaggedJet->eta() );
+    vars.FillVars( "TaggedJet_Phi",iTaggedJet,itTaggedJet->phi() );
   }
   
   // Fill Lepton Variables
   std::vector<math::XYZTLorentzVector> looseLeptonVecs = BoostedUtils::GetLepVecs(input.selectedElectronsLoose,input.selectedMuonsLoose);
   for(std::vector<math::XYZTLorentzVector>::iterator itLep = looseLeptonVecs.begin() ; itLep != looseLeptonVecs.end(); ++itLep){
     int iLep = itLep - looseLeptonVecs.begin();
-    vars.FillVars( "E_LooseLepton",iLep,itLep->E() );
-    vars.FillVars( "M_LooseLepton",iLep,itLep->M() );
-    vars.FillVars( "Pt_LooseLepton",iLep,itLep->Pt() );
-    vars.FillVars( "Eta_LooseLepton",iLep,itLep->Eta());
-    vars.FillVars( "Phi_LooseLepton",iLep,itLep->Phi() );
+    vars.FillVars( "LooseLepton_E",iLep,itLep->E() );
+    vars.FillVars( "LooseLepton_M",iLep,itLep->M() );
+    vars.FillVars( "LooseLepton_Pt",iLep,itLep->Pt() );
+    vars.FillVars( "LooseLepton_Eta",iLep,itLep->Eta());
+    vars.FillVars( "LooseLepton_Phi",iLep,itLep->Phi() );
   }
   
   math::XYZTLorentzVector primLepVec = math::XYZTLorentzVector();
   if(input.selectedElectrons.size()>0 || input.selectedMuons.size()>0){
     primLepVec = BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons);
-    vars.FillVar( "E_PrimaryLepton",primLepVec.E());
-    vars.FillVar( "M_PrimaryLepton",primLepVec.M());
-    vars.FillVar( "Pt_PrimaryLepton",primLepVec.Pt() );
-    vars.FillVar( "Eta_PrimaryLepton",primLepVec.Eta());
-    vars.FillVar( "Phi_PrimaryLepton",primLepVec.Phi());    
+    vars.FillVar( "Evt_E_PrimaryLepton",primLepVec.E());
+    vars.FillVar( "Evt_M_PrimaryLepton",primLepVec.M());
+    vars.FillVar( "Evt_Pt_PrimaryLepton",primLepVec.Pt() );
+    vars.FillVar( "Evt_Eta_PrimaryLepton",primLepVec.Eta());
+    vars.FillVar( "Evt_Phi_PrimaryLepton",primLepVec.Phi());    
   }
   
   for(std::vector<pat::Electron>::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle){
     int iEle = itEle - input.selectedElectronsLoose.begin();
-    vars.FillVars( "E_Electron",iEle,itEle->energy() );
-    vars.FillVars( "M_Electron",iEle,itEle->mass() );
-    vars.FillVars( "Pt_Electron",iEle,itEle->pt() );
-    vars.FillVars( "Eta_Electron",iEle,itEle->eta() );
-    vars.FillVars( "Phi_Electron",iEle,itEle->phi() ); 
+    vars.FillVars( "Electron_E",iEle,itEle->energy() );
+    vars.FillVars( "Electron_M",iEle,itEle->mass() );
+    vars.FillVars( "Electron_Pt",iEle,itEle->pt() );
+    vars.FillVars( "Electron_Eta",iEle,itEle->eta() );
+    vars.FillVars( "Electron_Phi",iEle,itEle->phi() ); 
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     int iMu = itMu - input.selectedMuonsLoose.begin();
-    vars.FillVars( "E_Muon",iMu,itMu->energy() );
-    vars.FillVars( "M_Muon",iMu,itMu->mass() );
-    vars.FillVars( "Pt_Muon",iMu,itMu->pt() );
-    vars.FillVars( "Eta_Muon",iMu,itMu->eta() );
-    vars.FillVars( "Phi_Muon",iMu,itMu->phi() );
+    vars.FillVars( "Muon_E",iMu,itMu->energy() );
+    vars.FillVars( "Muon_M",iMu,itMu->mass() );
+    vars.FillVars( "Muon_Pt",iMu,itMu->pt() );
+    vars.FillVars( "Muon_Eta",iMu,itMu->eta() );
+    vars.FillVars( "Muon_Phi",iMu,itMu->phi() );
   }
   
-  vars.FillVar( "Pt_MET",input.pfMets[0].pt() );
-  vars.FillVar( "Phi_MET",input.pfMets[0].phi() );
+  vars.FillVar( "Evt_Pt_MET",input.pfMets[0].pt() );
+  vars.FillVar( "Evt_Phi_MET",input.pfMets[0].phi() );
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
   math::XYZTLorentzVector metvec = input.pfMets[0].p4();
@@ -329,7 +329,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
       } 
     }
   }
-  vars.FillVar("M3",m3);
+  vars.FillVar("Evt_M3",m3);
   float m3tagged = -1.;
   float maxpttagged=-1.;
   for(std::vector<pat::Jet>::iterator itJetUntagged1 = selectedUntaggedJets.begin() ; itJetUntagged1 != selectedUntaggedJets.end(); ++itJetUntagged1){
@@ -345,14 +345,14 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
       } 
     }
   }
-  vars.FillVar("M3_OneJetTagged",m3tagged);
+  vars.FillVar("Evt_M3_OneJetTagged",m3tagged);
   
   // Fill MTW
   float mtw = -1.;
   if(input.selectedElectrons.size()>0 || input.selectedMuons.size()>0){
     mtw = sqrt(2*(primLepVec.Pt()*input.pfMets[0].pt() - primLepVec.Px()*input.pfMets[0].px() - primLepVec.Py()*input.pfMets[0].py()));
   }
-  vars.FillVar("MTW",mtw);
+  vars.FillVar("Evt_MTW",mtw);
   
   // Fill Ht Variables
   float ht = 0.;
@@ -379,9 +379,9 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   }
   ht += input.pfMets[0].pt();
   
-  vars.FillVar("HT",ht);
-  vars.FillVar("MHT",sqrt( mht_px*mht_px + mht_py*mht_py ));
-  vars.FillVar("HT_Jets",htjets);
+  vars.FillVar("Evt_HT",ht);
+  vars.FillVar("Evt_MHT",sqrt( mht_px*mht_px + mht_py*mht_py ));
+  vars.FillVar("Evt_HT_Jets",htjets);
   
   // Fill Event Mass
   math::XYZTLorentzVector p4all;
@@ -392,7 +392,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     p4all += *itLep;
   }
   p4all += metvec;
-  vars.FillVar("M_Total",p4all.M());
+  vars.FillVar("Evt_M_Total",p4all.M());
   
   // Fill Number of b Tags
   vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );  
@@ -407,7 +407,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   }
   
   std::sort(csvJets.begin(),csvJets.end(),BoostedUtils::FirstIsLarger);
-  vars.FillVar("CSV_Min",csvJets.size()>0 ? csvJets.back() : -.1);
+  vars.FillVar("Evt_CSV_Min",csvJets.size()>0 ? csvJets.back() : -.1);
   
   float averageCSV = 0;
   for(std::vector<float>::iterator itCSV = csvJets.begin() ; itCSV != csvJets.end(); ++itCSV){
@@ -416,7 +416,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     averageCSV += fmax(*itCSV,0);
   }
   averageCSV /= csvJets.size();
-  vars.FillVar("CSV_Average" ,averageCSV );
+  vars.FillVar("Evt_CSV_Average" ,averageCSV );
   
   float csvDev = 0;
   for(std::vector<float>::iterator itCSV = csvJets.begin() ; itCSV != csvJets.end(); ++itCSV){
@@ -426,7 +426,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     csvDev /= csvJets.size();
   else
     csvDev=-1.;
-  vars.FillVar("CSV_Dev",csvDev);
+  vars.FillVar("Evt_CSV_Dev",csvDev);
   
   // Tagged Jets
   vector<float> csvTaggedJets;
@@ -434,14 +434,14 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     csvTaggedJets.push_back(fmax(itTaggedJet->bDiscriminator( btagger),-.1));
   }
   sort(csvTaggedJets.begin(),csvTaggedJets.end(),BoostedUtils::FirstIsLarger);
-  vars.FillVar("CSV_Min_Tagged",csvTaggedJets.size()>0 ? csvTaggedJets.back() : -.1);
+  vars.FillVar("Evt_CSV_Min_Tagged",csvTaggedJets.size()>0 ? csvTaggedJets.back() : -.1);
   
   float averageCSVTagged = 0;
   for(std::vector<float>::iterator itCSVTagged = csvTaggedJets.begin() ; itCSVTagged != csvTaggedJets.end(); ++itCSVTagged){
     averageCSVTagged += fmax(*itCSVTagged,0);
   }
   averageCSVTagged /= csvTaggedJets.size();
-  vars.FillVar("CSV_Average_Tagged",averageCSVTagged);
+  vars.FillVar("Evt_CSV_Average_Tagged",averageCSVTagged);
   
   float csvDevTagged = 0;
   for(std::vector<float>::iterator itCSVTagged = csvTaggedJets.begin() ; itCSVTagged != csvTaggedJets.end(); ++itCSVTagged){
@@ -452,7 +452,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   else
     csvDevTagged=-1.;
     
-  vars.FillVar("CSV_Dev_Tagged",csvDevTagged);
+  vars.FillVar("Evt_CSV_Dev_Tagged",csvDevTagged);
   // Fill Variables for closest ak5 Jets
   // All Jets
   if(input.selectedJets.size()>1){
@@ -461,9 +461,9 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     float minDrJets = BoostedUtils::GetClosestJetIDs(idClosestJet1,idClosestJet2,input.selectedJets);
     math::XYZTLorentzVector closestJetVec1 = input.selectedJets[idClosestJet1].p4();
     math::XYZTLorentzVector closestJetVec2 = input.selectedJets[idClosestJet1].p4();
-    vars.FillVar("M_MinDeltaRJets",(closestJetVec1+closestJetVec2).M());
-    vars.FillVar("Dr_MinDeltaRJets",minDrJets);
-    vars.FillVar("Pt_MinDeltaRJets",(closestJetVec1+closestJetVec2).Pt());
+    vars.FillVar("Evt_M_MinDeltaRJets",(closestJetVec1+closestJetVec2).M());
+    vars.FillVar("Evt_Dr_MinDeltaRJets",minDrJets);
+    vars.FillVar("Evt_Pt_MinDeltaRJets",(closestJetVec1+closestJetVec2).Pt());
   }
   // Tagged Jets
   if(selectedTaggedJets.size()>1){
@@ -472,9 +472,9 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     float minDrTaggedJets = BoostedUtils::GetClosestJetIDs(idClosestTaggedJet1,idClosestTaggedJet2,selectedTaggedJets);
     math::XYZTLorentzVector closestTaggedJetVec1 = selectedTaggedJets[idClosestTaggedJet1].p4();
     math::XYZTLorentzVector closestTaggedJetVec2 = selectedTaggedJets[idClosestTaggedJet2].p4();
-    vars.FillVar("M_MinDeltaRTaggedJets",(closestTaggedJetVec1+closestTaggedJetVec2).M());
-    vars.FillVar("Dr_MinDeltaRTaggedJets",minDrTaggedJets);
-    vars.FillVar("Pt_MinDeltaRTaggedJets",(closestTaggedJetVec1+closestTaggedJetVec2).Pt());
+    vars.FillVar("Evt_M_MinDeltaRTaggedJets",(closestTaggedJetVec1+closestTaggedJetVec2).M());
+    vars.FillVar("Evt_Dr_MinDeltaRTaggedJets",minDrTaggedJets);
+    vars.FillVar("Evt_Pt_MinDeltaRTaggedJets",(closestTaggedJetVec1+closestTaggedJetVec2).Pt());
   }
   // Untagged Jets
   if(selectedUntaggedJets.size()>1){
@@ -483,17 +483,17 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     float minDrUntaggedJets = BoostedUtils::GetClosestJetIDs(idClosestUntaggedJet1,idClosestUntaggedJet2,selectedUntaggedJets);
     math::XYZTLorentzVector closestUntaggedJetVec1 = selectedUntaggedJets[idClosestUntaggedJet1].p4();
     math::XYZTLorentzVector closestUntaggedJetVec2 = selectedUntaggedJets[idClosestUntaggedJet2].p4();
-    vars.FillVar("M_MinDeltaRUntaggedJets",(closestUntaggedJetVec1+closestUntaggedJetVec2).M());
-    vars.FillVar("Dr_MinDeltaRUntaggedJets",minDrUntaggedJets);
-    vars.FillVar("Pt_MinDeltaRUntaggedJets",(closestUntaggedJetVec1+closestUntaggedJetVec2).Pt());
+    vars.FillVar("Evt_M_MinDeltaRUntaggedJets",(closestUntaggedJetVec1+closestUntaggedJetVec2).M());
+    vars.FillVar("Evt_Dr_MinDeltaRUntaggedJets",minDrUntaggedJets);
+    vars.FillVar("Evt_Pt_MinDeltaRUntaggedJets",(closestUntaggedJetVec1+closestUntaggedJetVec2).Pt());
   }
   // Jet and Lepton
   if(input.selectedJets.size()>1&&(input.selectedElectrons.size()>0||input.selectedMuons.size()>0)){
     int idClosestJet = -1;
     float minDrLepJet = BoostedUtils::GetClosestLepJetID(idClosestJet,primLepVec,input.selectedJets);
     math::XYZTLorentzVector closestJetVec = input.selectedJets[idClosestJet].p4();
-    vars.FillVar("M_MinDeltaRLeptonJet",(primLepVec+closestJetVec).M());
-    vars.FillVar("Dr_MinDeltaRLeptonJet",minDrLepJet);
+    vars.FillVar("Evt_M_MinDeltaRLeptonJet",(primLepVec+closestJetVec).M());
+    vars.FillVar("Evt_Dr_MinDeltaRLeptonJet",minDrLepJet);
   }
   
   // Tagged Jet and Lepton
@@ -501,8 +501,8 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     int idClosestTaggedJet = -1;
     float minDrLepTaggedJet = BoostedUtils::GetClosestLepJetID(idClosestTaggedJet,primLepVec,selectedTaggedJets);
     math::XYZTLorentzVector closestTaggedJetVec = input.selectedJets[idClosestTaggedJet].p4();
-    vars.FillVar("M_MinDeltaRLeptonTaggedJet",(primLepVec+closestTaggedJetVec).M());
-    vars.FillVar("Dr_MinDeltaRLeptonTaggedJet",minDrLepTaggedJet);
+    vars.FillVar("Evt_M_MinDeltaRLeptonTaggedJet",(primLepVec+closestTaggedJetVec).M());
+    vars.FillVar("Evt_Dr_MinDeltaRLeptonTaggedJet",minDrLepTaggedJet);
   }
   
   // JetRelation Variables
@@ -542,13 +542,13 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     drJetsAverage /= (float) nPairsJets;
     dktJetsAverage /= (float) nPairsJets;
   }
-  vars.FillVar("M_JetsAverage",mJetsAverage);
-  vars.FillVar("Eta_JetsAverage",etaJetsAverage);
-  vars.FillVar("M2_JetsAverage",m2JetsAverage);
-  vars.FillVar("Deta_JetsAverage",detaJetsAverage);
-  vars.FillVar("Dr_JetsAverage",drJetsAverage);
-  vars.FillVar("Dkt_JetsAverage",dktJetsAverage);
-  vars.FillVar("JetPtOverJetE", ptJetsAverage/eJetsAverage);  
+  vars.FillVar("Evt_M_JetsAverage",mJetsAverage);
+  vars.FillVar("Evt_Eta_JetsAverage",etaJetsAverage);
+  vars.FillVar("Evt_M2_JetsAverage",m2JetsAverage);
+  vars.FillVar("Evt_Deta_JetsAverage",detaJetsAverage);
+  vars.FillVar("Evt_Dr_JetsAverage",drJetsAverage);
+  vars.FillVar("Evt_Dkt_JetsAverage",dktJetsAverage);
+  vars.FillVar("Evt_JetPtOverJetE", ptJetsAverage/eJetsAverage);  
   
   // Tagged Jets
   float mTaggedJetsAverage = 0;
@@ -592,14 +592,14 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   }
   sort(m2TaggedJets.begin(),m2TaggedJets.end(),BoostedUtils::FirstIsLarger);
   
-  vars.FillVar("M_TaggedJetsAverage",mTaggedJetsAverage);
-  vars.FillVar("Eta_TaggedJetsAverage",etaTaggedJetsAverage);
-  vars.FillVar("M2_TaggedJetsAverage",m2TaggedJetsAverage);
-  if(m2TaggedJets.size()>0) vars.FillVar("M_MedianTaggedJets",m2TaggedJets.at(m2TaggedJets.size()/2));
-  vars.FillVar("M_TaggedJetsClosestTo125",m2TaggedJetsClosestTo125);
-  vars.FillVar("Deta_TaggedJetsAverage",detaTaggedJetsAverage);
-  vars.FillVar("Dr_TaggedJetsAverage",drTaggedJetsAverage);
-  vars.FillVar("Dkt_TaggedJetsAverage",dktTaggedJetsAverage);
+  vars.FillVar("Evt_M_TaggedJetsAverage",mTaggedJetsAverage);
+  vars.FillVar("Evt_Eta_TaggedJetsAverage",etaTaggedJetsAverage);
+  vars.FillVar("Evt_M2_TaggedJetsAverage",m2TaggedJetsAverage);
+  if(m2TaggedJets.size()>0) vars.FillVar("Evt_M_MedianTaggedJets",m2TaggedJets.at(m2TaggedJets.size()/2));
+  vars.FillVar("Evt_M_TaggedJetsClosestTo125",m2TaggedJetsClosestTo125);
+  vars.FillVar("Evt_Deta_TaggedJetsAverage",detaTaggedJetsAverage);
+  vars.FillVar("Evt_Dr_TaggedJetsAverage",drTaggedJetsAverage);
+  vars.FillVar("Evt_Dkt_TaggedJetsAverage",dktTaggedJetsAverage);
   // Untagged Jets
   float mUntaggedJetsAverage = 0;
   float etaUntaggedJetsAverage = 0;
@@ -633,12 +633,12 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     drUntaggedJetsAverage /= nPairsUntaggedJets;
     dktUntaggedJetsAverage /= nPairsUntaggedJets;
   }
-  vars.FillVar( "M_UntaggedJetsAverage",mUntaggedJetsAverage );
-  vars.FillVar( "Eta_UntaggedJetsAverage",etaUntaggedJetsAverage );
-  vars.FillVar( "M2_UntaggedJetsAverage",m2UntaggedJetsAverage );
-  vars.FillVar( "Deta_UntaggedJetsAverage",detaUntaggedJetsAverage );
-  vars.FillVar( "Dr_UntaggedJetsAverage",drUntaggedJetsAverage );
-  vars.FillVar( "Dkt_UntaggedJetsAverage",dktUntaggedJetsAverage );
+  vars.FillVar( "Evt_M_UntaggedJetsAverage",mUntaggedJetsAverage );
+  vars.FillVar( "Evt_Eta_UntaggedJetsAverage",etaUntaggedJetsAverage );
+  vars.FillVar( "Evt_M2_UntaggedJetsAverage",m2UntaggedJetsAverage );
+  vars.FillVar( "Evt_Deta_UntaggedJetsAverage",detaUntaggedJetsAverage );
+  vars.FillVar( "Evt_Dr_UntaggedJetsAverage",drUntaggedJetsAverage );
+  vars.FillVar( "Evt_Dkt_UntaggedJetsAverage",dktUntaggedJetsAverage );
   
   // Hardest N Jets
   for(int maxjets=2;maxjets<=6;maxjets++){
@@ -662,10 +662,10 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
       dktJetsAverage/=nPairsJets;
     }
     
-    TString mName = "M2_";
-    TString detaName = "Deta_";
-    TString drName = "Dr_";
-    TString dktName = "Dkt_";
+    TString mName = "Evt_M2_";
+    TString detaName = "Evt_Deta_";
+    TString drName = "Evt_Dr_";
+    TString dktName = "Evt_Dkt_";
     mName += maxjets;
     detaName += maxjets;
     drName += maxjets;
@@ -710,10 +710,10 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
       dktJetsAverage /= nPairsJets;
     }
     
-    TString mName = "M2_";
-    TString detaName = "Deta_";
-    TString drName = "Dr_";
-    TString dktName = "Dkt_";
+    TString mName = "Evt_M2_";
+    TString detaName = "Evt_Deta_";
+    TString drName = "Evt_Dr_";
+    TString dktName = "Evt_Dkt_";
     mName += maxjets;
     detaName += maxjets;
     drName += maxjets;
@@ -730,25 +730,25 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   }
   
   // DeltaEta of Jets
-  vars.FillVar("MaxDeta_Jets_Jet",BoostedUtils::GetJetAverageJetEtaMax(input.selectedJets,input.selectedJets));
-  vars.FillVar("MaxDeta_Jets_TaggedJet",BoostedUtils::GetJetAverageJetEtaMax(input.selectedJets,selectedTaggedJets));
-  vars.FillVar("MaxDeta_TaggedJets_TaggedJet",BoostedUtils::GetJetAverageJetEtaMax(selectedTaggedJets,selectedTaggedJets));
+  vars.FillVar("Evt_Jet_MaxDeta_Jets",BoostedUtils::GetJetAverageJetEtaMax(input.selectedJets,input.selectedJets));
+  vars.FillVar("Evt_TaggedJet_MaxDeta_Jets",BoostedUtils::GetJetAverageJetEtaMax(input.selectedJets,selectedTaggedJets));
+  vars.FillVar("Evt_TaggedJet_MaxDeta_TaggedJets",BoostedUtils::GetJetAverageJetEtaMax(selectedTaggedJets,selectedTaggedJets));
   
   // Event Shape Variables
   // Fox Wolfram Moments
   float h0,h1,h2,h3,h4;
   BoostedUtils::GetFoxWolframMoments(jetvecs, h0,h1,h2,h3,h4);
-  vars.FillVar( "H0", h0 );
-  vars.FillVar( "H1", h1 );
-  vars.FillVar( "H2", h2 );
-  vars.FillVar( "H3", h3 );
-  vars.FillVar( "H4", h4 );
+  vars.FillVar( "Evt_H0", h0 );
+  vars.FillVar( "Evt_H1", h1 );
+  vars.FillVar( "Evt_H2", h2 );
+  vars.FillVar( "Evt_H3", h3 );
+  vars.FillVar( "Evt_H4", h4 );
   
   // Aplanarity and Sphericity;
   float aplanarity,sphericity;
   BoostedUtils::GetAplanaritySphericity(primLepVec, metvec, jetvecs, aplanarity, sphericity) ;
-  vars.FillVar( "Aplanarity", aplanarity );
-  vars.FillVar( "Sphericity", sphericity );
+  vars.FillVar( "Evt_Aplanarity", aplanarity );
+  vars.FillVar( "Evt_Sphericity", sphericity );
   
   // Event Angle Variables 
   float drmax_lj=-1;
@@ -817,29 +817,29 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
       c_j4j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[3]);
     }
     
-    vars.FillVars("Deta_Lepton_Jet",iJetVec,deta_lj);
-    vars.FillVars("Deta_Jet1_Jet",iJetVec,deta_j1j);
-    vars.FillVars("Deta_Jet2_Jet",iJetVec,deta_j2j);
-    vars.FillVars("Deta_Jet3_Jet",iJetVec,deta_j3j);
-    vars.FillVars("Deta_Jet4_Jet",iJetVec,deta_j4j);
+    vars.FillVars("Jet_Deta_Lepton",iJetVec,deta_lj);
+    vars.FillVars("Jet_Deta_Jet1",iJetVec,deta_j1j);
+    vars.FillVars("Jet_Deta_Jet2",iJetVec,deta_j2j);
+    vars.FillVars("Jet_Deta_Jet3",iJetVec,deta_j3j);
+    vars.FillVars("Jet_Deta_Jet4",iJetVec,deta_j4j);
     
-    vars.FillVars("Dr_Lepton_Jet",iJetVec,dr_lj);
-    vars.FillVars("Dr_Jet1_Jet",iJetVec,dr_j1j);
-    vars.FillVars("Dr_Jet2_Jet",iJetVec,dr_j2j);
-    vars.FillVars("Dr_Jet3_Jet",iJetVec,dr_j3j);
-    vars.FillVars("Dr_Jet4_Jet",iJetVec,dr_j4j);
+    vars.FillVars("Jet_Dr_Lepton",iJetVec,dr_lj);
+    vars.FillVars("Jet_Dr_Jet1",iJetVec,dr_j1j);
+    vars.FillVars("Jet_Dr_Jet2",iJetVec,dr_j2j);
+    vars.FillVars("Jet_Dr_Jet3",iJetVec,dr_j3j);
+    vars.FillVars("Jet_Dr_Jet4",iJetVec,dr_j4j);
     
-    vars.FillVars("Dkt_Lepton_Jet",iJetVec,dkt_lj);
-    vars.FillVars("Dkt_Jet1_Jet",iJetVec,dkt_j1j);
-    vars.FillVars("Dkt_Jet2_Jet",iJetVec,dkt_j2j);
-    vars.FillVars("Dkt_Jet3_Jet",iJetVec,dkt_j3j);
-    vars.FillVars("Dkt_Jet4_Jet",iJetVec,dkt_j4j);
+    vars.FillVars("Jet_Dkt_Lepton",iJetVec,dkt_lj);
+    vars.FillVars("Jet_Dkt_Jet1",iJetVec,dkt_j1j);
+    vars.FillVars("Jet_Dkt_Jet2",iJetVec,dkt_j2j);
+    vars.FillVars("Jet_Dkt_Jet3",iJetVec,dkt_j3j);
+    vars.FillVars("Jet_Dkt_Jet4",iJetVec,dkt_j4j);
     
-    vars.FillVars("CosThetaStar_Lepton_Jet",iJetVec,c_lj);
-    vars.FillVars("CosThetaStar_Jet1_Jet",iJetVec,c_j1j);
-    vars.FillVars("CosThetaStar_Jet2_Jet",iJetVec,c_j2j);
-    vars.FillVars("CosThetaStar_Jet3_Jet",iJetVec,c_j3j);
-    vars.FillVars("CosThetaStar_Jet4_Jet",iJetVec,c_j4j);
+    vars.FillVars("Jet_CosThetaStar_Lepton",iJetVec,c_lj);
+    vars.FillVars("Jet_CosThetaStar_Jet1",iJetVec,c_j1j);
+    vars.FillVars("Jet_CosThetaStar_Jet2",iJetVec,c_j2j);
+    vars.FillVars("Jet_CosThetaStar_Jet3",iJetVec,c_j3j);
+    vars.FillVars("Jet_CosThetaStar_Jet4",iJetVec,c_j4j);
     
     if(drmax_lj < dr_lj){
       drmax_lj = dr_lj;
@@ -873,16 +873,16 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     }
     
     float costheta_jcm= BoostedUtils::CosThetaCM(*itJetVec,p4all);
-    vars.FillVars("CosTheta_cm_Jet",iJetVec,costheta_jcm  );
+    vars.FillVars("Jet_CosTheta_cm",iJetVec,costheta_jcm  );
     if(costhetamax_jcm<fabs(costheta_jcm)){
       costhetamax_jcm=fabs(costheta_jcm);
     }
   }
-  vars.FillVar("Drmax_Lepton_Jet",drmax_lj);
-  vars.FillVar("Detamax_Lepton_Jet",detamax_lj);
-  vars.FillVar("Drmax_Jet1_Jet",drmax_j1j);
-  vars.FillVar("Detamax_Jet1_Jet",detamax_j1j);
-  vars.FillVar("CosThetamax_cm_Jet",costhetamax_jcm );
+  vars.FillVar("Evt_Jet_Drmax_Lepton",drmax_lj);
+  vars.FillVar("Evt_Jet_Detamax_Lepton",detamax_lj);
+  vars.FillVar("Evt_Jet_Drmax_Jet1",drmax_j1j);
+  vars.FillVar("Evt_Jet_Detamax_Jet1",detamax_j1j);
+  vars.FillVar("Evt_Jet_CosThetamax_cm",costhetamax_jcm );
   
   // Ohio Variables
   std::vector<pat::Jet> selectedJetsLooseExclusive;
@@ -897,10 +897,10 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   float abs_dEta_leptop_bb;
   float dEta_fn;
   BoostedUtils::TTHRecoVarsOhio(input.selectedJets,selectedJetsLooseExclusive, input.pfMets[0], primLepVec, best_higgs_mass, dRbb,abs_dEta_hadtop_bb,abs_dEta_leptop_bb, dEta_fn);
-  vars.FillVar("Deta_TopLep_BB_Ohio",abs_dEta_leptop_bb);
-  vars.FillVar("Deta_TopHad_BB_Ohio",abs_dEta_hadtop_bb);
-  vars.FillVar("Best_Higgs_Mass_Ohio",best_higgs_mass);
-  vars.FillVar("Deta_Fn_Ohio",dEta_fn);
-  vars.FillVar("Dr_BB_Ohio",dRbb);
+  vars.FillVar("Evt_Deta_TopLep_BB_Ohio",abs_dEta_leptop_bb);
+  vars.FillVar("Evt_Deta_TopHad_BB_Ohio",abs_dEta_hadtop_bb);
+  vars.FillVar("Evt_Best_Higgs_Mass_Ohio",best_higgs_mass);
+  vars.FillVar("Evt_Deta_Fn_Ohio",dEta_fn);
+  vars.FillVar("Evt_Dr_BB_Ohio",dRbb);
 
 }

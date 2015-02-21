@@ -9,245 +9,245 @@ BoostedJetVarProcessor::~BoostedJetVarProcessor (){}
 void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
   vars.InitVar( "N_TopJets","I" );
   
-  vars.InitVars( "HEPTopTag_TopJet","N_TopJets" );
-  vars.InitVars( "Tag_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_HEPTopTag","N_TopJets" );
+  vars.InitVars( "TopJet_Tag","N_TopJets" );
   
-  vars.InitVars( "E_TopJet","N_TopJets" );
-  vars.InitVars( "Pt_TopJet","N_TopJets" );
-  vars.InitVars( "Eta_TopJet","N_TopJets" );
-  vars.InitVars( "Phi_TopJet","N_TopJets" );
-  vars.InitVars( "M_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_E","N_TopJets" );
+  vars.InitVars( "TopJet_Pt","N_TopJets" );
+  vars.InitVars( "TopJet_Eta","N_TopJets" );
+  vars.InitVars( "TopJet_Phi","N_TopJets" );
+  vars.InitVars( "TopJet_M","N_TopJets" );
 
-  vars.InitVars( "E_B_TopJet","N_TopJets" );
-  vars.InitVars( "Pt_B_TopJet","N_TopJets" );
-  vars.InitVars( "Eta_B_TopJet","N_TopJets" );
-  vars.InitVars( "Phi_B_TopJet","N_TopJets" );
-  vars.InitVars( "M_B_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_E_B","N_TopJets" );
+  vars.InitVars( "TopJet_Pt_B","N_TopJets" );
+  vars.InitVars( "TopJet_Eta_B","N_TopJets" );
+  vars.InitVars( "TopJet_Phi_B","N_TopJets" );
+  vars.InitVars( "TopJet_M_B","N_TopJets" );
 
-  vars.InitVars( "E_W1_TopJet","N_TopJets" );
-  vars.InitVars( "Pt_W1_TopJet","N_TopJets" );
-  vars.InitVars( "Eta_W1_TopJet","N_TopJets" );
-  vars.InitVars( "Phi_W1_TopJet","N_TopJets" );
-  vars.InitVars( "M_W1_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_E_W1","N_TopJets" );
+  vars.InitVars( "TopJet_Pt_W1","N_TopJets" );
+  vars.InitVars( "TopJet_Eta_W1","N_TopJets" );
+  vars.InitVars( "TopJet_Phi_W1","N_TopJets" );
+  vars.InitVars( "TopJet_M_W1","N_TopJets" );
 
-  vars.InitVars( "E_W2_TopJet","N_TopJets" );
-  vars.InitVars( "Pt_W2_TopJet","N_TopJets" );
-  vars.InitVars( "Eta_W2_TopJet","N_TopJets" );
-  vars.InitVars( "Phi_W2_TopJet","N_TopJets" );
-  vars.InitVars( "M_W2_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_E_W2","N_TopJets" );
+  vars.InitVars( "TopJet_Pt_W2","N_TopJets" );
+  vars.InitVars( "TopJet_Eta_W2","N_TopJets" );
+  vars.InitVars( "TopJet_Phi_W2","N_TopJets" );
+  vars.InitVars( "TopJet_M_W2","N_TopJets" );
 
-  vars.InitVars( "E_W_TopJet","N_TopJets" );
-  vars.InitVars( "Pt_W_TopJet","N_TopJets" );
-  vars.InitVars( "Eta_W_TopJet","N_TopJets" );
-  vars.InitVars( "Phi_W_TopJet","N_TopJets" );
-  vars.InitVars( "M_W_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_E_W","N_TopJets" );
+  vars.InitVars( "TopJet_Pt_W","N_TopJets" );
+  vars.InitVars( "TopJet_Eta_W","N_TopJets" );
+  vars.InitVars( "TopJet_Phi_W","N_TopJets" );
+  vars.InitVars( "TopJet_M_W","N_TopJets" );
 
-  vars.InitVars( "E_Top_TopJet","N_TopJets" );
-  vars.InitVars( "Pt_Top_TopJet","N_TopJets" );
-  vars.InitVars( "Eta_Top_TopJet","N_TopJets" );
-  vars.InitVars( "Phi_Top_TopJet","N_TopJets" );
-  vars.InitVars( "M_Top_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_E_Top","N_TopJets" );
+  vars.InitVars( "TopJet_Pt_Top","N_TopJets" );
+  vars.InitVars( "TopJet_Eta_Top","N_TopJets" );
+  vars.InitVars( "TopJet_Phi_Top","N_TopJets" );
+  vars.InitVars( "TopJet_M_Top","N_TopJets" );
 
-  vars.InitVars( "M12_TopJet","N_TopJets" );
-  vars.InitVars( "M13_TopJet","N_TopJets" );
-  vars.InitVars( "M23_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_M12","N_TopJets" );
+  vars.InitVars( "TopJet_M13","N_TopJets" );
+  vars.InitVars( "TopJet_M23","N_TopJets" );
 
-  vars.InitVars( "CSV_B_TopJet","N_TopJets" );
-  vars.InitVars( "CSV_W1_TopJet","N_TopJets" );
-  vars.InitVars( "CSV_W2_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_CSV_B","N_TopJets" );
+  vars.InitVars( "TopJet_CSV_W1","N_TopJets" );
+  vars.InitVars( "TopJet_CSV_W2","N_TopJets" );
 
-  vars.InitVars( "Dr_B_Top_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W1_Top_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W2_Top_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W_Top_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W_B_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W1_B_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W2_B_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W1_W_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W2_W_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W1_W2_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_B_Top","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W1_Top","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W2_Top","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W_Top","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W_B","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W1_B","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W2_B","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W1_W","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W2_W","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W1_W2","N_TopJets" );
 
-  vars.InitVars( "ERatio_Top_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_B_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W1_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W2_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_B_Top_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W1_Top_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W2_Top_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W_Top_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_Top","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_B","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W1","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W2","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_B_Top","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W1_Top","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W2_Top","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W_Top","N_TopJets" );
 
-  vars.InitVars( "PtRatio_Top_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_B_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W1_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W2_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_B_Top_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W1_Top_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W2_Top_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W_Top_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_Top","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_B","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W1","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W2","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_B_Top","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W1_Top","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W2_Top","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W_Top","N_TopJets" );
 
-  vars.InitVars( "MRatio_Top_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_B_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W1_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W2_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_B_Top_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W1_Top_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W2_Top_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W_Top_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_Top","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_B","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W1","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W2","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_B_Top","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W1_Top","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W2_Top","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W_Top","N_TopJets" );
 
-  vars.InitVars( "Subjetiness1_TopJet","N_TopJets" );
-  vars.InitVars( "Subjetiness2_TopJet","N_TopJets" );
-  vars.InitVars( "Subjetiness3_TopJet","N_TopJets" );
-  vars.InitVars( "Subjetiness4_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_Subjetiness1","N_TopJets" );
+  vars.InitVars( "TopJet_Subjetiness2","N_TopJets" );
+  vars.InitVars( "TopJet_Subjetiness3","N_TopJets" );
+  vars.InitVars( "TopJet_Subjetiness4","N_TopJets" );
 
-  vars.InitVars( "IdxAk5_W1_TopJet","N_TopJets" );
-  vars.InitVars( "IdxAk5_W2_TopJet","N_TopJets" );
-  vars.InitVars( "IdxAk5_B_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_Lepton_TopJet","N_TopJets" );
-  vars.InitVars( "TaggedB_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_IdxAk5_W1","N_TopJets" );
+  vars.InitVars( "TopJet_IdxAk5_W2","N_TopJets" );
+  vars.InitVars( "TopJet_IdxAk5_B","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_Lepton","N_TopJets" );
+  vars.InitVars( "TopJet_TaggedB","N_TopJets" );
 
-  vars.InitVars( "Pt_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "Pt_W1btag_TopJet","N_TopJets" );
-  vars.InitVars( "Pt_W2btag_TopJet","N_TopJets" );
-  vars.InitVars( "Eta_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "Eta_W1btag_TopJet","N_TopJets" );
-  vars.InitVars( "Eta_W2btag_TopJet","N_TopJets" );
-  vars.InitVars( "Phi_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "Phi_W1btag_TopJet","N_TopJets" );
-  vars.InitVars( "Phi_W2btag_TopJet","N_TopJets" );
-  vars.InitVars( "E_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "E_W1btag_TopJet","N_TopJets" );
-  vars.InitVars( "E_W2btag_TopJet","N_TopJets" );
-  vars.InitVars( "CSV_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "CSV_W1btag_TopJet","N_TopJets" );
-  vars.InitVars( "CSV_W2btag_TopJet","N_TopJets" );
-  vars.InitVars( "M_Wbtag_TopJet","N_TopJets" );
-  vars.InitVars( "M_BW1btag_TopJet","N_TopJets" );
-  vars.InitVars( "M_BW2btag_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_Pt_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_Pt_W1btag","N_TopJets" );
+  vars.InitVars( "TopJet_Pt_W2btag","N_TopJets" );
+  vars.InitVars( "TopJet_Eta_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_Eta_W1btag","N_TopJets" );
+  vars.InitVars( "TopJet_Eta_W2btag","N_TopJets" );
+  vars.InitVars( "TopJet_Phi_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_Phi_W1btag","N_TopJets" );
+  vars.InitVars( "TopJet_Phi_W2btag","N_TopJets" );
+  vars.InitVars( "TopJet_E_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_E_W1btag","N_TopJets" );
+  vars.InitVars( "TopJet_E_W2btag","N_TopJets" );
+  vars.InitVars( "TopJet_CSV_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_CSV_W1btag","N_TopJets" );
+  vars.InitVars( "TopJet_CSV_W2btag","N_TopJets" );
+  vars.InitVars( "TopJet_M_Wbtag","N_TopJets" );
+  vars.InitVars( "TopJet_M_BW1btag","N_TopJets" );
+  vars.InitVars( "TopJet_M_BW2btag","N_TopJets" );
 
-  vars.InitVars( "ERatio_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W1btag_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W2btag_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_Wbtag_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_Bbtag_Top_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W1btag_Top_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_W2btag_Top_TopJet","N_TopJets" );
-  vars.InitVars( "ERatio_Wbtag_Top_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W1btag","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W2btag","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_Wbtag","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_Bbtag_Top","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W1btag_Top","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_W2btag_Top","N_TopJets" );
+  vars.InitVars( "TopJet_ERatio_Wbtag_Top","N_TopJets" );
 
-  vars.InitVars( "PtRatio_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W1btag_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W2btag_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_Wbtag_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_Bbtag_Top_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W1btag_Top_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_W2btag_Top_TopJet","N_TopJets" );
-  vars.InitVars( "PtRatio_Wbtag_Top_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W1btag","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W2btag","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_Wbtag","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_Bbtag_Top","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W1btag_Top","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_W2btag_Top","N_TopJets" );
+  vars.InitVars( "TopJet_PtRatio_Wbtag_Top","N_TopJets" );
 
-  vars.InitVars( "MRatio_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W1btag_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W2btag_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_Wbtag_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_Bbtag_Top_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W1btag_Top_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_W2btag_Top_TopJet","N_TopJets" );
-  vars.InitVars( "MRatio_Wbtag_Top_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W1btag","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W2btag","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_Wbtag","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_Bbtag_Top","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W1btag_Top","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_W2btag_Top","N_TopJets" );
+  vars.InitVars( "TopJet_MRatio_Wbtag_Top","N_TopJets" );
 
-  vars.InitVars( "Dr_W1btag_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W2btag_Bbtag_TopJet","N_TopJets" );
-  vars.InitVars( "Dr_W1btag_W2btag_TopJet","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W1btag_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W2btag_Bbtag","N_TopJets" );
+  vars.InitVars( "TopJet_Dr_W1btag_W2btag","N_TopJets" );
 
 
   vars.InitVar( "N_HiggsJets","I" );
-  vars.InitVars( "Pt_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Eta_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Phi_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CSV1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CSV2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CSV3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CSV4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M2_SingleTag_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M3_SingleTag_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M2_DoubleTag_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M3_DoubleTag_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Pt2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Pt3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_TopJet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_TopJet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_TopJet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_TopJet4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Subjetiness1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Subjetiness2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Subjetiness3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Subjetiness4_HiggsJet","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M2_SingleTag","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M3_SingleTag","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M2_DoubleTag","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M3_DoubleTag","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_TopJet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_TopJet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_TopJet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_TopJet4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Subjetiness1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Subjetiness2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Subjetiness3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Subjetiness4","N_HiggsJets" );
   
-  vars.InitVars( "Pt_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Pt_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Pt_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Pt_Filterjet4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "E_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "E_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "E_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "E_Filterjet4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "M_Filterjet4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Eta_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Eta_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Eta_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Eta_Filterjet4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Phi_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Phi_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Phi_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Phi_Filterjet4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CSV_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CSV_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CSV_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CSV_Filterjet4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_Filterjet4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "PtRatio_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "PtRatio_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "PtRatio_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "PtRatio_Filterjet4_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "ERatio_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "ERatio_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "ERatio_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "ERatio_Filterjet4_HiggsJet","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt_Filterjet4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_E_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_E_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_E_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_E_Filterjet4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M_Filterjet4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta_Filterjet4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi_Filterjet4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV_Filterjet4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_PtRatio_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_PtRatio_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_PtRatio_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_PtRatio_Filterjet4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_ERatio_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_ERatio_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_ERatio_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_ERatio_Filterjet4","N_HiggsJets" );
   
-  vars.InitVars( "Dr_Filterjet12_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_Filterjet13_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_Filterjet23_HiggsJet","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet12","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet13","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet23","N_HiggsJets" );
   
-  vars.InitVars( "E_Filterjet1_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Pt_Filterjet1_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Eta_Filterjet1_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Phi_Filterjet1_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "E_Filterjet2_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Pt_Filterjet2_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Eta_Filterjet2_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Phi_Filterjet2_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "E_Filterjet3_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Pt_Filterjet3_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Eta_Filterjet3_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Phi_Filterjet3_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "E_Filterjet4_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Pt_Filterjet4_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Eta_Filterjet4_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Phi_Filterjet4_RestFrame_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CosThetaStar_Filterjet12_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CosThetaStar_Filterjet13_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "CosThetaStar_Filterjet23_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "IdxAk5_Filterjet1_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "IdxAk5_Filterjet2_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "IdxAk5_Filterjet3_HiggsJet","N_HiggsJets" );
-  vars.InitVars( "Dr_Lepton_HiggsJet","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_E_Filterjet1_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt_Filterjet1_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta_Filterjet1_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi_Filterjet1_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_E_Filterjet2_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt_Filterjet2_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta_Filterjet2_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi_Filterjet2_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_E_Filterjet3_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt_Filterjet3_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta_Filterjet3_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi_Filterjet3_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_E_Filterjet4_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt_Filterjet4_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta_Filterjet4_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi_Filterjet4_RestFrame","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CosThetaStar_Filterjet12","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CosThetaStar_Filterjet13","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CosThetaStar_Filterjet23","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_IdxAk5_Filterjet1","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_IdxAk5_Filterjet2","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_IdxAk5_Filterjet3","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Lepton","N_HiggsJets" );
 
   initialized=true;
 }
@@ -260,87 +260,87 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 
   vars.FillVar("N_TopJets",input.selectedHEPTopJets.size());
   for(size_t i=0; i< input.selectedHEPTopJets.size(); i++){
-    //vars.FillVars( "Tagged_TopJet",i,input.selectedHEPTopJets[i].toptag );
+    //vars.FillVars( "TopJet_Tagged",i,input.selectedHEPTopJets[i].toptag );
     
-    vars.FillVars( "HEPTopTag_TopJet",i,input.selectedHEPTopJets[i].toptag);
-    vars.FillVars( "Tag_TopJet",i,BoostedUtils::GetTopTag(input.selectedHEPTopJets[i],0.15,120.));
+    vars.FillVars( "TopJet_HEPTopTag",i,input.selectedHEPTopJets[i].toptag);
+    vars.FillVars( "TopJet_Tag",i,BoostedUtils::GetTopTag(input.selectedHEPTopJets[i],0.15,120.));
     
-    vars.FillVars( "E_TopJet",i,input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "Pt_TopJet",i,input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "Eta_TopJet",i,input.selectedHEPTopJets[i].fatjet.eta() );
-    vars.FillVars( "Phi_TopJet",i,input.selectedHEPTopJets[i].fatjet.phi() );
-    vars.FillVars( "M_TopJet",i,input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_E",i,input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_Pt",i,input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_Eta",i,input.selectedHEPTopJets[i].fatjet.eta() );
+    vars.FillVars( "TopJet_Phi",i,input.selectedHEPTopJets[i].fatjet.phi() );
+    vars.FillVars( "TopJet_M",i,input.selectedHEPTopJets[i].fatjet.mass() );
 
-    vars.FillVars( "E_B_TopJet",i,input.selectedHEPTopJets[i].nonW.energy() );
-    vars.FillVars( "Pt_B_TopJet",i,input.selectedHEPTopJets[i].nonW.pt() );
-    vars.FillVars( "Eta_B_TopJet",i,input.selectedHEPTopJets[i].nonW.eta() );
-    vars.FillVars( "Phi_B_TopJet",i,input.selectedHEPTopJets[i].nonW.phi() );
-    vars.FillVars( "M_B_TopJet",i,input.selectedHEPTopJets[i].nonW.mass() );
+    vars.FillVars( "TopJet_E_B",i,input.selectedHEPTopJets[i].nonW.energy() );
+    vars.FillVars( "TopJet_Pt_B",i,input.selectedHEPTopJets[i].nonW.pt() );
+    vars.FillVars( "TopJet_Eta_B",i,input.selectedHEPTopJets[i].nonW.eta() );
+    vars.FillVars( "TopJet_Phi_B",i,input.selectedHEPTopJets[i].nonW.phi() );
+    vars.FillVars( "TopJet_M_B",i,input.selectedHEPTopJets[i].nonW.mass() );
 
-    vars.FillVars( "E_W1_TopJet",i,input.selectedHEPTopJets[i].W1.energy() );
-    vars.FillVars( "Pt_W1_TopJet",i,input.selectedHEPTopJets[i].W1.pt() );
-    vars.FillVars( "Eta_W1_TopJet",i,input.selectedHEPTopJets[i].W1.eta() );
-    vars.FillVars( "Phi_W1_TopJet",i,input.selectedHEPTopJets[i].W1.phi() );
-    vars.FillVars( "M_W1_TopJet",i,input.selectedHEPTopJets[i].W1.mass() );
+    vars.FillVars( "TopJet_E_W1",i,input.selectedHEPTopJets[i].W1.energy() );
+    vars.FillVars( "TopJet_Pt_W1",i,input.selectedHEPTopJets[i].W1.pt() );
+    vars.FillVars( "TopJet_Eta_W1",i,input.selectedHEPTopJets[i].W1.eta() );
+    vars.FillVars( "TopJet_Phi_W1",i,input.selectedHEPTopJets[i].W1.phi() );
+    vars.FillVars( "TopJet_M_W1",i,input.selectedHEPTopJets[i].W1.mass() );
 
-    vars.FillVars( "E_W2_TopJet",i,input.selectedHEPTopJets[i].W2.energy() );
-    vars.FillVars( "Pt_W2_TopJet",i,input.selectedHEPTopJets[i].W2.pt() );
-    vars.FillVars( "Eta_W2_TopJet",i,input.selectedHEPTopJets[i].W2.eta() );
-    vars.FillVars( "Phi_W2_TopJet",i,input.selectedHEPTopJets[i].W2.phi() );
-    vars.FillVars( "M_W2_TopJet",i,input.selectedHEPTopJets[i].W2.mass() );
+    vars.FillVars( "TopJet_E_W2",i,input.selectedHEPTopJets[i].W2.energy() );
+    vars.FillVars( "TopJet_Pt_W2",i,input.selectedHEPTopJets[i].W2.pt() );
+    vars.FillVars( "TopJet_Eta_W2",i,input.selectedHEPTopJets[i].W2.eta() );
+    vars.FillVars( "TopJet_Phi_W2",i,input.selectedHEPTopJets[i].W2.phi() );
+    vars.FillVars( "TopJet_M_W2",i,input.selectedHEPTopJets[i].W2.mass() );
 
-    vars.FillVars( "E_W_TopJet",i,input.selectedHEPTopJets[i].W.energy() );
-    vars.FillVars( "Pt_W_TopJet",i,input.selectedHEPTopJets[i].W.pt() );
-    vars.FillVars( "Eta_W_TopJet",i,input.selectedHEPTopJets[i].W.eta() );
-    vars.FillVars( "Phi_W_TopJet",i,input.selectedHEPTopJets[i].W.phi() );
-    vars.FillVars( "M_W_TopJet",i,input.selectedHEPTopJets[i].W.mass() );
+    vars.FillVars( "TopJet_E_W",i,input.selectedHEPTopJets[i].W.energy() );
+    vars.FillVars( "TopJet_Pt_W",i,input.selectedHEPTopJets[i].W.pt() );
+    vars.FillVars( "TopJet_Eta_W",i,input.selectedHEPTopJets[i].W.eta() );
+    vars.FillVars( "TopJet_Phi_W",i,input.selectedHEPTopJets[i].W.phi() );
+    vars.FillVars( "TopJet_M_W",i,input.selectedHEPTopJets[i].W.mass() );
 
-    vars.FillVars( "E_Top_TopJet",i,input.selectedHEPTopJets[i].topjet.energy() );
-    vars.FillVars( "Pt_Top_TopJet",i,input.selectedHEPTopJets[i].topjet.pt() );
-    vars.FillVars( "Eta_Top_TopJet",i,input.selectedHEPTopJets[i].topjet.eta() );
-    vars.FillVars( "Phi_Top_TopJet",i,input.selectedHEPTopJets[i].topjet.phi() );
-    vars.FillVars( "M_Top_TopJet",i,input.selectedHEPTopJets[i].topjet.mass() );
+    vars.FillVars( "TopJet_E_Top",i,input.selectedHEPTopJets[i].topjet.energy() );
+    vars.FillVars( "TopJet_Pt_Top",i,input.selectedHEPTopJets[i].topjet.pt() );
+    vars.FillVars( "TopJet_Eta_Top",i,input.selectedHEPTopJets[i].topjet.eta() );
+    vars.FillVars( "TopJet_Phi_Top",i,input.selectedHEPTopJets[i].topjet.phi() );
+    vars.FillVars( "TopJet_M_Top",i,input.selectedHEPTopJets[i].topjet.mass() );
 
-    vars.FillVars( "Dr_B_Top_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].nonW,input.selectedHEPTopJets[i].topjet) );
-    vars.FillVars( "Dr_W1_Top_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W1,input.selectedHEPTopJets[i].topjet) );
-    vars.FillVars( "Dr_W2_Top_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W2,input.selectedHEPTopJets[i].topjet) );
-    vars.FillVars( "Dr_W_Top_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W,input.selectedHEPTopJets[i].topjet) );
-    vars.FillVars( "Dr_W_B_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W,input.selectedHEPTopJets[i].nonW) );
-    vars.FillVars( "Dr_W1_B_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W1,input.selectedHEPTopJets[i].nonW) );
-    vars.FillVars( "Dr_W2_B_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W2,input.selectedHEPTopJets[i].nonW) );
-    vars.FillVars( "Dr_W1_W_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W1,input.selectedHEPTopJets[i].W) );
-    vars.FillVars( "Dr_W2_W_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W2,input.selectedHEPTopJets[i].W) );
-    vars.FillVars( "Dr_W1_W2_TopJet",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W1,input.selectedHEPTopJets[i].W2) );
+    vars.FillVars( "TopJet_Dr_B_Top",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].nonW,input.selectedHEPTopJets[i].topjet) );
+    vars.FillVars( "TopJet_Dr_W1_Top",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W1,input.selectedHEPTopJets[i].topjet) );
+    vars.FillVars( "TopJet_Dr_W2_Top",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W2,input.selectedHEPTopJets[i].topjet) );
+    vars.FillVars( "TopJet_Dr_W_Top",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W,input.selectedHEPTopJets[i].topjet) );
+    vars.FillVars( "TopJet_Dr_W_B",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W,input.selectedHEPTopJets[i].nonW) );
+    vars.FillVars( "TopJet_Dr_W1_B",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W1,input.selectedHEPTopJets[i].nonW) );
+    vars.FillVars( "TopJet_Dr_W2_B",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W2,input.selectedHEPTopJets[i].nonW) );
+    vars.FillVars( "TopJet_Dr_W1_W",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W1,input.selectedHEPTopJets[i].W) );
+    vars.FillVars( "TopJet_Dr_W2_W",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W2,input.selectedHEPTopJets[i].W) );
+    vars.FillVars( "TopJet_Dr_W1_W2",i,BoostedUtils::DeltaR(input.selectedHEPTopJets[i].W1,input.selectedHEPTopJets[i].W2) );
 
-    vars.FillVars( "ERatio_Top_TopJet",i,input.selectedHEPTopJets[i].topjet.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "ERatio_B_TopJet",i,input.selectedHEPTopJets[i].nonW.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "ERatio_W1_TopJet",i,input.selectedHEPTopJets[i].W1.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "ERatio_W2_TopJet",i,input.selectedHEPTopJets[i].W2.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "ERatio_W_TopJet",i,input.selectedHEPTopJets[i].W.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "ERatio_B_Top_TopJet",i,input.selectedHEPTopJets[i].nonW.energy()/input.selectedHEPTopJets[i].topjet.energy() );
-    vars.FillVars( "ERatio_W1_Top_TopJet",i,input.selectedHEPTopJets[i].W1.energy()/input.selectedHEPTopJets[i].topjet.energy() );
-    vars.FillVars( "ERatio_W2_Top_TopJet",i,input.selectedHEPTopJets[i].W2.energy()/input.selectedHEPTopJets[i].topjet.energy() );
-    vars.FillVars( "ERatio_W_Top_TopJet",i,input.selectedHEPTopJets[i].W.energy()/input.selectedHEPTopJets[i].topjet.energy() );
+    vars.FillVars( "TopJet_ERatio_Top",i,input.selectedHEPTopJets[i].topjet.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_ERatio_B",i,input.selectedHEPTopJets[i].nonW.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W1",i,input.selectedHEPTopJets[i].W1.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W2",i,input.selectedHEPTopJets[i].W2.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W",i,input.selectedHEPTopJets[i].W.energy()/input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_ERatio_B_Top",i,input.selectedHEPTopJets[i].nonW.energy()/input.selectedHEPTopJets[i].topjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W1_Top",i,input.selectedHEPTopJets[i].W1.energy()/input.selectedHEPTopJets[i].topjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W2_Top",i,input.selectedHEPTopJets[i].W2.energy()/input.selectedHEPTopJets[i].topjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W_Top",i,input.selectedHEPTopJets[i].W.energy()/input.selectedHEPTopJets[i].topjet.energy() );
 
-    vars.FillVars( "PtRatio_Top_TopJet",i,input.selectedHEPTopJets[i].topjet.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "PtRatio_B_TopJet",i,input.selectedHEPTopJets[i].nonW.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "PtRatio_W1_TopJet",i,input.selectedHEPTopJets[i].W1.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "PtRatio_W2_TopJet",i,input.selectedHEPTopJets[i].W2.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "PtRatio_W_TopJet",i,input.selectedHEPTopJets[i].W.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "PtRatio_B_Top_TopJet",i,input.selectedHEPTopJets[i].nonW.pt()/input.selectedHEPTopJets[i].topjet.pt() );
-    vars.FillVars( "PtRatio_W1_Top_TopJet",i,input.selectedHEPTopJets[i].W1.pt()/input.selectedHEPTopJets[i].topjet.pt() );
-    vars.FillVars( "PtRatio_W2_Top_TopJet",i,input.selectedHEPTopJets[i].W2.pt()/input.selectedHEPTopJets[i].topjet.pt() );
-    vars.FillVars( "PtRatio_W_Top_TopJet",i,input.selectedHEPTopJets[i].W.pt()/input.selectedHEPTopJets[i].topjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_Top",i,input.selectedHEPTopJets[i].topjet.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_B",i,input.selectedHEPTopJets[i].nonW.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W1",i,input.selectedHEPTopJets[i].W1.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W2",i,input.selectedHEPTopJets[i].W2.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W",i,input.selectedHEPTopJets[i].W.pt()/input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_B_Top",i,input.selectedHEPTopJets[i].nonW.pt()/input.selectedHEPTopJets[i].topjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W1_Top",i,input.selectedHEPTopJets[i].W1.pt()/input.selectedHEPTopJets[i].topjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W2_Top",i,input.selectedHEPTopJets[i].W2.pt()/input.selectedHEPTopJets[i].topjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W_Top",i,input.selectedHEPTopJets[i].W.pt()/input.selectedHEPTopJets[i].topjet.pt() );
 
-    vars.FillVars( "MRatio_Top_TopJet",i,input.selectedHEPTopJets[i].topjet.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
-    vars.FillVars( "MRatio_B_TopJet",i,input.selectedHEPTopJets[i].nonW.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
-    vars.FillVars( "MRatio_W1_TopJet",i,input.selectedHEPTopJets[i].W1.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
-    vars.FillVars( "MRatio_W2_TopJet",i,input.selectedHEPTopJets[i].W2.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
-    vars.FillVars( "MRatio_W_TopJet",i,input.selectedHEPTopJets[i].W.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
-    vars.FillVars( "MRatio_B_Top_TopJet",i,input.selectedHEPTopJets[i].nonW.mass()/input.selectedHEPTopJets[i].topjet.mass() );
-    vars.FillVars( "MRatio_W1_Top_TopJet",i,input.selectedHEPTopJets[i].W1.mass()/input.selectedHEPTopJets[i].topjet.mass() );
-    vars.FillVars( "MRatio_W2_Top_TopJet",i,input.selectedHEPTopJets[i].W2.mass()/input.selectedHEPTopJets[i].topjet.mass() );
-    vars.FillVars( "MRatio_W_Top_TopJet",i,input.selectedHEPTopJets[i].W.mass()/input.selectedHEPTopJets[i].topjet.mass() );
+    vars.FillVars( "TopJet_MRatio_Top",i,input.selectedHEPTopJets[i].topjet.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_MRatio_B",i,input.selectedHEPTopJets[i].nonW.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W1",i,input.selectedHEPTopJets[i].W1.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W2",i,input.selectedHEPTopJets[i].W2.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W",i,input.selectedHEPTopJets[i].W.mass()/input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_MRatio_B_Top",i,input.selectedHEPTopJets[i].nonW.mass()/input.selectedHEPTopJets[i].topjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W1_Top",i,input.selectedHEPTopJets[i].W1.mass()/input.selectedHEPTopJets[i].topjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W2_Top",i,input.selectedHEPTopJets[i].W2.mass()/input.selectedHEPTopJets[i].topjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W_Top",i,input.selectedHEPTopJets[i].W.mass()/input.selectedHEPTopJets[i].topjet.mass() );
 
     vector<math::XYZTLorentzVector> topvecs;
     topvecs.push_back(input.selectedHEPTopJets[i].W1.p4());
@@ -355,13 +355,13 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       m13=(topvecs[0]+topvecs[2]).M();
       m23=(topvecs[1]+topvecs[2]).M();
     }
-    vars.FillVars( "M12_TopJet",i,m12 );
-    vars.FillVars( "M13_TopJet",i,m13 );
-    vars.FillVars( "M23_TopJet",i,m23 );
+    vars.FillVars( "TopJet_M12",i,m12 );
+    vars.FillVars( "TopJet_M13",i,m13 );
+    vars.FillVars( "TopJet_M23",i,m23 );
 
-    vars.FillVars( "CSV_B_TopJet",i,fmax(input.selectedHEPTopJets[i].nonW.bDiscriminator(btagger),-.1) );
-    vars.FillVars( "CSV_W1_TopJet",i,fmax(input.selectedHEPTopJets[i].W1.bDiscriminator(btagger),-.1) );
-    vars.FillVars( "CSV_W2_TopJet",i,fmax(input.selectedHEPTopJets[i].W2.bDiscriminator(btagger),-.1) );
+    vars.FillVars( "TopJet_CSV_B",i,fmax(input.selectedHEPTopJets[i].nonW.bDiscriminator(btagger),-.1) );
+    vars.FillVars( "TopJet_CSV_W1",i,fmax(input.selectedHEPTopJets[i].W1.bDiscriminator(btagger),-.1) );
+    vars.FillVars( "TopJet_CSV_W2",i,fmax(input.selectedHEPTopJets[i].W2.bDiscriminator(btagger),-.1) );
     
     //Definition with b-jet == highest CSV
     vector<pat::Jet> subjets;
@@ -372,60 +372,60 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
     BoostedUtils::TopSubjetCSVDef(subjets);
 
     vector<math::XYZTLorentzVector> topvecs_bycsv = BoostedUtils::GetJetVecs(subjets);
-    vars.FillVars( "TaggedB_TopJet",i,BoostedUtils::GetTopTag(input.selectedHEPTopJets[i],0.2,120,true) );
-    vars.FillVars( "Pt_Bbtag_TopJet",i,subjets[0].pt() );
-    vars.FillVars( "Pt_W1btag_TopJet",i,subjets[1].pt() );
-    vars.FillVars( "Pt_W2btag_TopJet",i,subjets[2].pt() );
-    vars.FillVars( "Eta_Bbtag_TopJet",i,subjets[0].eta() );
-    vars.FillVars( "Eta_W1btag_TopJet",i,subjets[1].eta() );
-    vars.FillVars( "Eta_W2btag_TopJet",i,subjets[2].eta() );
-    vars.FillVars( "Phi_Bbtag_TopJet",i,subjets[0].phi() );
-    vars.FillVars( "Phi_W1btag_TopJet",i,subjets[1].phi() );
-    vars.FillVars( "Phi_W2btag_TopJet",i,subjets[2].phi() );
-    vars.FillVars( "E_Bbtag_TopJet",i,subjets[0].energy() );
-    vars.FillVars( "E_W1btag_TopJet",i,subjets[1].energy() );
-    vars.FillVars( "E_W2btag_TopJet",i,subjets[2].energy() );
-    vars.FillVars( "CSV_Bbtag_TopJet",i,fmax(subjets[0].bDiscriminator(btagger),-.1) );
-    vars.FillVars( "CSV_W1btag_TopJet",i,fmax(subjets[1].bDiscriminator(btagger),-.1) );
-    vars.FillVars( "CSV_W2btag_TopJet",i,fmax(subjets[2].bDiscriminator(btagger),-.1) );
-    vars.FillVars( "M_Wbtag_TopJet",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).M() );
-    vars.FillVars( "M_BW1btag_TopJet",i,(topvecs_bycsv[0]+topvecs_bycsv[1]).M() );
-    vars.FillVars( "M_BW2btag_TopJet",i,(topvecs_bycsv[0]+topvecs_bycsv[2]).M() );
-    vars.FillVars( "Dr_W1btag_Bbtag_TopJet",i,BoostedUtils::DeltaR(subjets[1],subjets[0]));
-    vars.FillVars( "Dr_W2btag_Bbtag_TopJet",i,BoostedUtils::DeltaR(subjets[2],subjets[0]));
-    vars.FillVars( "Dr_W1btag_W2btag_TopJet",i,BoostedUtils::DeltaR(subjets[1],subjets[2]));
+    vars.FillVars( "TopJet_TaggedB",i,BoostedUtils::GetTopTag(input.selectedHEPTopJets[i],0.2,120,true) );
+    vars.FillVars( "TopJet_Pt_Bbtag",i,subjets[0].pt() );
+    vars.FillVars( "TopJet_Pt_W1btag",i,subjets[1].pt() );
+    vars.FillVars( "TopJet_Pt_W2btag",i,subjets[2].pt() );
+    vars.FillVars( "TopJet_Eta_Bbtag",i,subjets[0].eta() );
+    vars.FillVars( "TopJet_Eta_W1btag",i,subjets[1].eta() );
+    vars.FillVars( "TopJet_Eta_W2btag",i,subjets[2].eta() );
+    vars.FillVars( "TopJet_Phi_Bbtag",i,subjets[0].phi() );
+    vars.FillVars( "TopJet_Phi_W1btag",i,subjets[1].phi() );
+    vars.FillVars( "TopJet_Phi_W2btag",i,subjets[2].phi() );
+    vars.FillVars( "TopJet_E_Bbtag",i,subjets[0].energy() );
+    vars.FillVars( "TopJet_E_W1btag",i,subjets[1].energy() );
+    vars.FillVars( "TopJet_E_W2btag",i,subjets[2].energy() );
+    vars.FillVars( "TopJet_CSV_Bbtag",i,fmax(subjets[0].bDiscriminator(btagger),-.1) );
+    vars.FillVars( "TopJet_CSV_W1btag",i,fmax(subjets[1].bDiscriminator(btagger),-.1) );
+    vars.FillVars( "TopJet_CSV_W2btag",i,fmax(subjets[2].bDiscriminator(btagger),-.1) );
+    vars.FillVars( "TopJet_M_Wbtag",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).M() );
+    vars.FillVars( "TopJet_M_BW1btag",i,(topvecs_bycsv[0]+topvecs_bycsv[1]).M() );
+    vars.FillVars( "TopJet_M_BW2btag",i,(topvecs_bycsv[0]+topvecs_bycsv[2]).M() );
+    vars.FillVars( "TopJet_Dr_W1btag_Bbtag",i,BoostedUtils::DeltaR(subjets[1],subjets[0]));
+    vars.FillVars( "TopJet_Dr_W2btag_Bbtag",i,BoostedUtils::DeltaR(subjets[2],subjets[0]));
+    vars.FillVars( "TopJet_Dr_W1btag_W2btag",i,BoostedUtils::DeltaR(subjets[1],subjets[2]));
 
-    vars.FillVars( "ERatio_Bbtag_TopJet",i,subjets[0].energy()/input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "ERatio_W1btag_TopJet",i,subjets[1].energy()/input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "ERatio_W2btag_TopJet",i,subjets[2].energy()/input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "ERatio_Wbtag_TopJet",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).E()/input.selectedHEPTopJets[i].fatjet.energy() );
-    vars.FillVars( "ERatio_Bbtag_Top_TopJet",i,subjets[0].energy()/input.selectedHEPTopJets[i].topjet.energy() );
-    vars.FillVars( "ERatio_W1btag_Top_TopJet",i,subjets[1].energy()/input.selectedHEPTopJets[i].topjet.energy() );
-    vars.FillVars( "ERatio_W2btag_Top_TopJet",i,subjets[2].energy()/input.selectedHEPTopJets[i].topjet.energy() );
-    vars.FillVars( "ERatio_Wbtag_Top_TopJet",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).E()/input.selectedHEPTopJets[i].topjet.energy() );
+    vars.FillVars( "TopJet_ERatio_Bbtag",i,subjets[0].energy()/input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W1btag",i,subjets[1].energy()/input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W2btag",i,subjets[2].energy()/input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_ERatio_Wbtag",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).E()/input.selectedHEPTopJets[i].fatjet.energy() );
+    vars.FillVars( "TopJet_ERatio_Bbtag_Top",i,subjets[0].energy()/input.selectedHEPTopJets[i].topjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W1btag_Top",i,subjets[1].energy()/input.selectedHEPTopJets[i].topjet.energy() );
+    vars.FillVars( "TopJet_ERatio_W2btag_Top",i,subjets[2].energy()/input.selectedHEPTopJets[i].topjet.energy() );
+    vars.FillVars( "TopJet_ERatio_Wbtag_Top",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).E()/input.selectedHEPTopJets[i].topjet.energy() );
 
-    vars.FillVars( "PtRatio_Bbtag_TopJet",i,subjets[0].pt()/input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "PtRatio_W1btag_TopJet",i,subjets[1].pt()/input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "PtRatio_W2btag_TopJet",i,subjets[2].pt()/input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "PtRatio_Wbtag_TopJet",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).pt()/input.selectedHEPTopJets[i].fatjet.pt() );
-    vars.FillVars( "PtRatio_Bbtag_Top_TopJet",i,subjets[0].pt()/input.selectedHEPTopJets[i].topjet.pt() );
-    vars.FillVars( "PtRatio_W1btag_Top_TopJet",i,subjets[1].pt()/input.selectedHEPTopJets[i].topjet.pt() );
-    vars.FillVars( "PtRatio_W2btag_Top_TopJet",i,subjets[2].pt()/input.selectedHEPTopJets[i].topjet.pt() );
-    vars.FillVars( "PtRatio_Wbtag_Top_TopJet",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).pt()/input.selectedHEPTopJets[i].topjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_Bbtag",i,subjets[0].pt()/input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W1btag",i,subjets[1].pt()/input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W2btag",i,subjets[2].pt()/input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_Wbtag",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).pt()/input.selectedHEPTopJets[i].fatjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_Bbtag_Top",i,subjets[0].pt()/input.selectedHEPTopJets[i].topjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W1btag_Top",i,subjets[1].pt()/input.selectedHEPTopJets[i].topjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_W2btag_Top",i,subjets[2].pt()/input.selectedHEPTopJets[i].topjet.pt() );
+    vars.FillVars( "TopJet_PtRatio_Wbtag_Top",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).pt()/input.selectedHEPTopJets[i].topjet.pt() );
 
-    vars.FillVars( "MRatio_Bbtag_TopJet",i,subjets[0].mass()/input.selectedHEPTopJets[i].fatjet.mass() );
-    vars.FillVars( "MRatio_W1btag_TopJet",i,subjets[1].mass()/input.selectedHEPTopJets[i].fatjet.mass() );
-    vars.FillVars( "MRatio_W2btag_TopJet",i,subjets[2].mass()/input.selectedHEPTopJets[i].fatjet.mass() );
-    vars.FillVars( "MRatio_Wbtag_TopJet",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).M()/input.selectedHEPTopJets[i].fatjet.mass() );
-    vars.FillVars( "MRatio_Bbtag_Top_TopJet",i,subjets[0].mass()/input.selectedHEPTopJets[i].topjet.mass() );
-    vars.FillVars( "MRatio_W1btag_Top_TopJet",i,subjets[1].mass()/input.selectedHEPTopJets[i].topjet.mass() );
-    vars.FillVars( "MRatio_W2btag_Top_TopJet",i,subjets[2].mass()/input.selectedHEPTopJets[i].topjet.mass() );
-    vars.FillVars( "MRatio_Wbtag_Top_TopJet",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).M()/input.selectedHEPTopJets[i].topjet.mass() );
+    vars.FillVars( "TopJet_MRatio_Bbtag",i,subjets[0].mass()/input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W1btag",i,subjets[1].mass()/input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W2btag",i,subjets[2].mass()/input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_MRatio_Wbtag",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).M()/input.selectedHEPTopJets[i].fatjet.mass() );
+    vars.FillVars( "TopJet_MRatio_Bbtag_Top",i,subjets[0].mass()/input.selectedHEPTopJets[i].topjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W1btag_Top",i,subjets[1].mass()/input.selectedHEPTopJets[i].topjet.mass() );
+    vars.FillVars( "TopJet_MRatio_W2btag_Top",i,subjets[2].mass()/input.selectedHEPTopJets[i].topjet.mass() );
+    vars.FillVars( "TopJet_MRatio_Wbtag_Top",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).M()/input.selectedHEPTopJets[i].topjet.mass() );
 
-    vars.FillVars( "Subjetiness1_TopJet",i,input.selectedHEPTopJets[i].subjettiness1 );
-    vars.FillVars( "Subjetiness2_TopJet",i,input.selectedHEPTopJets[i].subjettiness2 );
-    vars.FillVars( "Subjetiness3_TopJet",i,input.selectedHEPTopJets[i].subjettiness3 );
-    vars.FillVars( "Subjetiness4_TopJet",i,input.selectedHEPTopJets[i].subjettiness4 );
+    vars.FillVars( "TopJet_Subjetiness1",i,input.selectedHEPTopJets[i].subjettiness1 );
+    vars.FillVars( "TopJet_Subjetiness2",i,input.selectedHEPTopJets[i].subjettiness2 );
+    vars.FillVars( "TopJet_Subjetiness3",i,input.selectedHEPTopJets[i].subjettiness3 );
+    vars.FillVars( "TopJet_Subjetiness4",i,input.selectedHEPTopJets[i].subjettiness4 );
    
     vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
     math::XYZTLorentzVector w1vec = input.selectedHEPTopJets[i].W1.p4();
@@ -455,14 +455,14 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
     }
 
 
-    vars.FillVars( "IdxAk5_W1_TopJet",i,idxW1 );
-    vars.FillVars( "IdxAk5_W2_TopJet",i,idxW2 );
-    vars.FillVars( "IdxAk5_B_TopJet",i,idxB );
+    vars.FillVars( "TopJet_IdxAk5_W1",i,idxW1 );
+    vars.FillVars( "TopJet_IdxAk5_W2",i,idxW2 );
+    vars.FillVars( "TopJet_IdxAk5_B",i,idxB );
     math::XYZTLorentzVector primlepvec=math::XYZTLorentzVector(0.,0.,0.,0.);
     if(input.selectedElectronsLoose.size()>0||input.selectedMuonsLoose.size()>0)
 	  primlepvec = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
 
-    vars.FillVars("Dr_Lepton_TopJet",i,primlepvec.pt()>5 ? BoostedUtils::DeltaR(primlepvec,input.selectedHEPTopJets[i].fatjet.p4()) : -1);
+    vars.FillVars("TopJet_Dr_Lepton",i,primlepvec.pt()>5 ? BoostedUtils::DeltaR(primlepvec,input.selectedHEPTopJets[i].fatjet.p4()) : -1);
 
 
   }
@@ -470,9 +470,9 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
   
   vars.FillVar( "N_HiggsJets",input.selectedSubFilterJets.size() );
   for(size_t i=0; i< input.selectedSubFilterJets.size(); i++){
-    vars.FillVars( "Pt_HiggsJet",i,input.selectedSubFilterJets[i].fatjet.pt() );
-    vars.FillVars( "Eta_HiggsJet",i,input.selectedSubFilterJets[i].fatjet.eta() );
-    vars.FillVars( "Phi_HiggsJet",i,input.selectedSubFilterJets[i].fatjet.phi() );
+    vars.FillVars( "HiggsJet_Pt",i,input.selectedSubFilterJets[i].fatjet.pt() );
+    vars.FillVars( "HiggsJet_Eta",i,input.selectedSubFilterJets[i].fatjet.eta() );
+    vars.FillVars( "HiggsJet_Phi",i,input.selectedSubFilterJets[i].fatjet.phi() );
     
     TVector3 fatJetBoost = -(BoostedUtils::GetTLorentzVector(input.selectedSubFilterJets[i].fatjet.p4()).BoostVector());
     
@@ -481,58 +481,58 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       TString FilterJetName = "Filterjet";
       FilterJetName += ((itFiltJet-input.selectedSubFilterJets[i].filterjets.begin())+1);
       
-      vars.FillVars( "E_"+FilterJetName+"_HiggsJet",i,itFiltJet->energy() );
-      vars.FillVars( "Pt_"+FilterJetName+"_HiggsJet",i,itFiltJet->pt() );
-      vars.FillVars( "M_"+FilterJetName+"_HiggsJet",i,itFiltJet->mass() );
-      vars.FillVars( "Eta_"+FilterJetName+"_HiggsJet",i,itFiltJet->eta() );
-      vars.FillVars( "Phi_"+FilterJetName+"_HiggsJet",i,itFiltJet->phi() );
-      vars.FillVars( "CSV_"+FilterJetName+"_HiggsJet",i,itFiltJet->bDiscriminator(btagger) );
-      vars.FillVars( "Dr_"+FilterJetName+"_HiggsJet",i,BoostedUtils::DeltaR(*itFiltJet,input.selectedSubFilterJets[i].fatjet) );
-      vars.FillVars( "PtRatio_"+FilterJetName+"_HiggsJet",i,itFiltJet->pt()/input.selectedSubFilterJets[i].fatjet.pt() );
-      vars.FillVars( "ERatio_"+FilterJetName+"_HiggsJet",i,itFiltJet->energy()/input.selectedSubFilterJets[i].fatjet.energy() );
+      vars.FillVars( "HiggsJet_E_"+FilterJetName+"",i,itFiltJet->energy() );
+      vars.FillVars( "HiggsJet_Pt_"+FilterJetName+"",i,itFiltJet->pt() );
+      vars.FillVars( "HiggsJet_M_"+FilterJetName+"",i,itFiltJet->mass() );
+      vars.FillVars( "HiggsJet_Eta_"+FilterJetName+"",i,itFiltJet->eta() );
+      vars.FillVars( "HiggsJet_Phi_"+FilterJetName+"",i,itFiltJet->phi() );
+      vars.FillVars( "HiggsJet_CSV_"+FilterJetName+"",i,itFiltJet->bDiscriminator(btagger) );
+      vars.FillVars( "HiggsJet_Dr_"+FilterJetName+"",i,BoostedUtils::DeltaR(*itFiltJet,input.selectedSubFilterJets[i].fatjet) );
+      vars.FillVars( "HiggsJet_PtRatio_"+FilterJetName+"",i,itFiltJet->pt()/input.selectedSubFilterJets[i].fatjet.pt() );
+      vars.FillVars( "HiggsJet_ERatio_"+FilterJetName+"",i,itFiltJet->energy()/input.selectedSubFilterJets[i].fatjet.energy() );
 
       TLorentzVector restframeFiltJet = BoostedUtils::GetTLorentzVector(itFiltJet->p4());
       restframeFiltJet.Boost(fatJetBoost);
-      vars.FillVars( "Pt_"+FilterJetName+"_RestFrame_HiggsJet",i,restframeFiltJet.Pt());
-      vars.FillVars( "Eta_"+FilterJetName+"_RestFrame_HiggsJet",i,restframeFiltJet.Eta());
-      vars.FillVars( "Phi_"+FilterJetName+"_RestFrame_HiggsJet",i,restframeFiltJet.Phi()); 
+      vars.FillVars( "HiggsJet_Pt_"+FilterJetName+"_RestFrame",i,restframeFiltJet.Pt());
+      vars.FillVars( "HiggsJet_Eta_"+FilterJetName+"_RestFrame",i,restframeFiltJet.Eta());
+      vars.FillVars( "HiggsJet_Phi_"+FilterJetName+"_RestFrame",i,restframeFiltJet.Phi()); 
     }
     
     if(input.selectedSubFilterJets[i].filterjets.size()>1){
-      vars.FillVars( "Dr_Filterjet12_HiggsJet",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].filterjets[0],input.selectedSubFilterJets[i].filterjets[1]) );
-      vars.FillVars( "CosThetaStar_Filterjet12_HiggsJet",i,BoostedUtils::CosThetaStar(input.selectedSubFilterJets[i].filterjets[0].p4(),input.selectedSubFilterJets[i].filterjets[1].p4()) );
-      vars.FillVars( "M2_HiggsJet",i,(input.selectedSubFilterJets[i].filterjets[0].p4()+input.selectedSubFilterJets[i].filterjets[1].p4()).M() );
-      vars.FillVars( "Pt2_HiggsJet",i,(input.selectedSubFilterJets[i].filterjets[0].p4()+input.selectedSubFilterJets[i].filterjets[1].p4()).Pt() );
+      vars.FillVars( "HiggsJet_Dr_Filterjet12",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].filterjets[0],input.selectedSubFilterJets[i].filterjets[1]) );
+      vars.FillVars( "HiggsJet_CosThetaStar_Filterjet12",i,BoostedUtils::CosThetaStar(input.selectedSubFilterJets[i].filterjets[0].p4(),input.selectedSubFilterJets[i].filterjets[1].p4()) );
+      vars.FillVars( "HiggsJet_M2",i,(input.selectedSubFilterJets[i].filterjets[0].p4()+input.selectedSubFilterJets[i].filterjets[1].p4()).M() );
+      vars.FillVars( "HiggsJet_Pt2",i,(input.selectedSubFilterJets[i].filterjets[0].p4()+input.selectedSubFilterJets[i].filterjets[1].p4()).Pt() );
     }
     if(input.selectedSubFilterJets[i].filterjets.size()>2){
-      vars.FillVars( "Dr_Filterjet23_HiggsJet",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].filterjets[1],input.selectedSubFilterJets[i].filterjets[2]) );
-      vars.FillVars( "Dr_Filterjet13_HiggsJet",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].filterjets[0],input.selectedSubFilterJets[i].filterjets[2]) );
-      vars.FillVars( "CosThetaStar_Filterjet23_HiggsJet",i,BoostedUtils::CosThetaStar(input.selectedSubFilterJets[i].filterjets[1].p4(),input.selectedSubFilterJets[i].filterjets[2].p4()) );
-      vars.FillVars( "CosThetaStar_Filterjet13_HiggsJet",i,BoostedUtils::CosThetaStar(input.selectedSubFilterJets[i].filterjets[0].p4(),input.selectedSubFilterJets[i].filterjets[2].p4()) );
-      vars.FillVars( "M3_HiggsJet",i,(input.selectedSubFilterJets[i].filterjets[0].p4()+input.selectedSubFilterJets[i].filterjets[1].p4()+input.selectedSubFilterJets[i].filterjets[2].p4()).M() );
-      vars.FillVars( "Pt3_HiggsJet",i,(input.selectedSubFilterJets[i].filterjets[0].p4()+input.selectedSubFilterJets[i].filterjets[1].p4()+input.selectedSubFilterJets[i].filterjets[2].p4()).Pt() );
+      vars.FillVars( "HiggsJet_Dr_Filterjet23",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].filterjets[1],input.selectedSubFilterJets[i].filterjets[2]) );
+      vars.FillVars( "HiggsJet_Dr_Filterjet13",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].filterjets[0],input.selectedSubFilterJets[i].filterjets[2]) );
+      vars.FillVars( "HiggsJet_CosThetaStar_Filterjet23",i,BoostedUtils::CosThetaStar(input.selectedSubFilterJets[i].filterjets[1].p4(),input.selectedSubFilterJets[i].filterjets[2].p4()) );
+      vars.FillVars( "HiggsJet_CosThetaStar_Filterjet13",i,BoostedUtils::CosThetaStar(input.selectedSubFilterJets[i].filterjets[0].p4(),input.selectedSubFilterJets[i].filterjets[2].p4()) );
+      vars.FillVars( "HiggsJet_M3",i,(input.selectedSubFilterJets[i].filterjets[0].p4()+input.selectedSubFilterJets[i].filterjets[1].p4()+input.selectedSubFilterJets[i].filterjets[2].p4()).M() );
+      vars.FillVars( "HiggsJet_Pt3",i,(input.selectedSubFilterJets[i].filterjets[0].p4()+input.selectedSubFilterJets[i].filterjets[1].p4()+input.selectedSubFilterJets[i].filterjets[2].p4()).Pt() );
     }
     
-    vars.FillVars( "M2_SingleTag_HiggsJet",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 2, 1, 0.814) );
-    vars.FillVars( "M3_SingleTag_HiggsJet",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 3, 1, 0.814) );
-    vars.FillVars( "M2_DoubleTag_HiggsJet",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 2, 2, 0.814) );
-    vars.FillVars( "M3_DoubleTag_HiggsJet",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 3, 2, 0.814) );
+    vars.FillVars( "HiggsJet_M2_SingleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 2, 1, 0.814) );
+    vars.FillVars( "HiggsJet_M3_SingleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 3, 1, 0.814) );
+    vars.FillVars( "HiggsJet_M2_DoubleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 2, 2, 0.814) );
+    vars.FillVars( "HiggsJet_M3_DoubleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 3, 2, 0.814) );
     
     std::vector<pat::Jet> filterJets = BoostedUtils::GetHiggsFilterJets(input.selectedSubFilterJets[i], 4);
-    if(filterJets.size()>0) vars.FillVars( "CSV1_HiggsJet",i,filterJets[0].bDiscriminator(btagger) );
-    if(filterJets.size()>1) vars.FillVars( "CSV2_HiggsJet",i,filterJets[1].bDiscriminator(btagger) );
-    if(filterJets.size()>2) vars.FillVars( "CSV3_HiggsJet",i,filterJets[2].bDiscriminator(btagger) );
-    if(filterJets.size()>3) vars.FillVars( "CSV4_HiggsJet",i,filterJets[3].bDiscriminator(btagger) );
+    if(filterJets.size()>0) vars.FillVars( "HiggsJet_CSV1",i,filterJets[0].bDiscriminator(btagger) );
+    if(filterJets.size()>1) vars.FillVars( "HiggsJet_CSV2",i,filterJets[1].bDiscriminator(btagger) );
+    if(filterJets.size()>2) vars.FillVars( "HiggsJet_CSV3",i,filterJets[2].bDiscriminator(btagger) );
+    if(filterJets.size()>3) vars.FillVars( "HiggsJet_CSV4",i,filterJets[3].bDiscriminator(btagger) );
     
-    if(input.selectedHEPTopJets.size()>0) vars.FillVars( "Dr_TopJet1_HiggsJet",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHEPTopJets[0].fatjet) );
-    if(input.selectedHEPTopJets.size()>1) vars.FillVars( "Dr_TopJet2_HiggsJet",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHEPTopJets[1].fatjet) );
-    if(input.selectedHEPTopJets.size()>2) vars.FillVars( "Dr_TopJet3_HiggsJet",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHEPTopJets[2].fatjet) );
-    if(input.selectedHEPTopJets.size()>3) vars.FillVars( "Dr_TopJet4_HiggsJet",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHEPTopJets[3].fatjet) );
+    if(input.selectedHEPTopJets.size()>0) vars.FillVars( "HiggsJet_Dr_TopJet1",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHEPTopJets[0].fatjet) );
+    if(input.selectedHEPTopJets.size()>1) vars.FillVars( "HiggsJet_Dr_TopJet2",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHEPTopJets[1].fatjet) );
+    if(input.selectedHEPTopJets.size()>2) vars.FillVars( "HiggsJet_Dr_TopJet3",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHEPTopJets[2].fatjet) );
+    if(input.selectedHEPTopJets.size()>3) vars.FillVars( "HiggsJet_Dr_TopJet4",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHEPTopJets[3].fatjet) );
     
-    vars.FillVars( "Subjetiness1_HiggsJet",i,input.selectedSubFilterJets[i].subjettiness1 );
-    vars.FillVars( "Subjetiness2_HiggsJet",i,input.selectedSubFilterJets[i].subjettiness2 );
-    vars.FillVars( "Subjetiness3_HiggsJet",i,input.selectedSubFilterJets[i].subjettiness3 );
-    vars.FillVars( "Subjetiness4_HiggsJet",i,input.selectedSubFilterJets[i].subjettiness4 );
+    vars.FillVars( "HiggsJet_Subjetiness1",i,input.selectedSubFilterJets[i].subjettiness1 );
+    vars.FillVars( "HiggsJet_Subjetiness2",i,input.selectedSubFilterJets[i].subjettiness2 );
+    vars.FillVars( "HiggsJet_Subjetiness3",i,input.selectedSubFilterJets[i].subjettiness3 );
+    vars.FillVars( "HiggsJet_Subjetiness4",i,input.selectedSubFilterJets[i].subjettiness4 );
     
     vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
     vector<math::XYZTLorentzVector> filtvecs = BoostedUtils::GetJetVecs(input.selectedSubFilterJets[i].filterjets);
@@ -558,13 +558,13 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       }
     }
     
-    vars.FillVars( "IdxAk5_Filterjet1_HiggsJet",i,idx1);
-    vars.FillVars( "IdxAk5_Filterjet2_HiggsJet",i,idx2);
-    vars.FillVars( "IdxAk5_Filterjet3_HiggsJet",i,idx3);
+    vars.FillVars( "HiggsJet_IdxAk5_Filterjet1",i,idx1);
+    vars.FillVars( "HiggsJet_IdxAk5_Filterjet2",i,idx2);
+    vars.FillVars( "HiggsJet_IdxAk5_Filterjet3",i,idx3);
     
     math::XYZTLorentzVector primlepvec = math::XYZTLorentzVector();
     if(input.selectedElectronsLoose.size()>0 || input.selectedMuonsLoose.size()>0)
 	    primlepvec = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
-    vars.FillVars( "Dr_Lepton_HiggsJet",i,primlepvec.Pt()>5 ? BoostedUtils::DeltaR(primlepvec,input.selectedSubFilterJets[i].fatjet.p4()) : -1);
+    vars.FillVars( "HiggsJet_Dr_Lepton",i,primlepvec.Pt()>5 ? BoostedUtils::DeltaR(primlepvec,input.selectedSubFilterJets[i].fatjet.p4()) : -1);
   }
 }
