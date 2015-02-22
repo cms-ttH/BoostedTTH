@@ -38,6 +38,7 @@ public:
     void FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
     
 private:
+    const char* btagger;
     BoostedRecoType recotype;
     std::string   prefix;   
     TopTagger     toptagger;

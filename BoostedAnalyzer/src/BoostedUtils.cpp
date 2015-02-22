@@ -54,6 +54,10 @@ bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
   return jet1.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") > jet2.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
 }
 
+bool BoostedUtils::FirstHasHigherCSVold(pat::Jet jet1,pat::Jet jet2){
+  return jet1.bDiscriminator("combinedSecondaryVertexBJetTags") > jet2.bDiscriminator("combinedSecondaryVertexBJetTags");
+}
+
 
 float BoostedUtils::DeltaEta(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2){
   if(vec1.Pt()<0.001||vec2.Pt()<0.001) return -2;
@@ -647,7 +651,7 @@ float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const in
   std::vector<pat::Jet> filterJets = GetHiggsFilterJets(higgsJet,nBTags);
   
   if(nBTags>0){
-    if(filterJets[nBTags-1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags")<csvWP) return -1.;
+    if(filterJets[nBTags-1].bDiscriminator("combinedSecondaryVertexBJetTags")<csvWP) return -1.;
   }
   
   vector<math::XYZTLorentzVector> filterJetVecs = GetJetVecs(filterJets);

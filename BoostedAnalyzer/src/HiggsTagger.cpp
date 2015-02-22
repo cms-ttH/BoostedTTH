@@ -16,7 +16,7 @@ HiggsTagger::HiggsTagger(std::string name_): name(name_) {
 }
 
 
-HiggsTagger::HiggsTagger(std::string name_, std::vector<std::string> BDTVarNames_, std::string weightsPath_): name(name_) {
+HiggsTagger::HiggsTagger(std::string name_, std::vector<std::string> BDTVarNames_, std::string weightsPath_): name(name_),btagger("combinedSecondaryVertexBJetTags") {
   
   BDTReader = new TMVA::Reader();
 
@@ -50,12 +50,11 @@ void HiggsTagger::ResetBDTVars(){
 float HiggsTagger::GetSecondCSV(const boosted::SubFilterJet& higgsJet, bool verbose){
   
   if(!secondcsv) return -1.1;
-  if(higgsJet.subjets.size()<2) return -1.1;
+  if(higgsJet.filterjets.size()<2) return -1.1;
   
-  std::vector<pat::Jet> subjets = higgsJet.subjets;
-  std::sort(subjets.begin(),subjets.end(),BoostedUtils::FirstHasHigherCSV); 
-  
-  return subjets[1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  std::vector<pat::Jet> filterjets = higgsJet.filterjets;
+  std::sort(filterjets.begin(),filterjets.end(),BoostedUtils::FirstHasHigherCSVold); 
+  return filterjets[1].bDiscriminator("combinedSecondaryVertexBJetTags");
 
 }
 
@@ -78,8 +77,8 @@ float HiggsTagger::GetBDTOutput(const boosted::SubFilterJet& higgsJet, bool verb
   BDTVars["HiggsJet_Pt"]                      = higgsJet.fatjet.pt();
   BDTVars["HiggsJet_M2"]                      = M2;
   BDTVars["HiggsJet_M3"]                      = M3;
-  BDTVars["HiggsJet_CSV1"]                    = filterjets[0].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
-  BDTVars["HiggsJet_CSV2"]                    = filterjets[1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  BDTVars["HiggsJet_CSV1"]                    = filterjets[0].bDiscriminator(btagger);
+  BDTVars["HiggsJet_CSV2"]                    = filterjets[1].bDiscriminator(btagger);
   BDTVars["HiggsJet_NSubjettiness_12_Ratio"]  = higgsJet.subjettiness2/higgsJet.subjettiness1;
   BDTVars["HiggsJet_NSubjettiness_23_Ratio"]  = higgsJet.subjettiness3/higgsJet.subjettiness2;
   BDTVars["HiggsJet_NSubjettiness_13_Ratio"]  = higgsJet.subjettiness3/higgsJet.subjettiness1;

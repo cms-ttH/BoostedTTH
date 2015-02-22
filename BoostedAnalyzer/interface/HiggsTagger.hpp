@@ -31,6 +31,8 @@ private:
   TMVA::Reader* BDTReader;
   std::map<std::string,float> BDTVars;
   
+  const char* btagger;
+  
   void ResetBDTVars();  
   
   float GetSecondCSV(const boosted::SubFilterJet& topjet, bool verbose);

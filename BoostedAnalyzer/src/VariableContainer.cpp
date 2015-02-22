@@ -84,7 +84,11 @@ void VariableContainer::FillVars( TString name, int index, float value ) {
   if(arrayMap.count(name)==0){
     cerr << name << " does not exist!" << endl;
   }
-  arrayMap[name][index]=value;
+  else if(maxEntriesArrays[name]<index){
+    cerr << "array " << name << " is shorter than " << index << endl;
+  }
+  else
+    arrayMap[name][index]=value;
 }
 
 

@@ -34,6 +34,7 @@ class BoostedUtils{
     static bool FirstIsLarger(float val1,float val2);
     static bool FirstIsHarder(math::XYZTLorentzVector vec1,math::XYZTLorentzVector vec2);
     static bool FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2);
+    static bool FirstHasHigherCSVold(pat::Jet jet1,pat::Jet jet2);
     static bool FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2);
     template<typename boostedJetType>
     static bool FirstFatJetIsHarder(boostedJetType jet1, boostedJetType jet2){

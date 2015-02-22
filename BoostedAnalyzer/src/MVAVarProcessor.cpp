@@ -737,6 +737,11 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // Event Shape Variables
   // Fox Wolfram Moments
   float h0,h1,h2,h3,h4;
+  h0=-9;
+  h1=-9;
+  h2=-9;
+  h3=-9;
+  h4=-9;
   BoostedUtils::GetFoxWolframMoments(jetvecs, h0,h1,h2,h3,h4);
   vars.FillVar( "Evt_H0", h0 );
   vars.FillVar( "Evt_H1", h1 );

@@ -17,6 +17,9 @@ class BoostedJetVarProcessor: public TreeProcessor{
 
 
   private:
+
+  const char* btagger;
+
   
 };
 

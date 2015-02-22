@@ -31,18 +31,18 @@ TopTagger::TopTagger(std::string name_, std::vector<std::string> BDTVarNames_, s
   BDTReader = new TMVA::Reader();
 
   BDTVars["TopJet_Pt"]                      = -999;
-  BDTVars["TopJet_Pt_B"]                    = -999;
-  BDTVars["TopJet_Pt_W1"]                   = -999;
-  BDTVars["TopJet_Pt_W2"]                   = -999;
-  BDTVars["TopJet_CSV_B"]                   = -999;
-  BDTVars["TopJet_CSV_W1"]                  = -999;
-  BDTVars["TopJet_CSV_W2"]                  = -999;
+  BDTVars["TopJet_B_Pt"]                    = -999;
+  BDTVars["TopJet_W1_Pt"]                   = -999;
+  BDTVars["TopJet_W2_Pt"]                   = -999;
+  BDTVars["TopJet_B_CSV"]                   = -999;
+  BDTVars["TopJet_W1_CSV"]                  = -999;
+  BDTVars["TopJet_W2_CSV"]                  = -999;
   BDTVars["TopJet_M12"]                     = -999;
   BDTVars["TopJet_M13"]                     = -999;
   BDTVars["TopJet_M23"]                     = -999;
   BDTVars["TopJet_M_W"]                     = -999;
-  BDTVars["TopJet_M_Top"]                   = -999;
-  BDTVars["TopJet_DM_Top"]                  = -999;
+  BDTVars["TopJet_Top_M"]                   = -999;
+  BDTVars["TopJet_Top_DM"]                  = -999;
   BDTVars["TopJet_NSubjettiness_12_Ratio"]  = -999;
   BDTVars["TopJet_NSubjettiness_23_Ratio"]  = -999;
   BDTVars["TopJet_Dr_Lep"]                  = -999;
@@ -129,19 +129,19 @@ float TopTagger::GetBDTOutput(const boosted::HEPTopJet& topjet, bool verbose){
   ResetBDTVars();
   
   BDTVars["TopJet_Pt"]                      = topjet.fatjet.pt();
-  BDTVars["TopJet_Pt_B"]                    = topjet.nonW.pt();
-  BDTVars["TopJet_Pt_W1"]                   = topjet.W1.pt();
-  BDTVars["TopJet_Pt_W2"]                   = topjet.W2.pt();
+  BDTVars["TopJet_B_Pt"]                    = topjet.nonW.pt();
+  BDTVars["TopJet_W1_Pt"]                   = topjet.W1.pt();
+  BDTVars["TopJet_W2_Pt"]                   = topjet.W2.pt();
   const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
-  BDTVars["TopJet_CSV_B"]                   = fmax(topjet.nonW.bDiscriminator(btagger),-.1);
-  BDTVars["TopJet_CSV_W1"]                  = fmax(topjet.W1.bDiscriminator(btagger),-.1);
-  BDTVars["TopJet_CSV_W2"]                  = fmax(topjet.W2.bDiscriminator(btagger),-.1);
+  BDTVars["TopJet_B_CSV"]                   = fmax(topjet.nonW.bDiscriminator(btagger),-.1);
+  BDTVars["TopJet_W1_CSV"]                  = fmax(topjet.W1.bDiscriminator(btagger),-.1);
+  BDTVars["TopJet_W2_CSV"]                  = fmax(topjet.W2.bDiscriminator(btagger),-.1);
   BDTVars["TopJet_M12"]                     = (topvecs[0]+topvecs[1]).M();
   BDTVars["TopJet_M13"]                     = (topvecs[0]+topvecs[2]).M();
   BDTVars["TopJet_M23"]                     = (topvecs[1]+topvecs[2]).M();
-  BDTVars["TopJet_M_W"]                     = topjet.W.mass();
-  BDTVars["TopJet_M_Top"]                   = topjet.topjet.mass();
-  BDTVars["TopJet_DM_Top"]                  = (topjet.fatjet.mass())-(topjet.topjet.mass());
+  BDTVars["TopJet_W_M"]                     = topjet.W.mass();
+  BDTVars["TopJet_Top_M"]                   = topjet.topjet.mass();
+  BDTVars["TopJet_Top_DM"]                  = (topjet.fatjet.mass())-(topjet.topjet.mass());
   BDTVars["TopJet_NSubjettiness_12_Ratio"]  = topjet.subjettiness2/topjet.subjettiness1;
   BDTVars["TopJet_NSubjettiness_23_Ratio"]  = topjet.subjettiness3/topjet.subjettiness2;
   

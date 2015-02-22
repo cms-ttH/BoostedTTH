@@ -2,7 +2,7 @@
 
 using namespace std;
 
-ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, std::string taggername_, std::string higgstaggername_, std::string prefix_){
+ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, std::string taggername_, std::string higgstaggername_, std::string prefix_):btagger("combinedSecondaryVertexBJetTags"){
   recotype = recotype_;
   prefix = prefix_;
 
@@ -57,14 +57,14 @@ void ttHVarProcessor::InitTopTagger(string taggername){
       string weights;
 
       if(taggername == "TMVATopTaggerOutput_MWDef_CombDef_ttbar"){
-        BDTVars.push_back("TopJet_M_Top");
+        BDTVars.push_back("TopJet_Top_M");
         BDTVars.push_back("TopJet_Dr_Lep");
-        BDTVars.push_back("TopJet_Pt_W2");
-        BDTVars.push_back("TopJet_Pt_B");
+        BDTVars.push_back("TopJet_W2_Pt");
+        BDTVars.push_back("TopJet_B_Pt");
         BDTVars.push_back("TopJet_NSubjettiness_12_Ratio");
-        BDTVars.push_back("TopJet_Pt_W1");
-        BDTVars.push_back("TopJet_M_W");
-        BDTVars.push_back("TopJet_CSV_B");
+        BDTVars.push_back("TopJet_W1_Pt");
+        BDTVars.push_back("TopJet_W_M");
+        BDTVars.push_back("TopJet_B_CSV");
 
         weights = "/nfs/dust/cms/user/tpfotzer/ttbarX/BEANs/mva/TMVA/TMVATopTagger/weights/TMVATopTagger_BDTG_MWDef_CombDef.weights.xml";
       }
@@ -89,8 +89,8 @@ void ttHVarProcessor::InitHiggsTagger(string higgstaggerName){
     HBDTVars.push_back("HiggsJet_CSV2");
     HBDTVars.push_back("HiggsJet_NSubjettiness_13_Ratio");
     HBDTVars.push_back("HiggsJet_M3_SingleTag");
-    HBDTVars.push_back("HiggsJet_IdxAk5_Filterjet2");
-    HBDTVars.push_back("HiggsJet_CSV_Filterjet2");
+    HBDTVars.push_back("HiggsJet_Filterjet2_IdxAk5");
+    HBDTVars.push_back("HiggsJet_Filterjet2_CSV");
 
     string Hweightfile = "";
   
@@ -114,27 +114,27 @@ void ttHVarProcessor::InitHiggsCandidateVars(VariableContainer& vars){
   vars.InitVar(prefix+"HiggsCandidate_M",-9.);
   vars.InitVar(prefix+"HiggsCandidate_Eta",-9.);
   vars.InitVar(prefix+"HiggsCandidate_Phi",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Pt_Filterjet2",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Pt_Filterjet1",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_Filterjet2_Pt",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_Filterjet1_Pt",-9.);
   
-  vars.InitVar(prefix+"HiggsCandidate_E_B1",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_E_B2",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_E_G",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Pt_B1",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Pt_B2",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Pt_G",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_M_B1",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_M_B2",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_M_G",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Eta_B1",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Eta_B2",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Eta_G",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Phi_B1",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Phi_B2",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_Phi_G",-9.);
-  vars.InitVar(prefix+"HiggsCandidate_CSV_B1",-.1);
-  vars.InitVar(prefix+"HiggsCandidate_CSV_B2",-.1);
-  vars.InitVar(prefix+"HiggsCandidate_CSV_G",-.1);
+  vars.InitVar(prefix+"HiggsCandidate_B1_E",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B2_E",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_G_E",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B1_Pt",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B2_Pt",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_G_Pt",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B1_M",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B2_M",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_G_M",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B1_Eta",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B2_Eta",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_G_Eta",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B1_Phi",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B2_Phi",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_G_Phi",-9.);
+  vars.InitVar(prefix+"HiggsCandidate_B1_CSV",-.1);
+  vars.InitVar(prefix+"HiggsCandidate_B2_CSV",-.1);
+  vars.InitVar(prefix+"HiggsCandidate_G_CSV",-.1);
   
   vars.InitVar(prefix+"HiggsCandidate_E2",-9.);
   vars.InitVar(prefix+"HiggsCandidate_Pt2",-9.);
@@ -175,50 +175,50 @@ void ttHVarProcessor::InitTopHadCandidateVars(VariableContainer& vars){
   vars.InitVar(prefix+"TopHadCandidate_Eta",-9.);
   vars.InitVar(prefix+"TopHadCandidate_Phi",-9.);
   
-  vars.InitVar(prefix+"TopHadCandidate_E_B",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Pt_B",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_M_B",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Eta_B",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Phi_B",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_CSV_B",-.1);
+  vars.InitVar(prefix+"TopHadCandidate_B_E",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_B_Pt",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_B_M",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_B_Eta",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_B_Phi",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_B_CSV",-.1);
 
-  vars.InitVar(prefix+"TopHadCandidate_E_W1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Pt_W1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_M_W1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Eta_W1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Phi_W1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_CSV_W1",-1.);
+  vars.InitVar(prefix+"TopHadCandidate_W1_E",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W1_Pt",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W1_M",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W1_Eta",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W1_Phi",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W1_CSV",-1.);
 
-  vars.InitVar(prefix+"TopHadCandidate_E_W2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Pt_W2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_M_W2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Eta_W2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Phi_W2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_CSV_W2",-1.);
+  vars.InitVar(prefix+"TopHadCandidate_W2_E",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W2_Pt",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W2_M",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W2_Eta",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W2_Phi",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W2_CSV",-1.);
 
-  vars.InitVar(prefix+"TopHadCandidate_E_W",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Pt_W",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_M_W",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Eta_W",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Phi_W",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W_E",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W_Pt",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W_M",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W_Eta",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_W_Phi",-9.);
   
-  vars.InitVar(prefix+"TopHadCandidate_E_BW1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Pt_BW1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_M_BW1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Eta_BW1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Phi_BW1",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW1_E",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW1_Pt",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW1_M",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW1_Eta",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW1_Phi",-9.);
   
-  vars.InitVar(prefix+"TopHadCandidate_E_BW2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Pt_BW2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_M_BW2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Eta_BW2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Phi_BW2",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW2_E",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW2_Pt",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW2_M",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW2_Eta",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_BW2_Phi",-9.);
   
-  vars.InitVar(prefix+"TopHadCandidate_E_Top",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Pt_Top",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_M_Top",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Eta_Top",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Phi_Top",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Top_E",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Top_Pt",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Top_M",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Top_Eta",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Top_Phi",-9.);
   
   vars.InitVar(prefix+"TopHadCandidate_Subjettiness1",-9.);
   vars.InitVar(prefix+"TopHadCandidate_Subjettiness2",-9.);
@@ -236,36 +236,36 @@ void ttHVarProcessor::InitTopHadCandidateVars(VariableContainer& vars){
 
 void ttHVarProcessor::InitTopLepCandidateVars(VariableContainer& vars){
   
-  vars.InitVar(prefix+"TopLepCandidate_E_Top",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Pt_Top",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_M_Top",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Eta_Top",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Phi_Top",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Top_E",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Top_Pt",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Top_M",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Top_Eta",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Top_Phi",-9.);
   
-  vars.InitVar(prefix+"TopLepCandidate_E_W",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Pt_W",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_M_W",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Eta_W",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Phi_W",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_W_E",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_W_Pt",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_W_M",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_W_Eta",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_W_Phi",-9.);
   
-  vars.InitVar(prefix+"TopLepCandidate_E_B",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Pt_B",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_M_B",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Eta_B",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Phi_B",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_CSV_B",-.1);
+  vars.InitVar(prefix+"TopLepCandidate_B_E",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_B_Pt",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_B_M",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_B_Eta",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_B_Phi",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_B_CSV",-.1);
   
-  vars.InitVar(prefix+"TopLepCandidate_E_Lep",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Pt_Lep",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_M_Lep",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Eta_Lep",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Phi_Lep",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Lep_E",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Lep_Pt",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Lep_M",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Lep_Eta",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Lep_Phi",-9.);
   
-  vars.InitVar(prefix+"TopLepCandidate_E_Nu",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Pt_Nu",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_M_Nu",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Eta_Nu",-9.);
-  vars.InitVar(prefix+"TopLepCandidate_Phi_Nu",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Nu_E",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Nu_Pt",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Nu_M",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Nu_Eta",-9.);
+  vars.InitVar(prefix+"TopLepCandidate_Nu_Phi",-9.);
 }
 
 
@@ -369,35 +369,35 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
     vars.FillVar(prefix+"HiggsCandidate_M",higgsCand.fatjet.mass());
     vars.FillVar(prefix+"HiggsCandidate_Eta",higgsCand.fatjet.eta());
     vars.FillVar(prefix+"HiggsCandidate_Phi",higgsCand.fatjet.phi());
-    vars.FillVar(prefix+"HiggsCandidate_Pt_Filterjet1",higgsCand.filterjets[0].pt());
-    vars.FillVar(prefix+"HiggsCandidate_Pt_Filterjet2",higgsCand.filterjets[1].pt());
+    vars.FillVar(prefix+"HiggsCandidate_Filterjet1_Pt",higgsCand.filterjets[0].pt());
+    vars.FillVar(prefix+"HiggsCandidate_Filterjet2_Pt",higgsCand.filterjets[1].pt());
   }
   
   if(higgsB1Cand.pt()>0){
-    vars.FillVar(prefix+"HiggsCandidate_E_B1",higgsB1Cand.energy());
-    vars.FillVar(prefix+"HiggsCandidate_Pt_B1",higgsB1Cand.pt());
-    vars.FillVar(prefix+"HiggsCandidate_M_B1",higgsB1Cand.mass());
-    vars.FillVar(prefix+"HiggsCandidate_Eta_B1",higgsB1Cand.eta());
-    vars.FillVar(prefix+"HiggsCandidate_Phi_B1",higgsB1Cand.phi());
-    vars.FillVar(prefix+"HiggsCandidate_CSV_B1",fmax(higgsB1Cand.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),-.1));
+    vars.FillVar(prefix+"HiggsCandidate_B1_E",higgsB1Cand.energy());
+    vars.FillVar(prefix+"HiggsCandidate_B1_Pt",higgsB1Cand.pt());
+    vars.FillVar(prefix+"HiggsCandidate_B1_M",higgsB1Cand.mass());
+    vars.FillVar(prefix+"HiggsCandidate_B1_Eta",higgsB1Cand.eta());
+    vars.FillVar(prefix+"HiggsCandidate_B1_Phi",higgsB1Cand.phi());
+    vars.FillVar(prefix+"HiggsCandidate_B1_CSV",fmax(higgsB1Cand.bDiscriminator(btagger),-.1));
   }
   
   if(higgsB2Cand.pt()>0){
-    vars.FillVar(prefix+"HiggsCandidate_E_B2",higgsB2Cand.energy());
-    vars.FillVar(prefix+"HiggsCandidate_Pt_B2",higgsB2Cand.pt());
-    vars.FillVar(prefix+"HiggsCandidate_M_B2",higgsB2Cand.mass());
-    vars.FillVar(prefix+"HiggsCandidate_Eta_B2",higgsB2Cand.eta());
-    vars.FillVar(prefix+"HiggsCandidate_Phi_B2",higgsB2Cand.phi());
-    vars.FillVar(prefix+"HiggsCandidate_CSV_B2",fmax(higgsB2Cand.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),-.1));
+    vars.FillVar(prefix+"HiggsCandidate_B2_E",higgsB2Cand.energy());
+    vars.FillVar(prefix+"HiggsCandidate_B2_Pt",higgsB2Cand.pt());
+    vars.FillVar(prefix+"HiggsCandidate_B2_M",higgsB2Cand.mass());
+    vars.FillVar(prefix+"HiggsCandidate_B2_Eta",higgsB2Cand.eta());
+    vars.FillVar(prefix+"HiggsCandidate_B2_Phi",higgsB2Cand.phi());
+    vars.FillVar(prefix+"HiggsCandidate_B2_CSV",fmax(higgsB2Cand.bDiscriminator(btagger),-.1));
   }
   
   if(higgsGCand.pt()>0){
-    vars.FillVar(prefix+"HiggsCandidate_E_G",higgsGCand.energy());
-    vars.FillVar(prefix+"HiggsCandidate_Pt_G",higgsGCand.pt());
-    vars.FillVar(prefix+"HiggsCandidate_M_G",higgsGCand.mass());
-    vars.FillVar(prefix+"HiggsCandidate_Eta_G",higgsGCand.eta());
-    vars.FillVar(prefix+"HiggsCandidate_Phi_G",higgsGCand.phi());
-    vars.FillVar(prefix+"HiggsCandidate_CSV_G",fmax(higgsGCand.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),-.1));
+    vars.FillVar(prefix+"HiggsCandidate_G_E",higgsGCand.energy());
+    vars.FillVar(prefix+"HiggsCandidate_G_Pt",higgsGCand.pt());
+    vars.FillVar(prefix+"HiggsCandidate_G_M",higgsGCand.mass());
+    vars.FillVar(prefix+"HiggsCandidate_G_Eta",higgsGCand.eta());
+    vars.FillVar(prefix+"HiggsCandidate_G_Phi",higgsGCand.phi());
+    vars.FillVar(prefix+"HiggsCandidate_G_CSV",fmax(higgsGCand.bDiscriminator(btagger),-.1));
   }
   
   if(higgsCandVec2.Pt()>0){
@@ -488,57 +488,57 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
   vars.FillVar(prefix+"TopHadCandidate_Eta",topHadCand.fatjet.eta());
   vars.FillVar(prefix+"TopHadCandidate_Phi",topHadCand.fatjet.phi());
   
-  vars.FillVar(prefix+"TopHadCandidate_E_B",topHadBCand.energy());
-  vars.FillVar(prefix+"TopHadCandidate_Pt_B",topHadBCand.pt());
-  vars.FillVar(prefix+"TopHadCandidate_M_B",topHadBCand.mass());
-  vars.FillVar(prefix+"TopHadCandidate_Eta_B",topHadBCand.eta());
-  vars.FillVar(prefix+"TopHadCandidate_Phi_B",topHadBCand.phi());
-  vars.FillVar(prefix+"TopHadCandidate_CSV_B",fmax(topHadBCand.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),-.1));
+  vars.FillVar(prefix+"TopHadCandidate_B_E",topHadBCand.energy());
+  vars.FillVar(prefix+"TopHadCandidate_B_Pt",topHadBCand.pt());
+  vars.FillVar(prefix+"TopHadCandidate_B_M",topHadBCand.mass());
+  vars.FillVar(prefix+"TopHadCandidate_B_Eta",topHadBCand.eta());
+  vars.FillVar(prefix+"TopHadCandidate_B_Phi",topHadBCand.phi());
+  vars.FillVar(prefix+"TopHadCandidate_B_CSV",fmax(topHadBCand.bDiscriminator(btagger),-.1));
 
-  vars.FillVar(prefix+"TopHadCandidate_E_W1",topHadW1Cand.energy());
-  vars.FillVar(prefix+"TopHadCandidate_Pt_W1",topHadW1Cand.pt());
-  vars.FillVar(prefix+"TopHadCandidate_M_W1",topHadW1Cand.mass());
-  vars.FillVar(prefix+"TopHadCandidate_Eta_W1",topHadW1Cand.eta());
-  vars.FillVar(prefix+"TopHadCandidate_Phi_W1",topHadW1Cand.phi());
-  vars.FillVar(prefix+"TopHadCandidate_CSV_W1",fmax(topHadW1Cand.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),-.1));
+  vars.FillVar(prefix+"TopHadCandidate_W1_E",topHadW1Cand.energy());
+  vars.FillVar(prefix+"TopHadCandidate_W1_Pt",topHadW1Cand.pt());
+  vars.FillVar(prefix+"TopHadCandidate_W1_M",topHadW1Cand.mass());
+  vars.FillVar(prefix+"TopHadCandidate_W1_Eta",topHadW1Cand.eta());
+  vars.FillVar(prefix+"TopHadCandidate_W1_Phi",topHadW1Cand.phi());
+  vars.FillVar(prefix+"TopHadCandidate_W1_CSV",fmax(topHadW1Cand.bDiscriminator(btagger),-.1));
 
-  vars.FillVar(prefix+"TopHadCandidate_E_W2",topHadW2Cand.energy());
-  vars.FillVar(prefix+"TopHadCandidate_Pt_W2",topHadW2Cand.pt());
-  vars.FillVar(prefix+"TopHadCandidate_M_W2",topHadW2Cand.mass());
-  vars.FillVar(prefix+"TopHadCandidate_Eta_W2",topHadW2Cand.eta());
-  vars.FillVar(prefix+"TopHadCandidate_Phi_W2",topHadW2Cand.phi());
-  vars.FillVar(prefix+"TopHadCandidate_CSV_W2",fmax(topHadW2Cand.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),-.1));
+  vars.FillVar(prefix+"TopHadCandidate_W2_E",topHadW2Cand.energy());
+  vars.FillVar(prefix+"TopHadCandidate_W2_Pt",topHadW2Cand.pt());
+  vars.FillVar(prefix+"TopHadCandidate_W2_M",topHadW2Cand.mass());
+  vars.FillVar(prefix+"TopHadCandidate_W2_Eta",topHadW2Cand.eta());
+  vars.FillVar(prefix+"TopHadCandidate_W2_Phi",topHadW2Cand.phi());
+  vars.FillVar(prefix+"TopHadCandidate_W2_CSV",fmax(topHadW2Cand.bDiscriminator(btagger),-.1));
   
   if(wHadCandVec.Pt()>0.001){
-    vars.FillVar(prefix+"TopHadCandidate_E_W",wHadCandVec.E());
-    vars.FillVar(prefix+"TopHadCandidate_Pt_W",wHadCandVec.Pt());
-    vars.FillVar(prefix+"TopHadCandidate_M_W",wHadCandVec.M());
-    vars.FillVar(prefix+"TopHadCandidate_Eta_W",wHadCandVec.Eta());
-    vars.FillVar(prefix+"TopHadCandidate_Phi_W",wHadCandVec.Phi());
+    vars.FillVar(prefix+"TopHadCandidate_W_E",wHadCandVec.E());
+    vars.FillVar(prefix+"TopHadCandidate_W_Pt",wHadCandVec.Pt());
+    vars.FillVar(prefix+"TopHadCandidate_W_M",wHadCandVec.M());
+    vars.FillVar(prefix+"TopHadCandidate_W_Eta",wHadCandVec.Eta());
+    vars.FillVar(prefix+"TopHadCandidate_W_Phi",wHadCandVec.Phi());
   }
   
   if(bW1CandVec.Pt()>0.001){
-    vars.FillVar(prefix+"TopHadCandidate_E_BW1",bW1CandVec.E());
-    vars.FillVar(prefix+"TopHadCandidate_Pt_BW1",bW1CandVec.Pt());
-    vars.FillVar(prefix+"TopHadCandidate_M_BW1",bW1CandVec.M());
-    vars.FillVar(prefix+"TopHadCandidate_Eta_BW1",bW1CandVec.Eta());
-    vars.FillVar(prefix+"TopHadCandidate_Phi_BW1",bW1CandVec.Phi());
+    vars.FillVar(prefix+"TopHadCandidate_BW1_E",bW1CandVec.E());
+    vars.FillVar(prefix+"TopHadCandidate_BW1_Pt",bW1CandVec.Pt());
+    vars.FillVar(prefix+"TopHadCandidate_BW1_M",bW1CandVec.M());
+    vars.FillVar(prefix+"TopHadCandidate_BW1_Eta",bW1CandVec.Eta());
+    vars.FillVar(prefix+"TopHadCandidate_BW1_Phi",bW1CandVec.Phi());
   }
 
   if(bW2CandVec.Pt()>0.001){
-    vars.FillVar(prefix+"TopHadCandidate_E_BW2",bW2CandVec.E());
-    vars.FillVar(prefix+"TopHadCandidate_Pt_BW2",bW2CandVec.Pt());
-    vars.FillVar(prefix+"TopHadCandidate_M_BW2",bW2CandVec.M());
-    vars.FillVar(prefix+"TopHadCandidate_Eta_BW2",bW2CandVec.Eta());
-    vars.FillVar(prefix+"TopHadCandidate_Phi_BW2",bW2CandVec.Phi());
+    vars.FillVar(prefix+"TopHadCandidate_BW2_E",bW2CandVec.E());
+    vars.FillVar(prefix+"TopHadCandidate_BW2_Pt",bW2CandVec.Pt());
+    vars.FillVar(prefix+"TopHadCandidate_BW2_M",bW2CandVec.M());
+    vars.FillVar(prefix+"TopHadCandidate_BW2_Eta",bW2CandVec.Eta());
+    vars.FillVar(prefix+"TopHadCandidate_BW2_Phi",bW2CandVec.Phi());
   }
   
   if(topHadCandVec.Pt()>0.001){
-    vars.FillVar(prefix+"TopHadCandidate_E_Top",topHadCandVec.E());
-    vars.FillVar(prefix+"TopHadCandidate_M_Top",topHadCandVec.M());
-    vars.FillVar(prefix+"TopHadCandidate_Pt_Top", topHadCandVec.Pt());
-    vars.FillVar(prefix+"TopHadCandidate_Eta_Top",topHadCandVec.Eta());
-    vars.FillVar(prefix+"TopHadCandidate_Phi_Top", topHadCandVec.Phi());
+    vars.FillVar(prefix+"TopHadCandidate_Top_E",topHadCandVec.E());
+    vars.FillVar(prefix+"TopHadCandidate_Top_M",topHadCandVec.M());
+    vars.FillVar(prefix+"TopHadCandidate_Top_Pt", topHadCandVec.Pt());
+    vars.FillVar(prefix+"TopHadCandidate_Top_Eta",topHadCandVec.Eta());
+    vars.FillVar(prefix+"TopHadCandidate_Top_Phi", topHadCandVec.Phi());
   }
 
   vars.FillVar(prefix+"TopHadCandidate_Subjettiness1",topHadCand.subjettiness1);
@@ -572,44 +572,44 @@ void ttHVarProcessor::FillTopLepCandidateVars(VariableContainer& vars,BoostedttH
   
   // Fill Variables
   if(topLepCandVec.Pt()>0.001){
-    vars.FillVar(prefix+"TopLepCandidate_E_Top",topLepCandVec.E());
-    vars.FillVar(prefix+"TopLepCandidate_Pt_Top",topLepCandVec.Pt());
-    vars.FillVar(prefix+"TopLepCandidate_M_Top",topLepCandVec.M());
-    vars.FillVar(prefix+"TopLepCandidate_Eta_Top",topLepCandVec.Eta());
-    vars.FillVar(prefix+"TopLepCandidate_Phi_Top",topLepCandVec.Phi());
+    vars.FillVar(prefix+"TopLepCandidate_Top_E",topLepCandVec.E());
+    vars.FillVar(prefix+"TopLepCandidate_Top_Pt",topLepCandVec.Pt());
+    vars.FillVar(prefix+"TopLepCandidate_Top_M",topLepCandVec.M());
+    vars.FillVar(prefix+"TopLepCandidate_Top_Eta",topLepCandVec.Eta());
+    vars.FillVar(prefix+"TopLepCandidate_Top_Phi",topLepCandVec.Phi());
   }
   
   if(wLepCandVec.Pt()>0.001){
-    vars.FillVar(prefix+"TopLepCandidate_E_W",wLepCandVec.E());
-    vars.FillVar(prefix+"TopLepCandidate_Pt_W",wLepCandVec.Pt());
-    vars.FillVar(prefix+"TopLepCandidate_M_W",wLepCandVec.M());
-    vars.FillVar(prefix+"TopLepCandidate_Eta_W",wLepCandVec.Eta());
-    vars.FillVar(prefix+"TopLepCandidate_Phi_W",wLepCandVec.Phi());
+    vars.FillVar(prefix+"TopLepCandidate_W_E",wLepCandVec.E());
+    vars.FillVar(prefix+"TopLepCandidate_W_Pt",wLepCandVec.Pt());
+    vars.FillVar(prefix+"TopLepCandidate_W_M",wLepCandVec.M());
+    vars.FillVar(prefix+"TopLepCandidate_W_Eta",wLepCandVec.Eta());
+    vars.FillVar(prefix+"TopLepCandidate_W_Phi",wLepCandVec.Phi());
   }
   
   if(topLepBCand.pt()>0.001){
-    vars.FillVar(prefix+"TopLepCandidate_E_B",topLepBCand.energy());
-    vars.FillVar(prefix+"TopLepCandidate_Pt_B",topLepBCand.pt());
-    vars.FillVar(prefix+"TopLepCandidate_M_B",topLepBCand.mass());
-    vars.FillVar(prefix+"TopLepCandidate_Eta_B",topLepBCand.eta());
-    vars.FillVar(prefix+"TopLepCandidate_Phi_B",topLepBCand.phi());
-    vars.FillVar(prefix+"TopLepCandidate_CSV_B",fmax(topLepBCand.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),-.1));
+    vars.FillVar(prefix+"TopLepCandidate_B_E",topLepBCand.energy());
+    vars.FillVar(prefix+"TopLepCandidate_B_Pt",topLepBCand.pt());
+    vars.FillVar(prefix+"TopLepCandidate_B_M",topLepBCand.mass());
+    vars.FillVar(prefix+"TopLepCandidate_B_Eta",topLepBCand.eta());
+    vars.FillVar(prefix+"TopLepCandidate_B_Phi",topLepBCand.phi());
+    vars.FillVar(prefix+"TopLepCandidate_B_CSV",fmax(topLepBCand.bDiscriminator(btagger),-.1));
   }
   
   if(lepCandVec.Pt()>0.001){
-    vars.FillVar(prefix+"TopLepCandidate_E_Lep",lepCandVec.E());
-    vars.FillVar(prefix+"TopLepCandidate_Pt_Lep",lepCandVec.Pt());
-    vars.FillVar(prefix+"TopLepCandidate_M_Lep",lepCandVec.M());
-    vars.FillVar(prefix+"TopLepCandidate_Eta_Lep",lepCandVec.Eta());
-    vars.FillVar(prefix+"TopLepCandidate_Phi_Lep",lepCandVec.Phi()); 
+    vars.FillVar(prefix+"TopLepCandidate_Lep_E",lepCandVec.E());
+    vars.FillVar(prefix+"TopLepCandidate_Lep_Pt",lepCandVec.Pt());
+    vars.FillVar(prefix+"TopLepCandidate_Lep_M",lepCandVec.M());
+    vars.FillVar(prefix+"TopLepCandidate_Lep_Eta",lepCandVec.Eta());
+    vars.FillVar(prefix+"TopLepCandidate_Lep_Phi",lepCandVec.Phi()); 
   }
   
   if(nuCandVec.Pt()>0.001){
-    vars.FillVar(prefix+"TopLepCandidate_E_Nu",nuCandVec.E());
-    vars.FillVar(prefix+"TopLepCandidate_Pt_Nu",nuCandVec.Pt());
-    vars.FillVar(prefix+"TopLepCandidate_M_Nu",nuCandVec.M());
-    vars.FillVar(prefix+"TopLepCandidate_Eta_Nu",nuCandVec.Eta());
-    vars.FillVar(prefix+"TopLepCandidate_Phi_Nu",nuCandVec.Phi()); 
+    vars.FillVar(prefix+"TopLepCandidate_Nu_E",nuCandVec.E());
+    vars.FillVar(prefix+"TopLepCandidate_Nu_Pt",nuCandVec.Pt());
+    vars.FillVar(prefix+"TopLepCandidate_Nu_M",nuCandVec.M());
+    vars.FillVar(prefix+"TopLepCandidate_Nu_Eta",nuCandVec.Eta());
+    vars.FillVar(prefix+"TopLepCandidate_Nu_Phi",nuCandVec.Phi()); 
   }
 }
 

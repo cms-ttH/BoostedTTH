@@ -195,6 +195,9 @@ class BoostedttHEvent{
     // Leptonic Top Candidate
     bool foundTopLepCand;
     pat::Jet topLepBCand;      
+
+    bool verbose;
+    const char* btagger;
 };
 
 #endif
