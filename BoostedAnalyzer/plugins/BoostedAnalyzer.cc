@@ -251,7 +251,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     
     if(*itPro == "MVAVarProcessor") treewriter.AddTreeProcessor(new MVAVarProcessor());
     else if(*itPro == "BoostedJetVarProcessor") treewriter.AddTreeProcessor(new BoostedJetVarProcessor());
-    else if(*itPro == "ttHVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,"TopLikelihood","HiggsCSV","BoostedTopHiggs_"));
+    else if(*itPro == "BoostedTopHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,"TopLikelihood","HiggsCSV","BoostedTopHiggs_"));
+    else if(*itPro == "BoostedTopVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,"TopLikelihood","HiggsCSV","BoostedTop_"));
+    else if(*itPro == "BoostedHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,"TopLikelihood","HiggsCSV","BoostedHiggs_"));
     // the BDT processor rely on the variables filled py the other producers and should be added at the end
     else if(*itPro == "BDTVarProcessor") treewriter.AddTreeProcessor(new BDTVarProcessor());
     else cout << "No matching processor found for: " << *itPro << endl;    
