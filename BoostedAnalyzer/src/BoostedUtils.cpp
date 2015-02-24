@@ -605,21 +605,9 @@ void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
 
 std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::SubFilterJet& higgsJet, const int& nCSVJets){
 
-  std::vector<pat::Jet> filterJets = higgsJet.filterjets;
+  std::vector<pat::Jet> subJets = higgsJet.filterjets;
   
-  std::sort(filterJets.begin(), filterJets.end(),BoostedUtils::FirstHasHigherCSV);
-  
-  if(filterJets.size()>((size_t) nCSVJets+1)){
-    std::vector<pat::Jet> HighCSVFJets(filterJets.begin(),filterJets.begin()+nCSVJets);
-
-    filterJets.erase(filterJets.begin(),filterJets.begin()+nCSVJets);
-
-    std::sort(filterJets.begin(), filterJets.end(),BoostedUtils::FirstJetIsHarder);
-
-    filterJets.insert(filterJets.begin(),HighCSVFJets.begin(),HighCSVFJets.end());
-  }
-  
-  return filterJets;
+  return GetHiggsFilterJets(subJets,nCSVJets);
 }
 
 
@@ -629,14 +617,35 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
   
   std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstHasHigherCSV);
   
-  if(subJets.size()>((size_t) nCSVJets+1)){
-    std::vector<pat::Jet> HighCSVFJets(subJets.begin(),subJets.begin()+nCSVJets);
-
-    subJets.erase(subJets.begin(),subJets.begin()+nCSVJets);
-
+  std::vector<pat::Jet> HighCSVSubJets;
+  
+  for(std::vector<pat::Jet>::iterator itSubJet = subJets.begin(); itSubJet != subJets.end(); ){
+    
+    bool csvDistance = true;
+    for(std::vector<pat::Jet>::iterator itCSVJet = HighCSVSubJets.begin(); itCSVJet != HighCSVSubJets.end(); ++itCSVJet){
+      if(BoostedUtils::DeltaR(*itCSVJet,*itSubJet)<.4){
+        csvDistance = false;
+        break;
+      }
+    }
+    
+    if(csvDistance){
+      HighCSVSubJets.push_back(*itSubJet);
+      subJets.erase(itSubJet);
+    }
+    else{
+      ++itSubJet;
+    }
+    
+    if((int) HighCSVSubJets.size()>=nCSVJets) break;
+  }
+  
+  
+  if(subJets.size()==0) return HighCSVSubJets;
+  else{
     std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstJetIsHarder);
 
-    subJets.insert(subJets.begin(),HighCSVFJets.begin(),HighCSVFJets.end());
+    subJets.insert(subJets.begin(),HighCSVSubJets.begin(),HighCSVSubJets.end());
   }
   
   return subJets;
@@ -1132,42 +1141,7 @@ void BoostedUtils::TTHRecoVarsOhio(const std::vector<pat::Jet>& selectedJets,con
 
 
 /*
-bool BEANUtils::FirstIsHarder(TLorentzVector vec1,TLorentzVector vec2){
-  return vec1.Pt()>vec2.Pt();
-}
 
-bool BEANUtils::FirstJetIsHarder(BNjet j1,BNjet j2){
-  return j1.pt>j2.pt;
-}
-
-bool BEANUtils::FirstHasHigherCSV(BNjet j1,BNjet j2){
-  return j1.btagCombinedSecVertex>j2.btagCombinedSecVertex;
-}
-
-
-TLorentzVector BEANUtils::GetJetVec(BNjet jet){
-  return TLorentzVector(jet.px,jet.py,jet.pz,jet.energy);
-}
-
-TLorentzVector BEANUtils::GetMCVec(BNmcparticle p){
-  return TLorentzVector(p.px,p.py,p.pz,p.energy);
-}
-
-
-
-vector<TLorentzVector> BEANUtils::GetLepVecs(BNelectronCollection selectedElectrons, BNmuonCollection selectedMuons){
-  vector<TLorentzVector> p4SelectedLeptons;
-  for(size_t i=0; i<selectedElectrons.size(); i++){
-    p4SelectedLeptons.push_back(TLorentzVector(selectedElectrons.at(i).px,selectedElectrons.at(i).py,selectedElectrons.at(i).pz,selectedElectrons.at(i).energy));
-  }
-  for(size_t i=0; i<selectedMuons.size(); i++){
-    p4SelectedLeptons.push_back(TLorentzVector(selectedMuons.at(i).px,selectedMuons.at(i).py,selectedMuons.at(i).pz,selectedMuons.at(i).energy));
-  }
-  std::sort(p4SelectedLeptons.begin(), p4SelectedLeptons.end(),BEANUtils::FirstIsHarder);
-  return p4SelectedLeptons;
-  
-}
- 
 
 
 
@@ -1186,28 +1160,6 @@ vector<BNjet> BEANUtils::GetJetsByDr(TLorentzVector vec,const vector<BNjet>& jet
 }
 
 
-
-
-void BEANUtils::GetHiggsJetDistanceVars(const BNsubfilterjet& jet,const vector<BNtoptagjet>& topjets,float& deltaR1_,float& deltaR2_,float& deltaR3_,float& deltaR4_){
-  
-  float dr1 = -1;
-  float dr2 = -1;
-  float dr3 = -1;
-  float dr4 = -1;
-  
-  TLorentzVector fatvec = BEANUtils::GetJetVec(jet.fatjet);
-  for(size_t i=0;i<topjets.size()&&i<4;i++){
-    if(i==0) dr1 = BEANUtils::GetJetVec(topjets[i].topjet).DeltaR(fatvec);
-    if(i==1) dr2 = BEANUtils::GetJetVec(topjets[i].topjet).DeltaR(fatvec);
-    if(i==2) dr3 = BEANUtils::GetJetVec(topjets[i].topjet).DeltaR(fatvec);
-    if(i==3) dr4 = BEANUtils::GetJetVec(topjets[i].topjet).DeltaR(fatvec);
-  }
-  
-  deltaR1_=dr1;
-  deltaR2_=dr2;
-  deltaR3_=dr3;
-  deltaR4_=dr4;
-}
 
 
 void BEANUtils::GetHiggsJetCSVVarsDr(const BNsubfilterjet& jet, BNjet& csvec1_fjet_,BNjet& csvec2_fjet_){
