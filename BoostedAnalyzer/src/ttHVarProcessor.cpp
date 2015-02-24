@@ -481,33 +481,41 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
   vars.FillVar(prefix+"TopHadCandidate_Tagged",BoostedUtils::GetTopTag(topHadCand));
   vars.FillVar(prefix+"TopHadCandidate_TaggedB",BoostedUtils::GetTopTag(topHadCand,0.15,120.,true));
   vars.FillVar(prefix+"TopHadCandidate_TopMVAOutput", toptagger.GetTopTag(topHadCand));
-
-  vars.FillVar(prefix+"TopHadCandidate_E",topHadCand.fatjet.energy());
-  vars.FillVar(prefix+"TopHadCandidate_Pt",topHadCand.fatjet.pt());
-  vars.FillVar(prefix+"TopHadCandidate_M",topHadCand.fatjet.mass());
-  vars.FillVar(prefix+"TopHadCandidate_Eta",topHadCand.fatjet.eta());
-  vars.FillVar(prefix+"TopHadCandidate_Phi",topHadCand.fatjet.phi());
   
-  vars.FillVar(prefix+"TopHadCandidate_B_E",topHadBCand.energy());
-  vars.FillVar(prefix+"TopHadCandidate_B_Pt",topHadBCand.pt());
-  vars.FillVar(prefix+"TopHadCandidate_B_M",topHadBCand.mass());
-  vars.FillVar(prefix+"TopHadCandidate_B_Eta",topHadBCand.eta());
-  vars.FillVar(prefix+"TopHadCandidate_B_Phi",topHadBCand.phi());
-  vars.FillVar(prefix+"TopHadCandidate_B_CSV",fmax(topHadBCand.bDiscriminator(btagger),-.1));
-
-  vars.FillVar(prefix+"TopHadCandidate_W1_E",topHadW1Cand.energy());
-  vars.FillVar(prefix+"TopHadCandidate_W1_Pt",topHadW1Cand.pt());
-  vars.FillVar(prefix+"TopHadCandidate_W1_M",topHadW1Cand.mass());
-  vars.FillVar(prefix+"TopHadCandidate_W1_Eta",topHadW1Cand.eta());
-  vars.FillVar(prefix+"TopHadCandidate_W1_Phi",topHadW1Cand.phi());
-  vars.FillVar(prefix+"TopHadCandidate_W1_CSV",fmax(topHadW1Cand.bDiscriminator(btagger),-.1));
-
-  vars.FillVar(prefix+"TopHadCandidate_W2_E",topHadW2Cand.energy());
-  vars.FillVar(prefix+"TopHadCandidate_W2_Pt",topHadW2Cand.pt());
-  vars.FillVar(prefix+"TopHadCandidate_W2_M",topHadW2Cand.mass());
-  vars.FillVar(prefix+"TopHadCandidate_W2_Eta",topHadW2Cand.eta());
-  vars.FillVar(prefix+"TopHadCandidate_W2_Phi",topHadW2Cand.phi());
-  vars.FillVar(prefix+"TopHadCandidate_W2_CSV",fmax(topHadW2Cand.bDiscriminator(btagger),-.1));
+  if(topHadCand.fatjet.pt()>0){
+    vars.FillVar(prefix+"TopHadCandidate_E",topHadCand.fatjet.energy());
+    vars.FillVar(prefix+"TopHadCandidate_Pt",topHadCand.fatjet.pt());
+    vars.FillVar(prefix+"TopHadCandidate_M",topHadCand.fatjet.mass());
+    vars.FillVar(prefix+"TopHadCandidate_Eta",topHadCand.fatjet.eta());
+    vars.FillVar(prefix+"TopHadCandidate_Phi",topHadCand.fatjet.phi());
+  }
+  
+  if(topHadBCand.pt()>0){
+    vars.FillVar(prefix+"TopHadCandidate_B_E",topHadBCand.energy());
+    vars.FillVar(prefix+"TopHadCandidate_B_Pt",topHadBCand.pt());
+    vars.FillVar(prefix+"TopHadCandidate_B_M",topHadBCand.mass());
+    vars.FillVar(prefix+"TopHadCandidate_B_Eta",topHadBCand.eta());
+    vars.FillVar(prefix+"TopHadCandidate_B_Phi",topHadBCand.phi());
+    vars.FillVar(prefix+"TopHadCandidate_B_CSV",fmax(topHadBCand.bDiscriminator(btagger),-.1));
+  }
+  
+  if(topHadW1Cand.pt()>0){
+    vars.FillVar(prefix+"TopHadCandidate_W1_E",topHadW1Cand.energy());
+    vars.FillVar(prefix+"TopHadCandidate_W1_Pt",topHadW1Cand.pt());
+    vars.FillVar(prefix+"TopHadCandidate_W1_M",topHadW1Cand.mass());
+    vars.FillVar(prefix+"TopHadCandidate_W1_Eta",topHadW1Cand.eta());
+    vars.FillVar(prefix+"TopHadCandidate_W1_Phi",topHadW1Cand.phi());
+    vars.FillVar(prefix+"TopHadCandidate_W1_CSV",fmax(topHadW1Cand.bDiscriminator(btagger),-.1));
+  }
+  
+  if(topHadW2Cand.pt()>0){
+    vars.FillVar(prefix+"TopHadCandidate_W2_E",topHadW2Cand.energy());
+    vars.FillVar(prefix+"TopHadCandidate_W2_Pt",topHadW2Cand.pt());
+    vars.FillVar(prefix+"TopHadCandidate_W2_M",topHadW2Cand.mass());
+    vars.FillVar(prefix+"TopHadCandidate_W2_Eta",topHadW2Cand.eta());
+    vars.FillVar(prefix+"TopHadCandidate_W2_Phi",topHadW2Cand.phi());
+    vars.FillVar(prefix+"TopHadCandidate_W2_CSV",fmax(topHadW2Cand.bDiscriminator(btagger),-.1));
+  }
   
   if(wHadCandVec.Pt()>0.001){
     vars.FillVar(prefix+"TopHadCandidate_W_E",wHadCandVec.E());
