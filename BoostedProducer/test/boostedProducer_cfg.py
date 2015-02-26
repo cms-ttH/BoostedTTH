@@ -2,8 +2,8 @@ import FWCore.ParameterSet.Config as cms
 # input
 process = cms.Process("p")
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
-                            #fileNames = cms.untracked.vstring('file:/storage/9/mildner/ttbar_phys14.root')
+#                            fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
+                            fileNames = cms.untracked.vstring('file:/storage/9/mildner/ttbar_phys14.root')
                             #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
@@ -63,7 +63,7 @@ addJetCollection(
     labelName = 'CA12PF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators = [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
+    btagDiscriminators =None,
     jetCorrections = None,
     getJetMCFlavour = False,
     genJetCollection = None
@@ -91,7 +91,7 @@ addJetCollection(
     labelName = 'CA3FiltPF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators =None,
+    btagDiscriminators =  [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
     jetCorrections = None,
     getJetMCFlavour = False,
     genJetCollection = None#cms.InputTag('CA12JetsCA3FilterjetsGen','filterjets')
