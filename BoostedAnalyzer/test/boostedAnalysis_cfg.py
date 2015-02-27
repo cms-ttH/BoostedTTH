@@ -11,7 +11,7 @@ process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source(  "PoolSource",
                               #fileNames = cms.untracked.vstring( 'file:/storage/9/mildner/ttbar_miniAODtest.root' )

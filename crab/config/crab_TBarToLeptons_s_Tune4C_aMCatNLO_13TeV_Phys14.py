@@ -8,7 +8,7 @@ config.General.workArea = 'crab_projects'
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = '/nfs/dust/cms/user/shwillia/CMSSW_7_2_3/src/BoostedTTH/BoostedProducer/test/boostedProducer_plusTrees_cfg.py'
-config.JobType.outputFiles = ['BoostedTTH_MiniAOD.root','BoostedTTH_Tree.root','BoostedTTH_Cutflow.root']
+config.JobType.outputFiles = ['BoostedTTH_MiniAOD.root','BoostedTTH_Tree.root','BoostedTTH_Cutflow.txt']
 
 config.section_("Data")
 config.Data.inputDataset = '/TBarToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'

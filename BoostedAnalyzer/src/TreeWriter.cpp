@@ -18,7 +18,7 @@ TreeWriter::~TreeWriter(){
 
 void TreeWriter::Init( std::string fileName){
   
-  outFile = new TFile( (fileName+"_tree.root").c_str(), "RECREATE" );
+  outFile = new TFile( (fileName+"_Tree.root").c_str(), "RECREATE" );
   outFile->cd();
   
   tree = new TTree("MVATree","MVATree");

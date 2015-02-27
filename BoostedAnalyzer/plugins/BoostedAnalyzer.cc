@@ -231,7 +231,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   
   // INITIALIZE SELECTION & CUTFLOW
-  cutflow.Init((outfileName+"_cutflow.txt").c_str());
+  cutflow.Init((outfileName+"_Cutflow.txt").c_str());
   cutflow.AddStep("all");
   
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
