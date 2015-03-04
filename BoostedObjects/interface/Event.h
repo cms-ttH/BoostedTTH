@@ -23,9 +23,7 @@ namespace boosted {
         xPDF1(-1.), xPDF2(-1.),
         id1(-99), id2(-99),
         BSx(-99.), BSy(-99.), BSz(-99.),
-        numPV(-1),
-        GoodVertex(false),
-        PVx(-99.), PVy(-99.), PVz(-99.),
+		      //        GoodVertex(false),
         hcalnoiseLoose(false), hcalnoiseTight(false),
         sumNVtx(0), numGenPV(-1), nm1(-1), n0(-1), np1(-1),
         sumTrueNVtx(0), numTruePV(-1), nm1_true(-1), n0_true(-1), np1_true(-1) {};
@@ -50,9 +48,6 @@ namespace boosted {
       
       // Collision Point Information
       float BSx, BSy, BSz;
-      int   numPV;
-      bool  GoodVertex;
-      float PVx, PVy, PVz;
       
       // HCal Information
       bool hcalnoiseLoose, hcalnoiseTight;

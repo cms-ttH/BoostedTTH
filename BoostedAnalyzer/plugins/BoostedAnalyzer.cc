@@ -11,8 +11,8 @@
      [Notes on implementation]
 */
 //
-// Original Author:  Shawn Williamson
-//         Created:  Tue, 13 Jan 2015 10:48:49 GMT
+// Original Author:  Shawn Williamson, Hannes Mildner
+//         
 //
 //
 
@@ -52,6 +52,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/SynchSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
@@ -75,7 +76,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
       
-      boosted::Event FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const int& nPV, const reco::VertexCollection& selectedPVs, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo);
+      boosted::Event FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo);
       map<string,float> GetWeights(const boosted::Event& event, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles);
       
       // ----------member data ---------------------------
@@ -121,6 +122,10 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
        /** is analyzed sample data? */
       bool isData;
+
+
+      /** disable some object selections for synch exe? */
+      bool disableObjectSelections;
 
        /** use fat jets? this is only possible if the miniAOD contains them */
       bool useFatJets;
@@ -239,6 +244,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     
     if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection());
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection());
+    else if(*itSel == "SynchSelection") selections.push_back(new SynchSelection());
     else cout << "No matching selection found for: " << *itSel << endl;
     
     selections.back()->Init(iConfig,cutflow);
@@ -316,7 +322,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   reco::VertexCollection selectedPVs;
   if( h_vtxs.isValid() ){
     for( reco::VertexCollection::const_iterator itvtx = vtxs.begin(); itvtx!=vtxs.end(); ++itvtx ){
-
+      
       bool isGood = ( !(itvtx->isFake()) &&
 		                  (itvtx->ndof() >= 4.0) &&
 		                  (abs(itvtx->z()) <= 24.0) &&
@@ -422,7 +428,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   }
   
   // Fill Boosted Event Object
-  boosted::Event event = FillEvent(iEvent,h_geneventinfo,h_beamspot,vtxs.size(),selectedPVs,h_hcalnoisesummary,h_puinfosummary);
+  boosted::Event event = FillEvent(iEvent,h_geneventinfo,h_beamspot,h_hcalnoisesummary,h_puinfosummary);
   
   // FIGURE OUT SAMPLE
   SampleType sampleType;
@@ -443,12 +449,12 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
   // DEFINE INPUT
   InputCollections input( event,
-                          selectedTrigger,
-                          triggerResults,
-                          selectedPVs,
-                          selectedMuons,
-                          selectedMuonsLoose,
-                          selectedElectrons,
+			  selectedTrigger,
+			  triggerResults,
+			  selectedPVs,
+			  selectedMuons,
+			  selectedMuonsLoose,
+			  selectedElectrons,
                           selectedElectronsLoose,
                           selectedJets,
                           selectedJetsLoose,
@@ -459,7 +465,25 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                           selectedGenJets,
                           sampleType,
                           weights
-                        );
+			  );
+  InputCollections unselected_input( event,
+			  selectedTrigger,
+			  triggerResults,
+			  vtxs,
+			  muons,
+			  muons,
+			  electrons,
+                          electrons,
+                          pfjets,
+                          pfjets,
+                          pfMETs,
+                          heptopjets,
+                          subfilterjets,
+                          genParticles,
+                          selectedGenJets,
+                          sampleType,
+                          weights
+			  );
   
   /*  
   cout << "Number of primary Vertices: " << selectedPVs.size() << endl;
@@ -479,18 +503,27 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   cutflow.EventSurvivedStep("all");
   bool selected=true;
   for(size_t i=0; i<selections.size() && selected; i++){
-    if(!selections.at(i)->IsSelected(input,cutflow))
-	    selected=false;
+    if(disableObjectSelections){
+      if(!selections.at(i)->IsSelected(unselected_input,cutflow))
+	selected=false;
+    }
+    else {
+      if(!selections.at(i)->IsSelected(input,cutflow))
+	selected=false;
+    }
   }
   
   if(!selected) return;    
 
   // WRITE TREE
-  treewriter.Process(input);  
+  if(disableObjectSelections)
+    treewriter.Process(unselected_input);  
+  else
+    treewriter.Process(input);  
 }
 
 
-boosted::Event BoostedAnalyzer::FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const int& numPV, const reco::VertexCollection& selectedPVs, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo){
+boosted::Event BoostedAnalyzer::FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo){
  
   boosted::Event event = boosted::Event();
   
@@ -525,14 +558,7 @@ boosted::Event BoostedAnalyzer::FillEvent(const edm::Event& iEvent, const edm::H
     event.BSz = beamSpot->z0();
   }
   
-  event.numPV = numPV;
-  if(selectedPVs.size()>0){
-    event.GoodVertex = true;
-    event.PVx = selectedPVs[0].x();
-	  event.PVy = selectedPVs[0].y();
-	  event.PVz = selectedPVs[0].z();
-  }
-  
+ 
   if( hcalNoiseSummary.isValid() ){
     event.hcalnoiseLoose = hcalNoiseSummary->passLooseNoiseFilter();
     event.hcalnoiseTight = hcalNoiseSummary->passTightNoiseFilter();
