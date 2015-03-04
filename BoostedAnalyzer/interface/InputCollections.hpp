@@ -69,6 +69,8 @@ struct InputCollections{
   const std::vector<reco::GenJet>&              selectedGenJets;
   const SampleType                              sampleType;
   const std::map<std::string,float>&            weights;
+  
+  void Dump();
 };
 
 #endif
