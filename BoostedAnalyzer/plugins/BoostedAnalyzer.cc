@@ -211,8 +211,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   xs = iConfig.getParameter<double>("xs");
   totalMCevents = iConfig.getParameter<int>("nMCEvents");
   isData = iConfig.getParameter<bool>("isData");
-  useFatJets = iConfig.getParameter<bool>("useFatJets");
   
+  useFatJets = iConfig.getParameter<bool>("useFatJets");
+  disableObjectSelections = iConfig.getParameter<bool>("disableObjectSelections");
+
   string outfileName = iConfig.getParameter<std::string>("outfileName");
   
   // REGISTER DATA ACCESS

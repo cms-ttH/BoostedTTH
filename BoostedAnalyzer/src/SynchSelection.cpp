@@ -28,11 +28,14 @@ bool SynchSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   
   // For this selection, do object selections first
   // This is an exception, usually object selections should be done in BoostedAnalyzer.cc with the help of the miniAODhelper
-  reco::Vertex vtx= input.selectedPVs[0];
-  bool hasGoodVertex = !vtx.isFake() 
-    && vtx.ndof() >= 4.0 
-    && abs(vtx.z()) <= 24.0 
-    && abs(vtx.position().Rho()) <= 2.0;
+  bool hasGoodVertex = false; 
+  if(input.selectedPVs.size()>0){
+    reco::Vertex vtx= input.selectedPVs[0];
+    hasGoodVertex = !vtx.isFake() 
+      && vtx.ndof() >= 4.0 
+      && abs(vtx.z()) <= 24.0 
+      && abs(vtx.position().Rho()) <= 2.0;
+  }
 
   //  std::vector<pat::Electron> selectedElectrons;
   // ...
