@@ -58,6 +58,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
 //
 // class declaration
@@ -75,6 +76,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       virtual void beginJob() override;
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
+      virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
       
       boosted::Event FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo);
       map<string,float> GetWeights(const boosted::Event& event, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles);
@@ -148,7 +150,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** trigger results data access token **/
       edm::EDGetTokenT< edm::TriggerResults > EDMTriggerResultToken;
-      
+      HLTConfigProvider hlt_config_;
+
       /** beam spot data access token **/
       edm::EDGetTokenT< reco::BeamSpot > EDMBeamSpotToken;
       
@@ -221,7 +224,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","","HLT"));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","","RECO"));
   EDMSelectedTriggerToken = consumes< pat::TriggerObjectStandAloneCollection > (edm::InputTag("selectedPatTrigger","","PAT"));
-  EDMTriggerResultToken   = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","PAT"));
+  EDMTriggerResultToken   = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","HLT"));
   EDMBeamSpotToken        = consumes< reco::BeamSpot > (edm::InputTag("offlineBeamSpot","","RECO"));
   EDMVertexToken          = consumes< reco::VertexCollection > (edm::InputTag("offlineSlimmedPrimaryVertices","","PAT"));
   EDMMuonsToken           = consumes< std::vector<pat::Muon> >(edm::InputTag("slimmedMuons","","PAT"));
@@ -453,6 +456,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   InputCollections input( event,
 			  selectedTrigger,
 			  triggerResults,
+                          hlt_config_,
 			  selectedPVs,
 			  selectedMuons,
 			  selectedMuonsLoose,
@@ -471,6 +475,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   InputCollections unselected_input( event,
 			  selectedTrigger,
 			  triggerResults,
+                          hlt_config_,
 			  vtxs,
 			  muons,
 			  muons,
@@ -688,7 +693,19 @@ BoostedAnalyzer::endJob()
 {
   cutflow.Print();
 }
-
+// ------------ method called when starting to processes a run ------------
+// needed for the hlt_config_
+void
+BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
+{
+std::string hltTag="HLT";
+bool hltchanged = true;
+if (!hlt_config_.init(iRun, iSetup, hltTag, hltchanged)) {
+std::cout << "Warning, didn't find trigger process HLT,\t" << hltTag << std::endl;
+return;
+}
+}
+ 
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void

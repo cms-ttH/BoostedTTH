@@ -4,6 +4,11 @@
 #include <vector>
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+#include <stdio.h>
+#include <string.h>
+
+
 
 class SynchSelection: public Selection{
   

@@ -12,6 +12,8 @@
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "BoostedTTH/BoostedObjects/interface/SubFilterJet.h"
 #include "BoostedTTH/BoostedObjects/interface/HEPTopJet.h"
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+
 
 enum SampleType{data,tth,tt,nonttbkg};
 
@@ -19,6 +21,7 @@ struct InputCollections{
   InputCollections( const boosted::Event&                         event_,
                     const pat::TriggerObjectStandAloneCollection& selectedTrigger_,
                     const edm::TriggerResults&                    triggerResults_,
+                    const HLTConfigProvider&                      hlt_config_,
                     const reco::VertexCollection&                 selectedPVs_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsLoose_,
@@ -37,6 +40,7 @@ struct InputCollections{
                     event(event_),
                     selectedTrigger(selectedTrigger_),
                     triggerResults(triggerResults_),
+                    hlt_config(hlt_config_),
                     selectedPVs(selectedPVs_),
                     selectedMuons(selectedMuons_),
                     selectedMuonsLoose(selectedMuonsLoose_),
@@ -55,6 +59,7 @@ struct InputCollections{
   const boosted::Event&                         event;
   const pat::TriggerObjectStandAloneCollection& selectedTrigger;
   const edm::TriggerResults&                    triggerResults;
+  const HLTConfigProvider&                       hlt_config;
   const reco::VertexCollection&                 selectedPVs;
   const std::vector<pat::Muon>&                 selectedMuons;
   const std::vector<pat::Muon>&                 selectedMuonsLoose;
