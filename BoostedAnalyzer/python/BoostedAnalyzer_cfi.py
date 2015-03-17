@@ -16,5 +16,5 @@ BoostedAnalyzer = cms.EDAnalyzer(
     disableObjectSelections = cms.bool(False), # disables selection of some objects for synch exe
     outfileName = cms.string("BoostedTTH"),
     selectionNames = cms.vstring("LeptonSelection"),
-    processorNames = cms.vstring("MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
+    processorNames = cms.vstring("MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor","MCMatchVarProcessor")
 )

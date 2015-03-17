@@ -53,9 +53,11 @@ class BoostedUtils{
     static float CosThetaStar(const math::XYZTLorentzVector& vec1, const math::XYZTLorentzVector& vec2);
     static float CosThetaCM(const math::XYZTLorentzVector& vec,const math::XYZTLorentzVector& boostVec);
     
+    static std::vector<math::XYZTLorentzVector> GetGenParticleVecs(const std::vector<reco::GenParticle>& genParticles);
     static bool MCContainsTTbar(const std::vector<reco::GenParticle>& genParticles);
     static bool MCContainsHiggs(const std::vector<reco::GenParticle>& genParticles);
-    static void GetttHMCVecs(const std::vector<reco::GenParticle>& genParticles, std::vector<math::XYZTLorentzVector>& bhadvec, std::vector<math::XYZTLorentzVector>& q1vec, std::vector<math::XYZTLorentzVector>& q2vec, std::vector<math::XYZTLorentzVector>& blepvec, std::vector<math::XYZTLorentzVector>& lepvec, std::vector<math::XYZTLorentzVector>& nuvec, math::XYZTLorentzVector& b1vec, math::XYZTLorentzVector& b2vec);
+    static void GetttHMCParticles(const std::vector<reco::GenParticle>& genParticles, std::vector<reco::GenParticle>& tophad, std::vector<reco::GenParticle>& bhad, std::vector<reco::GenParticle>& q1, std::vector<reco::GenParticle>& q2, std::vector<reco::GenParticle>& toplep, std::vector<reco::GenParticle>& blep, std::vector<reco::GenParticle>& lep, std::vector<reco::GenParticle>& nu, reco::GenParticle& higgs, reco::GenParticle& b1, reco::GenParticle& b2);
+    static void GetttHMCVecs(const std::vector<reco::GenParticle>& genParticles, std::vector<math::XYZTLorentzVector>& tophadvecs, std::vector<math::XYZTLorentzVector>& bhadvecs, std::vector<math::XYZTLorentzVector>& q1vecs, std::vector<math::XYZTLorentzVector>& q2vecs, std::vector<math::XYZTLorentzVector>& toplepvecs, std::vector<math::XYZTLorentzVector>& blepvecs, std::vector<math::XYZTLorentzVector>& lepvecs, std::vector<math::XYZTLorentzVector>& nuvecs, math::XYZTLorentzVector& higgsvec, math::XYZTLorentzVector& b1vec, math::XYZTLorentzVector& b2vec);
     
     static bool IsAnyTriggerBitFired(const std::vector<std::string>& targetTriggers, const edm::TriggerResults& triggerResults);
     
@@ -139,7 +141,7 @@ enum SampleType{data,tth,ttl,ttbb,ttb,ttcc,nonttbkg};
 
 class BEANUtils{
 public:
-  static bool IsAnyTriggerBitFired ( const vector<string> & targetTriggers, const BNtriggerCollection &  triggerBits);
+  static bool IsAnyTriggerBitFired ( const std::vector<string> & targetTriggers, const BNtriggerCollection &  triggerBits);
   static bool PassesCSV(const BNjet& jet, const char workingPoint);
   static void GetSp(TLorentzVector lepton, TLorentzVector met, vecTLorentzVector jets, float &aplanarity, float &sphericity);
   static void GetFox(vecTLorentzVector jets, float &h0, float &h1, float &h2, float &h3, float &h4);
@@ -150,9 +152,9 @@ public:
   static bool GetTopTagB(const BNtoptagjet& top_jet);
   static bool FirstHasHigherCSV(BNjet j1,BNjet j2);
   static float GetClosestJetIndices(int&i,int&j,BNjetCollection jets);
-  static vector<BNjet> GetJetsByDr(TLorentzVector vec,const vector<BNjet>& jets);
+  static std::vector<BNjet> GetJetsByDr(TLorentzVector vec,const std::vector<BNjet>& jets);
   static TLorentzVector GetPrimLepVec(BNelectronCollection selectedElectrons, BNmuonCollection selectedMuons);
-  static vector<TLorentzVector> GetJetVecs(BNjetCollection selectedJets);
+  static std::vector<TLorentzVector> GetJetVecs(BNjetCollection selectedJets);
   static TLorentzVector GetJetVec(BNjet jet);
   static TLorentzVector GetMCVec(BNmcparticle p);
   static float CosThetaStar(const TLorentzVector & v1, const TLorentzVector & v2); 
@@ -162,14 +164,14 @@ public:
   static float CosThetaCM(const TLorentzVector& v,const TLorentzVector& b);
   static float DeltaR(const BNjet& j1,const BNjet& j2);
   static float DeltaKt(const TLorentzVector & v1, const TLorentzVector & v2); 
-  static void GetHiggsJetDistanceVars(const BNsubfilterjet& jet,const vector<BNtoptagjet>& topjets,float& deltaR1_,float& deltaR2_,float& deltaR3_,float& deltaR4_);
+  static void GetHiggsJetDistanceVars(const BNsubfilterjet& jet,const std::vector<BNtoptagjet>& topjets,float& deltaR1_,float& deltaR2_,float& deltaR3_,float& deltaR4_);
   static void GetFilterJetVars(const BNsubfilterjet& jet,TLorentzVector& vec1_,TLorentzVector& vec2_,TLorentzVector& vec3_,TLorentzVector& vec4_,float& csvfj1_,float& csvfj2_,float& csvfj3_,float& csvfj4_);
   static void GetHiggsJetCSVVars(const BNsubfilterjet& jet,float& csv1_,float& csv2_,float& csv3_,float& csv4_);
   static void GetHiggsJetCSVVarsDr(const BNsubfilterjet& jet,BNjet& csv1_fjet_,BNjet& csv2_fjet_);
   static void GetHiggsJetCSVVarsDr(const BNjetCollection& filterjets,BNjet& b1_fjet_,BNjet& b2_fjet_,BNjet& g_fjet_);
   static float GetHiggsMass(const BNsubfilterjet& higgs_jet, const int n_filterjets=2, const bool hardest_jets=false, const int n_btags=0, const float csv_wp=0.679);
   static void GetNuVecs(const TLorentzVector & lepvec, const TVector2 & metvec, TLorentzVector & nu1, TLorentzVector & nu2);
-  static BNjet GetTopLepBjet(const BNsubfilterjet& sfjet,const BNtoptagjet& topjet, const vector<BNjet>& ak5jets);
+  static BNjet GetTopLepBjet(const BNsubfilterjet& sfjet,const BNtoptagjet& topjet, const std::vector<BNjet>& ak5jets);
   static TLorentzVector GetTopLepVec(const TLorentzVector & lepvec, const TLorentzVector & nu1, const TLorentzVector & nu2, const BNjet & bjet);
   static void GetSemiLeptMCVecs(const BNmcparticleCollection& mcparticlesStatus3,TLorentzVector& bhad_mc,TLorentzVector& q1_mc,TLorentzVector& q2_mc,TLorentzVector& blep_mc,TLorentzVector& lep_mc,TLorentzVector& nu_mc,TLorentzVector& b1_mc,TLorentzVector& b2_mc);
 
@@ -181,7 +183,7 @@ public:
   static void TTHRecoVarsOhio(const BNjetCollection& selectedJets,const BNjetCollection& selectedJets_loose, const BNmet& correctedMET, const TLorentzVector& lepton, float& best_higgs_mass_, float& dRbb_,float& abs_dEta_hadtop_bb_,float& abs_dEta_leptop_bb_, float& dEta_fn_);
   static float GetBestHiggsMassOhio2(TLorentzVector lepton, TLorentzVector &met, vecTLorentzVector jets, vdouble btag, double &minChi, double &dRbb, TLorentzVector &bjet1, TLorentzVector &bjet2, double &chi2lepW, double &chi2leptop, double &chi2hadW, double &chi2hadtop, double &mass_lepW, double &mass_leptop, double &mass_hadW, double &mass_hadtop, TLorentzVector &toplep, TLorentzVector &tophad);
   static std::string GetDataPath();
-  static vector<string>ParseFileNames(string fnames);
+  static std::vector<string> ParseFileNames(string fnames);
 
 private:
 };

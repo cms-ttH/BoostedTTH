@@ -1,5 +1,5 @@
-#ifndef BOOSTEDJETVARPROCESSOR_HPP
-#define BOOSTEDJETVARPROCESSOR_HPP
+#ifndef BOOSTEDTTH_BOOSTEDANALYZER_BOOSTEDJETVARPROCESSOR_HPP
+#define BOOSTEDTTH_BOOSTEDANALYZER_BOOSTEDJETVARPROCESSOR_HPP
 
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
@@ -12,13 +12,14 @@ class BoostedJetVarProcessor: public TreeProcessor{
     
     BoostedJetVarProcessor();
     ~BoostedJetVarProcessor();
+    
     void Init(const InputCollections& input, VariableContainer& var);
     void Process(const InputCollections& input, VariableContainer& var);
 
 
   private:
 
-  const char* btagger;
+    const char* btagger;
 
   
 };
