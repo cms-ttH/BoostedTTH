@@ -11,10 +11,10 @@ BoostedAnalyzer = cms.EDAnalyzer(
     sampleID = cms.int32(9125),
     xs = cms.double(248),
     nMCEvents = cms.int32(25000000),
-    isData = cms.bool(True),
+    isData = cms.bool(False),
     useFatJets = cms.bool(False),
     disableObjectSelections = cms.bool(False), # disables selection of some objects for synch exe
     outfileName = cms.string("BoostedTTH"),
     selectionNames = cms.vstring("LeptonSelection"),
-    processorNames = cms.vstring("MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
 )
