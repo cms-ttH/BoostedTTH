@@ -23,15 +23,15 @@ void SynchSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
   cutflow.AddStep(">= 1 Higgs jet");
   
   
-  
-  
+  Config=iConfig;  
+
   initialized=true;
 }
 
 bool SynchSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "SynchSelection not initialized" << endl;
   
-  bool doElectrons=true;
+  bool doElectrons=false;
   
   // For this selection, do object selections first
   // This is an exception, usually object selections should be done in BoostedAnalyzer.cc with the help of the miniAODhelper
@@ -218,10 +218,17 @@ std::vector<pat::Jet> bufferJets;
 for( std::vector<pat::Jet>::const_iterator it = input.selectedJets.begin(), ed = input.selectedJets.end(); it != ed; ++it ){
   pat::Jet iJet = *it;
   double originalPt = iJet.pt();
+  std::cout<<iJet.currentJECLevel()<<" "<<iJet.currentJECSet()<<std::endl;
   math::XYZTLorentzVector uncorrectedP4 = iJet.correctedP4("Uncorrected");
+  math::XYZTLorentzVector ALTuncorrectedP4 = iJet.correctedJet(0).p4();
   iJet.setP4(uncorrectedP4);
   double uncorrectedPt = iJet.pt();
   std::cout<<originalPt<<" "<<uncorrectedPt<<std::endl;
+  iJet.setP4(ALTuncorrectedP4);
+  uncorrectedPt = iJet.pt();
+//   std::cout<<iJet.currentJECLevel()<<" "<<iJet.currentJECSet()<<std::endl;
+
+//   std::cout<<originalPt<<" "<<uncorrectedPt<<std::endl;
   bufferJets.push_back(iJet);
 }
   
@@ -323,12 +330,25 @@ for( std::vector<pat::Jet>::const_iterator it = bufferJets.begin(), ed = bufferJ
 //now correct the jets again
 //using the PHYS14_25_V2 corrections i hope :)
 /*  "ak4PFchsL1L2L3"*/
+
+const JetCorrector* jetCorrector = JetCorrector::getJetCorrector("ak4PFchsL1L2L3",input.setup);
+correctedJets.clear();
+  
+std::cout<<"setup the corrector"<<std::endl;
 for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = cleanMuonJets.end(); it != ed; ++it ){
   pat::Jet iJet = *it;
+  double jec = jetCorrector->correction(iJet, input.edmevent, input.setup );
+  std::cout<<"uncorrected "<<jec<<" "<<iJet.pt()<<std::endl;
+  iJet.scaleEnergy(jec);
+  std::cout<<"corrected "<<iJet.pt()<<std::endl;
+  std::cout<<iJet.currentJECLevel()<<" "<<iJet.currentJECSet()<<" "<<std::endl;
+
+  correctedJets.push_back(iJet);
+
 //   double uncorrectedPt = iJet.pt();
 //   math::XYZTLorentzVector correctedP4 = iJet.correctedP4("L1FastJetL2RelativeL3Absolute","","PHYS14_25_V2");
 //   iJet.setP4(correctedP4);
-  pat::Jet newJet = iJet.correctedJet("L3Absolute","none","patJetCorrFactors");
+//   pat::Jet newJet = iJet.correctedJet("L3Absolute","none","patJetCorrFactors");
 //   double correctedPt = newJet.pt();
 //   std::cout<<uncorrectedPt<<" "<<correctedPt<<std::endl;
 //   bufferJets.push_back(iJet);
@@ -339,6 +359,130 @@ for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = clea
 //   for(unsigned int i=0; i<iJet.availableJECLevels().size(); i++){
 //     std::cout<<iJet.availableJECLevels("patJetCorrFactors")[i]<<std::endl;
 //   }
+}
+
+// std::cout<<"The Parameter Set"<<std::endl;
+
+// std::cout<<Config.dump()<<std::endl;;
+
+//now sort the jets by pt
+std::sort(correctedJets.begin(), correctedJets.end(), BoostedUtils::FirstJetIsHarder);
+std::cout<<correctedJets.at(0).pt()<<" "<<correctedJets.at(1).pt()<<" "<<correctedJets.at(2).pt()<<std::endl;
+
+//now select only the good jets  
+selectedJets.clear();
+for( std::vector<pat::Jet>::const_iterator it = correctedJets.begin(), ed = correctedJets.end(); it != ed; ++it ){
+  pat::Jet iJet = *it;
+
+  bool isselected=false;
+  isselected=(iJet.pt()>25 && abs(iJet.eta())<2.4 && iJet.neutralHadronEnergyFraction()<0.99 && iJet.chargedHadronEnergyFraction()>0.0 && iJet.chargedMultiplicity()>0.0 && iJet.chargedEmEnergyFraction()<0.99 && iJet.neutralEmEnergyFraction()<0.99 && iJet.numberOfDaughters()>1 );
+  if(isselected){
+    selectedJets.push_back(iJet);
+    }
+}
+
+//get the btagged jets
+taggedJets.clear();
+for( std::vector<pat::Jet>::const_iterator it = selectedJets.begin(), ed = selectedJets.end(); it != ed; ++it ){
+  pat::Jet iJet = *it;
+
+  bool istagged=false;
+  double workingPoint=0.814;
+  istagged=(iJet.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") > workingPoint);
+  if(istagged){
+    taggedJets.push_back(iJet);
+    }
+}
+
+
+
+//----------------------------------------------------------------------------------
+//do the topjets
+std::vector<boosted::HEPTopJet> selectedTopJets;
+for( std::vector<boosted::HEPTopJet>::const_iterator it = input.selectedHEPTopJets.begin(), ed = input.selectedHEPTopJets.end(); it != ed; ++it ){
+  boosted::HEPTopJet iJet = *it;
+  bool passesCuts=false;
+  bool passesSubCuts=false;
+  bool hasTopTag=false;
+  
+  passesCuts=(iJet.fatjet.pt()>250 && abs(iJet.fatjet.eta())<1.8 );
+  passesSubCuts = (iJet.nonW.pt()>20 && abs(iJet.nonW.eta())<2.5 && iJet.W1.pt()>20 && abs(iJet.W1.eta())<2.5 && iJet.W2.pt()>20 && abs(iJet.W2.eta())<2.5 );
+
+  std::vector<pat::Jet> subjets;
+  subjets.push_back(iJet.nonW);
+  subjets.push_back(iJet.W1);
+  subjets.push_back(iJet.W2);
+  
+  std::sort(subjets.begin(), subjets.end(), BoostedUtils::FirstJetIsHarder);
+  vector<math::XYZTLorentzVector> topvecs;
+  topvecs.push_back(subjets.at(0).p4());
+  topvecs.push_back(subjets.at(1).p4());
+  topvecs.push_back(subjets.at(2).p4());
+
+  float m12=-99;
+  float m23=-99;
+  float m13=-99;
+  float m123=-99;
+  if(topvecs.size()==3){
+    m12=(topvecs[0]+topvecs[1]).M();
+    m13=(topvecs[0]+topvecs[2]).M();
+    m23=(topvecs[1]+topvecs[2]).M();
+    m123=(topvecs.at(0)+topvecs.at(1)+topvecs.at(2)).M();
+  }
+  
+  bool tagOne=false;
+  bool tagTwo=false;
+  bool tagThree=false;
+  double fW = 0.15;
+  double mT = 172.3;
+  double mW = 80.4;
+  double Rmin = (1.0-fW)*mW/mT;
+  double Rmax = (1.0+fW)*mW/mT;
+
+  double y1 = 1.0+pow(m13/m12 ,2);
+    double y2 = 1.0+pow(m12/m13 ,2);
+  double x = 1.0-pow(m23/m123 ,2);
+
+  tagOne = ( atan(m23/m123)>0.2 && atan(m23/m123)<1.3 && Rmin < m23/m123 && m23/m123 < Rmax);
+  
+  tagTwo = ( pow(Rmin,2)*y1 < x && pow(Rmax,2)*y1 > x && m23/m123 > 0.35 );
+  
+  tagThree = ( pow(Rmin,2)*y2 < x && pow(Rmax,2)*y2 > x && m23/m123 > 0.35 );
+
+  hasTopTag = (tagOne || tagTwo || tagThree );
+  if(hasTopTag && passesCuts && passesSubCuts ){
+    selectedTopJets.push_back(iJet);
+    }
+}
+
+
+//----------------------------------------------------------------------------------
+//do the higgsjets
+
+std::vector<boosted::SubFilterJet> selectedHiggsJets;
+for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFilterJets.begin(), ed =        input.selectedSubFilterJets.end(); it != ed; ++it ){
+  boosted::SubFilterJet iJet = *it;
+
+  
+  bool passesCuts=false;
+  bool hasTwoTaggedSubjets=false;
+  
+  passesCuts = ( iJet.fatjet.pt()>250 && abs(iJet.fatjet.eta())<1.8 );
+  
+  double workingPoint=0.814;
+
+  std::vector<pat::Jet> taggedsubjets;
+  for(size_t i=0; i< iJet.filterjets.size(); i++){
+    if( iJet.filterjets.at(i).pt()>20 && abs(iJet.filterjets.at(i).eta())<2.5 && iJet.filterjets.at(i).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") > workingPoint ){
+      taggedsubjets.push_back(iJet.filterjets.at(i));
+    }
+  }
+  
+  hasTwoTaggedSubjets = (taggedsubjets.size()>=2);
+  if(passesCuts && hasTwoTaggedSubjets){
+    selectedHiggsJets.push_back(iJet);
+    }
+  
 }
     
 //----------------------------------------------------------------------------------
@@ -380,7 +524,32 @@ for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = clea
    lep1_phi=selectedMuons.at(0).phi();
   }
   
+  if(selectedJets.size()>0){
+  jet1_pt=selectedJets.at(0).pt();
+  jet1_CSVv2=selectedJets.at(0).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  }
   
+  if(selectedJets.size()>1){
+  jet2_pt=selectedJets.at(1).pt();
+  jet2_CSVv2=selectedJets.at(1).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  }
+  
+  if(selectedJets.size()>2){
+  jet3_pt=selectedJets.at(2).pt();
+  jet3_CSVv2=selectedJets.at(2).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  }
+  
+  if(selectedJets.size()>3){
+  jet4_pt=selectedJets.at(3).pt();
+  jet4_CSVv2=selectedJets.at(3).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  }
+  
+  n_jets=int(selectedJets.size());
+  n_btags=int(taggedJets.size());
+  
+  
+  n_toptags = int(selectedTopJets.size());
+  n_higgstags = int(selectedHiggsJets.size());
   // dump
   printf("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d   %2d  %2d\n",
 	 run, lumi, event,
@@ -441,7 +610,7 @@ for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = clea
     
   bool noOtherLepton=false;
   if(doElectrons){if(selectedMuons.size()==0)noOtherLepton=true;}
-  else{if(selectedElectrons.size()==1)noOtherLepton=true;}
+  else{if(selectedElectrons.size()==0)noOtherLepton=true;}
   if(!noOtherLepton) return false;
   else{ cutflow.EventSurvivedStep("== 0 leptons different flavor");
     if(doElectrons) outfile="KIT_sync_ele_3.txt";
@@ -461,18 +630,83 @@ for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = clea
       } 
     }
     
-  if(false) return false;
-  else cutflow.EventSurvivedStep(">= 4 jets");
-  
-  if(false) return false;
-  else cutflow.EventSurvivedStep(">= 2 b-tags");
-  
-  if(false) return false;
-  else cutflow.EventSurvivedStep(">= 1 top tagged jet");
-  
-  if(false) return false;
-  else cutflow.EventSurvivedStep(">= 1 Higgs jet");
-  
+  if(selectedJets.size()<4) return false;
+  else{ cutflow.EventSurvivedStep(">= 4 jets");
+  if(doElectrons) outfile="KIT_sync_ele_4.txt";
+    else outfile="KIT_sync_mu_4.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags,
+      n_toptags, n_higgstags);
+      fclose (pFile);
+      } 
+    }
+    
+    
+  if(taggedJets.size()<2) return false;
+  else{ cutflow.EventSurvivedStep(">= 2 b-tags");
+  if(doElectrons) outfile="KIT_sync_ele_5.txt";
+    else outfile="KIT_sync_mu_5.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags,
+      n_toptags, n_higgstags);
+      fclose (pFile);
+      } 
+    }
+    
+  if(selectedTopJets.size()<1) return false;
+  else{ cutflow.EventSurvivedStep(">= 1 top tagged jet");
+  if(doElectrons) outfile="KIT_sync_ele_6.txt";
+    else outfile="KIT_sync_mu_6.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags,
+      n_toptags, n_higgstags);
+      fclose (pFile);
+      } 
+    }
+    
+  if(selectedHiggsJets.size()<1) return false;
+  else{ cutflow.EventSurvivedStep(">= 1 Higgs jet");
+  if(doElectrons) outfile="KIT_sync_ele_7.txt";
+    else outfile="KIT_sync_mu_7.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags,
+      n_toptags, n_higgstags);
+      fclose (pFile);
+      } 
+    }
+    
   return true;
   
 }

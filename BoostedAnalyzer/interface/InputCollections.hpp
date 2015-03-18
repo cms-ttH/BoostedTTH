@@ -35,7 +35,10 @@ struct InputCollections{
                     const std::vector<reco::GenParticle>&         genParticles_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
-                    const std::map<std::string,float>&            weights_
+                    const std::map<std::string,float>&            weights_,
+		    const edm::EventSetup&	                  setup_,
+        	    const edm::Event&	                          edmevent_
+
                   ):
                     event(event_),
                     selectedTrigger(selectedTrigger_),
@@ -54,7 +57,9 @@ struct InputCollections{
                     genParticles(genParticles_),
                     selectedGenJets(selectedGenJets_),
                     sampleType(sampleType_),
-                    weights(weights_){}
+                    weights(weights_),
+		    setup(setup_),
+                    edmevent(edmevent_){}
   
   const boosted::Event&                         event;
   const pat::TriggerObjectStandAloneCollection& selectedTrigger;
@@ -74,7 +79,9 @@ struct InputCollections{
   const std::vector<reco::GenJet>&              selectedGenJets;
   const SampleType                              sampleType;
   const std::map<std::string,float>&            weights;
-  
+  const edm::EventSetup& 			setup;
+  const edm::Event& 			        edmevent;
+
   void Dump();
 };
 
