@@ -54,11 +54,12 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SynchSelection.hpp"
 
+#include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
@@ -222,6 +223,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
 
   string outfileName = iConfig.getParameter<std::string>("outfileName");
   
+  std::cout << "Outfile Name: " << outfileName << std::endl;
+  
   // REGISTER DATA ACCESS
   EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","","HLT"));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","","RECO"));
@@ -262,14 +265,16 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
   for(vector<string>::const_iterator itPro = processorNames.begin();itPro != processorNames.end();++itPro) {
     
-    if(*itPro == "MVAVarProcessor") treewriter.AddTreeProcessor(new MVAVarProcessor());
+    if(*itPro == "WeightProcessor") treewriter.AddTreeProcessor(new WeightProcessor());
+    else if(*itPro == "MCMatchVarProcessor") treewriter.AddTreeProcessor(new MCMatchVarProcessor());
+    else if(*itPro == "MVAVarProcessor") treewriter.AddTreeProcessor(new MVAVarProcessor());
     else if(*itPro == "BoostedJetVarProcessor") treewriter.AddTreeProcessor(new BoostedJetVarProcessor());
     else if(*itPro == "BoostedTopHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,"TopLikelihood","HiggsCSV","BoostedTopHiggs_"));
     else if(*itPro == "BoostedTopVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,"TopLikelihood","HiggsCSV","BoostedTop_"));
     else if(*itPro == "BoostedHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,"TopLikelihood","HiggsCSV","BoostedHiggs_"));
     // the BDT processor rely on the variables filled py the other producers and should be added at the end
     else if(*itPro == "BDTVarProcessor") treewriter.AddTreeProcessor(new BDTVarProcessor());
-    else if(*itPro == "MCMatchVarProcessor") treewriter.AddTreeProcessor(new MCMatchVarProcessor());
+    
     else cout << "No matching processor found for: " << *itPro << endl;    
   }
 }
@@ -453,7 +458,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   }
 
   // DO REWEIGHTING
-  map<string,float> weights=GetWeights(event,selectedPVs,selectedJets,selectedElectrons,selectedMuons,genParticles);
+  map<string,float> weights = GetWeights(event,selectedPVs,selectedJets,selectedElectrons,selectedMuons,genParticles);
 
   // DEFINE INPUT
   InputCollections input( event,
@@ -494,20 +499,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                           sampleType,
                           weights
 			  );
-  
-  /*  
-  cout << "Number of primary Vertices: " << selectedPVs.size() << endl;
-  cout << "Number of selected Muons: " << selectedMuons.size() << endl;
-  cout << "Number of selected Muons (Loose): " << selectedMuonsLoose.size() << endl;
-  cout << "Number of selected Electrons: " << selectedElectrons.size() << endl;
-  cout << "Number of selected Electrons (Loose): " << selectedElectronsLoose.size() << endl;
-  cout << "Number of selected Jets: " << selectedJets.size() << endl;
-  cout << "Number of selected Jets (Loose): " << selectedJetsLoose.size() << endl;
-  cout << "Number of selected HEP Top Jets: " << heptopjets.size() << endl;
-  cout << "Number of selected Subjet Filterjets: " << subfilterjets.size() << endl;
-  cout << "Number of Gen Particles: " << genParticles.size() << endl;
-  cout << "Number of selected Genjets: " << selectedGenJets.size() << endl;
-  */
+        
   
   // DO SELECTION
   cutflow.EventSurvivedStep("all");
@@ -619,17 +611,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const boosted::Event& event, const
   }
 
   // not sure why the BNevent weight is !=+-1 but we dont want it that way
-  float weight=event.weight;
-  
-  /*
-  if(weight>0){
-    weight=1.;
-  }
-  if(weight<0) {
-    weight=-1.;
-  }
-  */
-  
+  float weight = event.weight;  
   float xsweight = xs*luminosity/totalMCevents;
   float csvweight = 1.;
   float puweight = 1.;
