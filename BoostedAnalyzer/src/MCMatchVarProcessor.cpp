@@ -15,46 +15,46 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopHad_Pt",-9.,"N_GenTopHad" );
   vars.InitVars( "GenTopHad_Eta",-9.,"N_GenTopHad" );
   vars.InitVars( "GenTopHad_Phi",-9.,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Pt_B",-9.,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Pt_Q1",-9.,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Pt_Q2",-9.,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Eta_B",-9.,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Eta_Q1",-9.,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Eta_Q2",-9.,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Phi_B",-9.,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Phi_Q1",-9.,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Phi_Q2",-9.,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_B_Pt",-9.,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_Q1_Pt",-9.,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_Q2_Pt",-9.,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_B_Eta",-9.,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_Q1_Eta",-9.,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_Q2_Eta",-9.,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_B_Phi",-9.,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_Q1_Phi",-9.,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_Q2_Phi",-9.,"N_GenTopHad" );
   
   vars.InitVar( "N_GenTopLep",-1,"I" );
   vars.InitVars( "GenTopLep_Pt",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_Eta",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_Phi",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Pt_B",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Pt_Lep",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Pt_Nu",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Eta_B",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Eta_Lep",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Eta_Nu",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Phi_B",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Phi_Lep",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Phi_Nu",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_B_Pt",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_Lep_Pt",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_Nu_Pt",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_B_Eta",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_Lep_Eta",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_Nu_Eta",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_B_Phi",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_Lep_Phi",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_Nu_Phi",-9.,"N_GenTopLep" );
   
   vars.InitVar( "GenHiggs_Pt",-9. );
   vars.InitVar( "GenHiggs_Eta",-9. );
   vars.InitVar( "GenHiggs_Phi",-9. );
-  vars.InitVar( "GenHiggs_Pt_B1",-9. );
-  vars.InitVar( "GenHiggs_Pt_B2",-9. );
-  vars.InitVar( "GenHiggs_Eta_B1",-9. );
-  vars.InitVar( "GenHiggs_Eta_B2",-9. );
-  vars.InitVar( "GenHiggs_Phi_B1",-9. );
-  vars.InitVar( "GenHiggs_Phi_B2",-9. );
+  vars.InitVar( "GenHiggs_B1_Pt",-9. );
+  vars.InitVar( "GenHiggs_B2_Pt",-9. );
+  vars.InitVar( "GenHiggs_B1_Eta",-9. );
+  vars.InitVar( "GenHiggs_B2_Eta",-9. );
+  vars.InitVar( "GenHiggs_B1_Phi",-9. );
+  vars.InitVar( "GenHiggs_B2_Phi",-9. );
   
-  vars.InitVars( "GenTopHad_Idx_B",-1,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Idx_Q1",-1,"N_GenTopHad" );
-  vars.InitVars( "GenTopHad_Idx_Q2",-1,"N_GenTopHad" );
-  vars.InitVars( "GenTopLep_Idx_B",-1,"N_GenTopLep" );
-  vars.InitVar( "GenHiggs_Idx_B1",-1 );
-  vars.InitVar( "GenHiggs_Idx_B2",-1 );
+  vars.InitVars( "GenTopHad_B_Idx",-1,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_Q1_Idx",-1,"N_GenTopHad" );
+  vars.InitVars( "GenTopHad_Q2_Idx",-1,"N_GenTopHad" );
+  vars.InitVars( "GenTopLep_B_Idx",-1,"N_GenTopLep" );
+  vars.InitVar( "GenHiggs_B1_Idx",-1 );
+  vars.InitVar( "GenHiggs_B2_Idx",-1 );
   
   vars.InitVars( "TopJet_Dr_GenTopHad",-9.,"N_TopJets" );
   vars.InitVars( "TopJet_Dr_GenTopLep",-9.,"N_TopJets" );
@@ -123,15 +123,15 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVars( "GenTopLep_Pt",i,toplep[i].pt());
     vars.FillVars( "GenTopLep_Eta",i,toplep[i].eta());
     vars.FillVars( "GenTopLep_Phi",i,toplep[i].phi());
-    vars.FillVars( "GenTopLep_Pt_B",i,blep[i].pt());
-    vars.FillVars( "GenTopLep_Pt_Lep",i,lep[i].pt());
-    vars.FillVars( "GenTopLep_Pt_Nu",i,nu[i].pt());
-    vars.FillVars( "GenTopLep_Eta_B",i,blep[i].eta());
-    vars.FillVars( "GenTopLep_Eta_Lep",i,lep[i].eta());
-    vars.FillVars( "GenTopLep_Eta_Nu",i,nu[i].eta());
-    vars.FillVars( "GenTopLep_Phi_B",i,blep[i].phi());
-    vars.FillVars( "GenTopLep_Phi_Lep",i,lep[i].phi());
-    vars.FillVars( "GenTopLep_Phi_Nu",i,nu[i].phi());
+    vars.FillVars( "GenTopLep_B_Pt",i,blep[i].pt());
+    vars.FillVars( "GenTopLep_Lep_Pt",i,lep[i].pt());
+    vars.FillVars( "GenTopLep_Nu_Pt",i,nu[i].pt());
+    vars.FillVars( "GenTopLep_B_Eta",i,blep[i].eta());
+    vars.FillVars( "GenTopLep_Lep_Eta",i,lep[i].eta());
+    vars.FillVars( "GenTopLep_Nu_Eta",i,nu[i].eta());
+    vars.FillVars( "GenTopLep_B_Phi",i,blep[i].phi());
+    vars.FillVars( "GenTopLep_Lep_Phi",i,lep[i].phi());
+    vars.FillVars( "GenTopLep_Nu_Phi",i,nu[i].phi());
     
     int idxblep = -1;
     double minDrTopLep = 999;
@@ -143,7 +143,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     }
     
     if(minDrTopLep<.25){
-      vars.FillVars( "GenTopLep_Idx_B",i,idxblep);
+      vars.FillVars( "GenTopLep_B_Idx",i,idxblep);
     }
   }
   
@@ -179,15 +179,15 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVars( "GenTopHad_Pt",i,tophad[i].pt());
     vars.FillVars( "GenTopHad_Eta",i,tophad[i].eta());
     vars.FillVars( "GenTopHad_Phi",i,tophad[i].phi());
-    vars.FillVars( "GenTopHad_Pt_B",i,bhad[i].pt());
-    vars.FillVars( "GenTopHad_Pt_Q1",i,q1[i].pt());
-    vars.FillVars( "GenTopHad_Pt_Q2",i,q2[i].pt());
-    vars.FillVars( "GenTopHad_Eta_B",i,bhad[i].eta());
-    vars.FillVars( "GenTopHad_Eta_Q1",i,q1[i].eta());
-    vars.FillVars( "GenTopHad_Eta_Q2",i,q2[i].eta());
-    vars.FillVars( "GenTopHad_Phi_B",i,bhad[i].phi());
-    vars.FillVars( "GenTopHad_Phi_Q1",i,q1[i].phi());
-    vars.FillVars( "GenTopHad_Phi_Q2",i,q1[i].phi());
+    vars.FillVars( "GenTopHad_B_Pt",i,bhad[i].pt());
+    vars.FillVars( "GenTopHad_Q1_Pt",i,q1[i].pt());
+    vars.FillVars( "GenTopHad_Q2_Pt",i,q2[i].pt());
+    vars.FillVars( "GenTopHad_B_Eta",i,bhad[i].eta());
+    vars.FillVars( "GenTopHad_Q1_Eta",i,q1[i].eta());
+    vars.FillVars( "GenTopHad_Q2_Eta",i,q2[i].eta());
+    vars.FillVars( "GenTopHad_B_Phi",i,bhad[i].phi());
+    vars.FillVars( "GenTopHad_Q1_Phi",i,q1[i].phi());
+    vars.FillVars( "GenTopHad_Q2_Phi",i,q2[i].phi());
     
     int idxbhad=-1;
     int idxq1=-1;
@@ -212,13 +212,13 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     }
     
     if(minDrTopHadB<.25){
-      vars.FillVars( "GenTopHad_Idx_B",i,idxbhad);
+      vars.FillVars( "GenTopHad_B_Idx",i,idxbhad);
     }
     if(minDrTopHadQ1<.25){
-      vars.FillVars( "GenTopHad_Idx_Q1",i,idxq1);
+      vars.FillVars( "GenTopHad_Q1_Idx",i,idxq1);
     }
     if(minDrTopHadQ2<.25){
-      vars.FillVars( "GenTopHad_Idx_Q2",i,idxq2);
+      vars.FillVars( "GenTopHad_Q2_Idx",i,idxq2);
     }
   }
   
@@ -292,12 +292,12 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   }
   
   if(b1.pt()>0.){
-    vars.FillVar("GenHiggs_Pt_B1",b1.pt());
-    vars.FillVar("GenHiggs_Pt_B2",b2.pt());
-    vars.FillVar("GenHiggs_Eta_B1",b1.eta());
-    vars.FillVar("GenHiggs_Eta_B2",b2.eta());
-    vars.FillVar("GenHiggs_Phi_B1",b1.phi());
-    vars.FillVar("GenHiggs_Phi_B2",b2.phi());
+    vars.FillVar("GenHiggs_B1_Pt",b1.pt());
+    vars.FillVar("GenHiggs_B2_Pt",b2.pt());
+    vars.FillVar("GenHiggs_B1_Eta",b1.eta());
+    vars.FillVar("GenHiggs_B2_Eta",b2.eta());
+    vars.FillVar("GenHiggs_B1_Phi",b1.phi());
+    vars.FillVar("GenHiggs_B2_Phi",b2.phi());
     
     int idxb1=-1;
     int idxb2=-1;
@@ -316,10 +316,10 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     }
     
     if(minDrB1<.25){
-      vars.FillVar( "GenHiggs_Idx_B1",idxb1);
+      vars.FillVar( "GenHiggs_B1_Idx",idxb1);
     }
     if(minDrB2<.25){
-      vars.FillVar( "GenHiggs_Idx_B2",idxb2);
+      vars.FillVar( "GenHiggs_B2_Idx",idxb2);
     }
   }
   
