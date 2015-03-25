@@ -6,13 +6,18 @@ SynchSelection::SynchSelection (){}
 SynchSelection::~SynchSelection (){}
 
 void SynchSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
-  vector<std::string> muonTriggers;
-  muonTriggers.push_back("HLT_IsoMu24_eta2p1_IterTrk02_v1");
-  vector<std::string> electronTriggers;
-  electronTriggers.push_back("HLT_Ele27_eta2p1_WP85_Gsf_v1");
+//   vector<std::string> muonTriggers;
+//   muonTriggers.push_back("HLT_IsoMu24_eta2p1_IterTrk02_v1");
+//   vector<std::string> electronTriggers;
+//   electronTriggers.push_back("HLT_Ele27_eta2p1_WP85_Gsf_v1");
 
    std::cout<<electronTriggers.size()<<" "<<muonTriggers.size()<<" "<<std::endl;
 
+//   string doMode="eleele"; // electrons, muons, eleele, mumu, elemu
+  doMode="muons"; // electrons, muons, eleele, mumu, elemu
+  std::cout<<doMode<<std::endl;
+
+  if(doMode=="electrons" || doMode=="muons"){
   cutflow.AddStep("vertex selection");
   cutflow.AddStep("single lepton trigger");
   cutflow.AddStep("== 1 lepton");
@@ -21,7 +26,25 @@ void SynchSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
   cutflow.AddStep(">= 2 b-tags");
   cutflow.AddStep(">= 1 top tagged jet");
   cutflow.AddStep(">= 1 Higgs jet");
-  
+  }
+  else if(doMode=="eleele" || doMode=="mumu"){
+  cutflow.AddStep("vertex selection");
+  cutflow.AddStep("dilepton trigger");
+  cutflow.AddStep(">= 2 OS leptons");
+  cutflow.AddStep("mll > 20");
+  cutflow.AddStep("Z Veto");
+  cutflow.AddStep(">= 2 jets");
+  cutflow.AddStep("MET > 40");
+  cutflow.AddStep(">= 1 b-tag");
+  }
+  else{
+  cutflow.AddStep("vertex selection");
+  cutflow.AddStep("dilepton trigger");
+  cutflow.AddStep(">= 2 OS emu");
+  cutflow.AddStep("mll > 20");
+  cutflow.AddStep(">= 2 jets");
+  cutflow.AddStep(">= 1 b-tag");
+  }
   
   Config=iConfig;  
 
@@ -31,8 +54,17 @@ void SynchSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
 bool SynchSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "SynchSelection not initialized" << endl;
   
-  bool doElectrons=false;
+//   string doMode="eleele"; // electrons, muons, eleele, mumu, elemu
+//   doMode="eleele"; // electrons, muons, eleele, mumu, elemu
+
+  std::cout<<"---------------------------Event "<<input.event.evt<<"-----------------------------"<<std::endl;
+  std::cout<<doMode<<std::endl;
   
+  bool doNewCleaning=true;
+  
+//   if(input.event.evt != 82384913 && input.event.evt != 95466213 && input.event.evt !=83536962  && input.event.evt !=84405499) return false;
+//     if(input.event.evt != 88527215) return false;
+
   // For this selection, do object selections first
   // This is an exception, usually object selections should be done in BoostedAnalyzer.cc with the help of the miniAODhelper
   //do only first vertex
@@ -69,7 +101,7 @@ std::cout<<"doing electrons"<<std::endl;
   double pfIsoNeutralPhoton = iElectron.pfIsolationVariables().sumPhotonEt;
   double pfIsoSumPUPt = iElectron.pfIsolationVariables().sumPUPt;
 
-  double relIso = (pfIsoCharged + std::max( pfIsoNeutralHadron + pfIsoNeutralPhoton - 0.5*pfIsoSumPUPt, 0.0 ))/iElectron.pt();
+  double relIso = (pfIsoCharged + max( pfIsoNeutralHadron + pfIsoNeutralPhoton - 0.5*pfIsoSumPUPt, 0.0 ))/iElectron.pt();
 
 
     //other stuff
@@ -95,15 +127,17 @@ std::cout<<"doing electrons"<<std::endl;
   //do the checks
   passesConversion = ( iElectron.passConversionVeto() );
   passesKinematics = (iElectron.pt()>20 && fabs(iElectron.eta())<2.4);
-  inCrack = (fabs(iElectron.superCluster()->position().eta())>1.4442 && fabs(iElectron.superCluster()->position().eta())<1.5660);
+  if(iElectron.superCluster().isAvailable()){
+    inCrack = (fabs(iElectron.superCluster()->position().eta())>1.4442 && fabs(iElectron.superCluster()->position().eta())<1.5660);
+    }
   
   //dZ and d0 cuts are different than in the posted recipe 
   if(isEB){
-      passessID = (full5x5_sigmaIetaIeta<0.010399 && dEtaIn<0.007641 && dPhiIn<0.032643 &&hOverE<0.060662 && d0<0.05 && dZ<0.5 && expectedMissingInnerHits<=1 && ooEmooP<0.153897);
+      passessID = (full5x5_sigmaIetaIeta<0.010399 && dEtaIn<0.007641 && dPhiIn<0.032643 &&hOverE<0.060662 && d0<0.011811 && dZ<0.070775 && expectedMissingInnerHits<=1 && ooEmooP<0.153897);
       passesISO = (relIso<0.097213);
       }
   else if(isEE){
-      passessID = (full5x5_sigmaIetaIeta<0.029524 && dEtaIn<0.009285 && dPhiIn<0.042447 &&hOverE<0.104263 && d0<0.05 && dZ<0.5 && expectedMissingInnerHits<=1 && ooEmooP<0.137468);
+      passessID = (full5x5_sigmaIetaIeta<0.029524 && dEtaIn<0.009285 && dPhiIn<0.042447 &&hOverE<0.104263 && d0<0.051682 && dZ<0.180720 && expectedMissingInnerHits<=1 && ooEmooP<0.137468);
       passesISO = (relIso<0.116708);
       }
   else{
@@ -111,10 +145,14 @@ std::cout<<"doing electrons"<<std::endl;
        passesISO=false;
        }
   
+//   std::cout<<relIso<<" "<<isEB<<std::endl;
+//   std::cout<<dZ<<" "<<d0<<std::endl;
+//   std::cout<<passesKinematics<<" "<<passesConversion<<" "<<passesISO<<" "<<passessID<<" "<<inCrack<<std::endl;
+  
   if(passesKinematics && passesConversion && passesISO && passessID && !inCrack){
     selectedElectrons.push_back(*it);
     }
-    
+//   std::cout<<selectedElectrons.size()<<std::endl;
   }
   
 std::cout<<"doing muons"<<std::endl;
@@ -179,12 +217,26 @@ bool hasTriggered=false;
 //  std::cout<<electronTriggers.size()<<" "<<muonTriggers.size()<<" "<<std::endl;
 
 vector<string> targetTriggers;
-  if(doElectrons){
+  if(doMode=="electrons"){
     targetTriggers.push_back("HLT_Ele27_eta2p1_WP85_Gsf_v1");
   }
-  else{
+  else if(doMode=="muons"){
       targetTriggers.push_back("HLT_IsoMu24_eta2p1_IterTrk02_v1");
     }
+  else if(doMode=="eleele"){
+      targetTriggers.push_back("HLT_Ele23_Ele12_CaloId_TrackId_Iso_v1");
+  }
+  else if(doMode=="mumu"){
+      targetTriggers.push_back("HLT_Mu30_TkMu11_v1");
+      targetTriggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1");
+      targetTriggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1");
+
+  }
+  else if(doMode=="elemu"){
+     targetTriggers.push_back("HLT_Mu23_TrkIsoVVL_Ele12_Gsf_CaloId_TrackId_Iso_MediumWP_v1");
+     targetTriggers.push_back("HLT_Mu8_TrkIsoVVL_Ele23_Gsf_CaloId_TrackId_Iso_MediumWP_v1");
+  }
+  
   
  if(input.triggerResults.size()>0){ 
 //   std::cout<<"ok im here"<<std::endl;
@@ -218,20 +270,37 @@ std::vector<pat::Jet> bufferJets;
 for( std::vector<pat::Jet>::const_iterator it = input.selectedJets.begin(), ed = input.selectedJets.end(); it != ed; ++it ){
   pat::Jet iJet = *it;
   double originalPt = iJet.pt();
-  std::cout<<iJet.currentJECLevel()<<" "<<iJet.currentJECSet()<<std::endl;
+//   std::cout<<iJet.currentJECLevel()<<" "<<iJet.currentJECSet()<<std::endl;
   math::XYZTLorentzVector uncorrectedP4 = iJet.correctedP4("Uncorrected");
-  math::XYZTLorentzVector ALTuncorrectedP4 = iJet.correctedJet(0).p4();
+//   math::XYZTLorentzVector ALTuncorrectedP4 = iJet.correctedJet(0).p4();
   iJet.setP4(uncorrectedP4);
   double uncorrectedPt = iJet.pt();
-  std::cout<<originalPt<<" "<<uncorrectedPt<<std::endl;
-  iJet.setP4(ALTuncorrectedP4);
-  uncorrectedPt = iJet.pt();
+//   std::cout<<originalPt<<" "<<uncorrectedPt<<std::endl;
+//   iJet.setP4(ALTuncorrectedP4);
+//   uncorrectedPt = iJet.pt();
 //   std::cout<<iJet.currentJECLevel()<<" "<<iJet.currentJECSet()<<std::endl;
 
-//   std::cout<<originalPt<<" "<<uncorrectedPt<<std::endl;
+  std::cout<<originalPt<<" "<<uncorrectedPt<<std::endl;
   bufferJets.push_back(iJet);
 }
   
+  
+if(doNewCleaning){
+  //cleaning like in miniAODhelper
+  std::cout<<"doing new cleaning"<<std::endl;
+  for( std::vector<pat::Jet>::const_iterator it = bufferJets.begin(), ed = bufferJets.end(); it != ed; ++it ){
+//     std::cout<<it->pt()<<std::endl;
+    }
+  cleanEleJets = BoostedUtils::RemoveOverlaps(selectedElectrons, bufferJets);
+  for( std::vector<pat::Jet>::const_iterator it = cleanEleJets.begin(), ed = cleanEleJets.end(); it != ed; ++it ){
+//     std::cout<<it->pt()<<std::endl;
+    }
+  cleanMuonJets = BoostedUtils::RemoveOverlaps(selectedMuons, cleanEleJets);
+  for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = cleanMuonJets.end(); it != ed; ++it ){
+//     std::cout<<it->pt()<<std::endl;
+    }
+}
+else{
 //clean from electrons 
 for(std::vector<pat::Electron>::const_iterator iEle = selectedElectrons.begin(), ed = selectedElectrons.end(); iEle != ed; ++iEle ){
   pat::Electron Ele = *iEle;
@@ -257,6 +326,8 @@ for(std::vector<pat::Electron>::const_iterator iEle = selectedElectrons.begin(),
   for( std::vector<pat::Jet>::const_iterator it = bufferJets.begin(), ed = bufferJets.end(); it != ed; ++it ){
       pat::Jet iJet = *it;
       if(matchindex==counter){
+//       std::cout<<"ele jet "<<Ele.pt()<<" "<<iJet.pt()<<std::endl;
+//       std::cout<<"ele jet "<<Ele.energy()<<" "<<iJet.energy()<<std::endl;
         math::XYZTLorentzVector original = iJet.p4();
         original -= Ele.p4();
         iJet.setP4(original);
@@ -265,6 +336,9 @@ for(std::vector<pat::Electron>::const_iterator iEle = selectedElectrons.begin(),
         cleanEleJets.push_back(iJet);
        } 
       counter++;
+    
+
+//     std::cout<<Ele.eta()<<" "<<Ele.phi()<<" "<<iJet.eta()<<" "<<iJet.phi()<<std::endl;
    }
    bufferJets.clear();
    for( std::vector<pat::Jet>::const_iterator it = cleanEleJets.begin(), ed = cleanEleJets.end(); it != ed; ++it ){
@@ -307,6 +381,9 @@ for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuons.begin(), ed = s
   for( std::vector<pat::Jet>::const_iterator it = bufferJets.begin(), ed = bufferJets.end(); it != ed; ++it ){
       pat::Jet iJet = *it;
       if(matchindex==counter){
+//         std::cout<<"muon jet "<<Muon.pt()<<" "<<iJet.pt()<<std::endl;
+//         std::cout<<"muon jet "<<Muon.energy()<<" "<<iJet.energy()<<std::endl;
+
         math::XYZTLorentzVector original = iJet.p4();
         original -= Muon.p4();
         iJet.setP4(original);
@@ -315,6 +392,7 @@ for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuons.begin(), ed = s
         cleanMuonJets.push_back(iJet);
        } 
       counter++;
+      
    }
    bufferJets.clear();
    for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = cleanMuonJets.end(); it != ed; ++it ){
@@ -324,9 +402,11 @@ for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuons.begin(), ed = s
 }
 for( std::vector<pat::Jet>::const_iterator it = bufferJets.begin(), ed = bufferJets.end(); it != ed; ++it ){
   cleanMuonJets.push_back(*it);
-  std::cout<<it->pt()<<std::endl;
+//   std::cout<<it->pt()<<std::endl;
 }
-
+}
+  
+  
 //now correct the jets again
 //using the PHYS14_25_V2 corrections i hope :)
 /*  "ak4PFchsL1L2L3"*/
@@ -337,11 +417,12 @@ correctedJets.clear();
 std::cout<<"setup the corrector"<<std::endl;
 for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = cleanMuonJets.end(); it != ed; ++it ){
   pat::Jet iJet = *it;
-  double jec = jetCorrector->correction(iJet, input.edmevent, input.setup );
-  std::cout<<"uncorrected "<<jec<<" "<<iJet.pt()<<std::endl;
+  double jec =1.0;
+  jec = jetCorrector->correction(iJet, input.edmevent, input.setup );
+//   std::cout<<"uncorrected "<<jec<<" "<<iJet.pt()<<std::endl;
   iJet.scaleEnergy(jec);
-  std::cout<<"corrected "<<iJet.pt()<<std::endl;
-  std::cout<<iJet.currentJECLevel()<<" "<<iJet.currentJECSet()<<" "<<std::endl;
+//   std::cout<<"corrected "<<iJet.pt()<<std::endl;
+//   std::cout<<iJet.currentJECLevel()<<" "<<iJet.currentJECSet()<<" "<<std::endl;
 
   correctedJets.push_back(iJet);
 
@@ -367,7 +448,7 @@ for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = clea
 
 //now sort the jets by pt
 std::sort(correctedJets.begin(), correctedJets.end(), BoostedUtils::FirstJetIsHarder);
-std::cout<<correctedJets.at(0).pt()<<" "<<correctedJets.at(1).pt()<<" "<<correctedJets.at(2).pt()<<std::endl;
+// std::cout<<correctedJets.at(0).pt()<<" "<<correctedJets.at(1).pt()<<" "<<correctedJets.at(2).pt()<<std::endl;
 
 //now select only the good jets  
 selectedJets.clear();
@@ -375,7 +456,7 @@ for( std::vector<pat::Jet>::const_iterator it = correctedJets.begin(), ed = corr
   pat::Jet iJet = *it;
 
   bool isselected=false;
-  isselected=(iJet.pt()>25 && abs(iJet.eta())<2.4 && iJet.neutralHadronEnergyFraction()<0.99 && iJet.chargedHadronEnergyFraction()>0.0 && iJet.chargedMultiplicity()>0.0 && iJet.chargedEmEnergyFraction()<0.99 && iJet.neutralEmEnergyFraction()<0.99 && iJet.numberOfDaughters()>1 );
+  isselected=(iJet.pt()>25.0 && abs(iJet.eta())<2.4 && iJet.neutralHadronEnergyFraction()<0.99 && iJet.chargedHadronEnergyFraction()>0.0 && iJet.chargedMultiplicity()>0.0 && iJet.chargedEmEnergyFraction()<0.99 && iJet.neutralEmEnergyFraction()<0.99 && iJet.numberOfDaughters()>1 );
   if(isselected){
     selectedJets.push_back(iJet);
     }
@@ -429,7 +510,7 @@ for( std::vector<boosted::HEPTopJet>::const_iterator it = input.selectedHEPTopJe
     m23=(topvecs[1]+topvecs[2]).M();
     m123=(topvecs.at(0)+topvecs.at(1)+topvecs.at(2)).M();
   }
-  
+//   std::cout<<m12<<" "<<m23<<" "<<m13<<" "<<m123<<std::endl;
   bool tagOne=false;
   bool tagTwo=false;
   bool tagThree=false;
@@ -494,6 +575,9 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
   float lep1_pt=-99;
   float lep1_eta=-99;
   float lep1_phi=-99;
+  float lep2_pt=-99;
+  float lep2_eta=-99;
+  float lep2_phi=-99;
   float jet1_pt=-99;
   float jet2_pt=-99;
   float jet3_pt=-99; 
@@ -507,22 +591,53 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
   int n_toptags=-99; 
   int n_higgstags=-99;
   
+  float m_ll=0.0;
+  float MET_pt=-99;
+  
   run = int(input.event.run);
   lumi = int(input.event.lumiBlock);
   event = int(input.event.evt);
+  MET_pt = input.pfMets.front().pt();
   
-  // not clear what lep1 is
-  // do we need to sort ele+mu by pt?
-  if(doElectrons && selectedElectrons.size()>0){
-    lep1_pt=selectedElectrons.at(0).pt();
-    lep1_eta=selectedElectrons.at(0).eta();
-    lep1_phi=selectedElectrons.at(0).phi();
+  
+//   // not clear what lep1 is
+//   // do we need to sort ele+mu by pt?
+for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuons.begin(), ed = selectedMuons.end(); iMuon != ed; ++iMuon ){
+    if(iMuon->pt()>lep1_pt){
+    lep1_pt=iMuon->pt();
+    lep1_eta=iMuon->eta();
+    lep1_phi=iMuon->phi();}
   }
-  else if(selectedMuons.size()>0){
-   lep1_pt=selectedMuons.at(0).pt();
-   lep1_eta=selectedMuons.at(0).eta();
-   lep1_phi=selectedMuons.at(0).phi();
+for(std::vector<pat::Electron>::const_iterator iEle = selectedElectrons.begin(), ed = selectedElectrons.end(); iEle != ed; ++iEle ){
+    if(iEle->pt()>lep1_pt){
+    lep1_pt=iEle->pt();
+    lep1_eta=iEle->eta();
+    lep1_phi=iEle->phi();}
   }
+  
+for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuons.begin(), ed = selectedMuons.end(); iMuon != ed; ++iMuon ){
+    if(iMuon->pt()>lep2_pt && iMuon->pt()!=lep1_pt){
+    lep2_pt=iMuon->pt();
+    lep2_eta=iMuon->eta();
+    lep2_phi=iMuon->phi();}
+  }
+for(std::vector<pat::Electron>::const_iterator iEle = selectedElectrons.begin(), ed = selectedElectrons.end(); iEle != ed; ++iEle ){
+    if(iEle->pt()>lep2_pt && iEle->pt()!=lep1_pt){
+    lep2_pt=iEle->pt();
+    lep2_eta=iEle->eta();
+    lep2_phi=iEle->phi();}
+  }
+
+//   if(doElectrons && selectedElectrons.size()>0){
+//     lep1_pt=selectedElectrons.at(0).pt();
+//     lep1_eta=selectedElectrons.at(0).eta();
+//     lep1_phi=selectedElectrons.at(0).phi();
+//   }
+//   else if(selectedMuons.size()>0){
+//    lep1_pt=selectedMuons.at(0).pt();
+//    lep1_eta=selectedMuons.at(0).eta();
+//    lep1_phi=selectedMuons.at(0).phi();
+//   }
   
   if(selectedJets.size()>0){
   jet1_pt=selectedJets.at(0).pt();
@@ -560,15 +675,101 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
 	 n_toptags, n_higgstags);
 
 
+  std::vector<pat::Electron> posElectrons;
+   std::vector<pat::Electron> negElectrons;
+   std::vector<pat::Muon> posMuons;
+   std::vector<pat::Muon> negMuons;
+
+  for(std::vector<pat::Electron>::const_iterator iEle = selectedElectrons.begin(), ed = selectedElectrons.end(); iEle != ed; ++iEle ){
+    pat::Electron iElectron = *iEle;
+    if(iEle->gsfTrack()->charge() > 0) posElectrons.push_back(iElectron);
+    else if(iEle->gsfTrack()->charge() < 0) negElectrons.push_back(iElectron);
+  }
+  for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuons.begin(), ed = selectedMuons.end(); iMuon != ed; ++iMuon ){
+    pat::Muon Muon=*iMuon;
+    if(iMuon->muonBestTrack()->charge() > 0) posMuons.push_back(Muon);
+    else if(iMuon->muonBestTrack()->charge() < 0) negMuons.push_back(Muon);
+  }
+  
+  
+  if(doMode=="eleele"){
+    double ppt=0;
+    double npt=0;
+    for(std::vector<pat::Electron>::const_iterator ipE = posElectrons.begin(), ed = posElectrons.end(); ipE != ed; ++ipE ){
+      if(ipE->pt()>ppt){
+        ppt=ipE->pt();
+        for(std::vector<pat::Electron>::const_iterator inE = negElectrons.begin(), ed = negElectrons.end(); inE != ed; ++inE ){
+          if(inE->pt()>npt){
+            npt=inE->pt();
+            m_ll = (ipE->p4()+inE->p4()).M();
+            }
+          }
+      }
+    }
+  }
+  else if(doMode=="mumu"){
+    double ppt=0;
+    double npt=0;
+    for(std::vector<pat::Muon>::const_iterator ipM = posMuons.begin(), ed = posMuons.end(); ipM != ed; ++ipM ){
+      if(ipM->pt()>ppt){
+        ppt=ipM->pt();
+        for(std::vector<pat::Muon>::const_iterator inM = negMuons.begin(), ed = negMuons.end(); inM != ed; ++inM ){
+          if(inM->pt()>npt){
+            npt=inM->pt();
+            m_ll = (ipM->p4()+inM->p4()).M();
+            }
+          }
+      }
+    }
+  }
+   else if(doMode=="elemu"){
+    double ppt=0;
+    double npt=0;
+    for(std::vector<pat::Muon>::const_iterator ipM = posMuons.begin(), ed = posMuons.end(); ipM != ed; ++ipM ){
+      if(ipM->pt()>ppt){
+        ppt=ipM->pt();
+        for(std::vector<pat::Electron>::const_iterator inE = negElectrons.begin(), ed = negElectrons.end(); inE != ed; ++inE ){
+          if(inE->pt()>npt){
+            npt=inE->pt();
+            m_ll = (ipM->p4()+inE->p4()).M();
+            }
+          }
+      }
+    }
+    for(std::vector<pat::Electron>::const_iterator ipE = posElectrons.begin(), ed = posElectrons.end(); ipE != ed; ++ipE ){
+      if(ipE->pt()>ppt){
+        ppt=ipE->pt();
+        for(std::vector<pat::Muon>::const_iterator inM = negMuons.begin(), ed = negMuons.end(); inM != ed; ++inM ){
+          if(inM->pt()>npt){
+            npt=inM->pt();
+            m_ll = (ipE->p4()+inM->p4()).M();
+            }
+          }
+      }
+    }
+  }
+//   std::cout<<"m_ll "<<m_ll<<std::endl;
+
+printf("dileptons %6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+    run, lumi, event,
+    lep1_pt, lep1_eta, lep1_phi,
+    lep2_pt, lep2_eta, lep2_phi,
+    m_ll, MET_pt,
+    jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+    jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+    n_jets, n_btags);
+
   // make event selection
   string outfile;
   
+  
+  if(doMode=="electrons" || doMode=="muons"){
   if(!hasGoodVertex) return false;
   else cutflow.EventSurvivedStep("vertex selection");
   
   if(!hasTriggered) return false;
   else{ cutflow.EventSurvivedStep("single lepton trigger");
-    if(doElectrons) outfile="KIT_sync_ele_1.txt";
+    if(doMode=="electrons") outfile="KIT_sync_ele_1.txt";
     else outfile="KIT_sync_mu_1.txt";
     FILE* pFile;
     pFile=fopen(outfile.c_str(),"a");
@@ -586,12 +787,12 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
     }
       
   bool singleLepton=false;
-  if(doElectrons){if(selectedElectrons.size()==1)singleLepton=true;}
+  if(doMode=="electrons"){if(selectedElectrons.size()==1)singleLepton=true;}
   else{if(selectedMuons.size()==1)singleLepton=true;}
   
   if(!singleLepton) return false;
   else{ cutflow.EventSurvivedStep("== 1 lepton");
-    if(doElectrons) outfile="KIT_sync_ele_2.txt";
+    if(doMode=="electrons") outfile="KIT_sync_ele_2.txt";
     else outfile="KIT_sync_mu_2.txt";
     FILE* pFile;
     pFile=fopen(outfile.c_str(),"a");
@@ -609,11 +810,11 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
     }
     
   bool noOtherLepton=false;
-  if(doElectrons){if(selectedMuons.size()==0)noOtherLepton=true;}
+  if(doMode=="electrons"){if(selectedMuons.size()==0)noOtherLepton=true;}
   else{if(selectedElectrons.size()==0)noOtherLepton=true;}
   if(!noOtherLepton) return false;
   else{ cutflow.EventSurvivedStep("== 0 leptons different flavor");
-    if(doElectrons) outfile="KIT_sync_ele_3.txt";
+    if(doMode=="electrons") outfile="KIT_sync_ele_3.txt";
     else outfile="KIT_sync_mu_3.txt";
     FILE* pFile;
     pFile=fopen(outfile.c_str(),"a");
@@ -632,7 +833,7 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
     
   if(selectedJets.size()<4) return false;
   else{ cutflow.EventSurvivedStep(">= 4 jets");
-  if(doElectrons) outfile="KIT_sync_ele_4.txt";
+  if(doMode=="electrons") outfile="KIT_sync_ele_4.txt";
     else outfile="KIT_sync_mu_4.txt";
     FILE* pFile;
     pFile=fopen(outfile.c_str(),"a");
@@ -652,7 +853,7 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
     
   if(taggedJets.size()<2) return false;
   else{ cutflow.EventSurvivedStep(">= 2 b-tags");
-  if(doElectrons) outfile="KIT_sync_ele_5.txt";
+  if(doMode=="electrons") outfile="KIT_sync_ele_5.txt";
     else outfile="KIT_sync_mu_5.txt";
     FILE* pFile;
     pFile=fopen(outfile.c_str(),"a");
@@ -671,7 +872,7 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
     
   if(selectedTopJets.size()<1) return false;
   else{ cutflow.EventSurvivedStep(">= 1 top tagged jet");
-  if(doElectrons) outfile="KIT_sync_ele_6.txt";
+  if(doMode=="electrons") outfile="KIT_sync_ele_6.txt";
     else outfile="KIT_sync_mu_6.txt";
     FILE* pFile;
     pFile=fopen(outfile.c_str(),"a");
@@ -690,7 +891,7 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
     
   if(selectedHiggsJets.size()<1) return false;
   else{ cutflow.EventSurvivedStep(">= 1 Higgs jet");
-  if(doElectrons) outfile="KIT_sync_ele_7.txt";
+  if(doMode=="electrons") outfile="KIT_sync_ele_7.txt";
     else outfile="KIT_sync_mu_7.txt";
     FILE* pFile;
     pFile=fopen(outfile.c_str(),"a");
@@ -706,7 +907,285 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
       fclose (pFile);
       } 
     }
+  }
+  
+  
+  //same lepton selection
+  else if(doMode=="eleele" || doMode=="mumu"){
+  if(!hasGoodVertex) return false;
+  else cutflow.EventSurvivedStep("vertex selection");
+  
+  if(!hasTriggered) return false;
+  else{ cutflow.EventSurvivedStep("dilepton trigger");
+    if(doMode=="eleele") outfile="KIT_sync_eleele_1.txt";
+    else outfile="KIT_sync_mumu_1.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }
+  
+  bool twoOSLeptons=false;
+  int negLepton=0;
+  int posLepton=0;
+  if(doMode=="eleele"){
+    std::cout<<"electron charges"<<std::endl;
+    for(std::vector<pat::Electron>::const_iterator iEle = selectedElectrons.begin(), ed = selectedElectrons.end(); iEle != ed; ++iEle ){
+    std::cout<<iEle->gsfTrack()->charge()<<std::endl;
+    if(iEle->gsfTrack()->charge() > 0) posLepton++;
+    else if(iEle->gsfTrack()->charge() < 0) negLepton++;
+  }
+  }
+  else{
+  std::cout<<"muon charges"<<std::endl;
+    for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuons.begin(), ed = selectedMuons.end(); iMuon != ed; ++iMuon ){
+    std::cout<<iMuon->muonBestTrack()->charge()<<std::endl;
+    if(iMuon->muonBestTrack()->charge() > 0) posLepton++;
+    else if(iMuon->muonBestTrack()->charge() < 0) negLepton++;
+  }
+  }
+  
+  twoOSLeptons=(negLepton>0 && posLepton>0);
+  if(!twoOSLeptons) return false;
+  else{ cutflow.EventSurvivedStep(">= 2 OS leptons");
+    if(doMode=="eleele") outfile="KIT_sync_eleele_2.txt";
+    else outfile="KIT_sync_mumu_2.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }
     
+  if(m_ll<=20) return false;
+  else{ cutflow.EventSurvivedStep("mll > 20");
+    if(doMode=="eleele") outfile="KIT_sync_eleele_3.txt";
+    else outfile="KIT_sync_mumu_3.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }
+    
+  if(m_ll<106.0 && m_ll>76.0) return false;
+  else{ cutflow.EventSurvivedStep("Z Veto");
+    if(doMode=="eleele") outfile="KIT_sync_eleele_4.txt";
+    else outfile="KIT_sync_mumu_4.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }
+    
+  if(selectedJets.size()<2) return false;
+  else{ cutflow.EventSurvivedStep(">= 2 jets");
+    if(doMode=="eleele") outfile="KIT_sync_eleele_5.txt";
+    else outfile="KIT_sync_mumu_5.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }
+    
+  std::cout<<"MET "<<input.pfMets.front().pt()<<std::endl;
+  if(input.pfMets.front().pt()<=40.0) return false;
+  else{ cutflow.EventSurvivedStep("MET > 40");
+    if(doMode=="eleele") outfile="KIT_sync_eleele_6.txt";
+    else outfile="KIT_sync_mumu_6.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }    
+    
+  if(taggedJets.size()<1) return false;
+  else{ cutflow.EventSurvivedStep(">= 1 b-tag");
+    if(doMode=="eleele") outfile="KIT_sync_eleele_7.txt";
+    else outfile="KIT_sync_mumu_7.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }    
+    
+
+
+
+  }
+  
+  //different lepton selection
+  else if(doMode=="elemu"){
+  if(!hasGoodVertex) return false;
+  else cutflow.EventSurvivedStep("vertex selection");
+  
+  if(!hasTriggered) return false;
+  else{ cutflow.EventSurvivedStep("dilepton trigger");
+    outfile="KIT_sync_elemu_1.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }
+  
+  bool twoOSelemu=false;
+  twoOSelemu = ( (posElectrons.size()>=1 && negMuons.size()>=1 ) || (negElectrons.size()>=1 && posMuons.size()>=1 ) );
+  
+  if(!twoOSelemu) return false;
+  else{ cutflow.EventSurvivedStep(">= 2 OS emu");
+    outfile="KIT_sync_elemu_2.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }
+    
+  if(m_ll<=20) return false;
+  else{ cutflow.EventSurvivedStep("mll > 20");
+    outfile="KIT_sync_elemu_3.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }
+    
+  if(selectedJets.size()<2) return false;
+  else{ cutflow.EventSurvivedStep(">= 2 jets");
+    outfile="KIT_sync_elemu_4.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }
+    
+  if(taggedJets.size()<1) return false;
+  else{ cutflow.EventSurvivedStep(">= 1 b-tag");
+    outfile="KIT_sync_elemu_5.txt";
+    FILE* pFile;
+    pFile=fopen(outfile.c_str(),"a");
+    if(pFile!=NULL)
+      {
+      fprintf(pFile, "%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.2f  %6.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d\n",
+      run, lumi, event,
+      lep1_pt, lep1_eta, lep1_phi,
+      lep2_pt, lep2_eta, lep2_phi,
+      m_ll, MET_pt,
+      jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+      jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+      n_jets, n_btags);
+      fclose (pFile);
+      } 
+    }    
+  }
+  
   return true;
   
 }

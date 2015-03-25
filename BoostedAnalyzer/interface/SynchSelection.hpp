@@ -27,7 +27,7 @@ private:
   std::vector<std::string> muonTriggers;
   std::vector<std::string> electronTriggers;
   edm::ParameterSet Config;
-
+  std::string doMode;
 };
 
 #endif

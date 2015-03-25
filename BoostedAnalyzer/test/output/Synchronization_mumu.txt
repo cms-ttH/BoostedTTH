@@ -1,0 +1,9 @@
+0 : all : 5000
+1 : vertex selection : 4997
+2 : dilepton trigger : 213
+3 : >= 2 OS leptons : 29
+4 : mll > 20 : 28
+5 : Z Veto : 19
+6 : >= 2 jets : 17
+7 : MET > 40 : 14
+8 : >= 1 b-tag : 11
