@@ -7,7 +7,7 @@ config.General.workArea = 'crab_projects'
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = '/nfs/dust/cms/user/shwillia/CMSSW_7_2_3/src/BoostedTTH/BoostedProducer/test/boostedProducer_cfg.py'
+config.JobType.psetName = '/nfs/dust/cms/user/tpfotzer/CMSSW_7_2_3/src/BoostedTTH/BoostedProducer/test/boostedProducer_cfg.py'
 config.JobType.outputFiles = ['BoostedMiniAOD.root']
 
 config.section_("Data")
@@ -15,10 +15,10 @@ config.Data.inputDataset = '/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/Phys14DR
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
-config.Data.publication = True
+config.Data.publication = False
 #config.Data.totalUnits = 5
 #config.Data.publishDbsUrl = 'phys03'
-config.Data.publishDataName = 'BoostedTTH_MiniAOD'
+#config.Data.publishDataName = 'BoostedTTH_MiniAOD'
 
 config.section_("Site")
 config.Site.storageSite = 'T2_DE_DESY'

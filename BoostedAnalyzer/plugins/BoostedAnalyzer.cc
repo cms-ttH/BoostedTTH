@@ -394,7 +394,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   }
   
   /**** GET SUBFILTERJETS ****/
-  edm::Handle<boosted::SubFilterJetCollection> h_subfilterjet;                   
+  edm::Handle<boosted::SubFilterJetCollection> h_subfilterjet;
   boosted::SubFilterJetCollection subfilterjets;
   if(useFatJets){
     iEvent.getByToken( EDMSubFilterJetsToken,h_subfilterjet );
@@ -483,10 +483,10 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	    selected=false;
   }
   
-  if(!selected) return;    
+  if(!selected) return;
 
   // WRITE TREE
-  treewriter.Process(input);  
+  treewriter.Process(input);
 }
 
 

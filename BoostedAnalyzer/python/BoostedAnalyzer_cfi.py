@@ -3,7 +3,7 @@ from BoostedTTH.BoostedAnalyzer.Selection_cff import *
 
 BoostedAnalyzer = cms.EDAnalyzer('BoostedAnalyzer',
   LeptonSelectionNoTrigger,
-  JetTagSelection,  
+  JetTagSelection,
   era = cms.string("2012_53x"),
   analysisType = cms.string("LJ"),
   luminostiy = cms.double(19.7),
