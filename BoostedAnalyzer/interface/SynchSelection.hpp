@@ -4,9 +4,12 @@
 #include <vector>
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include <stdio.h>
 #include <string.h>
+#include "JetMETCorrections/Objects/interface/JetCorrector.h"
 
 
 
@@ -23,7 +26,8 @@ private:
   
   std::vector<std::string> muonTriggers;
   std::vector<std::string> electronTriggers;
-
+  edm::ParameterSet Config;
+  std::string doMode;
 };
 
 #endif

@@ -478,7 +478,9 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                           genParticles,
                           selectedGenJets,
                           sampleType,
-                          weights
+                          weights,
+			  iSetup,
+                          iEvent
 			  );
   InputCollections unselected_input( event,
 			  selectedTrigger,
@@ -497,7 +499,9 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                           genParticles,
                           selectedGenJets,
                           sampleType,
-                          weights
+                          weights,
+			  iSetup,
+                          iEvent
 			  );
         
   
