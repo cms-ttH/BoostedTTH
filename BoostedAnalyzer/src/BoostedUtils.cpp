@@ -222,9 +222,22 @@ void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genPa
     if(itPart->mother()->pdgId()==24   && abs(itPart->pdgId())>=11&&abs(itPart->pdgId())<=16) leptonsFromWplus.push_back(*itPart);
     if(itPart->mother()->pdgId()==-24  && abs(itPart->pdgId())>=11&&abs(itPart->pdgId())<=16) leptonsFromWminus.push_back(*itPart);
     if(itPart->mother()->pdgId()==25   && abs(itPart->pdgId())==5) bquarksFromHiggs.push_back(*itPart);
-    if(itPart->mother()->pdgId()!=25   && itPart->pdgId()==25) higgs = *itPart;
-    if(itPart->mother()->pdgId()!=6    && itPart->pdgId()==6) top = *itPart;
-    if(itPart->mother()->pdgId()!=-6   && itPart->pdgId()==-6) topbar = *itPart;
+    
+    if(itPart->pdgId()==25 || fabs(itPart->pdgId())==6){
+      bool lastHiggs = true;
+      bool lastTop = true;
+      bool lastTopBar = true;
+
+      for(size_t iDaughter = 0;iDaughter<itPart->numberOfDaughters();++iDaughter){
+        if(itPart->daughter(iDaughter)->pdgId()==25) lastHiggs = false;
+        if(itPart->daughter(iDaughter)->pdgId()==6) lastTop = false;
+        if(itPart->daughter(iDaughter)->pdgId()==-6) lastTopBar = false;
+      }
+
+      if(lastHiggs  && itPart->pdgId()==25) higgs = *itPart;
+      if(lastTop    && itPart->pdgId()==6)  top = *itPart;
+      if(lastTopBar && itPart->pdgId()==-6) topbar = *itPart; 
+    }
   }
   
   if(leptonsFromWplus.size()==2 && quarksFromT.size()>=1){
