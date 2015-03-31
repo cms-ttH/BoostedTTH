@@ -172,6 +172,17 @@ float BoostedUtils::CosThetaCM(const math::XYZTLorentzVector& vec,const math::XY
 }
 
 
+std::vector<math::XYZTLorentzVector> BoostedUtils::GetGenParticleVecs(const std::vector<reco::GenParticle>& genParticles){
+  std::vector<math::XYZTLorentzVector> genParticleVecs;
+  
+  for(std::vector<reco::GenParticle>::const_iterator itPart=genParticles.begin();itPart!=genParticles.end();++itPart){
+    genParticleVecs.push_back(itPart->p4());
+  }
+  
+  return genParticleVecs;
+}
+
+
 bool BoostedUtils::MCContainsTTbar(const std::vector<reco::GenParticle>& genParticles){
   bool foundT=false;
   bool foundTbar=false;
@@ -191,7 +202,7 @@ bool BoostedUtils::MCContainsHiggs(const std::vector<reco::GenParticle>& genPart
 }
 
 
-void BoostedUtils::GetttHMCVecs(const std::vector<reco::GenParticle>& genParticles, vector<math::XYZTLorentzVector>& bhadvec, vector<math::XYZTLorentzVector>& q1vec, vector<math::XYZTLorentzVector>& q2vec, vector<math::XYZTLorentzVector>& blepvec, vector<math::XYZTLorentzVector>& lepvec, vector<math::XYZTLorentzVector>& nuvec, math::XYZTLorentzVector& b1vec, math::XYZTLorentzVector& b2vec){
+void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genParticles, std::vector<reco::GenParticle>& tophad, std::vector<reco::GenParticle>& bhad, std::vector<reco::GenParticle>& q1, std::vector<reco::GenParticle>& q2, std::vector<reco::GenParticle>& toplep, std::vector<reco::GenParticle>& blep, std::vector<reco::GenParticle>& lep, std::vector<reco::GenParticle>& nu, reco::GenParticle& higgs, reco::GenParticle& b1, reco::GenParticle& b2){
   std::vector<reco::GenParticle> leptonsFromWplus;
   std::vector<reco::GenParticle> leptonsFromWminus;
   std::vector<reco::GenParticle> quarksFromWplus;
@@ -201,7 +212,6 @@ void BoostedUtils::GetttHMCVecs(const std::vector<reco::GenParticle>& genParticl
   std::vector<reco::GenParticle> bquarksFromHiggs;
   reco::GenParticle top;
   reco::GenParticle topbar;
-  reco::GenParticle higgs;
   
   for(std::vector<reco::GenParticle>::const_iterator itPart = genParticles.begin();itPart != genParticles.end();itPart++) {
     if(itPart->numberOfMothers()==0) continue;
@@ -217,62 +227,76 @@ void BoostedUtils::GetttHMCVecs(const std::vector<reco::GenParticle>& genParticl
     if(itPart->mother()->pdgId()!=-6   && itPart->pdgId()==-6) topbar = *itPart;
   }
   
-  math::XYZTLorentzVector topvec = top.p4();
-  math::XYZTLorentzVector topbarvec = topbar.p4();
-  
-  std::vector<reco::GenParticle> tophad;
-  std::vector<reco::GenParticle> toplep;
-  std::vector<math::XYZTLorentzVector> tophadvec;
-  std::vector<math::XYZTLorentzVector> toplepvec;
-  
   if(leptonsFromWplus.size()==2 && quarksFromT.size()>=1){
     toplep.push_back(top);
-    toplepvec.push_back(topvec);
-    blepvec.push_back(quarksFromT[0].p4());
+    blep.push_back(quarksFromT[0]);
     if(leptonsFromWplus[0].pdgId()%2!=0){
-      lepvec.push_back(leptonsFromWplus[0].p4());
-      nuvec.push_back(leptonsFromWplus[1].p4());
+      lep.push_back(leptonsFromWplus[0]);
+      nu.push_back(leptonsFromWplus[1]);
     }
     else{
-      lepvec.push_back(leptonsFromWplus[1].p4());
-      nuvec.push_back(leptonsFromWplus[0].p4());
+      lep.push_back(leptonsFromWplus[1]);
+      nu.push_back(leptonsFromWplus[0]);
     }
   }
-  
   if(leptonsFromWminus.size()==2 && quarksFromTbar.size()>=1){
     toplep.push_back(topbar);
-    toplepvec.push_back(topbarvec);
-    blepvec.push_back(quarksFromTbar[0].p4());
+    blep.push_back(quarksFromTbar[0]);
     if(leptonsFromWminus[0].pdgId()%2!=0){
-      lepvec.push_back(leptonsFromWminus[0].p4());
-      nuvec.push_back(leptonsFromWminus[1].p4());
+      lep.push_back(leptonsFromWminus[0]);
+      nu.push_back(leptonsFromWminus[1]);
     }
     else{
-      lepvec.push_back(leptonsFromWminus[1].p4());
-      nuvec.push_back(leptonsFromWminus[0].p4());
+      lep.push_back(leptonsFromWminus[1]);
+      nu.push_back(leptonsFromWminus[0]);
     }
   }
-  
   if(quarksFromWplus.size()==2 && quarksFromT.size()>=1){
     tophad.push_back(top);
-    tophadvec.push_back(topvec);
-    bhadvec.push_back(quarksFromT[0].p4());
-    q1vec.push_back(quarksFromWplus[0].p4());
-    q2vec.push_back(quarksFromWplus[1].p4());
+    bhad.push_back(quarksFromT[0]);
+    q1.push_back(quarksFromWplus[0]);
+    q2.push_back(quarksFromWplus[1]);
   }
-  
   if(quarksFromWminus.size()==2 && quarksFromTbar.size()>=1){
     tophad.push_back(topbar);
-    tophadvec.push_back(topbarvec);
-    bhadvec.push_back(quarksFromTbar[0].p4());
-    q1vec.push_back(quarksFromWminus[0].p4());
-    q2vec.push_back(quarksFromWminus[1].p4());
+    bhad.push_back(quarksFromTbar[0]);
+    q1.push_back(quarksFromWminus[0]);
+    q2.push_back(quarksFromWminus[1]);
   }
-
   if(bquarksFromHiggs.size()==2){
-    b1vec = bquarksFromHiggs[0].p4();
-    b2vec = bquarksFromHiggs[1].p4();
-  }
+    b1 = bquarksFromHiggs[0];
+    b2 = bquarksFromHiggs[1];
+  }  
+}
+
+
+void BoostedUtils::GetttHMCVecs(const std::vector<reco::GenParticle>& genParticles, std::vector<math::XYZTLorentzVector>& tophadvecs, std::vector<math::XYZTLorentzVector>& bhadvecs, std::vector<math::XYZTLorentzVector>& q1vecs, std::vector<math::XYZTLorentzVector>& q2vecs, std::vector<math::XYZTLorentzVector>& toplepvecs, std::vector<math::XYZTLorentzVector>& blepvecs, std::vector<math::XYZTLorentzVector>& lepvecs, std::vector<math::XYZTLorentzVector>& nuvecs, math::XYZTLorentzVector& higgsvec, math::XYZTLorentzVector& b1vec, math::XYZTLorentzVector& b2vec){
+  
+  std::vector<reco::GenParticle> tophad;
+  std::vector<reco::GenParticle> bhad;
+  std::vector<reco::GenParticle> q1;
+  std::vector<reco::GenParticle> q2;
+  std::vector<reco::GenParticle> toplep;
+  std::vector<reco::GenParticle> blep;
+  std::vector<reco::GenParticle> lep;
+  std::vector<reco::GenParticle> nu;
+  reco::GenParticle higgs;
+  reco::GenParticle b1;
+  reco::GenParticle b2;
+  
+  GetttHMCParticles(genParticles,tophad,bhad,q1,q2,toplep,blep,lep,nu,higgs,b1,b2);
+  
+  tophadvecs = GetGenParticleVecs(tophad);
+  bhadvecs = GetGenParticleVecs(bhad);
+  q1vecs = GetGenParticleVecs(q1);
+  q2vecs = GetGenParticleVecs(q2);
+  toplepvecs = GetGenParticleVecs(toplep);
+  blepvecs = GetGenParticleVecs(blep);
+  lepvecs = GetGenParticleVecs(lep);
+  nuvecs = GetGenParticleVecs(nu);
+  higgsvec = higgs.p4();
+  b1vec = b1.p4();
+  b2vec = b2.p4();
 }
 
 
@@ -318,7 +342,7 @@ std::vector<math::XYZTLorentzVector> BoostedUtils::GetLepVecs(const std::vector<
 
 math::XYZTLorentzVector BoostedUtils::GetPrimLepVec(const std::vector<pat::Electron>& selectedElectrons,const std::vector<pat::Muon> selectedMuons){
   
-  vector<math::XYZTLorentzVector> leptonVecs = GetLepVecs(selectedElectrons,selectedMuons);
+  std::vector<math::XYZTLorentzVector> leptonVecs = GetLepVecs(selectedElectrons,selectedMuons);
   
   if(leptonVecs.size()==0){
     std::cerr<< "No PrimLep Found!" << std::endl;
@@ -352,7 +376,7 @@ void BoostedUtils::GetNuVecs(const math::XYZTLorentzVector& lepvec, const TVecto
 
 
 vector<math::XYZTLorentzVector> BoostedUtils::GetJetVecs(const std::vector<pat::Jet>& jets){
-  vector<math::XYZTLorentzVector> jetVecs;
+  std::vector<math::XYZTLorentzVector> jetVecs;
   
   for(std::vector<pat::Jet>::const_iterator itJet=jets.begin();itJet!=jets.end();++itJet){
     jetVecs.push_back(itJet->p4());
@@ -535,7 +559,7 @@ void BoostedUtils::GetAplanaritySphericity(math::XYZTLorentzVector leptonVec, ma
 
 
 bool BoostedUtils::GetTopTag(const boosted::HEPTopJet& topJet,const double& fW, const double& mTopMin, const bool& altConf){
-  vector<pat::Jet> subjets;
+  std::vector<pat::Jet> subjets;
   subjets.push_back(topJet.nonW);
   subjets.push_back(topJet.W1);
   subjets.push_back(topJet.W2);
@@ -545,7 +569,7 @@ bool BoostedUtils::GetTopTag(const boosted::HEPTopJet& topJet,const double& fW, 
   if(!altConf)  std::sort(subjets.begin(), subjets.end(),FirstJetIsHarder);
   else          TopSubjetCSVDef(subjets);
   
-  vector<math::XYZTLorentzVector> subjetVecs = GetJetVecs(subjets);
+  std::vector<math::XYZTLorentzVector> subjetVecs = GetJetVecs(subjets);
     
   float m12=-999;
   float m23=-999;
@@ -663,7 +687,7 @@ float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const in
     if(filterJets[nBTags-1].bDiscriminator("combinedSecondaryVertexBJetTags")<csvWP) return -1.;
   }
   
-  vector<math::XYZTLorentzVector> filterJetVecs = GetJetVecs(filterJets);
+  std::vector<math::XYZTLorentzVector> filterJetVecs = GetJetVecs(filterJets);
   math::XYZTLorentzVector sumVec = filterJetVecs[0];
   
   for(std::vector<math::XYZTLorentzVector>::const_iterator itFiltJet = filterJetVecs.begin()+1; itFiltJet-filterJetVecs.begin() < nFilterJets; ++itFiltJet){
@@ -1139,7 +1163,10 @@ void BoostedUtils::TTHRecoVarsOhio(const std::vector<pat::Jet>& selectedJets,con
   
 }
 
+    
 
+
+    
 /*
 
 
@@ -1151,10 +1178,10 @@ void BoostedUtils::TTHRecoVarsOhio(const std::vector<pat::Jet>& selectedJets,con
 
 
 
-vector<BNjet> BEANUtils::GetJetsByDr(TLorentzVector vec,const vector<BNjet>& jets){
+vector<BNjet> BEANUtils::GetJetsByDr(TLorentzVector vec,const std::vector<BNjet>& jets){
   closerToVec closer;
   closer.vec=vec;
-  vector<BNjet> sorted_jets = jets;
+  std::vector<BNjet> sorted_jets = jets;
   std::sort(sorted_jets.begin(),sorted_jets.end(),closer);
   return sorted_jets;
 }
@@ -1250,8 +1277,8 @@ float BEANUtils::GetHiggsMass(const BNsubfilterjet& higgs_jet, const int n_filte
 
 
 
-BNjet BEANUtils::GetTopLepBjet(const BNsubfilterjet& sfjet,const BNtoptagjet& topjet, const vector<BNjet>& ak5jets){
-  vector<BNjet> sortedJets=ak5jets;
+BNjet BEANUtils::GetTopLepBjet(const BNsubfilterjet& sfjet,const BNtoptagjet& topjet, const std::vector<BNjet>& ak5jets){
+  std::vector<BNjet> sortedJets=ak5jets;
   std::sort(sortedJets.begin(), sortedJets.end(),BEANUtils::FirstHasHigherCSV);  
   bool clean = false;
   BNjet bjet;
@@ -1334,7 +1361,7 @@ bool BEANUtils::MCContainsHiggs(const BNmcparticleCollection& mcparticlesStatus3
 
 // parses input file names
 vector<string> BEANUtils:: ParseFileNames(string fnames){
-    vector<string> filenames;
+    std::vector<string> filenames;
     while(fnames.size() > 0 && *fnames.rbegin()==' '){
         fnames.erase(fnames.begin() + (fnames.size() - 1));
     }

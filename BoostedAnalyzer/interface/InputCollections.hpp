@@ -12,6 +12,8 @@
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "BoostedTTH/BoostedObjects/interface/SubFilterJet.h"
 #include "BoostedTTH/BoostedObjects/interface/HEPTopJet.h"
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+
 
 enum SampleType{data,tth,tt,nonttbkg};
 
@@ -19,6 +21,7 @@ struct InputCollections{
   InputCollections( const boosted::Event&                         event_,
                     const pat::TriggerObjectStandAloneCollection& selectedTrigger_,
                     const edm::TriggerResults&                    triggerResults_,
+                    const HLTConfigProvider&                      hlt_config_,
                     const reco::VertexCollection&                 selectedPVs_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsLoose_,
@@ -32,11 +35,15 @@ struct InputCollections{
                     const std::vector<reco::GenParticle>&         genParticles_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
-                    const std::map<std::string,float>&            weights_
+                    const std::map<std::string,float>&            weights_,
+		    const edm::EventSetup&	                  setup_,
+        	    const edm::Event&	                          edmevent_
+
                   ):
                     event(event_),
                     selectedTrigger(selectedTrigger_),
                     triggerResults(triggerResults_),
+                    hlt_config(hlt_config_),
                     selectedPVs(selectedPVs_),
                     selectedMuons(selectedMuons_),
                     selectedMuonsLoose(selectedMuonsLoose_),
@@ -50,11 +57,14 @@ struct InputCollections{
                     genParticles(genParticles_),
                     selectedGenJets(selectedGenJets_),
                     sampleType(sampleType_),
-                    weights(weights_){}
+                    weights(weights_),
+		    setup(setup_),
+                    edmevent(edmevent_){}
   
   const boosted::Event&                         event;
   const pat::TriggerObjectStandAloneCollection& selectedTrigger;
   const edm::TriggerResults&                    triggerResults;
+  const HLTConfigProvider&                       hlt_config;
   const reco::VertexCollection&                 selectedPVs;
   const std::vector<pat::Muon>&                 selectedMuons;
   const std::vector<pat::Muon>&                 selectedMuonsLoose;
@@ -69,6 +79,10 @@ struct InputCollections{
   const std::vector<reco::GenJet>&              selectedGenJets;
   const SampleType                              sampleType;
   const std::map<std::string,float>&            weights;
+  const edm::EventSetup& 			setup;
+  const edm::Event& 			        edmevent;
+
+  void Dump();
 };
 
 #endif

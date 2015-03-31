@@ -1,0 +1,9 @@
+0 : all : 5000
+1 : vertex selection : 4997
+2 : single lepton trigger : 510
+3 : == 1 lepton : 426
+4 : == 0 leptons different flavor : 394
+5 : >= 4 jets : 230
+6 : >= 2 b-tags : 96
+7 : >= 1 top tagged jet : 4
+8 : >= 1 Higgs jet : 0

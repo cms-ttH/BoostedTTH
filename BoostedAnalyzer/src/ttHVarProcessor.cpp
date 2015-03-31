@@ -108,7 +108,7 @@ void ttHVarProcessor::InitHiggsTagger(string higgstaggerName){
 
 void ttHVarProcessor::InitHiggsCandidateVars(VariableContainer& vars){
   
-  vars.InitVar(prefix+"HiggsCandidate_HiggsTag",-9.9);
+  vars.InitVar(prefix+"HiggsCandidate_HiggsTag",-9.);
   vars.InitVar(prefix+"HiggsCandidate_E",-9.);
   vars.InitVar(prefix+"HiggsCandidate_Pt",-9.);
   vars.InitVar(prefix+"HiggsCandidate_M",-9.);
@@ -695,16 +695,19 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
   // Get Objects
   
   // MC Objects 
+  vector<math::XYZTLorentzVector> tophad_mc;
   vector<math::XYZTLorentzVector> bhad_mc;
   vector<math::XYZTLorentzVector> q1_mc;
   vector<math::XYZTLorentzVector> q2_mc;
+  vector<math::XYZTLorentzVector> toplep_mc;
   vector<math::XYZTLorentzVector> blep_mc;
   vector<math::XYZTLorentzVector> lep_mc;
   vector<math::XYZTLorentzVector> nu_mc;
+  math::XYZTLorentzVector higgs_mc;
   math::XYZTLorentzVector b1_mc;
   math::XYZTLorentzVector b2_mc;
   
-  BoostedUtils::GetttHMCVecs(ttHEvent.GetInput().genParticles,bhad_mc,q1_mc,q2_mc,blep_mc,lep_mc,nu_mc,b1_mc,b2_mc);
+  BoostedUtils::GetttHMCVecs(ttHEvent.GetInput().genParticles,tophad_mc,bhad_mc,q1_mc,q2_mc,toplep_mc,blep_mc,lep_mc,nu_mc,higgs_mc,b1_mc,b2_mc);
  
   // Higgs Candidate
   math::XYZTLorentzVector higgsCandVec2 = ttHEvent.GetHiggsCandVec2();
@@ -722,12 +725,6 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
   pat::Jet topLepBCand = ttHEvent.GetTopLepBCand();
   math::XYZTLorentzVector lepCandVec = ttHEvent.GetLeptonVec();
   math::XYZTLorentzVector nuCandVec = ttHEvent.GetNeutrinoVec();
-  
-  vector<math::XYZTLorentzVector>  tophad_mc;
-  for(size_t i=0;i<bhad_mc.size();i++) tophad_mc.push_back(bhad_mc[i]+q1_mc[i]+q2_mc[i]);
-  vector<math::XYZTLorentzVector>  toplep_mc;
-  for(size_t i=0;i<blep_mc.size();i++) toplep_mc.push_back(blep_mc[i]+lep_mc[i]+nu_mc[i]);
-  math::XYZTLorentzVector          higgs_mc=b1_mc+b2_mc;
  
   if(higgsCandVec2.Pt()>0.001){
     if(higgs_mc.Pt()>0.001)
@@ -738,7 +735,7 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
       vars.FillVar(prefix+"HiggsCandidate_Dr_TopHad",BoostedUtils::DeltaR(tophad_mc[0],higgsCandVec2));
     }
     else if(tophad_mc.size()==2){
-      vars.FillVar(prefix+"HiggsCandidate_Dr_B_TopHad", fmin(BoostedUtils::DeltaR(bhad_mc[0],higgsCandVec2),BoostedUtils::DeltaR(bhad_mc[1],higgsCandVec2)));
+      vars.FillVar(prefix+"HiggsCandidate_Dr_B_TopHad",fmin(BoostedUtils::DeltaR(bhad_mc[0],higgsCandVec2),BoostedUtils::DeltaR(bhad_mc[1],higgsCandVec2)));
       vars.FillVar(prefix+"HiggsCandidate_Dr_TopHad",fmin(BoostedUtils::DeltaR(tophad_mc[0],higgsCandVec2),BoostedUtils::DeltaR(tophad_mc[1],higgsCandVec2)));
     }
    
@@ -747,7 +744,7 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
       vars.FillVar(prefix+"HiggsCandidate_Dr_TopLep",BoostedUtils::DeltaR(toplep_mc[0],higgsCandVec2));
     }
     else if(toplep_mc.size()==2){
-      vars.FillVar(prefix+"HiggsCandidate_Dr_B_TopLep", fmin(BoostedUtils::DeltaR(blep_mc[0],higgsCandVec2),BoostedUtils::DeltaR(blep_mc[1],higgsCandVec2)));
+      vars.FillVar(prefix+"HiggsCandidate_Dr_B_TopLep",fmin(BoostedUtils::DeltaR(blep_mc[0],higgsCandVec2),BoostedUtils::DeltaR(blep_mc[1],higgsCandVec2)));
       vars.FillVar(prefix+"HiggsCandidate_Dr_TopLep",fmin(BoostedUtils::DeltaR(toplep_mc[0],higgsCandVec2),BoostedUtils::DeltaR(toplep_mc[1],higgsCandVec2)));
     }
   }
