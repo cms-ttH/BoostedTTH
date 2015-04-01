@@ -202,7 +202,7 @@ bool BoostedUtils::MCContainsHiggs(const std::vector<reco::GenParticle>& genPart
 }
 
 
-void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genParticles, std::vector<reco::GenParticle>& tophad, std::vector<reco::GenParticle>& bhad, std::vector<reco::GenParticle>& q1, std::vector<reco::GenParticle>& q2, std::vector<reco::GenParticle>& toplep, std::vector<reco::GenParticle>& blep, std::vector<reco::GenParticle>& lep, std::vector<reco::GenParticle>& nu, reco::GenParticle& higgs, reco::GenParticle& b1, reco::GenParticle& b2){
+void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genParticles, std::vector<reco::GenParticle>& tophad, std::vector<reco::GenParticle>& whad, std::vector<reco::GenParticle>& bhad, std::vector<reco::GenParticle>& q1, std::vector<reco::GenParticle>& q2, std::vector<reco::GenParticle>& toplep, std::vector<reco::GenParticle>& wlep, std::vector<reco::GenParticle>& blep, std::vector<reco::GenParticle>& lep, std::vector<reco::GenParticle>& nu, reco::GenParticle& higgs, reco::GenParticle& b1, reco::GenParticle& b2){
   std::vector<reco::GenParticle> leptonsFromWplus;
   std::vector<reco::GenParticle> leptonsFromWminus;
   std::vector<reco::GenParticle> quarksFromWplus;
@@ -210,6 +210,8 @@ void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genPa
   std::vector<reco::GenParticle> quarksFromT;
   std::vector<reco::GenParticle> quarksFromTbar;
   std::vector<reco::GenParticle> bquarksFromHiggs;
+  reco::GenParticle Wplus;
+  reco::GenParticle Wminus;
   reco::GenParticle top;
   reco::GenParticle topbar;
   
@@ -222,6 +224,9 @@ void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genPa
     if(itPart->mother()->pdgId()==24   && abs(itPart->pdgId())>=11&&abs(itPart->pdgId())<=16) leptonsFromWplus.push_back(*itPart);
     if(itPart->mother()->pdgId()==-24  && abs(itPart->pdgId())>=11&&abs(itPart->pdgId())<=16) leptonsFromWminus.push_back(*itPart);
     if(itPart->mother()->pdgId()==25   && abs(itPart->pdgId())==5) bquarksFromHiggs.push_back(*itPart);
+    
+    if(itPart->mother()->pdgId()==6    && itPart->pdgId()==24)    Wplus = *itPart;
+    if(itPart->mother()->pdgId()==-6   && itPart->pdgId()==-24)   Wminus = *itPart;
     
     if(itPart->pdgId()==25 || fabs(itPart->pdgId())==6){
       bool lastHiggs = true;
@@ -242,6 +247,7 @@ void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genPa
   
   if(leptonsFromWplus.size()==2 && quarksFromT.size()>=1){
     toplep.push_back(top);
+    wlep.push_back(Wplus);
     blep.push_back(quarksFromT[0]);
     if(leptonsFromWplus[0].pdgId()%2!=0){
       lep.push_back(leptonsFromWplus[0]);
@@ -254,6 +260,7 @@ void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genPa
   }
   if(leptonsFromWminus.size()==2 && quarksFromTbar.size()>=1){
     toplep.push_back(topbar);
+    wlep.push_back(Wminus);
     blep.push_back(quarksFromTbar[0]);
     if(leptonsFromWminus[0].pdgId()%2!=0){
       lep.push_back(leptonsFromWminus[0]);
@@ -266,12 +273,14 @@ void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genPa
   }
   if(quarksFromWplus.size()==2 && quarksFromT.size()>=1){
     tophad.push_back(top);
+    whad.push_back(Wplus);
     bhad.push_back(quarksFromT[0]);
     q1.push_back(quarksFromWplus[0]);
     q2.push_back(quarksFromWplus[1]);
   }
   if(quarksFromWminus.size()==2 && quarksFromTbar.size()>=1){
     tophad.push_back(topbar);
+    whad.push_back(Wminus);
     bhad.push_back(quarksFromTbar[0]);
     q1.push_back(quarksFromWminus[0]);
     q2.push_back(quarksFromWminus[1]);
@@ -283,13 +292,15 @@ void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genPa
 }
 
 
-void BoostedUtils::GetttHMCVecs(const std::vector<reco::GenParticle>& genParticles, std::vector<math::XYZTLorentzVector>& tophadvecs, std::vector<math::XYZTLorentzVector>& bhadvecs, std::vector<math::XYZTLorentzVector>& q1vecs, std::vector<math::XYZTLorentzVector>& q2vecs, std::vector<math::XYZTLorentzVector>& toplepvecs, std::vector<math::XYZTLorentzVector>& blepvecs, std::vector<math::XYZTLorentzVector>& lepvecs, std::vector<math::XYZTLorentzVector>& nuvecs, math::XYZTLorentzVector& higgsvec, math::XYZTLorentzVector& b1vec, math::XYZTLorentzVector& b2vec){
+void BoostedUtils::GetttHMCVecs(const std::vector<reco::GenParticle>& genParticles, std::vector<math::XYZTLorentzVector>& tophadvecs, std::vector<math::XYZTLorentzVector>& whadvecs, std::vector<math::XYZTLorentzVector>& bhadvecs, std::vector<math::XYZTLorentzVector>& q1vecs, std::vector<math::XYZTLorentzVector>& q2vecs, std::vector<math::XYZTLorentzVector>& toplepvecs, std::vector<math::XYZTLorentzVector>& wlepvecs, std::vector<math::XYZTLorentzVector>& blepvecs, std::vector<math::XYZTLorentzVector>& lepvecs, std::vector<math::XYZTLorentzVector>& nuvecs, math::XYZTLorentzVector& higgsvec, math::XYZTLorentzVector& b1vec, math::XYZTLorentzVector& b2vec){
   
   std::vector<reco::GenParticle> tophad;
+  std::vector<reco::GenParticle> whad;
   std::vector<reco::GenParticle> bhad;
   std::vector<reco::GenParticle> q1;
   std::vector<reco::GenParticle> q2;
   std::vector<reco::GenParticle> toplep;
+  std::vector<reco::GenParticle> wlep;
   std::vector<reco::GenParticle> blep;
   std::vector<reco::GenParticle> lep;
   std::vector<reco::GenParticle> nu;
@@ -297,13 +308,15 @@ void BoostedUtils::GetttHMCVecs(const std::vector<reco::GenParticle>& genParticl
   reco::GenParticle b1;
   reco::GenParticle b2;
   
-  GetttHMCParticles(genParticles,tophad,bhad,q1,q2,toplep,blep,lep,nu,higgs,b1,b2);
+  GetttHMCParticles(genParticles,tophad,whad,bhad,q1,q2,toplep,wlep,blep,lep,nu,higgs,b1,b2);
   
   tophadvecs = GetGenParticleVecs(tophad);
+  whadvecs = GetGenParticleVecs(whad);
   bhadvecs = GetGenParticleVecs(bhad);
   q1vecs = GetGenParticleVecs(q1);
   q2vecs = GetGenParticleVecs(q2);
   toplepvecs = GetGenParticleVecs(toplep);
+  wlepvecs = GetGenParticleVecs(wlep);
   blepvecs = GetGenParticleVecs(blep);
   lepvecs = GetGenParticleVecs(lep);
   nuvecs = GetGenParticleVecs(nu);
