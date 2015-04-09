@@ -108,7 +108,6 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     if(input.sampleType == SampleType::ttb) iBB = 1;
     if(input.sampleType == SampleType::ttcc) iCC = 1;
   */
-  
   vars.FillVar( "GenEvt_I_TTPlusCC",iCC );
   vars.FillVar( "GenEvt_I_TTPlusBB",iBB );
   std::vector<reco::GenParticle> tophad=input.genTopEvt.GetAllTopHads();
@@ -128,8 +127,8 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   reco::GenParticle b2;
 
   for(auto p =higgs_bs.begin(); p!=higgs_bs.end(); p++){
-    if(abs(p->pdgId())==5) b1=*p;
-    if(abs(p->pdgId())==-5) b2=*p;
+    if(p->pdgId()==5) b1=*p;
+    if(p->pdgId()==-5) b2=*p;
   }
   
   vars.FillVar( "N_GenTopLep", toplep.size());
@@ -167,7 +166,6 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
       vars.FillVars( "GenTopLep_B_Idx",i,idxblep);
     }
   }
-  
   for(size_t i=0; i< input.selectedHEPTopJets.size(); i++){
 	  
     float minDr_TopLep_TopJet = 999;
@@ -181,7 +179,6 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
 	    vars.FillVars("TopJet_Dr_GenTopLep",i,minDr_TopLep_TopJet);
     }
   }
-  
   for(size_t i=0; i< input.selectedSubFilterJets.size(); i++){
     
     float minDr_TopLep_HiggsJet = 999;
@@ -195,7 +192,6 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
       vars.FillVars("HiggsJet_Dr_GenTopLep",i,minDr_TopLep_HiggsJet);
     }
   }
-  
   for(size_t i=0;i<tophad.size();i++){
     vars.FillVars( "GenTopHad_Pt",i,tophad[i].pt());
     vars.FillVars( "GenTopHad_Eta",i,tophad[i].eta());
@@ -244,7 +240,6 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
       vars.FillVars( "GenTopHad_Q2_Idx",i,idxq2);
     }
   }
-  
   for(size_t i=0; i< input.selectedHEPTopJets.size(); i++){
 	  
     float minDr_TopHad_TopJet = 999;
@@ -269,17 +264,24 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
 	minDr_TopB_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].fatjet.p4());
 	minDr_TopQ1_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].fatjet.p4());
 	minDr_TopQ2_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].fatjet.p4());
-	minDr_TopB_B_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].nonW.p4());
-	minDr_TopB_W1_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].W1.p4());
-	minDr_TopB_W2_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].W2.p4());
-	minDr_TopQ1_B_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].nonW.p4());
-	minDr_TopQ1_W1_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].W1.p4());
-	minDr_TopQ1_W2_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].W2.p4());
-	minDr_TopQ2_B_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].nonW.p4());
-	minDr_TopQ2_W1_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].W1.p4());
-	minDr_TopQ2_W2_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].W2.p4());
+	if(input.selectedHEPTopJets[i].nonW.pt()>0){
+	  minDr_TopB_B_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].nonW.p4());
+	  minDr_TopQ2_B_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].nonW.p4());
+	  minDr_TopQ1_B_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].nonW.p4());
+	}
+	if(input.selectedHEPTopJets[i].W1.pt()>0){
+	  minDr_TopB_W1_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].W1.p4());
+	  minDr_TopQ1_W1_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].W1.p4());
+	  minDr_TopQ2_W1_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].W1.p4());
+	}
+	if(input.selectedHEPTopJets[i].W2.pt()>0){
+	  minDr_TopB_W2_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].W2.p4());
+	  minDr_TopQ1_W2_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].W2.p4());
+	  minDr_TopQ2_W2_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].W2.p4());
+	}
       }
     }
+
     if(minDr_TopQ1_TopJet<1.5&&minDr_TopQ2_TopJet<1.5&&minDr_TopB_TopJet<1.5)
     if(minDr_TopHad_TopJet<999) vars.FillVars("TopJet_Dr_GenTopHad",i,minDr_TopHad_TopJet);
     if(minDr_TopB_TopJet<999) vars.FillVars("TopJet_Dr_GenB",i,minDr_TopB_TopJet);
@@ -295,7 +297,6 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     if(minDr_TopQ2_W1_TopJet<999) vars.FillVars("TopJet_Dr_GenQ2_W1",i,minDr_TopQ2_W1_TopJet);
     if(minDr_TopQ2_W2_TopJet<999) vars.FillVars("TopJet_Dr_GenQ2_W2",i,minDr_TopQ2_W2_TopJet);
   }
-  
   for(size_t i=0; i< input.selectedSubFilterJets.size(); i++){
     
     float minDr_TopHad_HiggsJet = 9;
@@ -306,13 +307,11 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     }
     vars.FillVars("HiggsJet_Dr_GenTopHad",i,minDr_TopHad_HiggsJet);
   }
-  
   if(higgs.pt()>0.){
     vars.FillVar( "GenHiggs_Pt",higgs.pt());
     vars.FillVar( "GenHiggs_Eta",higgs.eta());
     vars.FillVar( "GenHiggs_Phi",higgs.phi());
   }
-  
   if(b1.pt()>0.){
     vars.FillVar("GenHiggs_B1_Pt",b1.pt());
     vars.FillVar("GenHiggs_B2_Pt",b2.pt());
@@ -327,6 +326,9 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     double minDrB2 = 999;
     
     for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin() ; itJetVec != jetvecs.end(); ++itJetVec){
+      assert(itJetVec->pt()>0);
+      assert(b1.pt()>0);
+      assert(b2.pt()>0);
       if(BoostedUtils::DeltaR(*itJetVec,b1.p4())<minDrB1){
         idxb1 = itJetVec-jetvecs.begin();
         minDrB1 = BoostedUtils::DeltaR(*itJetVec,b1.p4());
@@ -344,7 +346,6 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
       vars.FillVar( "GenHiggs_B2_Idx",idxb2);
     }
   }
-  
   for(size_t i=0; i< input.selectedSubFilterJets.size(); i++){
     if(higgs.pt()>0)
       vars.FillVars("HiggsJet_Dr_GenHiggs",i,BoostedUtils::DeltaR(higgs.p4(),input.selectedSubFilterJets[i].fatjet.p4()));	  
@@ -404,7 +405,6 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     if(minDr_Q1_FilterJet<999) vars.FillVars("HiggsJet_Dr_GenQ1_Filterjet",i,minDr_Q1_FilterJet);
     if(minDr_Q2_FilterJet<999) vars.FillVars("HiggsJet_Dr_GenQ2_Filterjet",i,minDr_Q2_FilterJet);
   }
-  
   for(size_t i=0; i<input.selectedHEPTopJets.size(); i++){
   	if(higgs.pt()>0) vars.FillVars("TopJet_Dr_GenHiggs",i,BoostedUtils::DeltaR(higgs.p4(),input.selectedHEPTopJets[i].fatjet.p4()));
   }

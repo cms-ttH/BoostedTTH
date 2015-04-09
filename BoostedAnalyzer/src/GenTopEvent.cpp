@@ -35,7 +35,17 @@ GenTopEvent::GenTopEvent (const std::vector<reco::GenParticle>& prunedGenParticl
 	if (abs(p->daughter(i)->pdgId())==24)
 	  lastW=false;
       }
-      if(lastW){
+      bool fromT=false;
+      const reco::Candidate* mother=&(*p);
+      while(mother!=0 && abs(mother->pdgId())==24){
+	if (abs(mother->mother()->pdgId())==6){
+	  fromT=true;
+	  break;
+	}
+	else mother=mother->mother();
+	
+      }
+      if(lastW&&fromT){
 	if(p->pdgId()==24) wplus=*p;
 	if(p->pdgId()==-24) wminus=*p;
 	for(uint i=0;i<p->numberOfDaughters();i++){

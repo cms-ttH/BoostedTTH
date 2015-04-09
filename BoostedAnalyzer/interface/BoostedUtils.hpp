@@ -2,7 +2,7 @@
 #define BOOSTEDTTH_BOOSTEDANALYZER_BOOSTEDUTILS_HPP
 
 #include <vector>
-
+#include <stdexcept>
 #include "TMath.h"
 #include "TVector.h"
 #include "TLorentzVector.h"
