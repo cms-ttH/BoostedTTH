@@ -61,6 +61,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 
+#include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
+
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
 //
@@ -439,7 +441,8 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     if(genjets[i].pt()>30&&fabs(genjets[i].eta())<2.5)
       selectedGenJets.push_back(genjets[i]);
   }
-  
+  GenTopEvent genTopEvt(genParticles);
+  //  genTopEvt.Print();
   // Fill Boosted Event Object
   boosted::Event event = FillEvent(iEvent,h_geneventinfo,h_beamspot,h_hcalnoisesummary,h_puinfosummary);
   
@@ -475,7 +478,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                           pfMETs,
                           heptopjets,
                           subfilterjets,
-                          genParticles,
+                          genTopEvt,
                           selectedGenJets,
                           sampleType,
                           weights,
@@ -496,7 +499,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                           pfMETs,
                           heptopjets,
                           subfilterjets,
-                          genParticles,
+                          genTopEvt,
                           selectedGenJets,
                           sampleType,
                           weights,

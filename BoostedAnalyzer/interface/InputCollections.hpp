@@ -13,12 +13,12 @@
 #include "BoostedTTH/BoostedObjects/interface/SubFilterJet.h"
 #include "BoostedTTH/BoostedObjects/interface/HEPTopJet.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
 enum SampleType{data,tth,tt,nonttbkg};
 
 struct InputCollections{
-  InputCollections( const boosted::Event&                         event_,
+InputCollections(   const boosted::Event&                         event_,
                     const pat::TriggerObjectStandAloneCollection& selectedTrigger_,
                     const edm::TriggerResults&                    triggerResults_,
                     const HLTConfigProvider&                      hlt_config_,
@@ -32,7 +32,7 @@ struct InputCollections{
                     const std::vector<pat::MET>&                  pfMets_,
                     const boosted::HEPTopJetCollection&           selectedHEPTopJets_,
                     const boosted::SubFilterJetCollection&        selectedSubFilterJets_,
-                    const std::vector<reco::GenParticle>&         genParticles_,
+		    const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
                     const std::map<std::string,float>&            weights_,
@@ -54,7 +54,7 @@ struct InputCollections{
                     pfMets(pfMets_),
                     selectedHEPTopJets(selectedHEPTopJets_),
                     selectedSubFilterJets(selectedSubFilterJets_),
-                    genParticles(genParticles_),
+                    genTopEvt(genTopEvt_),
                     selectedGenJets(selectedGenJets_),
                     sampleType(sampleType_),
                     weights(weights_),
@@ -75,7 +75,7 @@ struct InputCollections{
   const std::vector<pat::MET>&                  pfMets;
   const boosted::HEPTopJetCollection&           selectedHEPTopJets;
   const boosted::SubFilterJetCollection&        selectedSubFilterJets;
-  const std::vector<reco::GenParticle>&         genParticles;
+  const GenTopEvent&                            genTopEvt;
   const std::vector<reco::GenJet>&              selectedGenJets;
   const SampleType                              sampleType;
   const std::map<std::string,float>&            weights;
