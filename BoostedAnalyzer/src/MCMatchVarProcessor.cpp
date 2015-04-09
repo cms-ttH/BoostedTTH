@@ -282,7 +282,6 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
       }
     }
 
-    if(minDr_TopQ1_TopJet<1.5&&minDr_TopQ2_TopJet<1.5&&minDr_TopB_TopJet<1.5)
     if(minDr_TopHad_TopJet<999) vars.FillVars("TopJet_Dr_GenTopHad",i,minDr_TopHad_TopJet);
     if(minDr_TopB_TopJet<999) vars.FillVars("TopJet_Dr_GenB",i,minDr_TopB_TopJet);
     if(minDr_TopQ1_TopJet<999) vars.FillVars("TopJet_Dr_GenQ1",i,minDr_TopQ1_TopJet);
