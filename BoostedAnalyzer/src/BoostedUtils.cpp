@@ -203,7 +203,7 @@ bool BoostedUtils::MCContainsHiggs(const std::vector<reco::GenParticle>& genPart
   }
   return false;
 }
-bool BoostedUtils::IsAnyTriggerBitFired(const std::vector<string> & targetTriggers, const edm::TriggerResults& triggerResults){
+bool BoostedUtils::IsAnyTriggerBitFired(const std::vector<string> & targetTriggers, const edm::TriggerResults& triggerResults, const HLTConfigProvider& hlt_config){
   
   // check to see if you passed the trigger by looping over the bits
   // looking for your bit
@@ -211,12 +211,16 @@ bool BoostedUtils::IsAnyTriggerBitFired(const std::vector<string> & targetTrigge
   
   for(vector<string>::const_iterator iTarget = targetTriggers.begin();iTarget != targetTriggers.end();iTarget++) {
     
+//    std::cout<<*iTarget<<std::endl;
     if(*iTarget == "None") return true;
     
     // if this is the right name and the bit is set to one
-    int TriggerID = triggerResults.find(*iTarget);
-    
-    if(triggerResults.accept(TriggerID)==1) return true;
+//    int TriggerID = triggerResults.find(*iTarget);
+    unsigned int TriggerID =  hlt_config.triggerIndex(*iTarget);
+//    std::cout<<TriggerID<<" "<<triggerResults.size()<<std::endl;
+    if( TriggerID >= triggerResults.size() ) { std::cout<<TriggerID<<" "<<triggerResults.size()<<std::endl; continue; }
+    if(triggerResults.accept(TriggerID))return true;
+//    if(triggerResults.accept(TriggerID)==1) return true;
     
   }// end for each target
   
