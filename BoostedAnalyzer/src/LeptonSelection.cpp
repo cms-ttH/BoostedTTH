@@ -15,6 +15,8 @@ void LeptonSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
   cutflow.AddStep("== 1 loose lepton");
   cutflow.AddStep("== 1 tight lepton same flavor");
   cutflow.AddStep("== 0 loose leptons different flavor");
+//for testing	
+  cutflow.AddStep(">= 4 jets");
   
   initialized=true;
 }
@@ -28,9 +30,12 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
   int nelectronsloose = input.selectedElectronsLoose.size();
   int nmuonsloose = input.selectedMuonsLoose.size();
   
-  bool muonTriggered = BoostedUtils::IsAnyTriggerBitFired(muonTriggers,input.triggerResults);
-  bool electronTriggered = BoostedUtils::IsAnyTriggerBitFired(electronTriggers,input.triggerResults);
-  
+  bool muonTriggered = BoostedUtils::IsAnyTriggerBitFired(muonTriggers,input.triggerResults,input.hlt_config);
+  bool electronTriggered = BoostedUtils::IsAnyTriggerBitFired(electronTriggers,input.triggerResults,input.hlt_config);
+//std::cout<<"----"<<std::endl;
+//if(muonTriggered)std::cout<<"muon trigger"<<std::endl;
+//if(electronTriggered)std::cout<<"electron trigger"<<std::endl;
+
   if(npvs<1) return false;
   else cutflow.EventSurvivedStep("Has PV");
   if(!muonTriggered && !electronTriggered) return false;
@@ -41,6 +46,11 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
   else cutflow.EventSurvivedStep("== 1 tight lepton same flavor");
   if(!( (muonTriggered&&nmuonsloose==1&&nmuons==1&&nelectronsloose==0) || (electronTriggered&&nelectronsloose==1&&nelectrons==1&&nmuonsloose==0) ) ) return false;
   else cutflow.EventSurvivedStep("== 0 loose leptons different flavor");
+
+if(input.selectedJets.size()>0) std::cout<<input.event.evt<<" "<<input.selectedJets.at(0).pt()<<std::endl;
+
+  if(input.selectedJets.size()<4)return false;		//testing
+  else cutflow.EventSurvivedStep(">= 4 jets");			// testing
   return true;
   
 }

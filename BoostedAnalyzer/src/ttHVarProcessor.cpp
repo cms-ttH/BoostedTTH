@@ -43,7 +43,7 @@ void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& v
   FillTopLepCandidateVars(vars,ttHEvent);
   FillAk5JetsVars(vars,ttHEvent);
   FillCombinationVars(vars,ttHEvent);
-  FillMCVars(vars,ttHEvent);
+  FillMCVars(vars,ttHEvent,input);
 }
 
 
@@ -690,24 +690,31 @@ void ttHVarProcessor::FillCombinationVars(VariableContainer& vars,BoostedttHEven
 }
 
 
-void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEvent){
+void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEvent,const InputCollections& input){
   
   // Get Objects
   
   // MC Objects 
-  vector<math::XYZTLorentzVector> tophad_mc;
-  vector<math::XYZTLorentzVector> bhad_mc;
-  vector<math::XYZTLorentzVector> q1_mc;
-  vector<math::XYZTLorentzVector> q2_mc;
-  vector<math::XYZTLorentzVector> toplep_mc;
-  vector<math::XYZTLorentzVector> blep_mc;
-  vector<math::XYZTLorentzVector> lep_mc;
-  vector<math::XYZTLorentzVector> nu_mc;
-  math::XYZTLorentzVector higgs_mc;
+  std::vector<math::XYZTLorentzVector> tophad_mc=input.genTopEvt.GetAllTopHadVecs();
+  std::vector<math::XYZTLorentzVector> whad_mc=input.genTopEvt.GetAllWhadVecs();
+  std::vector<math::XYZTLorentzVector> bhad_mc=input.genTopEvt.GetAllTopHadDecayQuarkVecs();
+  std::vector<math::XYZTLorentzVector> q1_mc=input.genTopEvt.GetAllWQuarkVecs();
+  std::vector<math::XYZTLorentzVector> q2_mc=input.genTopEvt.GetAllWAntiQuarkVecs();
+  std::vector<math::XYZTLorentzVector> toplep_mc=input.genTopEvt.GetAllTopLepVecs();
+  std::vector<math::XYZTLorentzVector> wlep_mc=input.genTopEvt.GetAllWlepVecs();
+  std::vector<math::XYZTLorentzVector> blep_mc=input.genTopEvt.GetAllTopLepDecayQuarkVecs();
+  std::vector<math::XYZTLorentzVector> lep_mc=input.genTopEvt.GetAllLeptonVecs();
+  std::vector<math::XYZTLorentzVector> nu_mc=input.genTopEvt.GetAllNeutrinoVecs();
+  math::XYZTLorentzVector higgs_mc=input.genTopEvt.GetHiggsVec();
+  std::vector<reco::GenParticle> higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
+
   math::XYZTLorentzVector b1_mc;
   math::XYZTLorentzVector b2_mc;
-  
-  BoostedUtils::GetttHMCVecs(ttHEvent.GetInput().genParticles,tophad_mc,bhad_mc,q1_mc,q2_mc,toplep_mc,blep_mc,lep_mc,nu_mc,higgs_mc,b1_mc,b2_mc);
+
+  for(auto p =higgs_bs.begin(); p!=higgs_bs.end(); p++){
+    if(abs(p->pdgId())==5) b1_mc=p->p4();
+    if(abs(p->pdgId())==-5) b2_mc=p->p4();
+  }
  
   // Higgs Candidate
   math::XYZTLorentzVector higgsCandVec2 = ttHEvent.GetHiggsCandVec2();

@@ -6,6 +6,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TopTagger.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HiggsTagger.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedttHEvent.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
 enum BoostedRecoType {BoostedTop,BoostedTopHiggs,BoostedHiggs};
 
@@ -35,7 +36,7 @@ public:
     void FillTopLepCandidateVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
     void FillAk5JetsVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
     void FillCombinationVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
-    void FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
+    void FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHevent,const InputCollections& input);
     
 private:
     const char* btagger;

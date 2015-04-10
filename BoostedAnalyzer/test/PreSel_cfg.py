@@ -39,10 +39,17 @@ process.source = cms.Source(  "PoolSource",
 
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.useFatJets=True
-process.BoostedAnalyzer.disableObjectSelections=True
-process.BoostedAnalyzer.outfileName = "Synchronization"
-process.BoostedAnalyzer.selectionNames = ["SynchSelection"]
-process.BoostedAnalyzer.processorNames = []
+process.BoostedAnalyzer.disableObjectSelections=False
+process.BoostedAnalyzer.outfileName = "ttjets"
+process.BoostedAnalyzer.selectionNames = ["LeptonSelection"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor"]
+process.BoostedAnalyzer.era = "2015_72x"
+process.BoostedAnalyzer.analysisType = cms.string("LJ")
+process.BoostedAnalyzer.luminostiy = cms.double(19.7)
+process.BoostedAnalyzer.sampleID = cms.int32(9125)
+process.BoostedAnalyzer.xs = cms.double(248)
+process.BoostedAnalyzer.nMCEvents = cms.int32(25000000)
+process.BoostedAnalyzer.isData = cms.bool(False)
 
 
 process.p = cms.Path(process.BoostedAnalyzer)

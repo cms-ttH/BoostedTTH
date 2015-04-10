@@ -102,7 +102,11 @@ float BoostedUtils::DeltaPhi(const pat::Jet& jet1,const pat::Jet& jet2){
 
 
 float BoostedUtils::DeltaR(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2){
-  if(vec1.Pt()<0.001||vec2.Pt()<0.001) return -2;
+  if(vec1.Pt()<0.001||vec2.Pt()<0.001){
+    //throw std::invalid_argument( "BoostedUtils::DeltaR: vector with zero pt" );
+    std::cerr << "BoostedUtils::DeltaR: vector with zero pt" << std::endl;
+    return -2;
+  }
   
   float dr = ROOT::Math::VectorUtil::DeltaR(vec1,vec2);
   
@@ -200,107 +204,7 @@ bool BoostedUtils::MCContainsHiggs(const std::vector<reco::GenParticle>& genPart
   }
   return false;
 }
-
-
-void BoostedUtils::GetttHMCParticles(const std::vector<reco::GenParticle>& genParticles, std::vector<reco::GenParticle>& tophad, std::vector<reco::GenParticle>& bhad, std::vector<reco::GenParticle>& q1, std::vector<reco::GenParticle>& q2, std::vector<reco::GenParticle>& toplep, std::vector<reco::GenParticle>& blep, std::vector<reco::GenParticle>& lep, std::vector<reco::GenParticle>& nu, reco::GenParticle& higgs, reco::GenParticle& b1, reco::GenParticle& b2){
-  std::vector<reco::GenParticle> leptonsFromWplus;
-  std::vector<reco::GenParticle> leptonsFromWminus;
-  std::vector<reco::GenParticle> quarksFromWplus;
-  std::vector<reco::GenParticle> quarksFromWminus;
-  std::vector<reco::GenParticle> quarksFromT;
-  std::vector<reco::GenParticle> quarksFromTbar;
-  std::vector<reco::GenParticle> bquarksFromHiggs;
-  reco::GenParticle top;
-  reco::GenParticle topbar;
-  
-  for(std::vector<reco::GenParticle>::const_iterator itPart = genParticles.begin();itPart != genParticles.end();itPart++) {
-    if(itPart->numberOfMothers()==0) continue;
-    if(itPart->mother()->pdgId()==6    && abs(itPart->pdgId())<6) quarksFromT.push_back(*itPart);
-    if(itPart->mother()->pdgId()==-6   && abs(itPart->pdgId())<6) quarksFromTbar.push_back(*itPart);
-    if(itPart->mother()->pdgId()==24   && abs(itPart->pdgId())<6) quarksFromWplus.push_back(*itPart);
-    if(itPart->mother()->pdgId()==-24  && abs(itPart->pdgId())<6) quarksFromWminus.push_back(*itPart);
-    if(itPart->mother()->pdgId()==24   && abs(itPart->pdgId())>=11&&abs(itPart->pdgId())<=16) leptonsFromWplus.push_back(*itPart);
-    if(itPart->mother()->pdgId()==-24  && abs(itPart->pdgId())>=11&&abs(itPart->pdgId())<=16) leptonsFromWminus.push_back(*itPart);
-    if(itPart->mother()->pdgId()==25   && abs(itPart->pdgId())==5) bquarksFromHiggs.push_back(*itPart);
-    if(itPart->mother()->pdgId()!=25   && itPart->pdgId()==25) higgs = *itPart;
-    if(itPart->mother()->pdgId()!=6    && itPart->pdgId()==6) top = *itPart;
-    if(itPart->mother()->pdgId()!=-6   && itPart->pdgId()==-6) topbar = *itPart;
-  }
-  
-  if(leptonsFromWplus.size()==2 && quarksFromT.size()>=1){
-    toplep.push_back(top);
-    blep.push_back(quarksFromT[0]);
-    if(leptonsFromWplus[0].pdgId()%2!=0){
-      lep.push_back(leptonsFromWplus[0]);
-      nu.push_back(leptonsFromWplus[1]);
-    }
-    else{
-      lep.push_back(leptonsFromWplus[1]);
-      nu.push_back(leptonsFromWplus[0]);
-    }
-  }
-  if(leptonsFromWminus.size()==2 && quarksFromTbar.size()>=1){
-    toplep.push_back(topbar);
-    blep.push_back(quarksFromTbar[0]);
-    if(leptonsFromWminus[0].pdgId()%2!=0){
-      lep.push_back(leptonsFromWminus[0]);
-      nu.push_back(leptonsFromWminus[1]);
-    }
-    else{
-      lep.push_back(leptonsFromWminus[1]);
-      nu.push_back(leptonsFromWminus[0]);
-    }
-  }
-  if(quarksFromWplus.size()==2 && quarksFromT.size()>=1){
-    tophad.push_back(top);
-    bhad.push_back(quarksFromT[0]);
-    q1.push_back(quarksFromWplus[0]);
-    q2.push_back(quarksFromWplus[1]);
-  }
-  if(quarksFromWminus.size()==2 && quarksFromTbar.size()>=1){
-    tophad.push_back(topbar);
-    bhad.push_back(quarksFromTbar[0]);
-    q1.push_back(quarksFromWminus[0]);
-    q2.push_back(quarksFromWminus[1]);
-  }
-  if(bquarksFromHiggs.size()==2){
-    b1 = bquarksFromHiggs[0];
-    b2 = bquarksFromHiggs[1];
-  }  
-}
-
-
-void BoostedUtils::GetttHMCVecs(const std::vector<reco::GenParticle>& genParticles, std::vector<math::XYZTLorentzVector>& tophadvecs, std::vector<math::XYZTLorentzVector>& bhadvecs, std::vector<math::XYZTLorentzVector>& q1vecs, std::vector<math::XYZTLorentzVector>& q2vecs, std::vector<math::XYZTLorentzVector>& toplepvecs, std::vector<math::XYZTLorentzVector>& blepvecs, std::vector<math::XYZTLorentzVector>& lepvecs, std::vector<math::XYZTLorentzVector>& nuvecs, math::XYZTLorentzVector& higgsvec, math::XYZTLorentzVector& b1vec, math::XYZTLorentzVector& b2vec){
-  
-  std::vector<reco::GenParticle> tophad;
-  std::vector<reco::GenParticle> bhad;
-  std::vector<reco::GenParticle> q1;
-  std::vector<reco::GenParticle> q2;
-  std::vector<reco::GenParticle> toplep;
-  std::vector<reco::GenParticle> blep;
-  std::vector<reco::GenParticle> lep;
-  std::vector<reco::GenParticle> nu;
-  reco::GenParticle higgs;
-  reco::GenParticle b1;
-  reco::GenParticle b2;
-  
-  GetttHMCParticles(genParticles,tophad,bhad,q1,q2,toplep,blep,lep,nu,higgs,b1,b2);
-  
-  tophadvecs = GetGenParticleVecs(tophad);
-  bhadvecs = GetGenParticleVecs(bhad);
-  q1vecs = GetGenParticleVecs(q1);
-  q2vecs = GetGenParticleVecs(q2);
-  toplepvecs = GetGenParticleVecs(toplep);
-  blepvecs = GetGenParticleVecs(blep);
-  lepvecs = GetGenParticleVecs(lep);
-  nuvecs = GetGenParticleVecs(nu);
-  higgsvec = higgs.p4();
-  b1vec = b1.p4();
-  b2vec = b2.p4();
-}
-
-
-bool BoostedUtils::IsAnyTriggerBitFired(const std::vector<string> & targetTriggers, const edm::TriggerResults& triggerResults){
+bool BoostedUtils::IsAnyTriggerBitFired(const std::vector<string> & targetTriggers, const edm::TriggerResults& triggerResults, const HLTConfigProvider& hlt_config){
   
   // check to see if you passed the trigger by looping over the bits
   // looking for your bit
@@ -308,12 +212,16 @@ bool BoostedUtils::IsAnyTriggerBitFired(const std::vector<string> & targetTrigge
   
   for(vector<string>::const_iterator iTarget = targetTriggers.begin();iTarget != targetTriggers.end();iTarget++) {
     
+//    std::cout<<*iTarget<<std::endl;
     if(*iTarget == "None") return true;
     
     // if this is the right name and the bit is set to one
-    int TriggerID = triggerResults.find(*iTarget);
-    
-    if(triggerResults.accept(TriggerID)==1) return true;
+//    int TriggerID = triggerResults.find(*iTarget);
+    unsigned int TriggerID =  hlt_config.triggerIndex(*iTarget);
+//    std::cout<<TriggerID<<" "<<triggerResults.size()<<std::endl;
+    if( TriggerID >= triggerResults.size() ) { std::cout<<TriggerID<<" "<<triggerResults.size()<<std::endl; continue; }
+    if(triggerResults.accept(TriggerID))return true;
+//    if(triggerResults.accept(TriggerID)==1) return true;
     
   }// end for each target
   
