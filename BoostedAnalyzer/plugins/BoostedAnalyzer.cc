@@ -408,11 +408,11 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   // Clean electrons from jets
   std::vector<pat::Jet> jetsNoEle = helper.RemoveOverlaps(selectedElectronsLoose, jetsNoMu);
   // Apply jet corrections
-  std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
+   std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
   //Get jet Collection which pass selection
-  std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(jetsNoEle, 25., 2.4, jetID::jetLoose, '-' );
+  std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(correctedJets, 25., 2.4, jetID::jetLoose, '-' );
   // Get jet Collection which pass loose selection
-  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(jetsNoEle, 20., 2.5, jetID::jetLoose, '-' );
+  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(correctedJets, 20., 2.5, jetID::jetLoose, '-' );
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
@@ -536,13 +536,13 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     }
   }
   
-  if(!selected) return;    
+  if(!selected) return;
 
   // WRITE TREE
   if(disableObjectSelections)
-    treewriter.Process(unselected_input);  
+    treewriter.Process(unselected_input);
   else
-    treewriter.Process(input);  
+    treewriter.Process(input);
 }
 
 
