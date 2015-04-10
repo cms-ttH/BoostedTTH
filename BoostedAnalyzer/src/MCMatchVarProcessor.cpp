@@ -110,18 +110,32 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   */
   vars.FillVar( "GenEvt_I_TTPlusCC",iCC );
   vars.FillVar( "GenEvt_I_TTPlusBB",iBB );
-  std::vector<reco::GenParticle> tophad=input.genTopEvt.GetAllTopHads();
-  std::vector<reco::GenParticle> whad=input.genTopEvt.GetAllWhads();
-  std::vector<reco::GenParticle> bhad=input.genTopEvt.GetAllTopHadDecayQuarks();
-  std::vector<reco::GenParticle> q1=input.genTopEvt.GetAllWQuarks();
-  std::vector<reco::GenParticle> q2=input.genTopEvt.GetAllWAntiQuarks();
-  std::vector<reco::GenParticle> toplep=input.genTopEvt.GetAllTopLeps();
-  std::vector<reco::GenParticle> wlep=input.genTopEvt.GetAllWleps();
-  std::vector<reco::GenParticle> blep=input.genTopEvt.GetAllTopLepDecayQuarks();
-  std::vector<reco::GenParticle> lep=input.genTopEvt.GetAllLeptons();
-  std::vector<reco::GenParticle> nu=input.genTopEvt.GetAllNeutrinos();
-  reco::GenParticle higgs=input.genTopEvt.GetHiggs();
-  std::vector<reco::GenParticle> higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
+  std::vector<reco::GenParticle> tophad;
+  std::vector<reco::GenParticle> whad;
+  std::vector<reco::GenParticle> bhad;
+  std::vector<reco::GenParticle> q1;
+  std::vector<reco::GenParticle> q2;
+  std::vector<reco::GenParticle> toplep;
+  std::vector<reco::GenParticle> wlep;
+  std::vector<reco::GenParticle> blep;
+  std::vector<reco::GenParticle> lep;
+  std::vector<reco::GenParticle> nu;
+  reco::GenParticle higgs;
+  std::vector<reco::GenParticle> higgs_bs;
+  if(input.genTopEvt.IsFilled()){
+    tophad=input.genTopEvt.GetAllTopHads();
+    whad=input.genTopEvt.GetAllWhads();
+    bhad=input.genTopEvt.GetAllTopHadDecayQuarks();
+    q1=input.genTopEvt.GetAllWQuarks();
+    q2=input.genTopEvt.GetAllWAntiQuarks();
+    toplep=input.genTopEvt.GetAllTopLeps();
+    wlep=input.genTopEvt.GetAllWleps();
+    blep=input.genTopEvt.GetAllTopLepDecayQuarks();
+    lep=input.genTopEvt.GetAllLeptons();
+    nu=input.genTopEvt.GetAllNeutrinos();
+    higgs=input.genTopEvt.GetHiggs();
+    higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
+  }
 
   reco::GenParticle b1;
   reco::GenParticle b2;

@@ -6,11 +6,12 @@
 class GenTopEvent{
   
 public:
-  GenTopEvent(const std::vector<reco::GenParticle>& prunedGenParticles);
+  GenTopEvent();
   ~GenTopEvent();
+  void Fill(const std::vector<reco::GenParticle>& prunedGenParticles);
   reco::GenParticle GetHiggs() const;
   std::vector<reco::GenParticle> GetHiggsDecayProducts() const;
-
+  bool IsFilled() const;
   reco::GenParticle GetTop() const;
   reco::GenParticle GetTopBar() const;
   reco::GenParticle GetTopDecayQuark() const;
@@ -104,6 +105,7 @@ private:
   std::vector<reco::GenParticle> higgs_decay_products;
   bool topIsHadronic;
   bool topbarIsHadronic;
+  bool isFilled;
 };
 
 #endif

@@ -441,8 +441,6 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     if(genjets[i].pt()>30&&fabs(genjets[i].eta())<2.5)
       selectedGenJets.push_back(genjets[i]);
   }
-  GenTopEvent genTopEvt(genParticles);
-//  genTopEvt.Print();
   // Fill Boosted Event Object
   boosted::Event event = FillEvent(iEvent,h_geneventinfo,h_beamspot,h_hcalnoisesummary,h_puinfosummary);
   
@@ -459,6 +457,11 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   else{
     sampleType = SampleType::nonttbkg;
   }
+
+  GenTopEvent genTopEvt;
+  if(sampleType == SampleType::tt || sampleType == SampleType::tth) genTopEvt.Fill(genParticles);
+  //  genTopEvt.Print();
+
 
   // DO REWEIGHTING
   map<string,float> weights = GetWeights(event,selectedPVs,selectedJets,selectedElectrons,selectedMuons,genParticles);
