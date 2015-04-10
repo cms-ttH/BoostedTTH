@@ -695,18 +695,32 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
   // Get Objects
   
   // MC Objects 
-  std::vector<math::XYZTLorentzVector> tophad_mc=input.genTopEvt.GetAllTopHadVecs();
-  std::vector<math::XYZTLorentzVector> whad_mc=input.genTopEvt.GetAllWhadVecs();
-  std::vector<math::XYZTLorentzVector> bhad_mc=input.genTopEvt.GetAllTopHadDecayQuarkVecs();
-  std::vector<math::XYZTLorentzVector> q1_mc=input.genTopEvt.GetAllWQuarkVecs();
-  std::vector<math::XYZTLorentzVector> q2_mc=input.genTopEvt.GetAllWAntiQuarkVecs();
-  std::vector<math::XYZTLorentzVector> toplep_mc=input.genTopEvt.GetAllTopLepVecs();
-  std::vector<math::XYZTLorentzVector> wlep_mc=input.genTopEvt.GetAllWlepVecs();
-  std::vector<math::XYZTLorentzVector> blep_mc=input.genTopEvt.GetAllTopLepDecayQuarkVecs();
-  std::vector<math::XYZTLorentzVector> lep_mc=input.genTopEvt.GetAllLeptonVecs();
-  std::vector<math::XYZTLorentzVector> nu_mc=input.genTopEvt.GetAllNeutrinoVecs();
-  math::XYZTLorentzVector higgs_mc=input.genTopEvt.GetHiggsVec();
-  std::vector<reco::GenParticle> higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
+  std::vector<math::XYZTLorentzVector> tophad_mc;
+  std::vector<math::XYZTLorentzVector> whad_mc;
+  std::vector<math::XYZTLorentzVector> bhad_mc;
+  std::vector<math::XYZTLorentzVector> q1_mc;
+  std::vector<math::XYZTLorentzVector> q2_mc;
+  std::vector<math::XYZTLorentzVector> toplep_mc;
+  std::vector<math::XYZTLorentzVector> wlep_mc;
+  std::vector<math::XYZTLorentzVector> blep_mc;
+  std::vector<math::XYZTLorentzVector> lep_mc;
+  std::vector<math::XYZTLorentzVector> nu_mc;
+  math::XYZTLorentzVector higgs_mc;
+  std::vector<reco::GenParticle> higgs_bs;
+  if(input.genTopEvt.IsFilled()){
+    tophad_mc=input.genTopEvt.GetAllTopHadVecs();
+    whad_mc=input.genTopEvt.GetAllWhadVecs();
+    bhad_mc=input.genTopEvt.GetAllTopHadDecayQuarkVecs();
+    q1_mc=input.genTopEvt.GetAllWQuarkVecs();
+    q2_mc=input.genTopEvt.GetAllWAntiQuarkVecs();
+    toplep_mc=input.genTopEvt.GetAllTopLepVecs();
+    wlep_mc=input.genTopEvt.GetAllWlepVecs();
+    blep_mc=input.genTopEvt.GetAllTopLepDecayQuarkVecs();
+    lep_mc=input.genTopEvt.GetAllLeptonVecs();
+    nu_mc=input.genTopEvt.GetAllNeutrinoVecs();
+    higgs_mc=input.genTopEvt.GetHiggsVec();
+    higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
+  }
 
   math::XYZTLorentzVector b1_mc;
   math::XYZTLorentzVector b2_mc;
