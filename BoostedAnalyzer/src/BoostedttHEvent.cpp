@@ -558,7 +558,7 @@ void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger* 
 
 
 void BoostedttHEvent::BoostedHiggsEventRec(HiggsTagger* higgstagger){
-  
+
   ResetEvent();
   
   LeptonRec();
