@@ -294,8 +294,7 @@ BoostedAnalyzer::~BoostedAnalyzer()
 //
 
 // ------------ method called for each event  ------------
-void
-BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   if(eventcount<10||eventcount%1000==0){
     cout << "Analyzing event " << eventcount << endl;
@@ -392,7 +391,7 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   // Clean electrons from jets
   std::vector<pat::Jet> jetsNoEle = helper.RemoveOverlaps(selectedElectronsLoose, jetsNoMu);
   // Apply jet corrections
-  //  std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
+//    std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
   // Get jet Collection which pass selection
   std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(jetsNoEle, 30., 2.4, jetID::jetLoose, '-' );
   // Get jet Collection which pass loose selection
@@ -522,14 +521,10 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   if(!selected) return;
 
   // WRITE TREE
-<<<<<<< HEAD
-  treewriter.Process(input);
-=======
   if(disableObjectSelections)
-    treewriter.Process(unselected_input);  
+    treewriter.Process(unselected_input);
   else
-    treewriter.Process(input);  
->>>>>>> cd7b501fb2d8a5706a70cc38aa7a86e7401eac77
+    treewriter.Process(input);
 }
 
 
@@ -619,7 +614,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const boosted::Event& event, const
   }
 
   // not sure why the BNevent weight is !=+-1 but we dont want it that way
-  float weight = event.weight;  
+  float weight = event.weight;
   float xsweight = xs*luminosity/totalMCevents;
   float csvweight = 1.;
   float puweight = 1.;
@@ -671,8 +666,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const boosted::Event& event, const
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
-BoostedAnalyzer::beginJob()
+void BoostedAnalyzer::beginJob()
 {
   eventcount=0;
 
@@ -681,28 +675,25 @@ BoostedAnalyzer::beginJob()
 
 
 // ------------ method called once each job just after ending the event loop  ------------
-void 
-BoostedAnalyzer::endJob() 
+void BoostedAnalyzer::endJob() 
 {
   cutflow.Print();
 }
 // ------------ method called when starting to processes a run ------------
 // needed for the hlt_config_
-void
-BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
+
+void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
-std::string hltTag="HLT";
-bool hltchanged = true;
-if (!hlt_config_.init(iRun, iSetup, hltTag, hltchanged)) {
-std::cout << "Warning, didn't find trigger process HLT,\t" << hltTag << std::endl;
-return;
+  std::string hltTag="HLT";
+  bool hltchanged = true;
+  if (!hlt_config_.init(iRun, iSetup, hltTag, hltchanged)) {
+    std::cout << "Warning, didn't find trigger process HLT,\t" << hltTag << std::endl;
+    return;
+  }
 }
-}
- 
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-BoostedAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+void BoostedAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
