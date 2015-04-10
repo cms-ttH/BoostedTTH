@@ -28,6 +28,7 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
+  vars.InitVars( "Jet_Charge","N_Jets" );
   
   vars.InitVars( "TaggedJet_E","N_BTagsM" );
   vars.InitVars( "TaggedJet_M","N_BTagsM" );
@@ -78,19 +79,19 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVar( "Evt_CSV_Min_Tagged" );
   vars.InitVar( "Evt_CSV_Dev_Tagged" );
 
-  vars.InitVar( "Evt_M_MinDeltaRJets" );    
+  vars.InitVar( "Evt_M_MinDeltaRJets" );
   vars.InitVar( "Evt_M_MinDeltaRTaggedJets" );
   vars.InitVar( "Evt_M_MinDeltaRUntaggedJets" );
   vars.InitVar( "Evt_M_MinDeltaRLeptonTaggedJet" );
   vars.InitVar( "Evt_M_MinDeltaRLeptonJet" );
 
-  vars.InitVar( "Evt_Dr_MinDeltaRJets" );    
+  vars.InitVar( "Evt_Dr_MinDeltaRJets" );
   vars.InitVar( "Evt_Dr_MinDeltaRTaggedJets" );
   vars.InitVar( "Evt_Dr_MinDeltaRUntaggedJets" );
   vars.InitVar( "Evt_Dr_MinDeltaRLeptonTaggedJet" );
   vars.InitVar( "Evt_Dr_MinDeltaRLeptonJet" );
 
-  vars.InitVar( "Evt_Pt_MinDeltaRJets" );    
+  vars.InitVar( "Evt_Pt_MinDeltaRJets" );
   vars.InitVar( "Evt_Pt_MinDeltaRTaggedJets" );
   vars.InitVar( "Evt_Pt_MinDeltaRUntaggedJets" );
 
@@ -255,8 +256,9 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
-    vars.FillVars( "Jet_CSV",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );        
-    vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );        
+    vars.FillVars( "Jet_CSV",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );
+    vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );
+    vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
   }
   
   // Tagged Jets

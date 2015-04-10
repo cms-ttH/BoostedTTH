@@ -72,7 +72,10 @@ addJetCollection(
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
     btagDiscriminators = None,
     jetCorrections = None,
-    getJetMCFlavour = False,
+    getJetMCFlavour = True,
+    rParam=0.5,
+    algoLabel='CA12',
+    typeLabel='PF',
     genJetCollection = None
 )
 # the two subjets that created the mass drop
@@ -95,7 +98,7 @@ addJetCollection(
 # filterjets (reclustered from subjets)
 addJetCollection(
     process,
-    postfix="",
+    postfix = "",
     jetSource = cms.InputTag('CA12JetsCA3FilterjetsPF','filterjets'),
     pfCandidates = cms.InputTag('packedPFCandidates'),
     labelName = 'CA3FiltPF',
@@ -121,9 +124,12 @@ addJetCollection(
     rParam = 1.5,
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators =None,
+    btagDiscriminators = None,
     jetCorrections = None,
     getJetMCFlavour = False,
+    rParam=1.5,
+    algoLabel='CA15',
+    typeLabel='PF',
     genJetCollection = None
 )
 # 3 subjets corresbonding to W and b

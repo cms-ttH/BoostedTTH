@@ -68,7 +68,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(values['
 
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(values['filenames']),
-                              skipEvents = cms.untracked.uint32(int(values['skip']))                        
+                              skipEvents = cms.untracked.uint32(int(values['skip']))
 )
 
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
@@ -80,7 +80,7 @@ if values['sampletype'] is not None:
 if values['xs'] is not None:
     process.BoostedAnalyzer.xs=cms.double(float(values['xs']))
 if values['mcevents'] is not None:
-    process.BoostedAnalyzer.nMCEvents=cms.int32(int(values['mcevents']))      
+    process.BoostedAnalyzer.nMCEvents=cms.int32(int(values['mcevents']))
     
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 #process.p = cms.Path(process.content*process.BoostedAnalyzer)
