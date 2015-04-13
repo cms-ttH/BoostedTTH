@@ -293,6 +293,7 @@ void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContaine
 
 
 void BoostedJetVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
+  
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
   vars.FillVar("N_TopJets",input.selectedHEPTopJets.size());
