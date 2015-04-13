@@ -15,7 +15,8 @@ void LeptonSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
   cutflow.AddStep("== 1 loose lepton");
   cutflow.AddStep("== 1 tight lepton same flavor");
   cutflow.AddStep("== 0 loose leptons different flavor");
-  
+//for testing
+
   initialized=true;
 }
 
@@ -41,6 +42,6 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
   else cutflow.EventSurvivedStep("== 1 tight lepton same flavor");
   if(!( (muonTriggered&&nmuonsloose==1&&nmuons==1&&nelectronsloose==0) || (electronTriggered&&nelectronsloose==1&&nelectrons==1&&nmuonsloose==0) ) ) return false;
   else cutflow.EventSurvivedStep("== 0 loose leptons different flavor");
-  
+
   return true;
 }
