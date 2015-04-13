@@ -20,7 +20,7 @@ HEPTopJetsPF = cms.EDProducer(
     subjetMassCut 	= cms.double(30.),
     requireTopTag	= cms.bool(False)
 )
-HEPTopJetsPF.jetPtMin		= cms.double(180.)
+HEPTopJetsPF.jetPtMin   = cms.double(180.)
 HEPTopJetsPF.doAreaFastjet  = cms.bool(True)
 
 HEPTopJetsGen = cms.EDProducer(
@@ -36,8 +36,8 @@ HEPTopJetsGen = cms.EDProducer(
     subjetMassCut 	= cms.double(30.),
     requireTopTag	= cms.bool(False)
 )
-HEPTopJetsGen.jetPtMin		= cms.double(150.)
-HEPTopJetsGen.doAreaFastjet	= cms.bool(True)
+HEPTopJetsGen.jetPtMin  = cms.double(150.)
+HEPTopJetsGen.doAreaFastjet = cms.bool(True)
 
 heptopjet_pf_seq = cms.Sequence(HEPTopJetsPF)
 heptopjet_gen_seq = cms.Sequence(HEPTopJetsGen)

@@ -70,15 +70,15 @@ SubjetFilterJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
   
   edm::Handle<edm::View<pat::Jet> > patfatjetsHandle;
   iEvent.getByLabel(patfatjetsTag_, patfatjetsHandle);
-  edm::View<pat::Jet> patfatjets 		= *patfatjetsHandle;
+  edm::View<pat::Jet> patfatjets = *patfatjetsHandle;
   
   edm::Handle<edm::View<pat::Jet> > patsubjetsHandle;
   iEvent.getByLabel(patsubjetsTag_, patsubjetsHandle);
-  edm::View<pat::Jet> patsubjets 		= *patsubjetsHandle;
+  edm::View<pat::Jet> patsubjets = *patsubjetsHandle;
 	
   edm::Handle<edm::View<pat::Jet> > patfilterjetsHandle;
   iEvent.getByLabel(patfilterjetsTag_, patfilterjetsHandle);
-  edm::View<pat::Jet> patfilterjets 	= *patfilterjetsHandle;
+  edm::View<pat::Jet> patfilterjets = *patfilterjetsHandle;
   
   edm::Handle<std::vector<double> > subjettiness1Handle;
   iEvent.getByLabel(subjettiness1Tag_, subjettiness1Handle);
@@ -102,9 +102,9 @@ SubjetFilterJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
   std::multimap<double, int> patsubjetindex_by_eta;
   std::multimap<double, int> patfilterjetindex_by_eta;
   
-  for(size_t i=0; i<patfatjets.size(); ++i)			patfatjetindex_by_eta.insert(std::pair<double,int>(patfatjets[i].eta(), i));
-  for(size_t i=0; i<patsubjets.size(); ++i) 		patsubjetindex_by_eta.insert(std::pair<double,int>(patsubjets[i].eta(), i));
-  for(size_t i=0; i<patfilterjets.size(); ++i) 	patfilterjetindex_by_eta.insert(std::pair<double,int>(patfilterjets[i].eta(), i));
+  for(size_t i=0; i<patfatjets.size(); ++i) patfatjetindex_by_eta.insert(std::pair<double,int>(patfatjets[i].eta(), i));
+  for(size_t i=0; i<patsubjets.size(); ++i) patsubjetindex_by_eta.insert(std::pair<double,int>(patsubjets[i].eta(), i));
+  for(size_t i=0; i<patfilterjets.size(); ++i) patfilterjetindex_by_eta.insert(std::pair<double,int>(patfilterjets[i].eta(), i));
   
   for(typename std::vector<reco::BasicJet>::const_iterator it=recofatjets.begin();it!=recofatjets.end();++it){
     if(it->pt() < minJetPt) continue;

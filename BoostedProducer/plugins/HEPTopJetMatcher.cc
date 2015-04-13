@@ -72,11 +72,11 @@ HEPTopJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   edm::Handle<edm::View<pat::Jet> > patfatjetsHandle;
   iEvent.getByLabel(patfatjetsTag_, patfatjetsHandle);
-  edm::View<pat::Jet> patfatjets 		= *patfatjetsHandle;
+  edm::View<pat::Jet> patfatjets = *patfatjetsHandle;
   
   edm::Handle<edm::View<pat::Jet> > patsubjetsHandle;
   iEvent.getByLabel(patsubjetsTag_, patsubjetsHandle);
-  edm::View<pat::Jet> patsubjets 		= *patsubjetsHandle;
+  edm::View<pat::Jet> patsubjets = *patsubjetsHandle;
   
   edm::Handle<std::vector<bool> > toptagsHandle;
   iEvent.getByLabel(toptagsTag_, toptagsHandle);
@@ -103,15 +103,15 @@ HEPTopJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::multimap<double, int> patfatjetindex_by_eta;
   std::multimap<double, int> patsubjetindex_by_eta;
   
-  for(size_t i=0; i<patfatjets.size(); ++i)			patfatjetindex_by_eta.insert(std::pair<double,int>(patfatjets[i].eta(), i));
-  for(size_t i=0; i<patsubjets.size(); ++i) 		patsubjetindex_by_eta.insert(std::pair<double,int>(patsubjets[i].eta(), i));
+  for(size_t i=0; i<patfatjets.size(); ++i) patfatjetindex_by_eta.insert(std::pair<double,int>(patfatjets[i].eta(), i));
+  for(size_t i=0; i<patsubjets.size(); ++i) patsubjetindex_by_eta.insert(std::pair<double,int>(patsubjets[i].eta(), i));
   
   for(typename std::vector<reco::BasicJet>::const_iterator it=recofatjets.begin();it!=recofatjets.end();++it){
     if(it->pt() < minJetPt) continue;
     
     HEPTopJets->push_back(boosted::HEPTopJet());
-    HEPTopJets->back().fatjet 				= deltarJetMatching(patfatjets, patfatjetindex_by_eta, *it);
-    HEPTopJets->back().toptag 				= toptags[it-recofatjets.begin()];
+    HEPTopJets->back().fatjet 		= deltarJetMatching(patfatjets, patfatjetindex_by_eta, *it);
+    HEPTopJets->back().toptag 		= toptags[it-recofatjets.begin()];
     HEPTopJets->back().subjettiness1 	= subjettiness1[it-recofatjets.begin()];
     HEPTopJets->back().subjettiness2 	= subjettiness2[it-recofatjets.begin()];
     HEPTopJets->back().subjettiness3 	= subjettiness3[it-recofatjets.begin()];
@@ -122,11 +122,11 @@ HEPTopJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     for(size_t i=0;i<recosubjets.size(); ++i){
       const pat::Jet & patsubjet = deltarJetMatching(patsubjets, patsubjetindex_by_eta, *(recosubjets.at(i)));
       
-      if(i==0) HEPTopJets->back().topjet	= patsubjet;
-      if(i==1) HEPTopJets->back().nonW 		= patsubjet;
-      if(i==2) HEPTopJets->back().W 			= patsubjet;
-      if(i==3) HEPTopJets->back().W1 			= patsubjet;
-      if(i==4) HEPTopJets->back().W2 			= patsubjet;
+      if(i==0) HEPTopJets->back().topjet = patsubjet;
+      if(i==1) HEPTopJets->back().nonW = patsubjet;
+      if(i==2) HEPTopJets->back().W = patsubjet;
+      if(i==3) HEPTopJets->back().W1 = patsubjet;
+      if(i==4) HEPTopJets->back().W2 = patsubjet;
     }
   }
   
