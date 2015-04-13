@@ -7,7 +7,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     JetTagSelection,  
     era = cms.string("2012_53x"),
     analysisType = cms.string("LJ"),
-    luminostiy = cms.double(19.7),
+    luminosity = cms.double(19.7),
     sampleID = cms.int32(9125),
     xs = cms.double(248),
     nMCEvents = cms.int32(25000000),
