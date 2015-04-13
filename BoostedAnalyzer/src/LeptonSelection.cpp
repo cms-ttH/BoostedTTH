@@ -43,7 +43,4 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
   else cutflow.EventSurvivedStep("== 0 loose leptons different flavor");
 
   return true;
-  
 }
-
-

@@ -32,11 +32,11 @@ env['mcevents'] = os.getenv('MCEVENTS')
 # default variables
 default = {}
 default['nickname'] = 'MC_Pythia_TTHbb'
-#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/BoostedTTH_MiniAOD/150223_082502/0000/BoostedMiniAOD_4.root'
-default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/BoostedTTH_MiniAOD/150227_111650/0000/BoostedTTH_MiniAOD_15.root'
+default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/BoostedTTH_MiniAOD/150223_082502/0000/BoostedMiniAOD_4.root'
+#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/BoostedTTH_MiniAOD/150227_111650/0000/BoostedTTH_MiniAOD_15.root'
 default['outfilename'] = None
 default['skip'] = '0'
-default['max'] = '100'
+default['max'] = '1000'
 
 default['sampletype'] = '9125'
 default['xs'] = '248'
@@ -57,7 +57,7 @@ values['filenames'] = map(lambda s: s.strip('" '), values['filenames'].split(","
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
@@ -68,7 +68,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(values['
 
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(values['filenames']),
-                              skipEvents = cms.untracked.uint32(int(values['skip']))                        
+                              skipEvents = cms.untracked.uint32(int(values['skip']))
 )
 
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
@@ -80,7 +80,7 @@ if values['sampletype'] is not None:
 if values['xs'] is not None:
     process.BoostedAnalyzer.xs=cms.double(float(values['xs']))
 if values['mcevents'] is not None:
-    process.BoostedAnalyzer.nMCEvents=cms.int32(int(values['mcevents']))      
+    process.BoostedAnalyzer.nMCEvents=cms.int32(int(values['mcevents']))
     
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 #process.p = cms.Path(process.content*process.BoostedAnalyzer)

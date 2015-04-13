@@ -15,10 +15,10 @@ config.Data.inputDataset = '/TT_scaleup_Tune4C_13TeV-pythia8-tauola/Phys14DR-PU2
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
-config.Data.publication = True
+config.Data.publication = False
 #config.Data.totalUnits = 5
 #config.Data.publishDbsUrl = 'phys03'
-config.Data.publishDataName = 'BoostedTTH_MiniAOD'
+#config.Data.publishDataName = 'BoostedTTH_MiniAOD'
 
 config.section_("Site")
 config.Site.storageSite = 'T2_DE_DESY'

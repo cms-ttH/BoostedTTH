@@ -25,6 +25,7 @@ void ttHVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 
 
 void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
+
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
   BoostedttHEvent ttHEvent = BoostedttHEvent(input);  
@@ -553,7 +554,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
   vars.FillVar(prefix+"TopHadCandidate_Subjettiness2",topHadCand.subjettiness2);
   vars.FillVar(prefix+"TopHadCandidate_Subjettiness3",topHadCand.subjettiness3);
   
-  if(topHadCandVec.Pt()>0.001 && lepCandVec.Pt()>0.001){
+  if(topHadCandVec.Pt()>0 && lepCandVec.Pt()>0){
     vars.FillVar(prefix+"TopHadCandidate_Dr_Lepton",BoostedUtils::DeltaR(lepCandVec,topHadCandVec));
   }
   
@@ -670,19 +671,19 @@ void ttHVarProcessor::FillCombinationVars(VariableContainer& vars,BoostedttHEven
   math::XYZTLorentzVector topLepCandVec = ttHEvent.GetTopLepCandVec();
   
   // Fill Variables
-  if(higgsCandVec2.Pt()>0.001 && topHadCandVec.Pt()>0.001){
+  if(higgsCandVec2.Pt()>0 && topHadCandVec.Pt()>0){
     vars.FillVar(prefix+"HiggsCandidate_Dr_TopHadCandidate",BoostedUtils::DeltaR(topHadCandVec,higgsCandVec2));
     vars.FillVar(prefix+"HiggsCandidate_Dphi_TopHadCandidate",BoostedUtils::DeltaPhi(topHadCandVec,higgsCandVec2));
     vars.FillVar(prefix+"HiggsCandidate_Deta_TopHadCandidate",BoostedUtils::DeltaEta(topHadCandVec,higgsCandVec2));
   }
   
-  if(higgsCandVec2.Pt()>0.001 && topLepCandVec.Pt()>0.001){
+  if(higgsCandVec2.Pt()>0 && topLepCandVec.Pt()>0){
     vars.FillVar(prefix+"HiggsCandidate_Dr_TopLepCandidate",BoostedUtils::DeltaR(topLepCandVec,higgsCandVec2));
     vars.FillVar(prefix+"HiggsCandidate_Dphi_TopLepCandidate",BoostedUtils::DeltaPhi(topLepCandVec,higgsCandVec2));
     vars.FillVar(prefix+"HiggsCandidate_Deta_TopLepCandidate",BoostedUtils::DeltaEta(topLepCandVec,higgsCandVec2));
   }
   
-  if(topHadCandVec.Pt()>0.001 && topLepCandVec.Pt()>0.001){
+  if(topHadCandVec.Pt()>0 && topLepCandVec.Pt()>0){
     vars.FillVar(prefix+"TopHadCandidate_Dr_TopLepCandidate",BoostedUtils::DeltaR(topLepCandVec,topHadCandVec));
     vars.FillVar(prefix+"TopHadCandidate_Dphi_TopLepCandidate",BoostedUtils::DeltaPhi(topLepCandVec,topHadCandVec));
     vars.FillVar(prefix+"TopHadCandidate_Deta_TopLepCandidate",BoostedUtils::DeltaEta(topLepCandVec,topHadCandVec));
@@ -695,18 +696,32 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
   // Get Objects
   
   // MC Objects 
-  std::vector<math::XYZTLorentzVector> tophad_mc=input.genTopEvt.GetAllTopHadVecs();
-  std::vector<math::XYZTLorentzVector> whad_mc=input.genTopEvt.GetAllWhadVecs();
-  std::vector<math::XYZTLorentzVector> bhad_mc=input.genTopEvt.GetAllTopHadDecayQuarkVecs();
-  std::vector<math::XYZTLorentzVector> q1_mc=input.genTopEvt.GetAllWQuarkVecs();
-  std::vector<math::XYZTLorentzVector> q2_mc=input.genTopEvt.GetAllWAntiQuarkVecs();
-  std::vector<math::XYZTLorentzVector> toplep_mc=input.genTopEvt.GetAllTopLepVecs();
-  std::vector<math::XYZTLorentzVector> wlep_mc=input.genTopEvt.GetAllWlepVecs();
-  std::vector<math::XYZTLorentzVector> blep_mc=input.genTopEvt.GetAllTopLepDecayQuarkVecs();
-  std::vector<math::XYZTLorentzVector> lep_mc=input.genTopEvt.GetAllLeptonVecs();
-  std::vector<math::XYZTLorentzVector> nu_mc=input.genTopEvt.GetAllNeutrinoVecs();
-  math::XYZTLorentzVector higgs_mc=input.genTopEvt.GetHiggsVec();
-  std::vector<reco::GenParticle> higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
+  std::vector<math::XYZTLorentzVector> tophad_mc;
+  std::vector<math::XYZTLorentzVector> whad_mc;
+  std::vector<math::XYZTLorentzVector> bhad_mc;
+  std::vector<math::XYZTLorentzVector> q1_mc;
+  std::vector<math::XYZTLorentzVector> q2_mc;
+  std::vector<math::XYZTLorentzVector> toplep_mc;
+  std::vector<math::XYZTLorentzVector> wlep_mc;
+  std::vector<math::XYZTLorentzVector> blep_mc;
+  std::vector<math::XYZTLorentzVector> lep_mc;
+  std::vector<math::XYZTLorentzVector> nu_mc;
+  math::XYZTLorentzVector higgs_mc;
+  std::vector<reco::GenParticle> higgs_bs;
+  if(input.genTopEvt.IsFilled()){
+    tophad_mc=input.genTopEvt.GetAllTopHadVecs();
+    whad_mc=input.genTopEvt.GetAllWhadVecs();
+    bhad_mc=input.genTopEvt.GetAllTopHadDecayQuarkVecs();
+    q1_mc=input.genTopEvt.GetAllWQuarkVecs();
+    q2_mc=input.genTopEvt.GetAllWAntiQuarkVecs();
+    toplep_mc=input.genTopEvt.GetAllTopLepVecs();
+    wlep_mc=input.genTopEvt.GetAllWlepVecs();
+    blep_mc=input.genTopEvt.GetAllTopLepDecayQuarkVecs();
+    lep_mc=input.genTopEvt.GetAllLeptonVecs();
+    nu_mc=input.genTopEvt.GetAllNeutrinoVecs();
+    higgs_mc=input.genTopEvt.GetHiggsVec();
+    higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
+  }
 
   math::XYZTLorentzVector b1_mc;
   math::XYZTLorentzVector b2_mc;
@@ -715,7 +730,7 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
     if(abs(p->pdgId())==5) b1_mc=p->p4();
     if(abs(p->pdgId())==-5) b2_mc=p->p4();
   }
- 
+  
   // Higgs Candidate
   math::XYZTLorentzVector higgsCandVec2 = ttHEvent.GetHiggsCandVec2();
   pat::Jet higgsB1Cand = ttHEvent.GetHiggsB1Cand();
@@ -732,9 +747,9 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
   pat::Jet topLepBCand = ttHEvent.GetTopLepBCand();
   math::XYZTLorentzVector lepCandVec = ttHEvent.GetLeptonVec();
   math::XYZTLorentzVector nuCandVec = ttHEvent.GetNeutrinoVec();
- 
-  if(higgsCandVec2.Pt()>0.001){
-    if(higgs_mc.Pt()>0.001)
+
+  if(higgsCandVec2.Pt()>0){
+    if(higgs_mc.Pt()>0)
             vars.FillVar(prefix+"HiggsCandidate_Dr_Higgs",BoostedUtils::DeltaR(higgs_mc,higgsCandVec2));
     
     if(tophad_mc.size()==1){
@@ -755,9 +770,9 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
       vars.FillVar(prefix+"HiggsCandidate_Dr_TopLep",fmin(BoostedUtils::DeltaR(toplep_mc[0],higgsCandVec2),BoostedUtils::DeltaR(toplep_mc[1],higgsCandVec2)));
     }
   }
-   
-  if(topHadCandVec.Pt()>0.001){
-    if(higgs_mc.Pt()>0.001)
+  
+  if(topHadCandVec.Pt()>0){
+    if(higgs_mc.Pt()>0)
       vars.FillVar(prefix+"TopHadCandidate_Dr_Higgs",BoostedUtils::DeltaR(higgs_mc,topHadCandVec));
    
     if(tophad_mc.size()==1)
@@ -770,9 +785,9 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
     else if (toplep_mc.size()==2)
        vars.FillVar(prefix+"TopHadCandidate_Dr_TopLep",fmin(BoostedUtils::DeltaR(toplep_mc[0],topHadCandVec),BoostedUtils::DeltaR(toplep_mc[1],topHadCandVec)));
   }
- 
-  if(topLepCandVec.Pt()>0.001){
-    if(higgs_mc.Pt()>0.001)
+  
+  if(topLepCandVec.Pt()>0){
+    if(higgs_mc.Pt()>0)
             vars.FillVar(prefix+"TopLepCandidate_Dr_Higgs",BoostedUtils::DeltaR(higgs_mc,topLepCandVec));
     
     if(tophad_mc.size()==1)
@@ -785,7 +800,7 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
     else if (toplep_mc.size()==2)
       vars.FillVar(prefix+"TopLepCandidate_Dr_TopLep",fmin(BoostedUtils::DeltaR(toplep_mc[0],topLepCandVec),BoostedUtils::DeltaR(toplep_mc[1],topLepCandVec)));
   }
-
+  
   float drw11 = 9;
   float drw22 = 9;
   float drw21 = 9;
@@ -793,9 +808,11 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
  
   int topHadMCID = -1;
   if(tophad_mc.size()>0) topHadMCID = 0;
-  if(tophad_mc.size()>1 && topHadCandVec.Pt()>0.001 && BoostedUtils::DeltaR(tophad_mc[1],topHadCandVec)<BoostedUtils::DeltaR(tophad_mc[0],topHadCandVec)) topHadMCID = 1;
- 
-  if(tophad_mc.size()>0 && topHadW1Cand.pt()>0.001 && topHadW2Cand.pt()>0.001){
+  if(tophad_mc.size()>1 && topHadCandVec.Pt()>0){
+    if(BoostedUtils::DeltaR(tophad_mc[1],topHadCandVec)<BoostedUtils::DeltaR(tophad_mc[0],topHadCandVec)) topHadMCID = 1;
+  }
+  
+  if(tophad_mc.size()>0 && topHadW1Cand.pt()>0 && topHadW2Cand.pt()>0){
     drw11 = BoostedUtils::DeltaR(q1_mc[topHadMCID],topHadW1Cand.p4());
     drw22 = BoostedUtils::DeltaR(q2_mc[topHadMCID],topHadW2Cand.p4());
     drw21 = BoostedUtils::DeltaR(q2_mc[topHadMCID],topHadW1Cand.p4());
@@ -825,13 +842,13 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
   vars.FillVar(prefix+"Dr_W1",drw1 );
   vars.FillVar(prefix+"Dr_W2",drw2 );
   
-  if(topHadMCID>=0) vars.FillVar(prefix+"Dr_Bhad",BoostedUtils::DeltaR(bhad_mc[topHadMCID],topHadBCand.p4())); 
+  if(topHadMCID>=0 && topHadBCand.pt()>0) vars.FillVar(prefix+"Dr_Bhad",BoostedUtils::DeltaR(bhad_mc[topHadMCID],topHadBCand.p4())); 
   
   float drb11 = 9;
   float drb22 = 9;
   float drb21 = 9;
   float drb12 = 9;
-  if(higgs_mc.Pt()>0.001 && higgsB1Cand.pt()>0.001 && higgsB2Cand.pt()>0.001){
+  if(b1_mc.pt()>0 && b2_mc.pt()>0 && higgsB1Cand.pt()>0 && higgsB2Cand.pt()>0){
     drb11 = BoostedUtils::DeltaR(b1_mc,higgsB1Cand.p4());
     drb22 = BoostedUtils::DeltaR(b2_mc,higgsB2Cand.p4());
     drb21 = BoostedUtils::DeltaR(b2_mc,higgsB1Cand.p4());
@@ -859,13 +876,16 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
   
   vars.FillVar(prefix+"Dr_B1",drb1 );
   vars.FillVar(prefix+"Dr_B2",drb2 );
- 
-  int topLepMCID = 0;
-  if(toplep_mc.size()>1 && topLepCandVec.Pt()>0.001 && BoostedUtils::DeltaR(toplep_mc[1],topLepCandVec)<BoostedUtils::DeltaR(toplep_mc[0],topLepCandVec)) topLepMCID = 1;
+  
+  int topLepMCID = -1;
+  if(toplep_mc.size()>0) topLepMCID = 0;
+  if(toplep_mc.size()>1 && topLepCandVec.Pt()>0.001){
+    if(BoostedUtils::DeltaR(toplep_mc[1],topLepCandVec)<BoostedUtils::DeltaR(toplep_mc[0],topLepCandVec)) topLepMCID = 1;
+  }
  
   if(toplep_mc.size()>0){
-    if(topLepBCand.pt()>0.001) vars.FillVar(prefix+"Dr_Blep",BoostedUtils::DeltaR(blep_mc[topLepMCID],topLepBCand.p4()));
-    if(nuCandVec.Pt()>0.001) vars.FillVar(prefix+"Dr_Nu",BoostedUtils::DeltaR(nu_mc[topLepMCID],nuCandVec));
-    if(lepCandVec.Pt()>0.001) vars.FillVar(prefix+"Dr_Lep",BoostedUtils::DeltaR(lep_mc[topLepMCID],lepCandVec));
+    if(topLepBCand.pt()>0) vars.FillVar(prefix+"Dr_Blep",BoostedUtils::DeltaR(blep_mc[topLepMCID],topLepBCand.p4()));
+    if(nuCandVec.Pt()>0) vars.FillVar(prefix+"Dr_Nu",BoostedUtils::DeltaR(nu_mc[topLepMCID],nuCandVec));
+    if(lepCandVec.Pt()>0) vars.FillVar(prefix+"Dr_Lep",BoostedUtils::DeltaR(lep_mc[topLepMCID],lepCandVec));
   }
 }

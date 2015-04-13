@@ -54,18 +54,21 @@ process.HEPTopJetsPF.jetPtMin=cms.double(180.)
 process.HEPTopJetsPF.doAreaFastjet=cms.bool(True)
 
 from PhysicsTools.PatAlgos.tools.jetTools import addJetCollection
-# add fat CA1.2 pat jet 
+# add fat CA1.2 pat jet
 addJetCollection(
     process,
     postfix="",
-    jetSource=    cms.InputTag('CA12JetsCA3FilterjetsPF','fatjet'),
-    pfCandidates = cms.InputTag('packedPFCandidates'), 
+    jetSource= cms.InputTag('CA12JetsCA3FilterjetsPF','fatjet'),
+    pfCandidates = cms.InputTag('packedPFCandidates'),
     labelName = 'CA12PF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
     btagDiscriminators =None,
     jetCorrections = None,
-    getJetMCFlavour = False,
+    getJetMCFlavour = True,
+    rParam=0.5,
+    algoLabel='CA12',
+    typeLabel='PF',
     genJetCollection = None
 )
 # the two subjets that created the mass drop
@@ -73,7 +76,7 @@ addJetCollection(
     process,
     postfix="",
     jetSource=    cms.InputTag('CA12JetsCA3FilterjetsPF','subjets'),
-    pfCandidates = cms.InputTag('packedPFCandidates'), 
+    pfCandidates = cms.InputTag('packedPFCandidates'),
     labelName = 'CA3SubPF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
@@ -94,21 +97,24 @@ addJetCollection(
     btagDiscriminators =  [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
     jetCorrections = None,
     getJetMCFlavour = False,
-    genJetCollection = None#cms.InputTag('CA12JetsCA3FilterjetsGen','filterjets')
+    genJetCollection = None #cms.InputTag('CA12JetsCA3FilterjetsGen','filterjets')
 )
 # fatjet for HEPTopTagger
 addJetCollection(
     process,
     postfix="",
-    jetSource=     cms.InputTag('HEPTopJetsPF', 'fatjet'),
-    pfCandidates = cms.InputTag('packedPFCandidates'), 
+    jetSource= cms.InputTag('HEPTopJetsPF', 'fatjet'),
+    pfCandidates = cms.InputTag('packedPFCandidates'),
     labelName = 'HEPTopFatPF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators =None,
+    btagDiscriminators = None,
     jetCorrections = None,
-    getJetMCFlavour = False,
-    genJetCollection = None 
+    getJetMCFlavour = True,
+    rParam=1.5,
+    algoLabel='CA15',
+    typeLabel='PF',
+    genJetCollection = None
 )
 # 3 subjets corresbonding to W and b
 addJetCollection(
@@ -122,7 +128,7 @@ addJetCollection(
     btagDiscriminators = [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
     jetCorrections = None,
     getJetMCFlavour = False,
-    genJetCollection = None 
+    genJetCollection = None
 )
 
 # match sub, filter and fat jet
