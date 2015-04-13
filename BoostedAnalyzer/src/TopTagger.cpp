@@ -12,15 +12,30 @@ TopTagger::TopTagger(){
 
 TopTagger::TopTagger(std::string name_, std::string histosPath_): name(name_) {
   
-  file = new TFile((BoostedUtils::GetAnalyzerPath()+"/data/TopTagger/"+histosPath_).c_str());
+  file = new TFile((BoostedUtils::GetAnalyzerPath()+"/data/toptagger/"+histosPath_).c_str());
 
-  mtop_top_histo=(TH1F*)file->Get("mtop_top");
-  mtop_nottop_histo=(TH1F*)file->Get("mtop_nottop");
-  mratio_top_histo=(TH1F*)file->Get("mratio_top");
-  mratio_nottop_histo=(TH1F*)file->Get("mratio_nottop");
-  atan_top_histo=(TH1F*)file->Get("atan_top");
-  atan_nottop_histo=(TH1F*)file->Get("atan_nottop");
-
+  mtop_top_histo=(TH1F*)file->Get("TopJet_Top_M_True");
+  mtop_nottop_histo=(TH1F*)file->Get("TopJet_Top_M_False");
+  
+  /*
+  mratio_top_histo=(TH1F*)file->Get("TopJet_MRatio_23_Top_True");
+  mratio_nottop_histo=(TH1F*)file->Get("TopJet_MRatio_23_Top_False");
+  atan_top_histo=(TH1F*)file->Get("TopJet_Atan_1213_True");
+  atan_nottop_histo=(TH1F*)file->Get("TopJet_Atan_1213_False");
+  */
+  
+  mratio_top_histo=(TH1F*)file->Get("TopJet_MRatio_W_Top_True");
+  mratio_nottop_histo=(TH1F*)file->Get("TopJet_MRatio_W_Top_False");
+  atan_top_histo=(TH1F*)file->Get("TopJet_Atan_BW1W2_True");
+  atan_nottop_histo=(TH1F*)file->Get("TopJet_Atan_BW1W2_False");
+  
+  /*
+  mratio_top_histo=(TH1F*)file->Get("TopJet_MRatio_Wbtag_Top_True");
+  mratio_nottop_histo=(TH1F*)file->Get("TopJet_MRatio_Wbtag_Top_False");
+  atan_top_histo=(TH1F*)file->Get("TopJet_MRatio_Wbtag_Top_True");
+  atan_nottop_histo=(TH1F*)file->Get("TopJet_MRatio_Wbtag_Top_False");
+  */
+  
   toplikelihood = true;
   tmva = false;
 }
