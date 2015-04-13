@@ -373,14 +373,14 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   iEvent.getByToken( EDMMuonsToken,h_muons );
   std::vector<pat::Muon> const &muons = *h_muons; 
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 20., muonID::muonTight );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 20., muonID::muonTight );  //10. and muonLoose -> just for testing here
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose );  //10. and muonLoose -> just for testing here
 
   // ELECTRONS
   edm::Handle< std::vector<pat::Electron> > h_electrons;
   iEvent.getByToken( EDMElectronsToken,h_electrons );
   std::vector<pat::Electron> const &electrons = *h_electrons;
   std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M);
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M ); //10. and electronPhys14L
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., electronID::electronPhys14L ); //10. and electronPhys14L
 
   // Leptons
   /*
@@ -410,9 +410,9 @@ BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   // Apply jet corrections
   std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
   //Get jet Collection which pass selection
-  std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(jetsNoEle, 25., 2.4, jetID::jetLoose, '-' );
+  std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(correctedJets, 25., 2.4, jetID::jetLoose, '-' );
   // Get jet Collection which pass loose selection
-  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(jetsNoEle, 20., 2.5, jetID::jetLoose, '-' );
+  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(correctedJets, 20., 2.5, jetID::jetLoose, '-' );
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
