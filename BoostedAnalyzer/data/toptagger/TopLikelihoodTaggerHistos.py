@@ -35,6 +35,9 @@ for name,var,bins,xmin,xmax in variableNames:
   trueTree.Draw(var+">>"+name+"_True",trueDef)
   falseTree.Draw(var+">>"+name+"_False",falseDef)
 
+  trueHist.Scale(1/trueHist.Integral())
+  falseHist.Scale(1/falseHist.Integral())
+  
   trueHist.Write()
   falseHist.Write()
 
