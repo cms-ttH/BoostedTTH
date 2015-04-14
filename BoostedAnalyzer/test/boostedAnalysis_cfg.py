@@ -71,6 +71,24 @@ process.source = cms.Source(  "PoolSource",
                               skipEvents = cms.untracked.uint32(int(values['skip']))
 )
 
+from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
+from JetMETCorrections.Configuration.JetCorrectionCondDB_cff import *
+
+process.ak4PFCHSL1Fastjet = cms.ESProducer(
+  'L1FastjetCorrectionESProducer',
+  level = cms.string('L1FastJet'),
+  algorithm = cms.string('AK4PFchs'),
+  srcRho = cms.InputTag( 'fixedGridRhoFastjetAll' )
+  )
+process.ak4PFchsL2Relative = ak4CaloL2Relative.clone( algorithm = 'AK4PFchs' )
+process.ak4PFchsL3Absolute = ak4CaloL3Absolute.clone( algorithm = 'AK4PFchs' )
+process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
+  correctors = cms.vstring(
+    'ak4PFCHSL1Fastjet',
+    'ak4PFchsL2Relative',
+    'ak4PFchsL3Absolute')
+)
+
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.useFatJets=True
 if values['outfilename'] is not None:
