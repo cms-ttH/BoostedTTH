@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 HEPTopJetsPFMatcher = cms.EDProducer(
     "HEPTopJetMatcher",
-    verbose 		      = cms.bool(False),
+    verbose = cms.bool(False),
     minJetPt          = cms.double(15),
     recofatjetsTag    = cms.InputTag('HEPTopJetsPF','fatjet'),
     patfatjetsTag     = cms.InputTag('selectedPatJetsHEPTopFatPF'),

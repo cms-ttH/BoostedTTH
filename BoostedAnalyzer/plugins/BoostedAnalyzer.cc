@@ -214,7 +214,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   else if(analysisType == "TauDIL") iAnalysisType = analysisType::TauDIL;
   else cerr << "No matching analysis type found for: " << analysisType << endl;
   
-  luminosity = iConfig.getParameter<double>("luminostiy");
+  luminosity = iConfig.getParameter<double>("luminosity");
   sampleID = iConfig.getParameter<int>("sampleID");
   xs = iConfig.getParameter<double>("xs");
   totalMCevents = iConfig.getParameter<int>("nMCEvents");

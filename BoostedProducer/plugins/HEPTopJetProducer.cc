@@ -159,8 +159,7 @@ void HEPTopJetProducer::output(edm::Event& iEvent,
 
 //______________________________________________________________________________
 template< class T>
-void HEPTopJetProducer::writeCompoundJets(edm::Event& iEvent,
-						const edm::EventSetup& iSetup)
+void HEPTopJetProducer::writeCompoundJets(edm::Event& iEvent,const edm::EventSetup& iSetup)
 {
 	auto_ptr<reco::BasicJetCollection> fatJets( new reco::BasicJetCollection() );
 	auto_ptr< vector<T> >	subJets( new vector<T>() );
@@ -173,7 +172,7 @@ void HEPTopJetProducer::writeCompoundJets(edm::Event& iEvent,
 
 	vector<math::XYZTLorentzVector> p4FatJets;
 
-	vector<double>                  areaFatJets;
+	vector<double> areaFatJets;
 
 	vector<CompoundPseudoJet>::const_iterator itBegin(fjCompoundJets_.begin());
 	vector<CompoundPseudoJet>::const_iterator itEnd(fjCompoundJets_.end());
