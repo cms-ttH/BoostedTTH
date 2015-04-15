@@ -397,8 +397,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByToken( EDMJetsToken,h_pfjets );
   std::vector<pat::Jet> const &pfjets = *h_pfjets;
   
-//    const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
-//    helper.SetJetCorrector(corrector);
+    const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+    helper.SetJetCorrector(corrector);
   
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(pfjets);
@@ -407,7 +407,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // Clean electrons from jets
   std::vector<pat::Jet> jetsNoEle = helper.RemoveOverlaps(selectedElectronsLoose, jetsNoMu);
   // Apply jet corrections
-//    std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
+    std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
   //Get jet Collection which pass selection
   std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(correctedJets, 25., 2.4, jetID::jetLoose, '-' );
   // Get jet Collection which pass loose selection
@@ -634,6 +634,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const boosted::Event& event, const
   }
 
   // not sure why the BNevent weight is !=+-1 but we dont want it that way
+//std::cout<<event.weight<<" "<<xs<<" "<<luminosity<<" "<<totalMCevents<<std::endl;
   float weight = event.weight;
   float xsweight = xs*luminosity/totalMCevents;
   float csvweight = 1.;
