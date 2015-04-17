@@ -6,6 +6,7 @@
   <use   name="FWCore/ParameterSet"/>
   <use   name="DataFormats/JetReco"/>
   <use   name="DataFormats/PatCandidates"/>
+  <use   name="DataFormats/JetReco"/>
   <use   name="CommonTools/UtilAlgos"/>
   <use   name="CondFormats/JetMETObjects"/>
   <use   name="JetMETCorrections/Objects"/>

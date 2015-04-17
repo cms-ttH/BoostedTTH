@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// SubjetFilterJetProducer
+// SFJetProducer
 // -----------------------
 //
 // For a description of the Subjet/Filter algorithm, see e.g.
@@ -25,7 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "BoostedTTH/BoostedProducer/plugins/SubjetFilterJetProducer.h"
+#include "BoostedTTH/BoostedProducer/plugins/SFJetProducer.h"
 
 #include "RecoJets/JetProducers/interface/JetSpecific.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -39,7 +39,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 
 //______________________________________________________________________________
-SubjetFilterJetProducer::SubjetFilterJetProducer(const edm::ParameterSet& iConfig)
+SFJetProducer::SFJetProducer(const edm::ParameterSet& iConfig)
   : VirtualJetProducer(iConfig),
     alg_(iConfig.getParameter<string>	("@module_label"),
 	 iConfig.getParameter<bool> 	("verbose"),
@@ -81,7 +81,7 @@ SubjetFilterJetProducer::SubjetFilterJetProducer(const edm::ParameterSet& iConfi
 		iConfig.getParameter<double>	("rParam") // cone size R0
 		)
 {
-	produces<reco::BasicJetCollection>("fatjet");
+	produces<reco::BasicJetCollection>("fatjets");
 	makeProduces(moduleLabel_,"subjets");
 	makeProduces(moduleLabel_,"filterjets");
 
@@ -96,7 +96,7 @@ SubjetFilterJetProducer::SubjetFilterJetProducer(const edm::ParameterSet& iConfi
 
 
 //______________________________________________________________________________
-SubjetFilterJetProducer::~SubjetFilterJetProducer()
+SFJetProducer::~SFJetProducer()
 {
 
 }
@@ -107,7 +107,7 @@ SubjetFilterJetProducer::~SubjetFilterJetProducer()
 ////////////////////////////////////////////////////////////////////////////////
 
 //______________________________________________________________________________
-void SubjetFilterJetProducer::produce(edm::Event& iEvent,
+void SFJetProducer::produce(edm::Event& iEvent,
 				      const edm::EventSetup& iSetup)
 {
   VirtualJetProducer::produce(iEvent,iSetup);
@@ -115,14 +115,14 @@ void SubjetFilterJetProducer::produce(edm::Event& iEvent,
 
 
 //______________________________________________________________________________
-void SubjetFilterJetProducer::endJob()
+void SFJetProducer::endJob()
 {
   cout<<alg_.summary()<<endl;
 }
 
 
 //______________________________________________________________________________
-void SubjetFilterJetProducer::runAlgorithm(edm::Event& iEvent,
+void SFJetProducer::runAlgorithm(edm::Event& iEvent,
 					   const edm::EventSetup& iSetup)
 { 
   if ( !doAreaFastjet_ && !doRhoFastjet_) {
@@ -150,7 +150,7 @@ void SubjetFilterJetProducer::runAlgorithm(edm::Event& iEvent,
 
 
 //______________________________________________________________________________
-void SubjetFilterJetProducer::inputTowers()
+void SFJetProducer::inputTowers()
 {
   fjCompoundJets_.clear();
   nSjn1_.clear();
@@ -162,7 +162,7 @@ void SubjetFilterJetProducer::inputTowers()
 
 
 //______________________________________________________________________________
-void SubjetFilterJetProducer::output(edm::Event& iEvent,
+void SFJetProducer::output(edm::Event& iEvent,
 				     edm::EventSetup const& iSetup)
 {
   // Write jets and constitutents. Will use fjCompoundJets_. 
@@ -180,7 +180,7 @@ void SubjetFilterJetProducer::output(edm::Event& iEvent,
     writeCompoundJets<reco::BasicJet>( iEvent, iSetup );
     break;
   default:
-    edm::LogError("InvalidInput")<<" invalid jet type in SubjetFilterJetProducer\n";
+    edm::LogError("InvalidInput")<<" invalid jet type in SFJetProducer\n";
     break;
   };
   
@@ -189,7 +189,7 @@ void SubjetFilterJetProducer::output(edm::Event& iEvent,
 
 //______________________________________________________________________________
 template< class T>
-void SubjetFilterJetProducer::writeCompoundJets(edm::Event& iEvent,
+void SFJetProducer::writeCompoundJets(edm::Event& iEvent,
 						const edm::EventSetup& iSetup)
 {
   auto_ptr<reco::BasicJetCollection> fatJets( new reco::BasicJetCollection() );
@@ -287,7 +287,7 @@ void SubjetFilterJetProducer::writeCompoundJets(edm::Event& iEvent,
     fatJets->back().setJetArea(areaFatJets[fatIndex]);
   }
   
-  iEvent.put(fatJets,"fatjet");
+  iEvent.put(fatJets,"fatjets");
   for(size_t N=1;N<=4;N++){
     auto_ptr< vector<double> > NSubjettiness(new vector<double>());
     if(N==1)*NSubjettiness = nSjn1_;
@@ -308,5 +308,5 @@ void SubjetFilterJetProducer::writeCompoundJets(edm::Event& iEvent,
 // DEFINE THIS AS A CMSSW FWK PLUGIN
 ////////////////////////////////////////////////////////////////////////////////
 
-DEFINE_FWK_MODULE(SubjetFilterJetProducer);
+DEFINE_FWK_MODULE(SFJetProducer);
 

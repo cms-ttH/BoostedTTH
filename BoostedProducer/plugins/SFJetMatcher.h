@@ -1,12 +1,12 @@
-#ifndef BOOSTEDTTH_BOOSTEDPRODUCERS_SUBJETFILTERJETMATCHER_H
-#define BOOSTEDTTH_BOOSTEDPRODUCERS_SUBJETFILTERJETMATCHER_H 1
+#ifndef BOOSTEDTTH_BOOSTEDPRODUCERS_SFJETMATCHER_H
+#define BOOSTEDTTH_BOOSTEDPRODUCERS_SFJETMATCHER_H 1
 
 // -*- C++ -*-
 //
-// Package:    BoostedTTH/BoostedProducer/SubjetFilterJetMatcher
-// Class:      SubjetFilterJetMatcher
+// Package:    BoostedTTH/BoostedProducer/SFJetMatcher
+// Class:      SFJetMatcher
 // 
-/**\class SubjetFilterJetMatcher SubjetFilterJetMatcher.cc BoostedTTH/BoostedProducer/plugins/SubjetFilterJetMatcher.cc
+/**\class SFJetMatcher SFJetMatcher.cc BoostedTTH/BoostedProducer/plugins/SFJetMatcher.cc
 
  Description: [one line class summary]
 
@@ -42,12 +42,12 @@
 // class declaration
 //
 
-class SubjetFilterJetMatcher : public edm::EDProducer {
+class SFJetMatcher : public edm::EDProducer {
    
   public:
 
-    explicit SubjetFilterJetMatcher(const edm::ParameterSet&);
-    ~SubjetFilterJetMatcher();
+    explicit SFJetMatcher(const edm::ParameterSet&);
+    ~SFJetMatcher();
 
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
