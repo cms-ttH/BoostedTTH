@@ -18,7 +18,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "RecoJets/JetAlgorithms/interface/CompoundPseudoJet.h"
 
-#include "BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.h"
+#include "RecoJets/JetProducers/plugins/VirtualJetProducer.h"
 #include "BoostedTTH/BoostedProducer/interface/SubjetFilterjetAlgorithm.h"
 #include "BoostedTTH/BoostedProducer/interface/Nsubjettiness.h"
 

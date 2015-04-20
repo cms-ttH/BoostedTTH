@@ -1,22 +1,23 @@
-#ifndef BOOSTEDTTH_BOOSTEDPRODUCERS_HEPTOPJETPRODUCER_H
-#define BOOSTEDTTH_BOOSTEDPRODUCERS_HEPTOPJETPRODUCER_H 1
+#ifndef BOOSTEDTTH_BOOSTEDPRODUCERS_HTTV1TOPJETPRODUCER_H
+#define BOOSTEDTTH_BOOSTEDPRODUCERS_HTTV1TOPJETPRODUCER_H 1
 
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "RecoJets/JetAlgorithms/interface/CompoundPseudoJet.h"
 
+//#include "RecoJets/JetProducers/plugins/VirtualJetProducer.h"
 #include "BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.h"
 #include "BoostedTTH/BoostedProducer/interface/HEPTopTaggerAlgorithm.h"
 #include "BoostedTTH/BoostedProducer/interface/Nsubjettiness.h"
 
 
-class HEPTopJetProducer : public VirtualJetProducer
+class HTTV1TopJetProducer : public VirtualJetProducer
 {
 	//
   	// construction / destruction
   	//
 	public:
-		HEPTopJetProducer(const edm::ParameterSet& ps);
-		virtual ~HEPTopJetProducer();
+		HTTV1TopJetProducer(const edm::ParameterSet& ps);
+		virtual ~HTTV1TopJetProducer();
 		
 		
 	//

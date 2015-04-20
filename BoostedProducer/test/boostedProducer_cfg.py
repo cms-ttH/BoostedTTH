@@ -12,7 +12,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 10
 process.MessageLogger.suppressWarning = cms.untracked.vstring('ecalLaserCorrFilter','manystripclus53X','toomanystripclus53X')
-process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 # select loose lepton collections
@@ -183,8 +183,8 @@ process.load('BoostedTTH.BoostedProducer.HTTTopJetMatcher_cfi')
 ## match Subjet Filterjet Jet subjets to fat jet
 process.load('BoostedTTH.BoostedProducer.SFJetMatcher_cfi')
 
-process.dump=cms.EDAnalyzer('EventContentAnalyzer')
-process.EventContent = cms.Path(process.dump)
+#process.dump=cms.EDAnalyzer('EventContentAnalyzer')
+#process.EventContent = cms.Path(process.dump)
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
