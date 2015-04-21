@@ -301,9 +301,9 @@ boosted::SubFilterJetCollection BoostedUtils::GetSortedByPt(boosted::SubFilterJe
 }
 
 
-boosted::HEPTopJetCollection BoostedUtils::GetSortedByPt(boosted::HEPTopJetCollection const &heptopjets){
-  boosted::HEPTopJetCollection result = heptopjets;
-  std::sort(result.begin(), result.end(),BoostedUtils::FirstFatJetIsHarder<boosted::HEPTopJet>);
+boosted::HTTTopJetCollection BoostedUtils::GetSortedByPt(boosted::HTTTopJetCollection const &htttopjets){
+  boosted::HTTTopJetCollection result = htttopjets;
+  std::sort(result.begin(), result.end(),BoostedUtils::FirstFatJetIsHarder<boosted::HTTTopJet>);
   return result;
 }
 
@@ -466,7 +466,7 @@ void BoostedUtils::GetAplanaritySphericity(math::XYZTLorentzVector leptonVec, ma
 }
 
 
-bool BoostedUtils::GetTopTag(const boosted::HEPTopJet& topJet,const double& fW, const double& mTopMin, const bool& altConf){
+bool BoostedUtils::GetTopTag(const boosted::HTTTopJet& topJet,const double& fW, const double& mTopMin, const bool& altConf){
   std::vector<pat::Jet> subjets;
   subjets.push_back(topJet.nonW);
   subjets.push_back(topJet.W1);

@@ -20,7 +20,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "BoostedTTH/BoostedObjects/interface/SubFilterJet.h"
-#include "BoostedTTH/BoostedObjects/interface/HEPTopJet.h"
+#include "BoostedTTH/BoostedObjects/interface/HTTTopJet.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
 class BoostedUtils{
@@ -70,7 +70,7 @@ class BoostedUtils{
     static std::vector<math::XYZTLorentzVector> GetJetVecs(const std::vector<pat::Jet>& jets);
     
     static boosted::SubFilterJetCollection GetSortedByPt(boosted::SubFilterJetCollection const &subfilterjets);
-    static boosted::HEPTopJetCollection GetSortedByPt(boosted::HEPTopJetCollection const &heptopjets);
+    static boosted::HTTTopJetCollection GetSortedByPt(boosted::HTTTopJetCollection const &htttopjets);
     
     static bool PassesCSV(const pat::Jet& jet, const char workingPoint);
     
@@ -82,7 +82,7 @@ class BoostedUtils{
     static void GetFoxWolframMoments(std::vector<math::XYZTLorentzVector> jetVecs, float &h0, float &h1, float &h2, float &h3, float &h4);
     static void GetAplanaritySphericity(math::XYZTLorentzVector leptonVec, math::XYZTLorentzVector metVec, std::vector<math::XYZTLorentzVector> jetVecs, float &aplanarity, float &sphericity);
     
-    static bool GetTopTag(const boosted::HEPTopJet& topJet,const double& fW = 0.15, const double& mTopMin = 120, const bool& altConf = false);
+    static bool GetTopTag(const boosted::HTTTopJet& topJet,const double& fW = 0.15, const double& mTopMin = 120, const bool& altConf = false);
     static void TopSubjetCSVDef(std::vector<pat::Jet> &subjets);
     
     static std::vector<pat::Jet> GetHiggsFilterJets(const boosted::SubFilterJet& higgsJet, const int& nCSVJets = 2);

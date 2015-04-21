@@ -176,7 +176,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       edm::EDGetTokenT< std::vector<pat::MET> > EDMMETsToken;
       
       /** hep top jets data access token **/
-      edm::EDGetTokenT< boosted::HEPTopJetCollection > EDMHEPTopJetsToken;
+      edm::EDGetTokenT< boosted::HTTTopJetCollection > EDMHTTTopJetsToken;
       
       /** subjet filterjets data access token **/
       edm::EDGetTokenT< boosted::SubFilterJetCollection > EDMSubFilterJetsToken;
@@ -238,8 +238,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   EDMElectronsToken       = consumes< std::vector<pat::Electron> >(edm::InputTag("slimmedElectrons","","PAT"));
   EDMJetsToken            = consumes< std::vector<pat::Jet> >(edm::InputTag("slimmedJets","","PAT"));
   EDMMETsToken            = consumes< std::vector<pat::MET> >(edm::InputTag("slimmedMETs","","PAT"));
-  EDMHEPTopJetsToken      = consumes< boosted::HEPTopJetCollection >(edm::InputTag("HEPTopJetsPFMatcher","heptopjets","p"));
-  EDMSubFilterJetsToken   = consumes< boosted::SubFilterJetCollection >(edm::InputTag("CA12JetsCA3FilterjetsPFMatcher","subfilterjets","p"));
+  EDMHTTTopJetsToken      = consumes< boosted::HTTTopJetCollection >(edm::InputTag("HTTTopJetMatcher","htttopjets","p"));
+  EDMSubFilterJetsToken   = consumes< boosted::SubFilterJetCollection >(edm::InputTag("SFJetMatcher","subfilterjets","p"));
   EDMGenInfoToken         = consumes< GenEventInfoProduct >(edm::InputTag("generator","","SIM"));
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","","PAT"));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","","PAT"));
@@ -419,12 +419,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::MET> const &pfMETs = *h_pfmet;
 
   /**** GET TOPJETS ****/
-  edm::Handle<boosted::HEPTopJetCollection> h_heptopjet;
-  boosted::HEPTopJetCollection heptopjets;
+  edm::Handle<boosted::HTTTopJetCollection> h_htttopjet;
+  boosted::HTTTopJetCollection htttopjets;
   if(useFatJets){
-    iEvent.getByToken( EDMHEPTopJetsToken,h_heptopjet);
-    boosted::HEPTopJetCollection const &heptopjets_unsorted = *h_heptopjet;
-    heptopjets = BoostedUtils::GetSortedByPt(heptopjets_unsorted);
+    iEvent.getByToken( EDMHTTTopJetsToken,h_htttopjet);
+    boosted::HTTTopJetCollection const &htttopjets_unsorted = *h_htttopjet;
+    htttopjets = BoostedUtils::GetSortedByPt(htttopjets_unsorted);
   }
   
   /**** GET SUBFILTERJETS ****/
@@ -492,7 +492,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                           selectedJets,
                           selectedJetsLoose,
                           pfMETs,
-                          heptopjets,
+                          htttopjets,
                           subfilterjets,
                           genTopEvt,
                           selectedGenJets,
@@ -513,7 +513,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                           pfjets,
                           pfjets,
                           pfMETs,
-                          heptopjets,
+                          htttopjets,
                           subfilterjets,
                           genTopEvt,
                           selectedGenJets,

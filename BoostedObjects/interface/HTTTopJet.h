@@ -35,7 +35,28 @@ namespace boosted {
         qWeight(-99),
         qEpsilon(-99),
         qSigmaM(-99) {};
-
+      
+      math::XYZTLorentzVector GetWJetVec() const{
+        
+        if(W1.pt()<=0) return math::XYZTLorentzVector();
+        
+        math::XYZTLorentzVector wjet = W1.p4();
+        wjet += W2.p4();
+        
+        return wjet;
+      }
+      
+      math::XYZTLorentzVector GetTopJetVec() const{
+        
+        if(nonW.pt()<=0) return math::XYZTLorentzVector();
+        
+        math::XYZTLorentzVector topjet = nonW.p4();
+        topjet += W1.p4();
+        topjet += W2.p4();
+        
+        return topjet;
+      }
+      
       pat::Jet fatjet;
 	    pat::Jet nonW;
 	    pat::Jet W1;

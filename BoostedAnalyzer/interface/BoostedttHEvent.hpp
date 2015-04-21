@@ -7,7 +7,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "BoostedTTH/BoostedObjects/interface/SubFilterJet.h"
-#include "BoostedTTH/BoostedObjects/interface/HEPTopJet.h"
+#include "BoostedTTH/BoostedObjects/interface/HTTTopJet.h"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
@@ -113,7 +113,7 @@ class BoostedttHEvent{
     math::XYZTLorentzVector  GetHiggsCandVec2();   
     
     // Hadronic Top Candidate
-    boosted::HEPTopJet     GetTopHadCandBoosted();
+    boosted::HTTTopJet     GetTopHadCandBoosted();
     pat::Jet           GetTopHadBCand();
     pat::Jet           GetTopHadW1Cand();
     pat::Jet           GetTopHadW2Cand();
@@ -187,7 +187,7 @@ class BoostedttHEvent{
     
     // Hadronic Top Candidate
     bool                foundTopHadCand;
-    boosted::HEPTopJet  topHadCand;
+    boosted::HTTTopJet  topHadCand;
     pat::Jet            topHadBCand;
     pat::Jet            topHadW1Cand;
     pat::Jet            topHadW2Cand;

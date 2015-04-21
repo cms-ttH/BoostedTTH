@@ -181,12 +181,12 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     }
   }
   
-  for(size_t i=0; i< input.selectedHEPTopJets.size(); i++){
+  for(size_t i=0; i< input.selectedHTTTopJets.size(); i++){
 	  
     float minDr_TopLep_TopJet = 999;
     
     for(size_t j=0;j<toplep.size();j++){
-	    float Dr_temp = BoostedUtils::DeltaR(toplep[j].p4(),input.selectedHEPTopJets[i].fatjet.p4());
+	    float Dr_temp = BoostedUtils::DeltaR(toplep[j].p4(),input.selectedHTTTopJets[i].fatjet.p4());
 	    if(Dr_temp<minDr_TopLep_TopJet) minDr_TopLep_TopJet = Dr_temp;
 	  }
     
@@ -257,7 +257,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
       vars.FillVars( "GenTopHad_Q2_Idx",i,idxq2);
     }
   }
-  for(size_t i=0; i< input.selectedHEPTopJets.size(); i++){
+  for(size_t i=0; i< input.selectedHTTTopJets.size(); i++){
 	  
     float minDr_TopHad_TopJet = 999;
     float minDr_TopB_TopJet = 999;
@@ -275,26 +275,26 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     
     for(size_t j=0;j<tophad.size();j++){
       
-      float Dr_temp = BoostedUtils::DeltaR(tophad[j].p4(),input.selectedHEPTopJets[i].fatjet.p4());
+      float Dr_temp = BoostedUtils::DeltaR(tophad[j].p4(),input.selectedHTTTopJets[i].fatjet.p4());
       if(Dr_temp<minDr_TopHad_TopJet){
 	      minDr_TopHad_TopJet = Dr_temp;
-	      minDr_TopB_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].fatjet.p4());
-	      minDr_TopQ1_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].fatjet.p4());
-	      minDr_TopQ2_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].fatjet.p4());
-	      if(input.selectedHEPTopJets[i].nonW.pt()>0){
-	        minDr_TopB_B_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].nonW.p4());
-	        minDr_TopQ2_B_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].nonW.p4());
-	        minDr_TopQ1_B_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].nonW.p4());
+	      minDr_TopB_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHTTTopJets[i].fatjet.p4());
+	      minDr_TopQ1_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHTTTopJets[i].fatjet.p4());
+	      minDr_TopQ2_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHTTTopJets[i].fatjet.p4());
+	      if(input.selectedHTTTopJets[i].nonW.pt()>0){
+	        minDr_TopB_B_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHTTTopJets[i].nonW.p4());
+	        minDr_TopQ2_B_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHTTTopJets[i].nonW.p4());
+	        minDr_TopQ1_B_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHTTTopJets[i].nonW.p4());
 	      }
-	      if(input.selectedHEPTopJets[i].W1.pt()>0){
-	        minDr_TopB_W1_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].W1.p4());
-	        minDr_TopQ1_W1_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].W1.p4());
-	        minDr_TopQ2_W1_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].W1.p4());
+	      if(input.selectedHTTTopJets[i].W1.pt()>0){
+	        minDr_TopB_W1_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHTTTopJets[i].W1.p4());
+	        minDr_TopQ1_W1_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHTTTopJets[i].W1.p4());
+	        minDr_TopQ2_W1_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHTTTopJets[i].W1.p4());
 	      }
-	      if(input.selectedHEPTopJets[i].W2.pt()>0){
-	        minDr_TopB_W2_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHEPTopJets[i].W2.p4());
-	        minDr_TopQ1_W2_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHEPTopJets[i].W2.p4());
-	        minDr_TopQ2_W2_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHEPTopJets[i].W2.p4());
+	      if(input.selectedHTTTopJets[i].W2.pt()>0){
+	        minDr_TopB_W2_TopJet = BoostedUtils::DeltaR(bhad[j].p4(),input.selectedHTTTopJets[i].W2.p4());
+	        minDr_TopQ1_W2_TopJet = BoostedUtils::DeltaR(q1[j].p4(),input.selectedHTTTopJets[i].W2.p4());
+	        minDr_TopQ2_W2_TopJet = BoostedUtils::DeltaR(q2[j].p4(),input.selectedHTTTopJets[i].W2.p4());
 	      }
       }
     }
@@ -422,7 +422,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     if(minDr_Q2_FilterJet<999) vars.FillVars("HiggsJet_Dr_GenQ2_Filterjet",i,minDr_Q2_FilterJet);
   }
   
-  for(size_t i=0; i<input.selectedHEPTopJets.size(); i++){
-  	if(higgs.pt()>0) vars.FillVars("TopJet_Dr_GenHiggs",i,BoostedUtils::DeltaR(higgs.p4(),input.selectedHEPTopJets[i].fatjet.p4()));
+  for(size_t i=0; i<input.selectedHTTTopJets.size(); i++){
+  	if(higgs.pt()>0) vars.FillVars("TopJet_Dr_GenHiggs",i,BoostedUtils::DeltaR(higgs.p4(),input.selectedHTTTopJets[i].fatjet.p4()));
   }
 }

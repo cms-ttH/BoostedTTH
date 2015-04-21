@@ -80,7 +80,7 @@ void TopTagger::ResetBDTVars(){
 }
 
 
-float TopTagger::GetTopLikelihood(const boosted::HEPTopJet& topjet, bool verbose){
+float TopTagger::GetTopLikelihood(const boosted::HTTTopJet& topjet, bool verbose){
   
   if(!toplikelihood) return -1.1;
   if(topjet.nonW.pt()<0) return -1.1;
@@ -125,7 +125,7 @@ float TopTagger::GetTopLikelihood(const boosted::HEPTopJet& topjet, bool verbose
 }
 
 
-float TopTagger::GetBDTOutput(const boosted::HEPTopJet& topjet, bool verbose){
+float TopTagger::GetBDTOutput(const boosted::HTTTopJet& topjet, bool verbose){
   
   if(!tmva) return -1.1;
   if(topjet.nonW.pt()<0) return -1.1;
@@ -143,22 +143,23 @@ float TopTagger::GetBDTOutput(const boosted::HEPTopJet& topjet, bool verbose){
   
   ResetBDTVars();
   
+  const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
+  
   BDTVars["TopJet_Pt"]                      = topjet.fatjet.pt();
   BDTVars["TopJet_B_Pt"]                    = topjet.nonW.pt();
   BDTVars["TopJet_W1_Pt"]                   = topjet.W1.pt();
   BDTVars["TopJet_W2_Pt"]                   = topjet.W2.pt();
-  const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
   BDTVars["TopJet_B_CSV"]                   = fmax(topjet.nonW.bDiscriminator(btagger),-.1);
   BDTVars["TopJet_W1_CSV"]                  = fmax(topjet.W1.bDiscriminator(btagger),-.1);
   BDTVars["TopJet_W2_CSV"]                  = fmax(topjet.W2.bDiscriminator(btagger),-.1);
   BDTVars["TopJet_M12"]                     = (topvecs[0]+topvecs[1]).M();
   BDTVars["TopJet_M13"]                     = (topvecs[0]+topvecs[2]).M();
   BDTVars["TopJet_M23"]                     = (topvecs[1]+topvecs[2]).M();
-  BDTVars["TopJet_W_M"]                     = topjet.W.mass();
-  BDTVars["TopJet_Top_M"]                   = topjet.topjet.mass();
-  BDTVars["TopJet_Top_DM"]                  = (topjet.fatjet.mass())-(topjet.topjet.mass());
-  BDTVars["TopJet_NSubjettiness_12_Ratio"]  = topjet.subjettiness2/topjet.subjettiness1;
-  BDTVars["TopJet_NSubjettiness_23_Ratio"]  = topjet.subjettiness3/topjet.subjettiness2;
+  BDTVars["TopJet_W_M"]                     = topjet.GetWJetVec().M();
+  BDTVars["TopJet_Top_M"]                   = topjet.GetTopJetVec().M();
+  BDTVars["TopJet_Top_DM"]                  = (topjet.fatjet.mass())-(topjet.GetTopJetVec().M());
+  BDTVars["TopJet_NSubjettiness_12_Ratio"]  = topjet.tau2Filtered/topjet.tau1Filtered;
+  BDTVars["TopJet_NSubjettiness_23_Ratio"]  = topjet.tau3Filtered/topjet.tau2Filtered;
   
   if(verbose){
     std::cout << "Top Tagger Variables:" << std::endl;
@@ -175,7 +176,7 @@ float TopTagger::GetBDTOutput(const boosted::HEPTopJet& topjet, bool verbose){
 }
 
 
-float TopTagger::GetTopTag(const boosted::HEPTopJet& topJet, bool verbose){
+float TopTagger::GetTopTag(const boosted::HTTTopJet& topJet, bool verbose){
 
   if(toplikelihood && !tmva) return GetTopLikelihood(topJet,verbose);
   if(tmva && !toplikelihood) return GetBDTOutput(topJet,verbose);
@@ -185,9 +186,9 @@ float TopTagger::GetTopTag(const boosted::HEPTopJet& topJet, bool verbose){
 }
 
 
-boosted::HEPTopJetCollection TopTagger::GetSortedByTopTaggerOutput(const boosted::HEPTopJetCollection& topJets, bool verbose){
+boosted::HTTTopJetCollection TopTagger::GetSortedByTopTaggerOutput(const boosted::HTTTopJetCollection& topJets, bool verbose){
   
-  boosted::HEPTopJetCollection result = topJets;
+  boosted::HTTTopJetCollection result = topJets;
   
   TopTaggerOutputComparison topTagComp(this);
   std::sort(result.begin(), result.end(),topTagComp);
@@ -196,11 +197,11 @@ boosted::HEPTopJetCollection TopTagger::GetSortedByTopTaggerOutput(const boosted
 }
 
 
-float TopTagger::GetTopHad(boosted::HEPTopJetCollection& topJets, boosted::HEPTopJet& topHadCand, bool verbose){
+float TopTagger::GetTopHad(boosted::HTTTopJetCollection& topJets, boosted::HTTTopJet& topHadCand, bool verbose){
   
   float maxTopTag=-9999;
   
-  for(boosted::HEPTopJetCollection::iterator itTopJet = topJets.begin() ; itTopJet != topJets.end(); ++itTopJet){
+  for(boosted::HTTTopJetCollection::iterator itTopJet = topJets.begin() ; itTopJet != topJets.end(); ++itTopJet){
     
     float topTag = GetTopTag(*itTopJet,verbose);
     

@@ -188,7 +188,7 @@ process.load('BoostedTTH.BoostedProducer.SFJetMatcher_cfi')
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
-    fileName = cms.untracked.string('MiniAOD_BoostedTTH.root'),
+    fileName = cms.untracked.string('BoostedTTH_MiniAOD.root'),
     #outputCommands = cms.untracked.vstring(['keep *'])
     #outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*HEPTopJetsPFMatcher_*_*','keep *_*CA12JetsCA3FilterjetsPFMatcher_*_*'])
     outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*HTTTopJetMatcher*_*_*','keep *_*SFJetMatcher*_*_*'])

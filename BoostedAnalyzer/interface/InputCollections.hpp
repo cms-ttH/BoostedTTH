@@ -11,7 +11,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "BoostedTTH/BoostedObjects/interface/SubFilterJet.h"
-#include "BoostedTTH/BoostedObjects/interface/HEPTopJet.h"
+#include "BoostedTTH/BoostedObjects/interface/HTTTopJet.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
@@ -30,7 +30,7 @@ InputCollections(   const boosted::Event&                         event_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     const std::vector<pat::MET>&                  pfMets_,
-                    const boosted::HEPTopJetCollection&           selectedHEPTopJets_,
+                    const boosted::HTTTopJetCollection&           selectedHTTTopJets_,
                     const boosted::SubFilterJetCollection&        selectedSubFilterJets_,
 		    const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
@@ -52,7 +52,7 @@ InputCollections(   const boosted::Event&                         event_,
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
                     pfMets(pfMets_),
-                    selectedHEPTopJets(selectedHEPTopJets_),
+                    selectedHTTTopJets(selectedHTTTopJets_),
                     selectedSubFilterJets(selectedSubFilterJets_),
                     genTopEvt(genTopEvt_),
                     selectedGenJets(selectedGenJets_),
@@ -73,7 +73,7 @@ InputCollections(   const boosted::Event&                         event_,
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
   const std::vector<pat::MET>&                  pfMets;
-  const boosted::HEPTopJetCollection&           selectedHEPTopJets;
+  const boosted::HTTTopJetCollection&           selectedHTTTopJets;
   const boosted::SubFilterJetCollection&        selectedSubFilterJets;
   const GenTopEvent&                            genTopEvt;
   const std::vector<reco::GenJet>&              selectedGenJets;

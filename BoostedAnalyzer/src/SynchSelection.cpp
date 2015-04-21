@@ -479,9 +479,9 @@ for( std::vector<pat::Jet>::const_iterator it = selectedJets.begin(), ed = selec
 
 //----------------------------------------------------------------------------------
 //do the topjets
-std::vector<boosted::HEPTopJet> selectedTopJets;
-for( std::vector<boosted::HEPTopJet>::const_iterator it = input.selectedHEPTopJets.begin(), ed = input.selectedHEPTopJets.end(); it != ed; ++it ){
-  boosted::HEPTopJet iJet = *it;
+std::vector<boosted::HTTTopJet> selectedTopJets;
+for( std::vector<boosted::HTTTopJet>::const_iterator it = input.selectedHTTTopJets.begin(), ed = input.selectedHTTTopJets.end(); it != ed; ++it ){
+  boosted::HTTTopJet iJet = *it;
   bool passesCuts=false;
   bool passesSubCuts=false;
   bool hasTopTag=false;

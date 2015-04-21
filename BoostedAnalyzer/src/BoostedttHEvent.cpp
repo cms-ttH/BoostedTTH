@@ -64,7 +64,7 @@ void BoostedttHEvent::ResetEvent(){
 
   // Hadronic Top Candidate
   foundTopHadCand = false;
-  topHadCand = boosted::HEPTopJet();
+  topHadCand = boosted::HTTTopJet();
   topHadBCand = pat::Jet();
   topHadW1Cand = pat::Jet();
   topHadW2Cand = pat::Jet();
@@ -308,14 +308,14 @@ void BoostedttHEvent::HiggsCandRec(){                                           
 
 
 void BoostedttHEvent::TopHadCandBoostedRec(TopTagger toptagger,const float topjetptcut, const float topjetetacut){
-  topHadCand = boosted::HEPTopJet();
+  topHadCand = boosted::HTTTopJet();
   topHadBCand = pat::Jet();
   topHadW1Cand = pat::Jet();
   topHadW2Cand = pat::Jet();
   
   float maxTopTag=-1.1;
 
-  for(std::vector<boosted::HEPTopJet>::const_iterator itJet=input.selectedHEPTopJets.begin();itJet!=input.selectedHEPTopJets.end();++itJet){
+  for(std::vector<boosted::HTTTopJet>::const_iterator itJet=input.selectedHTTTopJets.begin();itJet!=input.selectedHTTTopJets.end();++itJet){
   
     if(itJet->fatjet.pt()<topjetptcut || fabs(itJet->fatjet.eta())>topjetetacut) continue;
     
@@ -368,7 +368,7 @@ void BoostedttHEvent::TopHadCandBoostedRec(TopTagger toptagger,const float topje
 
 void BoostedttHEvent::TopHadCandRec(){
   
-  topHadCand = boosted::HEPTopJet();
+  topHadCand = boosted::HTTTopJet();
   topHadBCand = pat::Jet();
   topHadW1Cand = pat::Jet();
   topHadW2Cand = pat::Jet();
@@ -463,7 +463,7 @@ void BoostedttHEvent::TopLepCandRec(){
 
 void BoostedttHEvent::TopPairCandRec(){
   
-  topHadCand = boosted::HEPTopJet();
+  topHadCand = boosted::HTTTopJet();
   topHadBCand = pat::Jet();
   topHadW1Cand = pat::Jet();
   topHadW2Cand = pat::Jet();
@@ -838,8 +838,8 @@ math::XYZTLorentzVector BoostedttHEvent::GetHiggsCandVec2(){
 }
 
 
-boosted::HEPTopJet BoostedttHEvent::GetTopHadCandBoosted(){
-  if(!foundTopHadCand) return boosted::HEPTopJet();
+boosted::HTTTopJet BoostedttHEvent::GetTopHadCandBoosted(){
+  if(!foundTopHadCand) return boosted::HTTTopJet();
   
   return topHadCand;
 }
