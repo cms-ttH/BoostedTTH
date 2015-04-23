@@ -41,8 +41,6 @@ BDTOhio_v1::BDTOhio_v1 (TString weightPath){
   readerMap["5j3t"]=new TMVA::Reader();
   readerMap["4j3t"]=new TMVA::Reader();
   readerMap["6j2t"]=new TMVA::Reader();
-  readerMap["5j2t"]=new TMVA::Reader();
-  readerMap["4j2t"]=new TMVA::Reader();
 
   // ==================================================
   //add variables to corresponding readers
@@ -135,8 +133,6 @@ BDTOhio_v1::BDTOhio_v1 (TString weightPath){
   readerMap["5j3t"]->BookMVA("BDT",weightPath+"/533/TMVAClassification_BDT.weights.xml");
   readerMap["4j3t"]->BookMVA("BDT",weightPath+"/433/TMVAClassification_BDT.weights.xml");
   readerMap["6j2t"]->BookMVA("BDT",weightPath+"/623/TMVAClassification_BDT.weights.xml");
-  readerMap["5j2t"]->BookMVA("BDT",weightPath+"/523/TMVAClassification_BDT.weights.xml");
-  readerMap["4j2t"]->BookMVA("BDT",weightPath+"/423/TMVAClassification_BDT.weights.xml");
 
 }
 BDTOhio_v1::~BDTOhio_v1(){
@@ -168,12 +164,6 @@ bool BDTOhio_v1::EventIsInCategory(string categoryLabel,const vector<pat::Jet>& 
   else if(categoryLabel=="6j2t"){
     return ntagged==2&&njets>=6;
   }
-  else if(categoryLabel=="5j2t"){
-    return ntagged==2&&njets==5;
-  }
-  else if(categoryLabel=="4j2t"){
-    return ntagged==2&&njets==4;
-  }
   else{
     std::cerr <<"category " << categoryLabel << " does not exist" <<std::endl;
     return false;
@@ -187,7 +177,6 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   }
   // ==================================================
   // construct object vectors etc
-
   TLorentzVector lepton_vec;
   TLorentzVector met_vec;
   vector<TLorentzVector> jet_vecs;
@@ -230,7 +219,6 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
 
   // ==================================================
   // calculate variables
-
   // aplanarity and sphericity
   float aplanarity,sphericity;
   bdtvar.getSp(lepton_vec,met_vec,jet_vecs,aplanarity,sphericity);
@@ -271,7 +259,6 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   }
   mht_px+=lepton_vec.Px();
   mht_py+=lepton_vec.Py();
-
   float sum_pt_wo_met=sum_pt_jets+lepton_vec.Pt();
   float sum_pt_with_met=pfMET.pt()+sum_pt_wo_met;
   float MHT=sqrt( mht_px*mht_px + mht_py*mht_py );
@@ -290,7 +277,7 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   float sumDrTagged=0;
   int npairs=0;
   for(auto tagged_jet1=tagged_jet_vecs.begin();tagged_jet1!=tagged_jet_vecs.end();tagged_jet1++){
-    for(auto tagged_jet2=tagged_jet1+1;tagged_jet1!=tagged_jet_vecs.end();tagged_jet1++){
+    for(auto tagged_jet2=tagged_jet1+1;tagged_jet2!=tagged_jet_vecs.end();tagged_jet2++){
       float dr=tagged_jet1->DeltaR(*tagged_jet2);
       sumDrTagged=dr;
       npairs++;
@@ -318,7 +305,6 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
       } 
     }
   }
-
   // btag variables
   float averageCSV = 0;
   float lowest_btag=99;
@@ -345,7 +331,6 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   else
     csvDev=-1.;
 
-  
 
   // ==================================================
   // Fill variable map
