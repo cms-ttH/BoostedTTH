@@ -60,7 +60,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
@@ -83,8 +83,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       virtual void endJob() override;
       virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
       
-      boosted::Event FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo);
-      map<string,float> GetWeights(const boosted::Event& event, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles);
+      EventInfo FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo);
+      map<string,float> GetWeights(EventInfo& event, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles);
       
       // ----------member data ---------------------------
       
@@ -454,8 +454,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if(genjets[i].pt()>30&&fabs(genjets[i].eta())<2.5)
       selectedGenJets.push_back(genjets[i]);
   }
-  // Fill Boosted Event Object
-  boosted::Event event = FillEvent(iEvent,h_geneventinfo,h_beamspot,h_hcalnoisesummary,h_puinfosummary);
+  // Fill Event Info Object
+  EventInfo event = FillEvent(iEvent,h_geneventinfo,h_beamspot,h_hcalnoisesummary,h_puinfosummary);
   
   // FIGURE OUT SAMPLE
   SampleType sampleType;
@@ -548,9 +548,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 }
 
 
-boosted::Event BoostedAnalyzer::FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo){
+EventInfo BoostedAnalyzer::FillEvent(const edm::Event& iEvent, const edm::Handle<GenEventInfoProduct>& genEvtInfo, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo){
  
-  boosted::Event event = boosted::Event();
+  EventInfo event = EventInfo();
   
   event.evt         = iEvent.id().event();
   event.run         = iEvent.id().run();

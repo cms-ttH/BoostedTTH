@@ -4,7 +4,6 @@
 #include <vector>
 #include <map>
 
-#include "BoostedTTH/BoostedObjects/interface/Event.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -14,11 +13,12 @@
 #include "BoostedTTH/BoostedObjects/interface/HEPTopJet.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 
 enum SampleType{data,tth,tt,nonttbkg};
 
 struct InputCollections{
-InputCollections(   const boosted::Event&                         event_,
+InputCollections(   const EventInfo&                              event_,
                     const pat::TriggerObjectStandAloneCollection& selectedTrigger_,
                     const edm::TriggerResults&                    triggerResults_,
                     const HLTConfigProvider&                      hlt_config_,
@@ -61,10 +61,10 @@ InputCollections(   const boosted::Event&                         event_,
 		    setup(setup_),
                     edmevent(edmevent_){}
   
-  const boosted::Event&                         event;
+  const EventInfo&                              event;
   const pat::TriggerObjectStandAloneCollection& selectedTrigger;
   const edm::TriggerResults&                    triggerResults;
-  const HLTConfigProvider&                       hlt_config;
+  const HLTConfigProvider&                      hlt_config;
   const reco::VertexCollection&                 selectedPVs;
   const std::vector<pat::Muon>&                 selectedMuons;
   const std::vector<pat::Muon>&                 selectedMuonsLoose;
