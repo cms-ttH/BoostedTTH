@@ -54,6 +54,7 @@ bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
   return jet1.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") > jet2.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
 }
 
+
 bool BoostedUtils::FirstHasHigherCSVold(pat::Jet jet1,pat::Jet jet2){
   return jet1.bDiscriminator("combinedSecondaryVertexBJetTags") > jet2.bDiscriminator("combinedSecondaryVertexBJetTags");
 }
@@ -204,6 +205,8 @@ bool BoostedUtils::MCContainsHiggs(const std::vector<reco::GenParticle>& genPart
   }
   return false;
 }
+
+
 bool BoostedUtils::IsAnyTriggerBitFired(const std::vector<string> & targetTriggers, const edm::TriggerResults& triggerResults, const HLTConfigProvider& hlt_config){
   
   // check to see if you passed the trigger by looping over the bits
@@ -512,6 +515,7 @@ bool BoostedUtils::GetTopTag(const boosted::HEPTopJet& topJet,const double& fW, 
   
   return false;
 }
+
 
 void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
   std::sort(subjets.begin(), subjets.end(),BoostedUtils::FirstHasHigherCSV);
