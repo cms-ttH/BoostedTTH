@@ -16,8 +16,8 @@ LeptonSelectionNoTrigger = cms.PSet(
 )
 
 JetTagSelection = cms.PSet(
-    minJets = cms.vint32(4),
+    minJets = cms.vint32(4,6),
     maxJets = cms.vint32(-1),
-    minTags = cms.vint32(2),
+    minTags = cms.vint32(3,2),
     maxTags = cms.vint32(-1)
 )

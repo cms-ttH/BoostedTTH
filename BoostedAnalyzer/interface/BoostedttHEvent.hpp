@@ -1,7 +1,6 @@
 #ifndef BOOSTEDTTH_BOOSTEDANALYZER_BOOSTEDTTHEVENT_HPP
 #define BOOSTEDTTH_BOOSTEDANALYZER_BOOSTEDTTHEVENT_HPP
 
-#include "BoostedTTH/BoostedObjects/interface/Event.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"

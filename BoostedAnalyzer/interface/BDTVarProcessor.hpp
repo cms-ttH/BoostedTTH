@@ -2,6 +2,7 @@
 #define BDTVARPROCESSOR_HPP
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v1.hpp"
 #include "TMVA/Reader.h"
 
 class BDTVarProcessor: public TreeProcessor{
@@ -12,7 +13,8 @@ public:
   void Process(const InputCollections& input,VariableContainer& var);
 
 private:
-  std::map<TString,TMVA::Reader*> readerMap;
+  BDTOhio_v1 bdtohio;
+  
   
 };
 
