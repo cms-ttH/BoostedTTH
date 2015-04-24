@@ -61,7 +61,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/ForTests.hpp"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
@@ -465,9 +464,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                           genTopEvt,
                           selectedGenJets,
                           sampleType,
-                          weights,
-			  ForTests(iEvent,iSetup,helper)
-			  
+                          weights			  
 			  );
         
   

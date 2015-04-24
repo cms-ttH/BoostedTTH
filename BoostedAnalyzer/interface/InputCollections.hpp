@@ -35,8 +35,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		    const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
-                    const std::map<std::string,float>&            weights_,
-		    const ForTests                                onlyForTests_
+                    const std::map<std::string,float>&            weights_
 		    ): 
   eventInfo(eventInfo_),
   triggerInfo(triggerInfo_),
@@ -53,8 +52,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
   genTopEvt(genTopEvt_),
   selectedGenJets(selectedGenJets_),
   sampleType(sampleType_),
-  weights(weights_),
-  onlyForTests(onlyForTests_)
+  weights(weights_)
   {}
   
   const EventInfo&                              eventInfo;
@@ -73,7 +71,6 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const std::vector<reco::GenJet>&              selectedGenJets;
   const SampleType                              sampleType;
   const std::map<std::string,float>&            weights;
-  const ForTests                                onlyForTests;
 
   void Dump();
 };
