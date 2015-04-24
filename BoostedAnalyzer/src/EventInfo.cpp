@@ -1,6 +1,6 @@
 #include  "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 
-EventInfo::EventInfo(const edm::Event& iEvent, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo, const std::vector<reco::Vertex>& vtxs)
+EventInfo::EventInfo(const edm::Event& iEvent, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo, bool firstVertexIsGood_):firstVertexIsGood(firstVertexIsGood_)
 {
   
   evt         = iEvent.id().event();
@@ -44,9 +44,6 @@ EventInfo::EventInfo(const edm::Event& iEvent, const edm::Handle<reco::BeamSpot>
       }
     }
   }
-  firstVertex=0;
-  if(vtxs.size()>0){
-    firstVertex=&vtxs[0];
-  }
+    
   
 }

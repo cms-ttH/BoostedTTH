@@ -19,6 +19,7 @@ class LeptonSelection: public Selection{
 
     std::vector<std::string> muonTriggers;
     std::vector<std::string> electronTriggers;
+    std::string channel;
 
 };
 

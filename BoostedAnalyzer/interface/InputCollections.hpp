@@ -72,7 +72,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const SampleType                              sampleType;
   const std::map<std::string,float>&            weights;
 
-  void Dump();
+  void DumpFatJets();
+  void DumpSyncExe();
 };
 
 #endif

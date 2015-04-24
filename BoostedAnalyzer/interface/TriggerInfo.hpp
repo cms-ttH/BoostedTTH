@@ -12,7 +12,7 @@ public:
   bool IsTriggered(std::string triggername) const ; 
   bool IsAnyTriggered(std::vector< std::string > triggers) const ;
 private:
-  std::map<std::string, bool> triggers;
+  const std::map<std::string, bool> triggers;
 };
 
 #endif

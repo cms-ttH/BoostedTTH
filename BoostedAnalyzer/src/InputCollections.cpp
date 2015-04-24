@@ -1,5 +1,5 @@
 #include "../interface/InputCollections.hpp"
-void InputCollections::Dump(){
+void InputCollections::DumpFatJets(){
 
   for( auto higgsJet = selectedSubFilterJets.begin() ; higgsJet != selectedSubFilterJets.end(); ++higgsJet ){
     // pt and eta requirements on top jet
@@ -36,4 +36,32 @@ void InputCollections::Dump(){
     
   }
 
+}
+void InputCollections::DumpSyncExe(){
+  /*  int run=-99;
+  int lumi=-99;  
+  int event=-99;  
+  float lep1_pt=-99;
+  float lep1_eta=-99;
+  float lep1_phi=-99;
+  float lep1_pt=-99;
+  float lep2_pt=-99;
+  float lep3_pt=-99;
+  float lep4_pt=-99;
+  float lep1_CSVv2=-99;
+  float lep2_CSVv2=-99;
+  float lep3_CSVv2=-99;
+  float lep4_CSVv2=-99;
+  int njets=0;
+  int nbtags=0;
+  int n_toptags=0;
+  int n_higgstags=0;
+  
+  printf("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d   %2d  %2d\n",
+	 run, lumi, event,
+	 lep1_pt, lep1_eta, lep1_phi,
+	 jet1_pt, jet2_pt, jet3_pt, jet4_pt,
+	 jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
+	 n_jets, n_btags,
+	 n_toptags, n_higgstags);*/
 }

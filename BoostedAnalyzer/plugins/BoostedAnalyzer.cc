@@ -52,6 +52,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -81,8 +82,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
       virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;    
-      map<string,float> GetWeights(EventInfo& event, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles);
-      
+  map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles);
+
       // ----------member data ---------------------------
       
       /** the miniAODhelper is used for selections and reweighting */
@@ -102,6 +103,10 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** selections that are applied */
       vector<Selection*> selections;
+
+      /** triggers that are checked */
+      vector<std::string> relevantTriggers;
+
       
       /** sample ID */
       int sampleID;
@@ -148,7 +153,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** trigger results data access token **/
       edm::EDGetTokenT< edm::TriggerResults > EDMTriggerResultToken;
-      HLTConfigProvider hlt_config_;
+      HLTConfigProvider hlt_config;
 
       /** beam spot data access token **/
       edm::EDGetTokenT< reco::BeamSpot > EDMBeamSpotToken;
@@ -245,13 +250,14 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
-    if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection());
+    if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
+    else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection());
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection());
     else cout << "No matching selection found for: " << *itSel << endl;
     
     selections.back()->Init(iConfig,cutflow);
   }
-  
+  relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
   // INITIALIZE TREEWRITER
   treewriter.Init(outfileName);
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
@@ -303,11 +309,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle<HcalNoiseSummary> h_hcalnoisesummary;
   iEvent.getByToken( EDMHcalNoiseToken,h_hcalnoisesummary );
   
-  /**** GET TRIGGER ****/
-  edm::Handle<pat::TriggerObjectStandAloneCollection> h_selectedtrigger;
-  iEvent.getByToken( EDMSelectedTriggerToken,h_selectedtrigger );
-  pat::TriggerObjectStandAloneCollection const &selectedTrigger = *h_selectedtrigger;
-  
+  /**** GET TRIGGER ****/ 
   edm::Handle<edm::TriggerResults> h_triggerresults;
   iEvent.getByToken( EDMTriggerResultToken,h_triggerresults );
   edm::TriggerResults const &triggerResults = *h_triggerresults;
@@ -321,6 +323,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByToken( EDMVertexToken,h_vtxs );
   reco::VertexCollection const &vtxs = *h_vtxs;
   reco::VertexCollection selectedPVs; 
+  bool firstVertexIsGood=false;
+  bool isFirst=true;
   if( h_vtxs.isValid() ){
     for( reco::VertexCollection::const_iterator itvtx = vtxs.begin(); itvtx!=vtxs.end(); ++itvtx ){
       bool isGood = ( !(itvtx->isFake()) &&
@@ -328,8 +332,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 		      (abs(itvtx->z()) <= 24.0) &&
 		      (abs(itvtx->position().Rho()) <= 2.0) 
 		      );
-      if( !isGood ) continue;
-      selectedPVs.push_back(*itvtx);
+      if( isGood ) selectedPVs.push_back(*itvtx);
+      if( isFirst ) firstVertexIsGood=isGood;
+      isFirst=false;
     }
   }
   if( vtxs.size()>0 ) helper.SetVertex( vtxs[0] );
@@ -340,14 +345,14 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByToken( EDMMuonsToken,h_muons );
   std::vector<pat::Muon> const &muons = *h_muons; 
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 20., muonID::muonTight );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 20., muonID::muonTight );  //10. and muonLoose -> just for testing here
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose );  
   // ???
   // ELECTRONS
   edm::Handle< std::vector<pat::Electron> > h_electrons;
   iEvent.getByToken( EDMElectronsToken,h_electrons );
   std::vector<pat::Electron> const &electrons = *h_electrons;
   std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M);
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M ); //10. and electronPhys14L
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., electronID::electronPhys14L );
 
   /**** GET JETS ****/
   edm::Handle< std::vector<pat::Jet> > h_pfjets;
@@ -368,12 +373,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //Get jet Collection which pass selection
   std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(correctedJets, 25., 2.4, jetID::jetLoose, '-' );
   // Get jet Collection which pass loose selection
-  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(correctedJets, 20., 2.4, jetID::jetLoose, '-' ); // 2.5 or 2.4? inclusive or exclusive?
+  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(correctedJets, 20., 2.4, jetID::jetLoose, '-' ); 
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
   iEvent.getByToken( EDMMETsToken,h_pfmet );
   std::vector<pat::MET> const &pfMETs = *h_pfmet;
+  // type I met corrections?
   assert(pfMETs.size()>0);
 
   /**** GET TOPJETS ****/
@@ -409,21 +415,22 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<reco::GenJet> const &genjets = *h_genjets;
   std::vector<reco::GenJet> selectedGenJets;
   for(size_t i=0; i<genjets.size();i++){
-    if(genjets[i].pt()>30&&fabs(genjets[i].eta())<2.5) // why are the cuts different from pfjets?
+    if(genjets[i].pt()>25&&fabs(genjets[i].eta())<2.4)
       selectedGenJets.push_back(genjets[i]);
   }
   // Fill Event Info Object
-  EventInfo event(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,vtxs);
+  EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood);
   // Fill Trigger Info
   map<string,bool> triggerMap;
-  for(auto name=relevantTrigger.begin(); name!=relevantTrigger.end();name++){
+  for(auto name=relevantTriggers.begin(); name!=relevantTriggers.end();name++){
     unsigned int TriggerID =  hlt_config.triggerIndex(*name);
     if( TriggerID >= triggerResults.size() ) { 
       std::cerr <<"triggerID> trigge results.size: "<<TriggerID<<" "<<triggerResults.size()<<std::endl; 
       triggerMap[*name]=false;
-      continue;
     }
-    triggerMap[*name]=triggerResults.accept(TriggerID);
+    else{
+      triggerMap[*name]=triggerResults.accept(TriggerID);
+    }
   }
   TriggerInfo triggerInfo(triggerMap);
 
@@ -447,10 +454,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
 
   // DO REWEIGHTING
-  map<string,float> weights = GetWeights(event,selectedPVs,selectedJets,selectedElectrons,selectedMuons,genParticles);
+  map<string,float> weights = GetWeights(genEventInfo,eventInfo,selectedPVs,selectedJets,selectedElectrons,selectedMuons,genParticles);
 
   // DEFINE INPUT
   InputCollections input( eventInfo,			  
+			  triggerInfo,			  
 			  selectedPVs,
 			  selectedMuons,
 			  selectedMuonsLoose,
@@ -485,7 +493,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
 
 
-map<string,float> BoostedAnalyzer::GetWeights(const boosted::Event& event, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles){
+map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEventInfo,const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles){
   map<string,float> weights;
   
   if(isData){
@@ -497,8 +505,11 @@ map<string,float> BoostedAnalyzer::GetWeights(const boosted::Event& event, const
     return weights;
   }
 
-  // not sure why the BNevent weight is !=+-1 but we dont want it that way
-  float weight = event.weight;
+  float weight = 1.;
+  for(size_t i=0;i<genEventInfo.weights().size();i++){
+    weight *= genEventInfo.weights()[i];
+  }
+  
   float xsweight = xs*luminosity/totalMCevents;
   float csvweight = 1.;
   float puweight = 1.;
@@ -562,13 +573,13 @@ void BoostedAnalyzer::endJob()
   cutflow.Print();
 }
 // ------------ method called when starting to processes a run ------------
-// needed for the hlt_config_
+// needed for the hlt_config
 
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
   std::string hltTag="HLT";
   bool hltchanged = true;
-  if (!hlt_config_.init(iRun, iSetup, hltTag, hltchanged)) {
+  if (!hlt_config.init(iRun, iSetup, hltTag, hltchanged)) {
     std::cout << "Warning, didn't find trigger process HLT,\t" << hltTag << std::endl;
     return;
   }
