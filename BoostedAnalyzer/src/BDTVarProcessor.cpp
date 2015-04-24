@@ -16,7 +16,7 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 
 void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
-  float bdtoutput=bdtohio.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMets[0]);
+  float bdtoutput=bdtohio.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
   vars.FillVar("BDTOhio_v1_output",bdtoutput);
   map<string,float> bdtinputs=bdtohio.GetVariablesOfLastEvaluation();
   for(auto it=bdtinputs.begin(); it!=bdtinputs.end(); it++){

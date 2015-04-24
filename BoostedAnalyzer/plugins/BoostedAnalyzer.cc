@@ -61,6 +61,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ForTests.hpp"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
@@ -126,9 +127,6 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
        /** is analyzed sample data? */
       bool isData;
-
-      /** disable some object selections for synch exe? */
-      bool disableObjectSelections;
 
        /** use fat jets? this is only possible if the miniAOD contains them */
       bool useFatJets;
@@ -217,7 +215,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   isData = iConfig.getParameter<bool>("isData");
   
   useFatJets = iConfig.getParameter<bool>("useFatJets");
-  disableObjectSelections = iConfig.getParameter<bool>("disableObjectSelections");
 
   string outfileName = iConfig.getParameter<std::string>("outfileName");
   
@@ -249,7 +246,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
-    
     if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection());
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection());
     else cout << "No matching selection found for: " << *itSel << endl;
@@ -269,7 +265,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itPro == "BoostedTopHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,"TopLikelihood","HiggsCSV","BoostedTopHiggs_"));
     else if(*itPro == "BoostedTopVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,"TopLikelihood","HiggsCSV","BoostedTop_"));
     else if(*itPro == "BoostedHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,"TopLikelihood","HiggsCSV","BoostedHiggs_"));
-    // the BDT processor rely on the variables filled py the other producers and should be added at the end
     else if(*itPro == "BDTVarProcessor") treewriter.AddTreeProcessor(new BDTVarProcessor());
     
     else cout << "No matching processor found for: " << *itPro << endl;    
@@ -326,7 +321,19 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< reco::VertexCollection > h_vtxs;
   iEvent.getByToken( EDMVertexToken,h_vtxs );
   reco::VertexCollection const &vtxs = *h_vtxs;
-  if( selectedPVs.size()>0 ) helper.SetVertex( selectedPVs.at(0) );
+  reco::VertexCollection selectedPVs; 
+  if( h_vtxs.isValid() ){
+    for( reco::VertexCollection::const_iterator itvtx = vtxs.begin(); itvtx!=vtxs.end(); ++itvtx ){
+      bool isGood = ( !(itvtx->isFake()) &&
+		      (itvtx->ndof() >= 4.0) &&
+		      (abs(itvtx->z()) <= 24.0) &&
+		      (abs(itvtx->position().Rho()) <= 2.0) 
+		      );
+      if( !isGood ) continue;
+      selectedPVs.push_back(*itvtx);
+    }
+  }
+  if( vtxs.size()>0 ) helper.SetVertex( vtxs[0] );
 
   /**** GET LEPTONS ****/
   // MUONS
@@ -348,8 +355,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByToken( EDMJetsToken,h_pfjets );
   std::vector<pat::Jet> const &pfjets = *h_pfjets;
   
-   const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
-   helper.SetJetCorrector(corrector);
+  const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+  helper.SetJetCorrector(corrector);
   
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(pfjets);
@@ -362,7 +369,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //Get jet Collection which pass selection
   std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(correctedJets, 25., 2.4, jetID::jetLoose, '-' );
   // Get jet Collection which pass loose selection
-  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(correctedJets, 20., 2.4, jetID::jetLoose, '-' ); // 2.5 or 2.4?
+  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(correctedJets, 20., 2.4, jetID::jetLoose, '-' ); // 2.5 or 2.4? inclusive or exclusive?
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
@@ -403,13 +410,24 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<reco::GenJet> const &genjets = *h_genjets;
   std::vector<reco::GenJet> selectedGenJets;
   for(size_t i=0; i<genjets.size();i++){
-    if(genjets[i].pt()>30&&fabs(genjets[i].eta())<2.5)
+    if(genjets[i].pt()>30&&fabs(genjets[i].eta())<2.5) // why are the cuts different from pfjets?
       selectedGenJets.push_back(genjets[i]);
   }
   // Fill Event Info Object
-  EventInfo event(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary);
+  EventInfo event(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,vtxs);
   // Fill Trigger Info
-  TriggerInfo triggerInfo(selectedTrigger,triggerResults, hlt_config_) // why do we need hlt config here?
+  map<string,bool> triggerMap;
+  for(auto name=relevantTrigger.begin(); name!=relevantTrigger.end();name++){
+    unsigned int TriggerID =  hlt_config.triggerIndex(*name);
+    if( TriggerID >= triggerResults.size() ) { 
+      std::cerr <<"triggerID> trigge results.size: "<<TriggerID<<" "<<triggerResults.size()<<std::endl; 
+      triggerMap[*name]=false;
+      continue;
+    }
+    triggerMap[*name]=triggerResults.accept(TriggerID);
+  }
+  TriggerInfo triggerInfo(triggerMap);
+
   // FIGURE OUT SAMPLE
   SampleType sampleType;
   if(isData)
@@ -433,8 +451,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   map<string,float> weights = GetWeights(event,selectedPVs,selectedJets,selectedElectrons,selectedMuons,genParticles);
 
   // DEFINE INPUT
-  InputCollections input( event,			  
-			  vtxs,
+  InputCollections input( eventInfo,			  
+			  selectedPVs,
 			  selectedMuons,
 			  selectedMuonsLoose,
 			  selectedElectrons,
@@ -447,46 +465,23 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                           genTopEvt,
                           selectedGenJets,
                           sampleType,
-                          weights
+                          weights,
+			  ForTests(iEvent,iSetup,helper)
+			  
 			  );
-  InputCollections unselected_input( event,				     
-				     vtxs,
-				     muons,
-				     muons,
-				     electrons,
-				     electrons,
-				     pfjets,
-				     pfjets,
-				     pfMETs,
-				     heptopjets,
-				     subfilterjets,
-				     genTopEvt,
-				     selectedGenJets,
-				     sampleType,
-				     weights
-				     );
         
   
   // DO SELECTION
   cutflow.EventSurvivedStep("all");
   bool selected=true;
   for(size_t i=0; i<selections.size() && selected; i++){
-    if(disableObjectSelections){
-      if(!selections.at(i)->IsSelected(unselected_input,cutflow))
-	selected=false;
-    }
-    else {
-      if(!selections.at(i)->IsSelected(input,cutflow))
-	selected=false;
-    }
+    if(!selections.at(i)->IsSelected(input,cutflow))
+      selected=false;
   }
   
   if(!selected) return;
 
   // WRITE TREE
-  if(disableObjectSelections)
-    treewriter.Process(unselected_input);
-  else
     treewriter.Process(input);
 }
 
@@ -516,8 +511,6 @@ map<string,float> BoostedAnalyzer::GetWeights(const boosted::Event& event, const
   //float topptweight = beanHelper.GetTopPtweight(mcparticlesStatus3);
   //float q2scaleweight = beanHelper.GetQ2ScaleUp(const BNevent&);
   
-  //NA, JERup, JERdown, JESup, JESdown, hfSFup, hfSFdown, lfSFdown, lfSFup, TESup, TESdown, 
-  //CSVLFup, CSVLFdown, CSVHFup, CSVHFdown, CSVHFStats1up, CSVHFStats1down, CSVLFStats1up, CSVLFStats1down, CSVHFStats2up, CSVHFStats2down, CSVLFStats2up, CSVLFStats2down, CSVCErr1up, CSVCErr1down, CSVCErr2up, CSVCErr2down
   
   weight *= xsweight*csvweight*puweight*topptweight;
   weights["Weight"] = weight;

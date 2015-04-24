@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v1.hpp"
 using namespace std;
 
-BDTOhio_v1::BDTOhio_v1 (TString weightPath){
+BDTOhio_v1::BDTOhio_v1 (TString weightPath):btagMcut(0.814),btagger("combinedInclusiveSecondaryVertexV2BJetTags"){
   // ==================================================
   //init all variables used in BDT set
   variableMap["all_sum_pt_with_met"]=-999.;
@@ -141,7 +141,7 @@ bool BDTOhio_v1::EventIsInCategory(string categoryLabel,const vector<pat::Jet>& 
   int njets=selectedJets.size();
   int ntagged=0;
   for(auto jet=selectedJets.begin(); jet!=selectedJets.end(); jet++){
-    if(BoostedUtils::PassesCSV(*jet, 'M')) ntagged++;
+    if(jet->bDiscriminator(btagger)>btagMcut) ntagged++;
   }
   if(categoryLabel=="6j4t"){
     return ntagged>=4&&njets>=6;
@@ -189,8 +189,6 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   if(selectedMuons.size()>0) lepton_vec.SetPtEtaPhiE(selectedMuons[0].pt(),selectedMuons[0].eta(),selectedMuons[0].phi(),selectedMuons[0].energy());
   if(selectedElectrons.size()>0) lepton_vec.SetPtEtaPhiE(selectedElectrons[0].pt(),selectedElectrons[0].eta(),selectedElectrons[0].phi(),selectedElectrons[0].energy());
   met_vec.SetPtEtaPhiE(pfMET.pt(),pfMET.eta(),0,pfMET.pt());
-  const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
-  const double btagMcut=0.814;
   for(auto jet=selectedJets.begin();jet!=selectedJets.end(); jet++){
     TLorentzVector jetvec;
     jetvec.SetPtEtaPhiE(jet->pt(),jet->eta(),jet->phi(),jet->energy());

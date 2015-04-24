@@ -309,11 +309,11 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "Muon_Phi",iMu,itMu->phi() );
   }
   
-  vars.FillVar( "Evt_Pt_MET",input.pfMets[0].pt() );
-  vars.FillVar( "Evt_Phi_MET",input.pfMets[0].phi() );
+  vars.FillVar( "Evt_Pt_MET",input.pfMET.pt() );
+  vars.FillVar( "Evt_Phi_MET",input.pfMET.phi() );
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
-  math::XYZTLorentzVector metvec = input.pfMets[0].p4();
+  math::XYZTLorentzVector metvec = input.pfMET.p4();
   
   // Fill M3 Variables
   float m3 = -1.;
@@ -352,7 +352,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // Fill MTW
   float mtw = -1.;
   if(input.selectedElectrons.size()>0 || input.selectedMuons.size()>0){
-    mtw = sqrt(2*(primLepVec.Pt()*input.pfMets[0].pt() - primLepVec.Px()*input.pfMets[0].px() - primLepVec.Py()*input.pfMets[0].py()));
+    mtw = sqrt(2*(primLepVec.Pt()*input.pfMET.pt() - primLepVec.Px()*input.pfMET.px() - primLepVec.Py()*input.pfMET.py()));
   }
   vars.FillVar("Evt_MTW",mtw);
   
@@ -379,7 +379,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     mht_py += itMu->py();
     
   }
-  ht += input.pfMets[0].pt();
+  ht += input.pfMET.pt();
   
   vars.FillVar("Evt_HT",ht);
   vars.FillVar("Evt_MHT",sqrt( mht_px*mht_px + mht_py*mht_py ));
@@ -903,7 +903,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   float abs_dEta_hadtop_bb;
   float abs_dEta_leptop_bb;
   float dEta_fn;
-  BoostedUtils::TTHRecoVarsOhio(input.selectedJets,selectedJetsLooseExclusive, input.pfMets[0], primLepVec, best_higgs_mass, dRbb,abs_dEta_hadtop_bb,abs_dEta_leptop_bb, dEta_fn);
+  BoostedUtils::TTHRecoVarsOhio(input.selectedJets,selectedJetsLooseExclusive, input.pfMET, primLepVec, best_higgs_mass, dRbb,abs_dEta_hadtop_bb,abs_dEta_leptop_bb, dEta_fn);
   vars.FillVar("Evt_Deta_TopLep_BB_Ohio",abs_dEta_leptop_bb);
   vars.FillVar("Evt_Deta_TopHad_BB_Ohio",abs_dEta_hadtop_bb);
   vars.FillVar("Evt_Best_Higgs_Mass_Ohio",best_higgs_mass);

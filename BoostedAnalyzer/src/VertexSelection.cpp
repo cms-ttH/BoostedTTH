@@ -15,11 +15,11 @@ void VertexSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
 bool VertexSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "VertexSelection not initialized" << endl;
 
-  if(input.primaryVertices.size() < 1) return false;
-  if( !(input.primaryVertices[0].isFake()) &&
-      (input.primaryVertices[0].ndof() >= 4.0) &&
-      (abs(input.primaryVertices[0].z()) <= 24.0) &&
-      (abs(input.primaryVertices[0].position().Rho()) <= 2.0 )) {
+  if(input.event.firstVertex == 0) return false;
+  if( !(input.firstVertex->isFake()) &&
+      (input.firstVertex->ndof() >= 4.0) &&
+      (abs(input.firstVertex->z()) <= 24.0) &&
+      (abs(input.firstVertex->position().Rho()) <= 2.0 )) {
 
     cutflow.EventSurvivedStep("First PV is good PV");
     return true;    

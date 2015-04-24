@@ -26,9 +26,9 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
   int nmuons = input.selectedMuons.size();
   int nelectronsloose = input.selectedElectronsLoose.size();
   int nmuonsloose = input.selectedMuonsLoose.size();
-  
-  bool muonTriggered = BoostedUtils::IsAnyTriggerBitFired(muonTriggers,input.triggerResults,input.hlt_config);
-  bool electronTriggered = BoostedUtils::IsAnyTriggerBitFired(electronTriggers,input.triggerResults,input.hlt_config);
+  // todo: fix triggers
+  bool muonTriggered = input.triggerInfo.IsAnyTriggered(muonTriggers);
+  bool electronTriggered = input.triggerInfo.IsAnyTriggered(electronTriggers);
 
   if(!muonTriggered && !electronTriggered) return false;
   else cutflow.EventSurvivedStep("Single lepton trigger");

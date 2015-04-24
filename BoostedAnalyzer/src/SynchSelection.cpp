@@ -2,7 +2,23 @@
 
 using namespace std;
 
-SynchSelection::SynchSelection (){}
+SynchSelection::SynchSelection (){
+  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","","HLT"));
+  EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","","RECO"));
+  EDMSelectedTriggerToken = consumes< pat::TriggerObjectStandAloneCollection > (edm::InputTag("selectedPatTrigger","","PAT"));
+  EDMTriggerResultToken   = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","HLT"));
+  EDMBeamSpotToken        = consumes< reco::BeamSpot > (edm::InputTag("offlineBeamSpot","","RECO"));
+  EDMVertexToken          = consumes< reco::VertexCollection > (edm::InputTag("offlineSlimmedPrimaryVertices","","PAT"));
+  EDMMuonsToken           = consumes< std::vector<pat::Muon> >(edm::InputTag("slimmedMuons","","PAT"));
+  EDMElectronsToken       = consumes< std::vector<pat::Electron> >(edm::InputTag("slimmedElectrons","","PAT"));
+  EDMJetsToken            = consumes< std::vector<pat::Jet> >(edm::InputTag("slimmedJets","","PAT"));
+  EDMMETsToken            = consumes< std::vector<pat::MET> >(edm::InputTag("slimmedMETs","","PAT"));
+  EDMHEPTopJetsToken      = consumes< boosted::HEPTopJetCollection >(edm::InputTag("HEPTopJetsPFMatcher","heptopjets","p"));
+  EDMSubFilterJetsToken   = consumes< boosted::SubFilterJetCollection >(edm::InputTag("CA12JetsCA3FilterjetsPFMatcher","subfilterjets","p"));
+  EDMGenInfoToken         = consumes< GenEventInfoProduct >(edm::InputTag("generator","","SIM"));
+  EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","","PAT"));
+  EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","","PAT"));
+}
 SynchSelection::~SynchSelection (){}
 
 void SynchSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
@@ -53,11 +69,82 @@ void SynchSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
 
 bool SynchSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "SynchSelection not initialized" << endl;
+  const edm::Event& iEvent = input.onlyForTests.event;
+  const edm::Event& iSetup = input.onlyForTests.setup;
+  const MiniAODhelper& helper = input.onlyForTests.helper;
+
+    /**** GET PILEUPSUMMARYINFO ****/
+  edm::Handle< std::vector<PileupSummaryInfo> >  h_puinfosummary;
+  iEvent.getByToken( EDMPUInfoToken, h_puinfosummary);
+  
+  /**** GET HCALNOISESUMMARY ****/
+  edm::Handle<HcalNoiseSummary> h_hcalnoisesummary;
+  iEvent.getByToken( EDMHcalNoiseToken,h_hcalnoisesummary );
+  
+  /**** GET TRIGGER ****/
+  edm::Handle<pat::TriggerObjectStandAloneCollection> h_selectedtrigger;
+  iEvent.getByToken( EDMSelectedTriggerToken,h_selectedtrigger );
+  pat::TriggerObjectStandAloneCollection const &selectedTrigger = *h_selectedtrigger;
+  
+  edm::Handle<edm::TriggerResults> h_triggerresults;
+  iEvent.getByToken( EDMTriggerResultToken,h_triggerresults );
+  edm::TriggerResults const &triggerResults = *h_triggerresults;
+  
+  /**** GET BEAMSPOT ****/
+  edm::Handle<reco::BeamSpot> h_beamspot;
+  iEvent.getByToken( EDMBeamSpotToken,h_beamspot );
+  
+  /**** GET PRIMARY VERTICES ****/
+  edm::Handle< reco::VertexCollection > h_vtxs;
+  iEvent.getByToken( EDMVertexToken,h_vtxs );
+  reco::VertexCollection const &vtxs = *h_vtxs;
+
+  /**** GET LEPTONS ****/
+  // MUONS
+  edm::Handle< std::vector<pat::Muon> > h_muons;
+  iEvent.getByToken( EDMMuonsToken,h_muons );
+  std::vector<pat::Muon> const &muons = *h_muons; 
+
+  // ELECTRONS
+  edm::Handle< std::vector<pat::Electron> > h_electrons;
+  iEvent.getByToken( EDMElectronsToken,h_electrons );
+  std::vector<pat::Electron> const &electrons = *h_electrons;
+
+  /**** GET JETS ****/
+  edm::Handle< std::vector<pat::Jet> > h_pfjets;
+  iEvent.getByToken( EDMJetsToken,h_pfjets );
+  std::vector<pat::Jet> const &pfjets = *h_pfjets;
+
+  /**** GET MET ****/
+  edm::Handle< std::vector<pat::MET> > h_pfmet;
+  iEvent.getByToken( EDMMETsToken,h_pfmet );
+  std::vector<pat::MET> const &pfMETs = *h_pfmet;
+
+
+  /**** GET TOPJETS ****/
+  edm::Handle<boosted::HEPTopJetCollection> h_heptopjet;
+  boosted::HEPTopJetCollection heptopjets;
+  if(useFatJets){
+    iEvent.getByToken( EDMHEPTopJetsToken,h_heptopjet);
+    boosted::HEPTopJetCollection const &heptopjets_unsorted = *h_heptopjet;
+    heptopjets = BoostedUtils::GetSortedByPt(heptopjets_unsorted);
+  }
+  
+  /**** GET SUBFILTERJETS ****/
+  edm::Handle<boosted::SubFilterJetCollection> h_subfilterjet;
+  boosted::SubFilterJetCollection subfilterjets;
+  if(useFatJets){
+    iEvent.getByToken( EDMSubFilterJetsToken,h_subfilterjet );
+    boosted::SubFilterJetCollection const &subfilterjets_unsorted = *h_subfilterjet;
+    subfilterjets = BoostedUtils::GetSortedByPt(subfilterjets_unsorted);
+  }
+
+  
   
 //   string doMode="eleele"; // electrons, muons, eleele, mumu, elemu
 //   doMode="eleele"; // electrons, muons, eleele, mumu, elemu
 
-  std::cout<<"---------------------------Event "<<input.event.evt<<"-----------------------------"<<std::endl;
+  std::cout<<"---------------------------Event "<<input.eventInfo.evt<<"-----------------------------"<<std::endl;
   std::cout<<doMode<<std::endl;
   
   bool doNewCleaning=true;
@@ -69,8 +156,8 @@ bool SynchSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   // This is an exception, usually object selections should be done in BoostedAnalyzer.cc with the help of the miniAODhelper
   //do only first vertex
   bool hasGoodVertex = false; 
-  if(input.selectedPVs.size()>0){
-    reco::Vertex vtx= input.selectedPVs[0];
+  if(vtxs.size()>0){
+    reco::Vertex vtx= vtxs[0];
     hasGoodVertex = !vtx.isFake() 
       && vtx.ndof() >= 4.0 
       && abs(vtx.z()) <= 24.0 
@@ -81,7 +168,7 @@ std::cout<<"doing electrons"<<std::endl;
 //-------------------------------------------------------------------------
 //do electrons
    std::vector<pat::Electron> selectedElectrons;
-  for( std::vector<pat::Electron>::const_iterator it = input.selectedElectrons.begin(), ed = input.selectedElectrons.end(); it != ed; ++it ){
+  for( std::vector<pat::Electron>::const_iterator it = electrons.begin(), ed = electrons.end(); it != ed; ++it ){
     pat::Electron iElectron = *it;
     bool passesKinematics=false;
     bool inCrack=true;
@@ -119,8 +206,8 @@ std::cout<<"doing electrons"<<std::endl;
   double dZ = 999;
   double expectedMissingInnerHits = 999;
   if( iElectron.gsfTrack().isAvailable() ){
-    d0 = fabs(iElectron.gsfTrack()->dxy(input.selectedPVs[0].position()));
-    dZ = fabs(iElectron.gsfTrack()->dz(input.selectedPVs[0].position()));
+    d0 = fabs(iElectron.gsfTrack()->dxy(vtxs[0].position()));
+    dZ = fabs(iElectron.gsfTrack()->dz(vtxs[0].position()));
     expectedMissingInnerHits = iElectron.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS);
   }
 
@@ -159,7 +246,7 @@ std::cout<<"doing muons"<<std::endl;
 //-------------------------------------------------------------------------
 //do muons
   std::vector<pat::Muon> selectedMuons;
-  for( std::vector<pat::Muon>::const_iterator it = input.selectedMuons.begin(), ed = input.selectedMuons.end(); it != ed; ++it ){
+  for( std::vector<pat::Muon>::const_iterator it = muons.begin(), ed = muons.end(); it != ed; ++it ){
     pat::Muon iMuon = *it;
     bool passesKinematics=false;
     bool isPFandGlobal=false;
@@ -177,8 +264,8 @@ std::cout<<"doing muons"<<std::endl;
     } 
 
     if(iMuon.muonBestTrack().isAvailable()){
-    double d0 = fabs(iMuon.muonBestTrack()->dxy(input.selectedPVs[0].position()));
-    double dZ = fabs(iMuon.muonBestTrack()->dz(input.selectedPVs[0].position()));
+    double d0 = fabs(iMuon.muonBestTrack()->dxy(vtxs[0].position()));
+    double dZ = fabs(iMuon.muonBestTrack()->dz(vtxs[0].position()));
     passesBestTrackID=(d0<0.2 && dZ<0.5);
     }
 
@@ -214,6 +301,7 @@ std::cout<<"doing trigger"<<std::endl;
 //-------------------------------------------------------------------------
 //do trigger
 bool hasTriggered=false;
+
 //  std::cout<<electronTriggers.size()<<" "<<muonTriggers.size()<<" "<<std::endl;
 
 vector<string> targetTriggers;
@@ -236,23 +324,8 @@ vector<string> targetTriggers;
      targetTriggers.push_back("HLT_Mu23_TrkIsoVVL_Ele12_Gsf_CaloId_TrackId_Iso_MediumWP_v1");
      targetTriggers.push_back("HLT_Mu8_TrkIsoVVL_Ele23_Gsf_CaloId_TrackId_Iso_MediumWP_v1");
   }
-  
-  
- if(input.triggerResults.size()>0){ 
-//   std::cout<<"ok im here"<<std::endl;
-  
-  for(vector<string>::const_iterator iTarget = targetTriggers.begin();iTarget != targetTriggers.end();iTarget++) {
-    
-    unsigned int TriggerID =  input.hlt_config.triggerIndex(*iTarget);
-    std::cout<<TriggerID<<" "<<input.triggerResults.size()<<std::endl;
-    if( TriggerID >= input.triggerResults.size() ) continue;
-      std::cout<<input.triggerResults.accept(TriggerID)<<std::endl;
-
-    if(input.triggerResults.accept(TriggerID)) hasTriggered=true;
-
-  }
-}
-else hasTriggered=false;
+  // careful: in this single case we are relying on the boosted analyzer doing the right thing
+  hasTriggered=input.IsAnyTriggered(targetTriggers);
 
 
 
@@ -267,7 +340,7 @@ std::vector<pat::Jet> taggedJets;
 
 //first uncorrect the jets
 std::vector<pat::Jet> bufferJets;
-for( std::vector<pat::Jet>::const_iterator it = input.selectedJets.begin(), ed = input.selectedJets.end(); it != ed; ++it ){
+for( std::vector<pat::Jet>::const_iterator it = pfjets.begin(), ed = pfjets.end(); it != ed; ++it ){
   pat::Jet iJet = *it;
   double originalPt = iJet.pt();
 //   std::cout<<iJet.currentJECLevel()<<" "<<iJet.currentJECSet()<<std::endl;
@@ -411,14 +484,14 @@ for( std::vector<pat::Jet>::const_iterator it = bufferJets.begin(), ed = bufferJ
 //using the PHYS14_25_V2 corrections i hope :)
 /*  "ak4PFchsL1L2L3"*/
 
-const JetCorrector* jetCorrector = JetCorrector::getJetCorrector("ak4PFchsL1L2L3",input.setup);
+const JetCorrector* jetCorrector = JetCorrector::getJetCorrector("ak4PFchsL1L2L3",iSetup);
 correctedJets.clear();
   
 std::cout<<"setup the corrector"<<std::endl;
 for( std::vector<pat::Jet>::const_iterator it = cleanMuonJets.begin(), ed = cleanMuonJets.end(); it != ed; ++it ){
   pat::Jet iJet = *it;
   double jec =1.0;
-  jec = jetCorrector->correction(iJet, input.edmevent, input.setup );
+  jec = jetCorrector->correction(iJet, iEvent, iSetup );
 //   std::cout<<"uncorrected "<<jec<<" "<<iJet.pt()<<std::endl;
   iJet.scaleEnergy(jec);
 //   std::cout<<"corrected "<<iJet.pt()<<std::endl;
@@ -480,7 +553,7 @@ for( std::vector<pat::Jet>::const_iterator it = selectedJets.begin(), ed = selec
 //----------------------------------------------------------------------------------
 //do the topjets
 std::vector<boosted::HEPTopJet> selectedTopJets;
-for( std::vector<boosted::HEPTopJet>::const_iterator it = input.selectedHEPTopJets.begin(), ed = input.selectedHEPTopJets.end(); it != ed; ++it ){
+for( std::vector<boosted::HEPTopJet>::const_iterator it = heptopjets.begin(), ed = heptopjets.end(); it != ed; ++it ){
   boosted::HEPTopJet iJet = *it;
   bool passesCuts=false;
   bool passesSubCuts=false;
@@ -541,7 +614,7 @@ for( std::vector<boosted::HEPTopJet>::const_iterator it = input.selectedHEPTopJe
 //do the higgsjets
 
 std::vector<boosted::SubFilterJet> selectedHiggsJets;
-for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFilterJets.begin(), ed =        input.selectedSubFilterJets.end(); it != ed; ++it ){
+for( std::vector<boosted::SubFilterJet>::const_iterator it = subfilterjets.begin(), ed =        subfilterjets.end(); it != ed; ++it ){
   boosted::SubFilterJet iJet = *it;
 
   
@@ -597,7 +670,7 @@ for( std::vector<boosted::SubFilterJet>::const_iterator it = input.selectedSubFi
   run = int(input.event.run);
   lumi = int(input.event.lumiBlock);
   event = int(input.event.evt);
-  MET_pt = input.pfMets.front().pt();
+  MET_pt = pfMets.front().pt();
   
   
 //   // not clear what lep1 is
@@ -1036,8 +1109,8 @@ printf("dileptons %6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %+4.2f %+4.2f   %6.
       } 
     }
     
-  std::cout<<"MET "<<input.pfMets.front().pt()<<std::endl;
-  if(input.pfMets.front().pt()<=40.0) return false;
+  std::cout<<"MET "<<pfMets.front().pt()<<std::endl;
+  if(pfMets.front().pt()<=40.0) return false;
   else{ cutflow.EventSurvivedStep("MET > 40");
     if(doMode=="eleele") outfile="KIT_sync_eleele_6.txt";
     else outfile="KIT_sync_mumu_6.txt";
