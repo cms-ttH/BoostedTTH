@@ -14,7 +14,6 @@
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/ForTests.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 
 enum SampleType{data,tth,tt,nonttbkg};
