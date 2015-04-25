@@ -345,20 +345,20 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByToken( EDMMuonsToken,h_muons );
   std::vector<pat::Muon> const &muons = *h_muons; 
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 20., muonID::muonTight );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose );  
-  // ???
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 20., muonID::muonTight );  // for the sake of sync: loose == tight
+
   // ELECTRONS
   edm::Handle< std::vector<pat::Electron> > h_electrons;
   iEvent.getByToken( EDMElectronsToken,h_electrons );
   std::vector<pat::Electron> const &electrons = *h_electrons;
   std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M);
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., electronID::electronPhys14L );
-
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M );   // for the sake of sync: loose == tight
+ 
   /**** GET JETS ****/
   edm::Handle< std::vector<pat::Jet> > h_pfjets;
   iEvent.getByToken( EDMJetsToken,h_pfjets );
   std::vector<pat::Jet> const &pfjets = *h_pfjets;
-  
+  // initialize jetcorrector
   const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
   helper.SetJetCorrector(corrector);
   
@@ -369,7 +369,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // Clean electrons from jets
   std::vector<pat::Jet> jetsNoEle = helper.RemoveOverlaps(selectedElectronsLoose, jetsNoMu);
   // Apply jet corrections
-   std::vector<pat::Jet> correctedJets = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
+   std::vector<pat::Jet> correctedJets_unsorted = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup);
+  // Sort jets
+   std::vector<pat::Jet> correctedJets = helper.GetSortedByPt(correctedJets_unsorted);
   //Get jet Collection which pass selection
   std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(correctedJets, 25., 2.4, jetID::jetLoose, '-' );
   // Get jet Collection which pass loose selection
@@ -485,7 +487,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
   
   if(!selected) return;
-
+  //  input.DumpSyncExe();
   // WRITE TREE
     treewriter.Process(input);
 }
