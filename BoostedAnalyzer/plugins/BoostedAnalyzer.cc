@@ -437,17 +437,20 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   TriggerInfo triggerInfo(triggerMap);
 
   // FIGURE OUT SAMPLE
-  SampleType sampleType;
+  SampleType sampleType= SampleType::nonttbkg;
   if(isData)
     sampleType = SampleType::data;
-  else if(BoostedUtils::MCContainsTTbar(genParticles) && BoostedUtils::MCContainsHiggs(genParticles)){
-    sampleType = SampleType::tth;
-  }
-  else if(BoostedUtils::MCContainsTTbar(genParticles)){
-    sampleType = SampleType::tt;
-  }
   else{
-    sampleType = SampleType::nonttbkg;
+      bool foundT=false;
+      bool foundTbar=false;
+      bool foundHiggs=true;
+      for(size_t i=0; i<genParticles.size();i++){
+	if(genParticles[i].pdgId()==6) foundT=true;
+	if(genParticles[i].pdgId()==-6) foundTbar=true;	
+	if(genParticles[i].pdgId()==25) foundHiggs=true;
+      }   
+      if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
+      if(foundT&&foundTbar) sampleType = SampleType::tt;
   }
 
   GenTopEvent genTopEvt;
