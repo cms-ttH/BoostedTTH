@@ -25,30 +25,30 @@ TLorentzVector BoostedUtils::GetTLorentzVector(const math::XYZTLorentzVector& ve
   
 }
 
+vector<TLorentzVector> BoostedUtils::GetTLorentzVectors(const std::vector<math::XYZTLorentzVector>& vecs){
+  vector<TLorentzVector> results;
+  for(auto vec=vecs.begin();vec!=vecs.end();vec++){
+    TLorentzVector result(vec->Px(),vec->Py(),vec->Pz(),vec->E());
+    results.push_back(result);
+  }
+  return results;
+  
+}
 
 math::XYZTLorentzVector BoostedUtils::GetXYZTLorentzVector(const TLorentzVector& vec){
   
   math::XYZTLorentzVector result(vec.Px(),vec.Py(),vec.Pz(),vec.E());
   
-  return result;
-  
+  return result;  
 }
-
-
-bool BoostedUtils::FirstIsLarger(float val1,float val2){
-  return val1 > val2;
-}
-
 
 bool BoostedUtils::FirstIsHarder(math::XYZTLorentzVector vec1,math::XYZTLorentzVector vec2){
   return vec1.Pt()>vec2.Pt();
 }
 
-
 bool BoostedUtils::FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2){
   return jet1.pt()>jet2.pt();
 }
-
 
 bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
   return jet1.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") > jet2.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
@@ -116,21 +116,19 @@ float BoostedUtils::DeltaR(const math::XYZTLorentzVector& vec1,const math::XYZTL
 
 
 float BoostedUtils::DeltaR(const pat::Jet& jet1,const pat::Jet& jet2){
-  if(jet1.pt()<0.001||jet2.pt()<0.001) return -2;
   
   math::XYZTLorentzVector vec1 = jet1.p4();
   math::XYZTLorentzVector vec2 = jet2.p4();
   
-  float dr = ROOT::Math::VectorUtil::DeltaR(vec1,vec2);
+  float dr = BoostedUtils::DeltaR(vec1,vec2);
   
   return dr;
 }
 
 
 float BoostedUtils::DeltaKt(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2){
-  if(vec1.Pt()<0.001 || vec2.Pt()<0.001) return -2;
   
-  float dr = ROOT::Math::VectorUtil::DeltaR(vec1,vec2);
+  float dr = BoostedUtils::DeltaR(vec1,vec2);
   float ptmin=min(vec1.Pt(),vec2.Pt());
   
   return sqrt(dr*dr*ptmin*ptmin);
@@ -143,10 +141,7 @@ float BoostedUtils::DeltaKt(const pat::Jet& jet1,const pat::Jet& jet2){
   math::XYZTLorentzVector vec1 = jet1.p4();
   math::XYZTLorentzVector vec2 = jet2.p4();
   
-  float dr = ROOT::Math::VectorUtil::DeltaR(vec1,vec2);
-  float ptmin=min(vec1.Pt(),vec2.Pt());
-  
-  return sqrt(dr*dr*ptmin*ptmin);
+  return BoostedUtils::DeltaKt(vec1,vec2);
 }
 
 
@@ -174,62 +169,6 @@ float BoostedUtils::CosThetaCM(const math::XYZTLorentzVector& vec,const math::XY
   boostedVec.Boost(zBoost);
   float theta = boostedVec.Theta();
   return TMath::Cos(theta);
-}
-
-
-std::vector<math::XYZTLorentzVector> BoostedUtils::GetGenParticleVecs(const std::vector<reco::GenParticle>& genParticles){
-  std::vector<math::XYZTLorentzVector> genParticleVecs;
-  
-  for(std::vector<reco::GenParticle>::const_iterator itPart=genParticles.begin();itPart!=genParticles.end();++itPart){
-    genParticleVecs.push_back(itPart->p4());
-  }
-  
-  return genParticleVecs;
-}
-
-
-bool BoostedUtils::MCContainsTTbar(const std::vector<reco::GenParticle>& genParticles){
-  bool foundT=false;
-  bool foundTbar=false;
-  for(size_t i=0; i<genParticles.size();i++){
-    if(genParticles[i].pdgId()==6) foundT=true;
-    if(genParticles[i].pdgId()==-6) foundTbar=true;
-  }
-  return foundT&&foundTbar;
-}
-
-
-bool BoostedUtils::MCContainsHiggs(const std::vector<reco::GenParticle>& genParticles){
-  for(size_t i=0; i<genParticles.size();i++){
-    if(genParticles[i].pdgId()==25) return true;
-  }
-  return false;
-}
-
-
-bool BoostedUtils::IsAnyTriggerBitFired(const std::vector<string> & targetTriggers, const edm::TriggerResults& triggerResults, const HLTConfigProvider& hlt_config){
-  
-  // check to see if you passed the trigger by looping over the bits
-  // looking for your bit
-  // and see if it is 1
-  
-  for(vector<string>::const_iterator iTarget = targetTriggers.begin();iTarget != targetTriggers.end();iTarget++) {
-    
-//    std::cout<<*iTarget<<std::endl;
-    if(*iTarget == "None") return true;
-    
-    // if this is the right name and the bit is set to one
-//    int TriggerID = triggerResults.find(*iTarget);
-    unsigned int TriggerID =  hlt_config.triggerIndex(*iTarget);
-//    std::cout<<TriggerID<<" "<<triggerResults.size()<<std::endl;
-    if( TriggerID >= triggerResults.size() ) { std::cout<<TriggerID<<" "<<triggerResults.size()<<std::endl; continue; }
-    if(triggerResults.accept(TriggerID))return true;
-//    if(triggerResults.accept(TriggerID)==1) return true;
-    
-  }// end for each target
-  
-  return false;
-  
 }
 
 
@@ -388,86 +327,6 @@ float BoostedUtils::GetJetAverageJetEtaMax(const std::vector<pat::Jet>& jets1, c
 }
 
 
-void BoostedUtils::GetFoxWolframMoments(std::vector<math::XYZTLorentzVector> jetVecs, float &h0, float &h1, float &h2, float &h3, float &h4) {
-  //
-  // Aplanarity and sphericity
-  //
-  
-  float eVis = 0.0;
-  for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetVecs.begin();itJetVec != jetVecs.end();++itJetVec){
-    eVis += itJetVec->energy();
-  }
-  h0 = 0.0;
-  h1 = 0.0;
-  h2 = 0.0;
-  h3 = 0.0;
-  h4 = 0.0;
-  for(std::vector<math::XYZTLorentzVector>::iterator itJetVec1 = jetVecs.begin();itJetVec1 != jetVecs.end();++itJetVec1){
-    for(std::vector<math::XYZTLorentzVector>::iterator itJetVec2 = itJetVec1+1;itJetVec2 != jetVecs.end();++itJetVec2){
-      float costh = ROOT::Math::VectorUtil::CosTheta(*itJetVec1,*itJetVec2);
-      float p0 = 1.0;
-      float p1 = costh;
-      float p2 = 0.5*(3.0*costh*costh - 1.0);
-      float p3 = 0.5*(5.0*costh*costh - 3.0*costh);
-      float p4 = 0.125*(35.0*costh*costh*costh*costh - 30.0*costh*costh + 3.0);
-      float pipj = itJetVec1->P()*itJetVec2->P();
-      h0 += (pipj/(eVis*eVis))*p0;
-      h1 += (pipj/(eVis*eVis))*p1;
-      h2 += (pipj/(eVis*eVis))*p2;
-      h3 += (pipj/(eVis*eVis))*p3;
-      h4 += (pipj/(eVis*eVis))*p4;
-    }
-  }
-  return;
-}
-
-
-void BoostedUtils::GetAplanaritySphericity(math::XYZTLorentzVector leptonVec, math::XYZTLorentzVector metVec, std::vector<math::XYZTLorentzVector> jetVecs, float &aplanarity, float &sphericity){
-  //
-  // Aplanarity and sphericity
-  //
-  float mxx = leptonVec.Px()*leptonVec.Px() + metVec.Px()*metVec.Px();
-  float myy = leptonVec.Py()*leptonVec.Py() + metVec.Py()*metVec.Py();
-  float mzz = leptonVec.Pz()*leptonVec.Pz() + metVec.Pz()*metVec.Pz();
-  float mxy = leptonVec.Px()*leptonVec.Py() + metVec.Px()*metVec.Py();
-  float mxz = leptonVec.Px()*leptonVec.Pz() + metVec.Px()*metVec.Pz();
-  float myz = leptonVec.Py()*leptonVec.Pz() + metVec.Px()*metVec.Pz();
-  
-  for(std::vector<math::XYZTLorentzVector>::iterator itJetVec=jetVecs.begin();itJetVec!=jetVecs.end();++itJetVec){
-    mxx += itJetVec->Px()*itJetVec->Px();
-    myy += itJetVec->Py()*itJetVec->Py();
-    mzz += itJetVec->Pz()*itJetVec->Pz();
-    mxy += itJetVec->Px()*itJetVec->Py();
-    mxz += itJetVec->Px()*itJetVec->Pz();
-    myz += itJetVec->Py()*itJetVec->Pz();
-  }
-  float sum = mxx + myy + mzz;
-  mxx /= sum;
-  myy /= sum;
-  mzz /= sum;
-  mxy /= sum;
-  mxz /= sum;
-  myz /= sum;
-  
-  TMatrix tensor(3,3);
-  tensor(0,0) = mxx;
-  tensor(1,1) = myy;
-  tensor(2,2) = mzz;
-  tensor(0,1) = mxy;
-  tensor(1,0) = mxy;
-  tensor(0,2) = mxz;
-  tensor(2,0) = mxz;
-  tensor(1,2) = myz;
-  tensor(2,1) = myz;
-  TVector eigenval(3);
-  tensor.EigenVectors(eigenval);
-  
-  sphericity = 3.0*(eigenval(1)+eigenval(2))/2.0;
-  aplanarity = 3.0*eigenval(2)/2.0;
-  
-  return;
-}
-
 
 bool BoostedUtils::GetTopTag(const boosted::HEPTopJet& topJet,const double& fW, const double& mTopMin, const bool& altConf){
   std::vector<pat::Jet> subjets;
@@ -610,6 +469,7 @@ float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const in
 }
 
 
+<<<<<<< HEAD
 double BoostedUtils::GetBestHiggsMassOhio(math::XYZTLorentzVector lepton, math::XYZTLorentzVector met, std::vector<math::XYZTLorentzVector> jets, std::vector<double> btag, double &minChi, double &dRbb, math::XYZTLorentzVector &bjet1, math::XYZTLorentzVector &bjet2, std::vector<math::XYZTLorentzVector> loose_jets, std::vector<double> loose_btag){
   if(jets.size()<6 && loose_jets.size()>0){
     jets.push_back( loose_jets[0] );
@@ -1403,3 +1263,5 @@ vector<string> BEANUtils:: ParseFileNames(string fnames){
     return filenames;
 }
 */
+=======
+>>>>>>> 98f6d978ea3f5dc60afab538e0815910dbb02ba6

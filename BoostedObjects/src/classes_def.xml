@@ -1,9 +1,5 @@
 <lcgdict>
-  <class name="boosted::Event" />
-  <class name="std::vector<boosted::Event>" />
-  <class pattern="edm::Wrapper<boosted::Event>"/>
-  <class name="edm::Wrapper<std::vector<boosted::Event> >" />
-  
+ 
   <class name="boosted::SubFilterJet" />
   <class name="std::vector<boosted::SubFilterJet>" />
   <class pattern="edm::Wrapper<boosted::SubFilterJet>"/>
