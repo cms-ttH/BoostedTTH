@@ -1076,6 +1076,112 @@ void BoostedUtils::TTHRecoVarsOhio(const std::vector<pat::Jet>& selectedJets,con
 }
 
 
+std::vector<pat::Jet> BoostedUtils::GetCSVJets(const boosted::HEPTopJetCollection& heptopjets, const boosted::SubFilterJetCollection& subfilterjets, const std::vector<pat::Jet>& selectedJets, const float& ptcut, const float& etacut){
+  std::vector<pat::Jet> subJets;
+
+  for(size_t j=0; j< subfilterjets.size(); j++){
+    for(size_t k=0; k< subfilterjets[j].filterjets.size(); k++){
+      if(subfilterjets[j].filterjets[k].pt()>=ptcut && std::fabs(subfilterjets[j].filterjets[k].eta())<etacut) subJets.push_back(subfilterjets[j].filterjets[k]);
+    }
+  }
+
+  for(size_t j=0; j< heptopjets.size(); j++){
+    if(heptopjets[j].nonW.pt()>=ptcut && std::fabs(heptopjets[j].nonW.eta())<etacut) subJets.push_back(heptopjets[j].nonW);
+    if(heptopjets[j].W1.pt()>=ptcut && std::fabs(heptopjets[j].W1.eta())<etacut) subJets.push_back(heptopjets[j].W1);
+    if(heptopjets[j].W2.pt()>=ptcut && std::fabs(heptopjets[j].W2.eta())<etacut) subJets.push_back(heptopjets[j].W2);
+  }
+
+  float DeltaR;
+  float drmin;
+  std::vector<pat::Jet>::iterator itMJet;
+
+  for(std::vector<pat::Jet>::const_iterator itJet = selectedJets.begin(); itJet != selectedJets.end(); ++itJet){
+    drmin = 0.3;
+    itMJet = subJets.end();
+    for(std::vector<pat::Jet>::iterator itSJet = subJets.begin(); itSJet != subJets.end(); ++itSJet){
+      DeltaR = BoostedUtils::DeltaR(itJet->p4(), itSJet->p4());
+      if(DeltaR<drmin){
+        drmin = DeltaR;
+        itMJet = itSJet;
+      }
+    }
+    if(itMJet != subJets.end()) subJets.erase(itMJet);
+  }
+
+  return subJets;
+}
+
+
+// vector<TLorentzVector> BEANUtils::GetCA12MatchDiff(const BNsubfilterjetCollection& subfilterJets, const BNjetCollection& selectedJets, vector<float>& DCSV_Matchedfilterjets, vector<float>& Dr_Matchedfilterjets, const float& ptcut, const float& etacut){
+//   vector<TLorentzVector> matchjetdiff;
+//   BNjet filterjet;
+//   BNjet matchedjet;
+//   float DeltaR;
+//   float drmin;
+//   TLorentzVector mjet;
+//   for(size_t i=0; i< selectedJets.size(); i++){
+//     drmin = 0.3;
+//     for(size_t j=0; j< subfilterJets.size(); j++){
+//       for(size_t k=0; k< subfilterJets[j].filterjets.size(); k++){
+//         filterjet = subfilterJets[j].filterjets[k];
+//         DeltaR = BEANUtils::DeltaR(selectedJets[i], filterjet);
+//         if(DeltaR<drmin && filterjet.pt>=ptcut && filterjet.eta<etacut){
+//           drmin = DeltaR;
+//           matchedjet = filterjet;
+//         }
+//       }
+//     }
+//     if(drmin < 0.3){
+//       mjet.SetPtEtaPhiE(matchedjet.pt/selectedJets[i].pt, selectedJets[i].eta-matchedjet.eta, selectedJets[i].phi-matchedjet.phi, matchedjet.energy/selectedJets[i].energy);
+//       matchjetdiff.push_back(mjet);
+//       DCSV_Matchedfilterjets.push_back(selectedJets[i].btagCombinedSecVertex-matchedjet.btagCombinedSecVertex);
+//       Dr_Matchedfilterjets.push_back(drmin);
+//     }
+//   }
+//
+//   return matchjetdiff;
+// }
+
+
+// vector<TLorentzVector> BEANUtils::GetCA15MatchDiff(const BNtoptagjetCollection& toptagjets, const BNjetCollection& selectedJets, vector<float>& DCSV_Matchedfilterjets, vector<float>& Dr_Matchedfilterjets, const float& ptcut, const float& etacut){
+//   vector<TLorentzVector> matchjetdiff;
+//   BNjet filterjet;
+//   BNjet matchedjet;
+//   float DeltaR;
+//   float drmin;
+//   TLorentzVector mjet;
+//   for(size_t i=0; i< selectedJets.size(); i++){
+//   drmin = 0.3;
+//     for(size_t j=0; j< toptagjets.size(); j++){
+//       filterjet = toptagjets[j].nonW;
+//       DeltaR = BEANUtils::DeltaR(selectedJets[i], filterjet);
+//       if(DeltaR<drmin && filterjet.pt>=ptcut && filterjet.eta<etacut){
+//         drmin = DeltaR;
+//         matchedjet = filterjet;
+//       }
+//       filterjet = toptagjets[j].W1;
+//       DeltaR = BEANUtils::DeltaR(selectedJets[i], filterjet);
+//       if(DeltaR<drmin && filterjet.pt>=ptcut && filterjet.eta<etacut){
+//         drmin = DeltaR;
+//         matchedjet = filterjet;
+//       }
+//       filterjet = toptagjets[j].W2;
+//       DeltaR = BEANUtils::DeltaR(selectedJets[i], filterjet);
+//       if(DeltaR<drmin && filterjet.pt>=ptcut && filterjet.eta<etacut){
+//         drmin = DeltaR;
+//         matchedjet = filterjet;
+//       }
+//     }
+//     if(drmin < 0.3){
+//       mjet.SetPtEtaPhiE(matchedjet.pt/selectedJets[i].pt, selectedJets[i].eta-matchedjet.eta, selectedJets[i].phi-matchedjet.phi, matchedjet.energy/selectedJets[i].energy);
+//       matchjetdiff.push_back(mjet);
+//       DCSV_Matchedfilterjets.push_back(selectedJets[i].btagCombinedSecVertex-matchedjet.btagCombinedSecVertex);
+//       Dr_Matchedfilterjets.push_back(drmin);
+//     }
+//   }
+//   return matchjetdiff;
+// }
+
 
 
 
