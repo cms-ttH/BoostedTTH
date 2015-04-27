@@ -7,9 +7,14 @@ for filename in sys.argv[1:]:
     steps=[]
     nevents=[]
     f = open(filename)
-    print filename
     lines=f.read().splitlines()
-    for line in lines:
+    if first:
+        nlines=len(lines)
+    else:
+        if len(lines)!=nlines:
+            print 'file', filename,'has wrong number of lines (',len(lines),')'
+            break
+    for line in lines:        
         linelist=line.split(' : ')
         numbers.append(linelist[0])
         steps.append(linelist[1])
