@@ -137,39 +137,41 @@ BDTOhio_v1::BDTOhio_v1 (TString weightPath):btagMcut(0.814),btagger("combinedInc
 }
 BDTOhio_v1::~BDTOhio_v1(){
 }
-bool BDTOhio_v1::EventIsInCategory(string categoryLabel,const vector<pat::Jet>& selectedJets) const{
+std::string BDTOhio_v1::GetCategory(const std::vector<pat::Jet>& selectedJets) const{
   int njets=selectedJets.size();
   int ntagged=0;
   for(auto jet=selectedJets.begin(); jet!=selectedJets.end(); jet++){
     if(jet->bDiscriminator(btagger)>btagMcut) ntagged++;
   }
-  if(categoryLabel=="6j4t"){
-    return ntagged>=4&&njets>=6;
+  if(ntagged>=4&&njets>=6){
+    return "6j4t"; 
   }
-  else if(categoryLabel=="5j4t"){
-    return ntagged>=4&&njets==5;
+  else if(ntagged>=4&&njets==5){
+    return "5j4t"; 
   }
-  else if(categoryLabel=="4j4t"){
-    return ntagged>=4&&njets==4;
+  else if(ntagged>=4&&njets==4){
+    return "4j4t"; 
   }
-  else if(categoryLabel=="6j3t"){
-    return ntagged==3&&njets>=6;
+  else if(ntagged==3&&njets>=6){
+    return "6j3t"; 
   }
-  else if(categoryLabel=="5j3t"){
-    return ntagged==3&&njets==5;
+  else if(ntagged==3&&njets==5){
+    return "5j3t"; 
   }
-  else if(categoryLabel=="4j3t"){
-    return ntagged==3&&njets==4;
+  else if(ntagged==3&&njets==4){
+    return "4j3t"; 
   }
-  else if(categoryLabel=="6j2t"){
-    return ntagged==2&&njets>=6;
+  else if(ntagged==2&&njets>=6){
+    return "6j2t"; 
   }
   else{
-    std::cerr <<"category " << categoryLabel << " does not exist" <<std::endl;
-    return false;
+    return "none";
   }
-
+  
 }
+
+
+				   
 float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
 
   if(selectedMuons.size()+selectedElectrons.size()!=1){
@@ -365,16 +367,23 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   // evaluate BDT of current category
   return readerMap[categoryLabel]->EvaluateMVA("BDT");
 }
-float BDTOhio_v1::Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
+
+std::map<std::string,float> BDTOhio_v1::GetAllOutputsOfLastEvaluation() const{
+  std::map<std::string,float> outputs;
   for(auto it = readerMap.begin();it != readerMap.end();it++){
-    if(EventIsInCategory(it->first,selectedJets)){
-      return Evaluate(it->first,selectedMuons,selectedElectrons,selectedJets,selectedJetsLoose,pfMET);
-      break;
-    }
+    outputs[it->first]=it->second->EvaluateMVA("BDT");
   }
-  cerr <<  "BDTOhio_v1: no matching category found" << endl;
-  return -2;
+  return outputs;
 }
+float BDTOhio_v1::Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
+  std::string category=GetCategory(selectedJets);
+  if(category=="none") {
+    cerr <<  "BDTOhio_v1: no matching category found" << endl;
+    return -2;
+  }
+  return Evaluate(category,selectedMuons,selectedElectrons,selectedJets,selectedJetsLoose,pfMET);
+}
+
 std::map<std::string,float> BDTOhio_v1::GetVariablesOfLastEvaluation() const{
   return variableMap;
 }
