@@ -25,6 +25,15 @@ TLorentzVector BoostedUtils::GetTLorentzVector(const math::XYZTLorentzVector& ve
   
 }
 
+vector<TLorentzVector> BoostedUtils::GetTLorentzVectors(const std::vector<math::XYZTLorentzVector>& vecs){
+  vector<TLorentzVector> results;
+  for(auto vec=vecs.begin();vec!=vecs.end();vec++){
+    TLorentzVector result(vec->Px(),vec->Py(),vec->Pz(),vec->E());
+    results.push_back(result);
+  }
+  return results;
+  
+}
 
 math::XYZTLorentzVector BoostedUtils::GetXYZTLorentzVector(const TLorentzVector& vec){
   

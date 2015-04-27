@@ -26,6 +26,7 @@ class BoostedUtils{
     static std::string GetAnalyzerPath();
     
     static TLorentzVector GetTLorentzVector(const math::XYZTLorentzVector& vec);
+    static std::vector<TLorentzVector> GetTLorentzVectors(const std::vector<math::XYZTLorentzVector>& vec);
     static math::XYZTLorentzVector GetXYZTLorentzVector(const TLorentzVector& vec);   
     static bool FirstIsHarder(math::XYZTLorentzVector vec1,math::XYZTLorentzVector vec2);
     static bool FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2);
