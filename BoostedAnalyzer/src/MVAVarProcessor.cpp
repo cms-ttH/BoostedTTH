@@ -899,10 +899,13 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vars.FillVar( "Evt_H4", h4 );
   
   // Aplanarity and Sphericity;
-  float aplanarity,sphericity;
+  float aplanarity=-1;
+  float sphericity=-1;
   TLorentzVector primLepVecTL = BoostedUtils::GetTLorentzVector(primLepVec);
   TLorentzVector metvecTL = BoostedUtils::GetTLorentzVector(primLepVec);
-  bdtvar.getSp(primLepVecTL, metvecTL, jetvecsTL, aplanarity, sphericity) ;
+  // workaround to avoid bdtvar crashing
+  if(jetvecsTL.size()>0)
+    bdtvar.getSp(primLepVecTL, metvecTL, jetvecsTL, aplanarity, sphericity) ;
   vars.FillVar( "Evt_Aplanarity", aplanarity );
   vars.FillVar( "Evt_Sphericity", sphericity );
   double minChi,dRbb;
