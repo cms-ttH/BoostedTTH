@@ -1,8 +1,14 @@
+#!/usr/bin/env python
+# submits alls *.sh files to cluster
+# usage: ./sup.py path/to/scripts [script_pattern]
 import os
 import sys
 pattern=''
+path=''
 if len(sys.argv) > 1:
-    pattern= sys.argv[1]
+    path= sys.argv[1]+'/'
+if len(sys.argv) > 2:
+    pattern= sys.argv[2]
 from subprocess import call
 
 if not os.path.exists('logs'):
