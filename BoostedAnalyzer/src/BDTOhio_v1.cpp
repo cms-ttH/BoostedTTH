@@ -279,7 +279,7 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   for(auto tagged_jet1=tagged_jet_vecs.begin();tagged_jet1!=tagged_jet_vecs.end();tagged_jet1++){
     for(auto tagged_jet2=tagged_jet1+1;tagged_jet2!=tagged_jet_vecs.end();tagged_jet2++){
       float dr=tagged_jet1->DeltaR(*tagged_jet2);
-      sumDrTagged=dr;
+      sumDrTagged+=dr;
       npairs++;
       if(dr<minDrTagged){
 	minDrTagged=dr;
@@ -308,6 +308,7 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   // btag variables
   float averageCSV = 0;
   float lowest_btag=99;
+  int njets=selectedJets.size();
   int ntags=0;
   for(auto itCSV = jetCSV.begin() ; itCSV != jetCSV.end(); ++itCSV){
     if(*itCSV<btagMcut) continue;
@@ -343,7 +344,7 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   variableMap["dev_from_avg_disc_btags"]=csvDev;
   variableMap["dr_between_lep_and_closest_jet"]=dr_between_lep_and_closest_jet;
   variableMap["first_jet_pt"]=jet_vecs.size()>0?jet_vecs[0].Pt():-99;
-  variableMap["fourth_highest_btag"]=ntags>3?sortedCSV[3]:-1.;
+  variableMap["fourth_highest_btag"]=njets>3?sortedCSV[3]:-1.;
   variableMap["fourth_jet_pt"]=jet_vecs.size()>3?jet_vecs[3].Pt():-99;
   variableMap["h0"]=h0;
   variableMap["h2"]=h2;
@@ -357,10 +358,10 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   variableMap["MHT"]=MHT;
   variableMap["Mlb"]=Mlb;
   variableMap["pt_all_jets_over_E_all_jets"]=pt_E_ratio;
-  variableMap["second_highest_btag"]=ntags>1?sortedCSV[1]:-1.;
+  variableMap["second_highest_btag"]=njets>1?sortedCSV[1]:-1.;
   variableMap["second_jet_pt"]=jet_vecs.size()>1?jet_vecs[1].Pt():-99;
   variableMap["sphericity"]=sphericity;
-  variableMap["third_highest_btag"]=ntags>2?sortedCSV[2]:-1.;
+  variableMap["third_highest_btag"]=njets>2?sortedCSV[2]:-1.;
   variableMap["third_jet_pt"]=jet_vecs.size()>2?jet_vecs[2].Pt():-99;
 
   // ==================================================
