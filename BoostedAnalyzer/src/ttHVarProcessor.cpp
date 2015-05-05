@@ -572,31 +572,31 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
     vars.FillVar(prefix+"TopHadCandidate_Top_Phi", topHadCandVec.Phi());
   }
 
-  vars.FillVar(prefix+"TopJet_FatJet_Mass",topHadCand.fatjetMass);
-  vars.FillVar(prefix+"TopJet_FatJet_Pt",topHadCand.fatjetPt);
-  vars.FillVar(prefix+"TopJet_FatJet_Eta",topHadCand.fatjetEta);
-  vars.FillVar(prefix+"TopJet_FatJet_Phi",topHadCand.fatjetPhi);
+  vars.FillVar(prefix+"TopHadCandidate_FatJet_Mass",topHadCand.fatjetMass);
+  vars.FillVar(prefix+"TopHadCandidate_FatJet_Pt",topHadCand.fatjetPt);
+  vars.FillVar(prefix+"TopHadCandidate_FatJet_Eta",topHadCand.fatjetEta);
+  vars.FillVar(prefix+"TopHadCandidate_FatJet_Phi",topHadCand.fatjetPhi);
 
-  vars.FillVar(prefix+"TopJet_TopMass",topHadCand.topMass);
-  vars.FillVar(prefix+"TopJet_UnfilteredMass",topHadCand.unfilteredMass);
-  vars.FillVar(prefix+"TopJet_PrunedMass",topHadCand.prunedMass);
-  vars.FillVar(prefix+"TopJet_fRec",topHadCand.fRec);
-  vars.FillVar(prefix+"TopJet_MassRatioPassed",topHadCand.massRatioPassed);
+  vars.FillVar(prefix+"TopHadCandidate_TopMass",topHadCand.topMass);
+  vars.FillVar(prefix+"TopHadCandidate_UnfilteredMass",topHadCand.unfilteredMass);
+  vars.FillVar(prefix+"TopHadCandidate_PrunedMass",topHadCand.prunedMass);
+  vars.FillVar(prefix+"TopHadCandidate_fRec",topHadCand.fRec);
+  vars.FillVar(prefix+"TopHadCandidate_MassRatioPassed",topHadCand.massRatioPassed);
 
-  vars.FillVar(prefix+"TopJet_Ropt",topHadCand.Ropt);
-  vars.FillVar(prefix+"TopJet_RoptCalc",topHadCand.RoptCalc);
-  vars.FillVar(prefix+"TopJet_PtForRoptCalc",topHadCand.ptForRoptCalc);
+  vars.FillVar(prefix+"TopHadCandidate_Ropt",topHadCand.Ropt);
+  vars.FillVar(prefix+"TopHadCandidate_RoptCalc",topHadCand.RoptCalc);
+  vars.FillVar(prefix+"TopHadCandidate_PtForRoptCalc",topHadCand.ptForRoptCalc);
 
-  vars.FillVar(prefix+"TopJet_Tau1Unfiltered",topHadCand.tau1Unfiltered);
-  vars.FillVar(prefix+"TopJet_Tau2Unfiltered",topHadCand.tau2Unfiltered);
-  vars.FillVar(prefix+"TopJet_Tau3Unfiltered",topHadCand.tau3Unfiltered);
-  vars.FillVar(prefix+"TopJet_Tau1Filtered",topHadCand.tau1Filtered);
-  vars.FillVar(prefix+"TopJet_Tau2Filtered",topHadCand.tau2Filtered);
-  vars.FillVar(prefix+"TopJet_Tau3Filtered",topHadCand.tau3Filtered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau1Unfiltered",topHadCand.tau1Unfiltered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau2Unfiltered",topHadCand.tau2Unfiltered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau3Unfiltered",topHadCand.tau3Unfiltered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau1Filtered",topHadCand.tau1Filtered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau2Filtered",topHadCand.tau2Filtered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau3Filtered",topHadCand.tau3Filtered);
 
-  vars.FillVar(prefix+"TopJet_QWeight",topHadCand.qWeight);
-  vars.FillVar(prefix+"TopJet_QEpsilon",topHadCand.qEpsilon);
-  vars.FillVar(prefix+"TopJet_QSigmaM",topHadCand.qSigmaM);
+  vars.FillVar(prefix+"TopHadCandidate_QWeight",topHadCand.qWeight);
+  vars.FillVar(prefix+"TopHadCandidate_QEpsilon",topHadCand.qEpsilon);
+  vars.FillVar(prefix+"TopHadCandidate_QSigmaM",topHadCand.qSigmaM);
   
   if(topHadCandVec.Pt()>0 && lepCandVec.Pt()>0){
     vars.FillVar(prefix+"TopHadCandidate_Dr_Lepton",BoostedUtils::DeltaR(lepCandVec,topHadCandVec));

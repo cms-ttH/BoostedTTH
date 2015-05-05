@@ -6,7 +6,7 @@ process.source = cms.Source("PoolSource",
                             #fileNames = cms.untracked.vstring('file:/storage/9/mildner/ttbar_phys14.root')
                             fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -64,6 +64,23 @@ from PhysicsTools.PatAlgos.tools.jetTools import addJetCollection
 addJetCollection(
     process,
     labelName = 'HTTFatJetsPF',
+    postfix="",
+    jetSource = cms.InputTag('HTTTopJetProducer','fatjets'),
+    pfCandidates = cms.InputTag('packedPFCandidates'),
+    trackSource = cms.InputTag('unpackedTracksAndVertices'),
+    pvSource = cms.InputTag('unpackedTracksAndVertices'),
+    algo = 'CA',
+    rParam = 1.5,
+    getJetMCFlavour = False,
+    genJetCollection = None,
+    jetCorrections = None,
+    btagDiscriminators = None
+)
+
+# HTT fatjet
+addJetCollection(
+    process,
+    labelName = 'HTTTopJetsPF',
     postfix="",
     jetSource = cms.InputTag('HTTTopJetProducer',''),
     pfCandidates = cms.InputTag('packedPFCandidates'),
@@ -150,6 +167,9 @@ addJetCollection(
 # fatjets
 process.patJetsHTTFatJetsPF.addGenJetMatch=False
 process.patJetPartonMatchHTTFatJetsPF.matched = "prunedGenParticles"
+# topjets
+process.patJetsHTTTopJetsPF.addGenJetMatch=False
+process.patJetPartonMatchHTTTopJetsPF.matched = "prunedGenParticles"
 # subjets
 process.patJetsHTTSubjetsPF.addGenJetMatch=False
 process.patJetPartonMatchHTTSubjetsPF.matched = "prunedGenParticles"
@@ -170,7 +190,7 @@ process.patJetPartons.particles = "prunedGenParticles"
 
 
 # create Path for PAT Jets
-process.patJetsHTTTopJetsPath = cms.Path(process.patJetsHTTFatJetsPF * process.patJetsHTTSubjetsPF)
+process.patJetsHTTTopJetsPath = cms.Path(process.patJetsHTTFatJetsPF * process.patJetsHTTTopJetsPF * process.patJetsHTTSubjetsPF)
 process.patJetsSFJetsPath = cms.Path(process.patJetsSFFatJetsPF * process.patJetsSFSubjetsPF * process.patJetsSFFilterjetsPF)
 
 #from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets

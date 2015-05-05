@@ -14,6 +14,7 @@ namespace boosted {
     
       HTTTopJet() :
 		    fatjet(pat::Jet()),
+        topjet(pat::Jet()),
 		    nonW(pat::Jet()),
 		    W1(pat::Jet()),
 		    W2(pat::Jet()),
@@ -58,6 +59,7 @@ namespace boosted {
       }
       
       pat::Jet fatjet;
+      pat::Jet topjet;
 	    pat::Jet nonW;
 	    pat::Jet W1;
 	    pat::Jet W2;

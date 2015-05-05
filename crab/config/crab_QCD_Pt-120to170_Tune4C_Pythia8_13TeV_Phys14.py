@@ -2,7 +2,7 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 
 config.section_("General")
-config.General.requestName = 'MC_MadGraph_TTbar_MSDecaysCKM_Tune4C_13TeV_PHYS14'
+config.General.requestName = 'MC_Pythia8_QCD_Pt-120to170_Tune4C_13TeV_PHYS14'
 config.General.workArea = 'crab_projects'
 
 config.section_("JobType")
@@ -11,7 +11,7 @@ config.JobType.psetName = '/nfs/dust/cms/user/shwillia/Test/CMSSW_7_2_3/src/Boos
 config.JobType.outputFiles = ['BoostedTTH_MiniAOD.root']
 
 config.section_("Data")
-config.Data.inputDataset = '/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'
+config.Data.inputDataset = '/QCD_Pt-120to170_Tune4C_13TeV_pythia8/Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v2/MINIAODSIM'
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1

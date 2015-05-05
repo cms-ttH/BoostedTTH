@@ -2,7 +2,7 @@
 
 import ROOT
 
-fileDir = "/nfs/dust/cms/user/shwillia/BNTrees_MiniAOD/SingleLeptonSelection/"
+fileDir = "/nfs/dust/cms/user/shwillia/BoostedTTH_Trees/"
 
 trueFileDir = fileDir+"MC_MadGraph_TTbar_tree.root"
 falseFileDir = fileDir+"MC_MadGraph_TTbar_tree.root"

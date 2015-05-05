@@ -61,11 +61,15 @@ class HTTTopJetMatcher : public edm::EDProducer {
 
     template<typename recojettype>
     const pat::Jet & deltarJetMatching(const edm::View<pat::Jet> & patjets, const std::multimap<double, int> & patjetindex_by_eta, const recojettype & rjet);
-  
+    template<typename recojettype>
+    const int deltarTopJetMatching(const recojettype & recofatjet, const std::vector<reco::BasicJet> & recotopjets);
+
   
     // ----------member data ---------------------------
     edm::InputTag recoFatJetsTag_;
+    edm::InputTag recoTopJetsTag_;
     edm::InputTag patFatJetsTag_;
+    edm::InputTag patTopJetsTag_;
     edm::InputTag patSubjetsTag_;
     edm::InputTag httInfosTag_;
 };
