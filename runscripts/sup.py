@@ -20,4 +20,4 @@ files = [os.path.join(root, name)
                      if pattern in name and name.endswith((".sh"))]
 for f in files:
 #    print f
-    call(['qsub', '-cwd', '-S', '/bin/bash','-l', 'os=sld6', '-o', 'logs/$JOB_NAME.o$JOB_ID', '-e', 'logs/$JOB_NAME.e$JOB_ID', '-q', 'default.q', f])
+    call(['qsub', '-cwd', '-S', '/bin/bash','-l', 'os=sld6', '-l' ,'h_vmem=2000M', '-l', 's_vmem=2000M' ,'-o', 'logs/$JOB_NAME.o$JOB_ID', '-e', 'logs/$JOB_NAME.e$JOB_ID', '-q', 'default.q', f])
