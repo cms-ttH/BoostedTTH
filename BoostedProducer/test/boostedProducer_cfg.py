@@ -72,10 +72,7 @@ addJetCollection(
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
     btagDiscriminators = None,
     jetCorrections = None,
-    getJetMCFlavour = True,
-    rParam=0.5,
-    algoLabel='CA12',
-    typeLabel='PF',
+    getJetMCFlavour = False,
     genJetCollection = None
 )
 # the two subjets that created the mass drop
@@ -127,9 +124,6 @@ addJetCollection(
     btagDiscriminators = None,
     jetCorrections = None,
     getJetMCFlavour = False,
-    rParam=1.5,
-    algoLabel='CA15',
-    typeLabel='PF',
     genJetCollection = None
 )
 # 3 subjets corresbonding to W and b

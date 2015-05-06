@@ -155,15 +155,6 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   
   vars.InitVar( "Evt_JetPtOverJetE" );
   
-  vars.InitVar( "Evt_Aplanarity" );
-  vars.InitVar( "Evt_Sphericity" );
-    
-  vars.InitVar( "Evt_H0" );
-  vars.InitVar( "Evt_H1" );
-  vars.InitVar( "Evt_H2" );
-  vars.InitVar( "Evt_H3" );
-  vars.InitVar( "Evt_H4" );
-
   vars.InitVar( "Evt_Jet_MaxDeta_Jets" );
   vars.InitVar( "Evt_TaggedJet_MaxDeta_Jets" );
   vars.InitVar( "Evt_TaggedJet_MaxDeta_TaggedJets" );
@@ -203,6 +194,16 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVars("Jet_Deta_Jet2","N_Jets");
   vars.InitVars("Jet_Deta_Jet3","N_Jets");
   vars.InitVars("Jet_Deta_Jet4","N_Jets");
+
+  vars.InitVar( "Evt_Aplanarity" );
+  vars.InitVar( "Evt_Sphericity" );
+    
+  vars.InitVar( "Evt_H0" );
+  vars.InitVar( "Evt_H1" );
+  vars.InitVar( "Evt_H2" );
+  vars.InitVar( "Evt_H3" );
+  vars.InitVar( "Evt_H4" );
+
   
   vars.InitVar("Evt_Deta_TopLep_BB_Ohio");
   vars.InitVar("Evt_Deta_TopHad_BB_Ohio");
@@ -309,11 +310,11 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "Muon_Phi",iMu,itMu->phi() );
   }
   
-  vars.FillVar( "Evt_Pt_MET",input.pfMets[0].pt() );
-  vars.FillVar( "Evt_Phi_MET",input.pfMets[0].phi() );
+  vars.FillVar( "Evt_Pt_MET",input.pfMET.pt() );
+  vars.FillVar( "Evt_Phi_MET",input.pfMET.phi() );
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
-  math::XYZTLorentzVector metvec = input.pfMets[0].p4();
+  math::XYZTLorentzVector metvec = input.pfMET.p4();
   
   // Fill M3 Variables
   float m3 = -1.;
@@ -352,7 +353,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // Fill MTW
   float mtw = -1.;
   if(input.selectedElectrons.size()>0 || input.selectedMuons.size()>0){
-    mtw = sqrt(2*(primLepVec.Pt()*input.pfMets[0].pt() - primLepVec.Px()*input.pfMets[0].px() - primLepVec.Py()*input.pfMets[0].py()));
+    mtw = sqrt(2*(primLepVec.Pt()*input.pfMET.pt() - primLepVec.Px()*input.pfMET.px() - primLepVec.Py()*input.pfMET.py()));
   }
   vars.FillVar("Evt_MTW",mtw);
   
@@ -379,7 +380,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     mht_py += itMu->py();
     
   }
-  ht += input.pfMets[0].pt();
+  ht += input.pfMET.pt();
   
   vars.FillVar("Evt_HT",ht);
   vars.FillVar("Evt_MHT",sqrt( mht_px*mht_px + mht_py*mht_py ));
@@ -403,29 +404,29 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   
   // Fill CSV Variables
   // All Jets
-  std::vector<float> csvJets;
+  std::vector<double> csvJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
     csvJets.push_back(fmax(itJet->bDiscriminator(btagger),-.1));
   }
-  
-  std::sort(csvJets.begin(),csvJets.end(),BoostedUtils::FirstIsLarger);
-  vars.FillVar("Evt_CSV_Min",csvJets.size()>0 ? csvJets.back() : -.1);
+  std::vector<double> csvJetsSorted=csvJets;
+  std::sort(csvJetsSorted.begin(),csvJetsSorted.end(),std::greater<double>());
+  vars.FillVar("Evt_CSV_Min",csvJetsSorted.size()>0 ? csvJetsSorted.back() : -.1);
   
   float averageCSV = 0;
-  for(std::vector<float>::iterator itCSV = csvJets.begin() ; itCSV != csvJets.end(); ++itCSV){
-    int iCSV = itCSV - csvJets.begin();
+  for(std::vector<double>::iterator itCSV = csvJetsSorted.begin() ; itCSV != csvJetsSorted.end(); ++itCSV){
+    int iCSV = itCSV - csvJetsSorted.begin();
     vars.FillVars("CSV" ,iCSV,*itCSV);
     averageCSV += fmax(*itCSV,0);
   }
-  averageCSV /= csvJets.size();
+  averageCSV /= csvJetsSorted.size();
   vars.FillVar("Evt_CSV_Average" ,averageCSV );
   
   float csvDev = 0;
-  for(std::vector<float>::iterator itCSV = csvJets.begin() ; itCSV != csvJets.end(); ++itCSV){
+  for(std::vector<double>::iterator itCSV = csvJetsSorted.begin() ; itCSV != csvJetsSorted.end(); ++itCSV){
     csvDev += fabs(pow(*itCSV - averageCSV,2));
   }
-  if(csvJets.size() > 0)
-    csvDev /= csvJets.size();
+  if(csvJetsSorted.size() > 0)
+    csvDev /= csvJetsSorted.size();
   else
     csvDev=-1.;
   vars.FillVar("Evt_CSV_Dev",csvDev);
@@ -435,7 +436,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   for(std::vector<pat::Jet>::iterator itTaggedJet = selectedTaggedJets.begin() ; itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet){
     csvTaggedJets.push_back(fmax(itTaggedJet->bDiscriminator( btagger),-.1));
   }
-  sort(csvTaggedJets.begin(),csvTaggedJets.end(),BoostedUtils::FirstIsLarger);
+  sort(csvTaggedJets.begin(),csvTaggedJets.end(),std::greater<float>());
   vars.FillVar("Evt_CSV_Min_Tagged",csvTaggedJets.size()>0 ? csvTaggedJets.back() : -.1);
   
   float averageCSVTagged = 0;
@@ -592,7 +593,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     drTaggedJetsAverage /= (float) nPairsTaggedJets;
     dktTaggedJetsAverage /= (float) nPairsTaggedJets;
   }
-  sort(m2TaggedJets.begin(),m2TaggedJets.end(),BoostedUtils::FirstIsLarger);
+  sort(m2TaggedJets.begin(),m2TaggedJets.end(),std::greater<float>());
   
   vars.FillVar("Evt_M_TaggedJetsAverage",mTaggedJetsAverage);
   vars.FillVar("Evt_Eta_TaggedJetsAverage",etaTaggedJetsAverage);
@@ -736,27 +737,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vars.FillVar("Evt_TaggedJet_MaxDeta_Jets",BoostedUtils::GetJetAverageJetEtaMax(input.selectedJets,selectedTaggedJets));
   vars.FillVar("Evt_TaggedJet_MaxDeta_TaggedJets",BoostedUtils::GetJetAverageJetEtaMax(selectedTaggedJets,selectedTaggedJets));
   
-  // Event Shape Variables
-  // Fox Wolfram Moments
-  float h0,h1,h2,h3,h4;
-  h0=-9;
-  h1=-9;
-  h2=-9;
-  h3=-9;
-  h4=-9;
-  BoostedUtils::GetFoxWolframMoments(jetvecs, h0,h1,h2,h3,h4);
-  vars.FillVar( "Evt_H0", h0 );
-  vars.FillVar( "Evt_H1", h1 );
-  vars.FillVar( "Evt_H2", h2 );
-  vars.FillVar( "Evt_H3", h3 );
-  vars.FillVar( "Evt_H4", h4 );
-  
-  // Aplanarity and Sphericity;
-  float aplanarity,sphericity;
-  BoostedUtils::GetAplanaritySphericity(primLepVec, metvec, jetvecs, aplanarity, sphericity) ;
-  vars.FillVar( "Evt_Aplanarity", aplanarity );
-  vars.FillVar( "Evt_Sphericity", sphericity );
-  
+ 
   // Event Angle Variables 
   float drmax_lj=-1;
   float detamax_lj=-1;
@@ -893,21 +874,67 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   
   // Ohio Variables
   std::vector<pat::Jet> selectedJetsLooseExclusive;
+  vector<TLorentzVector> jet_loose_vecsTL;
+  vector<double> jetCSV_loose;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){
     if(itJet->pt() >= 30) continue;
     selectedJetsLooseExclusive.push_back(*itJet);
+    jetCSV_loose.push_back(itJet->bDiscriminator(btagger));
+    jet_loose_vecsTL.push_back(BoostedUtils::GetTLorentzVector(itJet->p4()));
   }
+  vector<TLorentzVector> jetvecsTL=BoostedUtils::GetTLorentzVectors(jetvecs);
+  // Event Shape Variables
+  // Fox Wolfram Moments
+  float h0,h1,h2,h3,h4;
+  h0=-9;
+  h1=-9;
+  h2=-9;
+  h3=-9;
+  h4=-9;
+  bdtvar.getFox(jetvecsTL, h0,h1,h2,h3,h4);
+  vars.FillVar( "Evt_H0", h0 );
+  vars.FillVar( "Evt_H1", h1 );
+  vars.FillVar( "Evt_H2", h2 );
+  vars.FillVar( "Evt_H3", h3 );
+  vars.FillVar( "Evt_H4", h4 );
   
-  float best_higgs_mass;
-  float dRbb;
-  float abs_dEta_hadtop_bb;
-  float abs_dEta_leptop_bb;
-  float dEta_fn;
-  BoostedUtils::TTHRecoVarsOhio(input.selectedJets,selectedJetsLooseExclusive, input.pfMets[0], primLepVec, best_higgs_mass, dRbb,abs_dEta_hadtop_bb,abs_dEta_leptop_bb, dEta_fn);
-  vars.FillVar("Evt_Deta_TopLep_BB_Ohio",abs_dEta_leptop_bb);
-  vars.FillVar("Evt_Deta_TopHad_BB_Ohio",abs_dEta_hadtop_bb);
+  // Aplanarity and Sphericity;
+  float aplanarity=-1;
+  float sphericity=-1;
+  TLorentzVector primLepVecTL = BoostedUtils::GetTLorentzVector(primLepVec);
+  TLorentzVector metvecTL = BoostedUtils::GetTLorentzVector(primLepVec);
+  // workaround to avoid bdtvar crashing
+  if(jetvecsTL.size()>0)
+    bdtvar.getSp(primLepVecTL, metvecTL, jetvecsTL, aplanarity, sphericity) ;
+  vars.FillVar( "Evt_Aplanarity", aplanarity );
+  vars.FillVar( "Evt_Sphericity", sphericity );
+  double minChi,dRbb;
+  TLorentzVector bjet1,bjet2;
+  float best_higgs_mass = bdtvar.getBestHiggsMass(primLepVecTL,metvecTL,jetvecsTL,csvJets,minChi,dRbb,bjet1,bjet2, jet_loose_vecsTL,jetCSV_loose);
+  TLorentzVector dummy_metv;
+  double minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7; 
+  TLorentzVector b1,b2;
+  vector< vector<double> > jets_vvdouble;
+  for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
+    vector<double> pxpypzE;
+    pxpypzE.push_back(jet->px());
+    pxpypzE.push_back(jet->py());
+    pxpypzE.push_back(jet->pz());
+    pxpypzE.push_back(jet->energy());
+    jets_vvdouble.push_back(pxpypzE);
+  }
+  bdtvar.study_tops_bb_syst (input.pfMET.pt(), input.pfMET.phi(), dummy_metv, primLepVecTL, jets_vvdouble, csvJets, minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7, b1, b2);
+  float dEta_fn=testquant6;
+
   vars.FillVar("Evt_Best_Higgs_Mass_Ohio",best_higgs_mass);
   vars.FillVar("Evt_Deta_Fn_Ohio",dEta_fn);
-  vars.FillVar("Evt_Dr_BB_Ohio",dRbb);
+
+  float abs_dEta_hadtop_bb=fabs(testquant2);
+  float abs_dEta_leptop_bb=fabs(testquant2);
+
+
+  vars.FillVar("Evt_Deta_TopLep_BB_Ohio",abs_dEta_leptop_bb);
+  vars.FillVar("Evt_Deta_TopHad_BB_Ohio",abs_dEta_hadtop_bb);
+  vars.FillVar("Evt_Dr_BB_Ohio",dRbbStudy);
 
 }
