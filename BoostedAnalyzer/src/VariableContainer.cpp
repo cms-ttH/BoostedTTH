@@ -55,7 +55,7 @@ void VariableContainer::FillVar( TString name, float value ) {
     if(intMapFilled[name]){
       cerr << name << " already filled!" << endl;
     }
-    intMap[name] = value;
+    intMap[name] = int(value+0.1);
     intMapFilled[name] = true;
   }
 //     std::cout << "filling variable " << name << " with " << value << std::endl;

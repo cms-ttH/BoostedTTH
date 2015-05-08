@@ -511,6 +511,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   }
 
   float weight = 1.;
+  assert(genEventInfo.weights().size()<=1); // before we multiply any weights we should understand what they mean
   for(size_t i=0;i<genEventInfo.weights().size();i++){
     weight *= genEventInfo.weights()[i];
   }
