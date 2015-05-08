@@ -6,7 +6,7 @@ process.source = cms.Source("PoolSource",
                             #fileNames = cms.untracked.vstring('file:/storage/9/mildner/ttbar_phys14.root')
                             #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -173,11 +173,15 @@ process.inclusiveVertexFinder.tracks=cms.InputTag("unpackedTracksAndVertices")
 process.trackVertexArbitrator.tracks=cms.InputTag("unpackedTracksAndVertices")
 process.trackVertexArbitrator.primaryVertices=cms.InputTag("offlineSlimmedPrimaryVertices")
 
+# gen hadron matching for tt+X categorization
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+process.load("BoostedTTH.BoostedAnalyzer.genHadronMatching_cfi")
+
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('MiniAOD_BoostedTTH.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*HEPTopJetsPFMatcher_*_*','keep *_*CA12JetsCA3FilterjetsPFMatcher_*_*'])
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*HEPTopJetsPFMatcher_*_*','keep *_*CA12JetsCA3FilterjetsPFMatcher_*_*','keep *_matchGen*Hadron_*_*'])
 )
 process.endpath = cms.EndPath(process.OUT)
 
