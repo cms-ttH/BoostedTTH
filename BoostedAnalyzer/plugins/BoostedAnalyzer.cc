@@ -284,7 +284,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   cutflow.AddStep("all");
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
   int nselection=0;
-  for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
+  for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {    
+    cout << *itSel << endl;
     if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
     else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
@@ -317,8 +318,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   // INITIALIZE TREEWRITER
   treewriter.Init(outfileName);
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
+  cout << "using processors:" << endl; 
   for(vector<string>::const_iterator itPro = processorNames.begin();itPro != processorNames.end();++itPro) {
-    
+    cout << *itPro << endl;
     if(*itPro == "WeightProcessor") treewriter.AddTreeProcessor(new WeightProcessor());
     else if(*itPro == "MCMatchVarProcessor") treewriter.AddTreeProcessor(new MCMatchVarProcessor());
     else if(*itPro == "MVAVarProcessor") treewriter.AddTreeProcessor(new MVAVarProcessor());
@@ -586,7 +588,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   for(size_t i=0; i<selections.size() && selected; i++){
     if(!selections.at(i)->IsSelected(input,cutflow))
       selected=false;
-    if(dumpSyncExe)
+    if(dumpSyncExe&&selected)
       input.DumpSyncExe(*(dumpFiles[i]));
   }
   
