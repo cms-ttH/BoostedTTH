@@ -21,6 +21,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <fstream>
 
 #include "TStopwatch.h"
 
@@ -36,7 +37,7 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/METReco/interface/HcalNoiseSummary.h"
-
+#include "DataFormats/Common/interface/TriggerResults.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
@@ -107,7 +108,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** triggers that are checked */
       vector<std::string> relevantTriggers;
 
-      
+      /** files to dump eventnumber into */
+      vector<std::ofstream*> dumpFiles;
+        
       /** sample ID */
       int sampleID;
       
@@ -134,9 +137,12 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
        /** use fat jets? this is only possible if the miniAOD contains them */
       bool useFatJets;
+
+       /** use GenBmatching info? this is only possible if the miniAOD contains them */
+      bool useGenHadronMatch;
       
-      /** calculate and store systematic weights? */
-      bool doSystematics;
+      /** dump some event content for synchronization */
+      bool dumpSyncExe;
       
       /** jet systematic that is applied (the outher systematics are done at a different place with reweighting)*/
       sysType::sysType jsystype;
@@ -187,6 +193,22 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** gen jets data access token **/
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
+     // custom genjets for tt+X categorization
+      edm::EDGetTokenT< std::vector<reco::GenJet> > EDMCustomGenJetsToken;
+    
+     /** tt+X categorization tokens **/
+      edm::EDGetTokenT<std::vector<int> > genBHadJetIndexToken;
+      edm::EDGetTokenT<std::vector<int> > genBHadFlavourToken;
+      edm::EDGetTokenT<std::vector<int> > genBHadFromTopWeakDecayToken;
+      edm::EDGetTokenT<std::vector<reco::GenParticle> > genBHadPlusMothersToken;
+      edm::EDGetTokenT<std::vector<std::vector<int> > > genBHadPlusMothersIndicesToken;
+      edm::EDGetTokenT<std::vector<int> > genBHadIndexToken;
+      edm::EDGetTokenT<std::vector<int> > genBHadLeptonHadronIndexToken;
+      edm::EDGetTokenT<std::vector<int> > genBHadLeptonViaTauToken;
+      edm::EDGetTokenT<std::vector<int> > genCHadJetIndexToken;
+      edm::EDGetTokenT<std::vector<int> > genCHadFlavourToken;
+      edm::EDGetTokenT<std::vector<int> > genCHadFromTopWeakDecayToken;
+      edm::EDGetTokenT<std::vector<int> > genCHadBHadronIdToken;
 };
 
 //
@@ -219,11 +241,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   isData = iConfig.getParameter<bool>("isData");
   
   useFatJets = iConfig.getParameter<bool>("useFatJets");
+  useGenHadronMatch = iConfig.getParameter<bool>("useGenHadronMatch");
+
+  dumpSyncExe = iConfig.getParameter<bool>("dumpSyncExe");
 
   string outfileName = iConfig.getParameter<std::string>("outfileName");
-  
-  std::cout << "Outfile Name: " << outfileName << std::endl;
-  
   // REGISTER DATA ACCESS
   EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","","HLT"));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","","RECO"));
@@ -240,22 +262,38 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   EDMGenInfoToken         = consumes< GenEventInfoProduct >(edm::InputTag("generator","","SIM"));
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","","PAT"));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","","PAT"));
-  
+  EDMCustomGenJetsToken   = consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","","p"));
+  // for tt+X categorizations
+  genBHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadJetIndex","p"));
+  genBHadFlavourToken            = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFlavour","p"));
+  genBHadFromTopWeakDecayToken   = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFromTopWeakDecay","p"));
+  genBHadPlusMothersToken        = consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenBHadron","genBHadPlusMothers","p"));
+  genBHadPlusMothersIndicesToken = consumes<std::vector<std::vector<int> > >(edm::InputTag("matchGenBHadron","genBHadPlusMothersIndices","p"));
+  genBHadIndexToken              = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadIndex"));
+  genBHadLeptonHadronIndexToken  = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonHadronIndex","p"));
+  genBHadLeptonViaTauToken       = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonViaTau","p"));
+  genCHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadJetIndex","p"));
+  genCHadFlavourToken            = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFlavour","p"));
+  genCHadFromTopWeakDecayToken   = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFromTopWeakDecay","p"));
+  genCHadBHadronIdToken          = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadBHadronId","p"));
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   
   // INITIALIZE SELECTION & CUTFLOW
   cutflow.Init((outfileName+"_Cutflow.txt").c_str());
   cutflow.AddStep("all");
-  
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
+  int nselection=0;
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
     if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
     else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection());
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection());
-    else cout << "No matching selection found for: " << *itSel << endl;
-    
+    else cout << "No matching selection found for: " << *itSel << endl;    
     selections.back()->Init(iConfig,cutflow);
+    nselection++;       
+    if(dumpSyncExe){
+      dumpFiles.push_back(new ofstream((outfileName+"_Dump_"+std::to_string(nselection)+".txt").c_str()));
+    }   
   }
   relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
   // INITIALIZE TREEWRITER
@@ -279,7 +317,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
 
 BoostedAnalyzer::~BoostedAnalyzer()
 {
- 
+  for(auto f = dumpFiles.begin(); f!=dumpFiles.end(); f++){
+    (*f)->close();
+  }
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
 
@@ -420,6 +460,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if(genjets[i].pt()>25&&fabs(genjets[i].eta())<2.4)
       selectedGenJets.push_back(genjets[i]);
   }
+  // custom genjets for tt+X categorization
+  edm::Handle< std::vector<reco::GenJet> > h_customgenjets;
+  iEvent.getByToken( EDMCustomGenJetsToken,h_customgenjets );
+
   // Fill Event Info Object
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood);
   // Fill Trigger Info
@@ -427,7 +471,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   for(auto name=relevantTriggers.begin(); name!=relevantTriggers.end();name++){
     unsigned int TriggerID =  hlt_config.triggerIndex(*name);
     if( TriggerID >= triggerResults.size() ) { 
-      std::cerr <<"triggerID> trigge results.size: "<<TriggerID<<" "<<triggerResults.size()<<std::endl; 
+      std::cerr <<"triggerID > trigger results.size: "<<TriggerID<<" "<<triggerResults.size()<<std::endl; 
       triggerMap[*name]=false;
     }
     else{
@@ -437,25 +481,62 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   TriggerInfo triggerInfo(triggerMap);
 
   // FIGURE OUT SAMPLE
-  SampleType sampleType= SampleType::nonttbkg;
-  if(isData)
-    sampleType = SampleType::data;
-  else{
-      bool foundT=false;
-      bool foundTbar=false;
-      bool foundHiggs=true;
-      for(size_t i=0; i<genParticles.size();i++){
-	if(genParticles[i].pdgId()==6) foundT=true;
-	if(genParticles[i].pdgId()==-6) foundTbar=true;	
-	if(genParticles[i].pdgId()==25) foundHiggs=true;
-      }   
-      if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
-      if(foundT&&foundTbar) sampleType = SampleType::tt;
+  bool foundT=false;
+  bool foundTbar=false;
+  bool foundHiggs=false;
+  if(!isData){
+    for(size_t i=0; i<genParticles.size();i++){
+      if(genParticles[i].pdgId()==6) foundT=true;
+      if(genParticles[i].pdgId()==-6) foundTbar=true;	
+      if(genParticles[i].pdgId()==25) foundHiggs=true;
+    }   
   }
 
+  int ttid=-1;
+  if(useGenHadronMatch&&foundT&&foundTbar){
+    /**** tt+X categorization ****/
+    // Reading gen jets from the event
+    // Reading B hadrons related information
+    edm::Handle<std::vector<int> > genBHadFlavour;
+    edm::Handle<std::vector<int> > genBHadJetIndex;
+    edm::Handle<std::vector<int> > genBHadFromTopWeakDecay;
+    edm::Handle<std::vector<reco::GenParticle> > genBHadPlusMothers;
+    edm::Handle<std::vector<std::vector<int> > > genBHadPlusMothersIndices;
+    edm::Handle<std::vector<int> > genBHadIndex;
+    edm::Handle<std::vector<int> > genBHadLeptonHadronIndex;
+    edm::Handle<std::vector<int> > genBHadLeptonViaTau;
+    // Reading C hadrons related information
+    edm::Handle<std::vector<int> > genCHadFlavour;
+    edm::Handle<std::vector<int> > genCHadJetIndex;
+    edm::Handle<std::vector<int> > genCHadFromTopWeakDecay;
+    edm::Handle<std::vector<int> > genCHadBHadronId;
+    iEvent.getByToken(genCHadBHadronIdToken, genCHadBHadronId);
+    iEvent.getByToken(genBHadFlavourToken, genBHadFlavour);
+    iEvent.getByToken(genBHadJetIndexToken, genBHadJetIndex);  
+    iEvent.getByToken(genBHadFromTopWeakDecayToken, genBHadFromTopWeakDecay);  
+    iEvent.getByToken(genBHadPlusMothersToken, genBHadPlusMothers);    
+    iEvent.getByToken(genBHadPlusMothersIndicesToken, genBHadPlusMothersIndices);
+    iEvent.getByToken(genBHadIndexToken, genBHadIndex);
+    iEvent.getByToken(genBHadLeptonHadronIndexToken, genBHadLeptonHadronIndex);
+    iEvent.getByToken(genBHadLeptonViaTauToken, genBHadLeptonViaTau);
+    iEvent.getByToken(genCHadFlavourToken, genCHadFlavour);
+    iEvent.getByToken(genCHadJetIndexToken, genCHadJetIndex);
+    iEvent.getByToken(genCHadFromTopWeakDecayToken, genCHadFromTopWeakDecay);
+    ttid = helper.ttHFCategorization(*h_customgenjets, *genBHadIndex, *genBHadJetIndex, *genBHadFlavour, *genBHadFromTopWeakDecay, *genBHadPlusMothers, *genBHadPlusMothersIndices, *genBHadLeptonHadronIndex, *genBHadLeptonViaTau, *genCHadFlavour, *genCHadJetIndex, *genCHadFromTopWeakDecay, *genCHadBHadronId, 20, 2.4);
+  }
+  SampleType sampleType= SampleType::nonttbkg;
+  if(isData) sampleType = SampleType::data;
+  else if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
+  else if(foundT&&foundTbar){ 
+    sampleType =SampleType::ttl;
+    if(ttid==51||ttid==52) sampleType = SampleType::ttb;
+    else if(ttid==53||ttid==54||ttid==55) sampleType = SampleType::ttbb;
+    else if(ttid==41||ttid==42) sampleType = SampleType::ttc;
+    else if(ttid==43||ttid==44||ttid==45) sampleType = SampleType::ttc;    
+  }
   GenTopEvent genTopEvt;
-  if(sampleType == SampleType::tt || sampleType == SampleType::tth) genTopEvt.Fill(genParticles);
-  //  genTopEvt.Print();
+  if(foundT&&foundTbar) genTopEvt.Fill(genParticles,ttid); // might want to store also genjets linked to ttHF event
+
 
 
   // DO REWEIGHTING
@@ -487,10 +568,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   for(size_t i=0; i<selections.size() && selected; i++){
     if(!selections.at(i)->IsSelected(input,cutflow))
       selected=false;
+    if(dumpSyncExe)
+      input.DumpSyncExe(*(dumpFiles[i]));
   }
   
   if(!selected) return;
-  //  input.DumpSyncExe();
   // WRITE TREE
     treewriter.Process(input);
 }
@@ -513,7 +595,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   float weight = 1.;
   assert(genEventInfo.weights().size()<=1); // before we multiply any weights we should understand what they mean
   for(size_t i=0;i<genEventInfo.weights().size();i++){
-    weight *= genEventInfo.weights()[i];
+    weight *= (genEventInfo.weights()[i]>0); // overwrite intransparent MC weights, use \pm 1 instead
   }
   
   float xsweight = xs*luminosity/totalMCevents;
