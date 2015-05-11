@@ -1,19 +1,28 @@
 #!/usr/bin/env python
 # creates scripts to run cmssw on naf cluster
-# usage: ./get_filenames.py /folder/containing/rootfiles filepattern_without_wildcards name number_of_jobs
+# usage: ./get_filenames.py /folder/containing/rootfiles filepattern_without_wildcards name [number_of_jobs XS sum_pos_minus_neg_events sampleID]
 import os
 import sys
 import stat   
 path= sys.argv[1]
 pattern= sys.argv[2]
 samplename= sys.argv[3]
-njobs=int(sys.argv[4])
-sampleID="9125"
-xs="0.5"
-mcevents="200000"
+njobs=9999999
+xs="1"
+mcevents="1000000"
+sampleID="1"
+if len(sys.argv) > 4:
+    njobs=int(sys.argv[4])
+if len(sys.argv) > 5:
+    xs=sys.argv[5]
+if len(sys.argv) > 6:
+    mcevents=sys.argv[6]
+if len(sys.argv) > 7:
+    sampleID=sys.argv[7]
+
 outpath='/nfs/dust/cms/user/hmildner/trees/'
 scriptpath='/nfs/dust/cms/user/hmildner/CMSSW_7_2_3/src/BoostedTTH/runscripts/scripts'
-cmsswcfgpath='/nfs/dust/cms/user/hmildner/CMSSW_7_2_3/src/BoostedTTH/BoostedAnalyzer/test/boostedAnalysis_hannes_cfg.py'
+cmsswcfgpath='/nfs/dust/cms/user/hmildner/CMSSW_7_2_3/src/BoostedTTH/BoostedAnalyzer/test/boostedAnalysis_nosel_cfg.py'
 cmsswpath='/nfs/dust/cms/user/hmildner/CMSSW_7_2_3/'
 
 print 'path',path

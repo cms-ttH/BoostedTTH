@@ -8,7 +8,7 @@ class GenTopEvent{
 public:
   GenTopEvent();
   ~GenTopEvent();
-  void Fill(const std::vector<reco::GenParticle>& prunedGenParticles);
+  void Fill(const std::vector<reco::GenParticle>& prunedGenParticles, int ttXid);
   reco::GenParticle GetHiggs() const;
   std::vector<reco::GenParticle> GetHiggsDecayProducts() const;
   bool IsFilled() const;
@@ -46,7 +46,6 @@ public:
 
   std::vector<reco::GenParticle> GetQuarks() const;
 
-
   math::XYZTLorentzVector GetHiggsVec() const;
   math::XYZTLorentzVector GetTopVec() const;
   math::XYZTLorentzVector GetTopBarVec() const;
@@ -80,6 +79,7 @@ public:
   std::vector<math::XYZTLorentzVector> GetAllWQuarkVecs() const;
   std::vector<math::XYZTLorentzVector> GetAllWAntiQuarkVecs() const;
 
+  int GetTTxId() const;
 
   bool IsAllHadron() const;
   bool IsDiLepton() const;
@@ -106,6 +106,7 @@ private:
   bool topIsHadronic;
   bool topbarIsHadronic;
   bool isFilled;
+  int ttXid;
 };
 
 #endif

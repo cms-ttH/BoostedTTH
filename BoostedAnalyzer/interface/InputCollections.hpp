@@ -3,20 +3,21 @@
 
 #include <vector>
 #include <map>
+#include <stdio.h>
+#include <boost/format.hpp>
 
-#include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "BoostedTTH/BoostedObjects/interface/SubFilterJet.h"
 #include "BoostedTTH/BoostedObjects/interface/HEPTopJet.h"
-#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
-enum SampleType{data,tth,tt,nonttbkg};
+enum SampleType{data,tth,ttl,ttbb,ttb,ttcc,ttc,nonttbkg};
 
 struct InputCollections{
 InputCollections(   const EventInfo&                              eventInfo_,
@@ -71,8 +72,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const SampleType                              sampleType;
   const std::map<std::string,float>&            weights;
 
-  void DumpFatJets();
-  void DumpSyncExe();
+  void DumpFatJets(std::ostream &out = std::cout);
+  void DumpSyncExe(std::ostream &out = std::cout);
 };
 
 #endif

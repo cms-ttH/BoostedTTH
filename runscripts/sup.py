@@ -15,7 +15,7 @@ if not os.path.exists('logs'):
     os.makedirs('logs')
 
 files = [os.path.join(root, name)
-                     for root, dirs, files in os.walk('.')
+                     for root, dirs, files in os.walk('./'+path)
                      for name in files
                      if pattern in name and name.endswith((".sh"))]
 for f in files:
