@@ -11,7 +11,8 @@ from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
 ak4GenJetsCustom = ak4GenJets.clone(
     src = genJetInputParticleCollection,
     rParam = cms.double(0.4),
-    jetAlgorithm = cms.string("AntiKt")
+    jetAlgorithm = cms.string("AntiKt"),
+    jetPtMin = 20.
 )
 
 # Ghost particle collection used for Hadron-Jet association 
