@@ -2,10 +2,8 @@
 using namespace std;
 
 JetTagSelection::JetTagSelection(std::vector<int> minjets,std::vector<int> mintags){
-  vector<int> vec;
-  vec.push_back(-1);
-  JetTagSelection(minjets,vec,mintags,vec);
-  
+  minJets=minjets;
+  minTags=mintags;
 }
 JetTagSelection::JetTagSelection(std::vector<int> minjets,std::vector<int> maxjets, std::vector<int> mintags, std::vector<int> maxtags){
   minJets=minjets;
@@ -27,30 +25,27 @@ JetTagSelection::~JetTagSelection (){}
 
 void JetTagSelection::InitCutflow(Cutflow& cutflow){
   
-  
   selSize = max(max(minJets.size(),maxJets.size()),max(minTags.size(),maxTags.size()));
-  
-  selName = "" ;
   for(size_t iSel=0;iSel<selSize;++iSel){
   
     if(iSel!=0) selName+=" or ";
     if(iSel<minJets.size() && minJets[iSel] >= 0){
-      selName += ">= ";
+      selName += " >=";
       selName += std::to_string(minJets[iSel]);
       selName += " jets ";
     }
     if(iSel<maxJets.size() && maxJets[iSel] >= 0){
-      selName += ",<= ";
+      selName += " <=";
       selName += std::to_string(maxJets[iSel]);
       selName += " jets ";
     }
     if(iSel<minTags.size() && minTags[iSel] >= 0){
-      selName += ", >= ";
+      selName += " >=";
       selName += std::to_string(minTags[iSel]);
       selName += " tags";
     }
     if(iSel<maxTags.size() && maxTags[iSel] >= 0){
-      selName += ", <= ";
+      selName += " <=";
       selName += std::to_string(maxTags[iSel]);
       selName += " tags";
     }
