@@ -286,10 +286,28 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   int nselection=0;
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
     if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
-    else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection());
-    else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection());
+    else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
+    else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
+    else if(*itSel == "LeptonSelection1") selections.push_back(new LeptonSelection(iConfig,1));
+    else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
+    else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
+    else if(*itSel == "LeptonSelection4") selections.push_back(new LeptonSelection(iConfig,4));
+    else if(*itSel == "4JetSelection"){
+      vector<int> njets;
+      njets.push_back(4);
+      vector<int> ntags;
+      ntags.push_back(-1);
+      selections.push_back(new JetTagSelection(njets,ntags));
+    }
+    else if(*itSel == "2TagSelection") {
+      vector<int> ntags;
+      ntags.push_back(2);
+      vector<int> njets;
+      njets.push_back(-1);
+      selections.push_back(new JetTagSelection(njets,ntags));
+    }
     else cout << "No matching selection found for: " << *itSel << endl;    
-    selections.back()->Init(iConfig,cutflow);
+    selections.back()->InitCutflow(cutflow);
     nselection++;       
     if(dumpSyncExe){
       dumpFiles.push_back(new ofstream((outfileName+"_Dump_"+std::to_string(nselection)+".txt").c_str()));

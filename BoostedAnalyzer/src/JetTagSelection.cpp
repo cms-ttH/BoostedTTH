@@ -1,18 +1,32 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 using namespace std;
 
-JetTagSelection::JetTagSelection(){}
+JetTagSelection::JetTagSelection(std::vector<int> minjets,std::vector<int> mintags){
+  vector<int> vec;
+  vec.push_back(-1);
+  JetTagSelection(minjets,vec,mintags,vec);
+  
+}
+JetTagSelection::JetTagSelection(std::vector<int> minjets,std::vector<int> maxjets, std::vector<int> mintags, std::vector<int> maxtags){
+  minJets=minjets;
+  maxJets=maxjets;
+  minTags=mintags;
+  maxTags=maxtags;
+}
+
+JetTagSelection::JetTagSelection(const edm::ParameterSet& iConfig){
+  minJets = iConfig.getParameter< std::vector<int> >("minJets");
+  maxJets = iConfig.getParameter< std::vector<int> >("maxJets");
+  minTags = iConfig.getParameter< std::vector<int> >("minTags");
+  maxTags = iConfig.getParameter< std::vector<int> >("maxTags");
+}
 
 
 JetTagSelection::~JetTagSelection (){}
 
 
-void JetTagSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
+void JetTagSelection::InitCutflow(Cutflow& cutflow){
   
-  minJets = iConfig.getParameter< std::vector<int> >("minJets");
-  maxJets = iConfig.getParameter< std::vector<int> >("maxJets");
-  minTags = iConfig.getParameter< std::vector<int> >("minTags");
-  maxTags = iConfig.getParameter< std::vector<int> >("maxTags");
   
   selSize = max(max(minJets.size(),maxJets.size()),max(minTags.size(),maxTags.size()));
   
