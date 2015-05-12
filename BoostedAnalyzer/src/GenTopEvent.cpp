@@ -2,13 +2,15 @@
 
 GenTopEvent::GenTopEvent (){
   isFilled=false;
+  ttXid=-1;
 }
 GenTopEvent::~GenTopEvent(){}
 
 bool GenTopEvent::IsFilled() const{
   return isFilled;
 }
-void GenTopEvent::Fill(const std::vector<reco::GenParticle>& prunedGenParticles){
+void GenTopEvent::Fill(const std::vector<reco::GenParticle>& prunedGenParticles,int ttXid_){
+  ttXid=ttXid_;
   for(auto p=prunedGenParticles.begin(); p!=prunedGenParticles.end(); p++){
     if (abs(p->pdgId())==6){
       bool lastTop=true;
@@ -535,3 +537,6 @@ std::vector<math::XYZTLorentzVector> GenTopEvent::GetLVs(const std::vector<reco:
   return vecs;
 }
 
+int GenTopEvent::GetTTxId() const{
+  return ttXid;
+}

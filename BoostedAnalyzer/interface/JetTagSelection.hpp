@@ -9,9 +9,11 @@ class JetTagSelection: public Selection{
   
   public:
   
-    JetTagSelection();
+    JetTagSelection(const edm::ParameterSet& iConfig);
+    JetTagSelection(std::vector<int> minjets,std::vector<int> mintags);
+    JetTagSelection(std::vector<int> minjets,std::vector<int> maxjets, std::vector<int> mintags, std::vector<int> maxtags);
     ~JetTagSelection();
-    void Init(const edm::ParameterSet& iConfig, Cutflow& cutflow);
+    void InitCutflow(Cutflow& cutflow);
     bool IsSelected(const InputCollections& input,Cutflow& cutflow);
 
 

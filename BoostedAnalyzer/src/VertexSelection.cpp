@@ -5,7 +5,7 @@ using namespace std;
 VertexSelection::VertexSelection (){}
 VertexSelection::~VertexSelection (){}
 
-void VertexSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
+void VertexSelection::InitCutflow(Cutflow& cutflow){
 
   cutflow.AddStep("First PV is good PV");
 

@@ -1,10 +1,14 @@
 #include "../interface/InputCollections.hpp"
-void InputCollections::DumpFatJets(){
+/*void InputCollections::DumpSampleType(){
+  
+  }*/
+
+void InputCollections::DumpFatJets(std::ostream &out){
 
   for( auto higgsJet = selectedSubFilterJets.begin() ; higgsJet != selectedSubFilterJets.end(); ++higgsJet ){
     // pt and eta requirements on top jet
     if( !(higgsJet->fatjet.pt() > 250. && abs(higgsJet->fatjet.eta()) < 1.8) ) continue;
-    std::cout << "fat jet pt: " << higgsJet->fatjet.pt()<<std::endl;
+    out << "fat jet pt: " << higgsJet->fatjet.pt()<<std::endl;
     std::vector<pat::Jet> filterjets = higgsJet->filterjets;
     for( uint ijet=0; ijet<filterjets.size(); ijet++ ){
       printf("\t\t filt jet %2d:\t pT = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
@@ -17,7 +21,7 @@ void InputCollections::DumpFatJets(){
   for(auto topjet = selectedHEPTopJets.begin() ; topjet != selectedHEPTopJets.end(); topjet++ ){
     // pt and eta requirements on top jet
     if( !(topjet->fatjet.pt() > 250. && abs(topjet->fatjet.eta()) < 1.8) ) continue;
-    std::cout << "fat top jet pt: " << topjet->fatjet.pt()<<std::endl;
+    out << "fat top jet pt: " << topjet->fatjet.pt()<<std::endl;
     pat::Jet W = topjet->W;
     pat::Jet W1 = topjet->W1;
     pat::Jet top = topjet->topjet;
@@ -37,7 +41,7 @@ void InputCollections::DumpFatJets(){
   }
 
 }
-void InputCollections::DumpSyncExe(){
+void InputCollections::DumpSyncExe(std::ostream &out){
   int run=eventInfo.run;
   int lumi=eventInfo.lumiBlock;  
   int event=eventInfo.evt;  
@@ -92,15 +96,47 @@ void InputCollections::DumpSyncExe(){
   }
   n_jets=int(selectedJets.size());
   for(auto jet=selectedJets.begin();jet!=selectedJets.end(); jet++){
-    if(jet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags")>0.815) n_btags++;
+    if(BoostedUtils::PassesCSV(*jet)) n_btags++;
+  }
+  
+  for(auto topjet = selectedHEPTopJets.begin() ; topjet != selectedHEPTopJets.end(); topjet++ ){
+    // pt and eta requirements on top jet
+    if( !(topjet->fatjet.pt() > 250. && abs(topjet->fatjet.eta()) < 1.8) ) continue;
+    std::vector<pat::Jet> subjets;
+    subjets.push_back(topjet->W1);
+    subjets.push_back(topjet->W2);
+    subjets.push_back(topjet->nonW);
+    bool subjetcuts=true;
+    for(auto j = subjets.begin(); j!=subjets.end();j++){
+      if(j->pt()<20 || fabs(j->eta())>2.5) {
+	subjetcuts=false;
+	break;
+      }
+    }
+    if(!subjetcuts) continue;
+    if(BoostedUtils::GetTopTag(*topjet)) n_toptags++;
+  }
+  for( auto higgsJet = selectedSubFilterJets.begin() ; higgsJet != selectedSubFilterJets.end(); ++higgsJet ){
+    // pt and eta requirements on higgs jet
+    if( !(higgsJet->fatjet.pt() > 250. && abs(higgsJet->fatjet.eta()) < 1.8) ) continue;
+    std::vector<pat::Jet> filterjets = higgsJet->filterjets;
+    int subjettags=0;
+    for(auto j=filterjets.begin(); j!=filterjets.end(); j++ ){
+      if(j->pt()<20 || fabs(j->eta())>2.5) continue;
+      if(BoostedUtils::PassesCSV(*j)){
+	subjettags++;
+      }	
+    }
+    if(subjettags>=2) n_higgstags++;
+    
   }
   
   
-  printf("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d   %2d  %2d\n",
-	 run, lumi, event,
-	 lep1_pt, lep1_eta, lep1_phi,
-	 jet1_pt, jet2_pt, jet3_pt, jet4_pt,
-	 jet1_CSVv2, jet2_CSVv2, jet3_CSVv2, jet4_CSVv2,
-	 n_jets, n_btags,
-	 n_toptags, n_higgstags);
+  out << boost::format("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d   %2d  %2d\n")%
+	 run% lumi% event%
+	 lep1_pt% lep1_eta% lep1_phi%
+	 jet1_pt% jet2_pt% jet3_pt% jet4_pt%
+	 jet1_CSVv2% jet2_CSVv2% jet3_CSVv2% jet4_CSVv2%
+	 n_jets% n_btags%
+	 n_toptags% n_higgstags;
 }
