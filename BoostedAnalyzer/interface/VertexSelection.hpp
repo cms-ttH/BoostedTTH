@@ -11,7 +11,7 @@ class VertexSelection: public Selection{
     
     VertexSelection();
     ~VertexSelection();
-    void Init(const edm::ParameterSet& iConfig, Cutflow& cutflow);
+    void InitCutflow(Cutflow& cutflow);
     bool IsSelected(const InputCollections& input,Cutflow& cutflow);
 
 

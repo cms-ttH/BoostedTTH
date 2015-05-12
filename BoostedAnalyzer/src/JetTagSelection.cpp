@@ -1,42 +1,51 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 using namespace std;
 
-JetTagSelection::JetTagSelection(){}
+JetTagSelection::JetTagSelection(std::vector<int> minjets,std::vector<int> mintags){
+  minJets=minjets;
+  minTags=mintags;
+}
+JetTagSelection::JetTagSelection(std::vector<int> minjets,std::vector<int> maxjets, std::vector<int> mintags, std::vector<int> maxtags){
+  minJets=minjets;
+  maxJets=maxjets;
+  minTags=mintags;
+  maxTags=maxtags;
+}
+
+JetTagSelection::JetTagSelection(const edm::ParameterSet& iConfig){
+  minJets = iConfig.getParameter< std::vector<int> >("minJets");
+  maxJets = iConfig.getParameter< std::vector<int> >("maxJets");
+  minTags = iConfig.getParameter< std::vector<int> >("minTags");
+  maxTags = iConfig.getParameter< std::vector<int> >("maxTags");
+}
 
 
 JetTagSelection::~JetTagSelection (){}
 
 
-void JetTagSelection::Init(const edm::ParameterSet& iConfig, Cutflow& cutflow){
-  
-  minJets = iConfig.getParameter< std::vector<int> >("minJets");
-  maxJets = iConfig.getParameter< std::vector<int> >("maxJets");
-  minTags = iConfig.getParameter< std::vector<int> >("minTags");
-  maxTags = iConfig.getParameter< std::vector<int> >("maxTags");
+void JetTagSelection::InitCutflow(Cutflow& cutflow){
   
   selSize = max(max(minJets.size(),maxJets.size()),max(minTags.size(),maxTags.size()));
-  
-  selName = "" ;
   for(size_t iSel=0;iSel<selSize;++iSel){
   
     if(iSel!=0) selName+=" or ";
     if(iSel<minJets.size() && minJets[iSel] >= 0){
-      selName += ">= ";
+      selName += " >=";
       selName += std::to_string(minJets[iSel]);
       selName += " jets ";
     }
     if(iSel<maxJets.size() && maxJets[iSel] >= 0){
-      selName += ",<= ";
+      selName += " <=";
       selName += std::to_string(maxJets[iSel]);
       selName += " jets ";
     }
     if(iSel<minTags.size() && minTags[iSel] >= 0){
-      selName += ", >= ";
+      selName += " >=";
       selName += std::to_string(minTags[iSel]);
       selName += " tags";
     }
     if(iSel<maxTags.size() && maxTags[iSel] >= 0){
-      selName += ", <= ";
+      selName += " <=";
       selName += std::to_string(maxTags[iSel]);
       selName += " tags";
     }

@@ -14,6 +14,10 @@ Cutflow::~Cutflow(){
 
 
 void Cutflow::AddStep(string name){
+  if(std::find(selectionStepNames.begin(), selectionStepNames.end(), name) != selectionStepNames.end()){
+    std::cerr<< "Selection step " << name << " does already exist" << std::endl;
+    return;
+  }
   eventsAfterSelectionSteps.push_back(0);
   yieldsAfterSelectionSteps.push_back(0);
   selectionStepNames.push_back(name);

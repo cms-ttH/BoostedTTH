@@ -96,7 +96,7 @@ void InputCollections::DumpSyncExe(std::ostream &out){
   }
   n_jets=int(selectedJets.size());
   for(auto jet=selectedJets.begin();jet!=selectedJets.end(); jet++){
-    if(jet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags")>0.815) n_btags++;
+    if(BoostedUtils::PassesCSV(*jet)) n_btags++;
   }
   
   for(auto topjet = selectedHEPTopJets.begin() ; topjet != selectedHEPTopJets.end(); topjet++ ){
@@ -108,7 +108,7 @@ void InputCollections::DumpSyncExe(std::ostream &out){
     subjets.push_back(topjet->nonW);
     bool subjetcuts=true;
     for(auto j = subjets.begin(); j!=subjets.end();j++){
-      if(j->pt()<20 || fabs(j->eta())<2.5) {
+      if(j->pt()<20 || fabs(j->eta())>2.5) {
 	subjetcuts=false;
 	break;
       }
@@ -122,7 +122,7 @@ void InputCollections::DumpSyncExe(std::ostream &out){
     std::vector<pat::Jet> filterjets = higgsJet->filterjets;
     int subjettags=0;
     for(auto j=filterjets.begin(); j!=filterjets.end(); j++ ){
-      if(j->pt()<20 || fabs(j->eta())<2.5) continue;
+      if(j->pt()<20 || fabs(j->eta())>2.5) continue;
       if(BoostedUtils::PassesCSV(*j)){
 	subjettags++;
       }	
