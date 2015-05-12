@@ -469,506 +469,67 @@ float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const in
 }
 
 
-<<<<<<< HEAD
-double BoostedUtils::GetBestHiggsMassOhio(math::XYZTLorentzVector lepton, math::XYZTLorentzVector met, std::vector<math::XYZTLorentzVector> jets, std::vector<double> btag, double &minChi, double &dRbb, math::XYZTLorentzVector &bjet1, math::XYZTLorentzVector &bjet2, std::vector<math::XYZTLorentzVector> loose_jets, std::vector<double> loose_btag){
-  if(jets.size()<6 && loose_jets.size()>0){
-    jets.push_back( loose_jets[0] );
-    btag.push_back( loose_btag[0] );
-  }
-  int nJets = int(jets.size());
-  double chi_top_lep=10000;
-  double chi_top_had=10000;
-  //double chi_W_lep=10000; //isn't really used
-  double chi_W_had=10000;
-  minChi = 1000000;
-  dRbb = 1000000;
-  double btagCut = 0.814;
-  double W_mass = 80.0;
-  double top_mass = 172.5;
-  //double H_mass=120.0;
-  // updated 8/22/2012 from J. Timcheck
-  //sigma's from >=6j >=4t, muon, no imaginary neutrino pz ttH
-  double sigma_hadW = 12.77;
-  double sigma_hadTop = 18.9;
-  double sigma_lepTop = 32.91;
-  // //sigma's from >=6j >=4t, muon, no imaginary neutrino pz ttH
-  // double sigma_hadW = 12.59;
-  // double sigma_hadTop = 19.9;
-  // double sigma_lepTop = 39.05;
-  //sigma's from >=6j >=4t, muon, no imaginary neutrino pz ttJets
-  //double sigma_hadW = 12.72,
-  //sigma_hadTop = 18.12,
-  //sigma_lepTop = 38.72;
-  
-  double metPz[2];
-  double chi=999999;
-  //stuff to find:
-  double higgs_mass_high_energy=0;
-  int nBtags = 0;
-  for(int i=0;i<nJets;i++){
-    if(btag[i]>btagCut) nBtags++;
-  }
-  int nUntags = nJets-nBtags;
-  double lowest_btag = 99.;
-  double second_lowest_btag = 999.;
-  int ind_lowest_btag = 999;
-  int ind_second_lowest_btag = 999;
-  if( nJets>=6 && nBtags>=4 ){
-    if( nUntags<2 ){
-      for(int i=0;i<nJets;i++){
-	      if( btag[i]<lowest_btag ){
-	        second_lowest_btag = lowest_btag;
-	        ind_second_lowest_btag = ind_lowest_btag;
-	        lowest_btag = btag[i];
-	        ind_lowest_btag = i;
-	      }
-	      else if( btag[i]<second_lowest_btag ){
-	        second_lowest_btag = btag[i];
-	        ind_second_lowest_btag = i;
-	      }
-      }
-    }
-  }
-  //Handle 6j3t.
-  int ind_promoted_btag = 999;
-  if( nJets>=6 && nBtags==3 ){
-    for(int i=0;i<nJets;i++){
-      int rank = 0;
-      for(int j=0;j<nJets;j++){
-	      if( btag[j] > btag[i] ){
-	        rank++;
-	      }
-      }
-      if( rank == 3 ) ind_promoted_btag = i;
-    }
-  }
-  // First get the neutrino z
-  double energyLep = lepton.E();
-  double a = (W_mass*W_mass/(2.0*energyLep)) + (lepton.Px()*met.Px() + lepton.Py()*met.Py())/energyLep;
-  double radical = (2.0*lepton.Pz()*a/energyLep)*(2.0*lepton.Pz()*a/energyLep);
-  radical = radical - 4.0*(1.0 - (lepton.Pz()/energyLep)*(lepton.Pz()/energyLep))*(met.Px()*met.Px() + met.Py()*met.Py()- a*a);
-  if (radical < 0.0) radical = 0.0;
-  metPz[0] = (lepton.Pz()*a/energyLep) + 0.5*sqrt(radical);
-  metPz[0] = metPz[0] / (1.0 - (lepton.Pz()/energyLep)*(lepton.Pz()/energyLep));
-  metPz[1] = (lepton.Pz()*a/energyLep) - 0.5*sqrt(radical);
-  metPz[1] = metPz[1] / (1.0 - (lepton.Pz()/energyLep)*(lepton.Pz()/energyLep));
-  // Loop over all jets, both Pz, calcaulte chi-square
-  math::XYZTLorentzVector metNew;
-  for( int ipznu=0; ipznu<2; ipznu++ ){
-    metNew.SetXYZT(met.Px(),met.Py(),metPz[ipznu],0.0); //neutrino has mass 0
-    
-    //with b-tag info
-    if( (nJets>=6 && nBtags>=4) || (nJets>=6 && nBtags==3) ){
-      std::vector<math::XYZTLorentzVector> not_b_tagged,b_tagged;
-      
-      //fill not_b_tagged and b_tagged
-      for( int i=0;i<nJets;i++ ){
-	      if((btag[i]>btagCut && i!=ind_second_lowest_btag && i!=ind_lowest_btag) || (i==ind_promoted_btag)) b_tagged.push_back(jets[i]);
-	      else not_b_tagged.push_back(jets[i]);
-      }
-      
-      //first make possible t_lep's with b-tagged jets (includes making W_lep)
-      for( int i=0; i<int(b_tagged.size()); i++ ){
-	      //math::XYZTLorentzVector W_lep = metNew+lepton; //used for histogram drawing only
-	      math::XYZTLorentzVector top_lep = metNew+lepton+b_tagged.at(i);
-	      chi_top_lep = pow((top_lep.M()-top_mass)/sigma_lepTop,2);
-        
-	      //next make possible W_had's with not b-tagged jets
-	      for( int j=0; j<int(not_b_tagged.size()); j++ ){
-	        for( int k=0; k<int(not_b_tagged.size()); k++ ){
-	          if( j!=k ){
-	            math::XYZTLorentzVector W_had=not_b_tagged.at(j)+not_b_tagged.at(k);
-	            chi_W_had=pow((W_had.M()-W_mass)/sigma_hadW,2);
-              
-	            //now make possible top_had's (using the W_had + some b-tagged jet)
-	            for( int l=0; l<int(b_tagged.size()); l++ ){
-		            if( l!=i ){
-		              math::XYZTLorentzVector top_had = W_had+b_tagged.at(l);
-		              chi_top_had = pow((top_had.M()-top_mass)/sigma_hadTop,2);
-		              chi = chi_top_lep+chi_W_had+chi_top_had;
-
-		              //accept the lowest chi
-		              if( chi<minChi ){
-		                minChi = chi;
-
-		                //pick the other two b's that have the highest et (energy in transverse plane) as higgs mass constituents
-		                math::XYZTLorentzVector H2;
-		                int numH2Constituents=0;
-		                math::XYZTLorentzVector bBest[2];
-		                for( int m=0; m<int(b_tagged.size()); m++ ){
-		                  if( m!=i && m!=l && numH2Constituents<2 ){
-			                  bBest[numH2Constituents] = b_tagged.at(m);
-			                  numH2Constituents++;
-			                  H2 += b_tagged.at(m);
-		                  }
-		                }
-		                dRbb = DeltaR(bBest[0],bBest[1]);
-		                higgs_mass_high_energy = H2.M();
-		                bjet1 = bBest[0];
-		                bjet2 = bBest[1];
-		              }
-		            }
-	            }
-	          }
-	        }
-	      }
-      }
-    }
-  }
-  return higgs_mass_high_energy;
-}
-
-
-float BoostedUtils::GetBestHiggsMassOhio2(math::XYZTLorentzVector lepton, math::XYZTLorentzVector &met, std::vector<math::XYZTLorentzVector> jets, std::vector<double> btag, double &minChi, double &dRbb, math::XYZTLorentzVector &bjet1, math::XYZTLorentzVector &bjet2, double &chi2lepW, double &chi2leptop, double &chi2hadW, double &chi2hadtop, double &mass_lepW, double &mass_leptop, double &mass_hadW, double &mass_hadtop, math::XYZTLorentzVector &toplep, math::XYZTLorentzVector &tophad){
-  int nJets = int(jets.size());
-  double pfmet_px=met.Px(), pfmet_py=met.Py();
-  double chi_top_lep=10000;
-  double chi_top_had=10000;
-  //double chi_W_lep=10000; //isn't really used
-  double chi_W_had=10000;
-  minChi = 1000000;
-  dRbb = 1000000;
-  double btagCut = 0.814;
-  double W_mass = 80.0;
-  double top_mass = 172.5;
-  //double H_mass=120.0;
-  // updated 8/22/2012 from J. Timcheck
-  //sigma's from >=6j >=4t, muon, no imaginary neutrino pz ttH
-  double sigma_hadW = 12.77;
-  double sigma_hadTop = 18.9;
-  //double sigma_lepTop = 32.91;
-  double sigma_lepTop = 18.9;
-  // //sigma's from >=6j >=4t, muon, no imaginary neutrino pz ttH
-  // double sigma_hadW = 12.59;
-  // double sigma_hadTop = 19.9;
-  // double sigma_lepTop = 39.05;
-  //sigma's from >=6j >=4t, muon, no imaginary neutrino pz ttJets
-  //double sigma_hadW = 12.72,
-  //sigma_hadTop = 18.12,
-  //sigma_lepTop = 38.72;
-  
-  /// more initializitions
-  bjet1.SetPxPyPzE(1.,1.,1.,2.);
-  bjet2.SetPxPyPzE(1.,1.,1.,2.);
-  // chi2lepW = 0.;
-  // chi2leptop = 0.;
-  // chi2hadtop = 0.;
-  mass_lepW = 0.;
-  mass_leptop = 0.;
-  mass_hadW = 0.;
-  mass_hadtop = 0.;
-  toplep.SetPxPyPzE(1.,1.,1.,2.);
-  tophad.SetPxPyPzE(1.,1.,1.,2.);
-  double metPz[2];
-  double chi=999999;
-  //stuff to find:
-  double higgs_mass_high_energy=0;
-  int nBtags = 0;
-  for(int i=0;i<nJets;i++){
-    if(btag[i]>btagCut) nBtags++;
-  }
-  int nUntags = nJets-nBtags;
-  double lowest_btag = 99.;
-  double second_lowest_btag = 999.;
-  int ind_lowest_btag = 999;
-  int ind_second_lowest_btag = 999;
-  std::vector<double> btag_sorted = btag;
-  if( nJets>=6 && nBtags>=4 ){
-    if( nUntags<2 ){
-      for(int i=0;i<nJets;i++){
-	      if( btag[i]<lowest_btag ){
-	        second_lowest_btag = lowest_btag;
-	        ind_second_lowest_btag = ind_lowest_btag;
-	        lowest_btag = btag[i];
-	        ind_lowest_btag = i;
-	      }
-	      else if( btag[i]<second_lowest_btag ){
-	        second_lowest_btag = btag[i];
-	        ind_second_lowest_btag = i;
-	      }
-      }
-    }
-      // if( nBtags==3 )
-//       {
-//       sort(btag_sorted.begin(),btag_sorted.end());
-//       double fourth_highest_csv = btag_sorted[nJets-4];
-//       for (int f=0; f<nJets; f++)
-//       {
-//       if (btag[f]==fourth_highest_csv) ind_fourth_highest = f;
-//       }
-//       }
-  }
-  //Handle 6j3t.
-  int ind_promoted_btag = 999;
-  if( nJets>=6 && nBtags==3 ){
-    for(int i=0;i<nJets;i++){
-      int rank = 0;
-      for(int j=0;j<nJets;j++){
-	      if( btag[j] > btag[i] ){
-	        rank++;
-	      }
-      }
-      if( rank == 3 ) ind_promoted_btag = i;
-    }
-  }
-  // First get the neutrino z
-  double energyLep = lepton.E();
-  double a = (W_mass*W_mass/(2.0*energyLep)) + (lepton.Px()*met.Px() + lepton.Py()*met.Py())/energyLep;
-  double radical = (2.0*lepton.Pz()*a/energyLep)*(2.0*lepton.Pz()*a/energyLep);
-  radical = radical - 4.0*(1.0 - (lepton.Pz()/energyLep)*(lepton.Pz()/energyLep))*(met.Px()*met.Px() + met.Py()*met.Py()- a*a);
-  bool imaginary = false;
-  if(radical < 0.0) imaginary = true;
-  if(imaginary){
-    radical = -1.0;
-    double value = .001;
-    while(true){
-	    met.SetPxPyPzE(pfmet_px,pfmet_py,0.0,sqrt(pow(pfmet_px,2)+pow(pfmet_py,2))); //neutrino mass 0, pt = sqrt(px^2+py^2)
-	    //	energyLep = lepton.E();
-	    a = (W_mass*W_mass/(2.0*energyLep)) + (lepton.Px()*met.Px() + lepton.Py()*met.Py())/energyLep;
-	    radical = (2.0*lepton.Pz()*a/energyLep)*(2.0*lepton.Pz()*a/energyLep);
-	    radical = radical - 4.0*(1.0 - (lepton.Pz()/energyLep)*(lepton.Pz()/energyLep))*(met.Px()*met.Px() + met.Py()*met.Py()- a*a);
-	    if(radical>=0) break;
-	    pfmet_px -= pfmet_px*value;
-	    pfmet_py -= pfmet_py*value;
-	  }
-  }
-  metPz[0] = (lepton.Pz()*a/energyLep) + 0.5*sqrt(radical);
-  metPz[0] = metPz[0] / (1.0 - (lepton.Pz()/energyLep)*(lepton.Pz()/energyLep));
-  metPz[1] = (lepton.Pz()*a/energyLep) - 0.5*sqrt(radical);
-  metPz[1] = metPz[1] / (1.0 - (lepton.Pz()/energyLep)*(lepton.Pz()/energyLep));
-  
-  // Loop over all jets, both Pz, calcaulte chi-square
-  math::XYZTLorentzVector metNew;
-  for( int ipznu=0; ipznu<2; ipznu++ ){
-    metNew.SetPxPyPzE(met.Px(),met.Py(),metPz[ipznu],0.0); //neutrino has mass 0
-    metNew.SetE(metNew.P());
-    
-    //with b-tag info
-    if(( nJets>=6 && nBtags>=4 )||( nJets>=6 && nBtags==3 )){
-      std::vector<math::XYZTLorentzVector> not_b_tagged,b_tagged;
-      
-      //fill not_b_tagged and b_tagged
-      for( int i=0;i<nJets;i++ ){
-	      //if (nBtags>=4)
-	      //{
-	      if( (btag[i]>btagCut && i!=ind_second_lowest_btag && i!=ind_lowest_btag) || (i==ind_promoted_btag) ) b_tagged.push_back(jets[i]);
-	      else not_b_tagged.push_back(jets[i]);
-	      //}
-
-        // 	  if (nBtags==3)
-        // 	  {
-        // 	  if( btag[i]>btagCut || i==ind_fourth_highest) b_tagged.push_back(jets[i]);
-        // 	  else not_b_tagged.push_back(jets[i]);
-	      //}
-      }
-      
-      //first make possible t_lep's with b-tagged jets (includes making W_lep)
-      for( int i=0; i<int(b_tagged.size()); i++ ){
-	      math::XYZTLorentzVector top_lep = metNew+lepton+b_tagged.at(i);
-	      chi_top_lep = pow((top_lep.M()-top_mass)/sigma_lepTop,2);
-	      
-        //next make possible W_had's with not b-tagged jets
-	      for( int j=0; j<int(not_b_tagged.size()); j++ ){
-	        for( int k=0; k<int(not_b_tagged.size()); k++ ){
-	          if( j!=k ){
-	            math::XYZTLorentzVector W_had = not_b_tagged.at(j)+not_b_tagged.at(k);
-	            chi_W_had = pow((W_had.M()-W_mass)/sigma_hadW,2);
-	            
-              //now make possible top_had's (using the W_had + some b-tagged jet)
-	            for( int l=0; l<int(b_tagged.size()); l++ ){
-		            if( l!=i ){
-		              math::XYZTLorentzVector top_had=W_had+b_tagged.at(l);
-		              chi_top_had = pow((top_had.M()-top_mass)/sigma_hadTop,2);
-		              chi = chi_top_lep+chi_W_had+chi_top_had;
-		              
-                  //accept the lowest chi
-		              if( chi<minChi ){
-		                minChi = chi;
-		                //pick the other two b's that have the highest et (energy in transverse plane) as higgs mass constituents
-		                math::XYZTLorentzVector H2;
-		                int numH2Constituents=0;
-		                math::XYZTLorentzVector bBest[2];
-		                for( int m=0; m<int(b_tagged.size()); m++ ){
-		                  if( m!=i && m!=l && numH2Constituents<2 ){
-			                  bBest[numH2Constituents] = b_tagged.at(m);
-			                  numH2Constituents++;
-			                  H2 += b_tagged.at(m);
-		                  }
-		                }
-		                dRbb = ROOT::Math::VectorUtil::DeltaR(bBest[0],bBest[1]);
-		                higgs_mass_high_energy = H2.M();
-		                bjet1 = bBest[0];
-		                bjet2 = bBest[1];
-		                mass_lepW = W_mass;
-		                mass_leptop = top_lep.M();
-		                mass_hadW = W_had.M();
-		                mass_hadtop = top_had.M();
-		                toplep = top_lep;
-		                tophad = top_had;
-		              }
-		            }
-	            }
-	          }
-	        }
-	      }
-      }
-    }
-  }
-  chi2lepW = 0.;
-  chi2leptop = chi_top_lep;
-  chi2hadtop = chi_top_had;
-  chi2hadW = chi_W_had;
-  return higgs_mass_high_energy;
-  
-}
-
-
-double BoostedUtils::StudyTopsBBSystOhio(math::XYZTLorentzVector &metv, std::vector<double> lep, std::vector< std::vector<double> > jets, std::vector<double> csv, double &minChi, double &chi2lepW, double &chi2leptop, double &chi2hadW, double &chi2hadtop, double &mass_lepW, double &mass_leptop, double &mass_hadW, double &mass_hadtop, double &dRbb, double &testquant1, double &testquant2, double &testquant3, double &testquant4, double &testquant5, double &testquant6, double &testquant7, math::XYZTLorentzVector &b1, math::XYZTLorentzVector &b2){
-  double pi = TMath::Pi();
-  math::XYZTLorentzVector lepton(lep[0],lep[1],lep[2],lep[3]);
-  std::vector<math::XYZTLorentzVector> jet_TLVs;
-  math::XYZTLorentzVector jet;
-  int nJets = jets.size();
-  for(int i=0;i<nJets;i++){
-    jet.SetPxPyPzE(jets[i][0],jets[i][1],jets[i][2],jets[i][3]);
-    jet_TLVs.push_back(jet);
-  } 
-  //double minChi;
-  //double dRbb;
-  math::XYZTLorentzVector bjet1;
-  math::XYZTLorentzVector bjet2;
-  math::XYZTLorentzVector leptop;
-  math::XYZTLorentzVector hadtop;
-  double bhm = GetBestHiggsMassOhio2(lepton, metv, jet_TLVs, csv, minChi, dRbb, bjet1, bjet2, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, leptop, hadtop); // Jon T. version 2
-  b1 = bjet1;
-  b2 = bjet2;
-  math::XYZTLorentzVector bsyst = bjet1+bjet2;
-  math::XYZTLorentzVector topsyst = leptop+hadtop;
-  //testquant1 = bsyst.Angle(leptop.Vect());
-  //testquant2 = bsyst.Angle(hadtop.Vect());
-  //testquant1 = bsyst.DeltaPhi(leptop);
-  //testquant2 = bsyst.DeltaPhi(hadtop);
-  //testquant1 = bsyst.Eta() - leptop.Eta();
-  //testquant2 = bsyst.Eta() - hadtop.Eta();
-  //testquant1 = bsyst.Eta() - hadtop.Eta();
-  //testquant2 = bsyst.DeltaPhi(hadtop);
-  //testquant2 = bsyst.Eta();
-  //testquant1 = topsyst.Phi();
-  //testquant2 = bsyst.Phi();
-  //testquant2 = bsyst.Angle(hadtop.Vect());
-  //dphi, deta stuff
-  testquant1 = bsyst.Eta() - leptop.Eta();
-  testquant2 = bsyst.Eta() - hadtop.Eta();
-  double dphihad = ROOT::Math::VectorUtil::DeltaPhi(bsyst,hadtop);
-  double dphilep = ROOT::Math::VectorUtil::DeltaPhi(bsyst,leptop);
-  testquant3 = fabs((dphilep - pi)*(dphilep + pi)) + pow(dphihad,2);
-  testquant3 = sqrt(testquant3 / (2.0*pow(pi,2)));
-  testquant4 = bsyst.Eta();
-  testquant5 = (hadtop.Eta() + leptop.Eta())/2;
-  testquant6 = sqrt(abs((bsyst.Eta() - leptop.Eta())*(bsyst.Eta() - hadtop.Eta())));
-  testquant7 = ROOT::Math::VectorUtil::Angle(bsyst,topsyst.Vect());
-  return bhm;
-}
-
-
-void BoostedUtils::TTHRecoVarsOhio(const std::vector<pat::Jet>& selectedJets,const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET, const math::XYZTLorentzVector& lepton, float& higgsMass_, float& dRbb_,float& dEtaHadTopbb_,float& dEtaLeptopbb_, float& dEtaFN_)
-{
-  math::XYZTLorentzVector met = pfMET.p4();
-  std::vector< std::vector<double> > fjets;
-  std::vector<math::XYZTLorentzVector> jets = BoostedUtils::GetJetVecs(selectedJets);
-  std::vector<double> btag;
-  for(std::vector<pat::Jet>::const_iterator itJet = selectedJets.begin(); itJet != selectedJets.end(); ++itJet){
-    std::vector<double> ajet;
-    ajet.push_back(itJet->px());
-    ajet.push_back(itJet->py());
-    ajet.push_back(itJet->pz());
-    ajet.push_back(itJet->energy());
-    fjets.push_back(ajet);
-    btag.push_back(itJet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
-  }
-  std::vector<math::XYZTLorentzVector> jetsLoose = GetJetVecs(selectedJetsLoose);
-  std::vector<double> btagLoose;
-  for(std::vector<pat::Jet>::const_iterator itJetLoose = selectedJetsLoose.begin(); itJetLoose != selectedJetsLoose.end(); ++itJetLoose){
-    btagLoose.push_back(itJetLoose->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
-  }  
-  std::vector<double> lep;
-  lep.push_back(lepton.Px());
-  lep.push_back(lepton.Py());
-  lep.push_back(lepton.Pz());
-  lep.push_back(lepton.E()); 
-
-  double minChi;
-  double dRbb;
-  math::XYZTLorentzVector bjet1;
-  math::XYZTLorentzVector bjet2;
-
-  double higgsmass1 = GetBestHiggsMassOhio(lepton, met, jets, btag, minChi, dRbb, bjet1, bjet2, jetsLoose, btagLoose);
-
-  double minChi2; 
-  double chi2lepW;
-  double chi2leptop;
-  double chi2hadW;
-  double chi2hadtop;
-  double mass_lepW;
-  double mass_leptop;
-  double mass_hadW;
-  double mass_hadtop;
-  double dRbb2;
-  double testquant1; 
-  double testquant2; 
-  double testquant3; 
-  double testquant4; 
-  double testquant5; 
-  double testquant6;
-  double testquant7;
-  math::XYZTLorentzVector b1; 
-  math::XYZTLorentzVector b2;
-  
-  //double higgsmass2 = BoostedUtils::StudyTopsBBSystOhio(MET, METphi, met, lep, fjets, btag, minChi2, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbb2, testquant1, testquant2, testquant3,testquant4, testquant5, testquant6, testquant7, b1, b2);
-  BoostedUtils::StudyTopsBBSystOhio(met, lep, fjets, btag, minChi2, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbb2, testquant1, testquant2, testquant3,testquant4, testquant5, testquant6, testquant7, b1, b2);
-
-  higgsMass_ = higgsmass1;
-  dRbb_ = dRbb2;
-  dEtaHadTopbb_ = abs(testquant2);
-  dEtaLeptopbb_ = abs(testquant1);
-  dEtaFN_ = testquant6;
-  
-}
-
-
-std::vector<pat::Jet> BoostedUtils::GetCSVJets(const boosted::HEPTopJetCollection& heptopjets, const boosted::SubFilterJetCollection& subfilterjets, const std::vector<pat::Jet>& selectedJets, const float& ptcut, const float& etacut){
-  std::vector<pat::Jet> subJets;
-
-  for(size_t j=0; j< subfilterjets.size(); j++){
-    for(size_t k=0; k< subfilterjets[j].filterjets.size(); k++){
-      if(subfilterjets[j].filterjets[k].pt()>=ptcut && std::fabs(subfilterjets[j].filterjets[k].eta())<etacut) subJets.push_back(subfilterjets[j].filterjets[k]);
+BNjetCollection BEANUtils::GetCSVJets(const BNtoptagjetCollection& toptagJets, const BNsubfilterjetCollection& subfilterJets, const BNjetCollection& selectedJets, BNjetCollection& matchedak5jets, BNjetCollection& matchedsubjets, int cutflow[], const float& ptcut, const float& etacut){
+  BNjetCollection subJets;
+  for(size_t j=0; j< subfilterJets.size(); j++){
+    for(size_t k=0; k< subfilterJets[j].filterjets.size(); k++){
+      if(subfilterJets[j].filterjets[k].pt>=ptcut && subfilterJets[j].filterjets[k].eta<etacut) subJets.push_back(subfilterJets[j].filterjets[k]);
     }
   }
 
-  for(size_t j=0; j< heptopjets.size(); j++){
-    if(heptopjets[j].nonW.pt()>=ptcut && std::fabs(heptopjets[j].nonW.eta())<etacut) subJets.push_back(heptopjets[j].nonW);
-    if(heptopjets[j].W1.pt()>=ptcut && std::fabs(heptopjets[j].W1.eta())<etacut) subJets.push_back(heptopjets[j].W1);
-    if(heptopjets[j].W2.pt()>=ptcut && std::fabs(heptopjets[j].W2.eta())<etacut) subJets.push_back(heptopjets[j].W2);
+  for(size_t j=0; j< toptagJets.size(); j++){
+    if(toptagJets[j].nonW.pt>=ptcut && toptagJets[j].nonW.eta<etacut) subJets.push_back(toptagJets[j].nonW);
+    if(toptagJets[j].W1.pt>=ptcut && toptagJets[j].W1.eta<etacut) subJets.push_back(toptagJets[j].W1);
+    if(toptagJets[j].W2.pt>=ptcut && toptagJets[j].W2.eta<etacut) subJets.push_back(toptagJets[j].W2);
   }
 
-  float DeltaR;
-  float drmin;
-  std::vector<pat::Jet>::iterator itMJet;
+  BNjetCollection unmatchedJets;
 
-  for(std::vector<pat::Jet>::const_iterator itJet = selectedJets.begin(); itJet != selectedJets.end(); ++itJet){
-    drmin = 0.3;
-    itMJet = subJets.end();
-    for(std::vector<pat::Jet>::iterator itSJet = subJets.begin(); itSJet != subJets.end(); ++itSJet){
-      DeltaR = BoostedUtils::DeltaR(itJet->p4(), itSJet->p4());
+  if(subJets.size() == 0) return unmatchedJets;
+
+  BNjetCollection subJets_sorted = BEANUtils::GetSortedByPt(subJets);
+  std::reverse(subJets_sorted.begin(), subJets_sorted.end());
+
+  cutflow[0] = subJets_sorted.size();
+
+  for(size_t i=0; i< subJets_sorted.size(); i++){
+    bool isalone = true;
+    for(size_t j=i+1; j< subJets_sorted.size(); j++) if(BEANUtils::DeltaR(subJets_sorted[i], subJets_sorted[j])<0.4) isalone = false;
+    if(isalone == true) unmatchedJets.push_back(subJets_sorted[i]);
+  }
+
+  return unmatchedJets;
+
+  cutflow[1] = unmatchedJets.size();
+
+  for(size_t i=0; i< selectedJets.size(); i++){
+    float drmin = 0.4;
+    int indx = -1;
+    for(size_t j=0; j< unmatchedJets.size(); j++){
+      float DeltaR = BEANUtils::DeltaR(selectedJets[i], unmatchedJets[j]);
       if(DeltaR<drmin){
         drmin = DeltaR;
-        itMJet = itSJet;
+        indx = j;
       }
     }
-    if(itMJet != subJets.end()) subJets.erase(itMJet);
+    if(indx>0){
+      matchedak5jets.push_back(selectedJets[i]);
+      matchedsubjets.push_back(unmatchedJets[indx]);
+      unmatchedJets.erase(unmatchedJets.begin()+indx);
+    }
   }
 
-  return subJets;
+  cutflow[2] = unmatchedJets.size();
+
+  for(size_t i=0; i< selectedJets.size(); i++){
+    for(size_t j=0; j< unmatchedJets.size();){
+      if(BEANUtils::DeltaR(selectedJets[i], unmatchedJets[j])<0.4) unmatchedJets.erase(unmatchedJets.begin()+j);
+      else j++;
+    }
+  }
+
+
+  return unmatchedJets;
 }
 
 
@@ -1263,5 +824,4 @@ vector<string> BEANUtils:: ParseFileNames(string fnames){
     return filenames;
 }
 */
-=======
->>>>>>> 98f6d978ea3f5dc60afab538e0815910dbb02ba6
+

@@ -443,10 +443,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   else{
       bool foundT=false;
       bool foundTbar=false;
-      bool foundHiggs=true;
+      bool foundHiggs=false;
       for(size_t i=0; i<genParticles.size();i++){
 	if(genParticles[i].pdgId()==6) foundT=true;
-	if(genParticles[i].pdgId()==-6) foundTbar=true;	
+	if(genParticles[i].pdgId()==-6) foundTbar=true;
 	if(genParticles[i].pdgId()==25) foundHiggs=true;
       }   
       if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
