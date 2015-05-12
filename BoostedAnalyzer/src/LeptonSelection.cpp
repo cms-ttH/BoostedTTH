@@ -38,55 +38,55 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
   if(channel=="both"){
     if(step<0||step==1){
       if(!muonTriggered && !electronTriggered) return false;
-      else cutflow.EventSurvivedStep("Single lepton trigger");
+      else cutflow.EventSurvivedStep("Single lepton trigger",input);
     }
     if(step<0||step==2){
       if(!( (muonTriggered&&nmuonsloose==1) || (electronTriggered&&nelectronsloose==1) ) ) return false;
-      else cutflow.EventSurvivedStep("== 1 loose lepton");
+      else cutflow.EventSurvivedStep("== 1 loose lepton",input);
     }
     if(step<0||step==3){
       if(!( (muonTriggered&&nmuonsloose==1&&nmuons==1) || (electronTriggered&&nelectronsloose==1&&nelectrons==1) ) ) return false;
-      else cutflow.EventSurvivedStep("== 1 tight lepton same flavor");
+      else cutflow.EventSurvivedStep("== 1 tight lepton same flavor",input);
     }
     if(step<0||step==4){
       if(!( (muonTriggered&&nmuonsloose==1&&nmuons==1&&nelectronsloose==0) || (electronTriggered&&nelectronsloose==1&&nelectrons==1&&nmuonsloose==0) ) ) return false;
-      else cutflow.EventSurvivedStep("== 0 loose leptons different flavor");
+      else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input);
     }
   }
   else if(channel=="el"){
     if(step<0||step==1){
       if(!electronTriggered) return false;
-      else cutflow.EventSurvivedStep("Single lepton trigger");
+      else cutflow.EventSurvivedStep("Single lepton trigger",input);
     }
     if(step<0||step==2){
       if(! (electronTriggered&&nelectronsloose==1 ) ) return false;
-      else cutflow.EventSurvivedStep("== 1 loose lepton");
+      else cutflow.EventSurvivedStep("== 1 loose lepton",input);
     }
     if(step<0||step==3){
       if(!( electronTriggered&&nelectronsloose==1&&nelectrons==1 ) ) return false;
-      else cutflow.EventSurvivedStep("== 1 tight lepton same flavor");
+      else cutflow.EventSurvivedStep("== 1 tight lepton same flavor",input);
     }
     if(step<0||step==4){
       if(!( electronTriggered&&nelectronsloose==1&&nelectrons==1&&nmuonsloose==0 ) ) return false;
-      else cutflow.EventSurvivedStep("== 0 loose leptons different flavor");
+      else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input);
     }
   }
   else if(channel=="mu"){
     if(step<0||step==1){
       if(!muonTriggered) return false;
-      else cutflow.EventSurvivedStep("Single lepton trigger");
+      else cutflow.EventSurvivedStep("Single lepton trigger",input);
     }
     if(step<0||step==2){
       if(!( muonTriggered&&nmuonsloose==1 ) ) return false;
-      else cutflow.EventSurvivedStep("== 1 loose lepton");
+      else cutflow.EventSurvivedStep("== 1 loose lepton",input);
     }
     if(step<0||step==3){
       if(!( muonTriggered&&nmuonsloose==1&&nmuons==1 ) ) return false;
-      else cutflow.EventSurvivedStep("== 1 tight lepton same flavor");
+      else cutflow.EventSurvivedStep("== 1 tight lepton same flavor",input);
     }
     if(step<0||step==4){
       if(!( muonTriggered&&nmuonsloose==1&&nmuons==1&&nelectronsloose==0 ) ) return false;
-      else cutflow.EventSurvivedStep("== 0 loose leptons different flavor");
+      else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input);
     }
   }
   else {

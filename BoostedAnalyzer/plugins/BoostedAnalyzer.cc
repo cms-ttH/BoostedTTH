@@ -418,10 +418,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< std::vector<pat::Jet> > h_pfjets;
   iEvent.getByToken( EDMJetsToken,h_pfjets );
   std::vector<pat::Jet> const &pfjets = *h_pfjets;
+
   // initialize jetcorrector
   const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
   helper.SetJetCorrector(corrector);
-  
+ 
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(pfjets);
   // Clean muons from jets
@@ -584,7 +585,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         
   
   // DO SELECTION
-  cutflow.EventSurvivedStep("all");
+  cutflow.EventSurvivedStep("all",input);
   bool selected=true;
   for(size_t i=0; i<selections.size() && selected; i++){
     if(!selections.at(i)->IsSelected(input,cutflow))
@@ -616,7 +617,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   float weight = 1.;
   assert(genEventInfo.weights().size()<=1); // before we multiply any weights we should understand what they mean
   for(size_t i=0;i<genEventInfo.weights().size();i++){
-    weight *= (genEventInfo.weights()[i]>0); // overwrite intransparent MC weights, use \pm 1 instead
+     weight *= (genEventInfo.weights()[i]>0 ? 1.: -1.); // overwrite intransparent MC weights, use \pm 1 instead
   }
   
   float xsweight = xs*luminosity/totalMCevents;
