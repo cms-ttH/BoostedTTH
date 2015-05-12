@@ -31,33 +31,33 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
   bool electronTriggered = input.triggerInfo.IsAnyTriggered(electronTriggers);
   if(channel=="both"){
     if(!muonTriggered && !electronTriggered) return false;
-    else cutflow.EventSurvivedStep("Single lepton trigger");
+    else cutflow.EventSurvivedStep("Single lepton trigger",input);
     if(!( (muonTriggered&&nmuonsloose==1) || (electronTriggered&&nelectronsloose==1) ) ) return false;
-    else cutflow.EventSurvivedStep("== 1 loose lepton");
+    else cutflow.EventSurvivedStep("== 1 loose lepton",input);
     if(!( (muonTriggered&&nmuonsloose==1&&nmuons==1) || (electronTriggered&&nelectronsloose==1&&nelectrons==1) ) ) return false;
-    else cutflow.EventSurvivedStep("== 1 tight lepton same flavor");
+    else cutflow.EventSurvivedStep("== 1 tight lepton same flavor",input);
     if(!( (muonTriggered&&nmuonsloose==1&&nmuons==1&&nelectronsloose==0) || (electronTriggered&&nelectronsloose==1&&nelectrons==1&&nmuonsloose==0) ) ) return false;
-    else cutflow.EventSurvivedStep("== 0 loose leptons different flavor");
+    else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input);
   }
   else if(channel=="el"){
     if(!electronTriggered) return false;
-    else cutflow.EventSurvivedStep("Single lepton trigger");
+    else cutflow.EventSurvivedStep("Single lepton trigger",input);
     if(! (electronTriggered&&nelectronsloose==1 ) ) return false;
-    else cutflow.EventSurvivedStep("== 1 loose lepton");
+    else cutflow.EventSurvivedStep("== 1 loose lepton",input);
     if(!( electronTriggered&&nelectronsloose==1&&nelectrons==1 ) ) return false;
-    else cutflow.EventSurvivedStep("== 1 tight lepton same flavor");
+    else cutflow.EventSurvivedStep("== 1 tight lepton same flavor",input);
     if(!( electronTriggered&&nelectronsloose==1&&nelectrons==1&&nmuonsloose==0 ) ) return false;
-    else cutflow.EventSurvivedStep("== 0 loose leptons different flavor");
+    else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input);
   }
   else if(channel=="mu"){
     if(!muonTriggered) return false;
-    else cutflow.EventSurvivedStep("Single lepton trigger");
+    else cutflow.EventSurvivedStep("Single lepton trigger",input);
     if(!( muonTriggered&&nmuonsloose==1 ) ) return false;
-    else cutflow.EventSurvivedStep("== 1 loose lepton");
+    else cutflow.EventSurvivedStep("== 1 loose lepton",input);
     if(!( muonTriggered&&nmuonsloose==1&&nmuons==1 ) ) return false;
-    else cutflow.EventSurvivedStep("== 1 tight lepton same flavor");
+    else cutflow.EventSurvivedStep("== 1 tight lepton same flavor",input);
     if(!( muonTriggered&&nmuonsloose==1&&nmuons==1&&nelectronsloose==0 ) ) return false;
-    else cutflow.EventSurvivedStep("== 0 loose leptons different flavor");
+    else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input);
   }
   else {
     std::cerr << "channel of lepton selection does not exist! " << std::endl;

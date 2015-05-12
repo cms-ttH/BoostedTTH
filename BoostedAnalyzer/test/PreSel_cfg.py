@@ -1,3 +1,5 @@
+#Karims config file
+
 import FWCore.ParameterSet.Config as cms
 import os
 
@@ -27,7 +29,7 @@ process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(999999999) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(999999999999) )
 
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
 #from JetMETCorrections.Configuration.JetCorrectionCondDB_cff import *
@@ -60,15 +62,16 @@ process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.useFatJets=True
 process.BoostedAnalyzer.disableObjectSelections=False
 process.BoostedAnalyzer.outfileName = OUTFILE
-process.BoostedAnalyzer.selectionNames = ["LeptonSelection"]
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
+process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BDTVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
 process.BoostedAnalyzer.era = ERA
 process.BoostedAnalyzer.analysisType = cms.string("LJ")
-process.BoostedAnalyzer.luminostiy = cms.double(10000.0)
+process.BoostedAnalyzer.luminosity = cms.double(10000.0)
 process.BoostedAnalyzer.sampleID = cms.int32(int(INSAMPLE))
 process.BoostedAnalyzer.xs = cms.double(float(XS))
 process.BoostedAnalyzer.nMCEvents = cms.int32(int(MCEvents))
 process.BoostedAnalyzer.isData = cms.bool(False)
+process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 
 
 process.p = cms.Path(process.BoostedAnalyzer)

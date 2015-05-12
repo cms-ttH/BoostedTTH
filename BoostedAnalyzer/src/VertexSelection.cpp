@@ -19,7 +19,7 @@ bool VertexSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
     return false;
   }
   else{
-    cutflow.EventSurvivedStep("First PV is good PV");
+    cutflow.EventSurvivedStep("First PV is good PV",input);
     return true;    
   }
 
