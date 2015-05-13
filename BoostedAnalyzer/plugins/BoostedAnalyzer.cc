@@ -404,15 +404,15 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< std::vector<pat::Muon> > h_muons;
   iEvent.getByToken( EDMMuonsToken,h_muons );
   std::vector<pat::Muon> const &muons = *h_muons; 
-  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., 2.1,  muonID::muonTight );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., 2.4, muonID::muonLoose );  // for the sake of sync: loose == tight
+  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30.,  muonID::muonTight,coneSize::R04,  corrType::deltaBeta, 2.1 );
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose,coneSize::R04,  corrType::deltaBeta, 2.4 );  // for the sake of sync: loose == tight
 
   // ELECTRONS
   edm::Handle< std::vector<pat::Electron> > h_electrons;
   iEvent.getByToken( EDMElectronsToken,h_electrons );
   std::vector<pat::Electron> const &electrons = *h_electrons;
-  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., 2.1, electronID::electronPhys14M );
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., 2.4, electronID::electronPhys14M );   // for the sake of sync: loose == tight
+  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronPhys14M, 2.1 );
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., electronID::electronPhys14M, 2.4 );   // for the sake of sync: loose == tight
 
   /**** GET JETS ****/
   edm::Handle< std::vector<pat::Jet> > h_pfjets;
