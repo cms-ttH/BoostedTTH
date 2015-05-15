@@ -56,8 +56,10 @@ void InputCollections::DumpSyncExe(std::ostream &out){
   float jet2_CSVv2=-99;
   float jet3_CSVv2=-99;
   float jet4_CSVv2=-99;
+  float MET=-99;
   int n_jets=0;
   int n_btags=0;
+  int ttHFCategory=0;
   int n_toptags=0;
   int n_higgstags=0;
 
@@ -130,13 +132,20 @@ void InputCollections::DumpSyncExe(std::ostream &out){
     if(subjettags>=2) n_higgstags++;
     
   }
+
   
+  MET=pfMET.pt();
+
+  ttHFCategory=genTopEvt.GetTTxId();
   
-  out << boost::format("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d   %2d  %2d\n")%
+  out << boost::format("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d  %2d  %2d  %2d\n")%
 	 run% lumi% event%
 	 lep1_pt% lep1_eta% lep1_phi%
 	 jet1_pt% jet2_pt% jet3_pt% jet4_pt%
 	 jet1_CSVv2% jet2_CSVv2% jet3_CSVv2% jet4_CSVv2%
+	 MET%
 	 n_jets% n_btags%
+	 ttHFCategory%
 	 n_toptags% n_higgstags;
+
 }
