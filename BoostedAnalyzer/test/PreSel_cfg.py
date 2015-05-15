@@ -29,7 +29,7 @@ process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(999999999999) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(999999999) )
 
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
 #from JetMETCorrections.Configuration.JetCorrectionCondDB_cff import *
