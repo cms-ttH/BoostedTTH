@@ -41,6 +41,26 @@ void InputCollections::DumpFatJets(std::ostream &out){
   }
 
 }
+void InputCollections::DumpLeptons(std::ostream &out){
+  out << "loose electrons" << std::endl;
+  for(auto el=selectedElectronsLoose.begin(); el!=selectedElectronsLoose.end(); el++){
+    out << " pT "  << el->pt() << " eta " << el->eta() << " phi "  << el->phi() << std::endl;
+  }
+  out << "tight electrons" << std::endl;
+  for(auto el=selectedElectrons.begin(); el!=selectedElectrons.end(); el++){
+    out << " pT "  << el->pt() << " eta " << el->eta() << " phi "  << el->phi() << std::endl;
+  }
+  out << "loose muons" << std::endl;
+  for(auto el=selectedMuonsLoose.begin(); el!=selectedMuonsLoose.end(); el++){
+    out << " pT "  << el->pt() << " eta " << el->eta() << " phi "  << el->phi() << std::endl;
+  }
+  out << "tight muons" << std::endl;
+  for(auto el=selectedMuons.begin(); el!=selectedMuons.end(); el++){
+    out << " pT "  << el->pt() << " eta " << el->eta() << " phi "  << el->phi() << std::endl;
+  }
+
+}
+
 void InputCollections::DumpSyncExe(std::ostream &out){
   int run=eventInfo.run;
   int lumi=eventInfo.lumiBlock;  

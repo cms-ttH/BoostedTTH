@@ -73,6 +73,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const std::map<std::string,float>&            weights;
 
   void DumpFatJets(std::ostream &out = std::cout);
+  void DumpLeptons(std::ostream &out = std::cout);
   void DumpSyncExe(std::ostream &out = std::cout);
 };
 
