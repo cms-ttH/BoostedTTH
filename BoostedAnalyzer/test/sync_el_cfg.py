@@ -72,7 +72,7 @@ if values['mcevents'] is not None:
     
 
 #process.BoostedAnalyzer.processorNames = []#["WeightProcessor","BDTVarProcessor","MVAVarProcessor"]
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection1","LeptonSelection2","LeptonSelection3","LeptonSelection4","4JetSelection","2TagSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection1","LeptonSelection3","LeptonSelection2","LeptonSelection4","4JetSelection","2TagSelection"]
 process.BoostedAnalyzer.channel=cms.string("el")
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 #process.p = cms.Path(process.content *process.BoostedAnalyzer)
