@@ -1,8 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 import os
 values={}
-values['filenames']=['file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttjets_phys14_20bx25_withfatjets.root']
-values['outfilename']="sync_el"
+values['filenames']=['file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttjets_phys14_20bx25_withfatjetsandtthf.root']
+values['outfilename']="sync_el_2"
 values['sampleID']="9125"
 values['xs']="0.5"
 values['mcevents']="100000"
@@ -71,7 +71,7 @@ if values['mcevents'] is not None:
     process.BoostedAnalyzer.nMCEvents=cms.int32(int(values['mcevents']))
     
 
-#process.BoostedAnalyzer.processorNames = []#["WeightProcessor","BDTVarProcessor","MVAVarProcessor"]
+process.BoostedAnalyzer.processorNames = []#["WeightProcessor","BDTVarProcessor","MVAVarProcessor"]
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection1","LeptonSelection3","LeptonSelection2","LeptonSelection4","4JetSelection","2TagSelection"]
 process.BoostedAnalyzer.channel=cms.string("el")
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")

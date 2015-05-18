@@ -4,9 +4,9 @@ process = cms.Process("p")
 process.source = cms.Source("PoolSource",
 #                            fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/tpfotzer/MiniAOD_raw/ttH_01.root')
                             #fileNames = cms.untracked.vstring('file:/storage/9/mildner/ttbar_phys14.root')
-                            fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
+                            fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
