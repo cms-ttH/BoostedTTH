@@ -1,8 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 import os
 values={}
-values['filenames']=['file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttjets_phys14_20bx25_withfatjets_v2.root']
-values['outfilename']="KIT_sync_mu_new"
+values['filenames']=['file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttjets_phys14_20bx25_withfatjetsandtthf.root']
+values['outfilename']="sync_mu_2"
 values['sampleID']="9125"
 values['xs']="0.5"
 values['mcevents']="100000"
@@ -59,7 +59,7 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.useFatJets=True
-process.BoostedAnalyzer.useGenHadronMatch=False
+process.BoostedAnalyzer.useGenHadronMatch=True
 process.BoostedAnalyzer.dumpSyncExe=True
 if values['outfilename'] is not None:
     process.BoostedAnalyzer.outfileName=values['outfilename']
@@ -71,8 +71,8 @@ if values['mcevents'] is not None:
     process.BoostedAnalyzer.nMCEvents=cms.int32(int(values['mcevents']))
     
 
-process.BoostedAnalyzer.processorNames = ["MVAVarProcessor"]#["WeightProcessor","BDTVarProcessor","MVAVarProcessor"]
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection1","LeptonSelection2","LeptonSelection3","LeptonSelection4","4JetSelection","2TagSelection"]
+process.BoostedAnalyzer.processorNames = []#["WeightProcessor","BDTVarProcessor","MVAVarProcessor"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection1","LeptonSelection3","LeptonSelection2","LeptonSelection4","4JetSelection","2TagSelection"]
 process.BoostedAnalyzer.channel=cms.string("mu")
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 #process.p = cms.Path(process.content *process.BoostedAnalyzer)
