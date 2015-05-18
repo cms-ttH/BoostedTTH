@@ -158,7 +158,7 @@ void InputCollections::DumpSyncExe(std::ostream &out){
 
   ttHFCategory=genTopEvt.GetTTxId();
   
-  out << boost::format("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f %+7.3f   %2d  %2d  %2d  %2d  %2d\n")%
+  out << boost::format("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %+7.3f   %2d  %2d   %2d   %2d  %2d\n")%
 	 run% lumi% event%
 	 lep1_pt% lep1_eta% lep1_phi%
 	 jet1_pt% jet2_pt% jet3_pt% jet4_pt%
