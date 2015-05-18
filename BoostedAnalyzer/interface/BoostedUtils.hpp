@@ -27,7 +27,7 @@ class BoostedUtils{
     
     static TLorentzVector GetTLorentzVector(const math::XYZTLorentzVector& vec);
     static std::vector<TLorentzVector> GetTLorentzVectors(const std::vector<math::XYZTLorentzVector>& vec);
-    static math::XYZTLorentzVector GetXYZTLorentzVector(const TLorentzVector& vec);   
+    static math::XYZTLorentzVector GetXYZTLorentzVector(const TLorentzVector& vec);
     static bool FirstIsHarder(math::XYZTLorentzVector vec1,math::XYZTLorentzVector vec2);
     static bool FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2);
     static bool FirstHasHigherCSVold(pat::Jet jet1,pat::Jet jet2);
@@ -73,6 +73,9 @@ class BoostedUtils{
     static std::vector<pat::Jet> GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets = 2);
     static float GetHiggsMass(const boosted::SubFilterJet& higgsJet, const int& nFilterJets = 2, const int& nBTags = 2, const float& csvWP = 0.679);
 //     static std::vector<pat::Jet> GetCSVJets(const boosted::HEPTopJetCollection& heptopjets, const boosted::SubFilterJetCollection& subfilterjets, const std::vector<pat::Jet>& selectedJets, const float& ptcut=0, const float& etacut=10);
+
+    static std::vector<TLorentzVector> GetCAMatchDiff(const boosted::SubFilterJetCollection &subfilterjets, const std::vector<pat::Jet>& jets, std::vector<float>& DCSV_Matchedfilterjets, std::vector<float>& Dr_Matchedfilterjets, const float& ptcut = 30, const float& etacut = 2.41);
+    static std::vector<TLorentzVector> GetCAMatchDiff(const boosted::HEPTopJetCollection &heptopjets, const std::vector<pat::Jet>& jets, std::vector<float>& DCSV_Matchedfilterjets, std::vector<float>& Dr_Matchedfilterjets, const float& ptcut = 30, const float& etacut = 2.41);
   
   private:
   
