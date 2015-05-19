@@ -16,7 +16,6 @@ BoostedAnalyzer = cms.EDAnalyzer(
     useFatJets = cms.bool(False),
     useGenHadronMatch = cms.bool(False),
     dumpSyncExe = cms.bool(False),
-    disableObjectSelections = cms.bool(False), # disables selection of some objects for synch exe
     outfileName = cms.string("BoostedTTH"),
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
     processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
