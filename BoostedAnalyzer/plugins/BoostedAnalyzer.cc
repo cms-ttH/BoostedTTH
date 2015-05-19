@@ -555,8 +555,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     sampleType =SampleType::ttl;
     if(ttid==51||ttid==52) sampleType = SampleType::ttb;
     else if(ttid==53||ttid==54||ttid==55) sampleType = SampleType::ttbb;
-    else if(ttid==41||ttid==42) sampleType = SampleType::ttc;
-    else if(ttid==43||ttid==44||ttid==45) sampleType = SampleType::ttc;    
+    else if(ttid==41||ttid==42) sampleType = SampleType::ttcc;
+    else if(ttid==43||ttid==44||ttid==45) sampleType = SampleType::ttcc;    
   }
   GenTopEvent genTopEvt;
   if(foundT&&foundTbar) genTopEvt.Fill(genParticles,ttid); // might want to store also genjets linked to ttHF event
