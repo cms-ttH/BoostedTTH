@@ -3,6 +3,7 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/JetMatching.hpp"
 
 #include <vector>
 

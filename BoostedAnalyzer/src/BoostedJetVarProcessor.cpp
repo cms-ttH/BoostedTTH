@@ -152,9 +152,7 @@ void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContaine
   
   vars.InitVars( "TopJet_BW1btag_M","N_TopJets" );
   vars.InitVars( "TopJet_BW2btag_M","N_TopJets" );
-//   vars.InitVars( "TopJet_Wbtag_Charge","N_TopJets" );
-//   vars.InitVars( "TopJet_BW1btag_Charge","N_TopJets" );
-//   vars.InitVars( "TopJet_BW2btag_Charge","N_TopJets" );
+
   vars.InitVars( "TopJet_Bbtag_Flav","N_TopJets" );
   vars.InitVars( "TopJet_W1btag_Flav","N_TopJets" );
   vars.InitVars( "TopJet_W2btag_Flav","N_TopJets" );
@@ -495,10 +493,6 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
     
     vars.FillVars( "TopJet_BW1btag_M",i,(topvecs_bycsv[0]+topvecs_bycsv[1]).M() );
     vars.FillVars( "TopJet_BW2btag_M",i,(topvecs_bycsv[0]+topvecs_bycsv[2]).M() );
-
-//     vars.FillVars( "TopJet_Wbtag_Charge",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).jetCharge() );
-//     vars.FillVars( "TopJet_BW1btag_Charge",i,(topvecs_bycsv[0]+topvecs_bycsv[1]).jetCharge() );
-//     vars.FillVars( "TopJet_BW2btag_Charge",i,(topvecs_bycsv[0]+topvecs_bycsv[2]).jetCharge() );
     
     vars.FillVars( "TopJet_Dr_W1btag_Bbtag",i,BoostedUtils::DeltaR(subjets[1],subjets[0]));
     vars.FillVars( "TopJet_Dr_W2btag_Bbtag",i,BoostedUtils::DeltaR(subjets[2],subjets[0]));
@@ -681,7 +675,8 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 
   vector<float> CA12MFJ_L_CSVR;
   vector<float> CA12MFJ_L_Dr;
-  vector<TLorentzVector> CA12MFJ_L_p4 = BoostedUtils::GetCAMatchDiff(input.selectedSubFilterJets, input.selectedJets, CA12MFJ_L_CSVR, CA12MFJ_L_Dr);
+  std::vector<pat::Jet> CA12filterjets_L = JetMatching::GetFilterjets(input.selectedSubFilterJets);
+  vector<TLorentzVector> CA12MFJ_L_p4 = JetMatching::GetMatchedVecs(CA12filterjets_L, input.selectedJets, CA12MFJ_L_CSVR, CA12MFJ_L_Dr);
 
   vars.FillVar( "N_MJDCA12_L",CA12MFJ_L_p4.size() );
   for(size_t i=0; i<CA12MFJ_L_p4.size();i++)
@@ -696,7 +691,8 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 
   vector<float> CA12MFJ_T_CSVR;
   vector<float> CA12MFJ_T_Dr;
-  vector<TLorentzVector> CA12MFJ_T_p4 = BoostedUtils::GetCAMatchDiff(input.selectedSubFilterJets, input.selectedJets, CA12MFJ_T_CSVR, CA12MFJ_T_Dr, 30, 2.41);
+  std::vector<pat::Jet> CA12filterjets_T = JetMatching::GetFilterjets(input.selectedSubFilterJets, 30, 2.41);
+  vector<TLorentzVector> CA12MFJ_T_p4 = JetMatching::GetMatchedVecs(CA12filterjets_T, input.selectedJets, CA12MFJ_T_CSVR, CA12MFJ_T_Dr);
 
   vars.FillVar( "N_MJDCA12_T",CA12MFJ_T_p4.size() );
   for(size_t i=0; i<CA12MFJ_T_p4.size();i++)
@@ -711,7 +707,8 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 
   vector<float> CA15MFJ_L_CSVR;
   vector<float> CA15MFJ_L_Dr;
-  vector<TLorentzVector> CA15MFJ_L_p4 = BoostedUtils::GetCAMatchDiff(input.selectedHEPTopJets, input.selectedJets, CA15MFJ_L_CSVR, CA15MFJ_L_Dr);
+  std::vector<pat::Jet> CA15filterjets_L = JetMatching::GetFilterjets(input.selectedHEPTopJets);
+  vector<TLorentzVector> CA15MFJ_L_p4 = JetMatching::GetMatchedVecs(CA15filterjets_L, input.selectedJets, CA15MFJ_L_CSVR, CA15MFJ_L_Dr);
 
   vars.FillVar( "N_MJDCA15_L",CA15MFJ_L_p4.size() );
   for(size_t i=0; i<CA15MFJ_L_p4.size();i++)
@@ -726,7 +723,8 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 
   vector<float> CA15MFJ_T_CSVR;
   vector<float> CA15MFJ_T_Dr;
-  vector<TLorentzVector> CA15MFJ_T_p4 = BoostedUtils::GetCAMatchDiff(input.selectedHEPTopJets, input.selectedJets, CA15MFJ_T_CSVR, CA15MFJ_T_Dr, 30, 2.41);
+  std::vector<pat::Jet> CA15filterjets_T = JetMatching::GetFilterjets(input.selectedHEPTopJets, 30, 2.41);
+  vector<TLorentzVector> CA15MFJ_T_p4 = JetMatching::GetMatchedVecs(CA15filterjets_T, input.selectedJets, CA15MFJ_T_CSVR, CA15MFJ_T_Dr);
 
   vars.FillVar( "N_MJDCA15_T",CA15MFJ_T_p4.size() );
   for(size_t i=0; i<CA15MFJ_T_p4.size();i++)
