@@ -103,11 +103,11 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   int iBB = 0;
   int iCC = 0;
   
-  /*
+  
     if(input.sampleType == SampleType::ttbb) iBB = 3;
     if(input.sampleType == SampleType::ttb) iBB = 1;
     if(input.sampleType == SampleType::ttcc) iCC = 1;
-  */
+  
   vars.FillVar( "GenEvt_I_TTPlusCC",iCC );
   vars.FillVar( "GenEvt_I_TTPlusBB",iBB );
   std::vector<reco::GenParticle> tophad;
