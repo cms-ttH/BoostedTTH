@@ -8,6 +8,8 @@ MVAVarProcessor::~MVAVarProcessor(){}
 
 void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
  
+  vars.InitVar("Evt_ID","I");
+
   vars.InitVar( "N_Jets","I" );
   vars.InitVar( "N_LooseJets","I" );
   vars.InitVar( "N_TightLeptons","I" );
@@ -216,6 +218,10 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 
 void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
+
+  //also write the event ID for splitting purposes
+  long evt_id = input.eventInfo.evt;
+  vars.FillVar("Evt_ID",evt_id);
 
   const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
   std::vector<pat::Jet> selectedTaggedJets;
