@@ -15,7 +15,7 @@ void LeptonSelection::InitCutflow(Cutflow& cutflow){
   if(step<0||step==1)
     cutflow.AddStep("Single lepton trigger");
   if(step<0||step==2)
-    cutflow.AddStep("== 1 loose lepton");
+    cutflow.AddStep("== 1 loose lepton same flavor");
   if(step<0||step==3)
     cutflow.AddStep("== 1 tight lepton same flavor");
   if(step<0||step==4)
