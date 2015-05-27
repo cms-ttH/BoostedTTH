@@ -110,7 +110,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
       /** files to dump eventnumber into */
       vector<std::ofstream*> dumpFiles;
-        
+      
       /** sample ID */
       int sampleID;
       
@@ -195,7 +195,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
      // custom genjets for tt+X categorization
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMCustomGenJetsToken;
-    
+     
      /** tt+X categorization tokens **/
       edm::EDGetTokenT<std::vector<int> > genBHadJetIndexToken;
       edm::EDGetTokenT<std::vector<int> > genBHadFlavourToken;
@@ -492,7 +492,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // Fill Trigger Info
   map<string,bool> triggerMap;
   for(auto name=relevantTriggers.begin(); name!=relevantTriggers.end();name++){
-    unsigned int TriggerID =  hlt_config.triggerIndex(*name);
+    unsigned int TriggerID = hlt_config.triggerIndex(*name);
     if( TriggerID >= triggerResults.size() ) { 
       std::cerr <<"triggerID > trigger results.size: "<<TriggerID<<" > "<<triggerResults.size()<<std::endl; 
       triggerMap[*name]=false;
