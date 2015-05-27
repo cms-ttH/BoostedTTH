@@ -54,6 +54,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -293,6 +294,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
     else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
     else if(*itSel == "LeptonSelection4") selections.push_back(new LeptonSelection(iConfig,4));
+    else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
     else if(*itSel == "4JetSelection"){
       vector<int> njets;
       njets.push_back(4);
