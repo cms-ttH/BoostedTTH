@@ -54,6 +54,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -293,6 +294,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
     else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
     else if(*itSel == "LeptonSelection4") selections.push_back(new LeptonSelection(iConfig,4));
+    else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
     else if(*itSel == "4JetSelection"){
       vector<int> njets;
       njets.push_back(4);
@@ -404,8 +406,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< std::vector<pat::Muon> > h_muons;
   iEvent.getByToken( EDMMuonsToken,h_muons );
   std::vector<pat::Muon> const &muons = *h_muons; 
-  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30.,  muonID::muonTight,coneSize::R04,  corrType::deltaBeta, 2.1 );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose,coneSize::R04,  corrType::deltaBeta, 2.4 );
+  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., muonID::muonTight, 2.1 );
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose, 2.4 );  // for the sake of sync: loose == tight
 
   // ELECTRONS
   edm::Handle< std::vector<pat::Electron> > h_electrons;
