@@ -13,8 +13,8 @@ void InputCollections::DumpFatJets(std::ostream &out){
     for( uint ijet=0; ijet<filterjets.size(); ijet++ ){
       printf("\t\t filt jet %2d:\t pT = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
 	     ijet, filterjets[ijet].pt(), filterjets[ijet].eta(), filterjets[ijet].phi(), 
-	     filterjets[ijet].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
-	     filterjets[ijet].bDiscriminator("combinedSecondaryVertexBJetTags"));
+	     filterjets[ijet].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
+	     filterjets[ijet].bDiscriminator("pfCombinedSecondaryVertexBJetTags"));
     }
   }
 
@@ -35,8 +35,8 @@ void InputCollections::DumpFatJets(std::ostream &out){
 	   top.bDiscriminator("combinedSecondaryVertexBJetTags"));
     printf("\t\t W1 %2d:\t pT = %.1f,\t M = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
 	   0, W1.pt() , W1.mass(), W1.eta(), W1.phi(), 
-	   W1.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
-	   W1.bDiscriminator("combinedSecondaryVertexBJetTags"));
+	   W1.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
+	   W1.bDiscriminator("pfCombinedSecondaryVertexBJetTags"));
     
   }
 
@@ -99,26 +99,26 @@ void InputCollections::DumpSyncExe(std::ostream &out){
   
   if(selectedJets.size()>0){
     jet1_pt=selectedJets.at(0).pt();
-    jet1_CSVv2=selectedJets.at(0).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+    jet1_CSVv2=selectedJets.at(0).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(selectedJets.size()>1){
     jet2_pt=selectedJets.at(1).pt();
-    jet2_CSVv2=selectedJets.at(1).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+    jet2_CSVv2=selectedJets.at(1).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(selectedJets.size()>2){
     jet3_pt=selectedJets.at(2).pt();
-    jet3_CSVv2=selectedJets.at(2).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+    jet3_CSVv2=selectedJets.at(2).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(selectedJets.size()>3){
     jet4_pt=selectedJets.at(3).pt();
-    jet4_CSVv2=selectedJets.at(3).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+    jet4_CSVv2=selectedJets.at(3).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   n_jets=int(selectedJets.size());
   for(auto jet=selectedJets.begin();jet!=selectedJets.end(); jet++){
-    if(BoostedUtils::PassesCSV(*jet)) n_btags++;
+    if(BoostedUtils::PassesCSV(*jet, 'M')) n_btags++;
   }
   
   for(auto topjet = selectedHEPTopJets.begin() ; topjet != selectedHEPTopJets.end(); topjet++ ){
@@ -145,7 +145,7 @@ void InputCollections::DumpSyncExe(std::ostream &out){
     int subjettags=0;
     for(auto j=filterjets.begin(); j!=filterjets.end(); j++ ){
       if(j->pt()<20 || fabs(j->eta())>2.5) continue;
-      if(BoostedUtils::PassesCSV(*j)){
+      if(BoostedUtils::PassesCSV(*j, 'M')){
 	subjettags++;
       }	
     }

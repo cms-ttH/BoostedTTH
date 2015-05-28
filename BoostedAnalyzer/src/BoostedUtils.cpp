@@ -56,7 +56,7 @@ bool BoostedUtils::FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2){
 
 
 bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
-  return jet1.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") > jet2.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  return jet1.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > jet2.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
 }
 
 
@@ -255,13 +255,13 @@ boosted::HEPTopJetCollection BoostedUtils::GetSortedByPt(boosted::HEPTopJetColle
 }
 
 
-bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
+bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint, const std::string btagger){
   
   float CSVLv2wp = 0.423;
   float CSVMv2wp = 0.814;
   float CSVTv2wp = 0.941;
   
-  float csvValue = jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  float csvValue = jet.bDiscriminator(btagger);
   
   switch(workingPoint){
     case 'L': if(csvValue > CSVLv2wp){ return true; } break;

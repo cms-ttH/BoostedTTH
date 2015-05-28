@@ -19,9 +19,13 @@
 
 // system include files
 #include <memory>
+#include <vector>
+#include <map>
+#include <fstream>
+
+#include "TStopwatch.h"
 
 // user include files
-
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 
@@ -59,9 +63,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
-//
-// class declaration
-//
+
 
 class StandardAnalyzer : public edm::EDAnalyzer {
    public:
@@ -147,48 +149,48 @@ class StandardAnalyzer : public edm::EDAnalyzer {
       HLTConfigProvider hlt_config;
       
       /** beam spot data access token **/
-      edm::EDGetTokenT< reco::BeamSpot > EDMBeamSpotToken;
+//       edm::EDGetTokenT< reco::BeamSpot > EDMBeamSpotToken;
       
       /** vertex data access token **/
-      edm::EDGetTokenT< reco::VertexCollection > EDMVertexToken;
+//       edm::EDGetTokenT< reco::VertexCollection > EDMVertexToken;
       
       /** muons data access token **/
-      edm::EDGetTokenT< std::vector<pat::Muon> > EDMMuonsToken;
+//       edm::EDGetTokenT< std::vector<pat::Muon> > EDMMuonsToken;
       
       /** electrons data access token **/
-      edm::EDGetTokenT< std::vector<pat::Electron> > EDMElectronsToken;
+//       edm::EDGetTokenT< std::vector<pat::Electron> > EDMElectronsToken;
       
       /** jets data access token **/
-      edm::EDGetTokenT< std::vector<pat::Jet> > EDMJetsToken;
+//       edm::EDGetTokenT< std::vector<pat::Jet> > EDMJetsToken;
       
       /** mets data access token **/
-      edm::EDGetTokenT< std::vector<pat::MET> > EDMMETsToken;
+//       edm::EDGetTokenT< std::vector<pat::MET> > EDMMETsToken;
       
       /** gen info data access token **/
-      edm::EDGetTokenT< GenEventInfoProduct > EDMGenInfoToken;
+//       edm::EDGetTokenT< GenEventInfoProduct > EDMGenInfoToken;
       
       /** gen particles data access token **/
-      edm::EDGetTokenT< std::vector<reco::GenParticle> > EDMGenParticlesToken;
+//       edm::EDGetTokenT< std::vector<reco::GenParticle> > EDMGenParticlesToken;
       
       /** gen jets data access token **/
-      edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
+//       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
       
       /** custom genjets for tt+X categorization **/
-      edm::EDGetTokenT< std::vector<reco::GenJet> > EDMCustomGenJetsToken;
+//       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMCustomGenJetsToken;
       
       /** tt+X categorization tokens **/
-      edm::EDGetTokenT<std::vector<int> > genBHadJetIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadFlavourToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadFromTopWeakDecayToken;
-      edm::EDGetTokenT<std::vector<reco::GenParticle> > genBHadPlusMothersToken;
-      edm::EDGetTokenT<std::vector<std::vector<int> > > genBHadPlusMothersIndicesToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadLeptonHadronIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadLeptonViaTauToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadJetIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadFlavourToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadFromTopWeakDecayToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadBHadronIdToken;
+//       edm::EDGetTokenT<std::vector<int> > genBHadJetIndexToken;
+//       edm::EDGetTokenT<std::vector<int> > genBHadFlavourToken;
+//       edm::EDGetTokenT<std::vector<int> > genBHadFromTopWeakDecayToken;
+//       edm::EDGetTokenT<std::vector<reco::GenParticle> > genBHadPlusMothersToken;
+//       edm::EDGetTokenT<std::vector<std::vector<int> > > genBHadPlusMothersIndicesToken;
+//       edm::EDGetTokenT<std::vector<int> > genBHadIndexToken;
+//       edm::EDGetTokenT<std::vector<int> > genBHadLeptonHadronIndexToken;
+//       edm::EDGetTokenT<std::vector<int> > genBHadLeptonViaTauToken;
+//       edm::EDGetTokenT<std::vector<int> > genCHadJetIndexToken;
+//       edm::EDGetTokenT<std::vector<int> > genCHadFlavourToken;
+//       edm::EDGetTokenT<std::vector<int> > genCHadFromTopWeakDecayToken;
+//       edm::EDGetTokenT<std::vector<int> > genCHadBHadronIdToken;
 };
 
 //

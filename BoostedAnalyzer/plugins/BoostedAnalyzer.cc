@@ -83,7 +83,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       virtual void beginJob() override;
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
-      virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;    
+      virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
   map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles);
 
       // ----------member data ---------------------------
@@ -105,10 +105,10 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** selections that are applied */
       vector<Selection*> selections;
-
+      
       /** triggers that are checked */
       vector<std::string> relevantTriggers;
-
+      
       /** files to dump eventnumber into */
       vector<std::ofstream*> dumpFiles;
       
@@ -135,10 +135,10 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
        /** is analyzed sample data? */
       bool isData;
-
+      
        /** use fat jets? this is only possible if the miniAOD contains them */
       bool useFatJets;
-
+      
        /** use GenBmatching info? this is only possible if the miniAOD contains them */
       bool useGenHadronMatch;
       
@@ -161,7 +161,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** trigger results data access token **/
       edm::EDGetTokenT< edm::TriggerResults > EDMTriggerResultToken;
       HLTConfigProvider hlt_config;
-
+      
       /** beam spot data access token **/
       edm::EDGetTokenT< reco::BeamSpot > EDMBeamSpotToken;
       
@@ -176,7 +176,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** jets data access token **/
       edm::EDGetTokenT< std::vector<pat::Jet> > EDMJetsToken;
-
+      
       /** mets data access token **/
       edm::EDGetTokenT< std::vector<pat::MET> > EDMMETsToken;
       
@@ -194,7 +194,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** gen jets data access token **/
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
-     // custom genjets for tt+X categorization
+      // custom genjets for tt+X categorization
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMCustomGenJetsToken;
      
      /** tt+X categorization tokens **/
@@ -314,7 +314,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     nselection++;       
     if(dumpSyncExe){
       dumpFiles.push_back(new ofstream((outfileName+"_Dump_"+std::to_string(nselection)+".txt").c_str()));
-    }   
+    }
   }
   relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
   // INITIALIZE TREEWRITER
@@ -332,7 +332,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itPro == "BoostedHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,"TopLikelihood","HiggsCSV","BoostedHiggs_"));
     else if(*itPro == "BDTVarProcessor") treewriter.AddTreeProcessor(new BDTVarProcessor());
     
-    else cout << "No matching processor found for: " << *itPro << endl;    
+    else cout << "No matching processor found for: " << *itPro << endl;
   }
 }
 
@@ -440,7 +440,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //Get jet Collection which pass selection
   std::vector<pat::Jet> selectedJets = helper.GetSelectedJets(correctedJets, 30., 2.4, jetID::none, '-' );
   // Get jet Collection which pass loose selection
-  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(correctedJets, 20., 2.4, jetID::none, '-' ); 
+  std::vector<pat::Jet> selectedJetsLoose = helper.GetSelectedJets(correctedJets, 20., 2.4, jetID::none, '-' );
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
@@ -569,8 +569,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   map<string,float> weights = GetWeights(genEventInfo,eventInfo,selectedPVs,selectedJets,selectedElectrons,selectedMuons,genParticles);
 
   // DEFINE INPUT
-  InputCollections input( eventInfo,			  
-			  triggerInfo,			  
+  InputCollections input( eventInfo,
+			  triggerInfo,
 			  selectedPVs,
 			  selectedMuons,
 			  selectedMuonsLoose,
@@ -584,10 +584,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                           genTopEvt,
                           selectedGenJets,
                           sampleType,
-                          weights			  
+                          weights
 			  );
-        
-  
+
   // DO SELECTION
   cutflow.EventSurvivedStep("all",input);
   bool selected=true;

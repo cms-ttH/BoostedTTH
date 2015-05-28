@@ -229,30 +229,30 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   std::vector<pat::Jet> selectedTaggedJetsL;
   std::vector<pat::Jet> selectedUntaggedJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
-    if(BoostedUtils::PassesCSV(*itJet, 'M')){
+    if(BoostedUtils::PassesCSV(*itJet, 'M', btagger)){
       selectedTaggedJets.push_back(*itJet);
     }
     else{
       selectedUntaggedJets.push_back(*itJet);
     }
-    if(BoostedUtils::PassesCSV(*itJet, 'L')){
+    if(BoostedUtils::PassesCSV(*itJet, 'L', btagger)){
       selectedTaggedJetsL.push_back(*itJet);
     }
-    if(BoostedUtils::PassesCSV(*itJet, 'T')){
+    if(BoostedUtils::PassesCSV(*itJet, 'T', btagger)){
       selectedTaggedJetsT.push_back(*itJet);
     }
   }
   
   // Fill Multiplicity Variables
-  vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
+  vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());
   vars.FillVar( "N_Jets",input.selectedJets.size());
   vars.FillVar( "N_LooseJets",input.selectedJetsLoose.size());
-  vars.FillVar( "N_TightLeptons",input.selectedElectrons.size()+ input.selectedMuons.size());  
-  vars.FillVar( "N_LooseLeptons",input.selectedElectronsLoose.size()+ input.selectedMuonsLoose.size());  
-  vars.FillVar( "N_TightElectrons",input.selectedElectrons.size());  
-  vars.FillVar( "N_LooseElectrons",input.selectedElectronsLoose.size());  
-  vars.FillVar( "N_TightMuons",input.selectedMuons.size());  
-  vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());  
+  vars.FillVar( "N_TightLeptons",input.selectedElectrons.size()+ input.selectedMuons.size());
+  vars.FillVar( "N_LooseLeptons",input.selectedElectronsLoose.size()+ input.selectedMuonsLoose.size());
+  vars.FillVar( "N_TightElectrons",input.selectedElectrons.size());
+  vars.FillVar( "N_LooseElectrons",input.selectedElectronsLoose.size());
+  vars.FillVar( "N_TightMuons",input.selectedMuons.size());
+  vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());
   
   // Fill Jet Variables
   // All Jets
@@ -296,7 +296,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVar( "Evt_M_PrimaryLepton",primLepVec.M());
     vars.FillVar( "Evt_Pt_PrimaryLepton",primLepVec.Pt() );
     vars.FillVar( "Evt_Eta_PrimaryLepton",primLepVec.Eta());
-    vars.FillVar( "Evt_Phi_PrimaryLepton",primLepVec.Phi());    
+    vars.FillVar( "Evt_Phi_PrimaryLepton",primLepVec.Phi());
   }
   
   for(std::vector<pat::Electron>::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle){
@@ -404,8 +404,8 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vars.FillVar("Evt_M_Total",p4all.M());
   
   // Fill Number of b Tags
-  vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );  
-  vars.FillVar( "N_BTagsL",selectedTaggedJetsL.size() );  
+  vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );
+  vars.FillVar( "N_BTagsL",selectedTaggedJetsL.size() );
   vars.FillVar( "N_BTagsT",selectedTaggedJetsT.size() );
   
   // Fill CSV Variables
@@ -557,7 +557,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vars.FillVar("Evt_Deta_JetsAverage",detaJetsAverage);
   vars.FillVar("Evt_Dr_JetsAverage",drJetsAverage);
   vars.FillVar("Evt_Dkt_JetsAverage",dktJetsAverage);
-  vars.FillVar("Evt_JetPtOverJetE", ptJetsAverage/eJetsAverage);  
+  vars.FillVar("Evt_JetPtOverJetE", ptJetsAverage/eJetsAverage);
   
   // Tagged Jets
   float mTaggedJetsAverage = 0;
