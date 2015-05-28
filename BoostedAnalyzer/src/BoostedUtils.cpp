@@ -261,7 +261,7 @@ bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   float CSVMv2wp = 0.814;
   float CSVTv2wp = 0.941;
   
-  float csvValue = jet.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  float csvValue = jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   
   switch(workingPoint){
     case 'L': if(csvValue > CSVLv2wp){ return true; } break;
