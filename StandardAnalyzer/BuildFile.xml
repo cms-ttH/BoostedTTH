@@ -1,0 +1,16 @@
+<use name="root"/>
+<lib name="TMVA"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/HepMCCandidate"/>
+<use name="PhysicsTools/Utilities"/>
+<use name="HLTrigger/HLTcore"/>
+<use name="JetMETCorrections/Objects"/>
+<use name="CondFormats/JetMETObjects"/>
+<use name="MiniAOD/MiniAODHelper"/>
+<use name="BoostedTTH/BoostedAnalyzer"/>
+<export>
+  <lib   name="1"/>
+</export>
