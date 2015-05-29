@@ -18,5 +18,5 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpSyncExe = cms.bool(False),
     outfileName = cms.string("BoostedTTH"),
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
 )

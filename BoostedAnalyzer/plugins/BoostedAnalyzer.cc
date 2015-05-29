@@ -58,6 +58,7 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BoostedMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
@@ -323,17 +324,16 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   cout << "using processors:" << endl; 
   for(vector<string>::const_iterator itPro = processorNames.begin();itPro != processorNames.end();++itPro) {
     cout << *itPro << endl;
-    if(*itPro == "WeightProcessor") treewriter.AddTreeProcessor(new WeightProcessor());
-    else if(*itPro == "MCMatchVarProcessor") treewriter.AddTreeProcessor(new MCMatchVarProcessor());
-    else if(*itPro == "MVAVarProcessor") treewriter.AddTreeProcessor(new MVAVarProcessor());
-    else if(*itPro == "BoostedJetVarProcessor") treewriter.AddTreeProcessor(new BoostedJetVarProcessor());
-    else if(*itPro == "BoostedTopHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,"TopLikelihood","HiggsCSV","BoostedTopHiggs_"));
-    else if(*itPro == "BoostedTopVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,"TopLikelihood","HiggsCSV","BoostedTop_"));
-    else if(*itPro == "BoostedHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,"TopLikelihood","HiggsCSV","BoostedHiggs_"));
-    else if(*itPro == "BDTVarProcessor") treewriter.AddTreeProcessor(new BDTVarProcessor());
-    
-    else cout << "No matching processor found for: " << *itPro << endl;    
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"WeightProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new WeightProcessor());
+  if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new MVAVarProcessor());
+  if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new BoostedJetVarProcessor());
+  if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,"TopLikelihood","HiggsCSV","BoostedTopHiggs_"));
+  if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,"TopLikelihood","HiggsCSV","BoostedTop_"));
+  if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,"TopLikelihood","HiggsCSV","BoostedHiggs_"));
+  if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new BDTVarProcessor());
+  if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new MCMatchVarProcessor());
+  if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new BoostedMCMatchVarProcessor());
 }
 
 
