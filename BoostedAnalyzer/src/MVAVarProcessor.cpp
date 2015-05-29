@@ -31,6 +31,7 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVars( "Jet_CSV","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
+  vars.InitVars( "Jet_PileUpID","N_Jets" );
   
   vars.InitVars( "TaggedJet_E","N_BTagsM" );
   vars.InitVars( "TaggedJet_M","N_BTagsM" );
@@ -266,6 +267,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "Jet_CSV",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );
     vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
+    vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
   }
   
   // Tagged Jets

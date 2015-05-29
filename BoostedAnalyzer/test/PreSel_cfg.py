@@ -10,6 +10,7 @@ MCEvents = os.getenv("MCEVENTS")
 ERA = os.getenv("ERA")
 INSAMPLE = os.getenv("INSAMPLE")
 INFILE = os.getenv("FILE_NAMES")
+SYSTEMATIC=os.getenv("SYSTEMATIC")
 
 List_INFILES = INFILE.split(" ")
 List_FileNames=[]
@@ -72,6 +73,7 @@ process.BoostedAnalyzer.xs = cms.double(float(XS))
 process.BoostedAnalyzer.nMCEvents = cms.int32(int(MCEvents))
 process.BoostedAnalyzer.isData = cms.bool(False)
 process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
+process.BoostedAnalyzer.systematicType = SYSTEMATIC
 
 
 process.p = cms.Path(process.BoostedAnalyzer)
