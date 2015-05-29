@@ -15,7 +15,7 @@ void LeptonSelection::InitCutflow(Cutflow& cutflow){
   if(step<0||step==1)
     cutflow.AddStep("Single lepton trigger");
   if(step<0||step==2)
-    cutflow.AddStep("== 1 loose lepton");
+    cutflow.AddStep("== 1 loose lepton same flavor");
   if(step<0||step==3)
     cutflow.AddStep("== 1 tight lepton same flavor");
   if(step<0||step==4)
@@ -42,7 +42,7 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
     }
     if(step<0||step==2){
       if(!( (muonTriggered&&nmuonsloose==1) || (electronTriggered&&nelectronsloose==1) ) ) return false;
-      else cutflow.EventSurvivedStep("== 1 loose lepton",input);
+      else cutflow.EventSurvivedStep("== 1 loose lepton same flavor",input);
     }
     if(step<0||step==3){
       if(!( (muonTriggered&&nmuonsloose==1&&nmuons==1) || (electronTriggered&&nelectronsloose==1&&nelectrons==1) ) ) return false;
@@ -60,7 +60,7 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
     }
     if(step<0||step==2){
       if( nelectronsloose!=1 ) return false;
-      else cutflow.EventSurvivedStep("== 1 loose lepton",input);
+      else cutflow.EventSurvivedStep("== 1 loose lepton same flavor",input);
     }
     if(step<0||step==3){
       if( nelectrons!=1 ) return false;
@@ -78,7 +78,7 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
     }
     if(step<0||step==2){
       if( nmuonsloose!=1 ) return false;
-      else cutflow.EventSurvivedStep("== 1 loose lepton",input);
+      else cutflow.EventSurvivedStep("== 1 loose lepton same flavor",input);
     }
     if(step<0||step==3){
       if( nmuons!=1 ) return false;

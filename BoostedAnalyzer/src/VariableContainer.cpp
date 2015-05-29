@@ -10,6 +10,13 @@ VariableContainer::VariableContainer(){
 VariableContainer::~VariableContainer(){
 
 }
+bool VariableContainer::DoesVarExist( TString name ){
+  return (intMap.count(name)>0||floatMap.count(name)>0||arrayMap.count(name)>0);
+}
+
+bool VariableContainer::IsVarFilled( TString name ){
+  return floatMapFilled[name]||intMapFilled[name]||arrayMapFilled[name];
+}
 
 
 void VariableContainer::InitVar( TString name,float defaultValue, std::string type ) {
@@ -65,6 +72,10 @@ void VariableContainer::FillVar( TString name, float value ) {
 void VariableContainer::InitVars( TString name, float defaultValue, TString nEntryVariable, int maxentries ){
   if(intMap.count(name)>0 || floatMap.count(name)>0 || arrayMap.count(name)>0){
     cerr << name << " already initialized!" << endl;
+  }
+  if(!DoesVarExist(nEntryVariable)){
+    cerr << nEntryVariable << " not filled, needed for " << name << ", will not initialize" << endl;
+    return;
   }
 
   arrayMap[name] = new float[maxentries];

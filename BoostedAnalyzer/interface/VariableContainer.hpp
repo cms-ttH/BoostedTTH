@@ -14,6 +14,8 @@ class VariableContainer{
     VariableContainer();
     ~VariableContainer();
 
+    bool DoesVarExist( TString name );
+    bool IsVarFilled( TString name );
     void InitVar( TString name, std::string type="F" );
     void InitVar( TString name, float defaultValue, std::string type="F" );
     void FillVar( TString name, float value );
