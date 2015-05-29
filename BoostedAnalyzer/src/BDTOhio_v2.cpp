@@ -5,6 +5,7 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
   // ==================================================
   //init all variables used in BDT set
   variableMap["all_sum_pt_with_met"]=-999.;
+  variableMap["aplanarity"]=-999.;
   variableMap["avg_btag_disc_btags"]=-999.;
   variableMap["avg_dr_tagged_jets"]=-999.;
   variableMap["best_higgs_mass"]=-999.;
@@ -17,13 +18,17 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
   variableMap["fourth_highest_btag"]=-999.;
   variableMap["fourth_jet_pt"]=-999.;
   variableMap["h0"]=-999.;
+  variableMap["h1"]=-999.;
   variableMap["h2"]=-999.;
+  variableMap["h3"]=-999.;
   variableMap["HT"]=-999.;
+  variableMap["invariant_mass_of_everything"]=-999.;
   variableMap["lowest_btag"]=-999.;
   variableMap["M3"]=-999.;
   variableMap["maxeta_jet_jet"]=-999.;
   variableMap["maxeta_jet_tag"]=-999.;
   variableMap["maxeta_tag_tag"]=-999.;
+  variableMap["min_dr_tagged_jets"]=-999.;
   variableMap["MET"]=-999.;
   variableMap["MHT"]=-999.;
   variableMap["Mlb"]=-999.;
@@ -32,6 +37,7 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
   variableMap["second_jet_pt"]=-999.;
   variableMap["sixth_highest_btag"]=-999.;
   variableMap["sphericity"]=-999.;
+  variableMap["tagged_dijet_mass_closest_to_125"]=-999.;
   variableMap["third_highest_btag"]=-999.;
   variableMap["third_jet_pt"]=-999.;
   // ==================================================
@@ -278,14 +284,18 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   float dr_between_lep_and_closest_jet=99;
   float mht_px=0;
   float mht_py=0;
+  TLorentzVector p4_of_everything=lepton_vec;
+  p4_of_everything+=met_vec;
   for(auto jetvec = jet_vecs.begin() ; jetvec != jet_vecs.end(); ++jetvec){
     dr_between_lep_and_closest_jet=fmin(dr_between_lep_and_closest_jet,lepton_vec.DeltaR(*jetvec));
     sum_pt_jets += jetvec->Pt();
     mht_px += jetvec->Px();
     mht_py += jetvec->Py();
+    p4_of_everything += *jetvec;
   }
   mht_px+=lepton_vec.Px();
   mht_py+=lepton_vec.Py();
+  float mass_of_everything=p4_of_everything.M();
   float sum_pt_wo_met=sum_pt_jets+lepton_vec.Pt();
   float sum_pt_with_met=pfMET.pt()+sum_pt_wo_met;
   float MHT=sqrt( mht_px*mht_px + mht_py*mht_py );
@@ -303,15 +313,21 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   float minDrTagged=99;
   float sumDrTagged=0;
   int npairs=0;
+  float tagged_dijet_mass_closest_to_125=-99;
   for(auto tagged_jet1=tagged_jet_vecs.begin();tagged_jet1!=tagged_jet_vecs.end();tagged_jet1++){
     for(auto tagged_jet2=tagged_jet1+1;tagged_jet2!=tagged_jet_vecs.end();tagged_jet2++){
       float dr=tagged_jet1->DeltaR(*tagged_jet2);
+      float m = (*tagged_jet1+*tagged_jet2).M();
       sumDrTagged+=dr;
       npairs++;
       if(dr<minDrTagged){
 	minDrTagged=dr;
-	closest_tagged_dijet_mass=(*tagged_jet1+*tagged_jet2).M();
+	closest_tagged_dijet_mass=m;
       }
+      if(fabs(tagged_dijet_mass_closest_to_125-125)>fabs(m-125)){
+	tagged_dijet_mass_closest_to_125=m;
+      }
+
     }
   }
   float avgDrTagged=-1;
@@ -363,6 +379,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   // ==================================================
   // Fill variable map
   variableMap["all_sum_pt_with_met"]=sum_pt_with_met;
+  variableMap["aplanarity"]=aplanarity;
   variableMap["avg_btag_disc_btags"]=averageCSV;
   variableMap["avg_dr_tagged_jets"]=avgDrTagged;
   variableMap["best_higgs_mass"]=bestHiggsMass;
@@ -375,13 +392,17 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   variableMap["fourth_highest_btag"]=njets>3?sortedCSV[3]:-1.;
   variableMap["fourth_jet_pt"]=jet_vecs.size()>3?jet_vecs[3].Pt():-99;
   variableMap["h0"]=h0;
+  variableMap["h1"]=h1;
   variableMap["h2"]=h2;
+  variableMap["h3"]=h3;
   variableMap["HT"]=sum_pt_jets;
+  variableMap["invariant_mass_of_everything"]=mass_of_everything;
   variableMap["lowest_btag"]=lowest_btag;
   variableMap["M3"]=m3;
   variableMap["maxeta_jet_jet"]=jet_jet_etamax;
   variableMap["maxeta_jet_tag"]=jet_tag_etamax;
   variableMap["maxeta_tag_tag"]=tag_tag_etamax;
+  variableMap["min_dr_tagged_jets"]=minDrTagged;
   variableMap["MET"]=pfMET.pt();
   variableMap["MHT"]=MHT;
   variableMap["Mlb"]=Mlb;
@@ -390,6 +411,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   variableMap["second_jet_pt"]=jet_vecs.size()>1?jet_vecs[1].Pt():-99;
   variableMap["sixth_highest_btag"]=njets>5?sortedCSV[5]:-1.;
   variableMap["sphericity"]=sphericity;
+  variableMap["tagged_dijet_mass_closest_to_125"]=tagged_dijet_mass_closest_to_125;
   variableMap["third_highest_btag"]=njets>2?sortedCSV[2]:-1.;
   variableMap["third_jet_pt"]=jet_vecs.size()>2?jet_vecs[2].Pt():-99;
 
