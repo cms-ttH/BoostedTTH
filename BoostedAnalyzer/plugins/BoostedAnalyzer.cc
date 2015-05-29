@@ -242,12 +242,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   
   jsystype=sysType::NA;
   std::string SystematicType= iConfig.getParameter<std::string>("systematicType");
-  std::cout<<"Type "<<SystematicType<<std::endl;
   if(SystematicType=="JESUP" ||  SystematicType=="JESUp" )jsystype=sysType::JESup;
   else if(SystematicType=="JESDOWN" || SystematicType=="JESDown" )jsystype=sysType::JESdown;
   else jsystype=sysType::NA;
-std::cout<<"SYSW "<<jsystype<<std::endl;
-
 
   luminosity = iConfig.getParameter<double>("luminosity");
   sampleID = iConfig.getParameter<int>("sampleID");
