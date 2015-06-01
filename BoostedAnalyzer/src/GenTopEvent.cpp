@@ -38,26 +38,26 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
 
   // loop over all bhadrons
   for(uint i=0; i<genBHadIndex.size();i++){
-    const reco::GenParticle* bhadron = &(genBHadPlusMothers[genBHadIndex[i]]);
+    const reco::GenParticle* bhadron = genBHadIndex[i]>=0&&genBHadIndex[i]<int(genBHadPlusMothers.size()) ? &(genBHadPlusMothers[genBHadIndex[i]]) : 0;
     int genjetidx=genBHadJetIndex[i];
     int motherflav = genBHadFlavour[i];
     bool from_tth=(abs(motherflav)==6||abs(motherflav)==25);
     bool aftertop = genBHadFromTopWeakDecay[i]==1;    
 
     // associate bhadrons with ttH decay products
-    if(motherflav==25){
+    if(bhadron!=0&&motherflav==25){
       higgs_b_hadron=*bhadron;
     }
-    else if(motherflav==-25){
+    else if(bhadron!=0&&motherflav==-25){
       higgs_bbar_hadron=*bhadron;
     }
-    else if(motherflav==6){
+    else if(bhadron!=0&&motherflav==6){
       top_b_hadron=*bhadron;
     }
-    else if(motherflav==-6){
+    else if(bhadron!=0&&motherflav==-6){
       topbar_bbar_hadron=*bhadron;
     }
-    else{
+    else if(bhadron!=0){
       additional_b_hadrons.push_back(*bhadron);      
       additional_b_hadron_aftertop.push_back(aftertop);
     }
@@ -84,7 +84,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
 
   // loop over all chadrons
   for(uint i=0; i<genCHadIndex.size();i++){
-    const reco::GenParticle* chadron = &(genCHadPlusMothers[genCHadJetIndex[i]]);
+    const reco::GenParticle* chadron = genCHadJetIndex[i]>=0 && genCHadJetIndex[i]<int(genCHadPlusMothers.size()) ? &(genCHadPlusMothers[genCHadJetIndex[i]]) : 0;
     int genjetidx=genCHadJetIndex[i];
     bool aftertop = genCHadFromTopWeakDecay[i]==1;    
     //    int motherflav = genCHadFlavour[i];
@@ -92,7 +92,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
 
     // consider only hadrons not from B decays ?
     if(genCHadBHadronId[i] < 1){
-      additional_c_hadrons.push_back(*chadron);      
+      additional_c_hadrons.push_back(chadron!=0?*chadron:reco::GenParticle());      
       additional_c_hadron_aftertop.push_back(aftertop);
       // count hadrons in genjets
       if(genjetidx>=0 && genjetidx<int(customGenJets.size())){
@@ -135,14 +135,14 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
 	additional_b_genjets.push_back(customGenJets[i]);
 	additional_b_genjet_nb.push_back(nb_per_genjet[i]);
 	additional_b_genjet_nb_aftertop.push_back(nb_aftertop_per_genjet[i]);
-	additional_b_genjet_hadron.push_back(*(genjet_leading_bhadron[i]));
+	additional_b_genjet_hadron.push_back(genjet_leading_bhadron[i]!=0 ? *(genjet_leading_bhadron[i]) : reco::GenParticle());
       }
     }
     else if(additionalnc_per_genjet[i]>0){
       additional_c_genjets.push_back(customGenJets[i]);
       additional_c_genjet_nc.push_back(additionalnc_per_genjet[i]);
       additional_c_genjet_nc_aftertop.push_back(additionalnc_aftertop_per_genjet[i]);
-      additional_c_genjet_hadron.push_back(*(genjet_leading_chadron[i]));
+      additional_c_genjet_hadron.push_back(genjet_leading_chadron[i] != 0 ? *(genjet_leading_chadron[i]) : reco::GenParticle());
     }
   }
   ttxIsFilled=true;
@@ -840,14 +840,14 @@ int GenTopEvent::GetTTxId(bool countPseudoAdditional) const{
   int n_pseudocjets_double=0;
   for(uint i=0; i<additional_c_genjets.size(); i++){
     if(countPseudoAdditional){
-      if(additional_c_genjet_nc[i]) n_cjets_single++;
-      else if(additional_c_genjet_nc[i]) n_cjets_double++;
+      if(additional_c_genjet_nc[i]==1) n_cjets_single++;
+      else if(additional_c_genjet_nc[i]>1) n_cjets_double++;
     }
     else{
       if(additional_c_genjet_nc[i]-additional_c_genjet_nc_aftertop[i]==1) n_cjets_single++;
       else if(additional_c_genjet_nc[i]-additional_c_genjet_nc_aftertop[i]>1) n_cjets_double++;
       else if(additional_c_genjet_nc_aftertop[i]==1) n_pseudocjets_single++;
-      else if(additional_c_genjet_nc_aftertop[i]>2) n_pseudocjets_double++;
+      else if(additional_c_genjet_nc_aftertop[i]>1) n_pseudocjets_double++;
     }
   }
   for(uint i=0; i<additional_b_genjets.size(); i++){
@@ -859,7 +859,7 @@ int GenTopEvent::GetTTxId(bool countPseudoAdditional) const{
       if(additional_b_genjet_nb[i]-additional_b_genjet_nb_aftertop[i]==1) n_bjets_single++;
       else if(additional_b_genjet_nb[i]-additional_b_genjet_nb_aftertop[i]>1) n_bjets_double++;
       else if(additional_b_genjet_nb_aftertop[i]==1) n_pseudobjets_single++;
-      else if(additional_b_genjet_nb_aftertop[i]>2) n_pseudobjets_double++;
+      else if(additional_b_genjet_nb_aftertop[i]>1) n_pseudobjets_double++;
     }
   }
 
