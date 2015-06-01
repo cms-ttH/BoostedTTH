@@ -10,6 +10,7 @@ MCEvents = os.getenv("MCEVENTS")
 ERA = os.getenv("ERA")
 INSAMPLE = os.getenv("INSAMPLE")
 INFILE = os.getenv("FILE_NAMES")
+SYSTEMATIC=os.getenv("SYSTEMATIC")
 
 List_INFILES = INFILE.split(" ")
 List_FileNames=[]
@@ -60,10 +61,10 @@ process.source = cms.Source(  "PoolSource",
 
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.useFatJets=True
-process.BoostedAnalyzer.disableObjectSelections=False
+#process.BoostedAnalyzer.disableObjectSelections=False
 process.BoostedAnalyzer.outfileName = OUTFILE
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
-process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BDTVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
+process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BoostedMCMatchVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
 process.BoostedAnalyzer.era = ERA
 process.BoostedAnalyzer.analysisType = cms.string("LJ")
 process.BoostedAnalyzer.luminosity = cms.double(10000.0)
@@ -72,6 +73,7 @@ process.BoostedAnalyzer.xs = cms.double(float(XS))
 process.BoostedAnalyzer.nMCEvents = cms.int32(int(MCEvents))
 process.BoostedAnalyzer.isData = cms.bool(False)
 process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
+process.BoostedAnalyzer.systematicType = SYSTEMATIC
 
 
 process.p = cms.Path(process.BoostedAnalyzer)

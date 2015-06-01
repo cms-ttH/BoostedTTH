@@ -17,7 +17,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
-enum SampleType{data,tth,ttl,ttbb,ttb,ttcc,nonttbkg};
+
+enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg};
 
 struct InputCollections{
 InputCollections(   const EventInfo&                              eventInfo_,
