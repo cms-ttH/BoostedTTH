@@ -84,7 +84,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
 
   // loop over all chadrons
   for(uint i=0; i<genCHadIndex.size();i++){
-    const reco::GenParticle* chadron = genCHadJetIndex[i]>=0 && genCHadJetIndex[i]<int(genCHadPlusMothers.size()) ? &(genCHadPlusMothers[genCHadJetIndex[i]]) : 0;
+    const reco::GenParticle* chadron = genCHadIndex[i]>=0 && genCHadIndex[i]<int(genCHadPlusMothers.size()) ? &(genCHadPlusMothers[genCHadIndex[i]]) : 0;
     int genjetidx=genCHadJetIndex[i];
     bool aftertop = genCHadFromTopWeakDecay[i]==1;    
     //    int motherflav = genCHadFlavour[i];
