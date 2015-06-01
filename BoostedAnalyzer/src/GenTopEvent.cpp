@@ -83,15 +83,15 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
   };
 
   // loop over all chadrons
-  for(uint i=0; i<genCHadIndex.size();i++){
+  for(uint i=0; i<genCHadIndex.size();i++){    
     const reco::GenParticle* chadron = genCHadIndex[i]>=0 && genCHadIndex[i]<int(genCHadPlusMothers.size()) ? &(genCHadPlusMothers[genCHadIndex[i]]) : 0;
     int genjetidx=genCHadJetIndex[i];
     bool aftertop = genCHadFromTopWeakDecay[i]==1;    
     //    int motherflav = genCHadFlavour[i];
     //    bool fromW = abs(motherflav)==24;
 
-    // consider only hadrons not from B decays ?
-    if(genCHadBHadronId[i] < 1){
+    // consider only hadrons not from B decays 
+    if(genCHadBHadronId[i] < 0){
       additional_c_hadrons.push_back(chadron!=0?*chadron:reco::GenParticle());      
       additional_c_hadron_aftertop.push_back(aftertop);
       // count hadrons in genjets
@@ -427,7 +427,7 @@ void GenTopEvent::PrintTTX() const{
   std::cout << GetTTxId() << std::endl;
   std::cout << "tt+x id miniaodhelper" << std::endl;
   std::cout << GetTTxIdFromHelper() << std::endl;
-  assert(GetTTxId()==GetTTxIdFromHelper());
+  assert(GetTTxId(true)==GetTTxIdFromHelper());
 
   std::cout << "============================" << std::endl;
 }
@@ -838,7 +838,8 @@ int GenTopEvent::GetTTxId(bool countPseudoAdditional) const{
   int n_bjets_double=0;
   int n_pseudobjets_double=0;
   int n_pseudocjets_double=0;
-  for(uint i=0; i<additional_c_genjets.size(); i++){
+  // consider only the two leading gen jets
+  for(int i=0; i<std::min(2,int(additional_c_genjets.size())); i++){
     if(countPseudoAdditional){
       if(additional_c_genjet_nc[i]==1) n_cjets_single++;
       else if(additional_c_genjet_nc[i]>1) n_cjets_double++;
@@ -850,7 +851,8 @@ int GenTopEvent::GetTTxId(bool countPseudoAdditional) const{
       else if(additional_c_genjet_nc_aftertop[i]>1) n_pseudocjets_double++;
     }
   }
-  for(uint i=0; i<additional_b_genjets.size(); i++){
+  // consider only the two leading hf jets
+  for(int i=0; i<std::min(2,int(additional_b_genjets.size())); i++){
     if(countPseudoAdditional){
       if(additional_b_genjet_nb[i]==1) n_bjets_single++;
       else if(additional_b_genjet_nb[i]>1) n_bjets_double++;
