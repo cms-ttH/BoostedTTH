@@ -98,6 +98,9 @@ void VariableContainer::FillVars( TString name, int index, float value ) {
   else if(maxEntriesArrays[name]<index){
     cerr << "array " << name << " is shorter than " << index << endl;
   }
+  else if(index<0){
+    cerr << "array " << name << " index is negative! " << index << endl;
+  }
   else
     arrayMap[name][index]=value;
 }
