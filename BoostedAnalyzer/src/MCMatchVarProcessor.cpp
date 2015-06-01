@@ -11,7 +11,7 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
  
   vars.InitVar( "GenEvt_I_TTPlusCC",-1,"I" );
   vars.InitVar( "GenEvt_I_TTPlusBB",-1,"I" );
-  vars.InitVar( "GenEvt_TTxId",-1,"I" );
+  vars.InitVar( "GenEvt_TTxId_FromHelper",-1,"I" );
   
   vars.InitVar( "N_GenTopHad", -1, "I" );
   vars.InitVars( "GenTopHad_Pt",-9.,"N_GenTopHad" );
@@ -29,7 +29,7 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopHad_B_Phi",-9.,"N_GenTopHad" );
   vars.InitVars( "GenTopHad_Q1_Phi",-9.,"N_GenTopHad" );
   vars.InitVars( "GenTopHad_Q2_Phi",-9.,"N_GenTopHad" );
-  
+ 
   vars.InitVar( "N_GenTopLep",-1,"I" );
   vars.InitVars( "GenTopLep_Pt",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_Eta",-9.,"N_GenTopLep" );
@@ -63,7 +63,6 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopLep_B_Idx",-1,"N_GenTopLep" );
   vars.InitVar( "GenHiggs_B1_Idx",-1 );
   vars.InitVar( "GenHiggs_B2_Idx",-1 );
-  
 
   initialized = true;
 }
@@ -83,7 +82,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   
   vars.FillVar( "GenEvt_I_TTPlusCC",iCC );
   vars.FillVar( "GenEvt_I_TTPlusBB",iBB );
-  vars.FillVar( "GenEvt_TTxId",input.genTopEvt.GetTTxId());
+  vars.FillVar( "GenEvt_TTxId_FromHelper",input.genTopEvt.GetTTxIdFromHelper());
   std::vector<reco::GenParticle> tophad;
   std::vector<reco::GenParticle> whad;
   std::vector<reco::GenParticle> bhad;
