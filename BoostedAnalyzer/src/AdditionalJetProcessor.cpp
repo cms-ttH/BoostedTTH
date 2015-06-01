@@ -15,6 +15,7 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "AdditionalGenBJet_E",-9.,"N_AdditionalGenBJets" );
   vars.InitVars( "AdditionalGenBJet_IsProper",-9.,"N_AdditionalGenBJets" );
   vars.InitVars( "AdditionalGenBJet_HadronPt",-9.,"N_AdditionalGenBJets" );
+  vars.InitVars( "AdditionalGenBJet_HadronId",-9.,"N_AdditionalGenBJets" );
 
   vars.InitVar( "N_AdditionalGenBJetsProper",-1,"I" );
   vars.InitVars( "AdditionalGenBJetProper_Pt",-9.,"N_AdditionalGenBJetsProper" );
@@ -35,6 +36,7 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "AdditionalGenCJet_E",-9.,"N_AdditionalGenCJets" );
   vars.InitVars( "AdditionalGenCJet_IsProper",-9.,"N_AdditionalGenCJets" );
   vars.InitVars( "AdditionalGenCJet_HadronPt",-9.,"N_AdditionalGenCJets" );
+  vars.InitVars( "AdditionalGenCJet_HadronId",-9.,"N_AdditionalGenCJets" );
   vars.InitVars( "AdditionalGenCJet_Dr_CfromW",-9.,"N_AdditionalGenCJets" );
 
   vars.InitVar( "N_AdditionalGenCJetsProper",-1,"I" );
@@ -87,6 +89,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalGenBJet_E", i, additional_b_genjets[i].energy());
       vars.FillVars( "AdditionalGenBJet_IsProper", i, !(additional_b_genjets_fromtop[i]));
       vars.FillVars( "AdditionalGenBJet_HadronPt", i, additional_b_genjets_hadron[i].pt());
+      vars.FillVars( "AdditionalGenBJet_HadronId", i, additional_b_genjets_hadron[i].pdgId());
     }
     
     vars.FillVar( "N_AdditionalGenBJetsProper",additional_b_propergenjets.size());
@@ -113,6 +116,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalGenCJet_E", i, additional_c_genjets[i].energy());
       vars.FillVars( "AdditionalGenCJet_IsProper", i, !(additional_c_genjets_fromtop[i]));
       vars.FillVars( "AdditionalGenCJet_HadronPt", i, additional_c_genjets_hadron[i].pt());
+      vars.FillVars( "AdditionalGenCJet_HadronId", i, additional_c_genjets_hadron[i].pdgId());
       float drQ=5;
       for(uint i=0; i<q1.size(); i++){
 	if(abs(q1[i].pdgId())==4){
