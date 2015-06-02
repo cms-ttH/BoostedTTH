@@ -1,11 +1,8 @@
-#ifndef BOOSTEDTTH_STANDARDANALYZER_RAWVARPROCESSOR_HPP
-#define BOOSTEDTTH_STANDARDANALYZER_RAWVARPROCESSOR_HPP
+#ifndef BOOSTEDTTH_BOOSTEDANALYZER_RAWVARPROCESSOR_HPP
+#define BOOSTEDTTH_BOOSTEDANALYZER_RAWVARPROCESSOR_HPP
 
-#include "BoostedTTH/StandardAnalyzer/interface/TreeProcessor.hpp"
-#include "BoostedTTH/StandardAnalyzer/interface/StandardUtils.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
-
-#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 class RawVarProcessor: public TreeProcessor{
   

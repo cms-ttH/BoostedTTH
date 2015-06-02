@@ -23,10 +23,13 @@ struct InputCollections{
 InputCollections(   const EventInfo&                              eventInfo_,
 		    const TriggerInfo&                            triggerInfo_,
 		    const std::vector<reco::Vertex>&              selectedPVs_,
+                    const std::vector<pat::Muon>&                 rawMuons_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsLoose_,
+                    const std::vector<pat::Electron>&             rawElectrons_,
                     const std::vector<pat::Electron>&             selectedElectrons_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
+                    const std::vector<pat::Jet>&                  correctedJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     const pat::MET&                               pfMET_,
@@ -40,10 +43,13 @@ InputCollections(   const EventInfo&                              eventInfo_,
   eventInfo(eventInfo_),
   triggerInfo(triggerInfo_),
   selectedPVs(selectedPVs_),
+  rawMuons(rawMuons_),
   selectedMuons(selectedMuons_),
   selectedMuonsLoose(selectedMuonsLoose_),
+  rawElectrons(rawElectrons_),
   selectedElectrons(selectedElectrons_),
   selectedElectronsLoose(selectedElectronsLoose_),
+  correctedJets(correctedJets_),
   selectedJets(selectedJets_),
   selectedJetsLoose(selectedJetsLoose_),
   pfMET(pfMET_),
@@ -58,10 +64,13 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const EventInfo&                              eventInfo;
   const TriggerInfo&                            triggerInfo;
   const std::vector<reco::Vertex>&              selectedPVs;
+  const std::vector<pat::Muon>&                 rawMuons;
   const std::vector<pat::Muon>&                 selectedMuons;
   const std::vector<pat::Muon>&                 selectedMuonsLoose;
+  const std::vector<pat::Electron>&             rawElectrons;
   const std::vector<pat::Electron>&             selectedElectrons;
   const std::vector<pat::Electron>&             selectedElectronsLoose;
+  const std::vector<pat::Jet>&                  correctedJets;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
   const pat::MET&                               pfMET;

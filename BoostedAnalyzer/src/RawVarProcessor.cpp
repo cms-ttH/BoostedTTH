@@ -1,4 +1,4 @@
-#include "BoostedTTH/StandardAnalyzer/interface/RawVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/RawVarProcessor.hpp"
 
 using namespace std;
 
@@ -8,19 +8,19 @@ RawVarProcessor::~RawVarProcessor(){}
 
 void RawVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
  
-  vars.InitVar( "N_RawJets","I" );
+  vars.InitVar( "N_CorrectedJets","I" );
   vars.InitVar( "N_RawLeptons","I" );
   vars.InitVar( "N_RawElectrons","I" );
   vars.InitVar( "N_RawMuons","I" );
   
-  vars.InitVars( "RawJet_E","N_RawJets" );
-  vars.InitVars( "RawJet_M","N_RawJets" );
-  vars.InitVars( "RawJet_Pt","N_RawJets" );
-  vars.InitVars( "RawJet_Phi","N_RawJets" );
-  vars.InitVars( "RawJet_Eta","N_RawJets" );
-  vars.InitVars( "RawJet_CSV","N_RawJets" );
-  vars.InitVars( "RawJet_Flav","N_RawJets" );
-  vars.InitVars( "RawJet_Charge","N_RawJets" );
+  vars.InitVars( "CorrectedJet_E","N_CorrectedJets" );
+  vars.InitVars( "CorrectedJet_M","N_CorrectedJets" );
+  vars.InitVars( "CorrectedJet_Pt","N_CorrectedJets" );
+  vars.InitVars( "CorrectedJet_Phi","N_CorrectedJets" );
+  vars.InitVars( "CorrectedJet_Eta","N_CorrectedJets" );
+  vars.InitVars( "CorrectedJet_CSV","N_CorrectedJets" );
+  vars.InitVars( "CorrectedJet_Flav","N_CorrectedJets" );
+  vars.InitVars( "CorrectedJet_Charge","N_CorrectedJets" );
   
   vars.InitVars( "RawLepton_E","N_RawLeptons" );
   vars.InitVars( "RawLepton_M","N_RawLeptons" );
@@ -51,26 +51,24 @@ void RawVarProcessor::Process(const InputCollections& input,VariableContainer& v
 
   const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   
-
   // Fill Multiplicity Variables
-  vars.FillVar( "N_RawJets",input.rawJets.size());
+  vars.FillVar( "N_CorrectedJets",input.correctedJets.size());
   vars.FillVar( "N_RawLeptons",input.rawElectrons.size() + input.rawMuons.size());
   vars.FillVar( "N_RawElectrons",input.rawElectrons.size());
   vars.FillVar( "N_RawMuons",input.rawMuons.size());
   
   // Fill Jet Variables
-  // Raw Jets
-  for(std::vector<pat::Jet>::const_iterator itJet = input.rawJets.begin() ; itJet != input.rawJets.end(); ++itJet){
-    int iJet = itJet - input.selectedJets.begin();
-    vars.FillVars( "RawJet_E",iJet,itJet->energy() );
-    vars.FillVars( "RawJet_M",iJet,itJet->mass() );
-    vars.FillVars( "RawJet_Pt",iJet,itJet->pt() );
-    vars.FillVars( "RawJet_Eta",iJet,itJet->eta() );
-    vars.FillVars( "RawJet_Phi",iJet,itJet->phi() );
-    vars.FillVars( "RawJet_CSV",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );
-    vars.FillVars( "RawJet_Flav",iJet,itJet->partonFlavour() );
-    vars.FillVars( "RawJet_Charge",iJet,itJet->jetCharge() );
-
+  // Corrected Jets
+  for(std::vector<pat::Jet>::const_iterator itJet = input.correctedJets.begin() ; itJet != input.correctedJets.end(); ++itJet){
+    int iJet = itJet - input.correctedJets.begin();
+    vars.FillVars( "CorrectedJet_E",iJet,itJet->energy() );
+    vars.FillVars( "CorrectedJet_M",iJet,itJet->mass() );
+    vars.FillVars( "CorrectedJet_Pt",iJet,itJet->pt() );
+    vars.FillVars( "CorrectedJet_Eta",iJet,itJet->eta() );
+    vars.FillVars( "CorrectedJet_Phi",iJet,itJet->phi() );
+    vars.FillVars( "CorrectedJet_CSV",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );
+    vars.FillVars( "CorrectedJet_Flav",iJet,itJet->partonFlavour() );
+    vars.FillVars( "CorrectedJet_Charge",iJet,itJet->jetCharge() );
   }
   
   // Fill Lepton Variables
@@ -91,7 +89,7 @@ void RawVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "RawElectron_Pt",iEle,itEle->pt() );
     vars.FillVars( "RawElectron_Eta",iEle,itEle->eta() );
     vars.FillVars( "RawElectron_Phi",iEle,itEle->phi() );
-    float RawElectron_Iso = StandardUtils::GetElectronRelIso(*itEle);
+    float RawElectron_Iso = BoostedUtils::GetElectronRelIso(*itEle);
     vars.FillVars( "RawElectron_Iso",iEle,RawElectron_Iso );
 //     vars.FillVars( "RawLepton_Iso",iEle,MiniAODHelper::GetElectronRelIso(*itEle) );
   }
@@ -103,7 +101,7 @@ void RawVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "RawMuon_Pt",iMu,itMu->pt() );
     vars.FillVars( "RawMuon_Eta",iMu,itMu->eta() );
     vars.FillVars( "RawMuon_Phi",iMu,itMu->phi() );
-    float RawMuon_Iso = StandardUtils::GetMuonRelIso(*itMu);
+    float RawMuon_Iso = BoostedUtils::GetMuonRelIso(*itMu);
     vars.FillVars( "RawMuon_Iso",iMu,RawMuon_Iso );
 //     vars.FillVars( "RawLepton_Iso",iMu+input.rawElectrons.size(),MiniAODHelper::GetMuonRelIso(*itMu, coneSize::R04, corrType::deltaBeta) );
   }
