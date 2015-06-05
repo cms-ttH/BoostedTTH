@@ -115,6 +115,7 @@ public:
   reco::GenParticle GetTopBHadron() const;
   reco::GenParticle GetHiggsBHadron() const;
   reco::GenParticle GetHiggsBBarHadron() const;
+  reco::GenParticle GetWCHadron() const;
 
   std::vector<reco::GenParticle> GetAdditionalBHadrons() const;
   std::vector<int> GetAdditionalBHadronMothers() const;
@@ -181,6 +182,7 @@ private:
   std::vector<int> additional_c_hadron_aftertop;
   std::vector<int> additional_c_hadron_mother;
 
+  reco::GenParticle w_c_hadron;
 
   bool topIsHadronic;
   bool topbarIsHadronic;

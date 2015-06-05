@@ -92,10 +92,11 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     int genjetidx=genCHadJetIndex[i];
     int aftertop = genCHadFromTopWeakDecay[i];    
     int motherflav = genCHadFlavour[i];
-    //    bool fromW = abs(motherflav)==24;
-
+    if(abs(motherflav)==24){
+      w_c_hadron=*chadron;
+    }
     // consider only hadrons not from B decays 
-    if(genCHadBHadronId[i] < 0){
+    else if(genCHadBHadronId[i] < 0 ){
       additional_c_hadrons.push_back(chadron!=0?*chadron:reco::GenParticle());      
       additional_c_hadron_aftertop.push_back(aftertop);
       additional_c_hadron_mother.push_back(motherflav);
@@ -239,6 +240,11 @@ reco::GenParticle GenTopEvent::GetHiggsBHadron() const{
 reco::GenParticle GenTopEvent::GetHiggsBBarHadron() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
   return higgs_bbar_hadron;
+}
+reco::GenParticle GenTopEvent::GetWCHadron() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  return w_c_hadron;
+  
 }
 
 std::vector<reco::GenParticle> GenTopEvent::GetAdditionalBGenJetsHadron() const{
