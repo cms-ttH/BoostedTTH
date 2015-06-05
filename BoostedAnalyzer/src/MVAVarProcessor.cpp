@@ -222,7 +222,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
 
   //also write the event ID for splitting purposes
   long evt_id = input.eventInfo.evt;
-  vars.FillVar("Evt_ID",evt_id);
+  vars.FillVar("Evt_ID",evt_id%2);
 
   const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
   std::vector<pat::Jet> selectedTaggedJets;
