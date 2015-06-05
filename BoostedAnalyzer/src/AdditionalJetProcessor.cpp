@@ -51,8 +51,10 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "AdditionalCHadron_Phi",-9.,"N_AdditionalCHadrons" );
   vars.InitVars( "AdditionalCHadron_E",-9.,"N_AdditionalCHadrons" );
   vars.InitVars( "AdditionalCHadron_FromTopType",-9.,"N_AdditionalCHadrons" );
-  vars.InitVars( "AdditionalCHadron_Mother",-9.,"N_AdditionalBHadrons" );
+  vars.InitVars( "AdditionalCHadron_Mother",-9.,"N_AdditionalCHadrons" );
   vars.InitVars( "AdditionalCHadron_Dr_CfromW",-9.,"N_AdditionalCHadrons" );
+
+  vars.InitVar( "WCHadron_Dr_CfromW",-9 );
 
   vars.InitVar( "GenEvt_TTxId",-1,"I" );
   vars.InitVar( "GenEvt_TTxId_wo_PseudoAdditional",-1,"I" );
@@ -237,7 +239,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalCHadron_Mother",i, cmothers[i]);
       float drQ=5;
       for(uint k=0; k<q1.size(); k++){
-	if(abs(q1[k].pdgId())==4&&q1[k].pt()>1&&chadrons[k].pt()>1){
+	if(abs(q1[k].pdgId())==4&&q1[k].pt()>1&&chadrons[i].pt()>1){
 	  float dr = BoostedUtils::DeltaR(q1[k].p4(),chadrons[i].p4());
 	  if(dr>0&&dr<drQ){
 	    drQ=dr;
@@ -254,7 +256,21 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       }    
       vars.FillVars( "AdditionalCHadron_Dr_CfromW", i, drQ);     
     }
-    
+    float drQ=5;
+    reco::GenParticle wchadron=input.genTopEvt.GetWCHadron();
+    for(uint k=0; k<q1.size(); k++){
+      if(abs(q1[k].pdgId())==4&&q1[k].pt()>1){
+	float dr = BoostedUtils::DeltaR(q1[k].p4(),wchadron.p4());
+	if(dr>0&&dr<drQ){
+	  drQ=dr;
+	}
+	dr = BoostedUtils::DeltaR(q2[k].p4(),wchadron.p4());
+	if(dr>0&&dr<drQ){
+	  drQ=dr;
+	}
+      }
+    }
+    vars.FillVar( "WCHadron_Dr_CfromW",drQ);
   }
 
 }
