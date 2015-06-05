@@ -13,7 +13,7 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
   variableMap["dEta_fn"]=-999.;
   variableMap["dev_from_avg_disc_btags"]=-999.;
   variableMap["dr_between_lep_and_closest_jet"]=-999.;
-  variableMap["fifth_highest_btag"]=-999.;
+  variableMap["fifth_highest_CSV"]=-999.;
   variableMap["first_jet_pt"]=-999.;
   variableMap["fourth_highest_btag"]=-999.;
   variableMap["fourth_jet_pt"]=-999.;
@@ -35,7 +35,6 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
   variableMap["pt_all_jets_over_E_all_jets"]=-999.;
   variableMap["second_highest_btag"]=-999.;
   variableMap["second_jet_pt"]=-999.;
-  variableMap["sixth_highest_btag"]=-999.;
   variableMap["sphericity"]=-999.;
   variableMap["tagged_dijet_mass_closest_to_125"]=-999.;
   variableMap["third_highest_btag"]=-999.;
@@ -387,7 +386,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   variableMap["dEta_fn"]=dEta_fn;
   variableMap["dev_from_avg_disc_btags"]=csvDev;
   variableMap["dr_between_lep_and_closest_jet"]=dr_between_lep_and_closest_jet;
-  variableMap["fifth_highest_btag"]=njets>4?sortedCSV[4]:-1.;
+  variableMap["fifth_highest_CSV"]=njets>4?sortedCSV[4]:-1.;
   variableMap["first_jet_pt"]=jet_vecs.size()>0?jet_vecs[0].Pt():-99;
   variableMap["fourth_highest_btag"]=njets>3?sortedCSV[3]:-1.;
   variableMap["fourth_jet_pt"]=jet_vecs.size()>3?jet_vecs[3].Pt():-99;
@@ -409,7 +408,6 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   variableMap["pt_all_jets_over_E_all_jets"]=pt_E_ratio;
   variableMap["second_highest_btag"]=njets>1?sortedCSV[1]:-1.;
   variableMap["second_jet_pt"]=jet_vecs.size()>1?jet_vecs[1].Pt():-99;
-  variableMap["sixth_highest_btag"]=njets>5?sortedCSV[5]:-1.;
   variableMap["sphericity"]=sphericity;
   variableMap["tagged_dijet_mass_closest_to_125"]=tagged_dijet_mass_closest_to_125;
   variableMap["third_highest_btag"]=njets>2?sortedCSV[2]:-1.;
@@ -430,7 +428,6 @@ std::map<std::string,float> BDTOhio_v2::GetAllOutputsOfLastEvaluation() const{
 float BDTOhio_v2::Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
   std::string category=GetCategory(selectedJets);
   if(category=="none") {
-    cerr <<  "BDTOhio_v2: no matching category found" << endl;
     return -2;
   }
   return Evaluate(category,selectedMuons,selectedElectrons,selectedJets,selectedJetsLoose,pfMET);

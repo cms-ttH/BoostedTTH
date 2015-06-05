@@ -379,7 +379,6 @@ std::map<std::string,float> BDTOhio_v1::GetAllOutputsOfLastEvaluation() const{
 float BDTOhio_v1::Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
   std::string category=GetCategory(selectedJets);
   if(category=="none") {
-    cerr <<  "BDTOhio_v1: no matching category found" << endl;
     return -2;
   }
   return Evaluate(category,selectedMuons,selectedElectrons,selectedJets,selectedJetsLoose,pfMET);

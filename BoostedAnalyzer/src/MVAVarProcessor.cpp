@@ -9,6 +9,7 @@ MVAVarProcessor::~MVAVarProcessor(){}
 void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
  
   vars.InitVar("Evt_ID","I");
+  vars.InitVar("Evt_Odd","I");
 
   vars.InitVar( "N_Jets","I" );
   vars.InitVar( "N_LooseJets","I" );
@@ -222,7 +223,10 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
 
   //also write the event ID for splitting purposes
   long evt_id = input.eventInfo.evt;
-  vars.FillVar("Evt_ID",evt_id%2);
+
+  vars.FillVar("Evt_ID",evt_id);
+  vars.FillVar("Evt_Odd",evt_id%2);
+
 
   const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
   std::vector<pat::Jet> selectedTaggedJets;
