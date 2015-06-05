@@ -91,24 +91,37 @@ public:
   std::vector<math::XYZTLorentzVector> GetAllWQuarkVecs() const;
   std::vector<math::XYZTLorentzVector> GetAllWAntiQuarkVecs() const;
 
-  reco::GenJet GetTopHadBGenJet() const;
-  reco::GenJet GetTopLepBGenJet() const;
+  std::vector<reco::GenJet> GetAllTopHadBGenJets() const;
+  std::vector<reco::GenJet> GetAllTopLepBGenJets() const;
   reco::GenJet GetTopBarBBarGenJet() const;
   reco::GenJet GetTopBGenJet() const;
   reco::GenJet GetHiggsBGenJet() const;
   reco::GenJet GetHiggsBBarGenJet() const;
+
   std::vector<reco::GenJet> GetAdditionalBGenJets() const;
   std::vector<reco::GenJet> GetAdditionalCGenJets() const;
-  std::vector<bool> AreAdditionalBGenJetsFromTop() const;
-  std::vector<bool> AreAdditionalCGenJetsFromTop() const;
-  std::vector<reco::GenJet> GetPseudoAdditionalBGenJets() const;
-  std::vector<reco::GenJet> GetPseudoAdditionalCGenJets() const;
-  std::vector<reco::GenJet> GetProperAdditionalBGenJets() const;
-  std::vector<reco::GenJet> GetProperAdditionalCGenJets() const;
-
   std::vector<reco::GenParticle> GetAdditionalBGenJetsHadron() const;
   std::vector<reco::GenParticle> GetAdditionalCGenJetsHadron() const;
 
+
+  std::vector<int> GetAdditionalCGenJetsFromTopType() const;
+  std::vector<int> GetAdditionalBGenJetsFromTopType() const;
+  std::vector<int> GetAdditionalCGenJetsNHadrons() const;
+  std::vector<int> GetAdditionalBGenJetsNHadrons() const;
+
+  std::vector<reco::GenParticle> GetAllTopHadBHadrons() const;
+  std::vector<reco::GenParticle> GetAllTopLepBHadrons() const;
+  reco::GenParticle GetTopBarBBarHadron() const;
+  reco::GenParticle GetTopBHadron() const;
+  reco::GenParticle GetHiggsBHadron() const;
+  reco::GenParticle GetHiggsBBarHadron() const;
+
+  std::vector<reco::GenParticle> GetAdditionalBHadrons() const;
+  std::vector<int> GetAdditionalBHadronMothers() const;
+  std::vector<int> GetAdditionalBHadronAfterTopType() const;
+  std::vector<reco::GenParticle> GetAdditionalCHadrons() const;
+  std::vector<int> GetAdditionalCHadronMothers() const;
+  std::vector<int> GetAdditionalCHadronAfterTopType() const;
 
   int GetTTxId(bool countAdditionalAfterTop=false) const;
   int GetTTxIdFromHelper() const;
@@ -146,6 +159,7 @@ private:
   std::vector<reco::GenJet> additional_b_genjets;
   std::vector<int> additional_b_genjet_nb;
   std::vector<int> additional_b_genjet_nb_aftertop;
+  std::vector<int> additional_b_genjet_aftertoptype;
   std::vector<reco::GenParticle> additional_b_genjet_hadron;
 
   reco::GenParticle higgs_b_hadron;
@@ -154,16 +168,18 @@ private:
   reco::GenParticle topbar_bbar_hadron;
 
   std::vector<reco::GenParticle> additional_b_hadrons;
-  std::vector<bool> additional_b_hadron_aftertop;
+  std::vector<int> additional_b_hadron_aftertop;
+  std::vector<int> additional_b_hadron_mother;
 
   std::vector<reco::GenJet> additional_c_genjets;
   std::vector<int> additional_c_genjet_nc;
   std::vector<int> additional_c_genjet_nc_aftertop;
+  std::vector<int> additional_c_genjet_aftertoptype;
   std::vector<reco::GenParticle> additional_c_genjet_hadron;
 
   std::vector<reco::GenParticle> additional_c_hadrons;
-  std::vector<bool> additional_c_hadron_aftertop;
-
+  std::vector<int> additional_c_hadron_aftertop;
+  std::vector<int> additional_c_hadron_mother;
 
 
   bool topIsHadronic;
