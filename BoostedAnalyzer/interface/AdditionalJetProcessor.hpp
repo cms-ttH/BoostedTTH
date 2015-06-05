@@ -16,6 +16,9 @@ class AdditionalJetProcessor: public TreeProcessor{
     
     void Init(const InputCollections& input,VariableContainer& var);
     void Process(const InputCollections& input,VariableContainer& var);
+
+  private:
+    const pat::Jet* GetPatJet(const reco::GenJet& genjet,const std::vector<pat::Jet>& patjets);
   
 };
 
