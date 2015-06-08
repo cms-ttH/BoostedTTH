@@ -2,7 +2,7 @@
 
 CSVHelper::CSVHelper(){
 
-  btagger="combinedInclusiveSecondaryVertexV2BJetTags";
+  btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   std::string path=BoostedUtils::GetAnalyzerPath();
 
   std::string inputFileHF = "/data/csvweights/csv_rwt_hf_IT_FlatSF.root";

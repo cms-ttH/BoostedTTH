@@ -25,8 +25,12 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.load('Configuration.StandardSequences.Services_cff')
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+process.GlobalTag.globaltag = 'MCRUN2_74_V9'
+#process.GlobalTag.globaltag = 'auto:run2_mc'
+
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
@@ -57,14 +61,16 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 #)
 process.source = cms.Source(  "PoolSource",
 			      fileNames = cms.untracked.vstring(List_FileNames)
+                              #fileNames= = cms.untracked.vstring("root://xrootd-cms.infn.it///store/mc/RunIISpring15DR74/ttHJetTobb_M125_13TeV_amcatnloFXFX_madspin_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/80000/002AEC99-1003-E511-A57F-0CC47A4DEE12.root")
 )
 
+process.content = cms.EDAnalyzer("EventContentAnalyzer")
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
-process.BoostedAnalyzer.useFatJets=True
+process.BoostedAnalyzer.useFatJets=False
 #process.BoostedAnalyzer.disableObjectSelections=False
 process.BoostedAnalyzer.outfileName = OUTFILE
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
-process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BoostedMCMatchVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","4JetSelection","2TagSelection"]
+process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BDTVarProcessor")
 process.BoostedAnalyzer.era = ERA
 process.BoostedAnalyzer.analysisType = cms.string("LJ")
 process.BoostedAnalyzer.luminosity = cms.double(10000.0)
@@ -76,4 +82,4 @@ process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 process.BoostedAnalyzer.systematicType = SYSTEMATIC
 
 
-process.p = cms.Path(process.BoostedAnalyzer)
+process.p = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.BoostedAnalyzer)

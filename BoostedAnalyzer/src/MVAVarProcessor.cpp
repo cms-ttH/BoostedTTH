@@ -224,7 +224,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   long evt_id = input.eventInfo.evt;
   vars.FillVar("Evt_ID",evt_id);
 
-  const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
+  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;

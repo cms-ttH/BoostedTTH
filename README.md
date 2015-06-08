@@ -21,3 +21,5 @@ BoostedObjects contains the classes needed for subjet-analysis. They associate f
 BoostedProduces contains the tools used to run the HEPTopTagger and SubjetFilterJet algorithm on MiniAOD and add the output as the above collections.
 
 BoostedAnalyzer can be used to analyze MiniAOD files. The plugin itself takes care of objectselections and stores the objects in InputCollections. Different event selection can be used in this step, too. The inputcollections can be analyzed with a TreeWriter that can load different Processors. Every processor writes a certain class of output variables in a flat TTree.
+
+This Branch was created to analze the new MCRun2 samples.

@@ -147,7 +147,7 @@ float TopTagger::GetBDTOutput(const boosted::HEPTopJet& topjet, bool verbose){
   BDTVars["TopJet_B_Pt"]                    = topjet.nonW.pt();
   BDTVars["TopJet_W1_Pt"]                   = topjet.W1.pt();
   BDTVars["TopJet_W2_Pt"]                   = topjet.W2.pt();
-  const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
+  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   BDTVars["TopJet_B_CSV"]                   = fmax(topjet.nonW.bDiscriminator(btagger),-.1);
   BDTVars["TopJet_W1_CSV"]                  = fmax(topjet.W1.bDiscriminator(btagger),-.1);
   BDTVars["TopJet_W2_CSV"]                  = fmax(topjet.W2.bDiscriminator(btagger),-.1);

@@ -39,7 +39,7 @@ std::vector<TLorentzVector> JetMatching::GetMatchedVecs(const std::vector<pat::J
       TLorentzVector mjet;
       mjet.SetPtEtaPhiE(itmJet->pt()/itJet->pt(), itJet->eta()-itmJet->eta(), itJet->phi()-itmJet->phi(), itmJet->energy()/itJet->energy());
       matchjetdiff.push_back(mjet);
-      DCSV_Matchedfilterjets.push_back(itJet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags")-itmJet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
+      DCSV_Matchedfilterjets.push_back(itJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")-itmJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
       Dr_Matchedfilterjets.push_back(drmin);
 //       fjets.erase(itmJet);
     }

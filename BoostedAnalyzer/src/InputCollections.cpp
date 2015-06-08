@@ -13,7 +13,7 @@ void InputCollections::DumpFatJets(std::ostream &out){
     for( uint ijet=0; ijet<filterjets.size(); ijet++ ){
       printf("\t\t filt jet %2d:\t pT = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
 	     ijet, filterjets[ijet].pt(), filterjets[ijet].eta(), filterjets[ijet].phi(), 
-	     filterjets[ijet].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
+	     filterjets[ijet].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
 	     filterjets[ijet].bDiscriminator("combinedSecondaryVertexBJetTags"));
     }
   }
@@ -27,15 +27,15 @@ void InputCollections::DumpFatJets(std::ostream &out){
     pat::Jet top = topjet->topjet;
     printf("\t\t W %2d:\t pT = %.1f,\t M = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
 	   0, W.pt() , W.mass(), W.eta(), W.phi(), 
-	   W.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
+	   W.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
 	   W.bDiscriminator("combinedSecondaryVertexBJetTags"));
     printf("\t\t top %2d:\t pT = %.1f,\t M = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
 	   0, top.pt() , top.mass(), top.eta(), top.phi(), 
-	   top.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
+	   top.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
 	   top.bDiscriminator("combinedSecondaryVertexBJetTags"));
     printf("\t\t W1 %2d:\t pT = %.1f,\t M = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
 	   0, W1.pt() , W1.mass(), W1.eta(), W1.phi(), 
-	   W1.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
+	   W1.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
 	   W1.bDiscriminator("combinedSecondaryVertexBJetTags"));
     
   }
@@ -99,22 +99,22 @@ void InputCollections::DumpSyncExe(std::ostream &out){
   
   if(selectedJets.size()>0){
     jet1_pt=selectedJets.at(0).pt();
-    jet1_CSVv2=selectedJets.at(0).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+    jet1_CSVv2=selectedJets.at(0).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(selectedJets.size()>1){
     jet2_pt=selectedJets.at(1).pt();
-    jet2_CSVv2=selectedJets.at(1).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+    jet2_CSVv2=selectedJets.at(1).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(selectedJets.size()>2){
     jet3_pt=selectedJets.at(2).pt();
-    jet3_CSVv2=selectedJets.at(2).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+    jet3_CSVv2=selectedJets.at(2).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(selectedJets.size()>3){
     jet4_pt=selectedJets.at(3).pt();
-    jet4_CSVv2=selectedJets.at(3).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+    jet4_CSVv2=selectedJets.at(3).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   n_jets=int(selectedJets.size());
   for(auto jet=selectedJets.begin();jet!=selectedJets.end(); jet++){

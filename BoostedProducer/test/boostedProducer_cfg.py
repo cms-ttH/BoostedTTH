@@ -105,7 +105,7 @@ addJetCollection(
     #groomedFatJets = cms.InputTag('CA12JetsCA3FilterjetsPF','subjets'),
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators =  [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
+    btagDiscriminators =  [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
     jetCorrections = None,
     getJetMCFlavour = False,
     genJetCollection = None #cms.InputTag('CA12JetsCA3FilterjetsGen','filterjets')
@@ -139,7 +139,7 @@ addJetCollection(
     #groomedFatJets = cms.InputTag("ak8PFJetsCHSPruned"),
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators = [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
+    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
     jetCorrections = None,
     getJetMCFlavour = False,
     genJetCollection = None
