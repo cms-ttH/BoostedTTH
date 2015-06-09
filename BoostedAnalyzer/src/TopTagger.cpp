@@ -82,9 +82,9 @@ void TopTagger::ResetBDTVars(){
 float TopTagger::GetTopLikelihood(const boosted::HTTTopJet& topjet, bool verbose){
   
   if(!toplikelihood) return -1.1;
-  if(topjet.nonW.pt()<0) return -1.1;
-  if(topjet.W1.pt()<0) return -1.1;
-  if(topjet.W2.pt()<0) return -1.1;
+  if(topjet.nonW.pt()<1.0) return -1.1;
+  if(topjet.W1.pt()<1.0) return -1.1;
+  if(topjet.W2.pt()<1.0) return -1.1;
   
   std::vector<pat::Jet> subjets;
   subjets.push_back(topjet.nonW);
@@ -107,11 +107,11 @@ float TopTagger::GetTopLikelihood(const boosted::HTTTopJet& topjet, bool verbose
   else return -1.1;
   float mratio=mW/mTop;
   float atan=TMath::ATan(mBW1/mBW2);
-  /*
+  
   if (mTop<120||mTop>200) return -1.1;
   if (mratio<0.2||mratio>0.8) return -1.1;
   if (atan<0.15||atan>1.4) return -1.1;
-  */
+  
   float ptt = mtop_top_histo->Interpolate(mTop);
   float ptf = mtop_nottop_histo->Interpolate(mTop);
   float pat = atan_top_histo->Interpolate(atan);

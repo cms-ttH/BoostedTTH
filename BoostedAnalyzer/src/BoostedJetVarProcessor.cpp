@@ -200,8 +200,9 @@ void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "TopJet_Dr_W1btag_Bbtag",-9,"N_TopJets" );
   vars.InitVars( "TopJet_Dr_W2btag_Bbtag",-9,"N_TopJets" );
   vars.InitVars( "TopJet_Dr_W1btag_W2btag",-9,"N_TopJets" );
-
+  
   vars.InitVar( "N_HiggsJets","I" );
+
   vars.InitVars( "HiggsJet_Pt","N_HiggsJets" );
   vars.InitVars( "HiggsJet_Eta","N_HiggsJets" );
   vars.InitVars( "HiggsJet_Phi","N_HiggsJets" );
@@ -299,6 +300,39 @@ void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "HiggsJet_Filterjet3_IdxAk5","N_HiggsJets" );
   vars.InitVars( "HiggsJet_Dr_Lepton","N_HiggsJets" );
 
+  vars.InitVar( "N_MJDCA12_L","I" );
+  vars.InitVars( "CA12MFJ_L_E","N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_Pt","N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_Eta","N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_Phi","N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_DCSV","N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_Dr","N_MJDCA12_L" );
+
+  vars.InitVar( "N_MJDCA12_T","I" );
+  vars.InitVars( "CA12MFJ_T_E","N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_Pt","N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_Eta","N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_Phi","N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_DCSV","N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_Dr","N_MJDCA12_T" );
+
+  vars.InitVar( "N_MJDCA15_L","I" );
+  vars.InitVars( "CA15MFJ_L_E","N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_Pt","N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_Eta","N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_Phi","N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_DCSV","N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_Dr","N_MJDCA15_L" );
+
+  vars.InitVar( "N_MJDCA15_T","I" );
+  vars.InitVars( "CA15MFJ_T_E","N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_Pt","N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_Eta","N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_Phi","N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_DCSV","N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_Dr","N_MJDCA15_T" );
+
+
   initialized=true;
 }
 
@@ -360,7 +394,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 
       vars.FillVars( "TopJet_BW1_M",i,(nonW.p4()+W1.p4()).M() );
       vars.FillVars( "TopJet_BW2_M",i,(nonW.p4()+W2.p4()).M() );
-    
+         
       vars.FillVars( "TopJet_Dr_B_Top",i,BoostedUtils::DeltaR(nonW.p4(),topVec) );
       vars.FillVars( "TopJet_Dr_W1_Top",i,BoostedUtils::DeltaR(W1.p4(),topVec) );
       vars.FillVars( "TopJet_Dr_W2_Top",i,BoostedUtils::DeltaR(W2.p4(),topVec) );
@@ -672,4 +706,69 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 	    primlepvec = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
     vars.FillVars( "HiggsJet_Dr_Lepton",i,primlepvec.Pt()>5 ? BoostedUtils::DeltaR(primlepvec,input.selectedSubFilterJets[i].fatjet.p4()) : -1);
   }
+
+  vector<float> CA12MFJ_L_CSVR;
+  vector<float> CA12MFJ_L_Dr;
+  std::vector<pat::Jet> CA12filterjets_L = JetMatching::GetFilterjets(input.selectedSubFilterJets);
+  vector<TLorentzVector> CA12MFJ_L_p4 = JetMatching::GetMatchedVecs(CA12filterjets_L, input.selectedJets, CA12MFJ_L_CSVR, CA12MFJ_L_Dr);
+
+  vars.FillVar( "N_MJDCA12_L",CA12MFJ_L_p4.size() );
+  for(size_t i=0; i<CA12MFJ_L_p4.size();i++)
+  {
+    vars.FillVars( "CA12MFJ_L_E",i,CA12MFJ_L_p4[i].E() );
+    vars.FillVars( "CA12MFJ_L_Pt",i,CA12MFJ_L_p4[i].Pt() );
+    vars.FillVars( "CA12MFJ_L_Eta",i,CA12MFJ_L_p4[i].Eta() );
+    vars.FillVars( "CA12MFJ_L_Phi",i,CA12MFJ_L_p4[i].Phi() );
+    vars.FillVars( "CA12MFJ_L_DCSV",i,CA12MFJ_L_CSVR[i] );
+    vars.FillVars( "CA12MFJ_L_Dr",i,CA12MFJ_L_Dr[i] );
+  }
+
+  vector<float> CA12MFJ_T_CSVR;
+  vector<float> CA12MFJ_T_Dr;
+  std::vector<pat::Jet> CA12filterjets_T = JetMatching::GetFilterjets(input.selectedSubFilterJets, 30, 2.41);
+  vector<TLorentzVector> CA12MFJ_T_p4 = JetMatching::GetMatchedVecs(CA12filterjets_T, input.selectedJets, CA12MFJ_T_CSVR, CA12MFJ_T_Dr);
+
+  vars.FillVar( "N_MJDCA12_T",CA12MFJ_T_p4.size() );
+  for(size_t i=0; i<CA12MFJ_T_p4.size();i++)
+  {
+    vars.FillVars( "CA12MFJ_T_E",i,CA12MFJ_T_p4[i].E() );
+    vars.FillVars( "CA12MFJ_T_Pt",i,CA12MFJ_T_p4[i].Pt() );
+    vars.FillVars( "CA12MFJ_T_Eta",i,CA12MFJ_T_p4[i].Eta() );
+    vars.FillVars( "CA12MFJ_T_Phi",i,CA12MFJ_T_p4[i].Phi() );
+    vars.FillVars( "CA12MFJ_T_DCSV",i,CA12MFJ_T_CSVR[i] );
+    vars.FillVars( "CA12MFJ_T_Dr",i,CA12MFJ_T_Dr[i] );
+  }
+
+  vector<float> CA15MFJ_L_CSVR;
+  vector<float> CA15MFJ_L_Dr;
+  std::vector<pat::Jet> CA15filterjets_L = JetMatching::GetFilterjets(input.selectedHEPTopJets);
+  vector<TLorentzVector> CA15MFJ_L_p4 = JetMatching::GetMatchedVecs(CA15filterjets_L, input.selectedJets, CA15MFJ_L_CSVR, CA15MFJ_L_Dr);
+
+  vars.FillVar( "N_MJDCA15_L",CA15MFJ_L_p4.size() );
+  for(size_t i=0; i<CA15MFJ_L_p4.size();i++)
+  {
+    vars.FillVars( "CA15MFJ_L_E",i,CA15MFJ_L_p4[i].E() );
+    vars.FillVars( "CA15MFJ_L_Pt",i,CA15MFJ_L_p4[i].Pt() );
+    vars.FillVars( "CA15MFJ_L_Eta",i,CA15MFJ_L_p4[i].Eta() );
+    vars.FillVars( "CA15MFJ_L_Phi",i,CA15MFJ_L_p4[i].Phi() );
+    vars.FillVars( "CA15MFJ_L_DCSV",i,CA15MFJ_L_CSVR[i] );
+    vars.FillVars( "CA15MFJ_L_Dr",i,CA15MFJ_L_Dr[i] );
+  }
+
+  vector<float> CA15MFJ_T_CSVR;
+  vector<float> CA15MFJ_T_Dr;
+  std::vector<pat::Jet> CA15filterjets_T = JetMatching::GetFilterjets(input.selectedHEPTopJets, 30, 2.41);
+  vector<TLorentzVector> CA15MFJ_T_p4 = JetMatching::GetMatchedVecs(CA15filterjets_T, input.selectedJets, CA15MFJ_T_CSVR, CA15MFJ_T_Dr);
+
+  vars.FillVar( "N_MJDCA15_T",CA15MFJ_T_p4.size() );
+  for(size_t i=0; i<CA15MFJ_T_p4.size();i++)
+  {
+    vars.FillVars( "CA15MFJ_T_E",i,CA15MFJ_T_p4[i].E() );
+    vars.FillVars( "CA15MFJ_T_Pt",i,CA15MFJ_T_p4[i].Pt() );
+    vars.FillVars( "CA15MFJ_T_Eta",i,CA15MFJ_T_p4[i].Eta() );
+    vars.FillVars( "CA15MFJ_T_Phi",i,CA15MFJ_T_p4[i].Phi() );
+    vars.FillVars( "CA15MFJ_T_DCSV",i,CA15MFJ_T_CSVR[i] );
+    vars.FillVars( "CA15MFJ_T_Dr",i,CA15MFJ_T_Dr[i] );
+  }
+
 }

@@ -9,6 +9,7 @@
 <use name="HLTrigger/HLTcore"/>
 <use name="JetMETCorrections/Objects"/>
 <use name="CondFormats/JetMETObjects"/>
+<use name="MiniAOD/MiniAODHelper"/>
 <export>
   <lib   name="1"/>
 </export>

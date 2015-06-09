@@ -12,7 +12,7 @@
 class Selection{
 
 public:
-  virtual void Init(const edm::ParameterSet& iConfig, Cutflow& cutflow)=0;
+  virtual void InitCutflow(Cutflow& cutflow)=0;
   virtual bool IsSelected(const InputCollections& input,Cutflow& cutflow)=0;
 
 protected:
