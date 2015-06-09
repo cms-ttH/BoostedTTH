@@ -52,22 +52,28 @@ void ttHVarProcessor::InitTopTagger(string taggername){
  
   if(taggername!=""){
     if(taggername.find("TopLikelihood")!=std::string::npos) toptagger = TopTagger(taggername);
-    else if(taggername.find("TMVATopTagger")!=std::string::npos){
+    else if(taggername.find("BDTTopTagger")!=std::string::npos){
 
       vector<string> BDTVars;
       string weights;
 
-      if(taggername == "TMVATopTaggerOutput_MWDef_CombDef_ttbar"){
+      if(taggername == "BDTTopTagger_PSO"){
+        BDTVars.push_back("TopJet_Wbtag_M");
+        BDTVars.push_back("TopJet_BW1btag_M");
+        BDTVars.push_back("TopJet_BW2btag_M");
+        BDTVars.push_back("TopJet_PrunedMass");
+        BDTVars.push_back("TopJet_UnfilteredMass");
+        BDTVars.push_back("TopJet_DRoptRoptCalc");
+        BDTVars.push_back("TopJet_Tau21Filtered");
+        BDTVars.push_back("TopJet_Tau32Filtered");
+        BDTVars.push_back("TopJet_Bbtag_CSV");
+        BDTVars.push_back("TopJet_W1btag_CSV");
+        BDTVars.push_back("TopJet_MRatio_Wbtag_Top");
+        BDTVars.push_back("TopJet_W2btag_CSV");
         BDTVars.push_back("TopJet_Top_M");
-        BDTVars.push_back("TopJet_Dr_Lep");
-        BDTVars.push_back("TopJet_W2_Pt");
-        BDTVars.push_back("TopJet_B_Pt");
-        BDTVars.push_back("TopJet_NSubjettiness_12_Ratio");
-        BDTVars.push_back("TopJet_W1_Pt");
-        BDTVars.push_back("TopJet_W_M");
-        BDTVars.push_back("TopJet_B_CSV");
-
-        weights = "/nfs/dust/cms/user/tpfotzer/ttbarX/BEANs/mva/TMVA/TMVATopTagger/weights/TMVATopTagger_BDTG_MWDef_CombDef.weights.xml";
+        BDTVars.push_back("TopJet_fRec");
+        
+        weights = "BDTTopTagger_PSO.weights.xml";
       }
 
       toptagger = TopTagger(taggername,BDTVars,weights); 

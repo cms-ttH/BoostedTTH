@@ -54,7 +54,7 @@ float HiggsTagger::GetSecondCSV(const boosted::SubFilterJet& higgsJet, bool verb
   
   std::vector<pat::Jet> filterjets = higgsJet.filterjets;
   std::sort(filterjets.begin(),filterjets.end(),BoostedUtils::FirstHasHigherCSVold); 
-  return filterjets[1].bDiscriminator("combinedSecondaryVertexBJetTags");
+  return fmax(filterjets[1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),-.1);
 
 }
 

@@ -271,9 +271,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itPro == "MCMatchVarProcessor") treewriter.AddTreeProcessor(new MCMatchVarProcessor());
     else if(*itPro == "MVAVarProcessor") treewriter.AddTreeProcessor(new MVAVarProcessor());
     else if(*itPro == "BoostedJetVarProcessor") treewriter.AddTreeProcessor(new BoostedJetVarProcessor());
-    else if(*itPro == "BoostedTopHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,"TopLikelihood","HiggsCSV","BoostedTopHiggs_"));
-    else if(*itPro == "BoostedTopVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,"TopLikelihood","HiggsCSV","BoostedTop_"));
-    else if(*itPro == "BoostedHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,"TopLikelihood","HiggsCSV","BoostedHiggs_"));
+    else if(*itPro == "BoostedTopHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,"BDTTopTagger_PSO","HiggsCSV","BoostedTopHiggs_"));
+    else if(*itPro == "BoostedTopVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,"BDTTopTagger_PSO","HiggsCSV","BoostedTop_"));
+    else if(*itPro == "BoostedHiggsVarProcessor") treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,"BDTTopTagger_PSO","HiggsCSV","BoostedHiggs_"));
     // the BDT processor rely on the variables filled py the other producers and should be added at the end
     else if(*itPro == "BDTVarProcessor") treewriter.AddTreeProcessor(new BDTVarProcessor());
     

@@ -23,18 +23,18 @@ TopTagger::TopTagger(std::string name_, std::string histosPath_): name(name_) {
   atan_top_histo=(TH1F*)file->Get("TopJet_Atan_1213_True");
   atan_nottop_histo=(TH1F*)file->Get("TopJet_Atan_1213_False");
   */
-  
+  /*
   mratio_top_histo=(TH1F*)file->Get("TopJet_MRatio_W_Top_True");
   mratio_nottop_histo=(TH1F*)file->Get("TopJet_MRatio_W_Top_False");
   atan_top_histo=(TH1F*)file->Get("TopJet_Atan_BW1W2_True");
   atan_nottop_histo=(TH1F*)file->Get("TopJet_Atan_BW1W2_False");
+  */
   
-  /*
   mratio_top_histo=(TH1F*)file->Get("TopJet_MRatio_Wbtag_Top_True");
   mratio_nottop_histo=(TH1F*)file->Get("TopJet_MRatio_Wbtag_Top_False");
   atan_top_histo=(TH1F*)file->Get("TopJet_MRatio_Wbtag_Top_True");
   atan_nottop_histo=(TH1F*)file->Get("TopJet_MRatio_Wbtag_Top_False");
-  */
+  
   
   toplikelihood = true;
   tmva = false;
@@ -45,28 +45,27 @@ TopTagger::TopTagger(std::string name_, std::vector<std::string> BDTVarNames_, s
   
   BDTReader = new TMVA::Reader();
 
-  BDTVars["TopJet_Pt"]                      = -999;
-  BDTVars["TopJet_B_Pt"]                    = -999;
-  BDTVars["TopJet_W1_Pt"]                   = -999;
-  BDTVars["TopJet_W2_Pt"]                   = -999;
-  BDTVars["TopJet_B_CSV"]                   = -999;
-  BDTVars["TopJet_W1_CSV"]                  = -999;
-  BDTVars["TopJet_W2_CSV"]                  = -999;
-  BDTVars["TopJet_M12"]                     = -999;
-  BDTVars["TopJet_M13"]                     = -999;
-  BDTVars["TopJet_M23"]                     = -999;
-  BDTVars["TopJet_M_W"]                     = -999;
-  BDTVars["TopJet_Top_M"]                   = -999;
-  BDTVars["TopJet_Top_DM"]                  = -999;
-  BDTVars["TopJet_NSubjettiness_12_Ratio"]  = -999;
-  BDTVars["TopJet_NSubjettiness_23_Ratio"]  = -999;
-  BDTVars["TopJet_Dr_Lep"]                  = -999;
-
+  BDTVars["TopJet_Top_M"]             = -999;
+  BDTVars["TopJet_Wbtag_M"]           = -999;
+  BDTVars["TopJet_BW1btag_M"]         = -999;
+  BDTVars["TopJet_BW2btag_M"]         = -999;
+  BDTVars["TopJet_PrunedMass"]        = -999;
+  BDTVars["TopJet_UnfilteredMass"]    = -999;
+  BDTVars["TopJet_fRec"]              = -999;
+  BDTVars["TopJet_DRoptRoptCalc"]     = -999;
+  BDTVars["TopJet_Tau21Filtered"]     = -999;
+  BDTVars["TopJet_Tau32Filtered"]     = -999;
+  BDTVars["TopJet_Bbtag_CSV"]         = -999;
+  BDTVars["TopJet_W1btag_CSV"]        = -999;
+  BDTVars["TopJet_W2btag_CSV"]        = -999;
+  BDTVars["TopJet_MRatio_Wbtag_Top"]  = -999;
+  BDTVars["TopJet_Atan_BW1W2btag"]    = -999;
+  
   for(size_t iBDTVars=0;iBDTVars<BDTVarNames_.size();iBDTVars++){
     BDTReader->AddVariable(BDTVarNames_[iBDTVars].c_str(),&BDTVars[BDTVarNames_[iBDTVars]]);
   }
 
-  BDTReader->BookMVA("BDT",BoostedUtils::GetAnalyzerPath()+"/data/"+weightsPath_.c_str());
+  BDTReader->BookMVA("BDT",(BoostedUtils::GetAnalyzerPath()+"/data/toptagger/"+weightsPath_).c_str());
   
   tmva = true;
   toplikelihood = false;
@@ -128,38 +127,29 @@ float TopTagger::GetTopLikelihood(const boosted::HTTTopJet& topjet, bool verbose
 float TopTagger::GetBDTOutput(const boosted::HTTTopJet& topjet, bool verbose){
   
   if(!tmva) return -1.1;
-  if(topjet.nonW.pt()<0) return -1.1;
-  if(topjet.W1.pt()<0) return -1.1;
-  if(topjet.W2.pt()<0) return -1.1;
-  
-  std::vector<pat::Jet> subjets;
-  subjets.push_back(topjet.nonW);
-  subjets.push_back(topjet.W1);
-  subjets.push_back(topjet.W2);
-  std::sort(subjets.begin(), subjets.end(),BoostedUtils::FirstJetIsHarder);
-  std::vector<math::XYZTLorentzVector> topvecs = BoostedUtils::GetJetVecs(subjets);
-  
-  if(topvecs.size()!=3) return -1.1;
+  if(topjet.nonW.pt()==0) return -1.1;
+  if(topjet.W1.pt()==0) return -1.1;
+  if(topjet.W2.pt()==0) return -1.1;
   
   ResetBDTVars();
   
   const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
   
-  BDTVars["TopJet_Pt"]                      = topjet.fatjet.pt();
-  BDTVars["TopJet_B_Pt"]                    = topjet.nonW.pt();
-  BDTVars["TopJet_W1_Pt"]                   = topjet.W1.pt();
-  BDTVars["TopJet_W2_Pt"]                   = topjet.W2.pt();
-  BDTVars["TopJet_B_CSV"]                   = fmax(topjet.nonW.bDiscriminator(btagger),-.1);
-  BDTVars["TopJet_W1_CSV"]                  = fmax(topjet.W1.bDiscriminator(btagger),-.1);
-  BDTVars["TopJet_W2_CSV"]                  = fmax(topjet.W2.bDiscriminator(btagger),-.1);
-  BDTVars["TopJet_M12"]                     = (topvecs[0]+topvecs[1]).M();
-  BDTVars["TopJet_M13"]                     = (topvecs[0]+topvecs[2]).M();
-  BDTVars["TopJet_M23"]                     = (topvecs[1]+topvecs[2]).M();
-  BDTVars["TopJet_W_M"]                     = topjet.GetWJetVec().M();
-  BDTVars["TopJet_Top_M"]                   = topjet.GetTopJetVec().M();
-  BDTVars["TopJet_Top_DM"]                  = (topjet.fatjet.mass())-(topjet.GetTopJetVec().M());
-  BDTVars["TopJet_NSubjettiness_12_Ratio"]  = topjet.tau2Filtered/topjet.tau1Filtered;
-  BDTVars["TopJet_NSubjettiness_23_Ratio"]  = topjet.tau3Filtered/topjet.tau2Filtered;
+  BDTVars["TopJet_Top_M"]             = topjet.topjet.mass();
+  BDTVars["TopJet_Wbtag_M"]           = (topjet.W1.p4()+topjet.W2.p4()).M();
+  BDTVars["TopJet_BW1btag_M"]         = (topjet.nonW.p4()+topjet.W1.p4()).M();
+  BDTVars["TopJet_BW2btag_M"]         = (topjet.nonW.p4()+topjet.W2.p4()).M();
+  BDTVars["TopJet_PrunedMass"]        = topjet.prunedMass;
+  BDTVars["TopJet_UnfilteredMass"]    = topjet.unfilteredMass;
+  BDTVars["TopJet_fRec"]              = topjet.fRec;
+  BDTVars["TopJet_DRoptRoptCalc"]     = topjet.Ropt-topjet.RoptCalc;
+  BDTVars["TopJet_Tau21Filtered"]     = topjet.tau2Filtered/topjet.tau1Filtered;
+  BDTVars["TopJet_Tau32Filtered"]     = topjet.tau3Filtered/topjet.tau2Filtered;
+  BDTVars["TopJet_Bbtag_CSV"]         = fmax(topjet.nonW.bDiscriminator(btagger),-.1);
+  BDTVars["TopJet_W1btag_CSV"]        = fmax(topjet.W1.bDiscriminator(btagger),-.1);
+  BDTVars["TopJet_W2btag_CSV"]        = fmax(topjet.W2.bDiscriminator(btagger),-.1);
+  BDTVars["TopJet_MRatio_Wbtag_Top"]  = (topjet.W1.p4()+topjet.W2.p4()).M()/topjet.topjet.mass();
+  BDTVars["TopJet_Atan_BW1W2btag"]    = atan((topjet.nonW.p4()+topjet.W1.p4()).M()/(topjet.nonW.p4()+topjet.W2.p4()).M());
   
   if(verbose){
     std::cout << "Top Tagger Variables:" << std::endl;

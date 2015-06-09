@@ -253,7 +253,7 @@ math::XYZTLorentzVector BoostedUtils::GetPrimLepVec(const std::vector<pat::Elect
   std::vector<math::XYZTLorentzVector> leptonVecs = GetLepVecs(selectedElectrons,selectedMuons);
   
   if(leptonVecs.size()==0){
-    std::cerr<< "No PrimLep Found!" << std::endl;
+    //std::cerr<< "No PrimLep Found!" << std::endl;
     return math::XYZTLorentzVector();
   }
   
