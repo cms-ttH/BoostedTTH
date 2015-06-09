@@ -1,7 +1,0 @@
-0 : all : 5000
-1 : vertex selection : 4997
-2 : dilepton trigger : 122
-3 : >= 2 OS emu : 47
-4 : mll > 20 : 46
-5 : >= 2 jets : 41
-6 : >= 1 b-tag : 36
