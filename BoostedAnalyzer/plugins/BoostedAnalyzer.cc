@@ -618,7 +618,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 			  rawElectrons,
 			  selectedElectrons,
 			  selectedElectronsLoose,
-			  correctedJets,
+			  rawJets,
 			  selectedJets,
                           selectedJetsLoose,
                           pfMETs[0],
@@ -691,32 +691,32 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   weights["Weight_PU"] = puweight;
   weights["Weight_TopPt"] = topptweight;
 
-  bool doSystematics=true;  
-  if(doSystematics && jsystype != sysType::JESup && jsystype != sysType::JESup){
+//   bool doSystematics=true;  
+//   if(doSystematics && jsystype != sysType::JESup && jsystype != sysType::JESup){
     //weights["Weight_TopPtup"] = beanHelper.GetTopPtweightUp(mcparticlesStatus3)/topptweight;
     //weights["Weight_TopPtdown"] = beanHelper.GetTopPtweightDown(mcparticlesStatus3)/topptweight;
 
-    weights["Weight_CSVLFup"] = csvReweighter.get_csv_wgt(selectedJets,9, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFdown"] = csvReweighter.get_csv_wgt(selectedJets,10, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFup"] = csvReweighter.get_csv_wgt(selectedJets,11, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFdown"] = csvReweighter.get_csv_wgt(selectedJets,12, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFStats1up"] = csvReweighter.get_csv_wgt(selectedJets,13, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFStats1down"] = csvReweighter.get_csv_wgt(selectedJets,14, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFStats1up"] = csvReweighter.get_csv_wgt(selectedJets,17, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFStats1down"] = csvReweighter.get_csv_wgt(selectedJets,18, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFStats2up"] = csvReweighter.get_csv_wgt(selectedJets,15, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFStats2down"] = csvReweighter.get_csv_wgt(selectedJets,16, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFStats2up"] = csvReweighter.get_csv_wgt(selectedJets,19, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFStats2down"] = csvReweighter.get_csv_wgt(selectedJets,20, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVCErr1up"] = csvReweighter.get_csv_wgt(selectedJets,21, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVCErr1down"] = csvReweighter.get_csv_wgt(selectedJets,22, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVCErr2up"] = csvReweighter.get_csv_wgt(selectedJets,23, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVCErr2down"] = csvReweighter.get_csv_wgt(selectedJets,24, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVLFup"] = csvReweighter.get_csv_wgt(selectedJets,9, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVLFdown"] = csvReweighter.get_csv_wgt(selectedJets,10, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVHFup"] = csvReweighter.get_csv_wgt(selectedJets,11, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVHFdown"] = csvReweighter.get_csv_wgt(selectedJets,12, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVHFStats1up"] = csvReweighter.get_csv_wgt(selectedJets,13, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVHFStats1down"] = csvReweighter.get_csv_wgt(selectedJets,14, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVLFStats1up"] = csvReweighter.get_csv_wgt(selectedJets,17, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVLFStats1down"] = csvReweighter.get_csv_wgt(selectedJets,18, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVHFStats2up"] = csvReweighter.get_csv_wgt(selectedJets,15, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVHFStats2down"] = csvReweighter.get_csv_wgt(selectedJets,16, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVLFStats2up"] = csvReweighter.get_csv_wgt(selectedJets,19, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVLFStats2down"] = csvReweighter.get_csv_wgt(selectedJets,20, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVCErr1up"] = csvReweighter.get_csv_wgt(selectedJets,21, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVCErr1down"] = csvReweighter.get_csv_wgt(selectedJets,22, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVCErr2up"] = csvReweighter.get_csv_wgt(selectedJets,23, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+//     weights["Weight_CSVCErr2down"] = csvReweighter.get_csv_wgt(selectedJets,24, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
     
     //weights["Weight_Q2up"] = beanHelper.GetQ2ScaleUp(event[0]);
     //weights["Weight_Q2down"] = beanHelper.GetQ2ScaleDown(event[0]);
 
-  }
+//   }
   
   
   return weights;

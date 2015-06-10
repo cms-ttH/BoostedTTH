@@ -9,7 +9,7 @@ TreeWriter::TreeWriter(){
 
 TreeWriter::~TreeWriter(){
   outFile->cd();
-  tree->Write(); 
+  tree->Write();
   outFile->Write();
   outFile->Close();
   cout << "Tree Written to " << outFile->GetPath() << endl;
