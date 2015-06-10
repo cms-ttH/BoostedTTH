@@ -4,21 +4,11 @@ import FWCore.ParameterSet.Config as cms
 import os
 
 process = cms.Process("boosted")
-List_FileNames=[]
-OUTFILE = os.getenv("OUTFILE_NAME")
 XS = os.getenv("XS")
 MCEvents = os.getenv("MCEVENTS")
 ERA = os.getenv("ERA")
 INSAMPLE = os.getenv("INSAMPLE")
-INFILE = os.getenv("FILE_NAMES")
 SYSTEMATIC=os.getenv("SYSTEMATIC")
-
-List_INFILES = INFILE.split(" ")
-for fn in List_INFILES:
-  List_FileNames.append("file:"+fn)
-print List_FileNames
-List_FileNames.pop()
-print List_FileNames
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -59,7 +49,7 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 #			      fileNames = cms.untracked.vstring('file:'+INFILE)
 #)
 process.source = cms.Source(  "PoolSource",
-			      fileNames = cms.untracked.vstring(List_FileNames)
+			      fileNames = cms.untracked.vstring()
                               #fileNames= = cms.untracked.vstring("root://xrootd-cms.infn.it///store/mc/RunIISpring15DR74/ttHJetTobb_M125_13TeV_amcatnloFXFX_madspin_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/80000/002AEC99-1003-E511-A57F-0CC47A4DEE12.root")
 )
 
@@ -67,7 +57,7 @@ process.content = cms.EDAnalyzer("EventContentAnalyzer")
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.useFatJets=False
 #process.BoostedAnalyzer.disableObjectSelections=False
-process.BoostedAnalyzer.outfileName = OUTFILE
+#process.BoostedAnalyzer.outfileName = OUTFILE
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","4JetSelection","2TagSelection"]
 process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BDTVarProcessor")
 process.BoostedAnalyzer.era = ERA
