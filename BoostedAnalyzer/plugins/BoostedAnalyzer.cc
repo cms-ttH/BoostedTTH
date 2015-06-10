@@ -274,7 +274,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   EDMJetsToken            = consumes< std::vector<pat::Jet> >(edm::InputTag("slimmedJets","",""));
   EDMMETsToken            = consumes< std::vector<pat::MET> >(edm::InputTag("slimmedMETs","",""));
   EDMHTTTopJetsToken      = consumes< boosted::HTTTopJetCollection >(edm::InputTag("HTTTopJetMatcher","htttopjets","p"));
-  EDMSubFilterJetsToken   = consumes< boosted::SubFilterJetCollection >(edm::InputTag("CA12JetsCA3FilterjetsPFMatcher","subfilterjets",""));
+  EDMSubFilterJetsToken   = consumes< boosted::SubFilterJetCollection >(edm::InputTag("SFJetMatcher","subfilterjets",""));
   EDMGenInfoToken         = consumes< GenEventInfoProduct >(edm::InputTag("generator","",""));
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
@@ -430,7 +430,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByToken( EDMMuonsToken,h_muons );
   std::vector<pat::Muon> const &muons = *h_muons; 
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., muonID::muonTight, 2.1 );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonTight, 2.4 );  // for the sake of sync: loose == tight
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose, 2.4 );  // for the sake of sync: loose == tight
 
   // ELECTRONS
   edm::Handle< std::vector<pat::Electron> > h_electrons;
@@ -495,7 +495,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   /**** GET GENEVENTINFO ****/
   edm::Handle<GenEventInfoProduct> h_geneventinfo;
   iEvent.getByToken( EDMGenInfoToken, h_geneventinfo );
-  GenEventInfoProduct const &genEventInfo=*h_geneventinfo;
+  GenEventInfoProduct const &genEventInfo=*h_geneventinfo;\
+  
   /**** GET GENPARTICLES ****/
   edm::Handle< std::vector<reco::GenParticle> > h_genParticles;
   iEvent.getByToken( EDMGenParticlesToken,h_genParticles );
@@ -624,7 +625,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                           sampleType,
                           weights			  
 	);
-  
+    
   // DO SELECTION
   cutflow.EventSurvivedStep("all",input);
   bool selected=true;
@@ -638,6 +639,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
   
   if(!selected) return;
+  
   // WRITE TREE
     treewriter.Process(input);
 }

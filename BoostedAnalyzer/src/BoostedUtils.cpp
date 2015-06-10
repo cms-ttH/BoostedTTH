@@ -459,7 +459,7 @@ float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const in
   std::vector<pat::Jet> filterJets = GetHiggsFilterJets(higgsJet,nBTags);
   
   if(nBTags>0){
-    if(filterJets[nBTags-1].bDiscriminator("combinedSecondaryVertexBJetTags")<csvWP) return -1.;
+    if(filterJets[nBTags-1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags")<csvWP) return -1.;
   }
   
   std::vector<math::XYZTLorentzVector> filterJetVecs = GetJetVecs(filterJets);

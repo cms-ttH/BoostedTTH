@@ -108,7 +108,7 @@ addJetCollection(
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
-    btagDiscriminators = [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ]
+    btagDiscriminators = [ 'combinedInclusiveSecondaryVertexV2BJetTags' ]
 )
 
 # make PAT Subjet Filterjet Jets
@@ -158,7 +158,7 @@ addJetCollection(
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
-    btagDiscriminators =  [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ]
+    btagDiscriminators =  [ 'combinedInclusiveSecondaryVertexV2BJetTags' ]
 )
 
 

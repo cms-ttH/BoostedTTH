@@ -2,7 +2,7 @@
 
 using namespace std;
 
-BoostedJetVarProcessor::BoostedJetVarProcessor ():btagger("combinedSecondaryVertexBJetTags"){
+BoostedJetVarProcessor::BoostedJetVarProcessor ():btagger("combinedInclusiveSecondaryVertexV2BJetTags"){
   
 
 }
@@ -203,134 +203,134 @@ void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContaine
   
   vars.InitVar( "N_HiggsJets","I" );
 
-  vars.InitVars( "HiggsJet_Pt","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Eta","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Phi","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_CSV1","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_CSV2","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_CSV3","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_CSV4","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_M2","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_M3","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_M2_SingleTag","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_M3_SingleTag","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_M2_DoubleTag","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_M3_DoubleTag","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Pt2","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Pt3","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Dr_TopJet1","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Dr_TopJet2","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Dr_TopJet3","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Dr_TopJet4","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Subjetiness1","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Subjetiness2","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Subjetiness3","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Subjetiness4","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Eta",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Phi",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV1",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV2",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV3",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CSV4",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M2",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M3",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M2_SingleTag",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M3_SingleTag",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M2_DoubleTag",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_M3_DoubleTag",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt2",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Pt3",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_TopJet1",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_TopJet2",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_TopJet3",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_TopJet4",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Subjetiness1",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Subjetiness2",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Subjetiness3",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Subjetiness4",-9,"N_HiggsJets" );
   
-  vars.InitVars( "HiggsJet_Filterjet1_Pt","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_Pt","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_Pt","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_Pt","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_E","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_E","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_E","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_E","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_M","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_M","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_M","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_M","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_Eta","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_Eta","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_Eta","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_Eta","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_Phi","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_Phi","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_Phi","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_Phi","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_CSV","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_CSV","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_CSV","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_CSV","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_Dr","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_Dr","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_Dr","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_Dr","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_Flav","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_Flav","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_Flav","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_Flav","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_Charge","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_Charge","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_Charge","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_Charge","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_PtRatio","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_PtRatio","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_PtRatio","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_PtRatio","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_ERatio","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_ERatio","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_ERatio","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_ERatio","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_Pt",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_Pt",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_Pt",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_Pt",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_E",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_E",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_E",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_E",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_M",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_M",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_M",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_M",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_Eta",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_Eta",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_Eta",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_Eta",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_Phi",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_Phi",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_Phi",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_Phi",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_CSV",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_CSV",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_CSV",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_CSV",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_Dr",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_Dr",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_Dr",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_Dr",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_Flav",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_Flav",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_Flav",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_Flav",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_Charge",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_Charge",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_Charge",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_Charge",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_PtRatio",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_PtRatio",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_PtRatio",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_PtRatio",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_ERatio",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_ERatio",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_ERatio",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_ERatio",-9,"N_HiggsJets" );
   
-  vars.InitVars( "HiggsJet_Dr_Filterjet12","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Dr_Filterjet13","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Dr_Filterjet23","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet12",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet13",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Filterjet23",-9,"N_HiggsJets" );
   
-  vars.InitVars( "HiggsJet_Filterjet1_E_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_Pt_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_Eta_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_Phi_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_E_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_Pt_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_Eta_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_Phi_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_E_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_Pt_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_Eta_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_Phi_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_E_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_Pt_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_Eta_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet4_Phi_RestFrame","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_CosThetaStar_Filterjet12","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_CosThetaStar_Filterjet13","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_CosThetaStar_Filterjet23","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet1_IdxAk5","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet2_IdxAk5","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Filterjet3_IdxAk5","N_HiggsJets" );
-  vars.InitVars( "HiggsJet_Dr_Lepton","N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_E_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_Pt_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_Eta_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_Phi_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_E_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_Pt_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_Eta_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_Phi_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_E_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_Pt_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_Eta_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_Phi_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_E_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_Pt_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_Eta_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet4_Phi_RestFrame",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CosThetaStar_Filterjet12",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CosThetaStar_Filterjet13",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_CosThetaStar_Filterjet23",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet1_IdxAk5",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet2_IdxAk5",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Filterjet3_IdxAk5",-9,"N_HiggsJets" );
+  vars.InitVars( "HiggsJet_Dr_Lepton",-9,"N_HiggsJets" );
 
-  vars.InitVar( "N_MJDCA12_L","I" );
-  vars.InitVars( "CA12MFJ_L_E","N_MJDCA12_L" );
-  vars.InitVars( "CA12MFJ_L_Pt","N_MJDCA12_L" );
-  vars.InitVars( "CA12MFJ_L_Eta","N_MJDCA12_L" );
-  vars.InitVars( "CA12MFJ_L_Phi","N_MJDCA12_L" );
-  vars.InitVars( "CA12MFJ_L_DCSV","N_MJDCA12_L" );
-  vars.InitVars( "CA12MFJ_L_Dr","N_MJDCA12_L" );
+  vars.InitVar( "N_MJDCA12_L",-9,"I" );
+  vars.InitVars( "CA12MFJ_L_E",-9,"N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_Pt",-9,"N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_Eta",-9,"N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_Phi",-9,"N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_DCSV",-9,"N_MJDCA12_L" );
+  vars.InitVars( "CA12MFJ_L_Dr",-9,"N_MJDCA12_L" );
 
-  vars.InitVar( "N_MJDCA12_T","I" );
-  vars.InitVars( "CA12MFJ_T_E","N_MJDCA12_T" );
-  vars.InitVars( "CA12MFJ_T_Pt","N_MJDCA12_T" );
-  vars.InitVars( "CA12MFJ_T_Eta","N_MJDCA12_T" );
-  vars.InitVars( "CA12MFJ_T_Phi","N_MJDCA12_T" );
-  vars.InitVars( "CA12MFJ_T_DCSV","N_MJDCA12_T" );
-  vars.InitVars( "CA12MFJ_T_Dr","N_MJDCA12_T" );
+  vars.InitVar( "N_MJDCA12_T",-9,"I" );
+  vars.InitVars( "CA12MFJ_T_E",-9,"N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_Pt",-9,"N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_Eta",-9,"N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_Phi",-9,"N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_DCSV",-9,"N_MJDCA12_T" );
+  vars.InitVars( "CA12MFJ_T_Dr",-9,"N_MJDCA12_T" );
 
-  vars.InitVar( "N_MJDCA15_L","I" );
-  vars.InitVars( "CA15MFJ_L_E","N_MJDCA15_L" );
-  vars.InitVars( "CA15MFJ_L_Pt","N_MJDCA15_L" );
-  vars.InitVars( "CA15MFJ_L_Eta","N_MJDCA15_L" );
-  vars.InitVars( "CA15MFJ_L_Phi","N_MJDCA15_L" );
-  vars.InitVars( "CA15MFJ_L_DCSV","N_MJDCA15_L" );
-  vars.InitVars( "CA15MFJ_L_Dr","N_MJDCA15_L" );
+  vars.InitVar( "N_MJDCA15_L",-9,"I" );
+  vars.InitVars( "CA15MFJ_L_E",-9,"N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_Pt",-9,"N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_Eta",-9,"N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_Phi",-9,"N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_DCSV",-9,"N_MJDCA15_L" );
+  vars.InitVars( "CA15MFJ_L_Dr",-9,"N_MJDCA15_L" );
 
-  vars.InitVar( "N_MJDCA15_T","I" );
-  vars.InitVars( "CA15MFJ_T_E","N_MJDCA15_T" );
-  vars.InitVars( "CA15MFJ_T_Pt","N_MJDCA15_T" );
-  vars.InitVars( "CA15MFJ_T_Eta","N_MJDCA15_T" );
-  vars.InitVars( "CA15MFJ_T_Phi","N_MJDCA15_T" );
-  vars.InitVars( "CA15MFJ_T_DCSV","N_MJDCA15_T" );
-  vars.InitVars( "CA15MFJ_T_Dr","N_MJDCA15_T" );
+  vars.InitVar( "N_MJDCA15_T",-9,"I" );
+  vars.InitVars( "CA15MFJ_T_E",-9,"N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_Pt",-9,"N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_Eta",-9,"N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_Phi",-9,"N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_DCSV",-9,"N_MJDCA15_T" );
+  vars.InitVars( "CA15MFJ_T_Dr",-9,"N_MJDCA15_T" );
 
 
   initialized=true;
@@ -357,7 +357,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
     vars.FillVars( "TopJet_Phi",i,fatjet.phi() );
     vars.FillVars( "TopJet_M",i,fatjet.mass() );
     
-    if(topVec.Pt()>0){
+    if(topVec.Pt()>0.){
       vars.FillVars( "TopJet_B_E",i,nonW.energy() );
       vars.FillVars( "TopJet_B_Pt",i,nonW.pt() );
       vars.FillVars( "TopJet_B_Eta",i,nonW.eta() );
@@ -706,7 +706,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 	    primlepvec = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
     vars.FillVars( "HiggsJet_Dr_Lepton",i,primlepvec.Pt()>5 ? BoostedUtils::DeltaR(primlepvec,input.selectedSubFilterJets[i].fatjet.p4()) : -1);
   }
-
+  
   vector<float> CA12MFJ_L_CSVR;
   vector<float> CA12MFJ_L_Dr;
   std::vector<pat::Jet> CA12filterjets_L = JetMatching::GetFilterjets(input.selectedSubFilterJets);
@@ -741,7 +741,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 
   vector<float> CA15MFJ_L_CSVR;
   vector<float> CA15MFJ_L_Dr;
-  std::vector<pat::Jet> CA15filterjets_L = JetMatching::GetFilterjets(input.selectedHEPTopJets);
+  std::vector<pat::Jet> CA15filterjets_L = JetMatching::GetFilterjets(input.selectedHTTTopJets);
   vector<TLorentzVector> CA15MFJ_L_p4 = JetMatching::GetMatchedVecs(CA15filterjets_L, input.selectedJets, CA15MFJ_L_CSVR, CA15MFJ_L_Dr);
 
   vars.FillVar( "N_MJDCA15_L",CA15MFJ_L_p4.size() );
@@ -757,7 +757,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 
   vector<float> CA15MFJ_T_CSVR;
   vector<float> CA15MFJ_T_Dr;
-  std::vector<pat::Jet> CA15filterjets_T = JetMatching::GetFilterjets(input.selectedHEPTopJets, 30, 2.41);
+  std::vector<pat::Jet> CA15filterjets_T = JetMatching::GetFilterjets(input.selectedHTTTopJets, 30, 2.41);
   vector<TLorentzVector> CA15MFJ_T_p4 = JetMatching::GetMatchedVecs(CA15filterjets_T, input.selectedJets, CA15MFJ_T_CSVR, CA15MFJ_T_Dr);
 
   vars.FillVar( "N_MJDCA15_T",CA15MFJ_T_p4.size() );
@@ -770,5 +770,4 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
     vars.FillVars( "CA15MFJ_T_DCSV",i,CA15MFJ_T_CSVR[i] );
     vars.FillVars( "CA15MFJ_T_Dr",i,CA15MFJ_T_Dr[i] );
   }
-
 }

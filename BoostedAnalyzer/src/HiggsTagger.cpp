@@ -16,7 +16,7 @@ HiggsTagger::HiggsTagger(std::string name_): name(name_) {
 }
 
 
-HiggsTagger::HiggsTagger(std::string name_, std::vector<std::string> BDTVarNames_, std::string weightsPath_): name(name_),btagger("combinedSecondaryVertexBJetTags") {
+HiggsTagger::HiggsTagger(std::string name_, std::vector<std::string> BDTVarNames_, std::string weightsPath_): name(name_),btagger("combinedInclusiveSecondaryVertexV2BJetTags") {
   
   BDTReader = new TMVA::Reader();
 

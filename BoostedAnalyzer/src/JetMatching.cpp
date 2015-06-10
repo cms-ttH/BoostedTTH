@@ -12,12 +12,12 @@ std::vector<pat::Jet> JetMatching::GetFilterjets(const boosted::SubFilterJetColl
   return filterjets;
 }
 
-std::vector<pat::Jet> JetMatching::GetFilterjets(const boosted::HEPTopJetCollection &heptopjets, const float& ptcut, const float& etacut){
+std::vector<pat::Jet> JetMatching::GetFilterjets(const boosted::HTTTopJetCollection &htttopjets, const float& ptcut, const float& etacut){
   std::vector<pat::Jet> filterjets;
-  for(size_t j=0; j< heptopjets.size(); j++){
-    if(heptopjets[j].nonW.pt()>=ptcut && heptopjets[j].nonW.eta()<etacut) filterjets.push_back(heptopjets[j].nonW);
-    if(heptopjets[j].W1.pt()>=ptcut && heptopjets[j].W1.eta()<etacut) filterjets.push_back(heptopjets[j].W1);
-    if(heptopjets[j].W2.pt()>=ptcut && heptopjets[j].W2.eta()<etacut) filterjets.push_back(heptopjets[j].W2);
+  for(size_t j=0; j< htttopjets.size(); j++){
+    if(htttopjets[j].nonW.pt()>ptcut && htttopjets[j].nonW.eta()<etacut) filterjets.push_back(htttopjets[j].nonW);
+    if(htttopjets[j].W1.pt()>ptcut && htttopjets[j].W1.eta()<etacut) filterjets.push_back(htttopjets[j].W1);
+    if(htttopjets[j].W2.pt()>ptcut && htttopjets[j].W2.eta()<etacut) filterjets.push_back(htttopjets[j].W2);
   }
   return filterjets;
 }
