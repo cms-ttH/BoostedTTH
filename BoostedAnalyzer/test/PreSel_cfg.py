@@ -33,7 +33,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(999999999) )
 
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
-#from JetMETCorrections.Configuration.JetCorrectionCondDB_cff import *
+from JetMETCorrections.Configuration.JetCorrectionCondDB_cff import *
 
 process.ak4PFCHSL1Fastjet = cms.ESProducer(
   'L1FastjetCorrectionESProducer',
@@ -58,12 +58,12 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 process.source = cms.Source(  "PoolSource",
 			      fileNames = cms.untracked.vstring(List_FileNames)
 )
-
+#process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.useFatJets=True
 #process.BoostedAnalyzer.disableObjectSelections=False
 process.BoostedAnalyzer.outfileName = OUTFILE
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","4JetSelection","2TagSelection"]
 process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BDTVarProcessor","BoostedMCMatchVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
 process.BoostedAnalyzer.era = ERA
 process.BoostedAnalyzer.analysisType = cms.string("LJ")
@@ -75,5 +75,5 @@ process.BoostedAnalyzer.isData = cms.bool(False)
 process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 process.BoostedAnalyzer.systematicType = SYSTEMATIC
 
-
+#process.Tracer = cms.Service("Tracer")
 process.p = cms.Path(process.BoostedAnalyzer)

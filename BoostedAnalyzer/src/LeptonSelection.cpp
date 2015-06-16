@@ -33,8 +33,10 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
   int nmuonsloose = input.selectedMuonsLoose.size();
   // todo: fix triggers 
   // what needs to be fixed here exactly?
-  bool muonTriggered = input.triggerInfo.IsAnyTriggered(muonTriggers);
-  bool electronTriggered = input.triggerInfo.IsAnyTriggered(electronTriggers);
+//  bool muonTriggered = input.triggerInfo.IsAnyTriggered(muonTriggers);    // for baseline we dont use triggers
+//  bool electronTriggered = input.triggerInfo.IsAnyTriggered(electronTriggers);
+ bool muonTriggered = true;
+  bool electronTriggered = true;
   if(channel=="both"){
     if(step<0||step==1){
       if(!muonTriggered && !electronTriggered) return false;
