@@ -76,6 +76,7 @@ process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 process.BoostedAnalyzer.systematicType = SYSTEMATIC
 process.BoostedAnalyzer.muonTriggers=["any"]
 process.BoostedAnalyzer.electronTriggers=["any"]
+process.BoostedAnalyzer.dumpSyncExe=cms.bool(False)
 
 #process.Tracer = cms.Service("Tracer")
 process.p = cms.Path(process.BoostedAnalyzer)

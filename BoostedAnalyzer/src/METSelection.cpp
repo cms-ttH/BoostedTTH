@@ -14,12 +14,12 @@ void METSelection::InitCutflow(Cutflow& cutflow){
 
 bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "METSelection not initialized" << endl;
-  double met=input.pfMET.pt():
+  double met=input.pfMET.pt();
   if(met<=800){
     cutflow.EventSurvivedStep("MET <= 800 for FastSim" ,input);
-
     return true;
+  }
 
   return false;   
 
-}
+} 
