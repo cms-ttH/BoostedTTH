@@ -10,7 +10,6 @@ class TreeProcessor{
     virtual void Init(const InputCollections& input,VariableContainer& var)=0;
     virtual void Process(const InputCollections& input,VariableContainer& var) =0;
 
-
   protected:
   
     bool initialized;

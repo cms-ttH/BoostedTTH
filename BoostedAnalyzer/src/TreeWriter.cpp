@@ -15,14 +15,12 @@ TreeWriter::~TreeWriter(){
   cout << "Tree Written to " << outFile->GetPath() << endl;
 }
 
-
 void TreeWriter::Init( std::string fileName){
   
   outFile = new TFile( (fileName+"_Tree.root").c_str(), "RECREATE" );
   outFile->cd();
-  
+
   tree = new TTree("MVATree","MVATree");
-  vars = VariableContainer();
 }
 
 
@@ -30,9 +28,12 @@ void TreeWriter::AddTreeProcessor(TreeProcessor* processor){
   processors.push_back(processor);
 }
 
+std::vector<TreeProcessor*> TreeWriter::GetTreeProcessors() const{
+  return processors;
+}
 
 bool TreeWriter::Process(const InputCollections& input) {  
-  
+
   if(!initialized){
     for(uint i=0; i<processors.size(); i++){
       processors[i]->Init(input,vars);
@@ -42,7 +43,6 @@ bool TreeWriter::Process(const InputCollections& input) {
     
     initialized=true;
   }
-  
   vars.SetDefaultValues();
   
   for(uint i=0; i<processors.size(); i++){
@@ -57,3 +57,4 @@ bool TreeWriter::Process(const InputCollections& input) {
 void TreeWriter::FillTree(){
   tree->Fill();
 }
+

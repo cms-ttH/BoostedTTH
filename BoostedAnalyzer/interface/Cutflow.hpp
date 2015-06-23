@@ -19,6 +19,7 @@ public:
   void Print();
   void EventSurvivedStep(std::string name, const InputCollections& input);
   void Init(const char* filename);
+
 private:
   bool initialized;
   std::vector<int> eventsAfterSelectionSteps;

@@ -25,8 +25,10 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		    const TriggerInfo&                            triggerInfo_,
 		    const std::vector<reco::Vertex>&              selectedPVs_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
+                    const std::vector<pat::Muon>&                 selectedMuonsDL_,
                     const std::vector<pat::Muon>&                 selectedMuonsLoose_,
                     const std::vector<pat::Electron>&             selectedElectrons_,
+                    const std::vector<pat::Electron>&             selectedElectronsDL_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
@@ -42,8 +44,10 @@ InputCollections(   const EventInfo&                              eventInfo_,
   triggerInfo(triggerInfo_),
   selectedPVs(selectedPVs_),
   selectedMuons(selectedMuons_),
+  selectedMuonsDL(selectedMuonsDL_),
   selectedMuonsLoose(selectedMuonsLoose_),
   selectedElectrons(selectedElectrons_),
+  selectedElectronsDL(selectedElectronsDL_),
   selectedElectronsLoose(selectedElectronsLoose_),
   selectedJets(selectedJets_),
   selectedJetsLoose(selectedJetsLoose_),
@@ -60,8 +64,10 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const TriggerInfo&                            triggerInfo;
   const std::vector<reco::Vertex>&              selectedPVs;
   const std::vector<pat::Muon>&                 selectedMuons;
+  const std::vector<pat::Muon>&                 selectedMuonsDL;
   const std::vector<pat::Muon>&                 selectedMuonsLoose;
   const std::vector<pat::Electron>&             selectedElectrons;
+  const std::vector<pat::Electron>&             selectedElectronsDL;
   const std::vector<pat::Electron>&             selectedElectronsLoose;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;

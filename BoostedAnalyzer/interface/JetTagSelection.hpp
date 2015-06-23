@@ -19,10 +19,7 @@ class JetTagSelection: public Selection{
 
   private:
 
-    
-
     std::string selName;
-
     size_t selSize;
 
     std::vector<int> minJets;
