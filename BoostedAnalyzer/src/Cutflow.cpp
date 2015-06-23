@@ -10,11 +10,9 @@ Cutflow::Cutflow(){
 
 
 Cutflow::~Cutflow(){
-  cutflowfile.close();
 }
 
-void Cutflow::Init(const char* filename){
-  cutflowfile.open(filename);
+void Cutflow::Init(){
   AddStep("all");
 }
 
@@ -28,10 +26,14 @@ void Cutflow::AddStep(string name){
   selectionStepNames.push_back(name);
 }
 
-void Cutflow::Print(){
+void Cutflow::Print(std::ostream& out){
   for(size_t i=0; i<selectionStepNames.size();i++){
-    cutflowfile << i << " : " << selectionStepNames[i] << " : " << eventsAfterSelectionSteps[i] << " : " << yieldsAfterSelectionSteps[i] <<endl;
+    out << i << " : " << selectionStepNames[i] << " : " << eventsAfterSelectionSteps[i] << " : " << yieldsAfterSelectionSteps[i] <<endl;
   }
+}
+
+int Cutflow::GetNSelected(){
+  return eventsAfterSelectionSteps.back();
 }
 
 

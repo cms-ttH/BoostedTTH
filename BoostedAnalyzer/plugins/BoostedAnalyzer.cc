@@ -125,6 +125,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       vector<std::ofstream*> dumpFiles_jesup;
       vector<std::ofstream*> dumpFiles_jesdown;
         
+      std::string outfileName;
+
       /** sample ID */
       int sampleID;
       
@@ -157,6 +159,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** dump some event content for synchronization */
       bool dumpSyncExe;
+
       
   // TOKENS =========================
       /** pu summary data access token **/
@@ -258,7 +261,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
 
   dumpSyncExe = iConfig.getParameter<bool>("dumpSyncExe");
 
-  string outfileName = iConfig.getParameter<std::string>("outfileName");
+  outfileName = iConfig.getParameter<std::string>("outfileName");
   // REGISTER DATA ACCESS
   EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","",""));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
@@ -296,9 +299,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   helper.SetJetCorrectorUncertainty();
   
   // INITIALIZE SELECTION & CUTFLOW
-  cutflow_nominal.Init((outfileName+"_Cutflow.txt").c_str());
-  cutflow_jesup.Init((outfileName+"_JESup_Cutflow.txt").c_str());
-  cutflow_jesdown.Init((outfileName+"_JESdown_Cutflow.txt").c_str());
+  cutflow_nominal.Init();
+  cutflow_jesup.Init();
+  cutflow_jesdown.Init();
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
   int nselection=0;
   if(dumpSyncExe){
@@ -871,9 +874,15 @@ void BoostedAnalyzer::beginJob()
 // ------------ method called once each job just after ending the event loop  ------------
 void BoostedAnalyzer::endJob() 
 {
-  cutflow_nominal.Print();
-  cutflow_jesup.Print();
-  cutflow_jesdown.Print();
+  std::ofstream fout_nominal(outfileName+"_Cutflow.txt");
+  std::ofstream fout_jesup(outfileName+"_JESup_Cutflow.txt");
+  std::ofstream fout_jesdown(outfileName+"_JESdown_Cutflow.txt");
+  cutflow_nominal.Print(fout_nominal);
+  cutflow_jesup.Print(fout_jesup);
+  cutflow_jesdown.Print(fout_jesdown);
+  fout_nominal.close();
+  fout_jesup.close();
+  fout_jesdown.close();
 }
 // ------------ method called when starting to processes a run ------------
 // needed for the hlt_config
