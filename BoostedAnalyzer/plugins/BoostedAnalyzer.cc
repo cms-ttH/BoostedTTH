@@ -517,19 +517,26 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> jetsNoEle = helper.RemoveOverlaps(selectedElectronsLoose, jetsNoMu);
   // Apply nominal jet corrections
   std::vector<pat::Jet> correctedJets_unsorted_nominal = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::NA);
-  // Sort jets
-  std::vector<pat::Jet> correctedJets_nominal = helper.GetSortedByPt(correctedJets_unsorted_nominal);
   //Get jet Collection which pass selection
-  std::vector<pat::Jet> selectedJets_nominal = helper.GetSelectedJets(correctedJets_nominal, jetptcut, jetetacut, jetID::none, '-' );
+  std::vector<pat::Jet> selectedJets_unsorted_nominal = helper.GetSelectedJets(correctedJets_unsorted_nominal, jetptcut, jetetacut, jetID::none, '-' );
+  // Sort jets
+  std::vector<pat::Jet> selectedJets_nominal = helper.GetSortedByPt(selectedJets_unsorted_nominal);
   // Get jet Collection which pass loose selection
-  std::vector<pat::Jet> selectedJetsLoose_nominal = helper.GetSelectedJets(correctedJets_nominal, jetptcut_loose,jetetacut_loose, jetID::none, '-' ); 
+  std::vector<pat::Jet> selectedJetsLoose_unsorted_nominal = helper.GetSelectedJets(correctedJets_unsorted_nominal, jetptcut_loose,jetetacut_loose, jetID::none, '-' ); 
+  // Sort jets
+  std::vector<pat::Jet> selectedJetsLoose_nominal = helper.GetSortedByPt(selectedJetsLoose_unsorted_nominal);
 
   // Apply systematically shifted jet corrections
   std::vector<pat::Jet> correctedJets_unsorted_jesup;
   std::vector<pat::Jet> correctedJets_unsorted_jesdown;
-  std::vector<pat::Jet> correctedJets_jesup;
-  std::vector<pat::Jet> correctedJets_jesdown;
-  std::vector<pat::Jet> uncorrectedJets;
+
+  std::vector<pat::Jet> selectedJets_unsorted_jesup;
+  std::vector<pat::Jet> selectedJets_unsorted_jesdown;
+  std::vector<pat::Jet> selectedJets_unsorted_uncorrected;
+  std::vector<pat::Jet> selectedJetsLoose_unsorted_jesup;
+  std::vector<pat::Jet> selectedJetsLoose_unsorted_jesdown;
+  std::vector<pat::Jet> selectedJetsLoose_unsorted_uncorrected;
+
   std::vector<pat::Jet> selectedJets_jesup;
   std::vector<pat::Jet> selectedJets_jesdown;
   std::vector<pat::Jet> selectedJets_uncorrected;
@@ -540,15 +547,20 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   if(makeSystematicsTrees){
     correctedJets_unsorted_jesup = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::JESup);
     correctedJets_unsorted_jesdown = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::JESdown);
-    correctedJets_jesup = helper.GetSortedByPt(correctedJets_unsorted_jesup);
-    correctedJets_jesdown = helper.GetSortedByPt(correctedJets_unsorted_jesdown);
-    uncorrectedJets = helper.GetSortedByPt(jetsNoEle);
-    selectedJets_jesup = helper.GetSelectedJets(correctedJets_jesup, jetptcut, jetetacut, jetID::none, '-' );
-    selectedJets_jesdown = helper.GetSelectedJets(correctedJets_jesdown, jetptcut, jetetacut, jetID::none, '-' );
-    selectedJets_uncorrected = helper.GetSelectedJets(uncorrectedJets, jetptcut, jetetacut, jetID::none, '-' );
-    selectedJetsLoose_jesup = helper.GetSelectedJets(correctedJets_jesup, jetptcut_loose, jetetacut_loose, jetID::none, '-' ); 
-    selectedJetsLoose_jesdown = helper.GetSelectedJets(correctedJets_jesdown, jetptcut_loose,jetetacut_loose, jetID::none, '-' ); 
-    selectedJetsLoose_uncorrected = helper.GetSelectedJets(uncorrectedJets, jetptcut_loose, jetetacut_loose, jetID::none, '-' ); 
+
+    selectedJets_unsorted_jesup = helper.GetSelectedJets(correctedJets_unsorted_jesup, jetptcut, jetetacut, jetID::none, '-' );
+    selectedJets_unsorted_jesdown = helper.GetSelectedJets(correctedJets_unsorted_jesdown, jetptcut, jetetacut, jetID::none, '-' );
+    selectedJets_unsorted_uncorrected = helper.GetSelectedJets(jetsNoEle, jetptcut, jetetacut, jetID::none, '-' );
+    selectedJetsLoose_unsorted_jesup = helper.GetSelectedJets(correctedJets_unsorted_jesup, jetptcut_loose, jetetacut_loose, jetID::none, '-' ); 
+    selectedJetsLoose_unsorted_jesdown = helper.GetSelectedJets(correctedJets_unsorted_jesdown, jetptcut_loose,jetetacut_loose, jetID::none, '-' ); 
+    selectedJetsLoose_unsorted_uncorrected = helper.GetSelectedJets(jetsNoEle, jetptcut_loose, jetetacut_loose, jetID::none, '-' ); 
+
+    selectedJets_jesup = helper.GetSortedByPt(selectedJets_unsorted_jesup);
+    selectedJets_jesdown = helper.GetSortedByPt(selectedJets_unsorted_jesdown);
+    selectedJets_uncorrected = helper.GetSortedByPt(selectedJets_unsorted_uncorrected);
+    selectedJetsLoose_jesup = helper.GetSortedByPt(selectedJetsLoose_unsorted_jesup);
+    selectedJetsLoose_jesdown = helper.GetSortedByPt(selectedJetsLoose_unsorted_jesdown);
+    selectedJetsLoose_uncorrected = helper.GetSortedByPt(selectedJetsLoose_unsorted_uncorrected);
   }
 
   /**** GET MET ****/
