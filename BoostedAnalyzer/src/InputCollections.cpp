@@ -3,44 +3,7 @@
   
   }*/
 
-void InputCollections::DumpFatJets(std::ostream &out){
 
-  for( auto higgsJet = selectedSubFilterJets.begin() ; higgsJet != selectedSubFilterJets.end(); ++higgsJet ){
-    // pt and eta requirements on top jet
-    if( !(higgsJet->fatjet.pt() > 250. && abs(higgsJet->fatjet.eta()) < 1.8) ) continue;
-    out << "fat jet pt: " << higgsJet->fatjet.pt()<<std::endl;
-    std::vector<pat::Jet> filterjets = higgsJet->filterjets;
-    for( uint ijet=0; ijet<filterjets.size(); ijet++ ){
-      printf("\t\t filt jet %2d:\t pT = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
-	     ijet, filterjets[ijet].pt(), filterjets[ijet].eta(), filterjets[ijet].phi(), 
-	     filterjets[ijet].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
-	     filterjets[ijet].bDiscriminator("combinedSecondaryVertexBJetTags"));
-    }
-  }
-
-  for(auto topjet = selectedHEPTopJets.begin() ; topjet != selectedHEPTopJets.end(); topjet++ ){
-    // pt and eta requirements on top jet
-    if( !(topjet->fatjet.pt() > 250. && abs(topjet->fatjet.eta()) < 1.8) ) continue;
-    out << "fat top jet pt: " << topjet->fatjet.pt()<<std::endl;
-    pat::Jet W = topjet->W;
-    pat::Jet W1 = topjet->W1;
-    pat::Jet top = topjet->topjet;
-    printf("\t\t W %2d:\t pT = %.1f,\t M = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
-	   0, W.pt() , W.mass(), W.eta(), W.phi(), 
-	   W.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
-	   W.bDiscriminator("combinedSecondaryVertexBJetTags"));
-    printf("\t\t top %2d:\t pT = %.1f,\t M = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
-	   0, top.pt() , top.mass(), top.eta(), top.phi(), 
-	   top.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
-	   top.bDiscriminator("combinedSecondaryVertexBJetTags"));
-    printf("\t\t W1 %2d:\t pT = %.1f,\t M = %.1f,\t eta = %.2f,\t phi = %.2f,\t CSVv2 = %+5.3f,\t CSVv1 = %+5.3f \n",
-	   0, W1.pt() , W1.mass(), W1.eta(), W1.phi(), 
-	   W1.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),
-	   W1.bDiscriminator("combinedSecondaryVertexBJetTags"));
-    
-  }
-
-}
 void InputCollections::DumpLeptons(std::ostream &out){
   out << "loose electrons" << std::endl;
   for(auto el=selectedElectronsLoose.begin(); el!=selectedElectronsLoose.end(); el++){
@@ -169,3 +132,102 @@ void InputCollections::DumpSyncExe(std::ostream &out){
 	 n_toptags% n_higgstags;
 
 }
+void InputCollections::DumpSyncExe2(std::ostream &out, const MiniAODHelper& helper){
+  int run=eventInfo.run;
+  int lumi=eventInfo.lumiBlock;  
+  int event=eventInfo.evt;  
+  float bWeight=input.weights.at("Weight_CSV")
+  float lep1_pt=-99;
+  float lep1_eta=-99;
+  float lep1_phi=-99;
+  float jet1_pt=-99;
+  float jet2_pt=-99;
+  float jet3_pt=-99;
+  float jet4_pt=-99;
+  float jet1_CSVv2=-99;
+  float jet2_CSVv2=-99;
+  float jet3_CSVv2=-99;
+  float jet4_CSVv2=-99;
+  float MET_pt=-99;
+  float MET_phi=-99;
+  int n_jets=0;
+  int n_btags=0;
+  int ttHFCategory=0;
+
+  //GetMuonRelIso(const pat::Muon& iMuon,const coneSize::coneSize iconeSize, const corrType::corrType icorrType) const
+  float lep1_iso=-99;
+  float lep1_pdgid=-99;
+  float lep2_pt=-99;
+  float lep2_eta=-99;
+  float lep2_phi=-99;
+  float lep2_iso=-99;
+  float lep2_pdgid=-99;
+
+
+
+  for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuonsLoose.begin(), iMuon != selectedMuonsLoose.end(); ++iMuon ){
+    if(iMuon->pt()>lep1_pt){
+      lep1_pt=iMuon->pt();
+      lep1_eta=iMuon->eta();
+      lep1_phi=iMuon->phi();
+      lep1_iso=helper.GetMuonRelIso(iMuon,coneSize::R04, const corrType::deltaBeta);
+      lep1_pdgid=iMuon->pdgId();
+    }
+  }
+  for(std::vector<pat::Electron>::const_iterator iEle = selectedElectronsLoose.begin(), iEle != selectedElectronsLoose.end(); ++iEle ){
+    if(iEle->pt()>lep1_pt){
+      lep1_pt=iEle->pt();
+      lep1_eta=iEle->eta();
+      lep1_phi=iEle->phi();
+      lep1_iso=helper.GetElectronRelIso(iElectron,coneSize::R04, const corrType::deltaBeta);
+      lep1_pdgid=iMuon->pdgId();
+    }
+  }
+  
+  
+  if(selectedJets.size()>0){
+    jet1_pt=selectedJets.at(0).pt();
+    jet1_CSVv2=selectedJets.at(0).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  }
+  
+  if(selectedJets.size()>1){
+    jet2_pt=selectedJets.at(1).pt();
+    jet2_CSVv2=selectedJets.at(1).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  }
+  
+  if(selectedJets.size()>2){
+    jet3_pt=selectedJets.at(2).pt();
+    jet3_CSVv2=selectedJets.at(2).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  }
+  
+  if(selectedJets.size()>3){
+    jet4_pt=selectedJets.at(3).pt();
+    jet4_CSVv2=selectedJets.at(3).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
+  }
+  n_jets=int(selectedJets.size());
+  for(auto jet=selectedJets.begin();jet!=selectedJets.end(); jet++){
+    if(BoostedUtils::PassesCSV(*jet)) n_btags++;
+  }
+
+  MET_pt=pfMET.pt();
+  MET_phi=pfMET.phi();
+
+  ttHFCategory=genTopEvt.GetTTxId();
+
+
+  
+run,lumi,event,\
+is_SL,is_DL,\
+lep1_pt,lep1_eta,lep1_phi,lep1_iso,lep1_pdgId,\
+lep2_pt,lep2_eta,lep2_phi,lep2_iso,lep2_pdgId,\
+jet1_pt,jet2_pt,jet3_pt,jet4_pt,\
+jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,\
+jet1_corr,jet2_corr,jet3_corr,jet4_corr,\
+jet1_corrUp,jet2_corrUp,jet3_corrUp,jet4_corrUp,\
+jet1_corrDown,jet2_corrDown,jet3_corrDown,jet4_corrDown,\
+MET_pt,MET_phi,\
+n_jets,n_btags,\
+bWeight,bWeightLFUp,bWeightLFDown,\
+ttHFCategory"
+
+  
