@@ -3,16 +3,26 @@
 using namespace std;
 
 TreeWriter::TreeWriter(){
+  tree=0;
+  outFile=0;
   initialized=false;
 }
 
 
 TreeWriter::~TreeWriter(){
-  outFile->cd();
-  tree->Write(); 
-  outFile->Write();
-  outFile->Close();
-  cout << "Tree Written to " << outFile->GetPath() << endl;
+  if(outFile!=0){
+    outFile->cd();
+  }
+  if(tree!=0){
+    tree->Write(); 
+  }  
+  if(outFile!=0){
+    outFile->Write();
+    outFile->Close();
+  }
+  if(tree!=0){
+    cout << "Tree Written to " << outFile->GetPath() << endl;
+  }
 }
 
 void TreeWriter::Init( std::string fileName){
