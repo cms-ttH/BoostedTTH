@@ -16,9 +16,11 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 
-enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg};
+enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg,thq};
+namespace HiggsDecay{enum HiggsDecay{NA,bb,nonbb};};
 
 struct InputCollections{
 InputCollections(   const EventInfo&                              eventInfo_,
@@ -38,6 +40,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		    const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
+		    const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_
 		    ): 
   eventInfo(eventInfo_),
@@ -57,6 +60,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
   genTopEvt(genTopEvt_),
   selectedGenJets(selectedGenJets_),
   sampleType(sampleType_),
+  higgsDecay(higgsDecay_),
   weights(weights_)
   {}
   
@@ -77,11 +81,12 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const GenTopEvent&                            genTopEvt;
   const std::vector<reco::GenJet>&              selectedGenJets;
   const SampleType                              sampleType;
+  const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>&            weights;
 
   void DumpLeptons(std::ostream &out = std::cout);
   void DumpSyncExe(std::ostream &out = std::cout);
-  void DumpSyncExe2(std::ostream &out = std::cout);
+  void DumpSyncExe2(const MiniAODHelper& helper, std::ostream &out = std::cout);
 };
 
 #endif

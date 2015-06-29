@@ -132,8 +132,8 @@ void InputCollections::DumpSyncExe(std::ostream &out){
 	 n_toptags% n_higgstags;
 
 }
-void InputCollections::DumpSyncExe2(std::ostream &out, const MiniAODHelper& helper){
-  int run=eventInfo.run;
+void InputCollections::DumpSyncExe2(const MiniAODHelper& helper, std::ostream &out){
+  /*  int run=eventInfo.run;
   int lumi=eventInfo.lumiBlock;  
   int event=eventInfo.evt;  
   float bWeight=input.weights.at("Weight_CSV")
@@ -229,5 +229,5 @@ MET_pt,MET_phi,\
 n_jets,n_btags,\
 bWeight,bWeightLFUp,bWeightLFDown,\
 ttHFCategory"
-
-  
+*/
+}

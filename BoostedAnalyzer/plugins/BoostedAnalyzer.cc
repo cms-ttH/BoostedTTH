@@ -63,6 +63,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AdditionalJetProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/SingleTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
@@ -159,6 +160,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** dump some event content for synchronization */
       bool dumpSyncExe;
+
+      /** write systematics trees */
+      bool makeSystematicsTrees;
 
       
   // TOKENS =========================
@@ -261,6 +265,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
 
   dumpSyncExe = iConfig.getParameter<bool>("dumpSyncExe");
 
+  makeSystematicsTrees = iConfig.getParameter<bool>("makeSystematicsTrees");
+
   outfileName = iConfig.getParameter<std::string>("outfileName");
   // REGISTER DATA ACCESS
   EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","",""));
@@ -300,8 +306,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   
   // INITIALIZE SELECTION & CUTFLOW
   cutflow_nominal.Init();
-  cutflow_jesup.Init();
-  cutflow_jesdown.Init();
+  if(makeSystematicsTrees){
+    cutflow_jesup.Init();
+    cutflow_jesdown.Init();
+  }
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
   int nselection=0;
   if(dumpSyncExe){
@@ -336,8 +344,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     }
     else cout << "No matching selection found for: " << *itSel << endl;    
     selections.back()->InitCutflow(cutflow_nominal);
-    selections.back()->InitCutflow(cutflow_jesup);
-    selections.back()->InitCutflow(cutflow_jesdown);
+    if(makeSystematicsTrees){
+      selections.back()->InitCutflow(cutflow_jesup);
+      selections.back()->InitCutflow(cutflow_jesdown);
+    }
     
     nselection++;       
     if(dumpSyncExe){
@@ -349,8 +359,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
   // INITIALIZE TREEWRITER
   treewriter_nominal.Init(outfileName);  
-  treewriter_jesup.Init(outfileName+"_JESup");
-  treewriter_jesdown.Init(outfileName+"_JESdown");
+  if(makeSystematicsTrees){
+    treewriter_jesup.Init(outfileName+"_JESup");
+    treewriter_jesdown.Init(outfileName+"_JESdown");
+  }
 
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
   cout << "using processors:" << endl; 
@@ -362,6 +374,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   }
   if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new MVAVarProcessor());
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"SingleTopVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new SingleTopVarProcessor());
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new BoostedJetVarProcessor());
@@ -388,11 +403,13 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     treewriter_nominal.AddTreeProcessor(new AdditionalJetProcessor());
   }
   // the systematics tree writer use the same processors that are used for the nonimal trees
-  // it might help performance to turn some of them of
-  std::vector<TreeProcessor*> tps = treewriter_nominal.GetTreeProcessors();
-  for(uint i=0; i<tps.size();i++){
-    treewriter_jesup.AddTreeProcessor(tps[i]);
-    treewriter_jesdown.AddTreeProcessor(tps[i]);
+  // it might help performance to turn some of them off
+  if(makeSystematicsTrees){
+    std::vector<TreeProcessor*> tps = treewriter_nominal.GetTreeProcessors();
+    for(uint i=0; i<tps.size();i++){
+      treewriter_jesup.AddTreeProcessor(tps[i]);
+      treewriter_jesdown.AddTreeProcessor(tps[i]);
+    }
   }
 
 }
@@ -400,16 +417,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
 
 BoostedAnalyzer::~BoostedAnalyzer()
 {
-  for(auto f = dumpFiles.begin(); f!=dumpFiles.end(); f++){
-    (*f)->close();
-  }
-  for(auto f = dumpFiles_jesup.begin(); f!=dumpFiles_jesup.end(); f++){
-    (*f)->close();
-  }
-  for(auto f = dumpFiles_jesdown.begin(); f!=dumpFiles_jesdown.end(); f++){
-    (*f)->close();
-  }
-
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
 
@@ -520,10 +527,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> selectedJets_jesdown = helper.GetSelectedJets(correctedJets_jesdown, 30., 2.4, jetID::none, '-' );
   std::vector<pat::Jet> selectedJets_uncorrected = helper.GetSelectedJets(uncorrectedJets, 30., 2.4, jetID::none, '-' );
   // Get jet Collection which pass loose selection
-  std::vector<pat::Jet> selectedJetsLoose_nominal = helper.GetSelectedJets(correctedJets_nominal, 20., 2.4, jetID::none, '-' ); 
-  std::vector<pat::Jet> selectedJetsLoose_jesup = helper.GetSelectedJets(correctedJets_jesup, 20., 2.4, jetID::none, '-' ); 
-  std::vector<pat::Jet> selectedJetsLoose_jesdown = helper.GetSelectedJets(correctedJets_jesdown, 20., 2.4, jetID::none, '-' ); 
-  std::vector<pat::Jet> selectedJetsLoose_uncorrected = helper.GetSelectedJets(uncorrectedJets, 20., 2.4, jetID::none, '-' ); 
+  std::vector<pat::Jet> selectedJetsLoose_nominal = helper.GetSelectedJets(correctedJets_nominal, 20., 5.0, jetID::none, '-' ); 
+  std::vector<pat::Jet> selectedJetsLoose_jesup = helper.GetSelectedJets(correctedJets_jesup, 20., 5.0, jetID::none, '-' ); 
+  std::vector<pat::Jet> selectedJetsLoose_jesdown = helper.GetSelectedJets(correctedJets_jesdown, 20., 5.0, jetID::none, '-' ); 
+  std::vector<pat::Jet> selectedJetsLoose_uncorrected = helper.GetSelectedJets(uncorrectedJets, 20., 5.0, jetID::none, '-' ); 
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
@@ -594,11 +601,20 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   bool foundT=false;
   bool foundTbar=false;
   bool foundHiggs=false;
+  HiggsDecay::HiggsDecay higgsdecay=HiggsDecay::NA;
   if(!isData){
     for(size_t i=0; i<genParticles.size();i++){
       if(genParticles[i].pdgId()==6) foundT=true;
       if(genParticles[i].pdgId()==-6) foundTbar=true;	
-      if(genParticles[i].pdgId()==25) foundHiggs=true;
+      if(genParticles[i].pdgId()==25){
+	foundHiggs=true;
+	if(higgsdecay==HiggsDecay::NA)higgsdecay=HiggsDecay::nonbb;
+	for(uint j=0;j<genParticles[i].numberOfDaughters();j++){
+	  if (abs(genParticles[i].daughter(j)->pdgId())==5){
+	    higgsdecay=HiggsDecay::bb;
+	  }
+	}
+      }
     }
   }
   GenTopEvent genTopEvt;
@@ -658,10 +674,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     else if(ttid==41||ttid==42) sampleType = SampleType::ttcc;
     else if(ttid==43||ttid==44||ttid==45) sampleType = SampleType::ttcc;    
   }
+  else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
   if(foundT&&foundTbar) {
     genTopEvt.Fill(genParticles,ttid);
   }
-
+  
 
 
   // DO REWEIGHTING
@@ -688,6 +705,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  genTopEvt,
 				  selectedGenJets,
 				  sampleType,
+				  higgsdecay,
 				  weights			  
 				  );
 
@@ -708,6 +726,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				genTopEvt,
 				selectedGenJets,
 				sampleType,
+				higgsdecay,
 				weights_jesup		  
 				);
         
@@ -728,6 +747,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  genTopEvt,
 				  selectedGenJets,
 				  sampleType,
+				  higgsdecay,
 				  weights_jesdown
 				  );
 
@@ -748,13 +768,16 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				     genTopEvt,
 				     selectedGenJets,
 				     sampleType,
+				     higgsdecay,
 				     weights_uncorrjets
 				     );
   
   // DO SELECTION
   cutflow_nominal.EventSurvivedStep("all",input_nominal);
-  cutflow_jesup.EventSurvivedStep("all",input_jesup);
-  cutflow_jesdown.EventSurvivedStep("all",input_jesdown);
+  if(makeSystematicsTrees){
+    cutflow_jesup.EventSurvivedStep("all",input_jesup);
+    cutflow_jesdown.EventSurvivedStep("all",input_jesdown);
+  }
   bool selected_nominal=true;
   for(size_t i=0; i<selections.size() && selected_nominal; i++){
     if(!selections.at(i)->IsSelected(input_nominal,cutflow_nominal)){
@@ -764,26 +787,33 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       input_nominal.DumpSyncExe(*(dumpFiles[i]));
     }
   }
-  bool selected_jesup=true;
-  for(size_t i=0; i<selections.size() && selected_jesup; i++){
-    if(!selections.at(i)->IsSelected(input_jesup,cutflow_jesup)){
-      selected_jesup=false;
-    }
+  // WRITE TREES  
+  if(selected_nominal){
+    treewriter_nominal.Process(input_nominal);
   }
-  bool selected_jesdown=true;
-  for(size_t i=0; i<selections.size() && selected_jesdown; i++){
-    if(!selections.at(i)->IsSelected(input_jesdown,cutflow_jesdown)){
-      selected_jesdown=false;
+
+
+  if(makeSystematicsTrees){
+    bool selected_jesup=true;
+    for(size_t i=0; i<selections.size() && selected_jesup; i++){
+      if(!selections.at(i)->IsSelected(input_jesup,cutflow_jesup)){
+	selected_jesup=false;
+      }
+    }
+    bool selected_jesdown=true;
+    for(size_t i=0; i<selections.size() && selected_jesdown; i++){
+      if(!selections.at(i)->IsSelected(input_jesdown,cutflow_jesdown)){
+	selected_jesdown=false;
+      }
+    }
+    if(selected_jesup){
+      treewriter_jesup.Process(input_jesup);
+    }
+    if(selected_jesdown){
+      treewriter_jesdown.Process(input_jesdown);
     }
   }
 
-  // WRITE TREES  
-  if(selected_nominal)
-    treewriter_nominal.Process(input_nominal);
-  if(selected_jesup)
-    treewriter_jesup.Process(input_jesup);
-  if(selected_jesdown)
-    treewriter_jesdown.Process(input_jesdown);
 }
 
 
@@ -875,14 +905,27 @@ void BoostedAnalyzer::beginJob()
 void BoostedAnalyzer::endJob() 
 {
   std::ofstream fout_nominal(outfileName+"_Cutflow.txt");
-  std::ofstream fout_jesup(outfileName+"_JESup_Cutflow.txt");
-  std::ofstream fout_jesdown(outfileName+"_JESdown_Cutflow.txt");
   cutflow_nominal.Print(fout_nominal);
-  cutflow_jesup.Print(fout_jesup);
-  cutflow_jesdown.Print(fout_jesdown);
   fout_nominal.close();
-  fout_jesup.close();
-  fout_jesdown.close();
+  if(makeSystematicsTrees){
+    std::ofstream fout_jesup(outfileName+"_JESup_Cutflow.txt");
+    std::ofstream fout_jesdown(outfileName+"_JESdown_Cutflow.txt");
+    cutflow_jesup.Print(fout_jesup);
+    cutflow_jesdown.Print(fout_jesdown);
+    fout_jesup.close();
+    fout_jesdown.close();
+  }
+  if(dumpSyncExe){
+    for(auto f = dumpFiles.begin(); f!=dumpFiles.end(); f++){
+      (*f)->close();
+    }
+    for(auto f = dumpFiles_jesup.begin(); f!=dumpFiles_jesup.end(); f++){
+      (*f)->close();
+    }
+    for(auto f = dumpFiles_jesdown.begin(); f!=dumpFiles_jesdown.end(); f++){
+      (*f)->close();
+    }
+  }
 }
 // ------------ method called when starting to processes a run ------------
 // needed for the hlt_config
