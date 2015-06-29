@@ -502,6 +502,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
   helper.SetJetCorrector(corrector);
 
+  const double jetptcut=30.0; 
+  const double jetetacut=2.4; 
+  const double jetptcut_loose=20.0; 
+  const double jetetacut_loose=5.; 
 
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(pfjets);
@@ -513,24 +517,39 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> jetsNoEle = helper.RemoveOverlaps(selectedElectronsLoose, jetsNoMu);
   // Apply nominal jet corrections
   std::vector<pat::Jet> correctedJets_unsorted_nominal = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::NA);
-  // Apply systematically shifted jet corrections
-  std::vector<pat::Jet> correctedJets_unsorted_jesup = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::JESup);
-  std::vector<pat::Jet> correctedJets_unsorted_jesdown = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::JESdown);
   // Sort jets
   std::vector<pat::Jet> correctedJets_nominal = helper.GetSortedByPt(correctedJets_unsorted_nominal);
-  std::vector<pat::Jet> correctedJets_jesup = helper.GetSortedByPt(correctedJets_unsorted_jesup);
-  std::vector<pat::Jet> correctedJets_jesdown = helper.GetSortedByPt(correctedJets_unsorted_jesdown);
-  std::vector<pat::Jet> uncorrectedJets = helper.GetSortedByPt(jetsNoEle);
   //Get jet Collection which pass selection
-  std::vector<pat::Jet> selectedJets_nominal = helper.GetSelectedJets(correctedJets_nominal, 30., 2.4, jetID::none, '-' );
-  std::vector<pat::Jet> selectedJets_jesup = helper.GetSelectedJets(correctedJets_jesup, 30., 2.4, jetID::none, '-' );
-  std::vector<pat::Jet> selectedJets_jesdown = helper.GetSelectedJets(correctedJets_jesdown, 30., 2.4, jetID::none, '-' );
-  std::vector<pat::Jet> selectedJets_uncorrected = helper.GetSelectedJets(uncorrectedJets, 30., 2.4, jetID::none, '-' );
+  std::vector<pat::Jet> selectedJets_nominal = helper.GetSelectedJets(correctedJets_nominal, jetptcut, jetetacut, jetID::none, '-' );
   // Get jet Collection which pass loose selection
-  std::vector<pat::Jet> selectedJetsLoose_nominal = helper.GetSelectedJets(correctedJets_nominal, 20., 5.0, jetID::none, '-' ); 
-  std::vector<pat::Jet> selectedJetsLoose_jesup = helper.GetSelectedJets(correctedJets_jesup, 20., 5.0, jetID::none, '-' ); 
-  std::vector<pat::Jet> selectedJetsLoose_jesdown = helper.GetSelectedJets(correctedJets_jesdown, 20., 5.0, jetID::none, '-' ); 
-  std::vector<pat::Jet> selectedJetsLoose_uncorrected = helper.GetSelectedJets(uncorrectedJets, 20., 5.0, jetID::none, '-' ); 
+  std::vector<pat::Jet> selectedJetsLoose_nominal = helper.GetSelectedJets(correctedJets_nominal, jetptcut_loose,jetetacut_loose, jetID::none, '-' ); 
+
+  // Apply systematically shifted jet corrections
+  std::vector<pat::Jet> correctedJets_unsorted_jesup;
+  std::vector<pat::Jet> correctedJets_unsorted_jesdown;
+  std::vector<pat::Jet> correctedJets_jesup;
+  std::vector<pat::Jet> correctedJets_jesdown;
+  std::vector<pat::Jet> uncorrectedJets;
+  std::vector<pat::Jet> selectedJets_jesup;
+  std::vector<pat::Jet> selectedJets_jesdown;
+  std::vector<pat::Jet> selectedJets_uncorrected;
+  std::vector<pat::Jet> selectedJetsLoose_jesup;
+  std::vector<pat::Jet> selectedJetsLoose_jesdown;
+  std::vector<pat::Jet> selectedJetsLoose_uncorrected;
+
+  if(makeSystematicsTrees){
+    correctedJets_unsorted_jesup = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::JESup);
+    correctedJets_unsorted_jesdown = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::JESdown);
+    correctedJets_jesup = helper.GetSortedByPt(correctedJets_unsorted_jesup);
+    correctedJets_jesdown = helper.GetSortedByPt(correctedJets_unsorted_jesdown);
+    uncorrectedJets = helper.GetSortedByPt(jetsNoEle);
+    selectedJets_jesup = helper.GetSelectedJets(correctedJets_jesup, jetptcut, jetetacut, jetID::none, '-' );
+    selectedJets_jesdown = helper.GetSelectedJets(correctedJets_jesdown, jetptcut, jetetacut, jetID::none, '-' );
+    selectedJets_uncorrected = helper.GetSelectedJets(uncorrectedJets, jetptcut, jetetacut, jetID::none, '-' );
+    selectedJetsLoose_jesup = helper.GetSelectedJets(correctedJets_jesup, jetptcut_loose, jetetacut_loose, jetID::none, '-' ); 
+    selectedJetsLoose_jesdown = helper.GetSelectedJets(correctedJets_jesdown, jetptcut_loose,jetetacut_loose, jetID::none, '-' ); 
+    selectedJetsLoose_uncorrected = helper.GetSelectedJets(uncorrectedJets, jetptcut_loose, jetetacut_loose, jetID::none, '-' ); 
+  }
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
@@ -573,7 +592,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<reco::GenJet> const &genjets = *h_genjets;
   std::vector<reco::GenJet> selectedGenJets;
   for(size_t i=0; i<genjets.size();i++){
-    if(genjets[i].pt()>25&&fabs(genjets[i].eta())<2.4)
+    if(genjets[i].pt()>jetptcut&&fabs(genjets[i].eta())<jetetacut)
       selectedGenJets.push_back(genjets[i]);
   }
   // custom genjets for tt+X categorization
