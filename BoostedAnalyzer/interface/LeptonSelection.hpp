@@ -10,6 +10,7 @@ class LeptonSelection: public Selection{
   public:
     
     LeptonSelection(const edm::ParameterSet& iConfig, int step=-1);
+    LeptonSelection(std::vector<std::string> electronTriggers, std::vector<std::string> muonTriggers, std::string channel="both", int step=-1);
     ~LeptonSelection();
     void InitCutflow(Cutflow& cutflow);
     bool IsSelected(const InputCollections& input,Cutflow& cutflow);
@@ -17,8 +18,8 @@ class LeptonSelection: public Selection{
 
   private:
 
-    std::vector<std::string> muonTriggers;
     std::vector<std::string> electronTriggers;
+    std::vector<std::string> muonTriggers;
     std::string channel;
     int step;
 };
