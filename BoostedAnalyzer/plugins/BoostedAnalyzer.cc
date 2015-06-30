@@ -122,9 +122,10 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       vector<std::string> relevantTriggers;
 
       /** files to dump eventnumber into */
-      vector<std::ofstream*> dumpFiles;
-      vector<std::ofstream*> dumpFiles_jesup;
-      vector<std::ofstream*> dumpFiles_jesdown;
+      vector<std::ofstream*> dumpFiles1;
+      vector<std::ofstream*> dumpFiles2;
+      vector<std::ofstream*> dumpFiles2_jesup;
+      vector<std::ofstream*> dumpFiles2_jesdown;
         
       std::string outfileName;
 
@@ -160,6 +161,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** dump some event content for synchronization */
       bool dumpSyncExe;
+      bool dumpSyncExe2;
 
       /** write systematics trees */
       bool makeSystematicsTrees;
@@ -264,6 +266,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   useGenHadronMatch = iConfig.getParameter<bool>("useGenHadronMatch");
 
   dumpSyncExe = iConfig.getParameter<bool>("dumpSyncExe");
+  dumpSyncExe2 = iConfig.getParameter<bool>("dumpSyncExe2");
 
   makeSystematicsTrees = iConfig.getParameter<bool>("makeSystematicsTrees");
 
@@ -313,10 +316,16 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
   int nselection=0;
   if(dumpSyncExe){
-    dumpFiles.push_back(new ofstream((outfileName+"_Dump_"+std::to_string(nselection)+".txt").c_str()));
-    dumpFiles_jesup.push_back(new ofstream((outfileName+"_DumpJESup_"+std::to_string(nselection)+".txt").c_str()));
-    dumpFiles_jesdown.push_back(new ofstream((outfileName+"_DumpJESdown_"+std::to_string(nselection)+".txt").c_str()));
-  }   
+    dumpFiles1.push_back(new ofstream((outfileName+"_Dump1_"+std::to_string(nselection)+".txt").c_str()));
+  }
+  if(dumpSyncExe2){
+    dumpFiles2.push_back(new ofstream((outfileName+"_Dump2_"+std::to_string(nselection)+".txt").c_str()));
+    dumpFiles2_jesup.push_back(new ofstream((outfileName+"_Dump2JESup_"+std::to_string(nselection)+".txt").c_str()));
+    dumpFiles2_jesdown.push_back(new ofstream((outfileName+"_Dump2JESdown_"+std::to_string(nselection)+".txt").c_str()));
+    InputCollections::DumpSyncExe2Header(*(dumpFiles2.back()));
+    InputCollections::DumpSyncExe2Header(*(dumpFiles2_jesup.back()));
+    InputCollections::DumpSyncExe2Header(*(dumpFiles2_jesdown.back()));
+  }  
 
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {    
     cout << "Initializing " << *itSel << endl;
@@ -349,12 +358,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
       selections.back()->InitCutflow(cutflow_jesdown);
     }
     
-    nselection++;       
+    nselection++;     
     if(dumpSyncExe){
-      dumpFiles.push_back(new ofstream((outfileName+"_Dump_"+std::to_string(nselection)+".txt").c_str()));
-      dumpFiles_jesup.push_back(new ofstream((outfileName+"_DumpJESup_"+std::to_string(nselection)+".txt").c_str()));
-      dumpFiles_jesdown.push_back(new ofstream((outfileName+"_DumpJESdown_"+std::to_string(nselection)+".txt").c_str()));
-    }   
+      dumpFiles1.push_back(new ofstream((outfileName+"_Dump1_"+std::to_string(nselection)+".txt").c_str()));
+    }  
   }
   relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
   // INITIALIZE TREEWRITER
@@ -481,9 +488,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< std::vector<pat::Muon> > h_muons;
   iEvent.getByToken( EDMMuonsToken,h_muons );
   std::vector<pat::Muon> const &muons = *h_muons; 
-  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., muonID::muonTight, 2.1 );
-  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( muons, 20., muonID::muonTight, 2.4 );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose, 2.4 );
+  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.1 );
+  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( muons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4 );
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose, coneSize::R04, corrType::deltaBeta, 2.4 );
 
   // ELECTRONS
   edm::Handle< std::vector<pat::Electron> > h_electrons;
@@ -810,13 +817,24 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     cutflow_jesdown.EventSurvivedStep("all",input_jesdown);
   }
   bool selected_nominal=true;
+
+  if(dumpSyncExe){
+    input_nominal.DumpSyncExe(*(dumpFiles1[0]));
+  }
+  if(dumpSyncExe2){
+    input_nominal.DumpSyncExe2(helper,*(dumpFiles2[0]));
+    input_jesup.DumpSyncExe2(helper,*(dumpFiles2_jesup[0]));
+    input_jesdown.DumpSyncExe2(helper,*(dumpFiles2_jesdown[0]));
+  }
+
   for(size_t i=0; i<selections.size() && selected_nominal; i++){
     if(!selections.at(i)->IsSelected(input_nominal,cutflow_nominal)){
       selected_nominal=false;
     }
     if(dumpSyncExe&&selected_nominal){
-      input_nominal.DumpSyncExe(*(dumpFiles[i]));
+      input_nominal.DumpSyncExe(*(dumpFiles1[i]));
     }
+
   }
   // WRITE TREES  
   if(selected_nominal){
@@ -947,13 +965,18 @@ void BoostedAnalyzer::endJob()
     fout_jesdown.close();
   }
   if(dumpSyncExe){
-    for(auto f = dumpFiles.begin(); f!=dumpFiles.end(); f++){
+    for(auto f = dumpFiles1.begin(); f!=dumpFiles1.end(); f++){
       (*f)->close();
     }
-    for(auto f = dumpFiles_jesup.begin(); f!=dumpFiles_jesup.end(); f++){
+  }
+  if(dumpSyncExe2){
+    for(auto f = dumpFiles2.begin(); f!=dumpFiles2.end(); f++){
       (*f)->close();
     }
-    for(auto f = dumpFiles_jesdown.begin(); f!=dumpFiles_jesdown.end(); f++){
+    for(auto f = dumpFiles2_jesup.begin(); f!=dumpFiles2_jesup.end(); f++){
+      (*f)->close();
+    }
+    for(auto f = dumpFiles2_jesdown.begin(); f!=dumpFiles2_jesdown.end(); f++){
       (*f)->close();
     }
   }

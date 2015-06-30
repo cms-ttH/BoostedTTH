@@ -87,6 +87,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
   void DumpLeptons(std::ostream &out = std::cout);
   void DumpSyncExe(std::ostream &out = std::cout);
   void DumpSyncExe2(const MiniAODHelper& helper, std::ostream &out = std::cout);
+  static void DumpSyncExe2Header(std::ostream &out = std::cout);
 };
 
 #endif
