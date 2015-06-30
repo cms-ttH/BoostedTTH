@@ -1,8 +1,4 @@
 #include "../interface/InputCollections.hpp"
-/*void InputCollections::DumpSampleType(){
-  
-  }*/
-
 
 void InputCollections::DumpLeptons(std::ostream &out){
   out << "loose electrons" << std::endl;
@@ -45,6 +41,9 @@ void InputCollections::DumpSyncExe(std::ostream &out){
   int ttHFCategory=0;
   int n_toptags=0;
   int n_higgstags=0;
+  
+  Cutflow cutflow_dl;
+  Cutflow cutflow_sl;
 
   for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuons.begin(), ed = selectedMuons.end(); iMuon != ed; ++iMuon ){
     if(iMuon->pt()>lep1_pt){
@@ -143,53 +142,74 @@ void InputCollections::DumpSyncExe2(const MiniAODHelper& helper, std::ostream &o
   int lumi=eventInfo.lumiBlock;  
   int event=eventInfo.evt;  
   float bWeight=weights.at("Weight_CSV");
-  float lep1_pt=-99;
-  float lep1_eta=-99;
-  float lep1_phi=-99;
-  float jet1_pt=-99;
-  float jet2_pt=-99;
-  float jet3_pt=-99;
-  float jet4_pt=-99;
-  float jet1_CSVv2=-99;
-  float jet2_CSVv2=-99;
-  float jet3_CSVv2=-99;
-  float jet4_CSVv2=-99;
-  float MET_pt=-99;
-  float MET_phi=-99;
+  float lep1_pt=0;
+  float lep1_eta=0;
+  float lep1_phi=0;
+  float lep1_iso=0;
+  float lep1_pdgId=0;
+  float lep2_pt=0;
+  float lep2_eta=0;
+  float lep2_phi=0;
+  float lep2_iso=0;
+  float lep2_pdgId=0;
+  float jet1_pt=0;
+  float jet2_pt=0;
+  float jet3_pt=0;
+  float jet4_pt=0;
+  float jet1_CSVv2=0;
+  float jet2_CSVv2=0;
+  float jet3_CSVv2=0;
+  float jet4_CSVv2=0;
+  float MET_pt=0;
+  float MET_phi=0;
   int n_jets=0;
   int n_btags=0;
   int ttHFCategory=0;
-
-  //GetMuonRelIso(const pat::Muon& iMuon,const coneSize::coneSize iconeSize, const corrType::corrType icorrType) const
-  float lep1_iso=-99;
-  float lep1_pdgId=-99;
-  float lep2_pt=-99;
-  float lep2_eta=-99;
-  float lep2_phi=-99;
-  float lep2_iso=-99;
-  float lep2_pdgId=-99;
-
   bool is_SL=false;
   bool is_DL=false;
 
-
-
   for(std::vector<pat::Muon>::const_iterator iMuon = selectedMuonsLoose.begin(); iMuon != selectedMuonsLoose.end(); ++iMuon ){
     if(iMuon->pt()>lep1_pt){
+      lep2_pt=lep1_pt;
+      lep2_eta=lep1_eta;
+      lep2_phi=lep1_phi;
+      lep2_iso=lep1_iso;
+      lep2_pdgId=lep1_pdgId;
+
       lep1_pt=iMuon->pt();
       lep1_eta=iMuon->eta();
       lep1_phi=iMuon->phi();
       lep1_iso=helper.GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
       lep1_pdgId=iMuon->pdgId();
     }
+    else if(iMuon->pt()>lep2_pt){
+      lep2_pt=iMuon->pt();
+      lep2_eta=iMuon->eta();
+      lep2_phi=iMuon->phi();
+      lep2_iso=helper.GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
+      lep2_pdgId=iMuon->pdgId();
+    }
   }
   for(std::vector<pat::Electron>::const_iterator iEle = selectedElectronsLoose.begin(); iEle != selectedElectronsLoose.end(); ++iEle ){
     if(iEle->pt()>lep1_pt){
+      lep2_pt=lep1_pt;
+      lep2_eta=lep1_eta;
+      lep2_phi=lep1_phi;
+      lep2_iso=lep1_iso;
+      lep2_pdgId=lep1_pdgId;
+
       lep1_pt=iEle->pt();
       lep1_eta=iEle->eta();
       lep1_phi=iEle->phi();
       lep1_iso=helper.GetElectronRelIso(*iEle);
       lep1_pdgId=iEle->pdgId();
+    }
+    else if(iEle->pt()>lep2_pt){
+      lep2_pt=iEle->pt();
+      lep2_eta=iEle->eta();
+      lep2_phi=iEle->phi();
+      lep2_iso=helper.GetElectronRelIso(*iEle);
+      lep2_pdgId=iEle->pdgId();
     }
   }
   
