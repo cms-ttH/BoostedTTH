@@ -16,6 +16,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/Cutflow.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 
