@@ -37,11 +37,10 @@ int Cutflow::GetNSelected(){
 }
 
 
-void Cutflow::EventSurvivedStep(string name, const InputCollections& input){
+void Cutflow::EventSurvivedStep(string name, float w){
   auto it = find(selectionStepNames.begin(), selectionStepNames.end(), name);
   if(it != selectionStepNames.end()) {
     int step=it-selectionStepNames.begin();
-    float w = input.weights.at("Weight");
     eventsAfterSelectionSteps.at(step)++;
     yieldsAfterSelectionSteps.at(step)+=w;
   }
