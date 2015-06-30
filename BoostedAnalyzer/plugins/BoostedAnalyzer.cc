@@ -832,7 +832,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       selected_nominal=false;
     }
     if(dumpSyncExe&&selected_nominal){
-      input_nominal.DumpSyncExe(*(dumpFiles1[i]));
+      input_nominal.DumpSyncExe(*(dumpFiles1[i+1]));
     }
 
   }
