@@ -16,7 +16,7 @@ bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "METSelection not initialized" << endl;
   double met=input.pfMET.pt();
   if(met<=800){
-    cutflow.EventSurvivedStep("MET <= 800 for FastSim" ,input);
+    cutflow.EventSurvivedStep("MET <= 800 for FastSim" ,input.weights.at("Weight"));
     return true;
   }
 

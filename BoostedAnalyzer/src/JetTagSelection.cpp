@@ -72,7 +72,7 @@ bool JetTagSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
     
     if(iSel == selSize-1) return false;
   } 
-  cutflow.EventSurvivedStep(selName.c_str(),input);
+  cutflow.EventSurvivedStep(selName.c_str(),input.weights.at("Weight"));
 
   return true;
 }

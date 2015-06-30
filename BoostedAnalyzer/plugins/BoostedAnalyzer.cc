@@ -811,10 +811,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				     );
   
   // DO SELECTION
-  cutflow_nominal.EventSurvivedStep("all",input_nominal);
+  cutflow_nominal.EventSurvivedStep("all",input_nominal.weights.at("Weight"));
   if(makeSystematicsTrees){
-    cutflow_jesup.EventSurvivedStep("all",input_jesup);
-    cutflow_jesdown.EventSurvivedStep("all",input_jesdown);
+    cutflow_jesup.EventSurvivedStep("all",input_jesup.weights.at("Weight"));
+    cutflow_jesdown.EventSurvivedStep("all",input_jesdown.weights.at("Weight"));
   }
   bool selected_nominal=true;
 

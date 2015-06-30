@@ -16,7 +16,7 @@ bool HbbSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "HbbSelection not initialized" << endl;
 
   if(input.higgsDecay==HiggsDecay::bb || input.higgsDecay==HiggsDecay::NA){
-    cutflow.EventSurvivedStep("Higgs to bb",input);   
+    cutflow.EventSurvivedStep("Higgs to bb",input.weights.at("Weight"));   
     return true;
   }
   return false;   

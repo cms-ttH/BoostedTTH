@@ -17,7 +17,7 @@ public:
   ~Cutflow();
   void AddStep(std::string name);
   void Print(std::ostream& out);
-  void EventSurvivedStep(std::string name, const InputCollections& input);
+  void EventSurvivedStep(std::string name, float weight);
   void Init();
   int GetNSelected();
 
