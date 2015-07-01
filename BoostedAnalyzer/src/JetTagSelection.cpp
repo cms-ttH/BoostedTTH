@@ -1,8 +1,11 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 using namespace std;
 
-JetTagSelection::JetTagSelection(std::vector<int> minjets_,std::vector<int> mintags_):JetTagSelection(JetTagSelection(minjets_,std::vector<int>(),mintags_,std::vector<int>())) {  
+JetTagSelection::JetTagSelection(std::vector<int> minjets_,std::vector<int> mintags_):JetTagSelection(minjets_,std::vector<int>(),mintags_,std::vector<int>()) {  
 }
+JetTagSelection::JetTagSelection(int minjets_,int mintags_):JetTagSelection(std::vector<int>(1,minjets_),std::vector<int>(1,mintags_)) {  
+}
+
 
 JetTagSelection::JetTagSelection(std::vector<int> minjets_,std::vector<int> maxjets_, std::vector<int> mintags_, std::vector<int> maxtags_):minJets(minjets_), maxJets(maxjets_), minTags(mintags_), maxTags(maxtags_){
 
