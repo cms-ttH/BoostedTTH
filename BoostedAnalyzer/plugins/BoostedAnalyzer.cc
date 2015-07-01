@@ -69,6 +69,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
@@ -120,12 +121,6 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
       /** triggers that are checked */
       vector<std::string> relevantTriggers;
-
-      /** files to dump eventnumber into */
-      vector<std::ofstream*> dumpFiles1;
-      vector<std::ofstream*> dumpFiles2;
-      vector<std::ofstream*> dumpFiles2_jesup;
-      vector<std::ofstream*> dumpFiles2_jesdown;
         
       std::string outfileName;
 
@@ -162,6 +157,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** dump some event content for synchronization */
       bool dumpSyncExe;
       bool dumpSyncExe2;
+      Synchronizer synchronizer;
 
       /** write systematics trees */
       bool makeSystematicsTrees;
@@ -316,15 +312,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
   int nselection=0;
   if(dumpSyncExe){
-    dumpFiles1.push_back(new ofstream((outfileName+"_Dump1_"+std::to_string(nselection)+".txt").c_str()));
+    synchronizer.InitDumpSyncFile1((outfileName+"_Dump1_"+std::to_string(nselection)));
   }
   if(dumpSyncExe2){
-    dumpFiles2.push_back(new ofstream((outfileName+"_Dump2_"+std::to_string(nselection)+".txt").c_str()));
-    dumpFiles2_jesup.push_back(new ofstream((outfileName+"_Dump2JESup_"+std::to_string(nselection)+".txt").c_str()));
-    dumpFiles2_jesdown.push_back(new ofstream((outfileName+"_Dump2JESdown_"+std::to_string(nselection)+".txt").c_str()));
-    InputCollections::DumpSyncExe2Header(*(dumpFiles2.back()));
-    InputCollections::DumpSyncExe2Header(*(dumpFiles2_jesup.back()));
-    InputCollections::DumpSyncExe2Header(*(dumpFiles2_jesdown.back()));
+    synchronizer.InitDumpSyncFile2((outfileName+"_Dump2_"+std::to_string(nselection)));
   }  
 
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {    
@@ -360,7 +351,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     
     nselection++;     
     if(dumpSyncExe){
-      dumpFiles1.push_back(new ofstream((outfileName+"_Dump1_"+std::to_string(nselection)+".txt").c_str()));
+      synchronizer.InitDumpSyncFile1(outfileName+"_Dump1_"+std::to_string(nselection));
     }  
   }
   relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
@@ -819,12 +810,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   bool selected_nominal=true;
 
   if(dumpSyncExe){
-    input_nominal.DumpSyncExe(*(dumpFiles1[0]));
+    synchronizer.DumpSyncExe1(0,input_nominal);
   }
   if(dumpSyncExe2){
-    input_nominal.DumpSyncExe2(helper,*(dumpFiles2[0]));
-    input_jesup.DumpSyncExe2(helper,*(dumpFiles2_jesup[0]));
-    input_jesdown.DumpSyncExe2(helper,*(dumpFiles2_jesdown[0]));
+    synchronizer.DumpSyncExe2(0,input_nominal,helper,sysType::NA);
+    synchronizer.DumpSyncExe2(0,input_jesup,helper,sysType::JESup);
+    synchronizer.DumpSyncExe2(0,input_jesdown,helper,sysType::JESdown);
   }
 
   for(size_t i=0; i<selections.size() && selected_nominal; i++){
@@ -832,7 +823,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       selected_nominal=false;
     }
     if(dumpSyncExe&&selected_nominal){
-      input_nominal.DumpSyncExe(*(dumpFiles1[i+1]));
+      synchronizer.DumpSyncExe2(i+1,input_nominal,helper,sysType::NA);
     }
 
   }
@@ -963,22 +954,6 @@ void BoostedAnalyzer::endJob()
     cutflow_jesdown.Print(fout_jesdown);
     fout_jesup.close();
     fout_jesdown.close();
-  }
-  if(dumpSyncExe){
-    for(auto f = dumpFiles1.begin(); f!=dumpFiles1.end(); f++){
-      (*f)->close();
-    }
-  }
-  if(dumpSyncExe2){
-    for(auto f = dumpFiles2.begin(); f!=dumpFiles2.end(); f++){
-      (*f)->close();
-    }
-    for(auto f = dumpFiles2_jesup.begin(); f!=dumpFiles2_jesup.end(); f++){
-      (*f)->close();
-    }
-    for(auto f = dumpFiles2_jesdown.begin(); f!=dumpFiles2_jesdown.end(); f++){
-      (*f)->close();
-    }
   }
 }
 // ------------ method called when starting to processes a run ------------

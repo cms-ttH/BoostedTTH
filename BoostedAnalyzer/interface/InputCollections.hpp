@@ -85,10 +85,6 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>&            weights;
 
-  void DumpLeptons(std::ostream &out = std::cout);
-  void DumpSyncExe(std::ostream &out = std::cout);
-  void DumpSyncExe2(const MiniAODHelper& helper, std::ostream &out = std::cout);
-  static void DumpSyncExe2Header(std::ostream &out = std::cout);
 };
 
 #endif
