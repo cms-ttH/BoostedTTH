@@ -2,24 +2,28 @@
 
 using namespace std;
 
-METSelection::METSelection (){}
+METSelection::METSelection (const edm::ParameterSet& iConfig):minMET(iConfig.getParameter<double>("minMET")),maxMET(iConfig.getParameter<double>("maxMET"))
+{}
 METSelection::~METSelection (){}
 
 void METSelection::InitCutflow(Cutflow& cutflow){
+    selectionName="MET > ";
+    selectionName=std::to_string(minMET);
+    selectionName=" and MET < ";
+    selectionName=std::to_string(maxMET);   
+    cutflow.AddStep(selectionName);
 
-  cutflow.AddStep("MET <= 800 for FastSim");
-
-  initialized=true;
+    initialized=true;
 }
 
 bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
-  if(!initialized) cerr << "METSelection not initialized" << endl;
-  double met=input.pfMET.pt();
-  if(met<=800){
-    cutflow.EventSurvivedStep("MET <= 800 for FastSim" ,input.weights.at("Weight"));
-    return true;
-  }
-
-  return false;   
+    if(!initialized) cerr << "METSelection not initialized" << endl;
+    double met=input.pfMET.pt();
+    if(met>minMET&&met<maxMET){
+	cutflow.EventSurvivedStep(selectionName ,input.weights.at("Weight"));
+	return true;
+    }
+    
+    return false;   
 
 } 
