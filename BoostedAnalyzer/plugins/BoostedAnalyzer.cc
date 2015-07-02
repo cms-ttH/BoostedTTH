@@ -53,6 +53,9 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonMassSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
@@ -327,6 +330,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
     else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
     else if(*itSel == "LeptonSelection4") selections.push_back(new LeptonSelection(iConfig,4));
+    else if(*itSel == "DiLeptonSelection") selections.push_back(new DiLeptonSelection(iConfig));
+    else if(*itSel == "MinDiLeptonMassSelection") selections.push_back(new DiLeptonMassSelection(20.,9999.));
+    else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true));
+    else if(*itSel == "METSelection") selections.push_back(new METSelection(iConfig));
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
     else if(*itSel == "4JetSelection"){
       vector<int> njets;
