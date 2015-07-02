@@ -64,6 +64,32 @@ InputCollections(   const EventInfo&                              eventInfo_,
   higgsDecay(higgsDecay_),
   weights(weights_)
   {}
+InputCollections(   const InputCollections&                       input,
+                    const std::vector<pat::Jet>&                  selectedJets_,
+                    const std::vector<pat::Jet>&                  selectedJetsLoose_,
+                    const pat::MET&                               pfMET_,
+                    const std::map<std::string,float>&            weights_
+		    ): 
+  eventInfo(input.eventInfo),
+  triggerInfo(input.triggerInfo),
+  selectedPVs(input.selectedPVs),
+  selectedMuons(input.selectedMuons),
+  selectedMuonsDL(input.selectedMuonsDL),
+  selectedMuonsLoose(input.selectedMuonsLoose),
+  selectedElectrons(input.selectedElectrons),
+  selectedElectronsDL(input.selectedElectronsDL),
+  selectedElectronsLoose(input.selectedElectronsLoose),
+  selectedJets(selectedJets_),
+  selectedJetsLoose(selectedJetsLoose_),
+  pfMET(pfMET_),
+  selectedHEPTopJets(input.selectedHEPTopJets),
+  selectedSubFilterJets(input.selectedSubFilterJets),
+  genTopEvt(input.genTopEvt),
+  selectedGenJets(input.selectedGenJets),
+  sampleType(input.sampleType),
+  higgsDecay(input.higgsDecay),
+  weights(weights_)
+  {}
   
   const EventInfo&                              eventInfo;
   const TriggerInfo&                            triggerInfo;

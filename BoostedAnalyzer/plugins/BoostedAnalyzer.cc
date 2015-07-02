@@ -738,68 +738,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  weights			  
 				  );
 
-  InputCollections input_jesup( eventInfo,			  
-				triggerInfo,			  
-				selectedPVs,
-				selectedMuons,
-				selectedMuonsDL,
-				selectedMuonsLoose,
-				selectedElectrons,
-				selectedElectronsDL,
-				selectedElectronsLoose,
-				selectedJets_jesup,
-				selectedJetsLoose_jesup,
-				pfMETs[0],
-				heptopjets,
-				subfilterjets,
-				genTopEvt,
-				selectedGenJets,
-				sampleType,
-				higgsdecay,
-				weights_jesup		  
-				);
-        
-  InputCollections input_jesdown( eventInfo,			  
-				  triggerInfo,			  
-				  selectedPVs,
-				  selectedMuons,
-				  selectedMuonsDL,
-				  selectedMuonsLoose,
-				  selectedElectrons,
-				  selectedElectronsDL,
-				  selectedElectronsLoose,
-				  selectedJets_jesdown,
-				  selectedJetsLoose_jesdown,
-				  pfMETs[0],
-				  heptopjets,
-				  subfilterjets,
-				  genTopEvt,
-				  selectedGenJets,
-				  sampleType,
-				  higgsdecay,
-				  weights_jesdown
-				  );
-
-  InputCollections input_uncorrjets( eventInfo,			  
-				     triggerInfo,			  
-				     selectedPVs,
-				     selectedMuons,
-				     selectedMuonsDL,
-				     selectedMuonsLoose,
-				     selectedElectrons,
-				     selectedElectronsDL,
-				     selectedElectronsLoose,
-				     selectedJets_uncorrected,
-				     selectedJetsLoose_uncorrected,
-				     pfMETs[0],
-				     heptopjets,
-				     subfilterjets,
-				     genTopEvt,
-				     selectedGenJets,
-				     sampleType,
-				     higgsdecay,
-				     weights_uncorrjets
-				     );
+  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,pfMETs[0],weights_jesup);
+  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,pfMETs[0],weights_jesdown);
+  InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,pfMETs[0],weights_uncorrjets);
   
   // DO SELECTION
   cutflow_nominal.EventSurvivedStep("all",input_nominal.weights.at("Weight"));
