@@ -56,6 +56,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/HNonbbSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
@@ -313,6 +314,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
     else if(*itSel == "LeptonSelection4") selections.push_back(new LeptonSelection(iConfig,4));
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
+    else if(*itSel == "HNonbbSelection") selections.push_back(new HNonbbSelection());
     else if(*itSel == "4JetSelection"){
       vector<int> njets;
       njets.push_back(4);
@@ -675,7 +677,6 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   //float puweight = beanHelper.GetPUweight(event[0].numTruePV);
   //float topptweight = beanHelper.GetTopPtweight(mcparticlesStatus3);
   //float q2scaleweight = beanHelper.GetQ2ScaleUp(const BNevent&);
-  
   
   weight *= xsweight*csvweight*puweight*topptweight;
   weights["Weight"] = weight;
