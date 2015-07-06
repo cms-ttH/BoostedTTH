@@ -16,17 +16,22 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/Cutflow.hpp"
+#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 
-enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg};
+enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg,thq};
+namespace HiggsDecay{enum HiggsDecay{NA,bb,nonbb};};
 
 struct InputCollections{
 InputCollections(   const EventInfo&                              eventInfo_,
 		    const TriggerInfo&                            triggerInfo_,
 		    const std::vector<reco::Vertex>&              selectedPVs_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
+                    const std::vector<pat::Muon>&                 selectedMuonsDL_,
                     const std::vector<pat::Muon>&                 selectedMuonsLoose_,
                     const std::vector<pat::Electron>&             selectedElectrons_,
+                    const std::vector<pat::Electron>&             selectedElectronsDL_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
@@ -36,14 +41,17 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		    const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
+		    const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_
 		    ): 
   eventInfo(eventInfo_),
   triggerInfo(triggerInfo_),
   selectedPVs(selectedPVs_),
   selectedMuons(selectedMuons_),
+  selectedMuonsDL(selectedMuonsDL_),
   selectedMuonsLoose(selectedMuonsLoose_),
   selectedElectrons(selectedElectrons_),
+  selectedElectronsDL(selectedElectronsDL_),
   selectedElectronsLoose(selectedElectronsLoose_),
   selectedJets(selectedJets_),
   selectedJetsLoose(selectedJetsLoose_),
@@ -53,6 +61,33 @@ InputCollections(   const EventInfo&                              eventInfo_,
   genTopEvt(genTopEvt_),
   selectedGenJets(selectedGenJets_),
   sampleType(sampleType_),
+  higgsDecay(higgsDecay_),
+  weights(weights_)
+  {}
+InputCollections(   const InputCollections&                       input,
+                    const std::vector<pat::Jet>&                  selectedJets_,
+                    const std::vector<pat::Jet>&                  selectedJetsLoose_,
+                    const pat::MET&                               pfMET_,
+                    const std::map<std::string,float>&            weights_
+		    ): 
+  eventInfo(input.eventInfo),
+  triggerInfo(input.triggerInfo),
+  selectedPVs(input.selectedPVs),
+  selectedMuons(input.selectedMuons),
+  selectedMuonsDL(input.selectedMuonsDL),
+  selectedMuonsLoose(input.selectedMuonsLoose),
+  selectedElectrons(input.selectedElectrons),
+  selectedElectronsDL(input.selectedElectronsDL),
+  selectedElectronsLoose(input.selectedElectronsLoose),
+  selectedJets(selectedJets_),
+  selectedJetsLoose(selectedJetsLoose_),
+  pfMET(pfMET_),
+  selectedHEPTopJets(input.selectedHEPTopJets),
+  selectedSubFilterJets(input.selectedSubFilterJets),
+  genTopEvt(input.genTopEvt),
+  selectedGenJets(input.selectedGenJets),
+  sampleType(input.sampleType),
+  higgsDecay(input.higgsDecay),
   weights(weights_)
   {}
   
@@ -60,8 +95,10 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const TriggerInfo&                            triggerInfo;
   const std::vector<reco::Vertex>&              selectedPVs;
   const std::vector<pat::Muon>&                 selectedMuons;
+  const std::vector<pat::Muon>&                 selectedMuonsDL;
   const std::vector<pat::Muon>&                 selectedMuonsLoose;
   const std::vector<pat::Electron>&             selectedElectrons;
+  const std::vector<pat::Electron>&             selectedElectronsDL;
   const std::vector<pat::Electron>&             selectedElectronsLoose;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
@@ -71,11 +108,9 @@ InputCollections(   const EventInfo&                              eventInfo_,
   const GenTopEvent&                            genTopEvt;
   const std::vector<reco::GenJet>&              selectedGenJets;
   const SampleType                              sampleType;
+  const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>&            weights;
 
-  void DumpFatJets(std::ostream &out = std::cout);
-  void DumpLeptons(std::ostream &out = std::cout);
-  void DumpSyncExe(std::ostream &out = std::cout);
 };
 
 #endif

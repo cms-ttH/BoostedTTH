@@ -5,13 +5,16 @@ using namespace std;
 // ------ Cutflow Object
 
 Cutflow::Cutflow(){
+  initialized=false;
 }
 
 
 Cutflow::~Cutflow(){
-  cutflowfile.close();
 }
 
+void Cutflow::Init(){
+  AddStep("all");
+}
 
 void Cutflow::AddStep(string name){
   if(std::find(selectionStepNames.begin(), selectionStepNames.end(), name) != selectionStepNames.end()){
@@ -23,23 +26,21 @@ void Cutflow::AddStep(string name){
   selectionStepNames.push_back(name);
 }
 
-void Cutflow::Init(const char* filename){
-  cutflowfile.open(filename);
-}
-
-
-void Cutflow::Print(){
+void Cutflow::Print(std::ostream& out){
   for(size_t i=0; i<selectionStepNames.size();i++){
-    cutflowfile << i << " : " << selectionStepNames[i] << " : " << eventsAfterSelectionSteps[i] << " : " << yieldsAfterSelectionSteps[i] <<endl;
+    out << i << " : " << selectionStepNames[i] << " : " << eventsAfterSelectionSteps[i] << " : " << yieldsAfterSelectionSteps[i] <<endl;
   }
 }
 
+int Cutflow::GetNSelected(){
+  return eventsAfterSelectionSteps.back();
+}
 
-void Cutflow::EventSurvivedStep(string name, const InputCollections& input){
+
+void Cutflow::EventSurvivedStep(string name, float w){
   auto it = find(selectionStepNames.begin(), selectionStepNames.end(), name);
   if(it != selectionStepNames.end()) {
     int step=it-selectionStepNames.begin();
-    float w = input.weights.begin()->second;
     eventsAfterSelectionSteps.at(step)++;
     yieldsAfterSelectionSteps.at(step)+=w;
   }
@@ -48,5 +49,3 @@ void Cutflow::EventSurvivedStep(string name, const InputCollections& input){
   }
    
 }
-
-

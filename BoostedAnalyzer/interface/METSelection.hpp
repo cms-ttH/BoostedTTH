@@ -9,13 +9,17 @@ class METSelection: public Selection{
   
   public:
     
-    METSelection();
+    METSelection(const edm::ParameterSet& iConfig);
+    METSelection(float minMET=-1, float maxMET=999999);
     ~METSelection();
     void InitCutflow(Cutflow& cutflow);
     bool IsSelected(const InputCollections& input,Cutflow& cutflow);
 
 
   private:
+    float minMET;
+    float maxMET;
+    std::string selectionName;
 
 };
 

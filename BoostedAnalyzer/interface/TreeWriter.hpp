@@ -32,16 +32,16 @@ class TreeWriter{
     void Init(std::string fileName);
     bool Process(const InputCollections& input);
     void AddTreeProcessor(TreeProcessor* processor);
-
+    std::vector<TreeProcessor*> GetTreeProcessors() const;
 
   private:
   
-    void Init();
     void FillTree();
-    bool initialized;
     TTree* tree;
     TFile* outFile;
+    bool initialized;
     VariableContainer vars;
     std::vector<TreeProcessor*> processors;
+
 };
 #endif

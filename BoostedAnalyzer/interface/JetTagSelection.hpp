@@ -11,6 +11,7 @@ class JetTagSelection: public Selection{
   
     JetTagSelection(const edm::ParameterSet& iConfig);
     JetTagSelection(std::vector<int> minjets,std::vector<int> mintags);
+    JetTagSelection(int minjets,int mintags);
     JetTagSelection(std::vector<int> minjets,std::vector<int> maxjets, std::vector<int> mintags, std::vector<int> maxtags);
     ~JetTagSelection();
     void InitCutflow(Cutflow& cutflow);
@@ -19,10 +20,7 @@ class JetTagSelection: public Selection{
 
   private:
 
-    
-
     std::string selName;
-
     size_t selSize;
 
     std::vector<int> minJets;

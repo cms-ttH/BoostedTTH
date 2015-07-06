@@ -16,15 +16,17 @@ public:
   Cutflow();
   ~Cutflow();
   void AddStep(std::string name);
-  void Print();
-  void EventSurvivedStep(std::string name, const InputCollections& input);
-  void Init(const char* filename);
+  void Print(std::ostream& out);
+  void EventSurvivedStep(std::string name, float weight);
+  void Init();
+  int GetNSelected();
+
 private:
   bool initialized;
   std::vector<int> eventsAfterSelectionSteps;
   std::vector<float> yieldsAfterSelectionSteps;
   std::vector<std::string> selectionStepNames;
-  std::ofstream cutflowfile;
+  
 
 };
 
