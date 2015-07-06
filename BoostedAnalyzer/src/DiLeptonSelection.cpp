@@ -33,12 +33,14 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
     int nelectrons=input.selectedElectronsDL.size();
     for(auto e=input.selectedElectronsDL.begin();e!=input.selectedElectronsDL.end();e++){
       if(e->charge()>0) nelectrons_p++;      
+      else nelectrons_n++;
     }
     int nmuons_p=0;
     int nmuons_n=0;
     int nmuons=input.selectedMuonsDL.size();
     for(auto e=input.selectedMuonsDL.begin();e!=input.selectedMuonsDL.end();e++){
       if(e->charge()>0) nmuons_p++;
+      else nmuons_n++;
     }
     int nleptons=nmuons+nelectrons;
     
