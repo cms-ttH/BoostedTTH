@@ -12,9 +12,9 @@ void DiLeptonMassSelection::InitCutflow(Cutflow& cutflow){
     if(invertCut) selectionName+="not ";
     selectionName+="between ";
     selectionName+=std::to_string(minMass);
-    selectionName+" and ";
+    selectionName+=" and ";
     selectionName+=std::to_string(maxMass);
-    
+    cutflow.AddStep(selectionName);
     initialized=true;
 }
 
@@ -24,7 +24,8 @@ bool DiLeptonMassSelection::IsSelected(const InputCollections& input,Cutflow& cu
     vector<math::XYZTLorentzVector> lvs=BoostedUtils::GetLepVecs(input.selectedElectronsDL,input.selectedMuonsDL);
     float mass=(lvs[0]+lvs[1]).M();
 
-    if( (!invertCut&&(mass<minMass||mass>maxMass)) || (invertCut&&(mass>minMass||mass<maxMass)) ) return false;
+    if( (!invertCut&&(mass<minMass||mass>maxMass)) 
+	|| (invertCut&&(mass>minMass&&mass<maxMass)) ) return false;
     else cutflow.EventSurvivedStep(selectionName,input.weights.at("Weight"));
     
     return true;
