@@ -2,15 +2,17 @@
 
 using namespace std;
 
-METSelection::METSelection (const edm::ParameterSet& iConfig):minMET(iConfig.getParameter<double>("minMET")),maxMET(iConfig.getParameter<double>("maxMET"))
+METSelection::METSelection (const edm::ParameterSet& iConfig):METSelection(iConfig.getParameter<double>("minMET"),iConfig.getParameter<double>("maxMET"))
+{}
+METSelection::METSelection (float minMET_, float maxMET_):minMET(minMET_),maxMET(maxMET_)
 {}
 METSelection::~METSelection (){}
 
 void METSelection::InitCutflow(Cutflow& cutflow){
     selectionName="MET > ";
-    selectionName=std::to_string(minMET);
-    selectionName=" and MET < ";
-    selectionName=std::to_string(maxMET);   
+    selectionName+=std::to_string(minMET);
+    selectionName+=" and MET < ";
+    selectionName+=std::to_string(maxMET);   
     cutflow.AddStep(selectionName);
 
     initialized=true;
