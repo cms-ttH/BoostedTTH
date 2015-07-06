@@ -54,7 +54,6 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
 
   readerMap["6j2t"]->AddVariable("first_jet_pt", &variableMap["first_jet_pt"]);
   readerMap["6j2t"]->AddVariable("second_jet_pt", &variableMap["second_jet_pt"]);
-  readerMap["6j2t"]->AddVariable("third_jet_pt", &variableMap["third_jet_pt"]);
   readerMap["6j2t"]->AddVariable("fourth_jet_pt", &variableMap["fourth_jet_pt"]);
   readerMap["6j2t"]->AddVariable("h0", &variableMap["h0"]);
   readerMap["6j2t"]->AddVariable("h1", &variableMap["h1"]);
@@ -65,6 +64,7 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
   readerMap["6j2t"]->AddVariable("fourth_highest_btag", &variableMap["fourth_highest_btag"]);
   readerMap["6j2t"]->AddVariable("fifth_highest_CSV", &variableMap["fifth_highest_CSV"]);
   readerMap["6j2t"]->AddVariable("maxeta_jet_jet", &variableMap["maxeta_jet_jet"]);
+  readerMap["6j2t"]->AddVariable("Mlb", &variableMap["Mlb"]);
   readerMap["6j2t"]->AddVariable("pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
 
   readerMap["4j3t"]->AddVariable("first_jet_pt", &variableMap["first_jet_pt"]);
@@ -77,8 +77,8 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
   readerMap["4j3t"]->AddVariable("second_highest_btag", &variableMap["second_highest_btag"]);
   readerMap["4j3t"]->AddVariable("third_highest_btag", &variableMap["third_highest_btag"]);
   readerMap["4j3t"]->AddVariable("invariant_mass_of_everything", &variableMap["invariant_mass_of_everything"]);
-  readerMap["4j3t"]->AddVariable("fifth_highest_CSV", &variableMap["fifth_highest_CSV"]);
 
+  readerMap["5j3t"]->AddVariable("second_jet_pt", &variableMap["second_jet_pt"]);
   readerMap["5j3t"]->AddVariable("third_jet_pt", &variableMap["third_jet_pt"]);
   readerMap["5j3t"]->AddVariable("fourth_jet_pt", &variableMap["fourth_jet_pt"]);
   readerMap["5j3t"]->AddVariable("all_sum_pt_with_met", &variableMap["all_sum_pt_with_met"]);
@@ -125,6 +125,7 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
   readerMap["4j4t"]->AddVariable("pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
 
   readerMap["5j4t"]->AddVariable("aplanarity", &variableMap["aplanarity"]);
+  readerMap["5j4t"]->AddVariable("third_jet_pt", &variableMap["third_jet_pt"]);
   readerMap["5j4t"]->AddVariable("fourth_jet_pt", &variableMap["fourth_jet_pt"]);
   readerMap["5j4t"]->AddVariable("h1", &variableMap["h1"]);
   readerMap["5j4t"]->AddVariable("avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
@@ -132,14 +133,12 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.814),btagger("combinedInc
   readerMap["5j4t"]->AddVariable("avg_btag_disc_btags", &variableMap["avg_btag_disc_btags"]);
   readerMap["5j4t"]->AddVariable("dev_from_avg_disc_btags", &variableMap["dev_from_avg_disc_btags"]);
   readerMap["5j4t"]->AddVariable("h2", &variableMap["h2"]);
-  readerMap["5j4t"]->AddVariable("lowest_btag", &variableMap["lowest_btag"]);
   readerMap["5j4t"]->AddVariable("h3", &variableMap["h3"]);
-  readerMap["5j4t"]->AddVariable("second_highest_btag", &variableMap["second_highest_btag"]);
   readerMap["5j4t"]->AddVariable("third_highest_btag", &variableMap["third_highest_btag"]);
+  readerMap["5j4t"]->AddVariable("fourth_highest_btag", &variableMap["fourth_highest_btag"]);
   readerMap["5j4t"]->AddVariable("maxeta_jet_jet", &variableMap["maxeta_jet_jet"]);
   readerMap["5j4t"]->AddVariable("maxeta_jet_tag", &variableMap["maxeta_jet_tag"]);
   readerMap["5j4t"]->AddVariable("maxeta_tag_tag", &variableMap["maxeta_tag_tag"]);
-  readerMap["5j4t"]->AddVariable("min_dr_tagged_jets", &variableMap["min_dr_tagged_jets"]);
   readerMap["5j4t"]->AddVariable("pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
 
   readerMap["6j4t"]->AddVariable("avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
