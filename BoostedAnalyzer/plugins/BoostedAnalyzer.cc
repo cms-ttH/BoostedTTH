@@ -537,12 +537,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // Sort jets
   std::vector<pat::Jet> selectedJetsLoose_nominal = helper.GetSortedByPt(selectedJetsLoose_unsorted_nominal);
   // Get jet Collection which pass the forward selection
-  std::vector<pat::Jet> selectedJetsForward_unsorted_nominal;
-  std::vector<pat::Jet> selectedJetsForward_nominal;
+  std::vector<pat::Jet> selectedJetsSingleTop_nominal;
   if(useForwardJets){
-      selectedJetsForward_unsorted_nominal = helper.GetSelectedJets(correctedJets_unsorted_nominal, jetptcut_forward,jetetacut_forward, jetID::none, '-' ); 
-      selectedJetsForward_nominal = helper.GetSortedByPt(selectedJetsForward_unsorted_nominal);
-
+      std::vector<pat::Jet> selectedJetsForward_unsorted_nominal = helper.GetSelectedJets(correctedJets_unsorted_nominal, jetptcut_forward,jetetacut_forward, jetID::none, '-' ); 
+      std::vector<pat::Jet> selectedJetsSingleTop_unsorted_nominal = BoostedUtils::GetSingleTopJets(selectedJetsLoose_nominal,selectedJetsForward_unsorted_nominal,jetetacut_loose);
+      selectedJetsSingleTop_nominal= helper.GetSortedByPt(selectedJetsSingleTop_unsorted_nominal);
   }
   // Apply systematically shifted jet corrections
   std::vector<pat::Jet> correctedJets_unsorted_jesup;
@@ -554,9 +553,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> selectedJetsLoose_unsorted_jesup;
   std::vector<pat::Jet> selectedJetsLoose_unsorted_jesdown;
   std::vector<pat::Jet> selectedJetsLoose_unsorted_uncorrected;
-  std::vector<pat::Jet> selectedJetsForward_unsorted_jesup;
-  std::vector<pat::Jet> selectedJetsForward_unsorted_jesdown;
-  std::vector<pat::Jet> selectedJetsForward_unsorted_uncorrected;
 
   std::vector<pat::Jet> selectedJets_jesup;
   std::vector<pat::Jet> selectedJets_jesdown;
@@ -564,9 +560,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> selectedJetsLoose_jesup;
   std::vector<pat::Jet> selectedJetsLoose_jesdown;
   std::vector<pat::Jet> selectedJetsLoose_uncorrected;
-  std::vector<pat::Jet> selectedJetsForward_jesup;
-  std::vector<pat::Jet> selectedJetsForward_jesdown;
-  std::vector<pat::Jet> selectedJetsForward_uncorrected;
+
+  std::vector<pat::Jet> selectedJetsSingleTop_jesup;
+  std::vector<pat::Jet> selectedJetsSingleTop_jesdown;
+  std::vector<pat::Jet> selectedJetsSingleTop_uncorrected;
 
   if(makeSystematicsTrees){
     correctedJets_unsorted_jesup = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::JESup);
@@ -587,13 +584,18 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     selectedJetsLoose_uncorrected = helper.GetSortedByPt(selectedJetsLoose_unsorted_uncorrected);
 
     if(useForwardJets){
-	selectedJetsForward_unsorted_jesup = helper.GetSelectedJets(correctedJets_unsorted_jesup, jetptcut_forward, jetetacut_forward, jetID::none, '-' ); 
-	selectedJetsForward_unsorted_jesdown = helper.GetSelectedJets(correctedJets_unsorted_jesdown, jetptcut_forward,jetetacut_forward, jetID::none, '-' ); 
-	selectedJetsForward_unsorted_uncorrected = helper.GetSelectedJets(jetsNoEle, jetptcut_forward, jetetacut_forward, jetID::none, '-' ); 
 
-	selectedJetsForward_jesup = helper.GetSortedByPt(selectedJetsForward_unsorted_jesup);
-	selectedJetsForward_jesdown = helper.GetSortedByPt(selectedJetsForward_unsorted_jesdown);
-	selectedJetsForward_uncorrected = helper.GetSortedByPt(selectedJetsForward_unsorted_uncorrected);
+	std::vector<pat::Jet> selectedJetsForward_unsorted_jesup = helper.GetSelectedJets(correctedJets_unsorted_jesup, jetptcut_forward, jetetacut_forward, jetID::none, '-' ); 
+	std::vector<pat::Jet> selectedJetsForward_unsorted_jesdown = helper.GetSelectedJets(correctedJets_unsorted_jesdown, jetptcut_forward,jetetacut_forward, jetID::none, '-' ); 
+	std::vector<pat::Jet> selectedJetsForward_unsorted_uncorrected = helper.GetSelectedJets(jetsNoEle, jetptcut_forward, jetetacut_forward, jetID::none, '-' ); 
+	
+	std::vector<pat::Jet> selectedJetsSingleTop_unsorted_jesup = BoostedUtils::GetSingleTopJets(selectedJetsLoose_jesup,selectedJetsForward_unsorted_jesup,jetetacut_loose);
+	std::vector<pat::Jet> selectedJetsSingleTop_unsorted_jesdown = BoostedUtils::GetSingleTopJets(selectedJetsLoose_jesdown,selectedJetsForward_unsorted_jesdown,jetetacut_loose);
+	std::vector<pat::Jet> selectedJetsSingleTop_unsorted_uncorrected = BoostedUtils::GetSingleTopJets(selectedJetsLoose_uncorrected,selectedJetsForward_unsorted_uncorrected,jetetacut_loose);
+
+	selectedJetsSingleTop_jesup = helper.GetSortedByPt(selectedJetsSingleTop_unsorted_jesup);
+	selectedJetsSingleTop_jesdown = helper.GetSortedByPt(selectedJetsSingleTop_unsorted_jesdown);
+	selectedJetsSingleTop_uncorrected = helper.GetSortedByPt(selectedJetsSingleTop_unsorted_uncorrected);
     }
   }
 
@@ -764,7 +766,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedElectronsLoose,
 				  selectedJets_nominal,
 				  selectedJetsLoose_nominal,
-				  selectedJetsForward_nominal,
+				  selectedJetsSingleTop_nominal,
 				  pfMETs[0],
 				  heptopjets,
 				  subfilterjets,
@@ -775,9 +777,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  weights			  
 				  );
 
-  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsForward_jesup,pfMETs[0],weights_jesup);
-  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsForward_jesdown,pfMETs[0],weights_jesdown);
-  InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,selectedJetsForward_uncorrected,pfMETs[0],weights_uncorrjets);
+  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,pfMETs[0],weights_jesup);
+  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,pfMETs[0],weights_jesdown);
+  InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],weights_uncorrjets);
   
   // DO SELECTION
   cutflow_nominal.EventSurvivedStep("all",input_nominal.weights.at("Weight"));
@@ -791,9 +793,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     synchronizer.DumpSyncExe1(0,input_nominal);
   }
   if(dumpSyncExe2){
-    synchronizer.DumpSyncExe2(0,input_nominal,helper,sysType::NA);
-    synchronizer.DumpSyncExe2(0,input_jesup,helper,sysType::JESup);
-    synchronizer.DumpSyncExe2(0,input_jesdown,helper,sysType::JESdown);
+      synchronizer.DumpSyncExe2(0,input_nominal,input_jesup,input_jesdown,input_uncorrjets,helper);
   }
 
   for(size_t i=0; i<selections.size() && selected_nominal; i++){

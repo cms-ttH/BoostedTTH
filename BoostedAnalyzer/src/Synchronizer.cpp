@@ -125,7 +125,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
   
   MET=input.pfMET.pt();
 
-  ttHFCategory=input.genTopEvt.GetTTxId();
+  ttHFCategory=input.genTopEvt.GetTTxIdFromHelper();
   
   out << boost::format("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %+7.3f   %2d  %2d   %2d   %2d  %2d\n")%
 	 run% lumi% event%
@@ -281,23 +281,23 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, const MiniAODHelp
   MET_phi=input.pfMET.phi();
 
   ttHFCategory=input.genTopEvt.GetTTxId();
-
-  out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
-      <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId
-      <<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","
-      <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
-      <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
-      <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","
-      <<bWeight<<","<<ttHFCategory<<"\n";
-
+  if(is_SL||is_DL){
+      out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
+	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId
+	  <<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","
+	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
+	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
+	  <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","
+	  <<bWeight<<","<<ttHFCategory<<"\n";
+  }
 }
 
 
-void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const MiniAODHelper helper, sysType::sysType syst){
-  if(syst==sysType::NA) DumpSyncExe2(input,helper,*(dumpFiles2[nfile]));
-  else if(syst==sysType::JESup) DumpSyncExe2(input,helper,*(dumpFiles2_jesup[nfile]));
-  else if(syst==sysType::JESdown) DumpSyncExe2(input,helper,*(dumpFiles2_jesdown[nfile]));
-  else DumpSyncExe2(input,helper,*(dumpFiles2_raw[nfile]));
+void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw, const MiniAODHelper helper){
+  DumpSyncExe2(input,helper,*(dumpFiles2[nfile]));
+  DumpSyncExe2(input_jesup,helper,*(dumpFiles2_jesup[nfile]));
+  DumpSyncExe2(input_jesdown,helper,*(dumpFiles2_jesdown[nfile]));
+  DumpSyncExe2(input_raw,helper,*(dumpFiles2_raw[nfile]));
 }
 
 void Synchronizer::InitDumpSyncFile1(std::string filename){
