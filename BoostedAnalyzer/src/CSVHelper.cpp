@@ -152,7 +152,7 @@ double CSVHelper::get_csv_wgt( const std::vector<pat::Jet>& Jets, int iSys, doub
     else if (jetPt >=40 && jetPt<60) iPt = 2;
     else if (jetPt >=60 && jetPt<100) iPt = 3;
     else if (jetPt >=100 && jetPt<160) iPt = 4;
-    else if (jetPt >=160 && jetPt<10000) iPt = 5;
+    else if (jetPt >=160) iPt = 5;
 
     if (jetAbsEta >=0 &&  jetAbsEta<0.8 ) iEta = 0;
     else if ( jetAbsEta>=0.8 && jetAbsEta<1.6 )  iEta = 1;
