@@ -60,6 +60,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/THQJetSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -330,6 +331,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
     else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
+    else if(*itSel == "THQJetSelection") selections.push_back(new THQJetSelection());
     else if(*itSel == "LeptonSelection1") selections.push_back(new LeptonSelection(iConfig,1));
     else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
     else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
@@ -338,21 +340,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itSel == "MinDiLeptonMassSelection") selections.push_back(new DiLeptonMassSelection(20.,9999.));
     else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true));
     else if(*itSel == "METSelection") selections.push_back(new METSelection(iConfig));
+    else if(*itSel == "FastSimMETSelection") selections.push_back(new METSelection(-1,800));
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
-    else if(*itSel == "4JetSelection"){
-      vector<int> njets;
-      njets.push_back(4);
-      vector<int> ntags;
-      ntags.push_back(-1);
-      selections.push_back(new JetTagSelection(njets,ntags));
-    }
-    else if(*itSel == "2TagSelection") {
-      vector<int> ntags;
-      ntags.push_back(2);
-      vector<int> njets;
-      njets.push_back(-1);
-      selections.push_back(new JetTagSelection(njets,ntags));
-    }
+    else if(*itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));
+    else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(2,-1));
     else cout << "No matching selection found for: " << *itSel << endl;    
     selections.back()->InitCutflow(cutflow_nominal);
     if(makeSystematicsTrees){
@@ -411,6 +402,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   if(std::find(processorNames.begin(),processorNames.end(),"AdditionalJetProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new AdditionalJetProcessor());
   }
+
   // the systematics tree writer use the same processors that are used for the nonimal trees
   // it might help performance to turn some of them off
   if(makeSystematicsTrees){
@@ -543,6 +535,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       std::vector<pat::Jet> selectedJetsSingleTop_unsorted_nominal = BoostedUtils::GetSingleTopJets(selectedJetsLoose_nominal,selectedJetsForward_unsorted_nominal,jetetacut_loose);
       selectedJetsSingleTop_nominal= helper.GetSortedByPt(selectedJetsSingleTop_unsorted_nominal);
   }
+
   // Apply systematically shifted jet corrections
   std::vector<pat::Jet> correctedJets_unsorted_jesup;
   std::vector<pat::Jet> correctedJets_unsorted_jesdown;
