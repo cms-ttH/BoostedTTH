@@ -35,7 +35,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
-                    const std::vector<pat::Jet>&                  selectedJetsForward_,
+                    const std::vector<pat::Jet>&                  selectedJetsSingleTop_,
                     const pat::MET&                               pfMET_,
                     const boosted::HEPTopJetCollection&           selectedHEPTopJets_,
                     const boosted::SubFilterJetCollection&        selectedSubFilterJets_,
@@ -56,7 +56,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
   selectedElectronsLoose(selectedElectronsLoose_),
   selectedJets(selectedJets_),
   selectedJetsLoose(selectedJetsLoose_),
-  selectedJetsForward(selectedJetsForward_),
+  selectedJetsSingleTop(selectedJetsSingleTop_),
   pfMET(pfMET_),
   selectedHEPTopJets(selectedHEPTopJets_),
   selectedSubFilterJets(selectedSubFilterJets_),
@@ -69,7 +69,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
 InputCollections(   const InputCollections&                       input,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
-                    const std::vector<pat::Jet>&                  selectedJetsForward_,
+                    const std::vector<pat::Jet>&                  selectedJetsSingleTop_,
                     const pat::MET&                               pfMET_,
                     const std::map<std::string,float>&            weights_
 		    ): 
@@ -84,7 +84,7 @@ InputCollections(   const InputCollections&                       input,
   selectedElectronsLoose(input.selectedElectronsLoose),
   selectedJets(selectedJets_),
   selectedJetsLoose(selectedJetsLoose_),
-  selectedJetsForward(selectedJetsForward_),
+  selectedJetsSingleTop(selectedJetsSingleTop_),
   pfMET(pfMET_),
   selectedHEPTopJets(input.selectedHEPTopJets),
   selectedSubFilterJets(input.selectedSubFilterJets),
@@ -106,7 +106,7 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Electron>&             selectedElectronsLoose;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
-  const std::vector<pat::Jet>&                  selectedJetsForward;
+  const std::vector<pat::Jet>&                  selectedJetsSingleTop;
   const pat::MET&                               pfMET;
   const boosted::HEPTopJetCollection&           selectedHEPTopJets;
   const boosted::SubFilterJetCollection&        selectedSubFilterJets;
