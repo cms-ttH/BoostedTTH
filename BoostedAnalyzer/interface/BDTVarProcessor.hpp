@@ -2,7 +2,6 @@
 #define BDTVARPROCESSOR_HPP
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v1.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v2.hpp"
 #include "TMVA/Reader.h"
 
@@ -14,7 +13,6 @@ public:
   void Process(const InputCollections& input,VariableContainer& var);
 
 private:
-  BDTOhio_v1 bdtohio1;
   BDTOhio_v2 bdtohio2;
   
   
