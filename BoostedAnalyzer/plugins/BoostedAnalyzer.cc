@@ -322,7 +322,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     synchronizer.InitDumpSyncFile1((outfileName+"_Dump1_"+std::to_string(nselection)));
   }
   if(dumpSyncExe2){
-    synchronizer.InitDumpSyncFile2((outfileName+"_Dump2_"+std::to_string(nselection)));
+    synchronizer.InitDumpSyncFile2(outfileName);
   }  
 
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {    

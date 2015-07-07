@@ -301,14 +301,14 @@ void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const I
 }
 
 void Synchronizer::InitDumpSyncFile1(std::string filename){
-    dumpFiles1.push_back(new ofstream((filename+".txt").c_str()));
+    dumpFiles1.push_back(new ofstream((filename+".csv").c_str()));
 }
 
 void Synchronizer::InitDumpSyncFile2(std::string filename){
-    dumpFiles2.push_back(new ofstream((filename+".txt").c_str()));
-    dumpFiles2_jesup.push_back(new ofstream((filename+"_JESup.txt").c_str()));
-    dumpFiles2_jesdown.push_back(new ofstream((filename+"_JESdown.txt").c_str()));
-    dumpFiles2_raw.push_back(new ofstream((filename+"_raw.txt").c_str()));
+    dumpFiles2.push_back(new ofstream((filename+".csv").c_str()));
+    dumpFiles2_jesup.push_back(new ofstream((filename+"_JESup.csv").c_str()));
+    dumpFiles2_jesdown.push_back(new ofstream((filename+"_JESdown.csv").c_str()));
+    dumpFiles2_raw.push_back(new ofstream((filename+"_raw.csv").c_str()));
     DumpSyncExe2Header(*(dumpFiles2.back()));
     DumpSyncExe2Header(*(dumpFiles2_jesup.back()));
     DumpSyncExe2Header(*(dumpFiles2_jesdown.back()));
