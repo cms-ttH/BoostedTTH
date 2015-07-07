@@ -34,7 +34,7 @@ void SingleTopVarProcessor::Process(const InputCollections& input,VariableContai
     int ntagsL=0;
     int ntagsT=0;
     float maxeta=0;    
-    for(auto j=input.selectedJetsSingleTop.begin(); j!=input.selectedJetsSingleTop.begin(); j++){
+    for(auto j=input.selectedJetsSingleTop.begin(); j!=input.selectedJetsSingleTop.end(); j++){
 	if(j->pt()>30) njets30++;
 	if(fabs(j->eta())<2.4&&BoostedUtils::PassesCSV(*j,'T')) ntagsT++;
 	if(fabs(j->eta())<2.4&&BoostedUtils::PassesCSV(*j,'M')) ntagsM++;
