@@ -20,6 +20,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     nMCEvents = cms.int32(100000),
     isData = cms.bool(False),
     useFatJets = cms.bool(False),
+    useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(False),
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
