@@ -91,7 +91,7 @@ addJetCollection(
     labelName = 'CA3FiltPF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators =  [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
+    btagDiscriminators =  [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
     jetCorrections = None,
     getJetMCFlavour = False,
     genJetCollection = None#cms.InputTag('CA12JetsCA3FilterjetsGen','filterjets')
@@ -119,7 +119,7 @@ addJetCollection(
     labelName = 'HEPTopSubPF',
     trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators = [ 'combinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
+    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
     jetCorrections = None,
     getJetMCFlavour = False,
     genJetCollection = None 

@@ -311,6 +311,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   helper.SetJetCorrectorUncertainty();
   
+
   // INITIALIZE SELECTION & CUTFLOW
   cutflow_nominal.Init();
   if(makeSystematicsTrees){
@@ -454,16 +455,16 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   /**** GET PILEUPSUMMARYINFO ****/
   edm::Handle< std::vector<PileupSummaryInfo> >  h_puinfosummary;
   iEvent.getByToken( EDMPUInfoToken, h_puinfosummary);
-  
+
   /**** GET HCALNOISESUMMARY ****/
   edm::Handle<HcalNoiseSummary> h_hcalnoisesummary;
   iEvent.getByToken( EDMHcalNoiseToken,h_hcalnoisesummary );
-  
+
   /**** GET TRIGGER ****/ 
   edm::Handle<edm::TriggerResults> h_triggerresults;
   iEvent.getByToken( EDMTriggerResultToken,h_triggerresults );
   edm::TriggerResults const &triggerResults = *h_triggerresults;
-  
+
   /**** GET BEAMSPOT ****/
   edm::Handle<reco::BeamSpot> h_beamspot;
   iEvent.getByToken( EDMBeamSpotToken,h_beamspot );
@@ -957,12 +958,14 @@ void BoostedAnalyzer::endJob()
 
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
+
   std::string hltTag="HLT";
   bool hltchanged = true;
   if (!hlt_config.init(iRun, iSetup, hltTag, hltchanged)) {
     std::cout << "Warning, didn't find trigger process HLT,\t" << hltTag << std::endl;
     return;
   }
+
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
