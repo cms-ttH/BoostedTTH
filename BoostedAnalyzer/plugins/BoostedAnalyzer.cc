@@ -59,7 +59,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/HNonbbSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
@@ -336,7 +335,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true));
     else if(*itSel == "METSelection") selections.push_back(new METSelection(iConfig));
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
-    else if(*itSel == "HNonbbSelection") selections.push_back(new HNonbbSelection());
     else if(*itSel == "4JetSelection"){
       vector<int> njets;
       njets.push_back(4);
@@ -367,8 +365,20 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   // INITIALIZE TREEWRITER
   treewriter_nominal.Init(outfileName);  
   if(makeSystematicsTrees){
-    treewriter_jesup.Init(outfileName+"_JESup");
-    treewriter_jesdown.Init(outfileName+"_JESdown");
+    size_t stringIndex = outfileName.find("nominal");
+    std::string jesDownName = outfileName;
+    std::string jesUpName = outfileName;
+    if(stringIndex==std::string::npos){
+      treewriter_jesup.Init(outfileName+"_JESup");
+      treewriter_jesdown.Init(outfileName+"_JESdown");
+    }
+    else{
+      jesUpName.replace(stringIndex,7,"JESUP");
+      jesDownName.replace(stringIndex,7,"JESDOWN");
+      std::cout<<jesUpName<<" "<<jesDownName<<std::endl;
+      treewriter_jesup.Init(jesUpName);
+      treewriter_jesdown.Init(jesDownName);
+    }
   }
 
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
@@ -897,8 +907,22 @@ void BoostedAnalyzer::endJob()
   cutflow_nominal.Print(fout_nominal);
   fout_nominal.close();
   if(makeSystematicsTrees){
-    std::ofstream fout_jesup(outfileName+"_JESup_Cutflow.txt");
-    std::ofstream fout_jesdown(outfileName+"_JESdown_Cutflow.txt");
+    size_t stringIndex = outfileName.find("nominal");
+    std::string jesDownName = outfileName;
+    std::string jesUpName = outfileName;
+    if(stringIndex==std::string::npos){
+      jesUpName=outfileName+"_JESup_Cutflow.txt";
+      jesDownName=outfileName+"_JESdown_Cutflow.txt";
+    }
+    else{
+      jesUpName.replace(stringIndex,7,"JESUP");
+      jesUpName+="_Cutflow.txt";
+      jesDownName.replace(stringIndex,7,"JESDOWN");
+      jesDownName+="_Cutflow.txt";
+      std::cout<<jesUpName<<" "<<jesDownName<<std::endl;
+    }
+    std::ofstream fout_jesup(jesUpName);
+    std::ofstream fout_jesdown(jesDownName);
     cutflow_jesup.Print(fout_jesup);
     cutflow_jesdown.Print(fout_jesdown);
     fout_jesup.close();

@@ -73,10 +73,11 @@ process.BoostedAnalyzer.xs = cms.double(float(XS))
 process.BoostedAnalyzer.nMCEvents = cms.int32(int(MCEvents))
 process.BoostedAnalyzer.isData = cms.bool(False)
 process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
-process.BoostedAnalyzer.systematicType = SYSTEMATIC
+#process.BoostedAnalyzer.systematicType = SYSTEMATIC
 process.BoostedAnalyzer.muonTriggers=["any"]
 process.BoostedAnalyzer.electronTriggers=["any"]
 process.BoostedAnalyzer.dumpSyncExe=cms.bool(False)
+process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(True)
 
 #process.Tracer = cms.Service("Tracer")
 process.p = cms.Path(process.BoostedAnalyzer)
