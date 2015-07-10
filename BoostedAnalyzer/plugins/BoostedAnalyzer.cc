@@ -65,6 +65,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
@@ -352,6 +353,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new MCMatchVarProcessor());
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new BoostedMCMatchVarProcessor());
   if(std::find(processorNames.begin(),processorNames.end(),"AdditionalJetProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new AdditionalJetProcessor());
+  if(std::find(processorNames.begin(),processorNames.end(),"DiLeptonVarProcessor")!=processorNames.end()) treewriter.AddTreeProcessor(new DiLeptonVarProcessor());
 }
 
 
