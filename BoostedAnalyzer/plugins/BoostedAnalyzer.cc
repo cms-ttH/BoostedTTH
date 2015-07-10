@@ -74,6 +74,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
@@ -415,6 +416,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   }
   if(std::find(processorNames.begin(),processorNames.end(),"AdditionalJetProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new AdditionalJetProcessor());
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"DiLeptonVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new DiLeptonVarProcessor());
   }
 
   // the systematics tree writer use the same processors that are used for the nonimal trees
