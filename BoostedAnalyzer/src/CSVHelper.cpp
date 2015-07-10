@@ -143,6 +143,7 @@ double CSVHelper::get_csv_wgt( const std::vector<pat::Jet>& Jets, int iSys, doub
     
     double csv = itJet->bDiscriminator(btagger);
     double jetPt = itJet->pt();
+    //std::cout<<jetPt<<std::endl;
     double jetAbsEta = fabs(itJet->eta());
     int flavor =itJet->partonFlavour();
 

@@ -360,8 +360,20 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   // INITIALIZE TREEWRITER
   treewriter_nominal.Init(outfileName);  
   if(makeSystematicsTrees){
-    treewriter_jesup.Init(outfileName+"_JESup");
-    treewriter_jesdown.Init(outfileName+"_JESdown");
+    size_t stringIndex = outfileName.find("nominal");
+    std::string jesDownName = outfileName;
+    std::string jesUpName = outfileName;
+    if(stringIndex==std::string::npos){
+      treewriter_jesup.Init(outfileName+"_JESup");
+      treewriter_jesdown.Init(outfileName+"_JESdown");
+    }
+    else{
+      jesUpName.replace(stringIndex,7,"JESUP");
+      jesDownName.replace(stringIndex,7,"JESDOWN");
+      std::cout<<jesUpName<<" "<<jesDownName<<std::endl;
+      treewriter_jesup.Init(jesUpName);
+      treewriter_jesdown.Init(jesDownName);
+    }
   }
 
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
@@ -863,7 +875,6 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   //float topptweight = beanHelper.GetTopPtweight(mcparticlesStatus3);
   //float q2scaleweight = beanHelper.GetQ2ScaleUp(const BNevent&);
   
-  
   weight *= xsweight*csvweight*puweight*topptweight;
   weights["Weight"] = weight;
   weights["Weight_XS"] = xsweight;
@@ -919,8 +930,22 @@ void BoostedAnalyzer::endJob()
   cutflow_nominal.Print(fout_nominal);
   fout_nominal.close();
   if(makeSystematicsTrees){
-    std::ofstream fout_jesup(outfileName+"_JESup_Cutflow.txt");
-    std::ofstream fout_jesdown(outfileName+"_JESdown_Cutflow.txt");
+    size_t stringIndex = outfileName.find("nominal");
+    std::string jesDownName = outfileName;
+    std::string jesUpName = outfileName;
+    if(stringIndex==std::string::npos){
+      jesUpName=outfileName+"_JESup_Cutflow.txt";
+      jesDownName=outfileName+"_JESdown_Cutflow.txt";
+    }
+    else{
+      jesUpName.replace(stringIndex,7,"JESUP");
+      jesUpName+="_Cutflow.txt";
+      jesDownName.replace(stringIndex,7,"JESDOWN");
+      jesDownName+="_Cutflow.txt";
+      std::cout<<jesUpName<<" "<<jesDownName<<std::endl;
+    }
+    std::ofstream fout_jesup(jesUpName);
+    std::ofstream fout_jesdown(jesDownName);
     cutflow_jesup.Print(fout_jesup);
     cutflow_jesdown.Print(fout_jesdown);
     fout_jesup.close();

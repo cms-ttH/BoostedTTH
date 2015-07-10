@@ -78,9 +78,10 @@ if values['mcevents'] is not None:
 process.BoostedAnalyzer.minMET = 40.
 process.BoostedAnalyzer.maxMET = 800.
 process.BoostedAnalyzer.useForwardJets = True
-
+process.BoostedAnalyzer.muonTriggers=["None"]
+process.BoostedAnalyzer.electronTriggers=["None"]
 process.BoostedAnalyzer.processorNames = ["WeightProcessor","BDTVarProcessor","MVAVarProcessor","MCMatchVarProcessor","SingleTopVarProcessor"]
-process.BoostedAnalyzer.selectionNames = ["FastSimMETSelection","VertexSelection","LeptonSelection","METSelection","THQJetSelection"]
+process.BoostedAnalyzer.selectionNames = ["HbbSelection","FastSimMETSelection","VertexSelection","LeptonSelection"]
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 #process.p = cms.Path(process.content *process.BoostedAnalyzer)
 process.p = cms.Path(process.BoostedAnalyzer)

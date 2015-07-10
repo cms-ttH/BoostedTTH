@@ -63,6 +63,13 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopLep_B_Idx",-1,"N_GenTopLep" );
   vars.InitVar( "GenHiggs_B1_Idx",-1 );
   vars.InitVar( "GenHiggs_B2_Idx",-1 );
+  
+  vars.InitVar( "GenHiggs_DecProd1_Pt",-9. );
+  vars.InitVar( "GenHiggs_DecProd1_Eta",-9. );
+  vars.InitVar( "GenHiggs_DecProd1_PDGID",-999 );
+  vars.InitVar( "GenHiggs_DecProd2_Pt",-9. );
+  vars.InitVar( "GenHiggs_DecProd2_Eta",-9. );
+  vars.InitVar( "GenHiggs_DecProd2_PDGID",-999 );
 
   vars.InitVar( "GenHiggs_B1_GenJet_Pt",-9. );
   vars.InitVar( "GenHiggs_B2_GenJet_Pt",-9. );
@@ -143,11 +150,32 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
 
   reco::GenParticle b1;
   reco::GenParticle b2;
+  reco::GenParticle decProd1;
+  reco::GenParticle decProd2;
 
+//if(higgs_bs.size()>2)std::cout<<"MORE THAN TWO HIGGS PRODUCTS"<<std::endl;
+bool dfirst=true;
   for(auto p =higgs_bs.begin(); p!=higgs_bs.end(); p++){
     if(p->pdgId()==5) b1=*p;
     if(p->pdgId()==-5) b2=*p;
+    if(dfirst){
+      decProd1=*p;
+      dfirst=false;
+    }
+    else{
+      decProd2=*p;
+    }
   }
+  
+  if(decProd1.pt()>0.){
+    vars.FillVar("GenHiggs_DecProd1_Pt",decProd1.pt());
+    vars.FillVar("GenHiggs_DecProd2_Pt",decProd2.pt());
+    vars.FillVar("GenHiggs_DecProd1_Eta",decProd1.eta());
+    vars.FillVar("GenHiggs_DecProd2_Eta",decProd2.eta());
+    vars.FillVar("GenHiggs_DecProd1_PDGID",decProd1.pdgId());
+    vars.FillVar("GenHiggs_DecProd2_PDGID",decProd2.pdgId());
+  }
+  //std::cout<<decProd1.pdgId()<<" "<<decProd2.pdgId()<<std::endl;
   
   vars.FillVar( "N_GenTopLep", toplep.size());
   vars.FillVar( "N_GenTopHad", tophad.size());
