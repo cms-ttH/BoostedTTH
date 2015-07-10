@@ -53,12 +53,12 @@ process.source = cms.Source(  "PoolSource",
                               #fileNames= = cms.untracked.vstring("root://xrootd-cms.infn.it///store/mc/RunIISpring15DR74/ttHJetTobb_M125_13TeV_amcatnloFXFX_madspin_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/80000/002AEC99-1003-E511-A57F-0CC47A4DEE12.root")
 )
 
-process.content = cms.EDAnalyzer("EventContentAnalyzer")
+#process.content = cms.EDAnalyzer("EventContentAnalyzer")
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.useFatJets=False
 #process.BoostedAnalyzer.disableObjectSelections=False
 #process.BoostedAnalyzer.outfileName = OUTFILE
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","4JetSelection","2TagSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
 process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor","BDTVarProcessor")
 process.BoostedAnalyzer.era = ERA
 process.BoostedAnalyzer.analysisType = cms.string("LJ")
@@ -69,6 +69,8 @@ process.BoostedAnalyzer.nMCEvents = cms.int32(int(MCEvents))
 process.BoostedAnalyzer.isData = cms.bool(False)
 process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 process.BoostedAnalyzer.systematicType = SYSTEMATIC
+process.BoostedAnalyzer.muonTriggers=["any"]
+process.BoostedAnalyzer.electronTriggers=["any"]
 
 
 process.p = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.BoostedAnalyzer)

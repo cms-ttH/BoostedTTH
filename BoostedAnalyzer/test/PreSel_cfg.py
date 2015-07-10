@@ -79,6 +79,7 @@ process.BoostedAnalyzer.nMCEvents = cms.int32(int(MCEvents))
 process.BoostedAnalyzer.isData = cms.bool(False)
 process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 process.BoostedAnalyzer.systematicType = SYSTEMATIC
-
+process.BoostedAnalyzer.muonTriggers=["any"]
+process.BoostedAnalyzer.electronTriggers=["any"]
 
 process.p = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.BoostedAnalyzer)

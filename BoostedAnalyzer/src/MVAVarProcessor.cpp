@@ -33,7 +33,9 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
   vars.InitVars( "Jet_PileUpID","N_Jets" );
-  
+  vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
+  vars.InitVars( "Jet_GenJet_Eta","N_Jets" );  
+
   vars.InitVars( "TaggedJet_E","N_BTagsM" );
   vars.InitVars( "TaggedJet_M","N_BTagsM" );
   vars.InitVars( "TaggedJet_Pt","N_BTagsM" );
@@ -272,6 +274,16 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
+    if(itJet->genJet()!=NULL){
+      vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
+      vars.FillVars( "Jet_GenJet_Eta",iJet,itJet->genJet()->eta());
+      std::cout<<itJet->pt()<<" "<<itJet->genJet()->pt()<<std::endl;
+    }
+    else {
+      vars.FillVars( "Jet_GenJet_Pt",iJet,-9.0);
+      vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
+      std::cout<<"no genjet found"<<std::endl;
+    }
   }
   
   // Tagged Jets
