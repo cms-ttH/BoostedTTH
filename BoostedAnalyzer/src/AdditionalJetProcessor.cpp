@@ -56,7 +56,7 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
 
   vars.InitVar( "WCHadron_Dr_CfromW",-9 );
 
-  vars.InitVar( "GenEvt_TTxId",-1,"I" );
+  vars.InitVar( "GenEvt_TTxId_FromGenTopEvt",-1,"I" );
   vars.InitVar( "GenEvt_TTxId_wo_PseudoAdditional",-1,"I" );
   vars.InitVar( "GenEvt_TTxId_w_PseudoAdditional",-1,"I" );
 
@@ -191,7 +191,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalGenCJet_Dr_CfromW", i, drQ);
     }
     
-    vars.FillVar( "GenEvt_TTxId",input.genTopEvt.GetTTxId());
+    vars.FillVar( "GenEvt_TTxId_FromGenTopEvt",input.genTopEvt.GetTTxId());
     vars.FillVar( "GenEvt_TTxId_w_PseudoAdditional",input.genTopEvt.GetTTxId(true));
     vars.FillVar( "GenEvt_TTxId_wo_PseudoAdditional",input.genTopEvt.GetTTxId(false));
   

@@ -472,3 +472,17 @@ float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const in
   return sumVec.M();
 }
 
+std::vector<pat::Jet> BoostedUtils::GetSingleTopJets(const std::vector<pat::Jet>& centralJets, const std::vector<pat::Jet>& forwardJets, float etacut){
+    std::vector<pat::Jet> singleTopJets;
+    for(auto cj=centralJets.begin(); cj!=centralJets.end();cj++){
+	if(fabs(cj->eta())<etacut){
+	    singleTopJets.push_back(*cj);
+	}
+    }
+    for(auto fj=forwardJets.begin(); fj!=forwardJets.end();fj++){
+	if(fabs(fj->eta())>etacut){
+	    singleTopJets.push_back(*fj);
+	}
+    }
+    return singleTopJets;
+}

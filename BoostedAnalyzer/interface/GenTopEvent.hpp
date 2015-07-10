@@ -124,7 +124,7 @@ public:
   std::vector<int> GetAdditionalCHadronMothers() const;
   std::vector<int> GetAdditionalCHadronAfterTopType() const;
 
-  int GetTTxId(bool countAdditionalAfterTop=false) const;
+  int GetTTxId(bool countAdditionalAfterTop=true) const;
   int GetTTxIdFromHelper() const;
 
 

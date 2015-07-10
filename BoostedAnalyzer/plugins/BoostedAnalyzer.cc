@@ -60,6 +60,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/THQJetSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -153,6 +154,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
        /** use fat jets? this is only possible if the miniAOD contains them */
       bool useFatJets;
+
+       /** use forward jets (for single top studies) */
+      bool useForwardJets;
 
        /** use GenBmatching info? this is only possible if the miniAOD contains them */
       bool useGenHadronMatch;
@@ -262,6 +266,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   isData = iConfig.getParameter<bool>("isData");
   
   useFatJets = iConfig.getParameter<bool>("useFatJets");
+  useForwardJets = iConfig.getParameter<bool>("useForwardJets");
   useGenHadronMatch = iConfig.getParameter<bool>("useGenHadronMatch");
 
   dumpSyncExe = iConfig.getParameter<bool>("dumpSyncExe");
@@ -318,7 +323,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     synchronizer.InitDumpSyncFile1((outfileName+"_Dump1_"+std::to_string(nselection)));
   }
   if(dumpSyncExe2){
-    synchronizer.InitDumpSyncFile2((outfileName+"_Dump2_"+std::to_string(nselection)));
+    synchronizer.InitDumpSyncFile2(outfileName);
   }  
 
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {    
@@ -326,6 +331,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
     else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
+    else if(*itSel == "THQJetSelection") selections.push_back(new THQJetSelection());
     else if(*itSel == "LeptonSelection1") selections.push_back(new LeptonSelection(iConfig,1));
     else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
     else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
@@ -334,21 +340,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itSel == "MinDiLeptonMassSelection") selections.push_back(new DiLeptonMassSelection(20.,9999.));
     else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true));
     else if(*itSel == "METSelection") selections.push_back(new METSelection(iConfig));
+    else if(*itSel == "FastSimMETSelection") selections.push_back(new METSelection(-1,800));
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
-    else if(*itSel == "4JetSelection"){
-      vector<int> njets;
-      njets.push_back(4);
-      vector<int> ntags;
-      ntags.push_back(-1);
-      selections.push_back(new JetTagSelection(njets,ntags));
-    }
-    else if(*itSel == "2TagSelection") {
-      vector<int> ntags;
-      ntags.push_back(2);
-      vector<int> njets;
-      njets.push_back(-1);
-      selections.push_back(new JetTagSelection(njets,ntags));
-    }
+    else if(*itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));
+    else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(2,-1));
     else cout << "No matching selection found for: " << *itSel << endl;    
     selections.back()->InitCutflow(cutflow_nominal);
     if(makeSystematicsTrees){
@@ -419,6 +414,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   if(std::find(processorNames.begin(),processorNames.end(),"AdditionalJetProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new AdditionalJetProcessor());
   }
+
   // the systematics tree writer use the same processors that are used for the nonimal trees
   // it might help performance to turn some of them off
   if(makeSystematicsTrees){
@@ -522,7 +518,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   const double jetptcut=30.0; 
   const double jetetacut=2.4; 
   const double jetptcut_loose=20.0; 
-  const double jetetacut_loose=5.; 
+  const double jetetacut_loose=2.4; 
+  const double jetptcut_forward=40.0; 
+  const double jetetacut_forward=4.7; 
 
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(pfjets);
@@ -542,6 +540,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> selectedJetsLoose_unsorted_nominal = helper.GetSelectedJets(correctedJets_unsorted_nominal, jetptcut_loose,jetetacut_loose, jetID::none, '-' ); 
   // Sort jets
   std::vector<pat::Jet> selectedJetsLoose_nominal = helper.GetSortedByPt(selectedJetsLoose_unsorted_nominal);
+  // Get jet Collection which pass the forward selection
+  std::vector<pat::Jet> selectedJetsSingleTop_nominal;
+  if(useForwardJets){
+      std::vector<pat::Jet> selectedJetsForward_unsorted_nominal = helper.GetSelectedJets(correctedJets_unsorted_nominal, jetptcut_forward,jetetacut_forward, jetID::none, '-' ); 
+      std::vector<pat::Jet> selectedJetsSingleTop_unsorted_nominal = BoostedUtils::GetSingleTopJets(selectedJetsLoose_nominal,selectedJetsForward_unsorted_nominal,jetetacut_loose);
+      selectedJetsSingleTop_nominal= helper.GetSortedByPt(selectedJetsSingleTop_unsorted_nominal);
+  }
 
   // Apply systematically shifted jet corrections
   std::vector<pat::Jet> correctedJets_unsorted_jesup;
@@ -561,6 +566,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> selectedJetsLoose_jesdown;
   std::vector<pat::Jet> selectedJetsLoose_uncorrected;
 
+  std::vector<pat::Jet> selectedJetsSingleTop_jesup;
+  std::vector<pat::Jet> selectedJetsSingleTop_jesdown;
+  std::vector<pat::Jet> selectedJetsSingleTop_uncorrected;
+
   if(makeSystematicsTrees){
     correctedJets_unsorted_jesup = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::JESup);
     correctedJets_unsorted_jesdown = helper.GetCorrectedJets(jetsNoEle, iEvent, iSetup, sysType::JESdown);
@@ -578,6 +587,21 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     selectedJetsLoose_jesup = helper.GetSortedByPt(selectedJetsLoose_unsorted_jesup);
     selectedJetsLoose_jesdown = helper.GetSortedByPt(selectedJetsLoose_unsorted_jesdown);
     selectedJetsLoose_uncorrected = helper.GetSortedByPt(selectedJetsLoose_unsorted_uncorrected);
+
+    if(useForwardJets){
+
+	std::vector<pat::Jet> selectedJetsForward_unsorted_jesup = helper.GetSelectedJets(correctedJets_unsorted_jesup, jetptcut_forward, jetetacut_forward, jetID::none, '-' ); 
+	std::vector<pat::Jet> selectedJetsForward_unsorted_jesdown = helper.GetSelectedJets(correctedJets_unsorted_jesdown, jetptcut_forward,jetetacut_forward, jetID::none, '-' ); 
+	std::vector<pat::Jet> selectedJetsForward_unsorted_uncorrected = helper.GetSelectedJets(jetsNoEle, jetptcut_forward, jetetacut_forward, jetID::none, '-' ); 
+	
+	std::vector<pat::Jet> selectedJetsSingleTop_unsorted_jesup = BoostedUtils::GetSingleTopJets(selectedJetsLoose_jesup,selectedJetsForward_unsorted_jesup,jetetacut_loose);
+	std::vector<pat::Jet> selectedJetsSingleTop_unsorted_jesdown = BoostedUtils::GetSingleTopJets(selectedJetsLoose_jesdown,selectedJetsForward_unsorted_jesdown,jetetacut_loose);
+	std::vector<pat::Jet> selectedJetsSingleTop_unsorted_uncorrected = BoostedUtils::GetSingleTopJets(selectedJetsLoose_uncorrected,selectedJetsForward_unsorted_uncorrected,jetetacut_loose);
+
+	selectedJetsSingleTop_jesup = helper.GetSortedByPt(selectedJetsSingleTop_unsorted_jesup);
+	selectedJetsSingleTop_jesdown = helper.GetSortedByPt(selectedJetsSingleTop_unsorted_jesdown);
+	selectedJetsSingleTop_uncorrected = helper.GetSortedByPt(selectedJetsSingleTop_unsorted_uncorrected);
+    }
   }
 
   /**** GET MET ****/
@@ -747,6 +771,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedElectronsLoose,
 				  selectedJets_nominal,
 				  selectedJetsLoose_nominal,
+				  selectedJetsSingleTop_nominal,
 				  pfMETs[0],
 				  heptopjets,
 				  subfilterjets,
@@ -757,9 +782,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  weights			  
 				  );
 
-  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,pfMETs[0],weights_jesup);
-  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,pfMETs[0],weights_jesdown);
-  InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,pfMETs[0],weights_uncorrjets);
+  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,pfMETs[0],weights_jesup);
+  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,pfMETs[0],weights_jesdown);
+  InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],weights_uncorrjets);
   
   // DO SELECTION
   cutflow_nominal.EventSurvivedStep("all",input_nominal.weights.at("Weight"));
@@ -773,9 +798,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     synchronizer.DumpSyncExe1(0,input_nominal);
   }
   if(dumpSyncExe2){
-    synchronizer.DumpSyncExe2(0,input_nominal,helper,sysType::NA);
-    synchronizer.DumpSyncExe2(0,input_jesup,helper,sysType::JESup);
-    synchronizer.DumpSyncExe2(0,input_jesdown,helper,sysType::JESdown);
+      synchronizer.DumpSyncExe2(0,input_nominal,input_jesup,input_jesdown,input_uncorrjets,helper);
   }
 
   for(size_t i=0; i<selections.size() && selected_nominal; i++){
@@ -783,7 +806,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       selected_nominal=false;
     }
     if(dumpSyncExe&&selected_nominal){
-      synchronizer.DumpSyncExe2(i+1,input_nominal,helper,sysType::NA);
+      synchronizer.DumpSyncExe1(i+1,input_nominal);
     }
 
   }

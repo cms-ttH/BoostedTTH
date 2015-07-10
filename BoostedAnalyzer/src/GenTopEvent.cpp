@@ -59,7 +59,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     else if(bhadron!=0&&motherflav==-6){
       topbar_bbar_hadron=*bhadron;
     }
-    else if(bhadron!=0){
+    else if(bhadron!=0&&abs(motherflav)!=24){
       additional_b_hadrons.push_back(*bhadron);      
       additional_b_hadron_aftertop.push_back(aftertop);
       additional_b_hadron_mother.push_back(motherflav);
