@@ -6,11 +6,11 @@ export INSAMPLE="9125"
 
 export ERA="2015_74x"
 
-export XS="0.2151"
+export XS="0.2934"
 
-export MCEVENTS="1230658"
+export MCEVENTS="3933404"
 
-export SYSTEMATIC="nominal"
+export DOSYSTEMATICS="TRUE"
 
 
 exec $*
