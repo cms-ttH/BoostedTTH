@@ -67,6 +67,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AdditionalJetProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/RawVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SingleTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
@@ -391,6 +393,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new MVAVarProcessor());
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"RawVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new RawVarProcessor());
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new StdTopVarProcessor());
+  }
   if(std::find(processorNames.begin(),processorNames.end(),"SingleTopVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new SingleTopVarProcessor());
   }
@@ -506,6 +514,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< std::vector<pat::Muon> > h_muons;
   iEvent.getByToken( EDMMuonsToken,h_muons );
   std::vector<pat::Muon> const &muons = *h_muons;
+  std::vector<pat::Muon> rawMuons = muons;
   // note: muon eta cuts and muonLoose ID no longer as in synch exe
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., muonID::muonTight, coneSize::R04, corrType::deltaBeta);
   std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( muons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta );
@@ -516,6 +525,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< std::vector<pat::Electron> > h_electrons;
   iEvent.getByToken( EDMElectronsToken,h_electrons );
   std::vector<pat::Electron> const &electrons = *h_electrons;
+  std::vector<pat::Electron> rawElectrons = electrons;
   // note: electron eta cuts no longer as in synch exe, revert as soon as miniAODhelper os updated
   std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronPhys14M, 2.1 );
   std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M, 2.4 );
@@ -781,15 +791,18 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   map<string,float> weights_uncorrjets = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
 
   // DEFINE INPUT
-  InputCollections input_nominal( eventInfo,			  
-				  triggerInfo,			  
+  InputCollections input_nominal( eventInfo,
+				  triggerInfo,
 				  selectedPVs,
+				  rawMuons,
 				  selectedMuons,
 				  selectedMuonsDL,
 				  selectedMuonsLoose,
+				  rawElectrons,
 				  selectedElectrons,
 				  selectedElectronsDL,
 				  selectedElectronsLoose,
+				  rawJets,
 				  selectedJets_nominal,
 				  selectedJetsLoose_nominal,
 				  selectedJetsSingleTop_nominal,
@@ -800,7 +813,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedGenJets,
 				  sampleType,
 				  higgsdecay,
-				  weights			  
+				  weights
 				  );
 
   InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,pfMETs[0],weights_jesup);
