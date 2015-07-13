@@ -5,15 +5,21 @@ CMSSW tools for analyzing TTH events with boosted objects
 
 ## Installation
 Follow These Steps:
-
-    cmsrel CMSSW_7_2_3
-    cd CMSSW_7_2_3/src
-    cmsenv
-
-    git clone https://github.com/cms-ttH/MiniAOD.git
-    git clone https://github.com/cms-ttH/BoostedTTH.git
-    
-    scram b -j 32
+    export SCRAM_ARCH=slc6_amd64_gcc491
+    scram project CMSSW_7_4_6_patch6
+    cd CMSSW_7_4_6_patch6/src
+    cmsenv   
+    git cms-addpkg PhysicsTools/JetMCAlgos/
+    cd PhysicsTools/JetMCAlgos/plugins/
+    rm GenHFHadronMatcher.cc
+    wget https://twiki.cern.ch/twiki/pub/CMSPublic/GenHFHadronMatcher/GenHFHadronMatcher.cc
+    cd -
+    git clone -b run2mc https://github.com/cms-ttH/MiniAOD.git
+    cd MiniAOD
+    git merge -m "merged updates from master" origin/master
+    cd ..
+    git clone https://github.com/cms-ttH/BoostedTTH.git        
+    scram b -j10
 
 ## Overview
 BoostedObjects contains the classes needed for subjet-analysis. They associate fat jets with the corresponding filtered objects.
