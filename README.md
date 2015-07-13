@@ -5,6 +5,7 @@ CMSSW tools for analyzing TTH events with boosted objects
 
 ## Installation
 Follow These Steps:
+ 
     export SCRAM_ARCH=slc6_amd64_gcc491
     scram project CMSSW_7_4_6_patch6
     cd CMSSW_7_4_6_patch6/src
