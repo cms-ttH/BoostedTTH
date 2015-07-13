@@ -27,12 +27,15 @@ struct InputCollections{
 InputCollections(   const EventInfo&                              eventInfo_,
 		    const TriggerInfo&                            triggerInfo_,
 		    const std::vector<reco::Vertex>&              selectedPVs_,
+                    const std::vector<pat::Muon>&                 rawMuons_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsDL_,
                     const std::vector<pat::Muon>&                 selectedMuonsLoose_,
+                    const std::vector<pat::Electron>&             rawElectrons_,
                     const std::vector<pat::Electron>&             selectedElectrons_,
                     const std::vector<pat::Electron>&             selectedElectronsDL_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
+                    const std::vector<pat::Jet>&                  rawJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     const std::vector<pat::Jet>&                  selectedJetsSingleTop_,
@@ -48,12 +51,15 @@ InputCollections(   const EventInfo&                              eventInfo_,
   eventInfo(eventInfo_),
   triggerInfo(triggerInfo_),
   selectedPVs(selectedPVs_),
+  rawMuons(rawMuons_),
   selectedMuons(selectedMuons_),
   selectedMuonsDL(selectedMuonsDL_),
   selectedMuonsLoose(selectedMuonsLoose_),
+  rawElectrons(rawElectrons_),
   selectedElectrons(selectedElectrons_),
   selectedElectronsDL(selectedElectronsDL_),
   selectedElectronsLoose(selectedElectronsLoose_),
+  rawJets(rawJets_),
   selectedJets(selectedJets_),
   selectedJetsLoose(selectedJetsLoose_),
   selectedJetsSingleTop(selectedJetsSingleTop_),
@@ -66,6 +72,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
   higgsDecay(higgsDecay_),
   weights(weights_)
   {}
+
+
 InputCollections(   const InputCollections&                       input,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
@@ -76,12 +84,15 @@ InputCollections(   const InputCollections&                       input,
   eventInfo(input.eventInfo),
   triggerInfo(input.triggerInfo),
   selectedPVs(input.selectedPVs),
+  rawMuons(input.rawMuons),
   selectedMuons(input.selectedMuons),
   selectedMuonsDL(input.selectedMuonsDL),
   selectedMuonsLoose(input.selectedMuonsLoose),
+  rawElectrons(input.rawElectrons),
   selectedElectrons(input.selectedElectrons),
   selectedElectronsDL(input.selectedElectronsDL),
   selectedElectronsLoose(input.selectedElectronsLoose),
+  rawJets(input.rawJets),
   selectedJets(selectedJets_),
   selectedJetsLoose(selectedJetsLoose_),
   selectedJetsSingleTop(selectedJetsSingleTop_),
@@ -98,12 +109,15 @@ InputCollections(   const InputCollections&                       input,
   const EventInfo&                              eventInfo;
   const TriggerInfo&                            triggerInfo;
   const std::vector<reco::Vertex>&              selectedPVs;
+  const std::vector<pat::Muon>&                 rawMuons;
   const std::vector<pat::Muon>&                 selectedMuons;
   const std::vector<pat::Muon>&                 selectedMuonsDL;
   const std::vector<pat::Muon>&                 selectedMuonsLoose;
+  const std::vector<pat::Electron>&             rawElectrons;
   const std::vector<pat::Electron>&             selectedElectrons;
   const std::vector<pat::Electron>&             selectedElectronsDL;
   const std::vector<pat::Electron>&             selectedElectronsLoose;
+  const std::vector<pat::Jet>&                  rawJets;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
   const std::vector<pat::Jet>&                  selectedJetsSingleTop;
