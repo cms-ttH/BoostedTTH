@@ -1,29 +1,36 @@
 import FWCore.ParameterSet.Config as cms
 import os
 
-XS=999999.9
-MCevents=100
-ERA="2015_74x"
 
 process = cms.Process("boosted")
 ISDATA=os.getenv("ISDATA")
 XS = os.getenv("XS")
+if XS==None:
+	XS=999999.9
 MCEvents = os.getenv("MCEVENTS")
+if MCEvents==None:
+	MCEvents=100
 ERA = os.getenv("ERA")
+if ERA==None:
+	ERA="2015_74x"
 INSAMPLE = os.getenv("INSAMPLE")
+if INSAMPLE==None:
+	INSAMPLE="9125"
 DOSYSTEMATICS=os.getenv("DOSYSTEMATICS")
 OUTFILE = os.getenv("OUTFILE_NAME")
 INFILE = os.getenv("FILE_NAMES")
 
+print ISDATA, type(ISDATA)
 List_FileNames=[]
 if INFILE!=None:
 	List_INFILES = INFILE.split(" ")
 	for fn in List_INFILES:
-	  List_FileNames.append("file:"+fn)
+	  List_FileNames.append(fn)
+#	  List_FileNames.append("file:"+fn)
 	#print List_FileNames
-	List_FileNames.pop()
+        if List_FileNames[-1]=="" or List_FileNames[-1]==" ":
+		List_FileNames.pop()
 	#print List_FileNames
-
 
 process = cms.Process("boosted")
 # initialize MessageLogger and output report
@@ -33,9 +40,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 #process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+
 if ISDATA=="TRUE":
   process.GlobalTag.globaltag = 'GR_P_V56'
-else if ISDATA=="FALSE":
+elif ISDATA=="FALSE" or ISDATA==None:
   process.GlobalTag.globaltag = 'MCRUN2_74_V9'
 
 #process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
@@ -68,6 +76,7 @@ if INFILE==None:
 			      fileNames = cms.untracked.vstring()
 				)
 else:
+	print List_FileNames
 	process.source = cms.Source(  "PoolSource",
 			      fileNames = cms.untracked.vstring(List_FileNames)
 				)
@@ -98,24 +107,24 @@ process.BoostedAnalyzer.nMCEvents = cms.int32(int(MCEvents))
 if ISDATA=="TRUE":
 	process.BoostedAnalyzer.isData = cms.bool(True)
 	process.BoostedAnalyzer.useGenHadronMatch = cms.bool(False)
-else if ISDATA==None:
+elif ISDATA==None:
 	process.BoostedAnalyzer.isData = cms.bool(False)
 	process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
-else if ISDATA=="FALSE":
+elif ISDATA=="FALSE":
 	process.BoostedAnalyzer.isData = cms.bool(False)
 	process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 if DOSYSTEMATICS==None:
 	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(False)
-else if DOSYYTEMATICS=="FALSE":
+elif DOSYYTEMATICS=="FALSE":
 	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(False)
-else if DOSYSTEMATICS=="TRUE":
+elif DOSYSTEMATICS=="TRUE":
 	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(True)
 process.BoostedAnalyzer.muonTriggers=["any"]
 process.BoostedAnalyzer.electronTriggers=["any"]
 
 if ISDATA==None or ISDATA=="FALSE":
 	process.p = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.BoostedAnalyzer)
-else if ISDATA=="TRUE":
+elif ISDATA=="TRUE":
 	process.p = cms.Path(process.BoostedAnalyzer)
 
 
