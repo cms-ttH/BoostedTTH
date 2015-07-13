@@ -8,11 +8,12 @@
 class TriggerInfo {
   
 public:
-  TriggerInfo(std::map<std::string,bool> triggers_);
-  bool IsTriggered(std::string triggername) const ; 
-  bool IsAnyTriggered(std::vector< std::string > triggers) const ;
+    TriggerInfo(std::map<std::string,bool> triggers_);
+    bool IsTriggered(std::string triggername) const ; 
+    bool IsAnyTriggered(std::vector< std::string > triggers) const ;
+    std::map<std::string, bool> GetTriggers() const;
 private:
-  const std::map<std::string, bool> triggers;
+    const std::map<std::string, bool> triggers;
 };
 
 #endif
