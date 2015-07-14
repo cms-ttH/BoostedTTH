@@ -689,7 +689,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   for(auto name=relevantTriggers.begin(); name!=relevantTriggers.end();name++){
     unsigned int TriggerID =  hlt_config.triggerIndex(*name);
     if( TriggerID >= triggerResults.size() ) { 
-      std::cerr <<"triggerID > trigger results.size: "<<TriggerID<<" > "<<triggerResults.size()<<std::endl; 
+      std::cerr <<"triggerID > trigger results.size, trigger name: "<< *name<<std::endl; 
       triggerMap[*name]=false;
     }
     else{
