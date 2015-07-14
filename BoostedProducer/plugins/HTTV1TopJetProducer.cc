@@ -1,4 +1,4 @@
-#include "BoostedTTH/BoostedProducer/plugins/HEPTopJetProducer.h"
+#include "BoostedTTH/BoostedProducer/plugins/HTTV1TopJetProducer.h"
 
 #include "RecoJets/JetProducers/interface/JetSpecific.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -12,7 +12,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 
 //______________________________________________________________________________
-HEPTopJetProducer::HEPTopJetProducer(edm::ParameterSet const& iConfig):
+HTTV1TopJetProducer::HTTV1TopJetProducer(edm::ParameterSet const& iConfig):
 		VirtualJetProducer(iConfig),
 		alg_(
 			iConfig.getParameter<string>	("@module_label"),
@@ -68,7 +68,7 @@ HEPTopJetProducer::HEPTopJetProducer(edm::ParameterSet const& iConfig):
 
 
 //______________________________________________________________________________
-HEPTopJetProducer::~HEPTopJetProducer()
+HTTV1TopJetProducer::~HTTV1TopJetProducer()
 {
 
 }
@@ -79,21 +79,21 @@ HEPTopJetProducer::~HEPTopJetProducer()
 ////////////////////////////////////////////////////////////////////////////////
 
 //______________________________________________________________________________
-void HEPTopJetProducer::produce(  edm::Event & e, const edm::EventSetup & c ) 
+void HTTV1TopJetProducer::produce(  edm::Event & e, const edm::EventSetup & c ) 
 {
   VirtualJetProducer::produce(e, c);
 }
 
 
 //______________________________________________________________________________
-void HEPTopJetProducer::endJob()
+void HTTV1TopJetProducer::endJob()
 {
   cout<<alg_.summary()<<endl;
 }
 
 
 //______________________________________________________________________________
-void HEPTopJetProducer::runAlgorithm( edm::Event& iEvent, const edm::EventSetup& iSetup)
+void HTTV1TopJetProducer::runAlgorithm( edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   if ( !doAreaFastjet_ && !doRhoFastjet_) {
     fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequence( fjInputs_, *fjJetDefinition_ ) );
@@ -119,7 +119,7 @@ void HEPTopJetProducer::runAlgorithm( edm::Event& iEvent, const edm::EventSetup&
 
 
 //______________________________________________________________________________
-void HEPTopJetProducer::inputTowers()
+void HTTV1TopJetProducer::inputTowers()
 {
   fjCompoundJets_.clear();
   topTags_.clear();
@@ -132,7 +132,7 @@ void HEPTopJetProducer::inputTowers()
 
 
 //______________________________________________________________________________
-void HEPTopJetProducer::output(edm::Event& iEvent,
+void HTTV1TopJetProducer::output(edm::Event& iEvent,
 				     edm::EventSetup const& iSetup)
 {
   // Write jets and constitutents. Will use fjCompoundJets_. 
@@ -159,7 +159,7 @@ void HEPTopJetProducer::output(edm::Event& iEvent,
 
 //______________________________________________________________________________
 template< class T>
-void HEPTopJetProducer::writeCompoundJets(edm::Event& iEvent,const edm::EventSetup& iSetup)
+void HTTV1TopJetProducer::writeCompoundJets(edm::Event& iEvent,const edm::EventSetup& iSetup)
 {
 	auto_ptr<reco::BasicJetCollection> fatJets( new reco::BasicJetCollection() );
 	auto_ptr< vector<T> >	subJets( new vector<T>() );
@@ -267,4 +267,4 @@ void HEPTopJetProducer::writeCompoundJets(edm::Event& iEvent,const edm::EventSet
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(HEPTopJetProducer);
+DEFINE_FWK_MODULE(HTTV1TopJetProducer);

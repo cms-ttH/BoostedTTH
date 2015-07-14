@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    BoostedTTH/BoostedProducer/SubjetFilterJetMatcher
-// Class:      SubjetFilterJetMatcher
+// Package:    BoostedTTH/BoostedProducer/SFJetMatcher
+// Class:      SFJetMatcher
 // 
-/**\class SubjetFilterJetMatcher SubjetFilterJetMatcher.cc BoostedTTH/BoostedProducer/SubjetFilterJetMatcher/plugins/SubjetFilterJetMatcher.cc
+/**\class SFJetMatcher SFJetMatcher.cc BoostedTTH/BoostedProducer/SFJetMatcher/plugins/SFJetMatcher.cc
 
  Description: [one line class summary]
 
@@ -16,7 +16,7 @@
 //
 //
 
-#include "BoostedTTH/BoostedProducer/plugins/SubjetFilterJetMatcher.h"
+#include "BoostedTTH/BoostedProducer/plugins/SFJetMatcher.h"
 
 //
 // constants, enums and typedefs
@@ -30,7 +30,7 @@
 //
 // constructors and destructor
 //
-SubjetFilterJetMatcher::SubjetFilterJetMatcher(const edm::ParameterSet& iConfig):
+SFJetMatcher::SFJetMatcher(const edm::ParameterSet& iConfig):
   minJetPt(iConfig.getParameter<double>("minJetPt")),
   recofatjetsTag_(iConfig.getParameter<edm::InputTag>("recofatjetsTag")),
   patfatjetsTag_(iConfig.getParameter<edm::InputTag>("patfatjetsTag")),
@@ -45,7 +45,7 @@ SubjetFilterJetMatcher::SubjetFilterJetMatcher(const edm::ParameterSet& iConfig)
 }
 
 
-SubjetFilterJetMatcher::~SubjetFilterJetMatcher()
+SFJetMatcher::~SFJetMatcher()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -60,7 +60,7 @@ SubjetFilterJetMatcher::~SubjetFilterJetMatcher()
 
 // ------------ method called to produce the data  ------------
 void
-SubjetFilterJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+SFJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
   
@@ -128,7 +128,7 @@ SubjetFilterJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
 template<typename recojettype>
-const pat::Jet & SubjetFilterJetMatcher::deltarJetMatching(const edm::View<pat::Jet> & patjets, const std::multimap<double, int> & patjetindex_by_eta, const recojettype & recojet){
+const pat::Jet & SFJetMatcher::deltarJetMatching(const edm::View<pat::Jet> & patjets, const std::multimap<double, int> & patjetindex_by_eta, const recojettype & recojet){
 	std::multimap<double, int>::const_iterator lower = patjetindex_by_eta.lower_bound(recojet.eta() - 0.01);
 	std::multimap<double, int>::const_iterator upper = patjetindex_by_eta.upper_bound(recojet.eta() + 0.01);
 
@@ -149,20 +149,20 @@ const pat::Jet & SubjetFilterJetMatcher::deltarJetMatching(const edm::View<pat::
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-SubjetFilterJetMatcher::beginJob()
+SFJetMatcher::beginJob()
 {
 }
 
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-SubjetFilterJetMatcher::endJob() {
+SFJetMatcher::endJob() {
 }
 
  
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-SubjetFilterJetMatcher::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+SFJetMatcher::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -171,4 +171,4 @@ SubjetFilterJetMatcher::fillDescriptions(edm::ConfigurationDescriptions& descrip
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(SubjetFilterJetMatcher);
+DEFINE_FWK_MODULE(SFJetMatcher);

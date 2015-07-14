@@ -2,7 +2,7 @@
 
 using namespace std;
 
-ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, std::string taggername_, std::string higgstaggername_, std::string prefix_):btagger("combinedSecondaryVertexBJetTags"){
+ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, std::string taggername_, std::string higgstaggername_, std::string prefix_):btagger("combinedInclusiveSecondaryVertexV2BJetTags"){
   recotype = recotype_;
   prefix = prefix_;
 
@@ -52,22 +52,28 @@ void ttHVarProcessor::InitTopTagger(string taggername){
  
   if(taggername!=""){
     if(taggername.find("TopLikelihood")!=std::string::npos) toptagger = TopTagger(taggername);
-    else if(taggername.find("TMVATopTagger")!=std::string::npos){
+    else if(taggername.find("BDTTopTagger")!=std::string::npos){
 
       vector<string> BDTVars;
       string weights;
 
-      if(taggername == "TMVATopTaggerOutput_MWDef_CombDef_ttbar"){
+      if(taggername == "BDTTopTagger_PSO"){
+        BDTVars.push_back("TopJet_Wbtag_M");
+        BDTVars.push_back("TopJet_BW1btag_M");
+        BDTVars.push_back("TopJet_BW2btag_M");
+        BDTVars.push_back("TopJet_PrunedMass");
+        BDTVars.push_back("TopJet_UnfilteredMass");
+        BDTVars.push_back("TopJet_DRoptRoptCalc");
+        BDTVars.push_back("TopJet_Tau21Filtered");
+        BDTVars.push_back("TopJet_Tau32Filtered");
+        BDTVars.push_back("TopJet_Bbtag_CSV");
+        BDTVars.push_back("TopJet_W1btag_CSV");
+        BDTVars.push_back("TopJet_MRatio_Wbtag_Top");
+        BDTVars.push_back("TopJet_W2btag_CSV");
         BDTVars.push_back("TopJet_Top_M");
-        BDTVars.push_back("TopJet_Dr_Lep");
-        BDTVars.push_back("TopJet_W2_Pt");
-        BDTVars.push_back("TopJet_B_Pt");
-        BDTVars.push_back("TopJet_NSubjettiness_12_Ratio");
-        BDTVars.push_back("TopJet_W1_Pt");
-        BDTVars.push_back("TopJet_W_M");
-        BDTVars.push_back("TopJet_B_CSV");
-
-        weights = "/nfs/dust/cms/user/tpfotzer/ttbarX/BEANs/mva/TMVA/TMVATopTagger/weights/TMVATopTagger_BDTG_MWDef_CombDef.weights.xml";
+        BDTVars.push_back("TopJet_fRec");
+        
+        weights = "BDTTopTagger_PSO.weights.xml";
       }
 
       toptagger = TopTagger(taggername,BDTVars,weights); 
@@ -221,10 +227,32 @@ void ttHVarProcessor::InitTopHadCandidateVars(VariableContainer& vars){
   vars.InitVar(prefix+"TopHadCandidate_Top_Eta",-9.);
   vars.InitVar(prefix+"TopHadCandidate_Top_Phi",-9.);
   
-  vars.InitVar(prefix+"TopHadCandidate_Subjettiness1",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Subjettiness2",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_Subjettiness3",-9.);
- 
+  vars.InitVar(prefix+"TopHadCandidate_FatJet_Mass",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_FatJet_Pt",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_FatJet_Eta",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_FatJet_Phi",-9.);
+
+  vars.InitVar(prefix+"TopHadCandidate_TopMass",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_UnfilteredMass",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_PrunedMass",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_fRec",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_MassRatioPassed",-9.);
+
+  vars.InitVar(prefix+"TopHadCandidate_Ropt",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_RoptCalc",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_PtForRoptCalc",-9.);
+
+  vars.InitVar(prefix+"TopHadCandidate_Tau1Unfiltered",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Tau2Unfiltered",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Tau3Unfiltered",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Tau1Filtered",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Tau2Filtered",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Tau3Filtered",-9.);
+
+  vars.InitVar(prefix+"TopHadCandidate_QWeight",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_QEpsilon",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_QSigmaM",-9.);
+  
   vars.InitVar(prefix+"TopHadCandidate_Dr_Lepton",-9.);
   vars.InitVar(prefix+"TopHadCandidate_M_Lepton_B",-9.);
   vars.InitVar(prefix+"TopHadCandidate_M_TopLep",-9.);
@@ -463,7 +491,7 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
 void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, BoostedttHEvent& ttHEvent){
   
   // Get Objects
-  boosted::HEPTopJet topHadCand = ttHEvent.GetTopHadCandBoosted();
+  boosted::HTTTopJet topHadCand = ttHEvent.GetTopHadCandBoosted();
   pat::Jet topHadBCand = ttHEvent.GetTopHadBCand();
   pat::Jet topHadW1Cand = ttHEvent.GetTopHadW1Cand();
   pat::Jet topHadW2Cand = ttHEvent.GetTopHadW2Cand();
@@ -550,9 +578,31 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
     vars.FillVar(prefix+"TopHadCandidate_Top_Phi", topHadCandVec.Phi());
   }
 
-  vars.FillVar(prefix+"TopHadCandidate_Subjettiness1",topHadCand.subjettiness1);
-  vars.FillVar(prefix+"TopHadCandidate_Subjettiness2",topHadCand.subjettiness2);
-  vars.FillVar(prefix+"TopHadCandidate_Subjettiness3",topHadCand.subjettiness3);
+  vars.FillVar(prefix+"TopHadCandidate_FatJet_Mass",topHadCand.fatjetMass);
+  vars.FillVar(prefix+"TopHadCandidate_FatJet_Pt",topHadCand.fatjetPt);
+  vars.FillVar(prefix+"TopHadCandidate_FatJet_Eta",topHadCand.fatjetEta);
+  vars.FillVar(prefix+"TopHadCandidate_FatJet_Phi",topHadCand.fatjetPhi);
+
+  vars.FillVar(prefix+"TopHadCandidate_TopMass",topHadCand.topMass);
+  vars.FillVar(prefix+"TopHadCandidate_UnfilteredMass",topHadCand.unfilteredMass);
+  vars.FillVar(prefix+"TopHadCandidate_PrunedMass",topHadCand.prunedMass);
+  vars.FillVar(prefix+"TopHadCandidate_fRec",topHadCand.fRec);
+  vars.FillVar(prefix+"TopHadCandidate_MassRatioPassed",topHadCand.massRatioPassed);
+
+  vars.FillVar(prefix+"TopHadCandidate_Ropt",topHadCand.Ropt);
+  vars.FillVar(prefix+"TopHadCandidate_RoptCalc",topHadCand.RoptCalc);
+  vars.FillVar(prefix+"TopHadCandidate_PtForRoptCalc",topHadCand.ptForRoptCalc);
+
+  vars.FillVar(prefix+"TopHadCandidate_Tau1Unfiltered",topHadCand.tau1Unfiltered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau2Unfiltered",topHadCand.tau2Unfiltered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau3Unfiltered",topHadCand.tau3Unfiltered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau1Filtered",topHadCand.tau1Filtered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau2Filtered",topHadCand.tau2Filtered);
+  vars.FillVar(prefix+"TopHadCandidate_Tau3Filtered",topHadCand.tau3Filtered);
+
+  vars.FillVar(prefix+"TopHadCandidate_QWeight",topHadCand.qWeight);
+  vars.FillVar(prefix+"TopHadCandidate_QEpsilon",topHadCand.qEpsilon);
+  vars.FillVar(prefix+"TopHadCandidate_QSigmaM",topHadCand.qSigmaM);
   
   if(topHadCandVec.Pt()>0 && lepCandVec.Pt()>0){
     vars.FillVar(prefix+"TopHadCandidate_Dr_Lepton",BoostedUtils::DeltaR(lepCandVec,topHadCandVec));

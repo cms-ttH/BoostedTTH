@@ -100,7 +100,6 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopLep_B_Hadron_Phi",-9., "N_GenTopLep" );
   vars.InitVars( "GenTopHad_B_Hadron_Phi",-9., "N_GenTopHad");
 
-
   initialized = true;
 }
 
@@ -112,11 +111,10 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   int iBB = 0;
   int iCC = 0;
   
-  
-    if(input.sampleType == SampleType::ttbb) iBB = 3;
-    if(input.sampleType == SampleType::ttb) iBB = 1;
-    if(input.sampleType == SampleType::tt2b) iBB = 2;
-    if(input.sampleType == SampleType::ttcc) iCC = 1;
+  if(input.sampleType == SampleType::ttbb) iBB = 3;
+  if(input.sampleType == SampleType::ttb) iBB = 1;
+  if(input.sampleType == SampleType::tt2b) iBB = 2;
+  if(input.sampleType == SampleType::ttcc) iCC = 1;
   
   vars.FillVar( "GenEvt_I_TTPlusCC",iCC );
   vars.FillVar( "GenEvt_I_TTPlusBB",iBB );
@@ -213,8 +211,6 @@ bool dfirst=true;
     }
   }
   
- 
- 
   for(size_t i=0;i<tophad.size();i++){
     vars.FillVars( "GenTopHad_Pt",i,tophad[i].pt());
     vars.FillVars( "GenTopHad_Eta",i,tophad[i].eta());
@@ -263,6 +259,7 @@ bool dfirst=true;
       vars.FillVars( "GenTopHad_Q2_Idx",i,idxq2);
     }
   }
+
   if(higgs.pt()>0.){
     vars.FillVar( "GenHiggs_Pt",higgs.pt());
     vars.FillVar( "GenHiggs_Eta",higgs.eta());
@@ -278,6 +275,7 @@ bool dfirst=true;
     
     int idxb1=-1;
     int idxb2=-1;
+    
     double minDrB1 = 999;
     double minDrB2 = 999;
     
@@ -326,31 +324,31 @@ bool dfirst=true;
     vars.FillVar( "GenHiggs_B2_Hadron_Eta",b2_hadron.eta());
     vars.FillVar( "GenHiggs_B1_Hadron_Phi",b1_hadron.phi());
     vars.FillVar( "GenHiggs_B2_Hadron_Phi",b2_hadron.phi() );
+    
     for(uint i=0;i<bhad_genjet.size();i++){
       if(bhad_genjet[i].pt()>1){
-	vars.FillVars( "GenTopHad_B_GenJet_Pt",i,bhad_genjet[i].pt() );
-	vars.FillVars( "GenTopHad_B_GenJet_Eta",i,bhad_genjet[i].eta() );
-	vars.FillVars( "GenTopHad_B_GenJet_Phi",i,bhad_genjet[i].phi());
+	      vars.FillVars( "GenTopHad_B_GenJet_Pt",i,bhad_genjet[i].pt() );
+	      vars.FillVars( "GenTopHad_B_GenJet_Eta",i,bhad_genjet[i].eta() );
+	      vars.FillVars( "GenTopHad_B_GenJet_Phi",i,bhad_genjet[i].phi());
       }
       if(bhad_hadron[i].pt()>1){
-	vars.FillVars( "GenTopHad_B_Hadron_Pt",i,bhad_hadron[i].pt() );
-	vars.FillVars( "GenTopHad_B_Hadron_Eta",i,bhad_hadron[i].eta() );
-	vars.FillVars( "GenTopHad_B_Hadron_Phi",i,bhad_hadron[i].phi());
+	      vars.FillVars( "GenTopHad_B_Hadron_Pt",i,bhad_hadron[i].pt() );
+	      vars.FillVars( "GenTopHad_B_Hadron_Eta",i,bhad_hadron[i].eta() );
+	      vars.FillVars( "GenTopHad_B_Hadron_Phi",i,bhad_hadron[i].phi());
       }
-    }
+	  }
+    
     for(uint i=0;i<blep_genjet.size();i++){
       if(blep_genjet[i].pt()>1){
-	vars.FillVars( "GenTopLep_B_GenJet_Phi",i,blep_genjet[i].phi());
-	vars.FillVars( "GenTopLep_B_GenJet_Pt",i,blep_genjet[i].pt() );
-	vars.FillVars( "GenTopLep_B_GenJet_Eta",i,blep_genjet[i].eta());
+	      vars.FillVars( "GenTopLep_B_GenJet_Phi",i,blep_genjet[i].phi());
+	      vars.FillVars( "GenTopLep_B_GenJet_Pt",i,blep_genjet[i].pt() );
+	      vars.FillVars( "GenTopLep_B_GenJet_Eta",i,blep_genjet[i].eta());
       }
       if(blep_hadron[i].pt()>1){
-	vars.FillVars( "GenTopLep_B_Hadron_Pt",i,blep_hadron[i].pt() );
-	vars.FillVars( "GenTopLep_B_Hadron_Eta",i,blep_hadron[i].eta());
-	vars.FillVars( "GenTopLep_B_Hadron_Phi",i,blep_hadron[i].phi());
+	      vars.FillVars( "GenTopLep_B_Hadron_Pt",i,blep_hadron[i].pt() );
+	      vars.FillVars( "GenTopLep_B_Hadron_Eta",i,blep_hadron[i].eta());
+	      vars.FillVars( "GenTopLep_B_Hadron_Phi",i,blep_hadron[i].phi());
       }
     }
-
-
   }
 }

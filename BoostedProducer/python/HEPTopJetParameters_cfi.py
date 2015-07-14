@@ -9,7 +9,11 @@ from RecoJets.JetProducers.AnomalousCellParameters_cfi import *
 
 HEPTopJetsPF = cms.EDProducer(
     "HEPTopJetProducer",
-    PFJetParameters,
+    PFJetParameters.clone(
+      src = cms.InputTag("pfNoElectronsCHS"),
+      doAreaFastjet = cms.bool(True),
+      jetPtMin = cms.double(180.0)
+    ),
     AnomalousCellParameters,
     verbose 		= cms.bool(False),
     jetAlgorithm 	= cms.string("CambridgeAachen"),
@@ -20,12 +24,13 @@ HEPTopJetsPF = cms.EDProducer(
     subjetMassCut 	= cms.double(30.),
     requireTopTag	= cms.bool(False)
 )
-HEPTopJetsPF.jetPtMin   = cms.double(180.)
-HEPTopJetsPF.doAreaFastjet  = cms.bool(True)
 
 HEPTopJetsGen = cms.EDProducer(
     "HEPTopJetProducer",
-    GenJetParameters,
+    GenJetParameters.clone(
+      doAreaFastjet = cms.bool(True),
+      jetPtMin = cms.double(150.0)
+    ),
     AnomalousCellParameters,
     verbose 		= cms.bool(False),
     jetAlgorithm 	= cms.string("CambridgeAachen"),
@@ -36,8 +41,3 @@ HEPTopJetsGen = cms.EDProducer(
     subjetMassCut 	= cms.double(30.),
     requireTopTag	= cms.bool(False)
 )
-HEPTopJetsGen.jetPtMin  = cms.double(150.)
-HEPTopJetsGen.doAreaFastjet = cms.bool(True)
-
-heptopjet_pf_seq = cms.Sequence(HEPTopJetsPF)
-heptopjet_gen_seq = cms.Sequence(HEPTopJetsGen)

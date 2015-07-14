@@ -1,5 +1,5 @@
-#ifndef BOOSTEDTTH_BOOSTEDPRODUCERS_SUBJETFILTERJETPRODUCER_H
-#define BOOSTEDTTH_BOOSTEDPRODUCERS_SUBJETFILTERJETPRODUCER_H 1
+#ifndef BOOSTEDTTH_BOOSTEDPRODUCERS_SFJETPRODUCER_H
+#define BOOSTEDTTH_BOOSTEDPRODUCERS_SFJETPRODUCER_H 1
 
 
 /*
@@ -18,18 +18,18 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "RecoJets/JetAlgorithms/interface/CompoundPseudoJet.h"
 
-#include "BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.h"
+#include "RecoJets/JetProducers/plugins/VirtualJetProducer.h"
 #include "BoostedTTH/BoostedProducer/interface/SubjetFilterjetAlgorithm.h"
 #include "BoostedTTH/BoostedProducer/interface/Nsubjettiness.h"
 
-class SubjetFilterJetProducer : public VirtualJetProducer
+class SFJetProducer : public VirtualJetProducer
 {
 	//
 	// construction / destruction
 	//
 	public:
-		SubjetFilterJetProducer(const edm::ParameterSet& ps);
-		~SubjetFilterJetProducer();
+		SFJetProducer(const edm::ParameterSet& ps);
+		~SFJetProducer();
 
 	//
 	// member functions
