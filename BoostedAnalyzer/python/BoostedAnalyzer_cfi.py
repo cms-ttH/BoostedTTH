@@ -5,7 +5,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
     LeptonSelection,
     JetTagSelection, 
-    checkManyRun2DataTriggers, # import many relevantTriggers
+    checkNoTriggers,
     mumuTriggers = cms.vstring("None"),
     elelTriggers = cms.vstring("None"),
     elmuTriggers = cms.vstring("None"),

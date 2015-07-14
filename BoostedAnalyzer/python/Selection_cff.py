@@ -21,6 +21,16 @@ JetTagSelection = cms.PSet(
     maxTags = cms.vint32(-1,-1)
 )
 
+checkBasicTriggers= cms.PSet(
+    relevantTriggers=cms.vstring("HLT_IsoMu24_eta2p1_v2",
+                                 "HLT_Ele27_eta2p1_WPLoose_Gsf_HT200_v1"
+                                 )
+    )
+
+checkNoTriggers= cms.PSet(
+    relevantTriggers=cms.vstring()
+    )
+
 checkManyRun2DataTriggers = cms.PSet(
     relevantTriggers=cms.vstring("HLT_Ele15_PFHT300_v2",
                                 "HLT_Ele22_eta2p1_WPLoose_Gsf_v1",
