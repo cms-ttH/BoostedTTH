@@ -74,6 +74,9 @@ class BoostedUtils{
     static float GetHiggsMass(const boosted::SubFilterJet& higgsJet, const int& nFilterJets = 2, const int& nBTags = 2, const float& csvWP = 0.679);
     static std::vector<pat::Jet> GetSingleTopJets(const std::vector<pat::Jet>& centralJets, const std::vector<pat::Jet>& forwardJets, float etacut=2.4);
 
+    static float GetMuonRelIso(const pat::Muon& iMuon);
+    static float GetElectronRelIso(const pat::Electron& iElectron);
+
   private:
   
 };

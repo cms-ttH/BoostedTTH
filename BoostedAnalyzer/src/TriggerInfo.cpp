@@ -4,16 +4,19 @@ TriggerInfo::TriggerInfo(std::map<std::string,bool> triggers_):triggers(triggers
       
 }
 bool TriggerInfo::IsTriggered(std::string triggername) const {
-  if(triggername=="any"||triggername=="Any"||triggername=="none"||triggername=="None") return true;
-  if(triggers.count(triggername)==0){ 
-    std::cerr << "trigger "  << triggername << " not existing (you might need to add it in the python cfg)" << std::endl;
-    return false;
-  }
-  return triggers.at(triggername);
+    if(triggername=="any"||triggername=="Any"||triggername=="none"||triggername=="None") return true;
+    if(triggers.count(triggername)==0){ 
+	std::cerr << "trigger "  << triggername << " not existing (you might need to add it in the python cfg)" << std::endl;
+	return false;
+    }
+    return triggers.at(triggername);
 }
 bool TriggerInfo::IsAnyTriggered(std::vector< std::string > triggernames) const {
-  for(auto name=triggernames.begin(); name!=triggernames.end();name++){
-    if(IsTriggered(*name)) return true;
-  }
-  return false;
+    for(auto name=triggernames.begin(); name!=triggernames.end();name++){
+	if(IsTriggered(*name)) return true;
+    }
+    return false;
+}
+std::map<std::string, bool> TriggerInfo::GetTriggers() const{
+    return triggers;
 }

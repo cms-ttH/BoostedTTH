@@ -114,7 +114,7 @@ elif ISDATA=="FALSE":
 	process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 if DOSYSTEMATICS==None:
 	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(False)
-elif DOSYYTEMATICS=="FALSE":
+elif DOSYSTEMATICS=="FALSE":
 	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(False)
 elif DOSYSTEMATICS=="TRUE":
 	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(True)
