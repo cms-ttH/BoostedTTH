@@ -190,7 +190,7 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   vector<double> sortedCSV;
   if(selectedMuons.size()>0) lepton_vec.SetPtEtaPhiE(selectedMuons[0].pt(),selectedMuons[0].eta(),selectedMuons[0].phi(),selectedMuons[0].energy());
   if(selectedElectrons.size()>0) lepton_vec.SetPtEtaPhiE(selectedElectrons[0].pt(),selectedElectrons[0].eta(),selectedElectrons[0].phi(),selectedElectrons[0].energy());
-  met_vec.SetPtEtaPhiE(pfMET.pt(),pfMET.eta(),0,pfMET.pt());
+  met_vec.SetPtEtaPhiE(pfMET.pt(),0,pfMET.phi(),pfMET.pt());
   for(auto jet=selectedJets.begin();jet!=selectedJets.end(); jet++){
     TLorentzVector jetvec;
     jetvec.SetPtEtaPhiE(jet->pt(),jet->eta(),jet->phi(),jet->energy());
