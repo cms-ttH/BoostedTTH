@@ -5,7 +5,7 @@ import os
 #------------------------------------------------------------------------------------------------------------------------------------
 process = cms.Process("analysis")
 
-filenames=['/store/data/Run2015B/SingleMu/MINIAOD/PromptReco-v1/000/251/131/00000/162D2CF4-9D26-E511-9C7D-02163E0136B5.root']
+filenames=['/store/data/Run2015B/SingleMuon/MINIAOD/PromptReco-v1/000/251/244/00000/68275270-7C27-E511-B1F0-02163E011A46.root']
 outfilename='data_2015_RunB_PR'
 skipevents=0
 maxevents=1000000
@@ -47,4 +47,5 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.outfileName=outfilename
 process.BoostedAnalyzer.isData = True
+process.BoostedAnalyzer.selectionNames=[]
 process.p = cms.Path(process.BoostedAnalyzer)
