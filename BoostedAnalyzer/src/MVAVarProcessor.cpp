@@ -924,7 +924,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   float aplanarity=-1;
   float sphericity=-1;
   TLorentzVector primLepVecTL = BoostedUtils::GetTLorentzVector(primLepVec);
-  TLorentzVector metvecTL = BoostedUtils::GetTLorentzVector(primLepVec);
+  TLorentzVector metvecTL(input.pfMET.px(),input.pfMET.py(),0,input.pfMET.energy());
   // workaround to avoid bdtvar crashing
   if(jetvecsTL.size()>0)
     bdtvar.getSp(primLepVecTL, metvecTL, jetvecsTL, aplanarity, sphericity) ;
