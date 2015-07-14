@@ -5,6 +5,19 @@ from RecoJets.JetProducers.AnomalousCellParameters_cfi import *
 
 # HEP top jet producer parameters
 # $Id
+
+HTTFatJetProducer = cms.EDProducer(
+    "FastjetJetProducer",
+    PFJetParameters.clone( src = cms.InputTag("pfNoElectronsCHS"),
+      doAreaFastjet = cms.bool(True),
+      doRhoFastjet = cms.bool(False),
+      jetPtMin = cms.double(180.0)
+    ),
+    AnomalousCellParameters,
+    jetAlgorithm = cms.string("CambridgeAachen"),
+    rParam       = cms.double(1.5)
+    )
+    
 HTTTopJetProducer = cms.EDProducer(
     "HTTTopJetProducer",
     PFJetParameters.clone( src = cms.InputTag("pfNoElectronsCHS"),
@@ -37,4 +50,4 @@ HTTTopJetProducer = cms.EDProducer(
     jetCollInstanceName = cms.string("subjets")
 )
 
-HTTTopJetProducerPath = cms.Path(HTTTopJetProducer)
+HTTTopJetProducerPath = cms.Path(HTTFatJetProducer*HTTTopJetProducer)

@@ -4,9 +4,10 @@ process = cms.Process("p")
 process.source = cms.Source("PoolSource",
                             #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/tpfotzer/MiniAOD_raw/ttH_01.root')
                             #fileNames = cms.untracked.vstring('file:/storage/9/mildner/ttbar_phys14.root')
-                            fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
+                            #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
+                            fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/10950426-4103-E511-8E6B-0025905A60DA.root')
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -53,6 +54,10 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
 
 # make HTT Top Jets
+
+#process.ak4PFJetsCHS = ak4PFJets.clone(src = 'pfNoElectronsCHS', doAreaFastjet = True)
+
+
 process.load('BoostedTTH.BoostedProducer.HTTTopJetProducer_cfi')
 
 # make Subjet Filterjet Jets
@@ -60,14 +65,16 @@ process.load('BoostedTTH.BoostedProducer.SFJetProducer_cfi')
 
 # make PAT HTT Top Jets
 from PhysicsTools.PatAlgos.tools.jetTools import addJetCollection
+
+
 # HTT fatjet
 addJetCollection(
     process,
     labelName = 'HTTFatJetsPF',
     postfix="",
-    jetSource = cms.InputTag('HTTTopJetProducer','fatjets'),
+    #jetSource = cms.InputTag('HTTTopJetProducer','fatjets'),
+    jetSource = cms.InputTag('HTTFatJetProducer',''),
     pfCandidates = cms.InputTag('packedPFCandidates'),
-    trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
     algo = 'CA',
     rParam = 1.5,
@@ -77,14 +84,13 @@ addJetCollection(
     btagDiscriminators = None
 )
 
-# HTT fatjet
+# HTT topjet
 addJetCollection(
     process,
     labelName = 'HTTTopJetsPF',
     postfix="",
     jetSource = cms.InputTag('HTTTopJetProducer',''),
     pfCandidates = cms.InputTag('packedPFCandidates'),
-    trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
     algo = 'CA',
     rParam = 1.5,
@@ -101,63 +107,60 @@ addJetCollection(
     postfix="",
     jetSource = cms.InputTag('HTTTopJetProducer','subjets'),
     pfCandidates = cms.InputTag('packedPFCandidates'),
-    trackSource = cms.InputTag('unpackedTracksAndVertices'),
     pvSource = cms.InputTag('unpackedTracksAndVertices'),
     algo = 'CA',
     rParam = 1.5,
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
-    btagDiscriminators = [ 'combinedInclusiveSecondaryVertexV2BJetTags' ]
+    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ]
 )
 
-# make PAT Subjet Filterjet Jets
-# add fat CA1.2 pat jet
-addJetCollection(
-    process,
-    labelName = 'SFFatJetsPF',
-    postfix = "",
-    jetSource = cms.InputTag('SFJetProducer','fatjets'),
-    pfCandidates = cms.InputTag('packedPFCandidates'),
-    trackSource = cms.InputTag('unpackedTracksAndVertices'),
-    pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators =  [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
-    getJetMCFlavour = False,
-    genJetCollection = None,
-    jetCorrections = None,
-    btagDiscriminators = None
-)
-# the two subjets that created the mass drop
-addJetCollection(
-    process,
-    labelName = 'SFSubjetsPF',
-    postfix = "",
-    jetSource = cms.InputTag('SFJetProducer','subjets'),
-    pfCandidates = cms.InputTag('packedPFCandidates'),
-    trackSource = cms.InputTag('unpackedTracksAndVertices'),
-    pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    algo = 'CA',
-    rParam = 1.2,
-    getJetMCFlavour = False,
-    genJetCollection = None,
-    jetCorrections = None,
-    btagDiscriminators = None
-)
-# filterjets (reclustered from subjets)
-addJetCollection(
-    process,
-    labelName = 'SFFilterjetsPF',
-    postfix = "",
-    jetSource = cms.InputTag('SFJetProducer','filterjets'),
-    pfCandidates = cms.InputTag('packedPFCandidates'),
-    trackSource = cms.InputTag('unpackedTracksAndVertices'),
-    pvSource = cms.InputTag('unpackedTracksAndVertices'),
-    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ],
-    getJetMCFlavour = False,
-    genJetCollection = None,
-    jetCorrections = None,
-    btagDiscriminators =  [ 'combinedInclusiveSecondaryVertexV2BJetTags' ]
-)
+## make PAT Subjet Filterjet Jets
+## add fat CA1.2 pat jet
+#addJetCollection(
+#    process,
+#    labelName = 'SFFatJetsPF',
+#    postfix = "",
+#    jetSource = cms.InputTag('SFJetProducer','fatjets'),
+#    pfCandidates = cms.InputTag('packedPFCandidates'),
+#    trackSource = cms.InputTag('unpackedTracksAndVertices'),
+#    pvSource = cms.InputTag('unpackedTracksAndVertices'),
+#    getJetMCFlavour = False,
+#    genJetCollection = None,
+#    jetCorrections = None,
+#    btagDiscriminators = None
+#)
+## the two subjets that created the mass drop
+#addJetCollection(
+#    process,
+#    labelName = 'SFSubjetsPF',
+#    postfix = "",
+#    jetSource = cms.InputTag('SFJetProducer','subjets'),
+#    pfCandidates = cms.InputTag('packedPFCandidates'),
+#    trackSource = cms.InputTag('unpackedTracksAndVertices'),
+#    pvSource = cms.InputTag('unpackedTracksAndVertices'),
+#    algo = 'CA',
+#    rParam = 1.2,
+#    getJetMCFlavour = False,
+#    genJetCollection = None,
+#    jetCorrections = None,
+#    btagDiscriminators = None
+#)
+## filterjets (reclustered from subjets)
+#addJetCollection(
+#    process,
+#    labelName = 'SFFilterjetsPF',
+#    postfix = "",
+#    jetSource = cms.InputTag('SFJetProducer','filterjets'),
+#    pfCandidates = cms.InputTag('packedPFCandidates'),
+#    trackSource = cms.InputTag('unpackedTracksAndVertices'),
+#    pvSource = cms.InputTag('unpackedTracksAndVertices'),
+#    getJetMCFlavour = False,
+#    genJetCollection = None,
+#    jetCorrections = None,
+#    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','combinedSecondaryVertexBJetTags' ]
+#)
 
 
 #adjust MC matching for all Boosted Jet collections
@@ -172,16 +175,16 @@ process.patJetPartonMatchHTTTopJetsPF.matched = "prunedGenParticles"
 process.patJetsHTTSubjetsPF.addGenJetMatch=False
 process.patJetPartonMatchHTTSubjetsPF.matched = "prunedGenParticles"
 
-#Subjet Filterjet Jet collections
-# fatjets
-process.patJetsSFFatJetsPF.addGenJetMatch=False
-process.patJetPartonMatchSFFatJetsPF.matched = "prunedGenParticles"
-# subjets
-process.patJetsSFSubjetsPF.addGenJetMatch=False
-process.patJetPartonMatchSFSubjetsPF.matched = "prunedGenParticles"
-# filterjets
-process.patJetsSFFilterjetsPF.addGenJetMatch=False
-process.patJetPartonMatchSFFilterjetsPF.matched = "prunedGenParticles"
+##Subjet Filterjet Jet collections
+## fatjets
+#process.patJetsSFFatJetsPF.addGenJetMatch=False
+#process.patJetPartonMatchSFFatJetsPF.matched = "prunedGenParticles"
+## subjets
+#process.patJetsSFSubjetsPF.addGenJetMatch=False
+#process.patJetPartonMatchSFSubjetsPF.matched = "prunedGenParticles"
+## filterjets
+#process.patJetsSFFilterjetsPF.addGenJetMatch=False
+#process.patJetPartonMatchSFFilterjetsPF.matched = "prunedGenParticles"
 
 # all
 process.patJetPartons.particles = "prunedGenParticles"
@@ -189,17 +192,17 @@ process.patJetPartons.particles = "prunedGenParticles"
 
 # create Path for PAT Jets
 process.patJetsHTTTopJetsPath = cms.Path(process.patJetsHTTFatJetsPF * process.patJetsHTTTopJetsPF * process.patJetsHTTSubjetsPF)
-process.patJetsSFJetsPath = cms.Path(process.patJetsSFFatJetsPF * process.patJetsSFSubjetsPF * process.patJetsSFFilterjetsPF)
+#process.patJetsSFJetsPath = cms.Path(process.patJetsSFFatJetsPF * process.patJetsSFSubjetsPF * process.patJetsSFFilterjetsPF)
 
 #from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
 #process.ak4PFJetsCHS = ak4PFJets.clone(src = 'pfNoElectronsCHS', doAreaFastjet = True)
 process.ak4GenJets = ak4GenJets.clone(src = 'packedGenParticles')
 
-## match HTT Top Jet subjets to fat jet
+# match HTT Top Jet subjets to fat jet
 process.load('BoostedTTH.BoostedProducer.HTTTopJetMatcher_cfi')
-## match Subjet Filterjet Jet subjets to fat jet
-process.load('BoostedTTH.BoostedProducer.SFJetMatcher_cfi')
+# match Subjet Filterjet Jet subjets to fat jet
+#process.load('BoostedTTH.BoostedProducer.SFJetMatcher_cfi')
 
 # gen hadron matching for tt+X categorization
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
@@ -211,8 +214,8 @@ process.OUT = cms.OutputModule(
     outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*HTTTopJetMatcher*_*_*','keep *_*SFJetMatcher*_*_*'])
 )
 
-#process.dump=cms.EDAnalyzer('EventContentAnalyzer')
-#process.EventContent = cms.Path(process.dump)
+process.dump=cms.EDAnalyzer('EventContentAnalyzer')
+process.EventContent = cms.Path(process.dump)
 
 process.endpath = cms.EndPath(process.OUT)
 

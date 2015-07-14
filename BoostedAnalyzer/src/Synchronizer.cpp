@@ -90,7 +90,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
     if(BoostedUtils::PassesCSV(*jet)) n_btags++;
   }
   
-  for(auto topjet = input.selectedHEPTopJets.begin() ; topjet != input.selectedHEPTopJets.end(); topjet++ ){
+  for(auto topjet = input.selectedHTTTopJets.begin() ; topjet != input.selectedHTTTopJets.end(); topjet++ ){
     // pt and eta requirements on top jet
     if( !(topjet->fatjet.pt() > 250. && abs(topjet->fatjet.eta()) < 1.8) ) continue;
     std::vector<pat::Jet> subjets;
