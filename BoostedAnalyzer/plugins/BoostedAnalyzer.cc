@@ -67,6 +67,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AdditionalJetProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/RawVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SingleTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
@@ -75,6 +77,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
@@ -390,6 +393,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new MVAVarProcessor());
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"RawVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new RawVarProcessor());
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new StdTopVarProcessor());
+  }
   if(std::find(processorNames.begin(),processorNames.end(),"SingleTopVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new SingleTopVarProcessor());
   }
@@ -420,9 +429,13 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
   if(std::find(processorNames.begin(),processorNames.end(),"DiLeptonVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new DiLeptonVarProcessor());
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"TriggerVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new TriggerVarProcessor());
+  }
 
-  // the systematics tree writer use the same processors that are used for the nonimal trees
-  // it might help performance to turn some of them off
+
+  // the systematics tree writers use the same processors that are used for the nominal trees
+  // it might improve the performance to turn some of them off
   if(makeSystematicsTrees){
     std::vector<TreeProcessor*> tps = treewriter_nominal.GetTreeProcessors();
     for(uint i=0; i<tps.size();i++){
@@ -501,6 +514,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< std::vector<pat::Muon> > h_muons;
   iEvent.getByToken( EDMMuonsToken,h_muons );
   std::vector<pat::Muon> const &muons = *h_muons;
+  std::vector<pat::Muon> rawMuons = muons;
   // note: muon eta cuts and muonLoose ID no longer as in synch exe
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., muonID::muonTight, coneSize::R04, corrType::deltaBeta);
   std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( muons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta );
@@ -511,6 +525,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< std::vector<pat::Electron> > h_electrons;
   iEvent.getByToken( EDMElectronsToken,h_electrons );
   std::vector<pat::Electron> const &electrons = *h_electrons;
+  std::vector<pat::Electron> rawElectrons = electrons;
   // note: electron eta cuts no longer as in synch exe, revert as soon as miniAODhelper os updated
   std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronPhys14M, 2.1 );
   std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M, 2.4 );
@@ -674,7 +689,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   for(auto name=relevantTriggers.begin(); name!=relevantTriggers.end();name++){
     unsigned int TriggerID =  hlt_config.triggerIndex(*name);
     if( TriggerID >= triggerResults.size() ) { 
-      std::cerr <<"triggerID > trigger results.size: "<<TriggerID<<" > "<<triggerResults.size()<<std::endl; 
+      std::cerr <<"triggerID > trigger results.size, trigger name: "<< *name<<std::endl; 
       triggerMap[*name]=false;
     }
     else{
@@ -776,15 +791,18 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   map<string,float> weights_uncorrjets = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
 
   // DEFINE INPUT
-  InputCollections input_nominal( eventInfo,			  
-				  triggerInfo,			  
+  InputCollections input_nominal( eventInfo,
+				  triggerInfo,
 				  selectedPVs,
+				  rawMuons,
 				  selectedMuons,
 				  selectedMuonsDL,
 				  selectedMuonsLoose,
+				  rawElectrons,
 				  selectedElectrons,
 				  selectedElectronsDL,
 				  selectedElectronsLoose,
+				  rawJets,
 				  selectedJets_nominal,
 				  selectedJetsLoose_nominal,
 				  selectedJetsSingleTop_nominal,
@@ -795,7 +813,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedGenJets,
 				  sampleType,
 				  higgsdecay,
-				  weights			  
+				  weights
 				  );
 
   InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,pfMETs[0],weights_jesup);

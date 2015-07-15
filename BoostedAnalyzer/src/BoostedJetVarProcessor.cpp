@@ -618,10 +618,10 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "HiggsJet_Pt3",i,(input.selectedSubFilterJets[i].filterjets[0].p4()+input.selectedSubFilterJets[i].filterjets[1].p4()+input.selectedSubFilterJets[i].filterjets[2].p4()).Pt() );
     }
     
-    vars.FillVars( "HiggsJet_M2_SingleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 2, 1, 0.814) );
-    vars.FillVars( "HiggsJet_M3_SingleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 3, 1, 0.814) );
-    vars.FillVars( "HiggsJet_M2_DoubleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 2, 2, 0.814) );
-    vars.FillVars( "HiggsJet_M3_DoubleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 3, 2, 0.814) );
+    vars.FillVars( "HiggsJet_M2_SingleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 2, 1, 0.89) );
+    vars.FillVars( "HiggsJet_M3_SingleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 3, 1, 0.89) );
+    vars.FillVars( "HiggsJet_M2_DoubleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 2, 2, 0.89) );
+    vars.FillVars( "HiggsJet_M3_DoubleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 3, 2, 0.89) );
     
     std::vector<pat::Jet> filterJets = BoostedUtils::GetHiggsFilterJets(input.selectedSubFilterJets[i], 4);
     if(filterJets.size()>0) vars.FillVars( "HiggsJet_CSV1",i,filterJets[0].bDiscriminator(btagger) );
