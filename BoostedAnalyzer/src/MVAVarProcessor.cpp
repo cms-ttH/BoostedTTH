@@ -31,6 +31,7 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
+  vars.InitVars( "Jet_GenPt","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
   vars.InitVars( "Jet_PileUpID","N_Jets" );
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
@@ -272,6 +273,9 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );
     vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );
+    if(itJet->genJet()!=0){
+      vars.FillVars( "Jet_GenPt",iJet,itJet->genJet()->pt() );
+    }
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
     if(itJet->genJet()!=NULL){
