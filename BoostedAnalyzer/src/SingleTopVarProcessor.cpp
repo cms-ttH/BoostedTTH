@@ -2,7 +2,7 @@
 
 using namespace std;
 
-SingleTopVarProcessor::SingleTopVarProcessor():tHqJetSelection(new THQJetSelection()),btagger("combinedInclusiveSecondaryVertexV2BJetTags"){
+SingleTopVarProcessor::SingleTopVarProcessor():tHqJetSelection(new THQJetSelection()),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
     tHqJetSelection->InitCutflow(cutflow);
 }
 SingleTopVarProcessor::~SingleTopVarProcessor(){}
