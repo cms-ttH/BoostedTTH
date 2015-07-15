@@ -8,13 +8,13 @@ config.General.workArea = 'crab_projects'
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = '/afs/desy.de/user/k/kelmorab/CMSSW_7_4_6_patch6/src/BoostedTTH/BoostedAnalyzer/test/BaseLineSel_cfg.py'
-config.JobType.outputFiles = ['BoostedTTH_Tree.root','BoostedTTH_Cutflow.txt']
+config.JobType.outputFiles = ['BoostedTTH_Tree.root','BoostedTTH_Cutflow.txt','BoostedTTH_JESup_Tree.root','BoostedTTH_JESup_Cutflow.txt','BoostedTTH_JESdown_Tree.root','BoostedTTH_JESdown_Cutflow.txt']
 
 config.section_("Data")
 config.Data.inputDataset = '/ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9_ext1-v3/MINIAODSIM'
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 10
+config.Data.unitsPerJob = 5
 config.Data.publication = False
 #config.Data.totalUnits = 1
 #config.Data.publishDbsUrl = 'phys03'

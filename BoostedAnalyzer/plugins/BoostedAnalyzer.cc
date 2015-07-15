@@ -346,7 +346,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     else if(*itSel == "FastSimMETSelection") selections.push_back(new METSelection(-1,800));
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
     else if(*itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));
-    else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(2,-1));
+    else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
     else cout << "No matching selection found for: " << *itSel << endl;    
     selections.back()->InitCutflow(cutflow_nominal);
     if(makeSystematicsTrees){
