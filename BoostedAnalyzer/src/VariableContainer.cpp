@@ -48,25 +48,43 @@ void VariableContainer::InitVar( TString name, std::string type ) {
 
 
 void VariableContainer::FillVar( TString name, float value ) {
-  if(intMap.count(name)==0&&floatMap.count(name)==0){
+  bool isInt=intMap.count(name)!=0;
+  bool isFloat=floatMap.count(name)!=0;
+  if(isFloat){
+    FillFloatVar( name, value, false);
+  }
+  else if(isInt){
+    FillIntVar( name, int(value+0.1), false);
+  }
+  else{
     cerr << name << " does not exist!" << endl;
   }
-  if(floatMap.count(name)!=0){
+}
+
+void VariableContainer::FillIntVar( TString name, int value, bool checkIfExists) {
+    if(checkIfExists&&intMap.count(name)!=0){
+        cerr << name << " does not exist!" << endl;
+        return;
+    }
+    if(intMapFilled[name]){
+        cerr << name << " already filled, replacing value!" << endl;
+    }
+    intMap[name] = value;
+    intMapFilled[name] = true;
+}
+
+void VariableContainer::FillFloatVar( TString name, float value, bool checkIfExists) {
+    if(checkIfExists&&floatMap.count(name)!=0){
+        cerr << name << " does not exist!" << endl;
+        return;
+    }
     if(floatMapFilled[name]){
-      cerr << name << " already filled!" << endl;
+        cerr << name << " already filled, replacing value!" << endl;
     }
     floatMap[name] = value;
     floatMapFilled[name] = true;
-  }
-  if(intMap.count(name)!=0){
-    if(intMapFilled[name]){
-      cerr << name << " already filled!" << endl;
-    }
-    intMap[name] = int(value+0.1);
-    intMapFilled[name] = true;
-  }
-//     std::cout << "filling variable " << name << " with " << value << std::endl;
 }
+
 
 
 void VariableContainer::InitVars( TString name, float defaultValue, TString nEntryVariable, int maxentries ){

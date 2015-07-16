@@ -19,6 +19,8 @@ class VariableContainer{
     void InitVar( TString name, std::string type="F" );
     void InitVar( TString name, float defaultValue, std::string type="F" );
     void FillVar( TString name, float value );
+    void FillFloatVar( TString name, float value, bool checkIfExists=true );
+    void FillIntVar( TString name, int value, bool checkIfExists=true );
     void InitVars( TString name, float defaultValue, TString nEntryVariable, int maxentries =100 );
     void InitVars( TString name, TString nEntryVariable, int maxentries=100 );
     void FillVars( TString name, int index, float value ); 
