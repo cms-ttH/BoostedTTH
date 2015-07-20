@@ -257,9 +257,9 @@ boosted::HEPTopJetCollection BoostedUtils::GetSortedByPt(boosted::HEPTopJetColle
 
 bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   
-  float CSVLv2wp = 0.423;
-  float CSVMv2wp = 0.814;
-  float CSVTv2wp = 0.941;
+  float CSVLv2wp = 0.605;
+  float CSVMv2wp = 0.89;
+  float CSVTv2wp = 0.97;
   
   float csvValue = jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   

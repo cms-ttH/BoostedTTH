@@ -2,13 +2,13 @@
 
 export ISDATA="FALSE"
 
-export INSAMPLE="9125"
+export INSAMPLE="2500"
 
 export ERA="2015_74x"
 
-export XS="0.2151"
+export XS="832.0"
 
-export MCEVENTS="1230658"
+export MCEVENTS="18508030"
 
 export DOSYSTEMATICS="TRUE"
 
