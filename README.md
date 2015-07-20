@@ -9,9 +9,13 @@ Follow These Steps:
     cmsrel CMSSW_7_2_3
     cd CMSSW_7_2_3/src
     cmsenv
-
+    git cms-addpkg PhysicsTools/JetMCAlgos/
+    cd PhysicsTools/JetMCAlgos/plugins/
+    rm GenHFHadronMatcher.cc
+    wget https://twiki.cern.ch/twiki/pub/CMSPublic/GenHFHadronMatcher/GenHFHadronMatcher.cc
+    cd -
     git clone https://github.com/cms-ttH/MiniAOD.git
-    git clone https://github.com/cms-ttH/BoostedTTH.git
+    git clone https://github.com/cms-ttH/BoostedTTH.git -b phys14
     
     scram b -j 32
 
