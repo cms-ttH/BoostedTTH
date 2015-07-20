@@ -17,7 +17,7 @@ Follow These Steps:
     cd -
     git clone -b run2mc https://github.com/cms-ttH/MiniAOD.git
     cd MiniAOD
-    git merge -m "merged updates from master" origin/master
+    git rebase -s ours origin/master
     cd ..
     git clone https://github.com/cms-ttH/BoostedTTH.git        
     scram b -j10
