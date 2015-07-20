@@ -2,7 +2,7 @@
 
 using namespace std;
 
-BoostedJetVarProcessor::BoostedJetVarProcessor ():btagger("combinedInclusiveSecondaryVertexV2BJetTags"){
+BoostedJetVarProcessor::BoostedJetVarProcessor ():btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
   
 
 }

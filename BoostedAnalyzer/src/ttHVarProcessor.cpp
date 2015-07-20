@@ -2,7 +2,7 @@
 
 using namespace std;
 
-ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, std::string taggername_, std::string higgstaggername_, std::string prefix_):btagger("combinedInclusiveSecondaryVertexV2BJetTags"){
+ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, std::string taggername_, std::string higgstaggername_, std::string prefix_):btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
   recotype = recotype_;
   prefix = prefix_;
 

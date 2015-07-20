@@ -3,7 +3,8 @@ import FWCore.ParameterSet.Config as cms
 HTTTopJetMatcher = cms.EDProducer(
     "HTTTopJetMatcher",
     verbose = cms.bool(False),
-    recoFatJetsTag    = cms.InputTag('HTTTopJetProducer','fatjets'),
+    #recoFatJetsTag    = cms.InputTag('HTTTopJetProducer','fatjets'),
+    recoFatJetsTag    = cms.InputTag('HTTFatJetProducer',''),
     recoTopJetsTag    = cms.InputTag('HTTTopJetProducer',''),
     patFatJetsTag     = cms.InputTag('selectedPatJetsHTTFatJetsPF'),
     patTopJetsTag     = cms.InputTag('selectedPatJetsHTTTopJetsPF'),

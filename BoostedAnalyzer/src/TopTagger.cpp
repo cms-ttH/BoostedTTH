@@ -115,7 +115,7 @@ float TopTagger::GetBDTOutput(const boosted::HTTTopJet& topjet, bool verbose){
   
   ResetBDTVars();
   
-  const char* btagger="combinedInclusiveSecondaryVertexV2BJetTags";
+  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   
   BDTVars["TopJet_Top_M"]             = topjet.topjet.mass();
   BDTVars["TopJet_Wbtag_M"]           = (topjet.W1.p4()+topjet.W2.p4()).M();

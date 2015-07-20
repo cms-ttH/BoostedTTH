@@ -16,7 +16,7 @@ HiggsTagger::HiggsTagger(std::string name_): name(name_) {
 }
 
 
-HiggsTagger::HiggsTagger(std::string name_, std::vector<std::string> BDTVarNames_, std::string weightsPath_): name(name_),btagger("combinedInclusiveSecondaryVertexV2BJetTags") {
+HiggsTagger::HiggsTagger(std::string name_, std::vector<std::string> BDTVarNames_, std::string weightsPath_): name(name_),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags") {
   
   BDTReader = new TMVA::Reader();
 
@@ -53,8 +53,8 @@ float HiggsTagger::GetSecondCSV(const boosted::SubFilterJet& higgsJet, bool verb
   if(higgsJet.filterjets.size()<2) return -1.1;
   
   std::vector<pat::Jet> filterjets = higgsJet.filterjets;
-  std::sort(filterjets.begin(),filterjets.end(),BoostedUtils::FirstHasHigherCSVold); 
-  return fmax(filterjets[1].bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"),-.1);
+  std::sort(filterjets.begin(),filterjets.end(),BoostedUtils::FirstHasHigherCSV); 
+  return fmax(filterjets[1].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"),-.1);
 
 }
 

@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedttHEvent.hpp"
 
 
-BoostedttHEvent::BoostedttHEvent(const InputCollections& input_):input(input_),verbose(false),btagger("combinedInclusiveSecondaryVertexV2BJetTags"){
+BoostedttHEvent::BoostedttHEvent(const InputCollections& input_):input(input_),verbose(false),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
   ResetEvent();
 }
 
