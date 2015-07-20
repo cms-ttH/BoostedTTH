@@ -19,7 +19,10 @@ Follow These Steps:
     cd MiniAOD
     git rebase -s ours origin/master
     cd ..
-    git clone https://github.com/cms-ttH/BoostedTTH.git        
+    git clone https://github.com/cms-ttH/BoostedTTH.git
+    rm BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.*
+    ln -s $CMSSW_RELEASE_BASE/src/RecoJets/JetProducers/plugins/VirtualJetProducer.h BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.h
+    ln -s $CMSSW_RELEASE_BASE/src/RecoJets/JetProducers/plugins/VirtualJetProducer.cc BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.cc
     scram b -j10
 
 ## Overview
