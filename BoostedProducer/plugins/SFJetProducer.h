@@ -19,8 +19,11 @@
 #include "RecoJets/JetAlgorithms/interface/CompoundPseudoJet.h"
 
 #include "RecoJets/JetProducers/plugins/VirtualJetProducer.h"
-#include "BoostedTTH/BoostedProducer/interface/SubjetFilterjetAlgorithm.h"
-#include "BoostedTTH/BoostedProducer/interface/Nsubjettiness.h"
+#include "BoostedTTH/BoostedProducer/interface/SFJetAlgorithm.h"
+#include "fastjet/contrib/Njettiness.hh"
+#include "fastjet/contrib/Nsubjettiness.hh"
+
+//#include "BoostedTTH/BoostedProducer/interface/Nsubjettiness.h"
 
 class SFJetProducer : public VirtualJetProducer
 {
@@ -47,11 +50,11 @@ class SFJetProducer : public VirtualJetProducer
 	// member data
 	//
 	private:
-		SubjetFilterjetAlgorithm				alg_;
-		fastjet::Nsubjettiness nSubJetAlgo1_;
-		fastjet::Nsubjettiness nSubJetAlgo2_;
-		fastjet::Nsubjettiness nSubJetAlgo3_;
-		fastjet::Nsubjettiness nSubJetAlgo4_;
+		SFJetAlgorithm				alg_;
+		fastjet::contrib::Nsubjettiness nSubJetAlgo1_;
+		fastjet::contrib::Nsubjettiness nSubJetAlgo2_;
+		fastjet::contrib::Nsubjettiness nSubJetAlgo3_;
+		fastjet::contrib::Nsubjettiness nSubJetAlgo4_;
 		std::vector<double> nSjn1_;
 		std::vector<double> nSjn2_;
 		std::vector<double> nSjn3_;

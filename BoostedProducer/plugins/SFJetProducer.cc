@@ -54,29 +54,29 @@ SFJetProducer::SFJetProducer(const edm::ParameterSet& iConfig)
 	 iConfig.getParameter<bool>     ("asymmCutLater"),
 	 iConfig.getParameter<double>   ("filterJetPtMin")
 	 ),
-    nSubJetAlgo1_(
-		  1, // N
-		  fastjet::Njettiness::AxesMode::kt_axes,
-		  1., //beta
-		  iConfig.getParameter<double>	("rParam") // cone size R0
-		  ),
+  nSubJetAlgo1_(
+		1, // N
+		fastjet::contrib::Njettiness::kt_axes,
+		1., //beta
+		iConfig.getParameter<double>	("rParam") // cone size R0
+		),
   nSubJetAlgo2_(
 		2, // N
-		fastjet::Njettiness::AxesMode::kt_axes,
+		fastjet::contrib::Njettiness::kt_axes,
 		1., //beta
 		iConfig.getParameter<double>	("rParam") // cone size R0
 		),
   
   nSubJetAlgo3_(
 		3, // N
-		fastjet::Njettiness::AxesMode::kt_axes,
+		fastjet::contrib::Njettiness::kt_axes,
 		1., //beta
 		iConfig.getParameter<double>	("rParam") // cone size R0
 		),
   
   nSubJetAlgo4_(
 		4, // N
-		fastjet::Njettiness::AxesMode::kt_axes,
+		fastjet::contrib::Njettiness::kt_axes,
 		1., //beta
 		iConfig.getParameter<double>	("rParam") // cone size R0
 		)
@@ -98,7 +98,6 @@ SFJetProducer::SFJetProducer(const edm::ParameterSet& iConfig)
 //______________________________________________________________________________
 SFJetProducer::~SFJetProducer()
 {
-
 }
 
 
@@ -136,10 +135,10 @@ void SFJetProducer::runAlgorithm(edm::Event& iEvent,
   alg_.run(fjInputs_, fjCompoundJets_, fjClusterSeq_);
   for(uint i=0; i<fjCompoundJets_.size();i++){
     // run nsubjettiness algorithms on fat jet
-    double n1= nSubJetAlgo1_(fjCompoundJets_[i].hardJet());
-    double n2= nSubJetAlgo2_(fjCompoundJets_[i].hardJet());
-    double n3= nSubJetAlgo3_(fjCompoundJets_[i].hardJet());
-    double n4= nSubJetAlgo4_(fjCompoundJets_[i].hardJet());
+    double n1= nSubJetAlgo1_.result(fjCompoundJets_[i].hardJet());
+    double n2= nSubJetAlgo2_.result(fjCompoundJets_[i].hardJet());
+    double n3= nSubJetAlgo3_.result(fjCompoundJets_[i].hardJet());
+    double n4= nSubJetAlgo4_.result(fjCompoundJets_[i].hardJet());
     nSjn1_.push_back(n1);
     nSjn2_.push_back(n2);
     nSjn3_.push_back(n3);

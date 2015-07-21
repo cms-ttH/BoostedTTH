@@ -1,5 +1,5 @@
-#ifndef BOOSTEDTTH_BOOSTEDBOOSTEDPRODUCERS_SUBJETFILTERJETALGORITHM_H
-#define BOOSTEDTTH_BOOSTEDBOOSTEDPRODUCERS_SUBJETFILTERJETALGORITHM_H 1
+#ifndef BOOSTEDTTH_BOOSTEDBOOSTEDPRODUCERS_SFJETALGORITHM_H
+#define BOOSTEDTTH_BOOSTEDBOOSTEDPRODUCERS_SFJETALGORITHM_H 1
 
 
 /*
@@ -24,13 +24,13 @@
 #include <fastjet/PseudoJet.hh>
 
 #include <boost/shared_ptr.hpp>
-class SubjetFilterjetAlgorithm
+class SFJetAlgorithm
 {
 	//
 	// construction / destruction
 	//
 	public:
-		SubjetFilterjetAlgorithm(const std::string& moduleLabel = '\0',
+		SFJetAlgorithm(const std::string& moduleLabel = '\0',
 				      bool verbose = false,
 				      bool doAreaFastjet = false,
 				      double rParam = 1.2,
@@ -43,7 +43,7 @@ class SubjetFilterjetAlgorithm
 				      bool asymmCutLater = true,
 				      double filterJetPtMin = 10.);
 							
-		~SubjetFilterjetAlgorithm();
+		~SFJetAlgorithm();
 
 
 	//

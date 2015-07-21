@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// SubjetFilterjetAlgorithm
+// SFJetAlgorithm
 // ---------------------
 //
 // This algorithm implements the Subjet/Filter jet reconstruction
@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "BoostedTTH/BoostedProducer/interface/SubjetFilterjetAlgorithm.h"
+#include "BoostedTTH/BoostedProducer/interface/SFJetAlgorithm.h"
 
 #include <fastjet/ClusterSequenceArea.hh>
 
@@ -33,7 +33,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 
 //______________________________________________________________________________
-SubjetFilterjetAlgorithm::SubjetFilterjetAlgorithm(const std::string& moduleLabel,
+SFJetAlgorithm::SFJetAlgorithm(const std::string& moduleLabel,
 					     bool verbose,
 					     bool doAreaFastjet,
 					     double rParam,
@@ -66,7 +66,7 @@ SubjetFilterjetAlgorithm::SubjetFilterjetAlgorithm(const std::string& moduleLabe
 
 
 //______________________________________________________________________________
-SubjetFilterjetAlgorithm::~SubjetFilterjetAlgorithm()
+SFJetAlgorithm::~SFJetAlgorithm()
 {
 
 }
@@ -89,7 +89,7 @@ namespace{
 
 
 //______________________________________________________________________________
-void SubjetFilterjetAlgorithm::run(const std::vector<fastjet::PseudoJet>& fjInputs, 
+void SFJetAlgorithm::run(const std::vector<fastjet::PseudoJet>& fjInputs, 
 				std::vector<CompoundPseudoJet>& fjJets,
 				boost::shared_ptr<fastjet::ClusterSequence> & cs)
 {
@@ -225,12 +225,12 @@ void SubjetFilterjetAlgorithm::run(const std::vector<fastjet::PseudoJet>& fjInpu
 
 
 //______________________________________________________________________________
-string SubjetFilterjetAlgorithm::summary() const
+string SFJetAlgorithm::summary() const
 {
   double eff = (ntotal_>0) ? nfound_/(double)ntotal_ : 0;
   std::stringstream ss;
   ss<<"************************************************************\n"
-    <<"* "<<moduleLabel_<<" (SubjetFilterjetAlgorithm) SUMMARY:\n"
+    <<"* "<<moduleLabel_<<" (SFJetAlgorithm) SUMMARY:\n"
     <<"************************************************************\n"
     <<"nevents = "<<nevents_<<endl
     <<"ntotal  = "<<ntotal_<<endl
