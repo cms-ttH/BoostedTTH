@@ -19,8 +19,8 @@ Follow These Steps:
     cd MiniAOD
     git rebase -s ours origin/master
     cd ..
+    git cms-merge-topic gkasieczka:htt-v2-74X
     git clone https://github.com/cms-ttH/BoostedTTH.git
-    rm BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.*
     ln -s $CMSSW_RELEASE_BASE/src/RecoJets/JetProducers/plugins/VirtualJetProducer.h BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.h
     ln -s $CMSSW_RELEASE_BASE/src/RecoJets/JetProducers/plugins/VirtualJetProducer.cc BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.cc
     scram b -j10
