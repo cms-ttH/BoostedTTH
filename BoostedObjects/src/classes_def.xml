@@ -1,9 +1,4 @@
 <lcgdict>
-  <class name="boosted::HEPTopJet" />
-  <class name="std::vector<boosted::HEPTopJet>" />
-  <class pattern="edm::Wrapper<boosted::HEPTopJet>"/>
-  <class name="edm::Wrapper<std::vector<boosted::HEPTopJet> >" />
-  
   <class name="boosted::HTTTopJet" />
   <class name="std::vector<boosted::HTTTopJet>" />
   <class pattern="edm::Wrapper<boosted::HTTTopJet>"/>
