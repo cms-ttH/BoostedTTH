@@ -1,12 +1,11 @@
 <lcgdict>
- 
+  <class name="boosted::HTTTopJet" />
+  <class name="std::vector<boosted::HTTTopJet>" />
+  <class pattern="edm::Wrapper<boosted::HTTTopJet>"/>
+  <class name="edm::Wrapper<std::vector<boosted::HTTTopJet> >" />
+  
   <class name="boosted::SubFilterJet" />
   <class name="std::vector<boosted::SubFilterJet>" />
   <class pattern="edm::Wrapper<boosted::SubFilterJet>"/>
   <class name="edm::Wrapper<std::vector<boosted::SubFilterJet> >" />
-
-  <class name="boosted::HEPTopJet" />
-  <class name="std::vector<boosted::HEPTopJet>" />
-  <class pattern="edm::Wrapper<boosted::HEPTopJet>"/>
-  <class name="edm::Wrapper<std::vector<boosted::HEPTopJet> >" />
 </lcgdict>

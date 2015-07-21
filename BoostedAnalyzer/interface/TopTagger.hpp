@@ -4,7 +4,7 @@
 #include <map>
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "BoostedTTH/BoostedObjects/interface/HEPTopJet.h"
+#include "BoostedTTH/BoostedObjects/interface/HTTTopJet.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "TH1F.h"
 #include "TFile.h"
@@ -17,10 +17,10 @@ public:
   TopTagger();
   TopTagger(std::string name, std::string histosPath = "toplikelihoodtaggerhistos.root");
   TopTagger(std::string name, std::vector<std::string> BDTVarNames, std::string weightsPath = "");
-  float GetTopTag(const boosted::HEPTopJet& topJet, bool verbose = false);
-  bool FirstHasHigherTopTaggerOutput(boosted::HEPTopJet jet1, boosted::HEPTopJet jet2);
-  boosted::HEPTopJetCollection GetSortedByTopTaggerOutput(const boosted::HEPTopJetCollection& topJets, bool verbose = false);
-  float GetTopHad(boosted::HEPTopJetCollection& topJets, boosted::HEPTopJet& topHadCand, bool verbose = false);
+  float GetTopTag(const boosted::HTTTopJet& topJet, bool verbose = false);
+  bool FirstHasHigherTopTaggerOutput(boosted::HTTTopJet jet1, boosted::HTTTopJet jet2);
+  boosted::HTTTopJetCollection GetSortedByTopTaggerOutput(const boosted::HTTTopJetCollection& topJets, bool verbose = false);
+  float GetTopHad(boosted::HTTTopJetCollection& topJets, boosted::HTTTopJet& topHadCand, bool verbose = false);
 
 private:
   std::string name;
@@ -41,8 +41,8 @@ private:
   
   void ResetBDTVars();  
   
-  float GetTopLikelihood(const boosted::HEPTopJet& topjet, bool verbose);
-  float GetBDTOutput(const boosted::HEPTopJet& topjet, bool verbose); 
+  float GetTopLikelihood(const boosted::HTTTopJet& topjet, bool verbose);
+  float GetBDTOutput(const boosted::HTTTopJet& topjet, bool verbose); 
 };
 
 
@@ -52,7 +52,7 @@ struct TopTaggerOutputComparison{
 
   TopTaggerOutputComparison(TopTagger* topTagger_): topTagger(topTagger_){};
 
-  bool operator()(boosted::HEPTopJet jet1, boosted::HEPTopJet jet2){
+  bool operator()(boosted::HTTTopJet jet1, boosted::HTTTopJet jet2){
     return topTagger->GetTopTag(jet1)>topTagger->GetTopTag(jet2);
   };
 };

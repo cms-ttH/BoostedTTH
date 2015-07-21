@@ -60,11 +60,6 @@ bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
 }
 
 
-bool BoostedUtils::FirstHasHigherCSVold(pat::Jet jet1,pat::Jet jet2){
-  return jet1.bDiscriminator("combinedSecondaryVertexBJetTags") > jet2.bDiscriminator("combinedSecondaryVertexBJetTags");
-}
-
-
 float BoostedUtils::DeltaEta(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2){
   if(vec1.Pt()<0.001||vec2.Pt()<0.001) return -2;
   
@@ -200,7 +195,7 @@ math::XYZTLorentzVector BoostedUtils::GetPrimLepVec(const std::vector<pat::Elect
   std::vector<math::XYZTLorentzVector> leptonVecs = GetLepVecs(selectedElectrons,selectedMuons);
   
   if(leptonVecs.size()==0){
-    std::cerr<< "No PrimLep Found!" << std::endl;
+    //std::cerr<< "No PrimLep Found!" << std::endl;
     return math::XYZTLorentzVector();
   }
   
@@ -248,9 +243,9 @@ boosted::SubFilterJetCollection BoostedUtils::GetSortedByPt(boosted::SubFilterJe
 }
 
 
-boosted::HEPTopJetCollection BoostedUtils::GetSortedByPt(boosted::HEPTopJetCollection const &heptopjets){
-  boosted::HEPTopJetCollection result = heptopjets;
-  std::sort(result.begin(), result.end(),BoostedUtils::FirstFatJetIsHarder<boosted::HEPTopJet>);
+boosted::HTTTopJetCollection BoostedUtils::GetSortedByPt(boosted::HTTTopJetCollection const &htttopjets){
+  boosted::HTTTopJetCollection result = htttopjets;
+  std::sort(result.begin(), result.end(),BoostedUtils::FirstFatJetIsHarder<boosted::HTTTopJet>);
   return result;
 }
 
@@ -332,7 +327,7 @@ float BoostedUtils::GetJetAverageJetEtaMax(const std::vector<pat::Jet>& jets1, c
 }
 
 
-bool BoostedUtils::GetTopTag(const boosted::HEPTopJet& topJet,const double& fW, const double& mTopMin, const bool& altConf){
+bool BoostedUtils::GetTopTag(const boosted::HTTTopJet& topJet,const double& fW, const double& mTopMin, const bool& altConf){
   std::vector<pat::Jet> subjets;
   subjets.push_back(topJet.nonW);
   subjets.push_back(topJet.W1);
@@ -459,7 +454,7 @@ float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const in
   std::vector<pat::Jet> filterJets = GetHiggsFilterJets(higgsJet,nBTags);
   
   if(nBTags>0){
-    if(filterJets[nBTags-1].bDiscriminator("combinedSecondaryVertexBJetTags")<csvWP) return -1.;
+    if(filterJets[nBTags-1].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<csvWP) return -1.;
   }
   
   std::vector<math::XYZTLorentzVector> filterJetVecs = GetJetVecs(filterJets);
