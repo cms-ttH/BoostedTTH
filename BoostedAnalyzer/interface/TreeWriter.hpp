@@ -11,27 +11,35 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 
 /*
-  The TreeWriter is used to write all the variables that are used in the MVA analysis in flat TTrees. Different Processors can be loaded that write a certain class of variables. Calculating BDT outputs and histograms from these variables will be supported soon.
- */
+  The TreeWriter opens the output TFile and a TTree and has a variable container. At the begin of the analysis different TreeProcessors are added to the TreeWriter. For every event the TreeWriter is given an InputCollection. With the help of the processors the output variables are calculated and written in the VariableContainer. The content VariableContainer is then written into the TTree. 
+*/
 class TreeWriter{
   public:
     
-    /**
-       Creates a TreeWriter and the associated TTree/ 
-    */
     TreeWriter();
     ~TreeWriter();
     
     /**
-       Process a single event.
-       @param outfileName filename of the created TTree
-       @param input input collections (cannot be changed, this is left to the BEANRunner)
-       @param sampleType type of the sample, decides wheter data or mc is analyzed, which mc-matching is possible and which ttbar subsample the event belongs to
-       @param weights the nominal and systematics weights of the event
+       Initialize the tree
+       @param fileName  filename of the created TTree
     */
     void Init(std::string fileName);
+
+    /**
+       Analyze a single event
+       @param input the event information that is used to calculate the variables
+    */
     bool Process(const InputCollections& input);
+
+    /**
+       Before the event loop different processors can be added to the TreeWriter. These will write into the trees whenever Process is called
+       @param processor the TreeProcessor to add
+    */
     void AddTreeProcessor(TreeProcessor* processor);
+
+    /**
+       Returns references to all used Processors (in case you want to use them in a different TreeWriter)
+    */
     std::vector<TreeProcessor*> GetTreeProcessors() const;
 
   private:

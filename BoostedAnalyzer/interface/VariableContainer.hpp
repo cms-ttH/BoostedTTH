@@ -8,6 +8,9 @@
 #include "TString.h"
 #include "TTree.h"
 
+/*
+The VariableContainer is basically a set of std::maps that stores variables as integers, floats or as arrays of floats. It also has some helper functions that make sure maps are filled with default values for every event and that maps are only filled once per event. The variable container is connected to a tree in which all the variables are written for every event. 
+ */
 class VariableContainer{
   public:
   

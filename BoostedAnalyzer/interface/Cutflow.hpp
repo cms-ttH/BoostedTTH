@@ -9,7 +9,6 @@
 #include <algorithm>
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 
-// ------ Cutflow Object
 class Cutflow{
 public:
 

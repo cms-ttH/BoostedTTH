@@ -23,10 +23,18 @@
 enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg,thq};
 namespace HiggsDecay{enum HiggsDecay{NA,bb,nonbb};};
 
+
+
+/*
+  References to the selected physics objects as well as some general event information, some generator information, and event weights (nominal and for systematics) are stored in InputCollections. Only from these inputs the variables in the trees are calculated. There are multiple InputCollections for different systematics (e.g. in one the default jets are exchanged with JES shifted jets). 
+ */
 struct InputCollections{
+/**
+   Constructor in which all references to the objects that are analyzed are set
+ */
 InputCollections(   const EventInfo&                              eventInfo_,
-		                const TriggerInfo&                            triggerInfo_,
-		                const std::vector<reco::Vertex>&              selectedPVs_,
+		    const TriggerInfo&                            triggerInfo_,
+		    const std::vector<reco::Vertex>&              selectedPVs_,
                     const std::vector<pat::Muon>&                 rawMuons_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsDL_,
@@ -73,7 +81,9 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     weights(weights_)
                     {}
 
-
+/**
+   Constructor that replaces all variables related to jets and copies the remaining ones from a different input colection
+ */
 InputCollections(   const InputCollections&                       input,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
