@@ -4,7 +4,7 @@
 #include <map>
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "BoostedTTH/BoostedObjects/interface/HTTTopJet.h"
+#include "MiniAOD/BoostedObjects/interface/HTTTopJet.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "TH1F.h"
 #include "TFile.h"
