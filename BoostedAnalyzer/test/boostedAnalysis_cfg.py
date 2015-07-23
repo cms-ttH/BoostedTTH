@@ -32,15 +32,18 @@ env['mcevents'] = os.getenv('MCEVENTS')
 # default variables
 default = {}
 default['nickname'] = 'MC_Pythia_TTHbb'
-default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/BoostedTTH_MiniAOD/150223_082502/0000/BoostedMiniAOD_4.root'
+#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/BoostedTTH_MiniAOD/150223_082502/0000/BoostedMiniAOD_4.root'
+#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/BoostedTTH_MiniAOD/150421_084810/0000/BoostedTTH_MiniAOD_4.root'
+#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/BoostedTTH_MiniAOD/150505_132803/0000/BoostedTTH_MiniAOD_6.root'
 #default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/BoostedTTH_MiniAOD/150227_111650/0000/BoostedTTH_MiniAOD_15.root'
+default['filenames'] = 'file:/nfs/dust/cms/user/shwillia/CMSSW_7_4_6_patch6/src/BoostedTTH_MiniAOD.root'
 default['outfilename'] = None
 default['skip'] = '0'
 default['max'] = '1000'
 
 default['sampletype'] = '9125'
-default['xs'] = '248'
-default['mcevents'] = '25000000'
+default['xs'] = '831.76'
+default['mcevents'] = '25446993'
 
 # fill in default values if not set by gc
 values = gc.copy()
@@ -89,7 +92,7 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
     'ak4PFchsL3Absolute')
 )
 
-process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_Analysis_cfi")
 process.BoostedAnalyzer.useFatJets=True
 if values['outfilename'] is not None:
     process.BoostedAnalyzer.outfileName=values['outfilename']

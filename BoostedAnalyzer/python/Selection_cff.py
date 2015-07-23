@@ -11,7 +11,8 @@ LeptonSelection = cms.PSet(
 
 LeptonSelectionNoTrigger = cms.PSet(
     muonTriggers = cms.vstring("None"),
-    electronTriggers = cms.vstring("None")
+    electronTriggers = cms.vstring("None"),
+    channel = cms.string("both")
 )
 
 JetTagSelection = cms.PSet(

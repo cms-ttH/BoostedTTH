@@ -62,7 +62,7 @@ void VariableContainer::FillVar( TString name, float value ) {
 }
 
 void VariableContainer::FillIntVar( TString name, int value, bool checkIfExists) {
-    if(checkIfExists&&intMap.count(name)!=0){
+    if(checkIfExists&&intMap.count(name)==0){
         cerr << name << " does not exist!" << endl;
         return;
     }
@@ -74,7 +74,7 @@ void VariableContainer::FillIntVar( TString name, int value, bool checkIfExists)
 }
 
 void VariableContainer::FillFloatVar( TString name, float value, bool checkIfExists) {
-    if(checkIfExists&&floatMap.count(name)!=0){
+    if(checkIfExists&&floatMap.count(name)==0){
         cerr << name << " does not exist!" << endl;
         return;
     }
