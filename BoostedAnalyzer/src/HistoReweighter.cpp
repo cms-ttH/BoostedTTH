@@ -1,4 +1,4 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/Reweighter.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/HistoReweighter.hpp"
 
 
 using namespace std;
