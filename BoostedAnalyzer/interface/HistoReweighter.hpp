@@ -3,7 +3,8 @@
 
 #include "TH1.h"
 #include "TFile.h"
-
+#include <assert.h>
+#include <iostream>
 class HistoReweighter{
   
 public:
@@ -14,7 +15,7 @@ public:
   float GetWeight(float value, bool interpolate=false);
 
 private:
-  CreateWeightHisto(TH1* nom_histo, TH1* denom_histo, bool normalize=true);
+  void CreateWeightHisto(TH1* nom_histo, TH1* denom_histo, bool normalize=true);
   TH1* nomHisto;
   TH1* denomHisto;
   float min;

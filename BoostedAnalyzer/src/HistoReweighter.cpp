@@ -6,39 +6,39 @@ HistoReweighter::HistoReweighter(TH1* nom_histo, TH1* denom_histo, bool normaliz
   CreateWeightHisto(nom_histo, denom_histo, normalize);
 }
 HistoReweighter::HistoReweighter(TFile* file, char* nom_histo_name, char* denom_histo_name, bool normalize){
-  TH1* nom_histo=file->Get(nom_histo_name);
-  TH1* denom_histo=file->Get(denom_histo_name);
+  TH1* nom_histo=(TH1*)file->Get(nom_histo_name);
+  TH1* denom_histo=(TH1*)file->Get(denom_histo_name);
   CreateWeightHisto(nom_histo, denom_histo, normalize);
   
 }
 HistoReweighter::HistoReweighter(TFile* nom_file, char* nom_histo_name, TFile* denom_file, char* denom_histo_name, bool normalize){
-  TH1* nom_histo=nom_file->Get(nom_histo_name);
-  TH1* denom_histo=denom_file->Get(denom_histo_name);
+  TH1* nom_histo=(TH1*)nom_file->Get(nom_histo_name);
+  TH1* denom_histo=(TH1*)denom_file->Get(denom_histo_name);
   CreateWeightHisto(nom_histo, denom_histo, normalize);
   
 }
 
-HistoReweighter::GetWeightHisto(TH1* nom_histo, TH1* denom_histo, bool normalize){
-  TH1* nom_clone=nom_histo->Clone();
-  TH1* denom_clone=denom_histo->Clone();
-  assert(denom_clone->GetNbinsX()==nom_clone->GetNbinsX());
-  nbins=denom_clone->GetNbinsX();
-  for(int i=1; i<=denom_clone->GetNbinsX(); i++){
-    if(denom_clone->GetBinContent(i)==0&&nom_clone->GetBinContent(i)==0){
+void HistoReweighter::CreateWeightHisto(TH1* nom_histo, TH1* denom_histo, bool normalize){
+  nomHisto=(TH1*)nom_histo->Clone();
+  denomHisto=(TH1*)denom_histo->Clone();
+  assert(denomHisto->GetNbinsX()==nomHisto->GetNbinsX());
+  nbins=denomHisto->GetNbinsX();
+  for(int i=1; i<=denomHisto->GetNbinsX(); i++){
+    if(denomHisto->GetBinContent(i)==0&&nomHisto->GetBinContent(i)==0){
       cerr << "bin in denominator histo empty but not in nominator, erasing bin" << endl;
-      nom_clone->SetBinContent(i,0);
+      nomHisto->SetBinContent(i,0);
     }
   }
   if(normalize){
-    nom_clone->Scale(1./nom_clone->Integral(0,nbins+1));
-    denom_clone->Scale(1./denom_clone->Integral(0,nbins+1));
+    nomHisto->Scale(1./nomHisto->Integral(0,nbins+1));
+    denomHisto->Scale(1./denomHisto->Integral(0,nbins+1));
   }
 
-  nomHisto=nom_clone;
-  denomHisto=nom_clone;
-  max=histo->GetXaxis()->GetXmax();
-  min=histo->GetXaxis()->GetXmin();
- 
+  nomHisto=nomHisto;
+  denomHisto=nomHisto;
+  max=nomHisto->GetXaxis()->GetXmax();
+  min=nomHisto->GetXaxis()->GetXmin();
+  
 
 }
 
