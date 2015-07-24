@@ -2,14 +2,14 @@
 
 using namespace std;
 
-ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, std::string taggername_, std::string higgstaggername_, std::string prefix_):btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
-  recotype = recotype_;
-  prefix = prefix_;
-
-  InitTopTagger(taggername_);
-  InitHiggsTagger(higgstaggername_);
-
+ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix_)
+                                : recotype(recotype_), prefix(prefix_), btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags")
+{  
+  toptagger = TopTagger(helper_,topTaggerMode_,subjetAssign_,topTaggerfilePath_);
+  higgstagger = HiggsTagger(helper_,higgsTaggerMode_,higgsTaggerFilePath_);
 }
+
+
 ttHVarProcessor::~ttHVarProcessor(){}
 
 
@@ -47,71 +47,6 @@ void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& v
   FillMCVars(vars,ttHEvent,input);
 }
 
-
-void ttHVarProcessor::InitTopTagger(string taggername){
- 
-  if(taggername!=""){
-    if(taggername.find("TopLikelihood")!=std::string::npos) toptagger = TopTagger(taggername);
-    else if(taggername.find("BDTTopTagger")!=std::string::npos){
-
-      vector<string> BDTVars;
-      string weights;
-
-      if(taggername == "BDTTopTagger_PSO"){
-        BDTVars.push_back("TopJet_Wbtag_M");
-        BDTVars.push_back("TopJet_BW1btag_M");
-        BDTVars.push_back("TopJet_BW2btag_M");
-        BDTVars.push_back("TopJet_PrunedMass");
-        BDTVars.push_back("TopJet_UnfilteredMass");
-        BDTVars.push_back("TopJet_DRoptRoptCalc");
-        BDTVars.push_back("TopJet_Tau21Filtered");
-        BDTVars.push_back("TopJet_Tau32Filtered");
-        BDTVars.push_back("TopJet_Bbtag_CSV");
-        BDTVars.push_back("TopJet_W1btag_CSV");
-        BDTVars.push_back("TopJet_MRatio_Wbtag_Top");
-        BDTVars.push_back("TopJet_W2btag_CSV");
-        BDTVars.push_back("TopJet_Top_M");
-        BDTVars.push_back("TopJet_fRec");
-        
-        weights = "BDTTopTagger_PSO.weights.xml";
-      }
-
-      toptagger = TopTagger(taggername,BDTVars,weights); 
-    }
-  } 
-}
-
-
-void ttHVarProcessor::InitHiggsTagger(string higgstaggerName){
-  
-  if(higgstaggerName.find("HiggsLikelihood")!=std::string::npos || higgstaggerName.find("HiggsBDT")!=std::string::npos){
-    std::vector<std::string> HBDTVars;
-    HBDTVars.push_back("HiggsJet_Pt");
-    HBDTVars.push_back("HiggsJet_Dr_Lep");
-    HBDTVars.push_back("HiggsJet_M2");
-    HBDTVars.push_back("HiggsJet_M3");
-    HBDTVars.push_back("HiggsJet_Dr_TopJet1");
-    HBDTVars.push_back("HiggsJet_Dr_TopJet2");
-    HBDTVars.push_back("HiggsJet_CSV1");
-    HBDTVars.push_back("HiggsJet_CSV2");
-    HBDTVars.push_back("HiggsJet_NSubjettiness_13_Ratio");
-    HBDTVars.push_back("HiggsJet_M3_SingleTag");
-    HBDTVars.push_back("HiggsJet_Filterjet2_IdxAk5");
-    HBDTVars.push_back("HiggsJet_Filterjet2_CSV");
-
-    string Hweightfile = "";
-  
-    if(higgstaggerName.find("HiggsLikelihood")!=std::string::npos) Hweightfile = (BoostedUtils::GetAnalyzerPath()+"/data/HiggsTagger/Likelihood.weights.xml").c_str();
-    else if(higgstaggerName.find("HiggsBDT")!=std::string::npos) Hweightfile = (BoostedUtils::GetAnalyzerPath()+"/data/HiggsTagger/BDTG.weights.xml").c_str();
-    else cerr << "Cant find specified HiggsTagger" << endl;
-    
-    higgstagger = new HiggsTagger(higgstaggerName, HBDTVars, Hweightfile);
-  }  
-  else if(higgstaggerName.find("HiggsCSV")!=std::string::npos){
-    higgstagger = new HiggsTagger(higgstaggerName);
-  }
-  else cerr << "Cant find specified HiggsTagger" << endl;
-}
 
 void ttHVarProcessor::InitHiggsCandidateVars(VariableContainer& vars){
   
@@ -387,7 +322,6 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
   math::XYZTLorentzVector nu2CandVec = ttHEvent.GetNeutrino2Vec();
   
   float higgsCandTag=-1.1;
-//   higgsCandTag=higgstagger->GetHiggsTag(higgsCand, lepCandVec,ttHEvent.GetInput().selectedToptagjets,ttHEvent.GetInput().selectedJets) ;
   higgsCandTag = ttHEvent.GetHiggsTag();
   
   
@@ -509,7 +443,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
   // Fill Variables
   vars.FillVar(prefix+"TopHadCandidate_Tagged",BoostedUtils::GetTopTag(topHadCand));
   vars.FillVar(prefix+"TopHadCandidate_TaggedB",BoostedUtils::GetTopTag(topHadCand,0.15,120.,true));
-  vars.FillVar(prefix+"TopHadCandidate_TopMVAOutput", toptagger.GetTopTag(topHadCand));
+  vars.FillVar(prefix+"TopHadCandidate_TopMVAOutput", toptagger.GetTopTaggerOutput(topHadCand, true));
   
   if(topHadCand.fatjet.pt()>0){
     vars.FillVar(prefix+"TopHadCandidate_E",topHadCand.fatjet.energy());

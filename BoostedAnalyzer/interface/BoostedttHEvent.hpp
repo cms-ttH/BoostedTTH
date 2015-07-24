@@ -7,11 +7,13 @@
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "MiniAOD/BoostedObjects/interface/SubFilterJet.h"
 #include "MiniAOD/BoostedObjects/interface/HTTTopJet.h"
+#include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
+#include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/TopTagger.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/HiggsTagger.hpp"
+
+
 
 class BoostedttHEvent{
   
@@ -40,7 +42,7 @@ class BoostedttHEvent{
     void ak5JetsClean(bool cleanHiggsCand = false, bool cleanTopHadCand = false, bool cleanTopLepCand = false);    
     
     // Higgs Candidate Reconstruction
-    void HiggsCandBoostedRec(HiggsTagger* higgstagger, const float higgsjetptcut = 200., const float higgsjetetacut = 2., bool cleanTopHadCand = false, bool cleanTopLepCand = false,  const float fatjetCleaningThreshold = 1.5, const float subjetCleaningThreshold = .4);
+    void HiggsCandBoostedRec(HiggsTagger higgstagger, const float higgsjetptcut = 200., const float higgsjetetacut = 2., bool cleanTopHadCand = false, bool cleanTopLepCand = false,  const float fatjetCleaningThreshold = 1.5, const float subjetCleaningThreshold = .4);
     void HiggsCandRec();
     
     // Hadronic Top Candidate Reconstruction
@@ -54,8 +56,8 @@ class BoostedttHEvent{
     void TopPairCandRec();
     
     // Event Reconstruction
-    void BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger* higgstagger);
-    void BoostedHiggsEventRec(HiggsTagger* higgstagger);
+    void BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger higgstagger);
+    void BoostedHiggsEventRec(HiggsTagger higgstagger);
     void BoostedTopEventRec(TopTagger toptagger);
     
     // Get Functions

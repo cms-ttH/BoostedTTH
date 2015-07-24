@@ -228,7 +228,7 @@ void BoostedttHEvent::ak5JetsClean(bool cleanHiggsCand, bool cleanTopHadCand, bo
 }
 
 
-void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger* higgstagger, const float higgsjetptcut, const float higgsjetetacut, const bool cleanTopHadCand, const bool cleanTopLepCand,  const float fatjetCleaningThreshold, const float subjetCleaningThreshold){
+void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger higgstagger, const float higgsjetptcut, const float higgsjetetacut, const bool cleanTopHadCand, const bool cleanTopLepCand,  const float fatjetCleaningThreshold, const float subjetCleaningThreshold){
   
   higgsCand = boosted::SubFilterJet();
   higgsB1Cand = pat::Jet();
@@ -267,7 +267,7 @@ void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger* higgstagger, const float 
       }
     }
     if(verbose) std::cout << "found " << cleanedFilterjets.size() << " cleaned filterjets"  << std::endl;
-    float tag = higgstagger->GetHiggsTag(*itJet);
+    float tag = higgstagger.GetHiggsTaggerOutput(*itJet);
     if(verbose) std::cout << "higgs tag of fat jet is " << tag  << std::endl;    
     if(tag>maxHiggsTag){
       
@@ -319,7 +319,7 @@ void BoostedttHEvent::TopHadCandBoostedRec(TopTagger toptagger,const float topje
   
     if(itJet->fatjet.pt()<topjetptcut || fabs(itJet->fatjet.eta())>topjetetacut) continue;
     
-    float tag = toptagger.GetTopTag(*itJet);
+    float tag = toptagger.GetTopTaggerOutput(*itJet);
     
     if(tag>maxTopTag) {
       maxTopTag = tag;
@@ -536,7 +536,7 @@ void BoostedttHEvent::TopPairCandRec(){
 }
 
 
-void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger* higgstagger){
+void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger higgstagger){
   
   ResetEvent();
   
@@ -557,7 +557,7 @@ void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger* 
 }
 
 
-void BoostedttHEvent::BoostedHiggsEventRec(HiggsTagger* higgstagger){
+void BoostedttHEvent::BoostedHiggsEventRec(HiggsTagger higgstagger){
 
   ResetEvent();
   
