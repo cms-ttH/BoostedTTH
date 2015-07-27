@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/JetReco/interface/HTTTopJetTagInfo.h"
 
 namespace boosted {
 
