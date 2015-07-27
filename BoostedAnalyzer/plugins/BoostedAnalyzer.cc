@@ -411,13 +411,13 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig)
     treewriter_nominal.AddTreeProcessor(new SingleTopVarProcessor());
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new BoostedJetVarProcessor());
+    treewriter_nominal.AddTreeProcessor(new BoostedJetVarProcessor(&helper));
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_PSO.weights.xml",HiggsTag::SecondCSV,"","BoostedTopHiggs_"));
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::Wmass,"BDTTopTagger_PSO.weights.xml",HiggsTag::SecondCSV,"","BoostedTop_"));
+    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_PSO.weights.xml",HiggsTag::SecondCSV,"","BoostedTop_"));
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_PSO.weights.xml",HiggsTag::SecondCSV,"","BoostedHiggs_"));

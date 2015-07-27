@@ -324,7 +324,6 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
   float higgsCandTag=-1.1;
   higgsCandTag = ttHEvent.GetHiggsTag();
   
-  
   // Fill Variables
   if(higgsCand.fatjet.pt()>0){
     vars.FillVar(prefix+"HiggsCandidate_E",higgsCand.fatjet.energy());
@@ -332,8 +331,8 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
     vars.FillVar(prefix+"HiggsCandidate_M",higgsCand.fatjet.mass());
     vars.FillVar(prefix+"HiggsCandidate_Eta",higgsCand.fatjet.eta());
     vars.FillVar(prefix+"HiggsCandidate_Phi",higgsCand.fatjet.phi());
-    vars.FillVar(prefix+"HiggsCandidate_Filterjet1_Pt",higgsCand.filterjets[0].pt());
-    vars.FillVar(prefix+"HiggsCandidate_Filterjet2_Pt",higgsCand.filterjets[1].pt());
+    if(higgsCand.filterjets.size()>0) vars.FillVar(prefix+"HiggsCandidate_Filterjet1_Pt",higgsCand.filterjets[0].pt());
+    if(higgsCand.filterjets.size()>1) vars.FillVar(prefix+"HiggsCandidate_Filterjet2_Pt",higgsCand.filterjets[1].pt());
   }
   
   if(higgsB1Cand.pt()>0){
@@ -443,7 +442,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
   // Fill Variables
   vars.FillVar(prefix+"TopHadCandidate_Tagged",BoostedUtils::GetTopTag(topHadCand));
   vars.FillVar(prefix+"TopHadCandidate_TaggedB",BoostedUtils::GetTopTag(topHadCand,0.15,120.,true));
-  vars.FillVar(prefix+"TopHadCandidate_TopMVAOutput", toptagger.GetTopTaggerOutput(topHadCand, true));
+  vars.FillVar(prefix+"TopHadCandidate_TopMVAOutput", toptagger.GetTopTaggerOutput(topHadCand));
   
   if(topHadCand.fatjet.pt()>0){
     vars.FillVar(prefix+"TopHadCandidate_E",topHadCand.fatjet.energy());

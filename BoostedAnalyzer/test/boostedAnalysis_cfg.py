@@ -39,7 +39,7 @@ default['nickname'] = 'MC_Pythia_TTHbb'
 default['filenames'] = 'file:/nfs/dust/cms/user/shwillia/CMSSW_7_4_6_patch6/src/BoostedTTH_MiniAOD.root'
 default['outfilename'] = None
 default['skip'] = '0'
-default['max'] = '100'
+default['max'] = '100000'
 
 default['sampletype'] = '9125'
 default['xs'] = '831.76'
@@ -60,7 +60,7 @@ values['filenames'] = map(lambda s: s.strip('" '), values['filenames'].split(","
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = 'PHYS14_25_V2::All'

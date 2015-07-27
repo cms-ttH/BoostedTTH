@@ -2,14 +2,23 @@
 
 using namespace std;
 
-BoostedJetVarProcessor::BoostedJetVarProcessor ():btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
+BoostedJetVarProcessor::BoostedJetVarProcessor(MiniAODHelper* helper_):btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
   
-
+  toptagger["HEP"] = TopTagger(helper_,TopTag::HEP,TopTag::Pt,"");
+  toptagger["HEPCSV"] = TopTagger(helper_,TopTag::HEP,TopTag::CSV,"");
+  toptagger["Likelihood"] = TopTagger(helper_,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root");
+  toptagger["BDT"] = TopTagger(helper_,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_PSO.weights.xml");
+  
+  higgstagger["SecondCSV"] = HiggsTagger(helper_,HiggsTag::SecondCSV,"");
 }
-BoostedJetVarProcessor::~BoostedJetVarProcessor (){}
+
+
+BoostedJetVarProcessor::~BoostedJetVarProcessor(){
+}
 
 
 void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
+  
   vars.InitVar( "N_TopJets","I" );
   
   vars.InitVars( "TopJet_E",-9,"N_TopJets" );
@@ -201,6 +210,11 @@ void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "TopJet_Dr_W2btag_Bbtag",-9,"N_TopJets" );
   vars.InitVars( "TopJet_Dr_W1btag_W2btag",-9,"N_TopJets" );
   
+  vars.InitVars( "TopJet_TopTag_HEP",-9,"N_TopJets" );
+  vars.InitVars( "TopJet_TopTag_HEPCSV",-9,"N_TopJets" );
+  vars.InitVars( "TopJet_TopTag_Likelihood",-9,"N_TopJets" );
+  vars.InitVars( "TopJet_TopTag_BDT",-9,"N_TopJets" );
+  
   vars.InitVar( "N_HiggsJets","I" );
 
   vars.InitVars( "HiggsJet_Pt",-9,"N_HiggsJets" );
@@ -299,6 +313,8 @@ void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "HiggsJet_Filterjet2_IdxAk5",-9,"N_HiggsJets" );
   vars.InitVars( "HiggsJet_Filterjet3_IdxAk5",-9,"N_HiggsJets" );
   vars.InitVars( "HiggsJet_Dr_Lepton",-9,"N_HiggsJets" );
+  
+  vars.InitVars( "HiggsJet_HiggsTag_SecondCSV",-9,"N_HiggsJets" );
 
   vars.InitVar( "N_MJDCA12_L",-9,"I" );
   vars.InitVars( "CA12MFJ_L_E",-9,"N_MJDCA12_L" );
@@ -595,6 +611,8 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "TopJet_W1_IdxAk5",i,idxW1 );
       vars.FillVars( "TopJet_W2_IdxAk5",i,idxW2 );
       vars.FillVars( "TopJet_B_IdxAk5",i,idxB );
+      
+      
     }
       
     math::XYZTLorentzVector primlepvec=math::XYZTLorentzVector(0.,0.,0.,0.);
@@ -602,10 +620,16 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 	  primlepvec = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
 
     vars.FillVars("TopJet_Dr_Lepton",i,primlepvec.pt()>5 ? BoostedUtils::DeltaR(primlepvec,fatjet.p4()) : -1);
+    
+    vars.FillVars( "TopJet_TopTag_HEP",i,toptagger["HEP"].GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
+    vars.FillVars( "TopJet_TopTag_HEPCSV",i,toptagger["HEPCSV"].GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
+    vars.FillVars( "TopJet_TopTag_Likelihood",i,toptagger["Likelihood"].GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
+    vars.FillVars( "TopJet_TopTag_BDT",i,toptagger["BDT"].GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
   }
-
+  
   
   vars.FillVar( "N_HiggsJets",input.selectedSubFilterJets.size() );
+  
   for(size_t i=0; i< input.selectedSubFilterJets.size(); i++){
     vars.FillVars( "HiggsJet_Pt",i,input.selectedSubFilterJets[i].fatjet.pt() );
     vars.FillVars( "HiggsJet_Eta",i,input.selectedSubFilterJets[i].fatjet.eta() );
@@ -705,6 +729,8 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
     if(input.selectedElectronsLoose.size()>0 || input.selectedMuonsLoose.size()>0)
 	    primlepvec = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
     vars.FillVars( "HiggsJet_Dr_Lepton",i,primlepvec.Pt()>5 ? BoostedUtils::DeltaR(primlepvec,input.selectedSubFilterJets[i].fatjet.p4()) : -1);
+    
+    vars.FillVars( "HiggsJet_HiggsTag_SecondCSV",i,higgstagger["SecondCSV"].GetHiggsTaggerOutput(input.selectedSubFilterJets[i]) );
   }
   
   vector<float> CA12MFJ_L_CSVR;
