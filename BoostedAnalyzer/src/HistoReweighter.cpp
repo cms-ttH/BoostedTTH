@@ -5,22 +5,27 @@ using namespace std;
 HistoReweighter::HistoReweighter(TH1* nom_histo, TH1* denom_histo, bool normalize){
   CreateWeightHisto(nom_histo, denom_histo, normalize);
 }
-HistoReweighter::HistoReweighter(TFile* file, char* nom_histo_name, char* denom_histo_name, bool normalize){
+HistoReweighter::HistoReweighter(const char* filename, const char* nom_histo_name, const char* denom_histo_name, bool normalize){
+  TFile* file = new TFile(filename);
   TH1* nom_histo=(TH1*)file->Get(nom_histo_name);
   TH1* denom_histo=(TH1*)file->Get(denom_histo_name);
   CreateWeightHisto(nom_histo, denom_histo, normalize);
+  file->Close();
   
 }
-HistoReweighter::HistoReweighter(TFile* nom_file, char* nom_histo_name, TFile* denom_file, char* denom_histo_name, bool normalize){
+HistoReweighter::HistoReweighter(const char* nom_filename, const char* nom_histo_name, const char* denom_filename, const char* denom_histo_name, bool normalize){
+  TFile* nom_file = new TFile(nom_filename);
+  TFile* denom_file = new TFile(denom_filename);
   TH1* nom_histo=(TH1*)nom_file->Get(nom_histo_name);
   TH1* denom_histo=(TH1*)denom_file->Get(denom_histo_name);
   CreateWeightHisto(nom_histo, denom_histo, normalize);
-  
+  nom_file->Close();
+  denom_file->Close();
 }
 
 void HistoReweighter::CreateWeightHisto(TH1* nom_histo, TH1* denom_histo, bool normalize){
-  nomHisto=(TH1*)nom_histo->Clone();
-  denomHisto=(TH1*)denom_histo->Clone();
+  nomHisto=(TH1*)nom_histo->Clone("nomHisto");
+  denomHisto=(TH1*)denom_histo->Clone("denomHisto");
   assert(denomHisto->GetNbinsX()==nomHisto->GetNbinsX());
   nbins=denomHisto->GetNbinsX();
   for(int i=1; i<=denomHisto->GetNbinsX(); i++){
@@ -35,7 +40,7 @@ void HistoReweighter::CreateWeightHisto(TH1* nom_histo, TH1* denom_histo, bool n
   }
 
   nomHisto=nomHisto;
-  denomHisto=nomHisto;
+  denomHisto=denomHisto;
   max=nomHisto->GetXaxis()->GetXmax();
   min=nomHisto->GetXaxis()->GetXmin();
   
@@ -61,7 +66,6 @@ float HistoReweighter::GetWeight(float value, bool interpolate){
     n=nomHisto->GetBinContent(nomHisto->FindBin(value));
     d=denomHisto->GetBinContent(denomHisto->FindBin(value));
   }
-  
   if(d>0) {
     return n/d;
   }

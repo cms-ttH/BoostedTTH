@@ -10,8 +10,8 @@ class HistoReweighter{
 public:
   
   HistoReweighter(TH1* nom_histo, TH1* denom_histo, bool normalize=true);
-  HistoReweighter(TFile* file, char* nom_histo_name, char* denom_histo_name, bool normalize=true);
-  HistoReweighter(TFile* nom_file, char* nom_histo_name, TFile* denom_file, char* denom_histo_name, bool normalize=true);
+  HistoReweighter(const char* filename, const char* nom_histo_name, const char* denom_histo_name, bool normalize=true);
+  HistoReweighter(const char* filename, const char* nom_histo_name, const char* denom_file, const char* denom_histo_name, bool normalize=true);
   float GetWeight(float value, bool interpolate=false);
 
 private:
