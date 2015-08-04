@@ -123,7 +123,7 @@ void StdTopVarProcessor::Process(const InputCollections& input,VariableContainer
   vars.FillVar( "HadTop_B_Eta",HadB.Eta() );
   vars.FillVar( "HadTop_B_Phi",HadB.Phi() );
   vars.FillVar( "HadTop_B_M",HadB.M() );
-//   vars.FillVar( "HadTop_B_CSV",fmax(HadB.bDiscriminator(btagger),-.1) );
+//   vars.FillVar( "HadTop_B_CSV",BoostedUtils::GetJetCSV(HadB,btagger) );
 //   vars.FillVar( "HadTop_B_Flav",HadB.flavour() );
 
   vars.FillVar( "HadTop_Pt",HadTop.Pt() );
@@ -165,7 +165,7 @@ void StdTopVarProcessor::Process(const InputCollections& input,VariableContainer
   vars.FillVar( "LepTop_B_Eta",LepB.Eta() );
   vars.FillVar( "LepTop_B_Phi",LepB.Phi() );
   vars.FillVar( "LepTop_B_M",LepB.M() );
-//   vars.FillVar( "LepTop_B_CSV",fmax(LepB.bDiscriminator(btagger),-.1) );
+//   vars.FillVar( "LepTop_B_CSV",BoostedUtils::GetJetCSV(LepB,btagger) );
 //   vars.FillVar( "LepTop_B_Flav",LepB.flavour() );
 
   vars.FillVar( "LepTop_Pt",LepTop.Pt() );

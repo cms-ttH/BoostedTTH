@@ -2,10 +2,10 @@
 
 import ROOT
 
-fileDir = "/nfs/dust/cms/user/shwillia/BoostedTTH_Trees/"
+fileDir = "/nfs/dust/cms/user/shwillia/BoostedTrees/Spring15/TopTagging/"
 
-trueFileDir = fileDir+"MC_MadGraph_TTbar_tree.root"
-falseFileDir = fileDir+"MC_MadGraph_TTbar_tree.root"
+trueFileDir = fileDir+"MC_Powheg_TTbar_Tree.root"
+falseFileDir = fileDir+"MC_Powheg_TTbar_Tree.root"
 
 trueDef = "(TopJet_Top_Pt>0)&&((TopJet_Dr_GenB>=0&&TopJet_Dr_GenB<1.5)&&(TopJet_Dr_GenQ1>=0&&TopJet_Dr_GenQ1<1.5)&&(TopJet_Dr_GenQ2>=0&&TopJet_Dr_GenQ2<1.5))"
 falseDef = "(TopJet_Top_Pt>0)&&(((TopJet_Dr_GenB>=0&&TopJet_Dr_GenB>1.5)||(TopJet_Dr_GenQ1>=0&&TopJet_Dr_GenQ1>1.5)||(TopJet_Dr_GenQ2>=0&&TopJet_Dr_GenQ2>1.5))&&(TopJet_Dr_GenTopHad>=0&&TopJet_Dr_GenTopHad>2.0))"

@@ -341,7 +341,7 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
     vars.FillVar(prefix+"HiggsCandidate_B1_M",higgsB1Cand.mass());
     vars.FillVar(prefix+"HiggsCandidate_B1_Eta",higgsB1Cand.eta());
     vars.FillVar(prefix+"HiggsCandidate_B1_Phi",higgsB1Cand.phi());
-    vars.FillVar(prefix+"HiggsCandidate_B1_CSV",fmax(higgsB1Cand.bDiscriminator(btagger),-.1));
+    vars.FillVar(prefix+"HiggsCandidate_B1_CSV",BoostedUtils::GetJetCSV(higgsB1Cand,btagger));
   }
   
   if(higgsB2Cand.pt()>0){
@@ -350,7 +350,7 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
     vars.FillVar(prefix+"HiggsCandidate_B2_M",higgsB2Cand.mass());
     vars.FillVar(prefix+"HiggsCandidate_B2_Eta",higgsB2Cand.eta());
     vars.FillVar(prefix+"HiggsCandidate_B2_Phi",higgsB2Cand.phi());
-    vars.FillVar(prefix+"HiggsCandidate_B2_CSV",fmax(higgsB2Cand.bDiscriminator(btagger),-.1));
+    vars.FillVar(prefix+"HiggsCandidate_B2_CSV",BoostedUtils::GetJetCSV(higgsB2Cand,btagger));
   }
   
   if(higgsGCand.pt()>0){
@@ -359,7 +359,7 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
     vars.FillVar(prefix+"HiggsCandidate_G_M",higgsGCand.mass());
     vars.FillVar(prefix+"HiggsCandidate_G_Eta",higgsGCand.eta());
     vars.FillVar(prefix+"HiggsCandidate_G_Phi",higgsGCand.phi());
-    vars.FillVar(prefix+"HiggsCandidate_G_CSV",fmax(higgsGCand.bDiscriminator(btagger),-.1));
+    vars.FillVar(prefix+"HiggsCandidate_G_CSV",BoostedUtils::GetJetCSV(higgsGCand,btagger));
   }
   
   if(higgsCandVec2.Pt()>0){
@@ -458,7 +458,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
     vars.FillVar(prefix+"TopHadCandidate_B_M",topHadBCand.mass());
     vars.FillVar(prefix+"TopHadCandidate_B_Eta",topHadBCand.eta());
     vars.FillVar(prefix+"TopHadCandidate_B_Phi",topHadBCand.phi());
-    vars.FillVar(prefix+"TopHadCandidate_B_CSV",fmax(topHadBCand.bDiscriminator(btagger),-.1));
+    vars.FillVar(prefix+"TopHadCandidate_B_CSV",BoostedUtils::GetJetCSV(topHadBCand,btagger));
   }
   
   if(topHadW1Cand.pt()>0){
@@ -467,7 +467,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
     vars.FillVar(prefix+"TopHadCandidate_W1_M",topHadW1Cand.mass());
     vars.FillVar(prefix+"TopHadCandidate_W1_Eta",topHadW1Cand.eta());
     vars.FillVar(prefix+"TopHadCandidate_W1_Phi",topHadW1Cand.phi());
-    vars.FillVar(prefix+"TopHadCandidate_W1_CSV",fmax(topHadW1Cand.bDiscriminator(btagger),-.1));
+    vars.FillVar(prefix+"TopHadCandidate_W1_CSV",BoostedUtils::GetJetCSV(topHadW1Cand,btagger));
   }
   
   if(topHadW2Cand.pt()>0){
@@ -476,7 +476,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
     vars.FillVar(prefix+"TopHadCandidate_W2_M",topHadW2Cand.mass());
     vars.FillVar(prefix+"TopHadCandidate_W2_Eta",topHadW2Cand.eta());
     vars.FillVar(prefix+"TopHadCandidate_W2_Phi",topHadW2Cand.phi());
-    vars.FillVar(prefix+"TopHadCandidate_W2_CSV",fmax(topHadW2Cand.bDiscriminator(btagger),-.1));
+    vars.FillVar(prefix+"TopHadCandidate_W2_CSV",BoostedUtils::GetJetCSV(topHadW2Cand,btagger));
   }
   
   if(wHadCandVec.Pt()>0.001){
@@ -585,7 +585,7 @@ void ttHVarProcessor::FillTopLepCandidateVars(VariableContainer& vars,BoostedttH
     vars.FillVar(prefix+"TopLepCandidate_B_M",topLepBCand.mass());
     vars.FillVar(prefix+"TopLepCandidate_B_Eta",topLepBCand.eta());
     vars.FillVar(prefix+"TopLepCandidate_B_Phi",topLepBCand.phi());
-    vars.FillVar(prefix+"TopLepCandidate_B_CSV",fmax(topLepBCand.bDiscriminator(btagger),-.1));
+    vars.FillVar(prefix+"TopLepCandidate_B_CSV",BoostedUtils::GetJetCSV(topLepBCand,btagger));
   }
   
   if(lepCandVec.Pt()>0.001){

@@ -41,7 +41,7 @@ void SingleTopVarProcessor::Process(const InputCollections& input,VariableContai
 	if(fabs(j->eta())<2.4&&BoostedUtils::PassesCSV(*j,'L')) ntagsL++;
 	maxeta=fmax(fabs(j->eta()),maxeta);
 	int i = j - input.selectedJetsSingleTop.begin();
-	vars.FillVars( "SingleTopJet_CSV",i,fmax(j->bDiscriminator(btagger),-.1));
+	vars.FillVars( "SingleTopJet_CSV",i,BoostedUtils::GetJetCSV(*j,btagger));
 	vars.FillVars( "SingleTopJet_Pt",i,j->pt());
 	vars.FillVars( "SingleTopJet_Eta",i,j->eta());
 	vars.FillVars( "SingleTopJet_Phi",i,j->phi());

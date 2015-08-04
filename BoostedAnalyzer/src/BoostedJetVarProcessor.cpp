@@ -7,7 +7,7 @@ BoostedJetVarProcessor::BoostedJetVarProcessor(MiniAODHelper* helper_):btagger("
   toptagger["HEP"] = TopTagger(helper_,TopTag::HEP,TopTag::Pt,"");
   toptagger["HEPCSV"] = TopTagger(helper_,TopTag::HEP,TopTag::CSV,"");
   toptagger["Likelihood"] = TopTagger(helper_,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root");
-  toptagger["BDT"] = TopTagger(helper_,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_PSO.weights.xml");
+  toptagger["BDT"] = TopTagger(helper_,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml");
   
   higgstagger["SecondCSV"] = HiggsTagger(helper_,HiggsTag::SecondCSV,"");
 }
@@ -469,9 +469,9 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "TopJet_M13",i,m13 );
       vars.FillVars( "TopJet_M23",i,m23 );
 
-      vars.FillVars( "TopJet_B_CSV",i,fmax(nonW.bDiscriminator(btagger),-.1) );
-      vars.FillVars( "TopJet_W1_CSV",i,fmax(W1.bDiscriminator(btagger),-.1) );
-      vars.FillVars( "TopJet_W2_CSV",i,fmax(W2.bDiscriminator(btagger),-.1) );
+      vars.FillVars( "TopJet_B_CSV",i,BoostedUtils::GetJetCSV(nonW,btagger) );
+      vars.FillVars( "TopJet_W1_CSV",i,BoostedUtils::GetJetCSV(W1,btagger) );
+      vars.FillVars( "TopJet_W2_CSV",i,BoostedUtils::GetJetCSV(W2,btagger) );
 
       //Definition with b-jet == highest CSV
       vector<pat::Jet> subjets;
@@ -498,21 +498,21 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "TopJet_W1btag_Flav",i,subjets[1].partonFlavour() );
       vars.FillVars( "TopJet_W2btag_Flav",i,subjets[2].partonFlavour() );
       vars.FillVars( "TopJet_Bbtag_M",i,subjets[0].mass() );
-      vars.FillVars( "TopJet_Bbtag_CSV",i,fmax(subjets[0].bDiscriminator(btagger),-.1) );
+      vars.FillVars( "TopJet_Bbtag_CSV",i,BoostedUtils::GetJetCSV(subjets[0],btagger) );
 
       vars.FillVars( "TopJet_W1btag_E",i,subjets[1].energy() );
       vars.FillVars( "TopJet_W1btag_Pt",i,subjets[1].pt() );
       vars.FillVars( "TopJet_W1btag_Eta",i,subjets[1].eta() );
       vars.FillVars( "TopJet_W1btag_Phi",i,subjets[1].phi() );
       vars.FillVars( "TopJet_W1btag_M",i,subjets[1].mass() );
-      vars.FillVars( "TopJet_W1btag_CSV",i,fmax(subjets[1].bDiscriminator(btagger),-.1) );
+      vars.FillVars( "TopJet_W1btag_CSV",i,BoostedUtils::GetJetCSV(subjets[1],btagger) );
 
       vars.FillVars( "TopJet_W2btag_E",i,subjets[2].energy() );
       vars.FillVars( "TopJet_W2btag_Pt",i,subjets[2].pt() );
       vars.FillVars( "TopJet_W2btag_Eta",i,subjets[2].eta() );
       vars.FillVars( "TopJet_W2btag_Phi",i,subjets[2].phi() );
       vars.FillVars( "TopJet_W2btag_M",i,subjets[2].mass() );
-      vars.FillVars( "TopJet_W2btag_CSV",i,fmax(subjets[2].bDiscriminator(btagger),-.1) );
+      vars.FillVars( "TopJet_W2btag_CSV",i,BoostedUtils::GetJetCSV(subjets[2],btagger) );
 
       vars.FillVars( "TopJet_Wbtag_E",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).E() );
       vars.FillVars( "TopJet_Wbtag_Pt",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).Pt() );
@@ -647,7 +647,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "HiggsJet_"+FilterJetName+"_M",i,itFiltJet->mass() );
       vars.FillVars( "HiggsJet_"+FilterJetName+"_Eta",i,itFiltJet->eta() );
       vars.FillVars( "HiggsJet_"+FilterJetName+"_Phi",i,itFiltJet->phi() );
-      vars.FillVars( "HiggsJet_"+FilterJetName+"_CSV",i,itFiltJet->bDiscriminator(btagger) );
+      vars.FillVars( "HiggsJet_"+FilterJetName+"_CSV",i,BoostedUtils::GetJetCSV(*itFiltJet,btagger) );
       vars.FillVars( "HiggsJet_"+FilterJetName+"_Dr",i,BoostedUtils::DeltaR(*itFiltJet,input.selectedSubFilterJets[i].fatjet) );
       vars.FillVars( "HiggsJet_"+FilterJetName+"_Flav",i,itFiltJet->partonFlavour() );
       vars.FillVars( "HiggsJet_"+FilterJetName+"_Charge",i,itFiltJet->jetCharge() );
@@ -682,10 +682,10 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
     vars.FillVars( "HiggsJet_M3_DoubleTag",i,BoostedUtils::GetHiggsMass(input.selectedSubFilterJets[i], 3, 2, 0.89) );
     
     std::vector<pat::Jet> filterJets = BoostedUtils::GetHiggsFilterJets(input.selectedSubFilterJets[i], 4);
-    if(filterJets.size()>0) vars.FillVars( "HiggsJet_CSV1",i,filterJets[0].bDiscriminator(btagger) );
-    if(filterJets.size()>1) vars.FillVars( "HiggsJet_CSV2",i,filterJets[1].bDiscriminator(btagger) );
-    if(filterJets.size()>2) vars.FillVars( "HiggsJet_CSV3",i,filterJets[2].bDiscriminator(btagger) );
-    if(filterJets.size()>3) vars.FillVars( "HiggsJet_CSV4",i,filterJets[3].bDiscriminator(btagger) );
+    if(filterJets.size()>0) vars.FillVars( "HiggsJet_CSV1",i,BoostedUtils::GetJetCSV(filterJets[0],btagger) );
+    if(filterJets.size()>1) vars.FillVars( "HiggsJet_CSV2",i,BoostedUtils::GetJetCSV(filterJets[1],btagger) );
+    if(filterJets.size()>2) vars.FillVars( "HiggsJet_CSV3",i,BoostedUtils::GetJetCSV(filterJets[2],btagger) );
+    if(filterJets.size()>3) vars.FillVars( "HiggsJet_CSV4",i,BoostedUtils::GetJetCSV(filterJets[3],btagger) );
     
     if(input.selectedHTTTopJets.size()>0) vars.FillVars( "HiggsJet_Dr_TopJet1",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHTTTopJets[0].fatjet) );
     if(input.selectedHTTTopJets.size()>1) vars.FillVars( "HiggsJet_Dr_TopJet2",i,BoostedUtils::DeltaR(input.selectedSubFilterJets[i].fatjet,input.selectedHTTTopJets[1].fatjet) );

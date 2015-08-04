@@ -37,7 +37,6 @@ default['nickname'] = 'MC_Pythia_TTHbb'
 #default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/BoostedTTH_MiniAOD/150505_132803/0000/BoostedTTH_MiniAOD_6.root'
 #default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/BoostedTTH_MiniAOD/150227_111650/0000/BoostedTTH_MiniAOD_15.root'
 #default['filenames'] = 'file:/nfs/dust/cms/user/shwillia/CMSSW_7_4_6_patch6/src/BoostedTTH_MiniAOD.root'
-#default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150731_155453/0000/BoostedTTH_MiniAOD_75.root'
 default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150731_155453/0000/BoostedTTH_MiniAOD_75.root'
 
 default['outfilename'] = None
@@ -63,7 +62,7 @@ values['filenames'] = map(lambda s: s.strip('" '), values['filenames'].split(","
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
@@ -95,7 +94,7 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
     'ak4PFchsL3Absolute')
 )
 
-process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_Analysis_cfi")
+process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_TopTagger_cfi")
 process.BoostedAnalyzer.useFatJets=True
 if values['outfilename'] is not None:
     process.BoostedAnalyzer.outfileName=values['outfilename']
