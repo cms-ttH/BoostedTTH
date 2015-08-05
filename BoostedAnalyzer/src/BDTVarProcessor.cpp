@@ -21,9 +21,10 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
 
   float bdtoutput2=bdtohio2.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
   vars.FillVar("BDTOhio_v2_output",bdtoutput2);
-  map<string,float> bdtinputs2=bdtohio2.GetVariablesOfLastEvaluation();
-  for(auto it=bdtinputs2.begin(); it!=bdtinputs2.end(); it++){
-    vars.FillVar("BDTOhio_v2_input_"+it->first,it->second);
+  if(bdtohio2.GetCategory(input.selectedJets)!="none"){
+    map<string,float> bdtinputs2=bdtohio2.GetVariablesOfLastEvaluation();
+    for(auto it=bdtinputs2.begin(); it!=bdtinputs2.end(); it++){
+      vars.FillVar("BDTOhio_v2_input_"+it->first,it->second);
+    }
   }
-
 }
