@@ -154,8 +154,9 @@ float BoostedUtils::GetJetCSV(const pat::Jet& jet, const std::string& taggername
   if(isnan(bTagVal)) return defaultFailure;
   
   if(bTagVal > 1.) return 1.;
+  if(bTagVal < 0.) return defaultFailure;
   
-  return fmax(bTagVal,defaultFailure);
+  return bTagVal;
 }
 
 

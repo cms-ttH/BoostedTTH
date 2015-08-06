@@ -38,7 +38,8 @@ default['nickname'] = 'MC_Pythia_TTHbb'
 #default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/BoostedTTH_MiniAOD/150227_111650/0000/BoostedTTH_MiniAOD_15.root'
 #default['filenames'] = 'file:/nfs/dust/cms/user/shwillia/CMSSW_7_4_6_patch6/src/BoostedTTH_MiniAOD.root'
 #default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150731_155453/0000/BoostedTTH_MiniAOD_75.root'
-default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150731_155453/0000/BoostedTTH_MiniAOD_75.root'
+#default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150731_155453/0000/BoostedTTH_MiniAOD_75.root'
+default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/Spring15_Sync/ttHbb_spring15_25ns_plusboostedjets.root'
 
 default['outfilename'] = None
 default['skip'] = '0'
