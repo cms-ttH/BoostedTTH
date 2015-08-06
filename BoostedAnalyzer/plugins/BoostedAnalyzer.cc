@@ -180,6 +180,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** pu summary data access token **/
       edm::EDGetTokenT< std::vector<PileupSummaryInfo> > EDMPUInfoToken;
       
+      /** pileup density data access token **/
+      edm::EDGetTokenT <double> EDMRhoToken;
+
       /** hcal noise data access token **/
       edm::EDGetTokenT< HcalNoiseSummary > EDMHcalNoiseToken;
       
@@ -285,6 +288,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
 
   // REGISTER DATA ACCESS
   EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","",""));
+  EDMRhoToken             = consumes <double> (edm::InputTag(std::string("fixedGridRhoAll")));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
   EDMSelectedTriggerToken = consumes< pat::TriggerObjectStandAloneCollection > (edm::InputTag("selectedPatTrigger","",""));
   EDMTriggerResultToken   = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","HLT"));
@@ -484,6 +488,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle< std::vector<PileupSummaryInfo> >  h_puinfosummary;
   iEvent.getByToken( EDMPUInfoToken, h_puinfosummary);
 
+  /**** GET RHO ****/
+  edm::Handle<double> h_rho;
+  iEvent.getByToken(EDMRhoToken,h_rho);
+  helper.SetRho(*h_rho);
+  
   /**** GET HCALNOISESUMMARY ****/
   edm::Handle<HcalNoiseSummary> h_hcalnoisesummary;
   iEvent.getByToken( EDMHcalNoiseToken,h_hcalnoisesummary );
@@ -691,7 +700,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( EDMCustomGenJetsToken,h_customgenjets );
   }
   // Fill Event Info Object
-  EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood);
+  EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
   // Fill Trigger Info -- a map with bools and some helper functions
   map<string,bool> triggerMap;
   for(auto name=relevantTriggers.begin(); name!=relevantTriggers.end();name++){
