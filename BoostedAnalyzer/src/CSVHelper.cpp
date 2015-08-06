@@ -141,7 +141,7 @@ double CSVHelper::get_csv_wgt( const std::vector<pat::Jet>& Jets, int iSys, doub
  for(std::vector<pat::Jet>::const_iterator itJet = Jets.begin(); itJet != Jets.end(); ++itJet){
 
     
-    double csv = itJet->bDiscriminator(btagger);
+    double csv = BoostedUtils::GetJetCSV(*itJet,btagger);
     double jetPt = itJet->pt();
     //std::cout<<jetPt<<std::endl;
     double jetAbsEta = fabs(itJet->eta());

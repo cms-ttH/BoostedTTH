@@ -35,7 +35,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "BoostedTTH/BoostedObjects/interface/HTTTopJet.h"
+#include "MiniAOD/BoostedObjects/interface/HTTTopJet.h"
 #include "DataFormats/JetReco/interface/HTTTopJetTagInfo.h"
 #include "DataFormats/Math/interface/deltaR.h"
 

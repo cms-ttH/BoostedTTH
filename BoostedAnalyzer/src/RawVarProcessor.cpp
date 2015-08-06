@@ -82,7 +82,7 @@ void RawVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "RawJet_Pt",iJet,itJet->pt() );
     vars.FillVars( "RawJet_Eta",iJet,itJet->eta() );
     vars.FillVars( "RawJet_Phi",iJet,itJet->phi() );
-    vars.FillVars( "RawJet_CSV",iJet,fmax(itJet->bDiscriminator(btagger),-.1) );
+    vars.FillVars( "RawJet_CSV",iJet,BoostedUtils::GetJetCSV(*itJet,btagger) );
     vars.FillVars( "RawJet_Flav",iJet,itJet->partonFlavour() );
     vars.FillVars( "RawJet_Charge",iJet,itJet->jetCharge() );
 

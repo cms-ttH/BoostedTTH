@@ -5,9 +5,10 @@ process.source = cms.Source("PoolSource",
                             #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/tpfotzer/MiniAOD_raw/ttH_01.root')
                             #fileNames = cms.untracked.vstring('file:/storage/9/mildner/ttbar_phys14.root')
                             #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/shwillia/Test/ttbar_miniAODtest.root')
-                            fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/10950426-4103-E511-8E6B-0025905A60DA.root')
+#                            fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/10950426-4103-E511-8E6B-0025905A60DA.root')
+                            fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/1E867A91-8D08-E511-9AFE-001E67A3FF1F.root')
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
