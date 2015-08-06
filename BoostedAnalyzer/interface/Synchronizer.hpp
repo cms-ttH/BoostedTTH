@@ -15,6 +15,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
+#include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 
 class Synchronizer{
 
@@ -39,6 +40,7 @@ private:
     vector<Selection*> dileptonSelections;
     Cutflow cutflowSL;
     Cutflow cutflowDL;
+    TopTagger toptagger;
 };
 
 

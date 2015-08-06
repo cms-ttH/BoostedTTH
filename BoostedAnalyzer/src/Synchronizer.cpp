@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Synchronizer::Synchronizer (){
+Synchronizer::Synchronizer ():toptagger(TopTag::Likelihood){
     cutflowSL.Init();
     cutflowDL.Init();
 }
@@ -92,14 +92,14 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
   
   for(auto topjet = input.selectedHTTTopJets.begin() ; topjet != input.selectedHTTTopJets.end(); topjet++ ){
     // pt and eta requirements on top jet
-    if( !(topjet->fatjet.pt() > 250. && abs(topjet->fatjet.eta()) < 1.8) ) continue;
+    if( !(topjet->fatjet.pt() > 200. && abs(topjet->fatjet.eta()) < 2.) ) continue;
     std::vector<pat::Jet> subjets;
     subjets.push_back(topjet->W1);
     subjets.push_back(topjet->W2);
     subjets.push_back(topjet->nonW);
     bool subjetcuts=true;
     for(auto j = subjets.begin(); j!=subjets.end();j++){
-      if(j->pt()<20 || fabs(j->eta())>2.5) {
+      if(j->pt()<20 || fabs(j->eta())>2.4) {
 	subjetcuts=false;
 	break;
       }
