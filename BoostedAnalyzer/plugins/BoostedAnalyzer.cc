@@ -62,6 +62,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/THQJetSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BoostedSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -119,12 +120,6 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       Cutflow cutflow_nominal;
       Cutflow cutflow_jesup;
       Cutflow cutflow_jesdown;
-      
-      /** toptagger used for selection */
-      TopTagger toptagger;
-      
-      /** higgstagger used for selection */
-      HiggsTagger higgstagger;
       
       /** selections that are applied */
       vector<Selection*> selections;
@@ -359,6 +354,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
     else if(*itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));
     else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
+    else if(*itSel == "BoostedSelection") selections.push_back(new BoostedSelection());
     else cout << "No matching selection found for: " << *itSel << endl;    
     selections.back()->InitCutflow(cutflow_nominal);
     if(makeSystematicsTrees){
