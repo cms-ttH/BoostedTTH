@@ -3,13 +3,12 @@
 using namespace std;
 
 BoostedJetVarProcessor::BoostedJetVarProcessor(MiniAODHelper* helper_):btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
+  toptagger.insert(map< string, TopTagger >::value_type("HEP", TopTagger(TopTag::HEP,TopTag::Pt,"")));
+  toptagger.insert(map< string, TopTagger >::value_type("HEPCSV", TopTagger(TopTag::HEP,TopTag::CSV,"")));
+  toptagger.insert(map< string, TopTagger >::value_type("Likelihood", TopTagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root")));
+  toptagger.insert(map< string, TopTagger >::value_type("BDT", TopTagger(TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml")));
   
-  toptagger["HEP"] = TopTagger(helper_,TopTag::HEP,TopTag::Pt,"");
-  toptagger["HEPCSV"] = TopTagger(helper_,TopTag::HEP,TopTag::CSV,"");
-  toptagger["Likelihood"] = TopTagger(helper_,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root");
-  toptagger["BDT"] = TopTagger(helper_,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml");
-  
-  higgstagger["SecondCSV"] = HiggsTagger(helper_,HiggsTag::SecondCSV,"");
+  higgstagger.insert(map< string, HiggsTagger >::value_type("SecondCSV", HiggsTagger(HiggsTag::SecondCSV,"")));
 }
 
 
@@ -621,10 +620,10 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 
     vars.FillVars("TopJet_Dr_Lepton",i,primlepvec.pt()>5 ? BoostedUtils::DeltaR(primlepvec,fatjet.p4()) : -1);
     
-    vars.FillVars( "TopJet_TopTag_HEP",i,toptagger["HEP"].GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
-    vars.FillVars( "TopJet_TopTag_HEPCSV",i,toptagger["HEPCSV"].GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
-    vars.FillVars( "TopJet_TopTag_Likelihood",i,toptagger["Likelihood"].GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
-    vars.FillVars( "TopJet_TopTag_BDT",i,toptagger["BDT"].GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
+    vars.FillVars( "TopJet_TopTag_HEP",i,toptagger.at("HEP").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
+    vars.FillVars( "TopJet_TopTag_HEPCSV",i,toptagger.at("HEPCSV").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
+    vars.FillVars( "TopJet_TopTag_Likelihood",i,toptagger.at("Likelihood").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
+    vars.FillVars( "TopJet_TopTag_BDT",i,toptagger.at("BDT").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
   }
   
   
@@ -730,7 +729,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 	    primlepvec = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
     vars.FillVars( "HiggsJet_Dr_Lepton",i,primlepvec.Pt()>5 ? BoostedUtils::DeltaR(primlepvec,input.selectedSubFilterJets[i].fatjet.p4()) : -1);
     
-    vars.FillVars( "HiggsJet_HiggsTag_SecondCSV",i,higgstagger["SecondCSV"].GetHiggsTaggerOutput(input.selectedSubFilterJets[i]) );
+    vars.FillVars( "HiggsJet_HiggsTag_SecondCSV",i,higgstagger.at("SecondCSV").GetHiggsTaggerOutput(input.selectedSubFilterJets[i]) );
   }
   
   vector<float> CA12MFJ_L_CSVR;

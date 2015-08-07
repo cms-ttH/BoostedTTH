@@ -3,10 +3,8 @@
 using namespace std;
 
 ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix_)
-                                : recotype(recotype_), prefix(prefix_), btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags")
+  : recotype(recotype_), prefix(prefix_), btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"), toptagger(topTaggerMode_,subjetAssign_,topTaggerfilePath_),higgstagger(higgsTaggerMode_,higgsTaggerFilePath_)
 {  
-  toptagger = TopTagger(helper_,topTaggerMode_,subjetAssign_,topTaggerfilePath_);
-  higgstagger = HiggsTagger(helper_,higgsTaggerMode_,higgsTaggerFilePath_);
 }
 
 

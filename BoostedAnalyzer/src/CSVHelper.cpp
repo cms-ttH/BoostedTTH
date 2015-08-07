@@ -5,8 +5,8 @@ CSVHelper::CSVHelper(){
   btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   std::string path=BoostedUtils::GetAnalyzerPath();
 
-  std::string inputFileHF = "/data/csvweights/csv_rwt_hf_IT_FlatSF.root";
-  std::string inputFileLF = "/data/csvweights/csv_rwt_lf_IT_FlatSF.root";
+  std::string inputFileHF = "/data/csvweights/csv_rwt_hf_IT_FlatSF_2015_07_27.root";
+  std::string inputFileLF = "/data/csvweights/csv_rwt_lf_IT_FlatSF_2015_07_27.root";
 
   TFile* f_CSVwgt_HF = new TFile(std::string(path + inputFileHF).c_str());
   TFile* f_CSVwgt_LF = new TFile(std::string(path + inputFileLF).c_str());
@@ -145,7 +145,7 @@ double CSVHelper::get_csv_wgt( const std::vector<pat::Jet>& Jets, int iSys, doub
     double jetPt = itJet->pt();
     //std::cout<<jetPt<<std::endl;
     double jetAbsEta = fabs(itJet->eta());
-    int flavor =itJet->partonFlavour();
+    int flavor =itJet->hadronFlavour();
 
     int iPt = -1; int iEta = -1;
     if (jetPt >=19.99 && jetPt<30) iPt = 0;
