@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Synchronizer::Synchronizer ():toptagger(TopTag::Likelihood){
+Synchronizer::Synchronizer ():toptagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root"){
     cutflowSL.Init();
     cutflowDL.Init();
 }
@@ -90,6 +90,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
     if(BoostedUtils::PassesCSV(*jet)) n_btags++;
   }
   
+  vector<boosted::HTTTopJet> syncTopJets;
   for(auto topjet = input.selectedHTTTopJets.begin() ; topjet != input.selectedHTTTopJets.end(); topjet++ ){
     // pt and eta requirements on top jet
     if( !(topjet->fatjet.pt() > 200. && abs(topjet->fatjet.eta()) < 2.) ) continue;
@@ -105,15 +106,26 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
       }
     }
     if(!subjetcuts) continue;
-    if(BoostedUtils::GetTopTag(*topjet)) n_toptags++;
+    if(toptagger.GetTopTaggerOutput(*topjet)>-1){
+      n_toptags++;
+      syncTopJets.push_back(*topjet);
+    }
   }
   for( auto higgsJet = input.selectedSubFilterJets.begin() ; higgsJet != input.selectedSubFilterJets.end(); ++higgsJet ){
     // pt and eta requirements on higgs jet
-    if( !(higgsJet->fatjet.pt() > 250. && abs(higgsJet->fatjet.eta()) < 1.8) ) continue;
+    if( !(higgsJet->fatjet.pt() > 200. && abs(higgsJet->fatjet.eta()) < 2) ) continue;
+    bool overlapping=false;
+    for(auto tj=syncTopJets.begin(); tj!=syncTopJets.end(); tj++){
+      if(BoostedUtils::DeltaR(tj->fatjet,higgsJet->fatjet)<1.5){
+	overlapping=true;
+	break;
+      }
+    }
+    if(overlapping) continue;
     std::vector<pat::Jet> filterjets = higgsJet->filterjets;
     int subjettags=0;
     for(auto j=filterjets.begin(); j!=filterjets.end(); j++ ){
-      if(j->pt()<20 || fabs(j->eta())>2.5) continue;
+      if(j->pt()<20 || fabs(j->eta())>2.4) continue;
       if(BoostedUtils::PassesCSV(*j)){
 	subjettags++;
       }	
