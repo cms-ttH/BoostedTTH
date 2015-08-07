@@ -313,7 +313,7 @@ void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const I
 }
 
 void Synchronizer::InitDumpSyncFile1(std::string filename){
-    dumpFiles1.push_back(new ofstream((filename+".csv").c_str()));
+    dumpFiles1.push_back(new ofstream((filename+".txt").c_str()));
 }
 
 void Synchronizer::InitDumpSyncFile2(std::string filename){
