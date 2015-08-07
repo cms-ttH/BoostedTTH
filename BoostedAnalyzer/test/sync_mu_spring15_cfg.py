@@ -60,7 +60,7 @@ process.BoostedAnalyzer.useFatJets=True
 process.BoostedAnalyzer.dumpSyncExe=True
 process.BoostedAnalyzer.channel="mu"
 # only minimal selections applied
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection1","LeptonSelection3","LeptonSelection2","LeptonSelection4","4JetSelection","2TagSelection","BoostedSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection1","LeptonSelection3","LeptonSelection2","LeptonSelection4","4JetSelection","2TagSelection","BoostedTopSelection","BoostedSelection"]
 # run some basic processors
 process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MVAVarProcessor")
 # no JES systematics for sync

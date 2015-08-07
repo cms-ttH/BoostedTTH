@@ -354,7 +354,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
     else if(*itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));
     else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
-    else if(*itSel == "BoostedSelection") selections.push_back(new BoostedSelection());
+    else if(*itSel == "BoostedTopSelection") selections.push_back(new BoostedSelection(1,0));
+    else if(*itSel == "BoostedSelection") selections.push_back(new BoostedSelection(0,1));
     else cout << "No matching selection found for: " << *itSel << endl;    
     selections.back()->InitCutflow(cutflow_nominal);
     if(makeSystematicsTrees){
