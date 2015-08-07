@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include "BoostedTTH/BoostedAnalyzer/interface/Interpretation.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/Interpretation.hpp"
 
 namespace IntType{enum IntType{tth,tt};};
 

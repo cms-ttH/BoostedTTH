@@ -1,10 +1,10 @@
 #ifndef ANALYZER_HPP
 #define ANALYZER_HPP
 
-#include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionQuality.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionMCMatching.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/InterpretationGenerator.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/Interpretation.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/ReconstructionQuality.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/ReconstructionMCMatching.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/InterpretationGenerator.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/Interpretation.hpp"
 #include "TLorentzVector.h"
 #include "TH1.h"
 #include "TH2.h"

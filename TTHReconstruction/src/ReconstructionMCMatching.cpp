@@ -1,4 +1,4 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionMCMatching.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/ReconstructionMCMatching.hpp"
 
 using namespace std;
 ReconstructionMCMatching::ReconstructionMCMatching():maxdr(0.4),setupMC(0)

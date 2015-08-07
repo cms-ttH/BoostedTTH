@@ -1,4 +1,4 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/MECalculator.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/MECalculator.hpp"
 
 MECalculator::MECalculator(){
   tthME.initProc("data/param_card.dat");

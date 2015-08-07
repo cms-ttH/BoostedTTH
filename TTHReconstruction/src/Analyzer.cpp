@@ -1,4 +1,4 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/Analyzer.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/Analyzer.hpp"
 
 using namespace std;
 

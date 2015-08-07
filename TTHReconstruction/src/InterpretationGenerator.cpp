@@ -1,4 +1,4 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/InterpretationGenerator.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/InterpretationGenerator.hpp"
 using namespace std;
 
 InterpretationGenerator::InterpretationGenerator(IntType::IntType type_, int allowedMistags_, int maxJets_, float minMWHad_,float maxMWHad_,float btagCut_):type(type_), allowedMistags(allowedMistags_), maxJets(maxJets_), minMWHad(minMWHad_), maxMWHad(maxMWHad_), btagCut(btagCut_)

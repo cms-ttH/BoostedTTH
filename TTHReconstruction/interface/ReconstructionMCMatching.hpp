@@ -3,7 +3,7 @@
 
 #include "TFile.h"
 #include "TLorentzVector.h"
-#include "BoostedTTH/BoostedAnalyzer/interface/Interpretation.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/Interpretation.hpp"
 #include "TH1F.h"
 #include "TMath.h"
 #include <iostream>

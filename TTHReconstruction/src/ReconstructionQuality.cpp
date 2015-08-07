@@ -1,4 +1,4 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionQuality.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/ReconstructionQuality.hpp"
 
 using namespace std;
 

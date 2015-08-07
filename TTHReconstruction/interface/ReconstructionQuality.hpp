@@ -3,8 +3,8 @@
 
 #include "TFile.h"
 #include "TLorentzVector.h"
-#include "BoostedTTH/BoostedAnalyzer/interface/Interpretation.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/MECalculator.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/Interpretation.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/MECalculator.hpp"
 #include "TH1F.h"
 #include "TMath.h"
 #include <iostream>
