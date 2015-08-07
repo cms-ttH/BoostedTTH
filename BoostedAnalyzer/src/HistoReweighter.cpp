@@ -30,7 +30,7 @@ void HistoReweighter::CreateWeightHisto(TH1* nom_histo, TH1* denom_histo, bool n
   nbins=denomHisto->GetNbinsX();
   for(int i=1; i<=denomHisto->GetNbinsX(); i++){
     if(denomHisto->GetBinContent(i)==0&&nomHisto->GetBinContent(i)==0){
-      cerr << "bin in denominator histo empty but not in nominator, erasing bin" << endl;
+      cerr << "HistoReweighter: bin in denominator histo empty but not in nominator, erasing bin" << endl;
       nomHisto->SetBinContent(i,0);
     }
   }

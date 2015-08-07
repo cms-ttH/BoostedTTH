@@ -11,7 +11,7 @@ class EventInfo {
   
 public:
   
-  EventInfo(const edm::Event& iEvent, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo, bool firstVertexIsGood_);
+  EventInfo(const edm::Event& iEvent, const edm::Handle<reco::BeamSpot>& beamSpot, const edm::Handle<HcalNoiseSummary>& hcalNoiseSummary, const edm::Handle< std::vector<PileupSummaryInfo> >& puSummaryInfo, bool firstVertexIsGood_, float rho_);
 
   // Event Information
   long evt;
@@ -29,6 +29,8 @@ public:
   int sumTrueNVtx, numTruePV, nm1_true, n0_true, np1_true;
 
   bool firstVertexIsGood;
+
+  float rho;
   
 };
 

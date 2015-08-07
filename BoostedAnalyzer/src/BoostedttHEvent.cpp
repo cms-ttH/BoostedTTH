@@ -228,7 +228,7 @@ void BoostedttHEvent::ak5JetsClean(bool cleanHiggsCand, bool cleanTopHadCand, bo
 }
 
 
-void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger* higgstagger, const float higgsjetptcut, const float higgsjetetacut, const bool cleanTopHadCand, const bool cleanTopLepCand,  const float fatjetCleaningThreshold, const float subjetCleaningThreshold){
+void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger higgstagger, const float higgsjetptcut, const float higgsjetetacut, const bool cleanTopHadCand, const bool cleanTopLepCand,  const float fatjetCleaningThreshold, const float subjetCleaningThreshold){
   
   higgsCand = boosted::SubFilterJet();
   higgsB1Cand = pat::Jet();
@@ -267,7 +267,7 @@ void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger* higgstagger, const float 
       }
     }
     if(verbose) std::cout << "found " << cleanedFilterjets.size() << " cleaned filterjets"  << std::endl;
-    float tag = higgstagger->GetHiggsTag(*itJet);
+    float tag = higgstagger.GetHiggsTaggerOutput(*itJet);
     if(verbose) std::cout << "higgs tag of fat jet is " << tag  << std::endl;    
     if(tag>maxHiggsTag){
       
@@ -319,7 +319,7 @@ void BoostedttHEvent::TopHadCandBoostedRec(TopTagger toptagger,const float topje
   
     if(itJet->fatjet.pt()<topjetptcut || fabs(itJet->fatjet.eta())>topjetetacut) continue;
     
-    float tag = toptagger.GetTopTag(*itJet);
+    float tag = toptagger.GetTopTaggerOutput(*itJet);
     
     if(tag>maxTopTag) {
       maxTopTag = tag;
@@ -331,12 +331,12 @@ void BoostedttHEvent::TopHadCandBoostedRec(TopTagger toptagger,const float topje
 
  
   if(foundTopHadCand){
-    if(topHadCand.nonW.bDiscriminator(btagger)>topHadCand.W1.bDiscriminator(btagger) && topHadCand.nonW.bDiscriminator(btagger)>topHadCand.W2.bDiscriminator(btagger)){
+    if(BoostedUtils::GetJetCSV(topHadCand.nonW,btagger)>BoostedUtils::GetJetCSV(topHadCand.W1,btagger) && BoostedUtils::GetJetCSV(topHadCand.nonW,btagger)>BoostedUtils::GetJetCSV(topHadCand.W2,btagger)){
       topHadW1Cand = topHadCand.W1;
       topHadW2Cand = topHadCand.W2;
       topHadBCand = topHadCand.nonW;  
     }
-    else if(topHadCand.W1.bDiscriminator(btagger)>topHadCand.W2.bDiscriminator(btagger) && topHadCand.W1.bDiscriminator(btagger)>topHadCand.nonW.bDiscriminator(btagger)){
+    else if(BoostedUtils::GetJetCSV(topHadCand.W1,btagger)>BoostedUtils::GetJetCSV(topHadCand.W2,btagger) && BoostedUtils::GetJetCSV(topHadCand.W1,btagger)>BoostedUtils::GetJetCSV(topHadCand.nonW,btagger)){
       topHadBCand = topHadCand.W1;
       if(topHadCand.nonW.pt()>topHadCand.W2.pt()){
         topHadW1Cand = topHadCand.nonW;
@@ -347,7 +347,7 @@ void BoostedttHEvent::TopHadCandBoostedRec(TopTagger toptagger,const float topje
         topHadW2Cand = topHadCand.nonW;
       }
     }
-    else if(topHadCand.W2.bDiscriminator(btagger)>topHadCand.W1.bDiscriminator(btagger) && topHadCand.W2.bDiscriminator(btagger)>topHadCand.nonW.bDiscriminator(btagger)){
+    else if(BoostedUtils::GetJetCSV(topHadCand.W2,btagger)>BoostedUtils::GetJetCSV(topHadCand.W1,btagger) && BoostedUtils::GetJetCSV(topHadCand.W2,btagger)>BoostedUtils::GetJetCSV(topHadCand.nonW,btagger)){
       topHadBCand = topHadCand.W2;
       if(topHadCand.nonW.pt()>topHadCand.W1.pt()){
         topHadW1Cand = topHadCand.nonW;
@@ -536,7 +536,7 @@ void BoostedttHEvent::TopPairCandRec(){
 }
 
 
-void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger* higgstagger){
+void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger higgstagger){
   
   ResetEvent();
   
@@ -557,7 +557,7 @@ void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger* 
 }
 
 
-void BoostedttHEvent::BoostedHiggsEventRec(HiggsTagger* higgstagger){
+void BoostedttHEvent::BoostedHiggsEventRec(HiggsTagger higgstagger){
 
   ResetEvent();
   
@@ -651,7 +651,7 @@ float BoostedttHEvent::GetAverageCSV(){
   
   float avgCSV = 0.;
   for(std::vector<pat::Jet>::const_iterator itJet=selectedJets.begin();itJet!=selectedJets.end();++itJet)
-    avgCSV += fmax(itJet->bDiscriminator(btagger),0.);
+    avgCSV += fmax(BoostedUtils::GetJetCSV(*itJet,btagger),0.);
     
   return avgCSV/nJets;
 }
@@ -683,7 +683,7 @@ float BoostedttHEvent::GetAverageCSVHiggsCand(){
   
   for(size_t iJet=0;iJet<selectedJets.size();iJet++){
     if(!HiggsCandak5Jet[iJet]) continue;
-    avgCSV += fmax(selectedJets[iJet].bDiscriminator(btagger),0.);
+    avgCSV += fmax(BoostedUtils::GetJetCSV(selectedJets[iJet],btagger),0.);
   }
     
   return avgCSV/nHiggsak5Jets;
@@ -716,7 +716,7 @@ float BoostedttHEvent::GetAverageCSVTopHadCand(){
   
   for(size_t iJet=0;iJet<selectedJets.size();iJet++){
     if(!TopHadCandak5Jet[iJet]) continue;
-    avgCSV += fmax(selectedJets[iJet].bDiscriminator(btagger),0.);
+    avgCSV += fmax(BoostedUtils::GetJetCSV(selectedJets[iJet],btagger),0.);
   }
     
   return avgCSV/nTopHadak5Jets;
@@ -749,7 +749,7 @@ float BoostedttHEvent::GetAverageCSVTopLepCand(){
   
   for(size_t iJet=0;iJet<selectedJets.size();iJet++){
     if(!TopLepCandak5Jet[iJet]) continue;
-    avgCSV += fmax(selectedJets[iJet].bDiscriminator(btagger),0.);
+    avgCSV += fmax(BoostedUtils::GetJetCSV(selectedJets[iJet],btagger),0.);
   }
     
   return avgCSV/nTopLepak5Jets;
@@ -786,7 +786,7 @@ float BoostedttHEvent::GetAverageCSVClean(){
   float avgCSV = 0.;
   
   for(size_t iJet=0;iJet<cleanedak5Jets.size();iJet++)
-    avgCSV += fmax(cleanedak5Jets[iJet].bDiscriminator(btagger),0.);
+    avgCSV += fmax(BoostedUtils::GetJetCSV(cleanedak5Jets[iJet],btagger),0.);
     
   return avgCSV/nCleanedak5Jets;
 }

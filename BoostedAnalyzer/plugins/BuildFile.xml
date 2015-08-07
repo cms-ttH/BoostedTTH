@@ -6,6 +6,6 @@
 <use name="DataFormats/HepMCCandidate"/>
 <use name="PhysicsTools/Utilities"/>
 <use name="MiniAOD/MiniAODHelper"/>
-<use name="BoostedTTH/BoostedObjects"/>
+<use name="MiniAOD/BoostedObjects"/>
 <use name="BoostedTTH/BoostedAnalyzer"/>
 <flags EDM_PLUGIN="1"/>

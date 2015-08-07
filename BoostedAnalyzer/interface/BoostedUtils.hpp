@@ -15,8 +15,8 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "BoostedTTH/BoostedObjects/interface/SubFilterJet.h"
-#include "BoostedTTH/BoostedObjects/interface/HTTTopJet.h"
+#include "MiniAOD/BoostedObjects/interface/SubFilterJet.h"
+#include "MiniAOD/BoostedObjects/interface/HTTTopJet.h"
 
 class BoostedUtils{
   
@@ -44,6 +44,8 @@ class BoostedUtils{
     static float DeltaR(const pat::Jet& jet1,const pat::Jet& jet2);
     static float DeltaKt(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2);
     static float DeltaKt(const pat::Jet& jet1,const pat::Jet& jet2);
+    
+    static float GetJetCSV(const pat::Jet& jet, const std::string& taggername = "pfCombinedInclusiveSecondaryVertexV2BJetTags"); 
     
     static float CosThetaStar(const math::XYZTLorentzVector& vec1, const math::XYZTLorentzVector& vec2);
     static float CosThetaCM(const math::XYZTLorentzVector& vec,const math::XYZTLorentzVector& boostVec);

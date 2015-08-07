@@ -56,7 +56,7 @@ bool BoostedUtils::FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2){
 
 
 bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
-  return jet1.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > jet2.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  return GetJetCSV(jet1,"pfCombinedInclusiveSecondaryVertexV2BJetTags") > GetJetCSV(jet2,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
 }
 
 
@@ -142,6 +142,21 @@ float BoostedUtils::DeltaKt(const pat::Jet& jet1,const pat::Jet& jet2){
   math::XYZTLorentzVector vec2 = jet2.p4();
   
   return BoostedUtils::DeltaKt(vec1,vec2);
+}
+
+
+float BoostedUtils::GetJetCSV(const pat::Jet& jet, const std::string& taggername){
+  
+  float defaultFailure = -.1;
+  
+  float bTagVal = jet.bDiscriminator(taggername);
+
+  if(isnan(bTagVal)) return defaultFailure;
+  
+  if(bTagVal > 1.) return 1.;
+  if(bTagVal < 0.) return defaultFailure;
+  
+  return bTagVal;
 }
 
 
@@ -256,7 +271,7 @@ bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   float CSVMv2wp = 0.89;
   float CSVTv2wp = 0.97;
   
-  float csvValue = jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  float csvValue = GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   
   switch(workingPoint){
     case 'L': if(csvValue > CSVLv2wp){ return true; } break;
@@ -454,7 +469,7 @@ float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const in
   std::vector<pat::Jet> filterJets = GetHiggsFilterJets(higgsJet,nBTags);
   
   if(nBTags>0){
-    if(filterJets[nBTags-1].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<csvWP) return -1.;
+    if(GetJetCSV(filterJets[nBTags-1],"pfCombinedInclusiveSecondaryVertexV2BJetTags")<csvWP) return -1.;
   }
   
   std::vector<math::XYZTLorentzVector> filterJetVecs = GetJetVecs(filterJets);
