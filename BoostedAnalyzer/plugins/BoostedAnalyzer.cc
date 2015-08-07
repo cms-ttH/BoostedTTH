@@ -532,9 +532,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Muon> const &muons = *h_muons;
   std::vector<pat::Muon> rawMuons = muons;
   // note: muon eta cuts and muonLoose ID no longer as in synch exe
-  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., muonID::muonTight, coneSize::R04, corrType::deltaBeta);
-  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( muons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose, coneSize::R04, corrType::deltaBeta );
+  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.1);
+  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( muons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4 );
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose, coneSize::R04, corrType::deltaBeta, 2.4);
 
   // ELECTRONS
   edm::Handle< std::vector<pat::Electron> > h_electrons;
