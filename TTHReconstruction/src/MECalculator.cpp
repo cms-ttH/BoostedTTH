@@ -1,9 +1,11 @@
 #include "BoostedTTH/TTHReconstruction/interface/MECalculator.hpp"
 
 MECalculator::MECalculator(){
-  tthME.initProc("data/param_card.dat");
-  ttbbME.initProc("data/param_card.dat");
-  tthbbME.initProc("data/param_card.dat");
+
+  std::string cmsswbase = getenv("CMSSW_BASE");
+  tthME.initProc(cmsswbase+"/src/BoostedTTH/TTHReconstruction/data/param_card.dat");
+  ttbbME.initProc(cmsswbase+"/src/BoostedTTH/TTHReconstruction/data/param_card.dat");
+  tthbbME.initProc(cmsswbase+"/src/BoostedTTH/TTHReconstruction/data/param_card.dat");
 }
 
 

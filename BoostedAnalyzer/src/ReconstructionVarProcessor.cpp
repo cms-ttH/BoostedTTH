@@ -4,17 +4,13 @@ using namespace std;
 
 // all configurations should be done in constructor
 ReconstructionVarProcessor::ReconstructionVarProcessor(){
-    tags.push_back("TTWHChi2");
-    tags.push_back("TTWBBChi2");
-    tags.push_back("TTWChi2");
     tags.push_back("TTWHLikelihood");
     tags.push_back("TTWBBLikelihood");
     tags.push_back("TTWLikelihood");
-    tags.push_back("TTWHLikelihood_comb");
-    tags.push_back("TTWBBLikelihood_comb");
-    tags.push_back("TTWLikelihood_comb");
-    tags.push_back("TTWHishLikelihood");
-    tags.push_back("TTWishLikelihood");
+    //    tags.push_back("TTWHLikelihood_comb");
+    //    tags.push_back("TTWBBLikelihood_comb");
+    //    tags.push_back("TTWLikelihood_comb");
+
 }
 ReconstructionVarProcessor::~ReconstructionVarProcessor(){}
 
@@ -53,12 +49,18 @@ void ReconstructionVarProcessor::Init(const InputCollections& input,VariableCont
 
 void ReconstructionVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
     if(!initialized) cerr << "tree processor not initialized" << endl;
+
+    if(input.selectedJets.size()<6) return;
     // get vectors
     vector<TLorentzVector> jetvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
     vector<float> jetcsvs;
+    int ntags=0;
     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
 	jetcsvs.push_back(BoostedUtils::GetJetCSV(*j));
+	if(BoostedUtils::PassesCSV(*j)) ntags++;
     }
+    if(ntags<4) return;
+    if(input.selectedElectrons.size()+input.selectedMuons.size()<1) return;
     TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
     TVector2 metvec(input.pfMET.px(),input.pfMET.py());
 
@@ -67,6 +69,9 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
     
     // calculate best tags and interpretations
     map<string,Interpretation*> best_int;
+    for(auto tagname=tags.begin();tagname!=tags.end();tagname++){
+	best_int[*tagname]=0;
+    }
     map<string,float> best_tag;
     for(uint i=0;i<ints.size();i++){
 	for(auto tagname=tags.begin();tagname!=tags.end();tagname++){
@@ -86,6 +91,7 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
     // calculate variables for best interpretations
     for(auto tagname=tags.begin();tagname!=tags.end();tagname++){
 	Interpretation* bi=best_int[*tagname];
+	if(bi==0) continue;
 	float dEta_fn=sqrt(abs((bi->Higgs().Eta() - bi->TopLep().Eta())*(bi->Higgs().Eta() - bi->TopHad().Eta())));
 	vars.FillVar("Reco_Deta_Fn_"+(*tagname),dEta_fn);
 	vars.FillVar("Reco_Deta_TopLep_BB_"+(*tagname),abs(bi->Higgs().Eta() - bi->TopLep().Eta()));

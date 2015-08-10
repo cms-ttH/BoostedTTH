@@ -12,7 +12,7 @@
 
 class ReconstructionQuality{
 public:
-  ReconstructionQuality(std::string filename="data/likelihoodhistos.root");
+  ReconstructionQuality(std::string filename="");
 
   float GetTag(std::string tag, Interpretation& i);
   // get chi2 containing 3 (4) terms: hadronic top-mass, leptonic top-mass, W-mass (, Higgs/BB-mass)
