@@ -8,7 +8,7 @@
 #include <algorithm>
 #include "BoostedTTH/TTHReconstruction/interface/Interpretation.hpp"
 
-namespace IntType{enum IntType{tth,tt};};
+namespace IntType{enum IntType{tth,tt,tth_plus,tt_plus,tth5,tth5_plus};};
 
 class InterpretationGenerator{
 public:

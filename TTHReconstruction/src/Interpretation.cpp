@@ -2,49 +2,99 @@
 #include <iostream>
 using namespace std;
 
-Interpretation::Interpretation(TLorentzVector b_had_, float csv_b_had_, TLorentzVector q1_, float csv_q1_, TLorentzVector q2_, float csv_q2_, TLorentzVector b_lep_, float csv_b_lep_, TLorentzVector lep_, TLorentzVector nu_, TLorentzVector b1_, float csv_b1_, TLorentzVector b2_, float csv_b2_){
-  b1=b1_;
-  b2=b2_;
-  b_had=b_had_;
-  q1=q1_;
-  q2=q2_;
-  b_lep=b_lep_;
-  lep=lep_;
-  nu=nu_;
-  csv_b1=csv_b1_;
-  csv_b2=csv_b2_;
-  csv_b_had=csv_b_had_;
-  csv_b_lep=csv_b_lep_;
-  csv_q1=csv_q1_;
-  csv_q2=csv_q2_;
-  //dervived
-  w_had=q1+q2;
-  t_had=b_had+w_had;
-  w_lep=lep+nu;
-  t_lep=b_lep+w_lep;
-  higgs=b1+b2;
+Interpretation::Interpretation(TLorentzVector b_had_, float csv_b_had_, TLorentzVector q1_, float csv_q1_, TLorentzVector q2_, float csv_q2_, TLorentzVector b_lep_, float csv_b_lep_, TLorentzVector lep_, TLorentzVector nu_, TLorentzVector b1_, float csv_b1_, TLorentzVector b2_, float csv_b2_):
+    b1(b1_),
+    b2(b2_),
+    b_had(b_had_),
+    q1(q1_),
+    q2(q2_),
+    b_lep(b_lep_),
+    lep(lep_),
+    nu(nu_),
+    w_had(q1+q2),
+    t_had(b_had+w_had),
+    w_lep(lep+nu),
+    t_lep(b_lep+w_lep),
+    higgs(b1+b2),
 
-}
+    csv_b1(csv_b1_),
+    csv_b2(csv_b2_),
+    csv_b_had(csv_b_had_),
+    csv_b_lep(csv_b_lep_),
+    csv_q1(csv_q1_),
+    csv_q2(csv_q2_)
 
-Interpretation::Interpretation(TLorentzVector b_had_, float csv_b_had_, TLorentzVector q1_, float csv_q1_, TLorentzVector q2_, float csv_q2_, TLorentzVector b_lep_, float csv_b_lep_, TLorentzVector lep_, TLorentzVector nu_){
-  b_had=b_had_;
-  q1=q1_;
-  q2=q2_;
-  b_lep=b_lep_;
-  lep=lep_;
-  nu=nu_;
-  csv_b1=-2;
-  csv_b2=-2;
-  csv_b_had=csv_b_had_;
-  csv_b_lep=csv_b_lep_;
-  csv_q1=csv_q1_;
-  csv_q2=csv_q2_;
-  //dervived
-  w_had=q1+q2;
-  t_had=b_had+w_had;
-  w_lep=lep+nu;
-  t_lep=b_lep+w_lep;
-}
+  {}
+
+Interpretation::Interpretation(TLorentzVector b_had_, float csv_b_had_, TLorentzVector q1_, float csv_q1_, TLorentzVector q2_, float csv_q2_, TLorentzVector b_lep_, float csv_b_lep_, TLorentzVector lep_, TLorentzVector nu_):
+  b_had(b_had_),
+  q1(q1_),
+  q2(q2_),
+  b_lep(b_lep_),
+  lep(lep_),
+  nu(nu_),
+  w_had(q1+q2),
+  t_had(b_had+w_had),
+  w_lep(lep+nu),
+  t_lep(b_lep+w_lep),
+  higgs(b1+b2),
+
+  csv_b1(-2),
+  csv_b2(-2),
+  csv_b_had(csv_b_had_),
+  csv_b_lep(csv_b_lep_),
+  csv_q1(csv_q1_),
+  csv_q2(csv_q2_)
+  {}
+
+Interpretation::Interpretation(TLorentzVector b_had_, float csv_b_had_, TLorentzVector q1_, float csv_q1_, TLorentzVector q2_, float csv_q2_, TLorentzVector b_lep_, float csv_b_lep_, TLorentzVector lep_, TLorentzVector nu_, TLorentzVector b1_, float csv_b1_, TLorentzVector b2_, float csv_b2_,std::vector<TLorentzVector> additional_jets_, std::vector<float> additional_jetcsvs_):
+  b1(b1_),
+  b2(b2_),
+  b_had(b_had_),
+  q1(q1_),
+  q2(q2_),
+  b_lep(b_lep_),
+  lep(lep_),
+  nu(nu_),
+  w_had(q1+q2),
+  t_had(b_had+w_had),
+  w_lep(lep+nu),
+  t_lep(b_lep+w_lep),
+  higgs(b1+b2),
+
+  csv_b1(csv_b1_),
+  csv_b2(csv_b2_),
+  csv_b_had(csv_b_had_),
+  csv_b_lep(csv_b_lep_),
+  csv_q1(csv_q1_),
+  csv_q2(csv_q2_),
+
+  additional_jets(additional_jets_),
+  additional_jetcsvs(additional_jetcsvs_)
+  {}
+
+Interpretation::Interpretation(TLorentzVector b_had_, float csv_b_had_, TLorentzVector q1_, float csv_q1_, TLorentzVector q2_, float csv_q2_, TLorentzVector b_lep_, float csv_b_lep_, TLorentzVector lep_, TLorentzVector nu_,std::vector<TLorentzVector> additional_jets_, std::vector<float> additional_jetcsvs_):
+  b_had(b_had_),
+  q1(q1_),
+  q2(q2_),
+  b_lep(b_lep_),
+  lep(lep_),
+  nu(nu_),
+  w_had(q1+q2),
+  t_had(b_had+w_had),
+  w_lep(lep+nu),
+  t_lep(b_lep+w_lep),
+  higgs(b1+b2),
+
+  csv_b1(-2),
+  csv_b2(-2),
+  csv_b_had(csv_b_had_),
+  csv_b_lep(csv_b_lep_),
+  csv_q1(csv_q1_),
+  csv_q2(csv_q2_),
+  additional_jets(additional_jets_),
+  additional_jetcsvs(additional_jetcsvs_)
+  {}
 
 
 TLorentzVector Interpretation::BHad(){
