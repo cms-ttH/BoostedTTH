@@ -563,12 +563,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   const double jetptcut_forward=40.0; 
   const double jetetacut_forward=4.7; 
 
-  // Get raw jets
-  std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(pfjets);
   // selected jets with jet ID cuts
-  std::vector<pat::Jet> idJets = helper.GetSelectedJets(rawJets, 0., 9999., jetID::jetLoose, '-' );
+  std::vector<pat::Jet> idJets = helper.GetSelectedJets(pfjets, 0., 9999., jetID::jetLoose, '-' );
+  // Get raw jets
+  std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
   // Clean muons and electrons from jets
-  std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(idJets,selectedMuonsLoose,selectedElectronsLoose,0.4);
+  std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets,selectedMuonsLoose,selectedElectronsLoose,0.4);
   // Apply nominal jet corrections
   std::vector<pat::Jet> correctedJets_unsorted_nominal = helper.GetCorrectedJets(cleanJets, iEvent, iSetup, sysType::NA);
   //Get jet Collection which pass selection
