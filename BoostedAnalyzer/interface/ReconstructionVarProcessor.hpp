@@ -22,8 +22,13 @@ public:
 private:
     ReconstructionQuality quality;
     InterpretationGenerator generator;
-    std::vector<std::string> tags;
-
+    std::vector<std::string> tags_tt;
+    std::vector<std::string> tags_ttbb;
+    std::vector<std::string> tags_tth;
+    std::vector<std::string> alltags;
+    std::vector<std::string> ratiotags_name;
+    std::vector<std::string> ratiotags_tth;
+    std::vector<std::string> ratiotags_ttbb;
 
 };
 
