@@ -843,7 +843,7 @@ std::vector<math::XYZTLorentzVector> GenTopEvent::GetLVs(const std::vector<reco:
 }
 
 int GenTopEvent::GetTTxIdFromHelper() const{
-  return ttXid;
+  return ttXid%100;
 }
 
 int GenTopEvent::GetTTxId(bool countPseudoAdditional) const{

@@ -238,6 +238,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       edm::EDGetTokenT<std::vector<int> > genCHadBHadronIdToken;
       edm::EDGetTokenT<std::vector<int> > genCHadIndexToken;
       edm::EDGetTokenT<std::vector<reco::GenParticle> > genCHadPlusMothersToken;
+      edm::EDGetTokenT<int> genTtbarIdToken;
 };
 
 //
@@ -283,7 +284,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
 
   // REGISTER DATA ACCESS
   EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","",""));
-  EDMRhoToken             = consumes <double> (edm::InputTag(std::string("fixedGridRhoAll")));
+  EDMRhoToken             = consumes <double> (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
   EDMSelectedTriggerToken = consumes< pat::TriggerObjectStandAloneCollection > (edm::InputTag("selectedPatTrigger","",""));
   EDMTriggerResultToken   = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","HLT"));
@@ -315,6 +316,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   genCHadBHadronIdToken          = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadBHadronId",""));
   genCHadIndexToken              = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadIndex"));
   genCHadPlusMothersToken        = consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenCHadron","genCHadPlusMothers",""));
+  genTtbarIdToken                = consumes<int>              (edm::InputTag("categorizeGenTtbar","genTtbarId",""));
 
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
@@ -736,6 +738,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
   GenTopEvent genTopEvt;
   int ttid=-1;
+  int ttid_full=-1;
   if(!isData&&useGenHadronMatch&&foundT&&foundTbar){
     /**** tt+X categorization ****/
     // Reading gen jets from the event
@@ -755,6 +758,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle<std::vector<int> > genCHadJetIndex;
     edm::Handle<std::vector<int> > genCHadFromTopWeakDecay;
     edm::Handle<std::vector<int> > genCHadBHadronId;
+    edm::Handle<int> genTtbarId;
     iEvent.getByToken(genCHadBHadronIdToken, genCHadBHadronId);
     iEvent.getByToken(genBHadFlavourToken, genBHadFlavour);
     iEvent.getByToken(genBHadJetIndexToken, genBHadJetIndex);  
@@ -769,16 +773,15 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken(genCHadJetIndexToken, genCHadJetIndex);
     iEvent.getByToken(genCHadFromTopWeakDecayToken, genCHadFromTopWeakDecay);
     iEvent.getByToken(genCHadIndexToken, genCHadIndex);
-    const float ttxptcut=20.;
-    const float ttxetacut=2.4;
-    ttid = helper.ttHFCategorization(*h_customgenjets, *genBHadIndex, *genBHadJetIndex, *genBHadFlavour, *genBHadFromTopWeakDecay, *genBHadPlusMothers, *genBHadPlusMothersIndices, *genBHadLeptonHadronIndex, *genBHadLeptonViaTau, *genCHadFlavour, *genCHadJetIndex, *genCHadFromTopWeakDecay, *genCHadBHadronId, ttxptcut,ttxetacut);
-
+    iEvent.getByToken(genTtbarIdToken, genTtbarId);
+    ttid_full = *genTtbarId;
+    ttid = ttid_full%100;
     // fill additional jet info in genTopEvt
     genTopEvt.FillTTxDetails(*h_customgenjets, 
 			     *genBHadIndex, *genBHadJetIndex, *genBHadFlavour, *genBHadFromTopWeakDecay, *genBHadPlusMothers, 
 			     *genCHadIndex, *genCHadJetIndex, *genCHadFlavour, *genCHadFromTopWeakDecay, *genCHadPlusMothers,
 			     *genCHadBHadronId,
-			     ttxptcut,ttxetacut); 
+			     20,2.4); 
   }
   SampleType sampleType= SampleType::nonttbkg;
   if(isData) sampleType = SampleType::data;
@@ -795,7 +798,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
   if(!isData&&foundT&&foundTbar) {
     // fill genTopEvt with tt(H) information
-    genTopEvt.Fill(*h_genParticles,ttid);
+    genTopEvt.Fill(*h_genParticles,ttid_full);
   }
 
   // DO REWEIGHTING

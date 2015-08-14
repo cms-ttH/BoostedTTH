@@ -14,6 +14,11 @@ Follow These Steps:
     cd PhysicsTools/JetMCAlgos/plugins/
     rm GenHFHadronMatcher.cc
     wget https://twiki.cern.ch/twiki/pub/CMSPublic/GenHFHadronMatcher/GenHFHadronMatcher.cc
+    wget https://twiki.cern.ch/twiki/pub/CMSPublic/GenHFHadronMatcher/GenTtbarCategorizer.cc
+    cd -
+    cd PhysicsTools/JetMCAlgos/python/
+    wget https://twiki.cern.ch/twiki/pub/CMSPublic/GenHFHadronMatcher/GenTtbarCategorizer_cfi.py.txt
+    mv GenTtbarCategorizer_cfi.py.txt GenTtbarCategorizer_cfi.py
     cd -
     git cms-merge-topic gkasieczka:htt-v2-74X
     git clone https://github.com/cms-ttH/MiniAOD.git
