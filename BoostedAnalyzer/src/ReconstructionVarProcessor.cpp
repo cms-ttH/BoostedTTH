@@ -7,8 +7,6 @@ ReconstructionVarProcessor::ReconstructionVarProcessor(){
     tags_tth.push_back("TTHLikelihood");
     tags_ttbb.push_back("TTBBLikelihood");
     tags_tt.push_back("TTLikelihood");
-    tags_tth.push_back("TTHLikelihood_comb");
-    tags_ttbb.push_back("TTBBLikelihood_comb");
     tags_tt.push_back("TTLikelihood_comb");
     tags_tth.push_back("TTHLikelihoodTimesME");
     tags_ttbb.push_back("TTBBLikelihoodTimesME");
@@ -26,12 +24,9 @@ ReconstructionVarProcessor::~ReconstructionVarProcessor(){}
 
 
 void ReconstructionVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
-
+    vars.InitVar("Reco_highest_TopAndWHadLikelihood");
     for(auto tagname=alltags.begin();tagname!=alltags.end();tagname++){
-	vars.InitVar("Reco_Highest_"+(*tagname));
-	vars.InitVar("Reco_Deta_Fn_best_"+(*tagname));
-	vars.InitVar("Reco_Deta_TopLep_BB_best_"+(*tagname));
-	vars.InitVar("Reco_Deta_TopHad_BB_best_"+(*tagname));
+	vars.InitVar("Reco_highest_"+(*tagname));
 
     }
     for(auto tagname=tags_tt.begin();tagname!=tags_tt.end();tagname++){
@@ -65,6 +60,9 @@ void ReconstructionVarProcessor::Init(const InputCollections& input,VariableCont
 	vars.InitVar("Reco_TTBBLikelihoodTimesME_best_"+(*tagname));
 	vars.InitVar("Reco_TTBBME_off_best_"+(*tagname));
 	vars.InitVar("Reco_TTBBLikelihoodTimesME_off_best_"+(*tagname));
+	vars.InitVar("Reco_Deta_Fn_best_"+(*tagname));
+	vars.InitVar("Reco_Deta_TopLep_BB_best_"+(*tagname));
+	vars.InitVar("Reco_Deta_TopHad_BB_best_"+(*tagname));
     }
     for(auto tagname=ratiotags_name.begin();tagname!=ratiotags_name.end();tagname++){
 	vars.InitVar("Reco_LikelihoodRatio_best_"+(*tagname));
@@ -128,17 +126,21 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
 
     // add best tags to vars
     for(auto t=best_tag.begin(); t!=best_tag.end(); t++){
-	vars.FillVar("Reco_Highest_"+t->first,t->second);
+	vars.FillVar("Reco_highest_"+t->first,t->second);
     }
+    float toptag=-9999;
+    for(uint i=0;i<nints;i++){
+        float tag=quality.TopAndWHadLikelihood(*ints[i]);
+	if(tag>toptag){
+	    toptag=tag;
+	}        
+    }
+    vars.FillVar("Reco_highest_TopAndWHadLikelihood",toptag);
 
     // calculate variables for best interpretations
     for(auto tagname=alltags.begin();tagname!=alltags.end();tagname++){
 	Interpretation* bi=best_int[*tagname];
 	if(bi==0) continue;
-	float dEta_fn=sqrt(abs((bi->Higgs().Eta() - bi->TopLep().Eta())*(bi->Higgs().Eta() - bi->TopHad().Eta())));
-	vars.FillVar("Reco_Deta_Fn_best_"+(*tagname),dEta_fn);
-	vars.FillVar("Reco_Deta_TopLep_BB_best_"+(*tagname),abs(bi->Higgs().Eta() - bi->TopLep().Eta()));
-	vars.FillVar("Reco_Deta_TopHad_BB_best_"+(*tagname),abs(bi->Higgs().Eta() - bi->TopHad().Eta()));
     }
 
     // calculate variables for best tt interpretations
@@ -198,6 +200,11 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
 	vars.FillVar("Reco_TTBBLikelihoodTimesME_best_"+(*tagname),ttbblikeme);
 	vars.FillVar("Reco_TTBBME_off_best_"+(*tagname),ttbbme_off);
 	vars.FillVar("Reco_TTBBLikelihoodTimesME_off_best_"+(*tagname),ttbblikeme_off);
+	float dEta_fn=sqrt(abs((bi->Higgs().Eta() - bi->TopLep().Eta())*(bi->Higgs().Eta() - bi->TopHad().Eta())));
+	vars.FillVar("Reco_Deta_Fn_best_"+(*tagname),dEta_fn);
+	vars.FillVar("Reco_Deta_TopLep_BB_best_"+(*tagname),abs(bi->Higgs().Eta() - bi->TopLep().Eta()));
+	vars.FillVar("Reco_Deta_TopHad_BB_best_"+(*tagname),abs(bi->Higgs().Eta() - bi->TopHad().Eta()));
+
 
     }
     // fill best tth / best ttbb interpretation ratios
