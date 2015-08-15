@@ -239,6 +239,13 @@ float ReconstructionQuality::TTHBB_ME(Interpretation& i){
     return tag;
 }
 
+float ReconstructionQuality::TopAndWHadLikelihood(Interpretation& i){
+    if(i.HasTag("TopAndWHadLikelihood")) return i.GetTag("TopAndWHadLikelihood");
+    float tag=TopAndWHadLikelihood(i.TopHad_M(),i.WHad_M());
+    i.SetTag("TopAndWHadLikelihood",tag);
+    return tag;
+}
+
 
 float ReconstructionQuality::BLikelihood(float csv){
     csv=fmax(csv,-0.099);
