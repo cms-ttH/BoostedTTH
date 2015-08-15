@@ -38,7 +38,7 @@ ReconstructionQuality::ReconstructionQuality(string filename){
     tophad_sigma=17;
     toplep_sigma=26;
     whad_sigma=10;
-    tiny_likelihood=1e-4;
+    tiny_likelihood=1e-6;
     bb_slope=0.0128;
 }
 
@@ -226,7 +226,7 @@ float ReconstructionQuality::TTBB_ON_ME(Interpretation& i){
 }
 float ReconstructionQuality::TTBB_OFF_ME(Interpretation& i){
     if(i.HasTag("TTBB_OFF_ME")) return i.GetTag("TTBB_OFF_ME");
-    float tag=1e4*me.GetTTBBMEsq_offshell(i.TopHad(),i.TopLep(),i.B1(),i.B2());
+    float tag=3e3*me.GetTTBBMEsq_offshell(i.TopHad(),i.TopLep(),i.B1(),i.B2());
     i.SetTag("TTBB_OFF_ME",tag);
     return tag;
 }
