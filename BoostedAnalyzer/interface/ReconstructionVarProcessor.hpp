@@ -5,6 +5,7 @@
 #include "BoostedTTH/TTHReconstruction/interface/ReconstructionQuality.hpp"
 #include "BoostedTTH/TTHReconstruction/interface/InterpretationGenerator.hpp"
 #include "BoostedTTH/TTHReconstruction/interface/Interpretation.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/ReconstructionMCMatching.hpp"
 #include "TLorentzVector.h"
 
 class ReconstructionVarProcessor: public TreeProcessor{
@@ -22,6 +23,7 @@ public:
 private:
     ReconstructionQuality quality;
     InterpretationGenerator generator;
+    ReconstructionMCMatching mcmatcher;
     std::vector<std::string> tags_tt;
     std::vector<std::string> tags_ttbb;
     std::vector<std::string> tags_tth;

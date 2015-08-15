@@ -26,9 +26,17 @@ ReconstructionVarProcessor::~ReconstructionVarProcessor(){}
 void ReconstructionVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
     vars.InitVar("Reco_highest_TopAndWHadLikelihood");
     for(auto tagname=alltags.begin();tagname!=alltags.end();tagname++){
-	vars.InitVar("Reco_highest_"+(*tagname));
-
+      vars.InitVar("Reco_highest_"+(*tagname),"I");
+	vars.InitVar("Reco_foundAll_with_"+(*tagname),"I");
+	vars.InitVar("Reco_foundW_with_"+(*tagname),"I");
+	vars.InitVar("Reco_foundH_with_"+(*tagname),"I");
+	vars.InitVar("Reco_foundN_with_"+(*tagname),"I");
     }
+    vars.InitVar("Reco_existingAll","I");
+    vars.InitVar("Reco_existingW","I");
+    vars.InitVar("Reco_existingH","I");
+    vars.InitVar("Reco_existingN","I");
+
     for(auto tagname=tags_tt.begin();tagname!=tags_tt.end();tagname++){
 	vars.InitVar("Reco_Dr_BB_best_"+(*tagname));
 	vars.InitVar("Reco_Higgs_M_best_"+(*tagname));
@@ -50,7 +58,7 @@ void ReconstructionVarProcessor::Init(const InputCollections& input,VariableCont
     }
     for(auto tagname=tags_tth.begin();tagname!=tags_tth.end();tagname++){
 	vars.InitVar("Reco_TTHLikelihood_best_"+(*tagname));
-	vars.InitVar("Reco_TTHBBME _best_"+(*tagname));
+	vars.InitVar("Reco_TTHBBME_best_"+(*tagname));
 	vars.InitVar("Reco_TTHLikelihoodTimesME_best_"+(*tagname));
 
     }
@@ -104,6 +112,30 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
     TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
     TVector2 metvec(input.pfMET.px(),input.pfMET.py());
 
+    // setup mc matching
+    if(input.genTopEvt.IsSemiLepton()&&(input.higgsDecay==HiggsDecay::bb)){
+      vector<TLorentzVector> bs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetHiggsDecayProductVecs());
+      vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());
+      if(qs_true.size()==2&&bs_true.size()==2){
+	TLorentzVector bhad_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopHadDecayQuarkVec());
+	TLorentzVector blep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopLepDecayQuarkVec());
+	TLorentzVector lep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetLeptonVec());
+	TLorentzVector nu_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetNeutrinoVec());
+	mcmatcher.Setup(bhad_true,qs_true[0],qs_true[1],blep_true,lep_true,nu_true,bs_true[0],bs_true[1]);
+      }
+    }
+    if(input.genTopEvt.IsSemiLepton()&&input.sampleType==ttbb){
+      std::vector<reco::GenJet> additional_b_genjets = input.genTopEvt.GetAdditionalBGenJets();
+      vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetQuarkVecs());
+      if(qs_true.size()==2&&additional_b_genjets.size()==2){
+	TLorentzVector bhad_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopHadDecayQuarkVec());
+	TLorentzVector blep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopLepDecayQuarkVec());
+	TLorentzVector lep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetLeptonVec());
+	TLorentzVector nu_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetNeutrinoVec());
+	mcmatcher.Setup(bhad_true,qs_true[0],qs_true[1],blep_true,lep_true,nu_true,BoostedUtils::GetTLorentzVector(additional_b_genjets[0].p4()),BoostedUtils::GetTLorentzVector(additional_b_genjets[1].p4()));
+      }
+    }
+
     // generate interpretations
     Interpretation** ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);
     uint nints = generator.GetNints();
@@ -139,9 +171,31 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
 
     // calculate variables for best interpretations
     for(auto tagname=alltags.begin();tagname!=alltags.end();tagname++){
-	Interpretation* bi=best_int[*tagname];
-	if(bi==0) continue;
+        Interpretation* bi=best_int[*tagname];
+        if(bi==0) continue;
+	if(mcmatcher.GetState()==2){
+	  vars.FillVar("Reco_foundAll_with_"+(*tagname),mcmatcher.MatchWHad(*bi));
+	  vars.FillVar("Reco_foundW_with_"+(*tagname),mcmatcher.MatchWHad(*bi));
+	  vars.FillVar("Reco_foundH_with_"+(*tagname),mcmatcher.MatchH(*bi));
+	  vars.FillVar("Reco_foundN_with_"+(*tagname),mcmatcher.MatchNTTH(*bi));
+	}
     }
+    bool existingAll=false;
+    bool existingW=false;
+    bool existingH=false;
+    int existingN=0;
+    for(uint i=0;i<nints;i++){
+      if(mcmatcher.GetState()==2){
+	if(mcmatcher.MatchWHad(*ints[i])) existingW=true;
+	if(mcmatcher.MatchH(*ints[i])) existingH=true;
+	if(mcmatcher.MatchTTHallQ(*ints[i])) existingAll=true;
+	if(mcmatcher.MatchNTTH(*ints[i])>existingN) existingN=mcmatcher.MatchNTTH(*ints[i]);
+      }
+    }    
+    vars.FillVar("Reco_existingAll",existingAll);
+    vars.FillVar("Reco_existingW",existingW);
+    vars.FillVar("Reco_existingH",existingH);
+    vars.FillVar("Reco_existingN",existingN);
 
     // calculate variables for best tt interpretations
     for(auto tagname=tags_tt.begin();tagname!=tags_tt.end();tagname++){
@@ -184,7 +238,7 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
 	double tthme = quality.TTHBB_ME(*bi);
 	double tthlikeme = tthlike*tthme;
 	vars.FillVar("Reco_TTHLikelihood_best_"+(*tagname),tthlike);
-	vars.FillVar("Reco_TTHBBME _best_"+(*tagname),tthme);
+	vars.FillVar("Reco_TTHBBME_best_"+(*tagname),tthme);
 	vars.FillVar("Reco_TTHLikelihoodTimesME_best_"+(*tagname),tthlikeme);
     }
     for(auto tagname=tags_ttbb.begin();tagname!=tags_ttbb.end();tagname++){
