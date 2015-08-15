@@ -16,6 +16,7 @@ public:
   void Setup(TLorentzVector b_had, TLorentzVector q1, TLorentzVector q2, TLorentzVector b_lep, TLorentzVector lep, TLorentzVector nu, TLorentzVector b1, TLorentzVector b2);
   void Setup(TLorentzVector b_had, TLorentzVector q1, TLorentzVector q2, TLorentzVector b_lep, TLorentzVector lep, TLorentzVector nu);
   float GetTag(std::string tag, Interpretation& i);
+  int GetState();
 
   bool MatchTTHallQ(Interpretation& i);
   bool MatchTTallQ(Interpretation& i);

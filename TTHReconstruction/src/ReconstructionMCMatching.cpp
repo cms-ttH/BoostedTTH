@@ -25,6 +25,9 @@ void ReconstructionMCMatching::Setup(TLorentzVector b_had_, TLorentzVector q1_, 
   setupMC=1;
 }
 
+int ReconstructionMCMatching::GetState(){
+  return setupMC;
+}
 
 bool ReconstructionMCMatching::MatchH(Interpretation& i){
   if(setupMC<2){
