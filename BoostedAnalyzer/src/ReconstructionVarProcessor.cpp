@@ -107,7 +107,8 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
     TVector2 metvec(input.pfMET.px(),input.pfMET.py());
 
     // generate interpretations
-    vector<Interpretation*> ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);
+    Interpretation** ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);
+    uint nints = generator.GetNints();
     
     // calculate best tags and interpretations
     map<string,Interpretation*> best_int;
@@ -115,7 +116,7 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
 	best_int[*tagname]=0;
     }
     map<string,float> best_tag;
-    for(uint i=0;i<ints.size();i++){
+    for(uint i=0;i<nints;i++){
 	for(auto tagname=alltags.begin();tagname!=alltags.end();tagname++){
 	    float tag=quality.GetTag(*tagname,*ints[i]);
 	    if(tag>best_tag[*tagname]){
@@ -237,7 +238,7 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
     double sum_ttbb_me_likelihood=0;
     double sum_tth_me=0;
     double sum_ttbb_me=0;   
-    for(uint i=0;i<ints.size();i++){
+    for(uint i=0;i<nints;i++){
 	// calculating MEs for many interpretations can take a lot of time
 	double tthlike= quality.TTHLikelihood(*ints[i]);
 	double tthme = quality.TTHBB_ME(*ints[i]);
@@ -262,11 +263,5 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVar("Reco_Sum_LikelihoodRatio",sum_tth_likelihood/(sum_tth_likelihood+sum_ttbb_likelihood));
     vars.FillVar("Reco_Sum_LikelihoodTimesMERatio",sum_tth_me_likelihood/(sum_tth_me_likelihood+sum_ttbb_me_likelihood));
     vars.FillVar("Reco_Sum_MERatio",sum_tth_me/(sum_tth_me+sum_ttbb_me));
-
-    for(uint i=0; i<ints.size(); i++){
-	delete ints[i];
-    }
-    ints.clear();
-
   
 }

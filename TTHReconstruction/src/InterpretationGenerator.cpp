@@ -4,9 +4,12 @@ using namespace std;
 InterpretationGenerator::InterpretationGenerator(IntType::IntType type_, int allowedMistags_, int maxJets_, float minMWHad_,float maxMWHad_,float btagCut_):type(type_), allowedMistags(allowedMistags_), maxJets(maxJets_), minMWHad(minMWHad_), maxMWHad(maxMWHad_), btagCut(btagCut_)
 {}
 
-std::vector<Interpretation*> InterpretationGenerator::GenerateTTHInterpretations(std::vector<TLorentzVector> jetvecs_in, std::vector<float> jetcsvs_in, TLorentzVector lepvec, TVector2 metvec){
+Interpretation** InterpretationGenerator::GenerateTTHInterpretations(std::vector<TLorentzVector> jetvecs_in, std::vector<float> jetcsvs_in, TLorentzVector lepvec, TVector2 metvec){
     // interpreatations
-    std::vector<Interpretation*> interpretations;
+    for(uint i=0; i<interpretations.size(); i++){
+	delete interpretations[i];
+    }
+    interpretations.clear();
     
     // Neutrino reconstruction
     TLorentzVector nuvec1;
@@ -56,9 +59,9 @@ std::vector<Interpretation*> InterpretationGenerator::GenerateTTHInterpretations
 	k=5;
     }
     // if njets<k no interpretation is possible, njets<4 is not supported, too
-    if(njets<4||njets<k) return interpretations;
-    if(njets<6&&(type==IntType::tth||type==IntType::tth_plus)) return interpretations;
-    if(njets<5&&(type==IntType::tth5||type==IntType::tth5_plus)) return interpretations;
+    if(njets<4||njets<k) return 0;
+    if(njets<6&&(type==IntType::tth||type==IntType::tth_plus)) return 0;
+    if(njets<5&&(type==IntType::tth5||type==IntType::tth5_plus)) return 0;
     
     // loop over neutrino solutions
     for(uint iNu=1; iNu<=nNu;iNu++){  
@@ -142,7 +145,11 @@ std::vector<Interpretation*> InterpretationGenerator::GenerateTTHInterpretations
 	    
 	}while(NextSubsetPermutation(idxs,k));
     }
-    return interpretations;
+    return interpretations.size()==0 ? 0 : &(interpretations[0]);
+}
+
+uint InterpretationGenerator::GetNints(){
+    return interpretations.size();
 }
 
 bool InterpretationGenerator::NextSubsetPermutation(vector<int>& idxs, int k){

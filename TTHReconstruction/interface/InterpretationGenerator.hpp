@@ -14,13 +14,15 @@ class InterpretationGenerator{
 public:
   InterpretationGenerator(IntType::IntType type=IntType::tth, int allowedMistags=1, int maxJets=10, float minMWHad=-99999,float maxMWHad=99999,float btagCut=0.89);
 
-  std::vector<Interpretation*> GenerateTTHInterpretations(std::vector<TLorentzVector> jetvecs, std::vector<float> jetcsvs, TLorentzVector lepvec, TVector2 metvec);
+  Interpretation** GenerateTTHInterpretations(std::vector<TLorentzVector> jetvecs, std::vector<float> jetcsvs, TLorentzVector lepvec, TVector2 metvec);
+
+  uint GetNints();
 
   void GetNuVecs(const TLorentzVector & lepvec, const TVector2 & metvec, TLorentzVector & nu1, TLorentzVector & nu2);
 
 private:
   bool NextSubsetPermutation(std::vector<int>& idxs, int length);
-
+  std::vector<Interpretation*> interpretations;
   IntType::IntType type;
   int allowedMistags;
   int maxJets;
