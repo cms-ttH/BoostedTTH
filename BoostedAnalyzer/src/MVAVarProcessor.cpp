@@ -952,7 +952,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vars.FillVar("Evt_Deta_Fn_Ohio",dEta_fn);
 
   float abs_dEta_hadtop_bb=fabs(testquant2);
-  float abs_dEta_leptop_bb=fabs(testquant2);
+  float abs_dEta_leptop_bb=fabs(testquant1);
 
 
   vars.FillVar("Evt_Deta_TopLep_BB_Ohio",abs_dEta_leptop_bb);
