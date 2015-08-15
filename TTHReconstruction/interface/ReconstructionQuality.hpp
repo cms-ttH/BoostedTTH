@@ -39,21 +39,7 @@ public:
     float BLikelihood(float csv);
     float LLikelihood(float csv);
     float NBLikelihood(uint ntagged, uint njets, float* csvs);
-    
-    // get likelihoods for different masses
-    float TopHadLikelihood(float m);
-    float TopHadLikelihood_comb(float m);
-    float TopAndWHadLikelihood(float mthad,float mwhad);
-    float TopAndWHadLikelihood_comb(float mthad,float mwhad);
-    float TopLepLikelihood(float m);
-    float TopLepLikelihood_comb(float m);
-    float WHadLikelihood(float m);
-    float WHadLikelihood_comb(float m);
-    float HiggsLikelihood(float m);
-    float HiggsLikelihood_comb(float m);
-    float BBLikelihood(float m);
-    float BBLikelihood_comb(float m);
-    
+      
     // get matrix element squared
     float TTH_ME(Interpretation& i);
     // ttbb me, using bb-mass as it is
@@ -62,9 +48,7 @@ public:
     float TTBB_ON_ME(Interpretation& i);
     float TTHBB_ME(Interpretation& i);
     
-    float Interpolate(TH1F* histo, float value);
-    void PCA_MW_MT(float mw, float mt, float& mw_new , float& mt_new);    
-    
+   
 private:
     float TTHChi2(float mthad, float mtlep, float mhiggs, float mwhad);
     float TTBBChi2(float mthad, float mtlep, float mhiggs, float mwhad);
@@ -77,7 +61,23 @@ private:
     float TTHLikelihood_comb(float mthad, float mtlep, float mhiggs, float mwhad);
     float TTBBLikelihood_comb(float mthad, float mtlep, float mhiggs, float mwhad);
     float TTLikelihood_comb(float mthad, float mtlep, float mwhad);
-      
+  
+// get likelihoods for different masses
+    float TopHadLikelihood(float m);
+    float TopHadLikelihood_comb(float m);
+    float TopAndWHadLikelihood(float mthad,float mwhad);
+    float TopAndWHadLikelihood_comb(float mthad,float mwhad);
+    float TopLepLikelihood(float m);
+    float TopLepLikelihood_comb(float m);
+    float WHadLikelihood(float m);
+    float WHadLikelihood_comb(float m);
+    float HiggsLikelihood(float m);
+    float HiggsLikelihood_comb(float m);
+    float BBLikelihood(float m);
+    float BBLikelihood_comb(float m);
+    float Interpolate(TH1F* histo, float value);
+    void PCA_MW_MT(float mw, float mt, float& mw_new , float& mt_new);    
+  
     
     TFile* file;
     TH1F* h_CSV_b;
