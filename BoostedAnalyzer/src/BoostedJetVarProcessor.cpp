@@ -6,7 +6,8 @@ BoostedJetVarProcessor::BoostedJetVarProcessor(MiniAODHelper* helper_):btagger("
   toptagger.insert(map< string, TopTagger >::value_type("HEP", TopTagger(TopTag::HEP,TopTag::Pt,"")));
   toptagger.insert(map< string, TopTagger >::value_type("HEPCSV", TopTagger(TopTag::HEP,TopTag::CSV,"")));
   toptagger.insert(map< string, TopTagger >::value_type("Likelihood", TopTagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root")));
-  toptagger.insert(map< string, TopTagger >::value_type("BDT", TopTagger(TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml")));
+  toptagger.insert(map< string, TopTagger >::value_type("BDT_Std", TopTagger(TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml")));
+  toptagger.insert(map< string, TopTagger >::value_type("BDT_PSO", TopTagger(TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_PSO.weights.xml")));
   
   higgstagger.insert(map< string, HiggsTagger >::value_type("SecondCSV", HiggsTagger(HiggsTag::SecondCSV,"")));
 }
@@ -212,7 +213,8 @@ void BoostedJetVarProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "TopJet_TopTag_HEP",-9,"N_TopJets" );
   vars.InitVars( "TopJet_TopTag_HEPCSV",-9,"N_TopJets" );
   vars.InitVars( "TopJet_TopTag_Likelihood",-9,"N_TopJets" );
-  vars.InitVars( "TopJet_TopTag_BDT",-9,"N_TopJets" );
+  vars.InitVars( "TopJet_TopTag_BDT_Std",-9,"N_TopJets" );
+  vars.InitVars( "TopJet_TopTag_BDT_PSO",-9,"N_TopJets" );
   
   vars.InitVar( "N_HiggsJets","I" );
 
@@ -623,7 +625,8 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
     vars.FillVars( "TopJet_TopTag_HEP",i,toptagger.at("HEP").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
     vars.FillVars( "TopJet_TopTag_HEPCSV",i,toptagger.at("HEPCSV").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
     vars.FillVars( "TopJet_TopTag_Likelihood",i,toptagger.at("Likelihood").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
-    vars.FillVars( "TopJet_TopTag_BDT",i,toptagger.at("BDT").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
+    vars.FillVars( "TopJet_TopTag_BDT_Std",i,toptagger.at("BDT_Std").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
+    vars.FillVars( "TopJet_TopTag_BDT_PSO",i,toptagger.at("BDT_PSO").GetTopTaggerOutput(input.selectedHTTTopJets[i]) );
   }
   
   

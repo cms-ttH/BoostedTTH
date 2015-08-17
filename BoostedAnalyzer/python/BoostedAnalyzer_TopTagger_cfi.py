@@ -27,5 +27,5 @@ BoostedAnalyzer = cms.EDAnalyzer(
     outfileName = cms.string("BoostedTTH"),
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
     makeSystematicsTrees = cms.bool(False),
-    processorNames = cms.vstring("WeightProcessor","BoostedMCMatchVarProcessor","BoostedJetVarProcessor")
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BoostedJetVarProcessor")
 )
