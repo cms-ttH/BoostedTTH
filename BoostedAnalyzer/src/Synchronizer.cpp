@@ -292,7 +292,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, const MiniAODHelp
   MET_pt=input.pfMET.pt();
   MET_phi=input.pfMET.phi();
 
-  ttHFCategory=input.genTopEvt.GetTTxId();
+  ttHFCategory=input.genTopEvt.GetTTxIdFromHelper();
   if(is_SL||is_DL){
       out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
 	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId

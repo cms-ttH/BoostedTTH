@@ -12,7 +12,7 @@ ak4GenJetsCustom = ak4GenJets.clone(
     src = genJetInputParticleCollection,
     rParam = cms.double(0.4),
     jetAlgorithm = cms.string("AntiKt"),
-    jetPtMin = 20.
+#    jetPtMin = 20.
 )
 
 # Ghost particle collection used for Hadron-Jet association 
@@ -48,3 +48,11 @@ matchGenCHadron = matchGenCHadron.clone(
     genParticles = genParticleCollection
 )
 
+## Producer for ttbar categorisation ID
+# MUST use same genJetCollection as used for tools above
+from PhysicsTools.JetMCAlgos.GenTtbarCategorizer_cfi import categorizeGenTtbar
+categorizeGenTtbar = categorizeGenTtbar.clone(
+    genJetPtMin = 20.,
+    genJetAbsEtaMax = 2.4,
+    genJets = genJetCollection,
+)
