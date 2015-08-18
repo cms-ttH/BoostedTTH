@@ -4,6 +4,7 @@
 #include "TFile.h"
 #include "TLorentzVector.h"
 #include "BoostedTTH/TTHReconstruction/interface/Interpretation.hpp"
+#include "BoostedTTH/TTHReconstruction/interface/InterpretationGenerator.hpp"
 #include "BoostedTTH/TTHReconstruction/interface/MECalculator.hpp"
 #include "TH1F.h"
 #include "TMath.h"
@@ -38,7 +39,7 @@ public:
     // get the b-tagger likelihoods
     float BLikelihood(float csv);
     float LLikelihood(float csv);
-    float NBLikelihood(uint ntagged, uint njets, float* csvs);
+    float NBLikelihood(uint ntagged, uint njets, const double* csvs);
       
     // get matrix element squared
     float TTH_ME(Interpretation& i);
