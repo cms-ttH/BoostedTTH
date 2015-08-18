@@ -209,13 +209,22 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVar( "Evt_H2" );
   vars.InitVar( "Evt_H3" );
   vars.InitVar( "Evt_H4" );
-
   
   vars.InitVar("Evt_Deta_TopLep_BB_Ohio");
   vars.InitVar("Evt_Deta_TopHad_BB_Ohio");
   vars.InitVar("Evt_Best_Higgs_Mass_Ohio");
   vars.InitVar("Evt_Deta_Fn_Ohio");
   vars.InitVar("Evt_Dr_BB_Ohio");
+
+  vars.InitVar("Evt_4bLikelihood");
+  vars.InitVar("Evt_3bLikelihood");
+  vars.InitVar("Evt_2bLikelihood");
+  vars.InitVar("Evt_1bLikelihood");
+  vars.InitVar("Evt_4b3bLikelihoodRatio");
+  vars.InitVar("Evt_4b2bLikelihoodRatio");
+  vars.InitVar("Evt_3b2bLikelihoodRatio");
+  vars.InitVar("Evt_2b1bLikelihoodRatio");
+
 
   initialized=true;
 }
@@ -958,5 +967,23 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vars.FillVar("Evt_Deta_TopLep_BB_Ohio",abs_dEta_leptop_bb);
   vars.FillVar("Evt_Deta_TopHad_BB_Ohio",abs_dEta_hadtop_bb);
   vars.FillVar("Evt_Dr_BB_Ohio",dRbbStudy);
+
+  float p_4b=quality.NBLikelihood(4,csvJets.size(),&(csvJets[0]));
+  float p_3b=quality.NBLikelihood(3,csvJets.size(),&(csvJets[0]));
+  float p_2b=quality.NBLikelihood(2,csvJets.size(),&(csvJets[0]));
+  float p_1b=quality.NBLikelihood(1,csvJets.size(),&(csvJets[0]));
+  float r_43=p_4b/(p_4b+p_3b);
+  float r_42=p_4b/(p_4b+p_2b);
+  float r_32=p_3b/(p_3b+p_2b);
+  float r_21=p_2b/(p_2b+p_1b);
+    
+  vars.FillVar("Evt_4bLikelihood",p_4b);
+  vars.FillVar("Evt_3bLikelihood",p_3b);
+  vars.FillVar("Evt_2bLikelihood",p_2b);
+  vars.FillVar("Evt_1bLikelihood",p_1b);
+  vars.FillVar("Evt_4b3bLikelihoodRatio",r_43);
+  vars.FillVar("Evt_4b2bLikelihoodRatio",r_42);
+  vars.FillVar("Evt_3b2bLikelihoodRatio",r_32);
+  vars.FillVar("Evt_2b1bLikelihoodRatio",r_21);
 
 }
