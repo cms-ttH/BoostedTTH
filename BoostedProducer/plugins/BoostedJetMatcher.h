@@ -1,12 +1,12 @@
-#ifndef BOOSTEDTTH_BOOSTEDPRODUCERS_SFJETMATCHER_H
-#define BOOSTEDTTH_BOOSTEDPRODUCERS_SFJETMATCHER_H 1
+#ifndef BOOSTEDTTH_BOOSTEDPRODUCERS_BOOSTEDJETMATCHER_H
+#define BOOSTEDTTH_BOOSTEDPRODUCERS_BOOSTEDJETMATCHER_H 1
 
 // -*- C++ -*-
 //
-// Package:    BoostedTTH/BoostedProducer/SFJetMatcher
-// Class:      SFJetMatcher
+// Package:    BoostedTTH/BoostedProducer/BoostedJetMatcher
+// Class:      BoostedJetMatcher
 // 
-/**\class SFJetMatcher SFJetMatcher.cc BoostedTTH/BoostedProducer/plugins/SFJetMatcher.cc
+/**\class BoostedJetMatcher BoostedJetMatcher.cc BoostedTTH/BoostedProducer/plugins/BoostedJetMatcher.cc
 
  Description: [one line class summary]
 
@@ -35,19 +35,20 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "MiniAOD/BoostedObjects/interface/SubFilterJet.h"
+#include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
+#include "DataFormats/JetReco/interface/HTTTopJetTagInfo.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
 //
 // class declaration
 //
 
-class SFJetMatcher : public edm::EDProducer {
+class BoostedJetMatcher : public edm::EDProducer {
    
   public:
 
-    explicit SFJetMatcher(const edm::ParameterSet&);
-    ~SFJetMatcher();
+    explicit BoostedJetMatcher(const edm::ParameterSet&);
+    ~BoostedJetMatcher();
 
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
@@ -60,20 +61,19 @@ class SFJetMatcher : public edm::EDProducer {
 
     template<typename recojettype>
     const pat::Jet & deltarJetMatching(const edm::View<pat::Jet> & patjets, const std::multimap<double, int> & patjetindex_by_eta, const recojettype & rjet);
-  
+    template<typename recojettype>
+    const int deltarTopJetMatching(const recojettype & recofatjet, const std::vector<reco::BasicJet> & recotopjets);
+
   
     // ----------member data ---------------------------
-    double minJetPt; 
-    
-    edm::InputTag recofatjetsTag_;
-    edm::InputTag patfatjetsTag_;
-    edm::InputTag patsubjetsTag_;
-    edm::InputTag patfilterjetsTag_;
-    edm::InputTag subjettiness1Tag_;
-    edm::InputTag subjettiness2Tag_;
-    edm::InputTag subjettiness3Tag_;
-    edm::InputTag subjettiness4Tag_;
-    
+    edm::InputTag recoFatJetsTag_;
+    edm::InputTag patFatJetsTag_;
+    edm::InputTag recoTopJetsTag_;
+    edm::InputTag patTopJetsTag_;
+    edm::InputTag patTopSubjetsTag_;
+    edm::InputTag httInfosTag_;
+    edm::InputTag patSFSubJetsTag_;
+    edm::InputTag patSFFilterJetsTag_;
 };
 
 #endif
