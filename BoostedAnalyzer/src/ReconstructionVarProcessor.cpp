@@ -25,6 +25,7 @@ ReconstructionVarProcessor::~ReconstructionVarProcessor(){}
 
 void ReconstructionVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
     vars.InitVar("Reco_highest_TopAndWHadLikelihood");
+
     for(auto tagname=alltags.begin();tagname!=alltags.end();tagname++){
       vars.InitVar("Reco_highest_"+(*tagname),"I");
 	vars.InitVar("Reco_foundAll_with_"+(*tagname),"I");
@@ -126,8 +127,8 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
     }
     if(input.genTopEvt.IsSemiLepton()&&input.sampleType==ttbb){
       std::vector<reco::GenJet> additional_b_genjets = input.genTopEvt.GetAdditionalBGenJets();
-      vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetQuarkVecs());
-      if(qs_true.size()==2&&additional_b_genjets.size()==2){
+      vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());
+      if(qs_true.size()==2&&additional_b_genjets.size()>=2){
 	TLorentzVector bhad_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopHadDecayQuarkVec());
 	TLorentzVector blep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopLepDecayQuarkVec());
 	TLorentzVector lep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetLeptonVec());
