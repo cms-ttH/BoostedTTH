@@ -20,7 +20,7 @@ HTTTopJetProducer = cms.EDProducer(
     minFatjetPt         = cms.double(180.),
     minSubjetPt         = cms.double(0.),
     minCandPt           = cms.double(0.),
-    maxFatjetAbsEta     = cms.double(2.0),
+    maxFatjetAbsEta     = cms.double(99.),
     subjetMass          = cms.double(30.),
     muCut               = cms.double(0.8),
     filtR               = cms.double(0.3),
@@ -37,7 +37,7 @@ HTTTopJetProducer = cms.EDProducer(
 )
 
 SFJetProducer = cms.EDProducer(
-    "SFJetProducer",
+    "SubjetFilterJetProducer",
     PFJetParameters.clone(
       src           = cms.InputTag("pfNoElectronsCHS"),
       doAreaFastjet = cms.bool(True),
@@ -45,16 +45,13 @@ SFJetProducer = cms.EDProducer(
       jetPtMin      = cms.double(180.0)
     ),
     AnomalousCellParameters,
-    verbose 		    = cms.bool(False),
     jetAlgorithm 	  = cms.string("CambridgeAachen"),
-    rParam       	  = cms.double(1.5),
     nFatMax      	  = cms.uint32(0),
-    centralEtaCut	  = cms.double(2.0),
-    massDropCut  	  = cms.double(0.67),
+    rParam       	  = cms.double(1.5),
     rFilt        	  = cms.double(0.3),
+    massDropCut  	  = cms.double(0.67),
     asymmCut     	  = cms.double(0.3),
-    asymmCutLater	  = cms.bool(True),
-    filterJetPtMin  = cms.double(15)	
+    asymmCutLater	  = cms.bool(True)	
 )
 
 BoostedProducerPath = cms.Path(HTTTopJetProducer*SFJetProducer)
