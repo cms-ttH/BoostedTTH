@@ -1,0 +1,5 @@
+<use name="root"/>
+<use name="BoostedTTH/MatrixElements"/>
+<export>
+  <lib   name="1"/>
+</export>

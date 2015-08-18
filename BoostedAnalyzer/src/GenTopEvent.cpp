@@ -525,7 +525,7 @@ reco::GenParticle GenTopEvent::GetLepton() const{
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic){
     for(auto p=wminus_decay_products.begin();p!=wminus_decay_products.end();p++){
-      if(p->pdgId()==-11||p->pdgId()==-13||p->pdgId()==-15)
+      if(p->pdgId()==11||p->pdgId()==13||p->pdgId()==15)
 	return *p;
     }
     std::cerr <<"no lepton found" <<std::endl;
@@ -533,7 +533,7 @@ reco::GenParticle GenTopEvent::GetLepton() const{
   }
   else if(!topIsHadronic&&topbarIsHadronic){
     for(auto p=wplus_decay_products.begin();p!=wplus_decay_products.end();p++){
-      if(p->pdgId()==11||p->pdgId()==13||p->pdgId()==15)
+      if(p->pdgId()==-11||p->pdgId()==-13||p->pdgId()==-15)
 	return *p;
     }
     std::cerr <<"no lepton found" <<std::endl;
