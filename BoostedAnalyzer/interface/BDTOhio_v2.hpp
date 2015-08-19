@@ -2,6 +2,7 @@
 #define BOOSTEDTTH_BOOSTEDANALYZER_BDTOHIOV2_HPP
 #include <vector>
 #include <map>
+#include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "MiniAOD/MiniAODHelper/interface/BDTvars.h"
 #include "TMVA/Reader.h"
 
@@ -31,7 +32,6 @@ private:
   std::map<std::string,float> variableMap;
   BDTvars bdtvar;
   const double btagMcut;
-  const char* btagger;
 
 };
 

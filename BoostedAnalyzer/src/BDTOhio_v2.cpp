@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v2.hpp"
 using namespace std;
 
-BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.89),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
+BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.89){
   // ==================================================
   //init all variables used in BDT set
   variableMap["all_sum_pt_with_met"]=-999.;
@@ -172,7 +172,7 @@ std::string BDTOhio_v2::GetCategory(const std::vector<pat::Jet>& selectedJets) c
   int njets=selectedJets.size();
   int ntagged=0;
   for(auto jet=selectedJets.begin(); jet!=selectedJets.end(); jet++){
-    if(jet->bDiscriminator(btagger)>btagMcut) ntagged++;
+    if(BoostedUtils::GetJetCSV(*jet)>btagMcut) ntagged++;
   }
   if(ntagged>=4&&njets>=6){
     return "6j4t"; 
@@ -226,7 +226,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
     TLorentzVector jetvec;
     jetvec.SetPtEtaPhiE(jet->pt(),jet->eta(),jet->phi(),jet->energy());
     jet_vecs.push_back(jetvec);
-    if(jet->bDiscriminator(btagger)>btagMcut){
+    if(BoostedUtils::GetJetCSV(*jet)>btagMcut){
       tagged_jet_vecs.push_back(jetvec);
     }
     vector<double> pxpypzE;
@@ -235,7 +235,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
     pxpypzE.push_back(jet->pz());
     pxpypzE.push_back(jet->energy());
     jets_vvdouble.push_back(pxpypzE);
-    jetCSV.push_back(jet->bDiscriminator(btagger));
+    jetCSV.push_back(BoostedUtils::GetJetCSV(*jet));
   }
   sortedCSV=jetCSV;
   std::sort(sortedCSV.begin(),sortedCSV.end(),std::greater<float>());
@@ -243,7 +243,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
     TLorentzVector jetvec;
     jetvec.SetPtEtaPhiE(jet->pt(),jet->eta(),jet->phi(),jet->energy());
     jet_loose_vecs.push_back(jetvec);
-    jetCSV_loose.push_back(jet->bDiscriminator(btagger));
+    jetCSV_loose.push_back(BoostedUtils::GetJetCSV(*jet));
   }
 
   // TODO loose jet and csv defintion
