@@ -55,8 +55,13 @@ bool BoostedUtils::FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2){
 }
 
 
+bool BoostedUtils::FirstJetIsHarder(boosted::BoostedJet jet1, boosted::BoostedJet jet2){
+  return BoostedUtils::FirstJetIsHarder(jet1.fatjet,jet2.fatjet);
+}
+
+
 bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
-  return GetJetCSV(jet1,"pfCombinedInclusiveSecondaryVertexV2BJetTags") > GetJetCSV(jet2,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  return MiniAODHelper::GetJetCSV(jet1,"pfCombinedInclusiveSecondaryVertexV2BJetTags") > MiniAODHelper::GetJetCSV(jet2,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
 }
 
 
@@ -142,21 +147,6 @@ float BoostedUtils::DeltaKt(const pat::Jet& jet1,const pat::Jet& jet2){
   math::XYZTLorentzVector vec2 = jet2.p4();
   
   return BoostedUtils::DeltaKt(vec1,vec2);
-}
-
-
-float BoostedUtils::GetJetCSV(const pat::Jet& jet, const std::string& taggername){
-  
-  float defaultFailure = -.1;
-  
-  float bTagVal = jet.bDiscriminator(taggername);
-
-  if(isnan(bTagVal)) return defaultFailure;
-  
-  if(bTagVal > 1.) return 1.;
-  if(bTagVal < 0.) return defaultFailure;
-  
-  return bTagVal;
 }
 
 
@@ -251,16 +241,9 @@ vector<math::XYZTLorentzVector> BoostedUtils::GetJetVecs(const std::vector<pat::
 }
 
 
-boosted::SubFilterJetCollection BoostedUtils::GetSortedByPt(boosted::SubFilterJetCollection const &subfilterjets){
-  boosted::SubFilterJetCollection result = subfilterjets;
-  std::sort(result.begin(), result.end(),BoostedUtils::FirstFatJetIsHarder<boosted::SubFilterJet>);
-  return result;
-}
-
-
-boosted::HTTTopJetCollection BoostedUtils::GetSortedByPt(boosted::HTTTopJetCollection const &htttopjets){
-  boosted::HTTTopJetCollection result = htttopjets;
-  std::sort(result.begin(), result.end(),BoostedUtils::FirstFatJetIsHarder<boosted::HTTTopJet>);
+boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCollection const &boostedJets){
+  boosted::BoostedJetCollection result = boostedJets;
+  std::sort(result.begin(), result.end(),static_cast<bool (*)(boosted::BoostedJet,boosted::BoostedJet)>(&BoostedUtils::FirstJetIsHarder));
   return result;
 }
 
@@ -271,7 +254,7 @@ bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   float CSVMv2wp = 0.89;
   float CSVTv2wp = 0.97;
   
-  float csvValue = GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  float csvValue = MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   
   switch(workingPoint){
     case 'L': if(csvValue > CSVLv2wp){ return true; } break;
@@ -342,54 +325,6 @@ float BoostedUtils::GetJetAverageJetEtaMax(const std::vector<pat::Jet>& jets1, c
 }
 
 
-bool BoostedUtils::GetTopTag(const boosted::HTTTopJet& topJet,const double& fW, const double& mTopMin, const bool& altConf){
-  std::vector<pat::Jet> subjets;
-  subjets.push_back(topJet.nonW);
-  subjets.push_back(topJet.W1);
-  subjets.push_back(topJet.W2);
-  
-  if(subjets.size()!=3) return false;
-  
-  if(!altConf)  std::sort(subjets.begin(), subjets.end(),FirstJetIsHarder);
-  else          TopSubjetCSVDef(subjets);
-  
-  std::vector<math::XYZTLorentzVector> subjetVecs = GetJetVecs(subjets);
-    
-  float m12=-999;
-  float m23=-999;
-  float m13=-999;
-  float m123=-999;
-  
-  m12=(subjetVecs[0]+subjetVecs[1]).M();
-  m13=(subjetVecs[0]+subjetVecs[2]).M();
-  m23=(subjetVecs[1]+subjetVecs[2]).M();
-  m123=(subjetVecs[0]+subjetVecs[1]+subjetVecs[2]).M();
-
-  if(m123<mTopMin) return false;
-  
-  float mT = 172.3;
-  float mW = 80.4;
-  
-  float Rmin = (1-fW)*mW/mT;
-  float Rmax = (1+fW)*mW/mT;
-  
-  if(!altConf){
-    float y1 = 1+pow(m13/m12,2);
-    float y2 = 1+pow(m12/m13,2);
-    float x = 1-pow(m23/m123,2);  
-  
-    if(((0.2<atan(m23/m123)) && (atan(m23/m123)<1.3)) && ((Rmin<m23/m123) && (m23/m123<Rmax))) return true;
-    if(((x>pow(Rmin,2)*y1) && (x<pow(Rmax,2)*y1)) && (m23/m123>0.35)) return true;
-    if(((x>pow(Rmin,2)*y2) && (x<pow(Rmax,2)*y2)) && (m23/m123>0.35)) return true;
-  }
-  else{
-    if(Rmin<m23/m123 && m23/m123<Rmax && 0.2<m12/m13 && 0.2<m13/m12 ) return true;
-  }
-  
-  return false;
-}
-
-
 void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
   std::sort(subjets.begin(), subjets.end(),BoostedUtils::FirstHasHigherCSV);
   
@@ -412,9 +347,9 @@ void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
 }
 
 
-std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::SubFilterJet& higgsJet, const int& nCSVJets){
+std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets){
 
-  std::vector<pat::Jet> subJets = higgsJet.filterjets;
+  std::vector<pat::Jet> subJets = boostedJet.filterjets;
   
   return GetHiggsFilterJets(subJets,nCSVJets);
 }
@@ -452,7 +387,7 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
   
   if(subJets.size()==0) return HighCSVSubJets;
   else{
-    std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstJetIsHarder);
+    std::sort(subJets.begin(), subJets.end(),static_cast<bool (*)(pat::Jet,pat::Jet)>(&BoostedUtils::FirstJetIsHarder));
 
     subJets.insert(subJets.begin(),HighCSVSubJets.begin(),HighCSVSubJets.end());
   }
@@ -461,21 +396,16 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
 }
 
 
-float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const int& nFilterJets, const int& nBTags, const float& csvWP){
+float BoostedUtils::GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets, const int& nCSVJets){
   
-  if(nFilterJets<2 || nBTags>nFilterJets) return -1.;
-  if(((int)higgsJet.filterjets.size())<nFilterJets || ((int)higgsJet.filterjets.size())<nBTags) return -1.;
+  std::vector<pat::Jet> filterJets = GetHiggsFilterJets(boostedJet,nCSVJets);
   
-  std::vector<pat::Jet> filterJets = GetHiggsFilterJets(higgsJet,nBTags);
-  
-  if(nBTags>0){
-    if(GetJetCSV(filterJets[nBTags-1],"pfCombinedInclusiveSecondaryVertexV2BJetTags")<csvWP) return -1.;
-  }
+  if(filterJets.size()<2 || nCSVJets>nJets) return -1.;
   
   std::vector<math::XYZTLorentzVector> filterJetVecs = GetJetVecs(filterJets);
   math::XYZTLorentzVector sumVec = filterJetVecs[0];
   
-  for(std::vector<math::XYZTLorentzVector>::const_iterator itFiltJet = filterJetVecs.begin()+1; itFiltJet-filterJetVecs.begin() < nFilterJets; ++itFiltJet){
+  for(std::vector<math::XYZTLorentzVector>::const_iterator itFiltJet = filterJetVecs.begin()+1; itFiltJet!=filterJetVecs.end() && itFiltJet-filterJetVecs.begin()<nJets; ++itFiltJet){
     sumVec += *itFiltJet;
   }
   

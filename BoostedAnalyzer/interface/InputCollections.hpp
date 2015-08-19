@@ -10,8 +10,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "MiniAOD/BoostedObjects/interface/SubFilterJet.h"
-#include "MiniAOD/BoostedObjects/interface/HTTTopJet.h"
+#include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
@@ -48,9 +47,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     const std::vector<pat::Jet>&                  selectedJetsSingleTop_,
                     const pat::MET&                               pfMET_,
-                    const boosted::HTTTopJetCollection&           selectedHTTTopJets_,
-                    const boosted::SubFilterJetCollection&        selectedSubFilterJets_,
-            		    const GenTopEvent&                            genTopEvt_,
+                    const boosted::BoostedJetCollection&          selectedBoostedJets_,
+                    const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
             		    const HiggsDecay::HiggsDecay                  higgsDecay_,
@@ -72,8 +70,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedJetsLoose(selectedJetsLoose_),
                     selectedJetsSingleTop(selectedJetsSingleTop_),
                     pfMET(pfMET_),
-                    selectedHTTTopJets(selectedHTTTopJets_),
-                    selectedSubFilterJets(selectedSubFilterJets_),
+                    selectedBoostedJets(selectedBoostedJets_),
                     genTopEvt(genTopEvt_),
                     selectedGenJets(selectedGenJets_),
                     sampleType(sampleType_),
@@ -107,8 +104,7 @@ InputCollections(   const InputCollections&                       input,
                     selectedJetsLoose(selectedJetsLoose_),
                     selectedJetsSingleTop(selectedJetsSingleTop_),
                     pfMET(pfMET_),
-                    selectedHTTTopJets(input.selectedHTTTopJets),
-                    selectedSubFilterJets(input.selectedSubFilterJets),
+                    selectedBoostedJets(input.selectedBoostedJets),
                     genTopEvt(input.genTopEvt),
                     selectedGenJets(input.selectedGenJets),
                     sampleType(input.sampleType),
@@ -132,8 +128,7 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Jet>&                  selectedJetsLoose;
   const std::vector<pat::Jet>&                  selectedJetsSingleTop;
   const pat::MET&                               pfMET;
-  const boosted::HTTTopJetCollection&           selectedHTTTopJets;
-  const boosted::SubFilterJetCollection&        selectedSubFilterJets;
+  const boosted::BoostedJetCollection&          selectedBoostedJets;
   const GenTopEvent&                            genTopEvt;
   const std::vector<reco::GenJet>&              selectedGenJets;
   const SampleType                              sampleType;

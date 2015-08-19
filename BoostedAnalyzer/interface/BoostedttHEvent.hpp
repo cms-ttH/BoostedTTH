@@ -5,8 +5,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "MiniAOD/BoostedObjects/interface/SubFilterJet.h"
-#include "MiniAOD/BoostedObjects/interface/HTTTopJet.h"
+#include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
 
@@ -106,7 +105,7 @@ class BoostedttHEvent{
     float           GetAverageCSVClean();
     
     // Higgs Candidate
-    boosted::SubFilterJet  GetHiggsCandBoosted();
+    boosted::BoostedJet  GetHiggsCandBoosted();
     pat::Jet           GetHiggsB1Cand();
     pat::Jet           GetHiggsB2Cand();
     pat::Jet           GetHiggsGCand();
@@ -114,7 +113,7 @@ class BoostedttHEvent{
     math::XYZTLorentzVector  GetHiggsCandVec2();   
     
     // Hadronic Top Candidate
-    boosted::HTTTopJet     GetTopHadCandBoosted();
+    boosted::BoostedJet     GetTopHadCandBoosted();
     pat::Jet           GetTopHadBCand();
     pat::Jet           GetTopHadW1Cand();
     pat::Jet           GetTopHadW2Cand();
@@ -181,14 +180,14 @@ class BoostedttHEvent{
     // Higgs Candidate
     bool                  foundHiggsCand;
     float                 HiggsTag_HiggsCand;
-    boosted::SubFilterJet higgsCand;
+    boosted::BoostedJet higgsCand;
     pat::Jet              higgsB1Cand;
     pat::Jet              higgsB2Cand;
     pat::Jet              higgsGCand;
     
     // Hadronic Top Candidate
     bool                foundTopHadCand;
-    boosted::HTTTopJet  topHadCand;
+    boosted::BoostedJet topHadCand;
     pat::Jet            topHadBCand;
     pat::Jet            topHadW1Cand;
     pat::Jet            topHadW2Cand;

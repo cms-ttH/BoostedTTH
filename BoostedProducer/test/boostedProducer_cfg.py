@@ -8,7 +8,7 @@ process.source = cms.Source("PoolSource",
 #                            fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/10950426-4103-E511-8E6B-0025905A60DA.root')
                             fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/1E867A91-8D08-E511-9AFE-001E67A3FF1F.root')
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -51,25 +51,6 @@ process.load('BoostedTTH.BoostedProducer.BoostedJetProducer_cfi')
 
 # make PAT Jets from Boosted Jets
 from PhysicsTools.PatAlgos.tools.jetTools import addJetCollection
-
-# HTT fatjet
-addJetCollection(
-    process,
-    labelName = 'HTTFatJetsPF',
-    postfix="",
-    jetSource = cms.InputTag('HTTFatJetProducer',''),
-    pfCandidates = cms.InputTag('packedPFCandidates'),
-    pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-    svSource = cms.InputTag('slimmedSecondaryVertices'),
-    elSource = cms.InputTag('slimmedElectrons'),
-    muSource = cms.InputTag('slimmedMuons'),
-    algo = 'CA',
-    rParam = 1.5,
-    getJetMCFlavour = False,
-    genJetCollection = None,
-    jetCorrections = None,
-    btagDiscriminators = ['pfBoostedDoubleSecondaryVertexCA15BJetTags']
-)
 
 # HTT topjet
 addJetCollection(

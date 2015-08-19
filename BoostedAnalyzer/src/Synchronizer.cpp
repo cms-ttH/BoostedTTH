@@ -68,30 +68,30 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
   
   if(input.selectedJets.size()>0){
     jet1_pt=input.selectedJets.at(0).pt();
-    jet1_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(0),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(input.selectedJets.size()>1){
     jet2_pt=input.selectedJets.at(1).pt();
-    jet2_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(1),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet2_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(1),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(input.selectedJets.size()>2){
     jet3_pt=input.selectedJets.at(2).pt();
-    jet3_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(2),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet3_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(2),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(input.selectedJets.size()>3){
     jet4_pt=input.selectedJets.at(3).pt();
-    jet4_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(3),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet4_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(3),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   n_jets=int(input.selectedJets.size());
   for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
     if(BoostedUtils::PassesCSV(*jet)) n_btags++;
   }
   
-  vector<boosted::HTTTopJet> syncTopJets;
-  for(auto topjet = input.selectedHTTTopJets.begin() ; topjet != input.selectedHTTTopJets.end(); topjet++ ){
+  vector<boosted::BoostedJet> syncTopJets;
+  for(auto topjet = input.selectedBoostedJets.begin() ; topjet != input.selectedBoostedJets.end(); topjet++ ){
     // pt and eta requirements on top jet
     if( !(topjet->fatjet.pt() > 200. && abs(topjet->fatjet.eta()) < 2.) ) continue;
     std::vector<pat::Jet> subjets;
@@ -111,7 +111,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
       syncTopJets.push_back(*topjet);
     }
   }
-  for( auto higgsJet = input.selectedSubFilterJets.begin() ; higgsJet != input.selectedSubFilterJets.end(); ++higgsJet ){
+  for( auto higgsJet = input.selectedBoostedJets.begin() ; higgsJet != input.selectedBoostedJets.end(); ++higgsJet ){
     // pt and eta requirements on higgs jet
     if( !(higgsJet->fatjet.pt() > 200. && abs(higgsJet->fatjet.eta()) < 2) ) continue;
     bool overlapping=false;
@@ -267,22 +267,22 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, const MiniAODHelp
   
   if(input.selectedJets.size()>0){
     jet1_pt=input.selectedJets.at(0).pt();
-    jet1_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(0),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(input.selectedJets.size()>1){
     jet2_pt=input.selectedJets.at(1).pt();
-    jet2_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(1),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet2_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(1),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(input.selectedJets.size()>2){
     jet3_pt=input.selectedJets.at(2).pt();
-    jet3_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(2),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet3_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(2),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(input.selectedJets.size()>3){
     jet4_pt=input.selectedJets.at(3).pt();
-    jet4_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(3),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet4_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(3),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   n_jets=int(input.selectedJets.size());
   for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){

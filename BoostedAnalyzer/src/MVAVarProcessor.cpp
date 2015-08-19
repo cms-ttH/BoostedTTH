@@ -270,7 +270,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
-    vars.FillVars( "Jet_CSV",iJet,BoostedUtils::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
@@ -428,7 +428,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // All Jets
   std::vector<double> csvJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
-    csvJets.push_back(BoostedUtils::GetJetCSV(*itJet,btagger));
+    csvJets.push_back(MiniAODHelper::GetJetCSV(*itJet,btagger));
   }
   std::vector<double> csvJetsSorted=csvJets;
   std::sort(csvJetsSorted.begin(),csvJetsSorted.end(),std::greater<double>());
@@ -456,7 +456,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // Tagged Jets
   vector<float> csvTaggedJets;
   for(std::vector<pat::Jet>::iterator itTaggedJet = selectedTaggedJets.begin() ; itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet){
-    csvTaggedJets.push_back(BoostedUtils::GetJetCSV(*itTaggedJet,btagger));
+    csvTaggedJets.push_back(MiniAODHelper::GetJetCSV(*itTaggedJet,btagger));
   }
   sort(csvTaggedJets.begin(),csvTaggedJets.end(),std::greater<float>());
   vars.FillVar("Evt_CSV_Min_Tagged",csvTaggedJets.size()>0 ? csvTaggedJets.back() : -.1);
@@ -901,7 +901,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){
     if(itJet->pt() >= 30) continue;
     selectedJetsLooseExclusive.push_back(*itJet);
-    jetCSV_loose.push_back(BoostedUtils::GetJetCSV(*itJet,btagger));
+    jetCSV_loose.push_back(MiniAODHelper::GetJetCSV(*itJet,btagger));
     jet_loose_vecsTL.push_back(BoostedUtils::GetTLorentzVector(itJet->p4()));
   }
   vector<TLorentzVector> jetvecsTL=BoostedUtils::GetTLorentzVectors(jetvecs);

@@ -104,10 +104,8 @@ void ttHVarProcessor::InitHiggsCandidateVars(VariableContainer& vars){
 
 void ttHVarProcessor::InitTopHadCandidateVars(VariableContainer& vars){
 
-  vars.InitVar(prefix+"TopHadCandidate_Tagged",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_TaggedB",-9.);
   vars.InitVar(prefix+"TopHadCandidate_TopMVAOutput",-9.);
-  vars.InitVar(prefix+"Chi2_TopHadCandidate_BoostedHiggs",-9.);
+  vars.InitVar(prefix+"TopHadCandidate_Chi2",-9.);
   
   vars.InitVar(prefix+"TopHadCandidate_E",-9.);
   vars.InitVar(prefix+"TopHadCandidate_Pt",-9.);
@@ -306,7 +304,7 @@ void ttHVarProcessor::InitMCVars(VariableContainer& vars){
 void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttHEvent& ttHEvent){
   
   // Get Objects
-  boosted::SubFilterJet higgsCand = ttHEvent.GetHiggsCandBoosted();
+  boosted::BoostedJet higgsCand = ttHEvent.GetHiggsCandBoosted();
   pat::Jet higgsB1Cand = ttHEvent.GetHiggsB1Cand();
   pat::Jet higgsB2Cand = ttHEvent.GetHiggsB2Cand();
   pat::Jet higgsGCand = ttHEvent.GetHiggsGCand();
@@ -339,7 +337,7 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
     vars.FillVar(prefix+"HiggsCandidate_B1_M",higgsB1Cand.mass());
     vars.FillVar(prefix+"HiggsCandidate_B1_Eta",higgsB1Cand.eta());
     vars.FillVar(prefix+"HiggsCandidate_B1_Phi",higgsB1Cand.phi());
-    vars.FillVar(prefix+"HiggsCandidate_B1_CSV",BoostedUtils::GetJetCSV(higgsB1Cand,btagger));
+    vars.FillVar(prefix+"HiggsCandidate_B1_CSV",MiniAODHelper::GetJetCSV(higgsB1Cand,btagger));
   }
   
   if(higgsB2Cand.pt()>0){
@@ -348,7 +346,7 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
     vars.FillVar(prefix+"HiggsCandidate_B2_M",higgsB2Cand.mass());
     vars.FillVar(prefix+"HiggsCandidate_B2_Eta",higgsB2Cand.eta());
     vars.FillVar(prefix+"HiggsCandidate_B2_Phi",higgsB2Cand.phi());
-    vars.FillVar(prefix+"HiggsCandidate_B2_CSV",BoostedUtils::GetJetCSV(higgsB2Cand,btagger));
+    vars.FillVar(prefix+"HiggsCandidate_B2_CSV",MiniAODHelper::GetJetCSV(higgsB2Cand,btagger));
   }
   
   if(higgsGCand.pt()>0){
@@ -357,7 +355,7 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
     vars.FillVar(prefix+"HiggsCandidate_G_M",higgsGCand.mass());
     vars.FillVar(prefix+"HiggsCandidate_G_Eta",higgsGCand.eta());
     vars.FillVar(prefix+"HiggsCandidate_G_Phi",higgsGCand.phi());
-    vars.FillVar(prefix+"HiggsCandidate_G_CSV",BoostedUtils::GetJetCSV(higgsGCand,btagger));
+    vars.FillVar(prefix+"HiggsCandidate_G_CSV",MiniAODHelper::GetJetCSV(higgsGCand,btagger));
   }
   
   if(higgsCandVec2.Pt()>0){
@@ -381,9 +379,9 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
   vars.FillVar(prefix+"HiggsCandidate_CosThetaStar_Filterjet23",BoostedUtils::CosThetaStar(higgsB2Cand.p4(),higgsGCand.p4()));
   
   if(higgsCand.fatjet.pt()>0){
-    vars.FillVar(prefix+"HiggsCandidate_Subjetiness1",higgsCand.subjettiness1);
-    vars.FillVar(prefix+"HiggsCandidate_Subjetiness2",higgsCand.subjettiness2);
-    vars.FillVar(prefix+"HiggsCandidate_Subjetiness3",higgsCand.subjettiness3);
+    vars.FillVar(prefix+"HiggsCandidate_Subjetiness1",higgsCand.tau1Filtered);
+    vars.FillVar(prefix+"HiggsCandidate_Subjetiness2",higgsCand.tau2Filtered);
+    vars.FillVar(prefix+"HiggsCandidate_Subjetiness3",higgsCand.tau3Filtered);
   }
   
   if(higgsCand.fatjet.pt()>0&&lepCandVec.Pt()>0)
@@ -422,7 +420,7 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
 void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, BoostedttHEvent& ttHEvent){
   
   // Get Objects
-  boosted::HTTTopJet topHadCand = ttHEvent.GetTopHadCandBoosted();
+  boosted::BoostedJet topHadCand = ttHEvent.GetTopHadCandBoosted();
   pat::Jet topHadBCand = ttHEvent.GetTopHadBCand();
   pat::Jet topHadW1Cand = ttHEvent.GetTopHadW1Cand();
   pat::Jet topHadW2Cand = ttHEvent.GetTopHadW2Cand();
@@ -438,8 +436,6 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
   math::XYZTLorentzVector nu2CandVec = ttHEvent.GetNeutrino2Vec();
   
   // Fill Variables
-  vars.FillVar(prefix+"TopHadCandidate_Tagged",BoostedUtils::GetTopTag(topHadCand));
-  vars.FillVar(prefix+"TopHadCandidate_TaggedB",BoostedUtils::GetTopTag(topHadCand,0.15,120.,true));
   vars.FillVar(prefix+"TopHadCandidate_TopMVAOutput", toptagger.GetTopTaggerOutput(topHadCand));
   
   if(topHadCand.fatjet.pt()>0){
@@ -456,7 +452,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
     vars.FillVar(prefix+"TopHadCandidate_B_M",topHadBCand.mass());
     vars.FillVar(prefix+"TopHadCandidate_B_Eta",topHadBCand.eta());
     vars.FillVar(prefix+"TopHadCandidate_B_Phi",topHadBCand.phi());
-    vars.FillVar(prefix+"TopHadCandidate_B_CSV",BoostedUtils::GetJetCSV(topHadBCand,btagger));
+    vars.FillVar(prefix+"TopHadCandidate_B_CSV",MiniAODHelper::GetJetCSV(topHadBCand,btagger));
   }
   
   if(topHadW1Cand.pt()>0){
@@ -465,7 +461,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
     vars.FillVar(prefix+"TopHadCandidate_W1_M",topHadW1Cand.mass());
     vars.FillVar(prefix+"TopHadCandidate_W1_Eta",topHadW1Cand.eta());
     vars.FillVar(prefix+"TopHadCandidate_W1_Phi",topHadW1Cand.phi());
-    vars.FillVar(prefix+"TopHadCandidate_W1_CSV",BoostedUtils::GetJetCSV(topHadW1Cand,btagger));
+    vars.FillVar(prefix+"TopHadCandidate_W1_CSV",MiniAODHelper::GetJetCSV(topHadW1Cand,btagger));
   }
   
   if(topHadW2Cand.pt()>0){
@@ -474,7 +470,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
     vars.FillVar(prefix+"TopHadCandidate_W2_M",topHadW2Cand.mass());
     vars.FillVar(prefix+"TopHadCandidate_W2_Eta",topHadW2Cand.eta());
     vars.FillVar(prefix+"TopHadCandidate_W2_Phi",topHadW2Cand.phi());
-    vars.FillVar(prefix+"TopHadCandidate_W2_CSV",BoostedUtils::GetJetCSV(topHadW2Cand,btagger));
+    vars.FillVar(prefix+"TopHadCandidate_W2_CSV",MiniAODHelper::GetJetCSV(topHadW2Cand,btagger));
   }
   
   if(wHadCandVec.Pt()>0.001){
@@ -583,7 +579,7 @@ void ttHVarProcessor::FillTopLepCandidateVars(VariableContainer& vars,BoostedttH
     vars.FillVar(prefix+"TopLepCandidate_B_M",topLepBCand.mass());
     vars.FillVar(prefix+"TopLepCandidate_B_Eta",topLepBCand.eta());
     vars.FillVar(prefix+"TopLepCandidate_B_Phi",topLepBCand.phi());
-    vars.FillVar(prefix+"TopLepCandidate_B_CSV",BoostedUtils::GetJetCSV(topLepBCand,btagger));
+    vars.FillVar(prefix+"TopLepCandidate_B_CSV",MiniAODHelper::GetJetCSV(topLepBCand,btagger));
   }
   
   if(lepCandVec.Pt()>0.001){
