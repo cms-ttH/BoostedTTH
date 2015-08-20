@@ -1,7 +1,7 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v2.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
 using namespace std;
 
-BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.89){
+BDT_v3::BDT_v3 (TString weightPath):btagMcut(0.89){
   // ==================================================
   //init all variables used in BDT set
   variableMap["all_sum_pt_with_met"]=-999.;
@@ -39,6 +39,8 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.89){
   variableMap["tagged_dijet_mass_closest_to_125"]=-999.;
   variableMap["third_highest_btag"]=-999.;
   variableMap["third_jet_pt"]=-999.;
+  variableMap["Evt_CSV_Average"]=-999.;
+  variableMap["Evt_Deta_JetsAverage"]=-999.;
   // ==================================================
   ///init readers for all categories
   readerMap["6j4t"]=new TMVA::Reader();
@@ -51,124 +53,94 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.89){
 
   // ==================================================
   //add variables to corresponding readers
-
-  readerMap["6j2t"]->AddVariable("first_jet_pt", &variableMap["first_jet_pt"]);
-  readerMap["6j2t"]->AddVariable("second_jet_pt", &variableMap["second_jet_pt"]);
-  readerMap["6j2t"]->AddVariable("fourth_jet_pt", &variableMap["fourth_jet_pt"]);
-  readerMap["6j2t"]->AddVariable("h0", &variableMap["h0"]);
-  readerMap["6j2t"]->AddVariable("h1", &variableMap["h1"]);
-  readerMap["6j2t"]->AddVariable("all_sum_pt_with_met", &variableMap["all_sum_pt_with_met"]);
-  readerMap["6j2t"]->AddVariable("HT", &variableMap["HT"]);
-  readerMap["6j2t"]->AddVariable("h3", &variableMap["h3"]);
-  readerMap["6j2t"]->AddVariable("third_highest_btag", &variableMap["third_highest_btag"]);
-  readerMap["6j2t"]->AddVariable("fourth_highest_btag", &variableMap["fourth_highest_btag"]);
-  readerMap["6j2t"]->AddVariable("fifth_highest_CSV", &variableMap["fifth_highest_CSV"]);
-  readerMap["6j2t"]->AddVariable("maxeta_jet_jet", &variableMap["maxeta_jet_jet"]);
-  readerMap["6j2t"]->AddVariable("Mlb", &variableMap["Mlb"]);
-  readerMap["6j2t"]->AddVariable("pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
-
-  readerMap["4j3t"]->AddVariable("first_jet_pt", &variableMap["first_jet_pt"]);
-  readerMap["4j3t"]->AddVariable("second_jet_pt", &variableMap["second_jet_pt"]);
-  readerMap["4j3t"]->AddVariable("third_jet_pt", &variableMap["third_jet_pt"]);
-  readerMap["4j3t"]->AddVariable("all_sum_pt_with_met", &variableMap["all_sum_pt_with_met"]);
-  readerMap["4j3t"]->AddVariable("HT", &variableMap["HT"]);
-  readerMap["4j3t"]->AddVariable("avg_btag_disc_btags", &variableMap["avg_btag_disc_btags"]);
-  readerMap["4j3t"]->AddVariable("dev_from_avg_disc_btags", &variableMap["dev_from_avg_disc_btags"]);
-  readerMap["4j3t"]->AddVariable("second_highest_btag", &variableMap["second_highest_btag"]);
-  readerMap["4j3t"]->AddVariable("third_highest_btag", &variableMap["third_highest_btag"]);
-  readerMap["4j3t"]->AddVariable("invariant_mass_of_everything", &variableMap["invariant_mass_of_everything"]);
-
-  readerMap["5j3t"]->AddVariable("second_jet_pt", &variableMap["second_jet_pt"]);
-  readerMap["5j3t"]->AddVariable("third_jet_pt", &variableMap["third_jet_pt"]);
-  readerMap["5j3t"]->AddVariable("fourth_jet_pt", &variableMap["fourth_jet_pt"]);
-  readerMap["5j3t"]->AddVariable("all_sum_pt_with_met", &variableMap["all_sum_pt_with_met"]);
-  readerMap["5j3t"]->AddVariable("HT", &variableMap["HT"]);
-  readerMap["5j3t"]->AddVariable("avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
-  readerMap["5j3t"]->AddVariable("avg_btag_disc_btags", &variableMap["avg_btag_disc_btags"]);
-  readerMap["5j3t"]->AddVariable("dev_from_avg_disc_btags", &variableMap["dev_from_avg_disc_btags"]);
-  readerMap["5j3t"]->AddVariable("h3", &variableMap["h3"]);
-  readerMap["5j3t"]->AddVariable("second_highest_btag", &variableMap["second_highest_btag"]);
-  readerMap["5j3t"]->AddVariable("third_highest_btag", &variableMap["third_highest_btag"]);
-  readerMap["5j3t"]->AddVariable("maxeta_jet_jet", &variableMap["maxeta_jet_jet"]);
-  readerMap["5j3t"]->AddVariable("maxeta_jet_tag", &variableMap["maxeta_jet_tag"]);
-  readerMap["5j3t"]->AddVariable("maxeta_tag_tag", &variableMap["maxeta_tag_tag"]);
-
-  readerMap["6j3t"]->AddVariable("third_jet_pt", &variableMap["third_jet_pt"]);
-  readerMap["6j3t"]->AddVariable("fourth_jet_pt", &variableMap["fourth_jet_pt"]);
-  readerMap["6j3t"]->AddVariable("all_sum_pt_with_met", &variableMap["all_sum_pt_with_met"]);
-  readerMap["6j3t"]->AddVariable("HT", &variableMap["HT"]);
-  readerMap["6j3t"]->AddVariable("avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
-  readerMap["6j3t"]->AddVariable("avg_btag_disc_btags", &variableMap["avg_btag_disc_btags"]);
-  readerMap["6j3t"]->AddVariable("dev_from_avg_disc_btags", &variableMap["dev_from_avg_disc_btags"]);
-  readerMap["6j3t"]->AddVariable("h3", &variableMap["h3"]);
-  readerMap["6j3t"]->AddVariable("second_highest_btag", &variableMap["second_highest_btag"]);
-  readerMap["6j3t"]->AddVariable("third_highest_btag", &variableMap["third_highest_btag"]);
-  readerMap["6j3t"]->AddVariable("fourth_highest_btag", &variableMap["fourth_highest_btag"]);
-  readerMap["6j3t"]->AddVariable("maxeta_jet_tag", &variableMap["maxeta_jet_tag"]);
-  readerMap["6j3t"]->AddVariable("maxeta_tag_tag", &variableMap["maxeta_tag_tag"]);
-  readerMap["6j3t"]->AddVariable("min_dr_tagged_jets", &variableMap["min_dr_tagged_jets"]);
-  readerMap["6j3t"]->AddVariable("pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
-
-  readerMap["4j4t"]->AddVariable("h1", &variableMap["h1"]);
-  readerMap["4j4t"]->AddVariable("avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
-  readerMap["4j4t"]->AddVariable("sphericity", &variableMap["sphericity"]);
-  readerMap["4j4t"]->AddVariable("avg_btag_disc_btags", &variableMap["avg_btag_disc_btags"]);
-  readerMap["4j4t"]->AddVariable("dev_from_avg_disc_btags", &variableMap["dev_from_avg_disc_btags"]);
-  readerMap["4j4t"]->AddVariable("h2", &variableMap["h2"]);
-  readerMap["4j4t"]->AddVariable("closest_tagged_dijet_mass", &variableMap["closest_tagged_dijet_mass"]);
-  readerMap["4j4t"]->AddVariable("h3", &variableMap["h3"]);
-  readerMap["4j4t"]->AddVariable("second_highest_btag", &variableMap["second_highest_btag"]);
-  readerMap["4j4t"]->AddVariable("third_highest_btag", &variableMap["third_highest_btag"]);
-  readerMap["4j4t"]->AddVariable("fourth_highest_btag", &variableMap["fourth_highest_btag"]);
-  readerMap["4j4t"]->AddVariable("maxeta_jet_jet", &variableMap["maxeta_jet_jet"]);
-  readerMap["4j4t"]->AddVariable("min_dr_tagged_jets", &variableMap["min_dr_tagged_jets"]);
-  readerMap["4j4t"]->AddVariable("pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
-
-  readerMap["5j4t"]->AddVariable("aplanarity", &variableMap["aplanarity"]);
-  readerMap["5j4t"]->AddVariable("third_jet_pt", &variableMap["third_jet_pt"]);
-  readerMap["5j4t"]->AddVariable("fourth_jet_pt", &variableMap["fourth_jet_pt"]);
-  readerMap["5j4t"]->AddVariable("h1", &variableMap["h1"]);
-  readerMap["5j4t"]->AddVariable("avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
-  readerMap["5j4t"]->AddVariable("sphericity", &variableMap["sphericity"]);
-  readerMap["5j4t"]->AddVariable("avg_btag_disc_btags", &variableMap["avg_btag_disc_btags"]);
-  readerMap["5j4t"]->AddVariable("dev_from_avg_disc_btags", &variableMap["dev_from_avg_disc_btags"]);
-  readerMap["5j4t"]->AddVariable("h2", &variableMap["h2"]);
-  readerMap["5j4t"]->AddVariable("h3", &variableMap["h3"]);
-  readerMap["5j4t"]->AddVariable("third_highest_btag", &variableMap["third_highest_btag"]);
-  readerMap["5j4t"]->AddVariable("fourth_highest_btag", &variableMap["fourth_highest_btag"]);
-  readerMap["5j4t"]->AddVariable("maxeta_jet_jet", &variableMap["maxeta_jet_jet"]);
-  readerMap["5j4t"]->AddVariable("maxeta_jet_tag", &variableMap["maxeta_jet_tag"]);
-  readerMap["5j4t"]->AddVariable("maxeta_tag_tag", &variableMap["maxeta_tag_tag"]);
-  readerMap["5j4t"]->AddVariable("pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
-
-  readerMap["6j4t"]->AddVariable("avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
-  readerMap["6j4t"]->AddVariable("avg_btag_disc_btags", &variableMap["avg_btag_disc_btags"]);
-  readerMap["6j4t"]->AddVariable("h2", &variableMap["h2"]);
-  readerMap["6j4t"]->AddVariable("h3", &variableMap["h3"]);
-  readerMap["6j4t"]->AddVariable("second_highest_btag", &variableMap["second_highest_btag"]);
-  readerMap["6j4t"]->AddVariable("third_highest_btag", &variableMap["third_highest_btag"]);
-  readerMap["6j4t"]->AddVariable("fourth_highest_btag", &variableMap["fourth_highest_btag"]);
-  readerMap["6j4t"]->AddVariable("maxeta_jet_jet", &variableMap["maxeta_jet_jet"]);
-  readerMap["6j4t"]->AddVariable("maxeta_jet_tag", &variableMap["maxeta_jet_tag"]);
-  readerMap["6j4t"]->AddVariable("maxeta_tag_tag", &variableMap["maxeta_tag_tag"]);
-  readerMap["6j4t"]->AddVariable("pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
-  readerMap["6j4t"]->AddVariable("tagged_dijet_mass_closest_to_125", &variableMap["tagged_dijet_mass_closest_to_125"]);
-  readerMap["6j4t"]->AddVariable("dEta_fn", &variableMap["dEta_fn"]);
-
+  // 62
+  readerMap["6j2t"]->AddVariable("BDTOhio_v2_input_h1", &variableMap["h1"]);
+  readerMap["6j2t"]->AddVariable("BDTOhio_v2_input_avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
+  readerMap["6j2t"]->AddVariable("BDTOhio_v2_input_sphericity", &variableMap["sphericity"]);
+  readerMap["6j2t"]->AddVariable("BDTOhio_v2_input_third_highest_btag", &variableMap["third_highest_btag"]);
+  readerMap["6j2t"]->AddVariable("BDTOhio_v2_input_h3", &variableMap["h3"]);
+  readerMap["6j2t"]->AddVariable("BDTOhio_v2_input_HT", &variableMap["HT"]);
+  readerMap["6j2t"]->AddVariable("BDTOhio_v2_input_Mlb", &variableMap["Mlb"]);
+  readerMap["6j2t"]->AddVariable("BDTOhio_v2_input_fifth_highest_CSV", &variableMap["fifth_highest_CSV"]);
+  readerMap["6j2t"]->AddVariable("BDTOhio_v2_input_fourth_highest_btag", &variableMap["fourth_highest_btag"]);
+  
+  // 43
+  readerMap["4j3t"]->AddVariable("BDTOhio_v2_input_h1", &variableMap["h1"]);
+  readerMap["4j3t"]->AddVariable("BDTOhio_v2_input_avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
+  readerMap["4j3t"]->AddVariable("BDTOhio_v2_input_sphericity", &variableMap["sphericity"]);
+  readerMap["4j3t"]->AddVariable("BDTOhio_v2_input_third_highest_btag", &variableMap["third_highest_btag"]);
+  readerMap["4j3t"]->AddVariable("BDTOhio_v2_input_HT", &variableMap["HT"]);
+  readerMap["4j3t"]->AddVariable("BDTOhio_v2_input_dev_from_avg_disc_btags", &variableMap["dev_from_avg_disc_btags"]);
+  readerMap["4j3t"]->AddVariable("BDTOhio_v2_input_M3", &variableMap["M3"]);
+  readerMap["4j3t"]->AddVariable("BDTOhio_v2_input_min_dr_tagged_jets", &variableMap["min_dr_tagged_jets"]);
+  readerMap["4j3t"]->AddVariable("Evt_CSV_Average", &variableMap["Evt_CSV_Average"]);
+  
+  // 53
+  readerMap["5j3t"]->AddVariable("BDTOhio_v2_input_h1", &variableMap["h1"]);
+  readerMap["5j3t"]->AddVariable("BDTOhio_v2_input_avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
+  readerMap["5j3t"]->AddVariable("BDTOhio_v2_input_sphericity", &variableMap["sphericity"]);
+  readerMap["5j3t"]->AddVariable("BDTOhio_v2_input_third_highest_btag", &variableMap["third_highest_btag"]);
+  readerMap["5j3t"]->AddVariable("BDTOhio_v2_input_h3", &variableMap["h3"]);
+  readerMap["5j3t"]->AddVariable("BDTOhio_v2_input_HT", &variableMap["HT"]);
+  readerMap["5j3t"]->AddVariable("BDTOhio_v2_input_dev_from_avg_disc_btags", &variableMap["dev_from_avg_disc_btags"]);
+  readerMap["5j3t"]->AddVariable("BDTOhio_v2_input_fourth_highest_btag", &variableMap["fourth_highest_btag"]);
+  
+  // 63
+  readerMap["6j3t"]->AddVariable("BDTOhio_v2_input_h1", &variableMap["h1"]);
+  readerMap["6j3t"]->AddVariable("BDTOhio_v2_input_avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
+  readerMap["6j3t"]->AddVariable("BDTOhio_v2_input_third_highest_btag", &variableMap["third_highest_btag"]);
+  readerMap["6j3t"]->AddVariable("BDTOhio_v2_input_HT", &variableMap["HT"]);
+  readerMap["6j3t"]->AddVariable("BDTOhio_v2_input_pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
+  readerMap["6j3t"]->AddVariable("BDTOhio_v2_input_fifth_highest_CSV", &variableMap["fifth_highest_CSV"]);
+  readerMap["6j3t"]->AddVariable("BDTOhio_v2_input_fourth_highest_btag", &variableMap["fourth_highest_btag"]);
+  readerMap["6j3t"]->AddVariable("BDTOhio_v2_input_min_dr_tagged_jets", &variableMap["min_dr_tagged_jets"]);
+  
+  // 44
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_h1", &variableMap["h1"]);
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_sphericity", &variableMap["sphericity"]);
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_avg_btag_disc_btags", &variableMap["avg_btag_disc_btags"]);
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_h2", &variableMap["h2"]);
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_closest_tagged_dijet_mass", &variableMap["closest_tagged_dijet_mass"]);
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_second_highest_btag", &variableMap["second_highest_btag"]);
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_fourth_highest_btag", &variableMap["fourth_highest_btag"]);
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_maxeta_jet_jet", &variableMap["maxeta_jet_jet"]);
+  readerMap["4j4t"]->AddVariable("BDTOhio_v2_input_pt_all_jets_over_E_all_jets", &variableMap["pt_all_jets_over_E_all_jets"]);
+  
+  // 54
+  readerMap["5j4t"]->AddVariable("BDTOhio_v2_input_avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
+  readerMap["5j4t"]->AddVariable("BDTOhio_v2_input_HT", &variableMap["HT"]);
+  readerMap["5j4t"]->AddVariable("BDTOhio_v2_input_M3", &variableMap["M3"]);
+  readerMap["5j4t"]->AddVariable("BDTOhio_v2_input_fifth_highest_CSV", &variableMap["fifth_highest_CSV"]);
+  readerMap["5j4t"]->AddVariable("BDTOhio_v2_input_fourth_highest_btag", &variableMap["fourth_highest_btag"]);
+  readerMap["5j4t"]->AddVariable("Evt_Deta_JetsAverage", &variableMap["Evt_Deta_JetsAverage"]);
+  readerMap["5j4t"]->AddVariable("BDTOhio_v2_input_avg_btag_disc_btags", &variableMap["avg_btag_disc_btags"]);
+  
+  // 64
+  readerMap["6j4t"]->AddVariable("BDTOhio_v2_input_h2", &variableMap["h2"]);
+  readerMap["6j4t"]->AddVariable("BDTOhio_v2_input_avg_dr_tagged_jets", &variableMap["avg_dr_tagged_jets"]);
+  readerMap["6j4t"]->AddVariable("BDTOhio_v2_input_third_highest_btag", &variableMap["third_highest_btag"]);
+  readerMap["6j4t"]->AddVariable("BDTOhio_v2_input_M3", &variableMap["M3"]);
+  readerMap["6j4t"]->AddVariable("BDTOhio_v2_input_fifth_highest_CSV", &variableMap["fifth_highest_CSV"]);
+  readerMap["6j4t"]->AddVariable("BDTOhio_v2_input_fourth_highest_btag", &variableMap["fourth_highest_btag"]);
+  readerMap["6j4t"]->AddVariable("BDTOhio_v2_input_best_higgs_mass", &variableMap["best_higgs_mass"]);
+  readerMap["6j4t"]->AddVariable("BDTOhio_v2_input_dEta_fn", &variableMap["dEta_fn"]);
+  
   // ==================================================
   //book MVAs from weights
-  readerMap["6j4t"]->BookMVA("BDT",weightPath+"/643/TMVAClassification_BDT.weights.xml");
-  readerMap["5j4t"]->BookMVA("BDT",weightPath+"/543/TMVAClassification_BDT.weights.xml");
-  readerMap["4j4t"]->BookMVA("BDT",weightPath+"/443/TMVAClassification_BDT.weights.xml");
-  readerMap["6j3t"]->BookMVA("BDT",weightPath+"/633/TMVAClassification_BDT.weights.xml");
-  readerMap["5j3t"]->BookMVA("BDT",weightPath+"/533/TMVAClassification_BDT.weights.xml");
-  readerMap["4j3t"]->BookMVA("BDT",weightPath+"/433/TMVAClassification_BDT.weights.xml");
-  readerMap["6j2t"]->BookMVA("BDT",weightPath+"/623/TMVAClassification_BDT.weights.xml");
+  readerMap["6j4t"]->BookMVA("BDT",weightPath+"weights_Final_64_KITV3.xml");
+  readerMap["5j4t"]->BookMVA("BDT",weightPath+"weights_Final_54_KITV3.xml");
+  readerMap["4j4t"]->BookMVA("BDT",weightPath+"weights_Final_44_KITV3.xml");
+  readerMap["6j3t"]->BookMVA("BDT",weightPath+"weights_Final_63_KITV3.xml");
+  readerMap["5j3t"]->BookMVA("BDT",weightPath+"weights_Final_53_KITV3.xml");
+  readerMap["4j3t"]->BookMVA("BDT",weightPath+"weights_Final_43_KITV3.xml");
+  readerMap["6j2t"]->BookMVA("BDT",weightPath+"weights_Final_62_KITV3.xml");
 
 }
-BDTOhio_v2::~BDTOhio_v2(){
+BDT_v3::~BDT_v3(){
 }
-std::string BDTOhio_v2::GetCategory(const std::vector<pat::Jet>& selectedJets) const{
+
+std::string BDT_v3::GetCategory(const std::vector<pat::Jet>& selectedJets) const{
   int njets=selectedJets.size();
   int ntagged=0;
   for(auto jet=selectedJets.begin(); jet!=selectedJets.end(); jet++){
@@ -201,12 +173,11 @@ std::string BDTOhio_v2::GetCategory(const std::vector<pat::Jet>& selectedJets) c
   
 }
 
-
 				   
-float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
+float BDT_v3::Evaluate(std::string categoryLabel, const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
 
   if(selectedMuons.size()+selectedElectrons.size()!=1){
-    cerr << "BDTOhio_v2: not a SL event" << endl;
+    cerr << "BDT_v3: not a SL event" << endl;
   }
   // ==================================================
   // construct object vectors etc
@@ -346,27 +317,46 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
       } 
     }
   }
+  float detaJetsAverage = 0;
+  int nPairsJets = 0;
+  for(auto itJetVec1 = jet_vecs.begin() ; itJetVec1 != jet_vecs.end(); ++itJetVec1){
+    for(auto itJetVec2 = itJetVec1+1 ; itJetVec2 != jet_vecs.end(); ++itJetVec2){
+      detaJetsAverage += fabs(itJetVec1->Eta()-itJetVec2->Eta());
+      nPairsJets++;
+    }
+  }
+  if(nPairsJets > 0){
+    detaJetsAverage /= (float) nPairsJets;
+  }
+
   // btag variables
-  float averageCSV = 0;
+  float averageCSV_tagged = 0;
+  float averageCSV_all = 0;
   float lowest_btag=99;
   int njets=selectedJets.size();
   int ntags=0;
   for(auto itCSV = jetCSV.begin() ; itCSV != jetCSV.end(); ++itCSV){
+    averageCSV_all += fmax(*itCSV,0);
     if(*itCSV<btagMcut) continue;
     lowest_btag=fmin(*itCSV,lowest_btag);
-    averageCSV += fmax(*itCSV,0);
+    averageCSV_tagged += fmax(*itCSV,0);
     ntags++;
   }
   if(ntags>0)
-    averageCSV /= ntags;
+    averageCSV_tagged /= ntags;
   else
-    averageCSV=1;
+    averageCSV_tagged=0;
+  if(jetCSV.size()>0)
+    averageCSV_all /= jetCSV.size();
+  else
+    averageCSV_all=0;
+
   if(lowest_btag>90) lowest_btag=-1;
 
   float csvDev = 0;
   for(auto itCSV = jetCSV.begin() ; itCSV != jetCSV.end(); ++itCSV){
     if(*itCSV<btagMcut) continue;
-    csvDev += pow(*itCSV - averageCSV,2);
+    csvDev += pow(*itCSV - averageCSV_tagged,2);
   }
   if(ntags>0)
     csvDev /= ntags;
@@ -378,7 +368,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   // Fill variable map
   variableMap["all_sum_pt_with_met"]=sum_pt_with_met;
   variableMap["aplanarity"]=aplanarity;
-  variableMap["avg_btag_disc_btags"]=averageCSV;
+  variableMap["avg_btag_disc_btags"]=averageCSV_tagged;
   variableMap["avg_dr_tagged_jets"]=avgDrTagged;
   variableMap["best_higgs_mass"]=bestHiggsMass;
   variableMap["closest_tagged_dijet_mass"]=closest_tagged_dijet_mass;
@@ -411,20 +401,22 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   variableMap["tagged_dijet_mass_closest_to_125"]=tagged_dijet_mass_closest_to_125;
   variableMap["third_highest_btag"]=njets>2?sortedCSV[2]:-1.;
   variableMap["third_jet_pt"]=jet_vecs.size()>2?jet_vecs[2].Pt():-99;
+  variableMap["Evt_CSV_Average"]=averageCSV_all;
+  variableMap["Evt_Deta_JetsAverage"]=detaJetsAverage;
 
   // ==================================================
   // evaluate BDT of current category
   return readerMap[categoryLabel]->EvaluateMVA("BDT");
 }
 
-std::map<std::string,float> BDTOhio_v2::GetAllOutputsOfLastEvaluation() const{
+std::map<std::string,float> BDT_v3::GetAllOutputsOfLastEvaluation() const{
   std::map<std::string,float> outputs;
   for(auto it = readerMap.begin();it != readerMap.end();it++){
     outputs[it->first]=it->second->EvaluateMVA("BDT");
   }
   return outputs;
 }
-float BDTOhio_v2::Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
+float BDT_v3::Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
   std::string category=GetCategory(selectedJets);
   if(category=="none") {
     return -2;
@@ -432,6 +424,6 @@ float BDTOhio_v2::Evaluate(const std::vector<pat::Muon>& selectedMuons, const st
   return Evaluate(category,selectedMuons,selectedElectrons,selectedJets,selectedJetsLoose,pfMET);
 }
 
-std::map<std::string,float> BDTOhio_v2::GetVariablesOfLastEvaluation() const{
+std::map<std::string,float> BDT_v3::GetVariablesOfLastEvaluation() const{
   return variableMap;
 }

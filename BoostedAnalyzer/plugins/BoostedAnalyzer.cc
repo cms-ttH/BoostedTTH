@@ -80,6 +80,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionVarProcessor.hpp"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
@@ -457,6 +458,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   }
   if(std::find(processorNames.begin(),processorNames.end(),"TriggerVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new TriggerVarProcessor());
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"ReconstructionVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new ReconstructionVarProcessor());
   }
 
 
