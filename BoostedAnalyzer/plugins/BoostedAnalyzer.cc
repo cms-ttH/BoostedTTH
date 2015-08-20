@@ -670,20 +670,22 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   /**** GET TOPJETS ****/
   edm::Handle<boosted::HTTTopJetCollection> h_htttopjet;
-  boosted::HTTTopJetCollection htttopjets;
+  boosted::HTTTopJetCollection selectedHTTTopJets;
   if(useFatJets){
     iEvent.getByToken( EDMHTTTopJetsToken,h_htttopjet);
     boosted::HTTTopJetCollection const &htttopjets_unsorted = *h_htttopjet;
-    htttopjets = BoostedUtils::GetSortedByPt(htttopjets_unsorted);
+    boosted::HTTTopJetCollection htttopjets = BoostedUtils::GetSortedByPt(htttopjets_unsorted);
+    selectedHTTTopJets = helper.GetSelectedTopJets(htttopjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
   }
   
   /**** GET SUBFILTERJETS ****/
   edm::Handle<boosted::SubFilterJetCollection> h_subfilterjet;
-  boosted::SubFilterJetCollection subfilterjets;
+  boosted::SubFilterJetCollection selectedSubFilterJets;
   if(useFatJets){
     iEvent.getByToken( EDMSubFilterJetsToken,h_subfilterjet );
     boosted::SubFilterJetCollection const &subfilterjets_unsorted = *h_subfilterjet;
-    subfilterjets = BoostedUtils::GetSortedByPt(subfilterjets_unsorted);
+    boosted::SubFilterJetCollection subfilterjets = BoostedUtils::GetSortedByPt(subfilterjets_unsorted);
+    selectedSubFilterJets = helper.GetSelectedHiggsJets(subfilterjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
   }
   
   /**** GET GENEVENTINFO ****/
@@ -840,8 +842,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedJetsLoose_nominal,
 				  selectedJetsSingleTop_nominal,
 				  pfMETs[0],
-				  htttopjets,
-				  subfilterjets,
+				  selectedHTTTopJets,
+				  selectedSubFilterJets,
 				  genTopEvt,
 				  selectedGenJets,
 				  sampleType,
