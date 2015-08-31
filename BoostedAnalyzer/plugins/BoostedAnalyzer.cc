@@ -565,6 +565,14 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M, 2.4 );
   std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., electronID::electronPhys14L, 2.4 );
 
+  /**** GET MET ****/
+  edm::Handle< std::vector<pat::MET> > h_pfmet;
+  iEvent.getByToken( EDMMETsToken,h_pfmet );
+  std::vector<pat::MET> const &pfMETs = *h_pfmet;
+  // type I met corrections?
+  assert(pfMETs.size()>0);
+
+
   /**** GET JETS ****/
   edm::Handle< std::vector<pat::Jet> > h_pfjets;
   iEvent.getByToken( EDMJetsToken,h_pfjets );
@@ -583,6 +591,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   // selected jets with jet ID cuts
   std::vector<pat::Jet> idJets = helper.GetSelectedJets(pfjets, 0., 9999., jetID::jetLoose, '-' );
+  // clean ID jets for MET correction
+  std::vector<pat::Jet> cleanIdJetsForMET = helper.GetDeltaRCleanedJets(idJets,selectedMuonsLoose,selectedElectronsLoose,0.4);
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
   // Clean muons and electrons from jets
@@ -604,6 +614,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       std::vector<pat::Jet> selectedJetsSingleTop_unsorted_nominal = BoostedUtils::GetSingleTopJets(selectedJetsLoose_nominal,selectedJetsForward_unsorted_nominal,jetetacut_loose);
       selectedJetsSingleTop_nominal= helper.GetSortedByPt(selectedJetsSingleTop_unsorted_nominal);
   }
+
+ //correct MET 
+std::vector<pat::MET> correctedMETs = BoostedUtils::GetCorrectedMET(cleanIdJetsForMET,cleanIdJetsForMET,pfMETs);
 
   // Apply systematically shifted jet corrections -- these vector stay empty if you dont use makeSystematicsTrees
   std::vector<pat::Jet> correctedJets_unsorted_jesup;
@@ -661,12 +674,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
   }
 
-  /**** GET MET ****/
-  edm::Handle< std::vector<pat::MET> > h_pfmet;
-  iEvent.getByToken( EDMMETsToken,h_pfmet );
-  std::vector<pat::MET> const &pfMETs = *h_pfmet;
-  // type I met corrections?
-  assert(pfMETs.size()>0);
+
 
   /**** GET TOPJETS ****/
   edm::Handle<boosted::HTTTopJetCollection> h_htttopjet;
