@@ -96,7 +96,7 @@ process.BoostedAnalyzer.useFatJets=False
 if OUTFILE!=None:
 	process.BoostedAnalyzer.outfileName = OUTFILE
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","4JetSelection","2TagSelection"]
-process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MVAVarProcessor","MCMatchVarProcessor","BDTVarProcessor","TriggerVarProcessor")
+process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MVAVarProcessor","MCMatchVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedMCMatchVarProcessor","AdditionalJetProcessor","StdTopVarProcessor","ReconstructionVarProcessor")
 process.BoostedAnalyzer.era = ERA
 process.BoostedAnalyzer.analysisType = cms.string("LJ")
 process.BoostedAnalyzer.luminosity = cms.double(10000.0)
@@ -123,7 +123,7 @@ process.BoostedAnalyzer.muonTriggers=["none"]
 process.BoostedAnalyzer.electronTriggers=["none"]
 
 if ISDATA==None or ISDATA=="FALSE":
-	process.p = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.BoostedAnalyzer)
+	process.p = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar*process.BoostedAnalyzer)
 elif ISDATA=="TRUE":
 	process.p = cms.Path(process.BoostedAnalyzer)
 
