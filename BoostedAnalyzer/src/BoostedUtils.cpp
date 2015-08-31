@@ -524,3 +524,47 @@ float BoostedUtils::GetElectronRelIso(const pat::Electron& iElectron){
   
   return result;
 }
+
+
+std::vector<pat::MET> BoostedUtils::GetCorrectedMET(const std::vector<pat::Jet>& cleanIdJetsForMET, const std::vector<pat::Jet>& correctedJets, const std::vector<pat::MET>& pfMETs){
+  std::vector<pat::MET> outputMets;
+
+  int i=0;
+  for(std::vector<pat::MET>::const_iterator oldMET=pfMETs.begin();oldMET!=pfMETs.end();++oldMET){
+  pat::MET outMET=*oldMET;  
+
+
+  if(i==0){
+  //get old MET p4
+  TLorentzVector oldMETVec;
+  oldMETVec.SetPxPyPzE(oldMET->p4().Px(),oldMET->p4().Py(),oldMET->p4().Pz(),oldMET->p4().E());
+  std::cout<<"uncorrected MET px py pz pT "<<oldMET->p4().Px()<<" "<<oldMET->p4().Py()<<" "<<oldMET->p4().Pz()<<" "<<oldMET->p4().Pt()<<" "<<std::endl;
+
+  // add the pT vector of cleaned jets with the initial correction to the MET vector
+  for(std::vector<pat::Jet>::const_iterator itJet=cleanIdJetsForMET.begin();itJet!=cleanIdJetsForMET.end();++itJet){
+    TLorentzVector cleanJETVec;
+    cleanJETVec.SetPtEtaPhiE(itJet->pt(),itJet->eta(),itJet->phi(),itJet->energy());
+    TLorentzVector PTcleanJETVec;
+    PTcleanJETVec.SetPxPyPzE(cleanJETVec.Px(),cleanJETVec.Py(),0.0,cleanJETVec.Et());
+    oldMETVec+=PTcleanJETVec;
+  }
+  // now subtract the pT vectors of the clean recorrected jets
+  for(std::vector<pat::Jet>::const_iterator itJet=correctedJets.begin();itJet!=correctedJets.end();++itJet){
+    TLorentzVector correctedJETVec;
+    correctedJETVec.SetPtEtaPhiE(itJet->pt(),itJet->eta(),itJet->phi(),itJet->energy());
+    TLorentzVector PTcorrectedJETVec;
+    PTcorrectedJETVec.SetPxPyPzE(correctedJETVec.Px(),correctedJETVec.Py(),0.0,correctedJETVec.Et());
+    oldMETVec-=PTcorrectedJETVec;
+  }
+  outMET.setP4(reco::Candidate::LorentzVector(oldMETVec.Px(),oldMETVec.Py(),oldMETVec.Pz(),oldMETVec.E()));
+  std::cout<<"recorrected MET px py pz pT"<<outMET.p4().Px()<<" "<<outMET.p4().Py()<<" "<<outMET.p4().Pz()<<" "<<outMET.p4().Pt()<<" "<<std::endl;
+  }
+  
+
+  outputMets.push_back(outMET);
+  }
+
+  return outputMets;
+
+}
+

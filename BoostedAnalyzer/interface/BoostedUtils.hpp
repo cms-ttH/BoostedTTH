@@ -82,6 +82,8 @@ class BoostedUtils{
     static float GetMuonRelIso(const pat::Muon& iMuon);
     static float GetElectronRelIso(const pat::Electron& iElectron);
 
+    static std::vector<pat::MET> GetCorrectedMET(const std::vector<pat::Jet>& cleanIdJetsForMET, const std::vector<pat::Jet>& correctedJets, const std::vector<pat::MET>& pfMETs);
+
   private:
   
 };
