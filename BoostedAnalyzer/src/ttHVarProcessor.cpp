@@ -104,8 +104,6 @@ void ttHVarProcessor::InitHiggsCandidateVars(VariableContainer& vars){
 
 void ttHVarProcessor::InitTopHadCandidateVars(VariableContainer& vars){
 
-  vars.InitVar(prefix+"TopHadCandidate_Tagged",-9.);
-  vars.InitVar(prefix+"TopHadCandidate_TaggedB",-9.);
   vars.InitVar(prefix+"TopHadCandidate_TopMVAOutput",-9.);
   vars.InitVar(prefix+"Chi2_TopHadCandidate_BoostedHiggs",-9.);
   
@@ -438,8 +436,6 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
   math::XYZTLorentzVector nu2CandVec = ttHEvent.GetNeutrino2Vec();
   
   // Fill Variables
-  vars.FillVar(prefix+"TopHadCandidate_Tagged",BoostedUtils::GetTopTag(topHadCand));
-  vars.FillVar(prefix+"TopHadCandidate_TaggedB",BoostedUtils::GetTopTag(topHadCand,0.15,120.,true));
   vars.FillVar(prefix+"TopHadCandidate_TopMVAOutput", toptagger.GetTopTaggerOutput(topHadCand));
   
   if(topHadCand.fatjet.pt()>0){
