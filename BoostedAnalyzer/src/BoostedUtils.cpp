@@ -361,35 +361,8 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
   
   std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstHasHigherCSV);
   
-  std::vector<pat::Jet> HighCSVSubJets;
-  
-  for(std::vector<pat::Jet>::iterator itSubJet = subJets.begin(); itSubJet != subJets.end(); ){
-    
-    bool csvDistance = true;
-    for(std::vector<pat::Jet>::iterator itCSVJet = HighCSVSubJets.begin(); itCSVJet != HighCSVSubJets.end(); ++itCSVJet){
-      if(BoostedUtils::DeltaR(*itCSVJet,*itSubJet)<.4){
-        csvDistance = false;
-        break;
-      }
-    }
-    
-    if(csvDistance){
-      HighCSVSubJets.push_back(*itSubJet);
-      subJets.erase(itSubJet);
-    }
-    else{
-      ++itSubJet;
-    }
-    
-    if((int) HighCSVSubJets.size()>=nCSVJets) break;
-  }
-  
-  
-  if(subJets.size()==0) return HighCSVSubJets;
-  else{
-    std::sort(subJets.begin(), subJets.end(),static_cast<bool (*)(pat::Jet,pat::Jet)>(&BoostedUtils::FirstJetIsHarder));
-
-    subJets.insert(subJets.begin(),HighCSVSubJets.begin(),HighCSVSubJets.end());
+  if((nCSVJets+1) < (int)subJets.size()){
+    std::sort(subJets.begin()+nCSVJets, subJets.end(),BoostedUtils::FirstJetIsHarder);
   }
   
   return subJets;
@@ -411,6 +384,7 @@ float BoostedUtils::GetHiggsMass(const boosted::BoostedJet& boostedJet, const in
   
   return sumVec.M();
 }
+
 
 std::vector<pat::Jet> BoostedUtils::GetSingleTopJets(const std::vector<pat::Jet>& centralJets, const std::vector<pat::Jet>& forwardJets, float etacut){
     std::vector<pat::Jet> singleTopJets;
