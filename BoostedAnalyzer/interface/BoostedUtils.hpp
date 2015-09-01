@@ -32,7 +32,7 @@ class BoostedUtils{
     static bool FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2);
     static bool FirstHasHigherCSVold(pat::Jet jet1,pat::Jet jet2);
     static bool FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2);
-    static bool FirstJetIsHarder(boosted::BoostedJet jet1, boosted::BoostedJet jet2);
+    static bool FirstBoostedJetIsHarder(boosted::BoostedJet jet1, boosted::BoostedJet jet2);
     
     static float DeltaEta(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2);
     static float DeltaEta(const pat::Jet& jet1,const pat::Jet& jet2);

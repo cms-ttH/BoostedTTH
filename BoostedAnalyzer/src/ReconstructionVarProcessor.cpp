@@ -105,7 +105,7 @@ void ReconstructionVarProcessor::Process(const InputCollections& input,VariableC
     vector<float> jetcsvs;
     int ntags=0;
     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
-	jetcsvs.push_back(BoostedUtils::GetJetCSV(*j));
+	jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
 	if(BoostedUtils::PassesCSV(*j)) ntags++;
     }
     if(ntags<4) return;

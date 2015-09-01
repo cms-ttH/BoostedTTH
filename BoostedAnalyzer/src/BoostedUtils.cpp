@@ -55,7 +55,7 @@ bool BoostedUtils::FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2){
 }
 
 
-bool BoostedUtils::FirstJetIsHarder(boosted::BoostedJet jet1, boosted::BoostedJet jet2){
+bool BoostedUtils::FirstBoostedJetIsHarder(boosted::BoostedJet jet1, boosted::BoostedJet jet2){
   return BoostedUtils::FirstJetIsHarder(jet1.fatjet,jet2.fatjet);
 }
 
@@ -243,7 +243,7 @@ vector<math::XYZTLorentzVector> BoostedUtils::GetJetVecs(const std::vector<pat::
 
 boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCollection const &boostedJets){
   boosted::BoostedJetCollection result = boostedJets;
-  std::sort(result.begin(), result.end(),static_cast<bool (*)(boosted::BoostedJet,boosted::BoostedJet)>(&BoostedUtils::FirstJetIsHarder));
+  std::sort(result.begin(), result.end(),static_cast<bool (*)(boosted::BoostedJet,boosted::BoostedJet)>(&BoostedUtils::FirstBoostedJetIsHarder));
   return result;
 }
 
@@ -361,7 +361,7 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
   
   std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstHasHigherCSV);
   
-  if((nCSVJets+1) < (int)subJets.size()){
+  if((int)subJets.size() > (nCSVJets+1)){
     std::sort(subJets.begin()+nCSVJets, subJets.end(),BoostedUtils::FirstJetIsHarder);
   }
   

@@ -828,7 +828,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedJetsLoose_nominal,
 				  selectedJetsSingleTop_nominal,
 				  pfMETs[0],
-				  boostedjets,
+				  selectedBoostedJets,
 				  genTopEvt,
 				  selectedGenJets,
 				  sampleType,
