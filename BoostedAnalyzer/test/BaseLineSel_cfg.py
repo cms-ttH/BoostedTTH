@@ -118,7 +118,7 @@ if DOSYSTEMATICS==None:
 elif DOSYSTEMATICS=="FALSE":
 	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(False)
 elif DOSYSTEMATICS=="TRUE":
-	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(True)
+	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(False)
 process.BoostedAnalyzer.muonTriggers=["HLT_IsoMu24_eta2p1_v1"]
 process.BoostedAnalyzer.electronTriggers=["HLT_Ele27_eta2p1_WP85_Gsf_HT200_v1"]
 
