@@ -616,7 +616,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
  //correct MET 
-std::vector<pat::MET> correctedMETs = BoostedUtils::GetCorrectedMET(cleanIdJetsForMET,cleanIdJetsForMET,pfMETs);
+std::vector<pat::MET> correctedMETs = BoostedUtils::GetCorrectedMET(cleanIdJetsForMET,correctedJets_unsorted_nominal,pfMETs);
 
   // Apply systematically shifted jet corrections -- these vector stay empty if you dont use makeSystematicsTrees
   std::vector<pat::Jet> correctedJets_unsorted_jesup;
@@ -849,7 +849,7 @@ std::vector<pat::MET> correctedMETs = BoostedUtils::GetCorrectedMET(cleanIdJetsF
 				  selectedJets_nominal,
 				  selectedJetsLoose_nominal,
 				  selectedJetsSingleTop_nominal,
-				  pfMETs[0],
+				  correctedMETs[0],
 				  selectedHTTTopJets,
 				  selectedSubFilterJets,
 				  genTopEvt,

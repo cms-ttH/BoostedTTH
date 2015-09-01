@@ -452,14 +452,13 @@ std::vector<pat::MET> BoostedUtils::GetCorrectedMET(const std::vector<pat::Jet>&
 
   int i=0;
   for(std::vector<pat::MET>::const_iterator oldMET=pfMETs.begin();oldMET!=pfMETs.end();++oldMET){
-  pat::MET outMET=*oldMET;  
-
+  pat::MET outMET=*oldMET; 
 
   if(i==0){
   //get old MET p4
   TLorentzVector oldMETVec;
   oldMETVec.SetPxPyPzE(oldMET->p4().Px(),oldMET->p4().Py(),oldMET->p4().Pz(),oldMET->p4().E());
-  std::cout<<"uncorrected MET px py pz pT "<<oldMET->p4().Px()<<" "<<oldMET->p4().Py()<<" "<<oldMET->p4().Pz()<<" "<<oldMET->p4().Pt()<<" "<<std::endl;
+//  std::cout<<"uncorrected MET px py pz pT "<<oldMET->p4().Px()<<" "<<oldMET->p4().Py()<<" "<<oldMET->p4().Pz()<<" "<<oldMET->p4().Pt()<<" "<<std::endl;
 
   // add the pT vector of cleaned jets with the initial correction to the MET vector
   for(std::vector<pat::Jet>::const_iterator itJet=cleanIdJetsForMET.begin();itJet!=cleanIdJetsForMET.end();++itJet){
@@ -478,10 +477,10 @@ std::vector<pat::MET> BoostedUtils::GetCorrectedMET(const std::vector<pat::Jet>&
     oldMETVec-=PTcorrectedJETVec;
   }
   outMET.setP4(reco::Candidate::LorentzVector(oldMETVec.Px(),oldMETVec.Py(),oldMETVec.Pz(),oldMETVec.E()));
-  std::cout<<"recorrected MET px py pz pT"<<outMET.p4().Px()<<" "<<outMET.p4().Py()<<" "<<outMET.p4().Pz()<<" "<<outMET.p4().Pt()<<" "<<std::endl;
+//  std::cout<<"recorrected MET px py pz pT"<<outMET.p4().Px()<<" "<<outMET.p4().Py()<<" "<<outMET.p4().Pz()<<" "<<outMET.p4().Pt()<<" "<<std::endl;
   }
   
-
+  i++;
   outputMets.push_back(outMET);
   }
 

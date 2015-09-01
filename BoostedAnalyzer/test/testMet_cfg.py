@@ -7,7 +7,7 @@ process = cms.Process("analysis")
 # set input, output, maxevents
 filenames=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/Spring15_Sync/ttHbb_spring15_25ns_plusboostedjets.root']
 outfilename='sync_mu_spring15'
-maxevents=10
+maxevents=999999999
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
