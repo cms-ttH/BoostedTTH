@@ -37,7 +37,7 @@ bool DiLeptonMassSelection::IsSelected(const InputCollections& input,Cutflow& cu
     if(input.selectedMuonsDL.size()>=2){
       mumu_mass=(input.selectedMuonsDL[0].p4()+input.selectedMuonsDL[1].p4()).M();
     }
-    if(input.selectedMuonsDL.size()<2 && input.selectedElectronsDL.size()<2) {
+    if(input.selectedMuonsDL.size()>=1 && input.selectedElectronsDL.size()>=1) {
       if(cutForDifferentFlavors) elmu_mass=(input.selectedElectronsDL[0].p4()+input.selectedMuonsDL[1].p4()).M();
       else{
         cutflow.EventSurvivedStep(selectionName,input.weights.at("Weight"));

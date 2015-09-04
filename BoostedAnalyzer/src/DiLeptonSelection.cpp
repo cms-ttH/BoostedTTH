@@ -50,7 +50,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
 
     bool elel_step2 = elelTriggered && nleptons>=2 && (nelectrons_p>=1&&nelectrons_n>=1);
     bool elmu_step2 = elmuTriggered && nleptons>=2 && ((nelectrons_p>=1&&nmuons_n>=1)||(nelectrons_n>=1&&nmuons_p>=1));
-    bool mumu_step2 = mumuTriggered && nleptons==2 && ((nmuons_p>=1&&nmuons_n>=1)||(nmuons_n>=1&&nmuons_p>=1));
+    bool mumu_step2 = mumuTriggered && nleptons>=2 && ((nmuons_p>=1&&nmuons_n>=1)||(nmuons_n>=1&&nmuons_p>=1));
 
     if(channel=="elel"){
 	if(step<0||step==1){
