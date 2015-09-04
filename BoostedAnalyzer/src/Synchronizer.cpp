@@ -188,7 +188,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& he
     elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1");
 
     dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers));
-    dileptonSelections.push_back(new DiLeptonMassSelection(20,99999));
+    dileptonSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
     dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true));
     dileptonSelections.push_back(new METSelection(40,99999));
     dileptonSelections.push_back(new JetTagSelection(2,1));
