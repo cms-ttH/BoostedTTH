@@ -158,7 +158,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
 }
 void Synchronizer::DumpSyncExe2Header(std::ostream &out){
-  out <<"run,lumi,event,is_SL,is_DL,lep1_pt,lep1_eta,lep1_phi,lep1_iso,lep1_pdgId,lep2_pt,lep2_eta,lep2_phi,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet3_pt,jet4_pt,jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,MET_pt,MET_phi,n_jets,n_btags,bWeight,ttHFCategory,final_discriminant1,final_discriminant2,n_fatjets,pt_fatjet_1,pt_fatjet_2,pt_fatjet_3,n_tops,pt_nonW_1,pt_nonW_2,pt_W1_1,pt_W1_2,pt_W2_1,pt_W2_2,m_top_1,m_top_2,higgstag_fatjet_1,higgstag_fatjet_2,higgstag_fatjet_3\n";
+  out <<"run,lumi,event,is_SL,is_DL,lep1_pt,lep1_eta,lep1_phi,lep1_iso,lep1_pdgId,lep2_pt,lep2_eta,lep2_phi,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet3_pt,jet4_pt,jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,MET_pt,MET_phi,n_jets,n_btags,bWeight,ttHFCategory,final_discriminant1,final_discriminant2,n_fatjets,pt_fatjet_1,pt_fatjet_2,pt_nonW_1,pt_nonW_2,pt_W1_1,pt_W1_2,pt_W2_1,pt_W2_2,m_top_1,m_top_2,higgstag_fatjet_1,higgstag_fatjet_2\n";
 }
 
 
