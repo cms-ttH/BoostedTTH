@@ -349,33 +349,33 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& he
     final_discriminant1=bdt3.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
   }
    
-  n_fatjets = int(input.selectedHTTTopJets.size());
-  if(input.selectedHTTTopJets.size()>0){
-    pt_fatjet_1=input.selectedHTTTopJets.at(0).fatjet.pt();
-    pt_nonW_1=input.selectedHTTTopJets.at(0).nonW.pt();
-    pt_W1_1=input.selectedHTTTopJets.at(0).W1.pt();
-    pt_W2_1=input.selectedHTTTopJets.at(0).W2.pt();
-    m_top_1=input.selectedHTTTopJets.at(0).topjet.mass();
+  n_fatjets = int(input.selectedBoostedJets.size());
+  if(input.selectedBoostedJets.size()>0){
+    pt_fatjet_1=input.selectedBoostedJets.at(0).fatjet.pt();
+    pt_nonW_1=input.selectedBoostedJets.at(0).nonW.pt();
+    pt_W1_1=input.selectedBoostedJets.at(0).W1.pt();
+    pt_W2_1=input.selectedBoostedJets.at(0).W2.pt();
+    m_top_1=input.selectedBoostedJets.at(0).topjet.mass();
   }
   
-  if(input.selectedHTTTopJets.size()>1){
-    pt_fatjet_2=input.selectedHTTTopJets.at(1).fatjet.pt();
-    pt_nonW_2=input.selectedHTTTopJets.at(1).nonW.pt();
-    pt_W1_2=input.selectedHTTTopJets.at(1).W1.pt();
-    pt_W2_2=input.selectedHTTTopJets.at(1).W2.pt();
-    m_top_2=input.selectedHTTTopJets.at(1).topjet.mass();
+  if(input.selectedBoostedJets.size()>1){
+    pt_fatjet_2=input.selectedBoostedJets.at(1).fatjet.pt();
+    pt_nonW_2=input.selectedBoostedJets.at(1).nonW.pt();
+    pt_W1_2=input.selectedBoostedJets.at(1).W1.pt();
+    pt_W2_2=input.selectedBoostedJets.at(1).W2.pt();
+    m_top_2=input.selectedBoostedJets.at(1).topjet.mass();
   }
   
-  if(input.selectedSubFilterJets.size()>0){
-    if(input.selectedSubFilterJets.at(0).filterjets.size()>1){
-      std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedSubFilterJets.at(0));
+  if(input.selectedBoostedJets.size()>0){
+    if(input.selectedBoostedJets.at(0).filterjets.size()>1){
+      std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets.at(0));
       higgstag_fatjet_1 = MiniAODHelper::GetJetCSV(filterjets.at(1));
     }
   }
   
-  if(input.selectedSubFilterJets.size()>1){
-    if(input.selectedSubFilterJets.at(1).filterjets.size()>1){
-      std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedSubFilterJets.at(1));
+  if(input.selectedBoostedJets.size()>1){
+    if(input.selectedBoostedJets.at(1).filterjets.size()>1){
+      std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets.at(1));
       higgstag_fatjet_2 = MiniAODHelper::GetJetCSV(filterjets.at(1));
     }
   }
