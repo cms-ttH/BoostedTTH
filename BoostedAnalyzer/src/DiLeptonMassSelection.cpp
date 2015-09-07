@@ -38,7 +38,7 @@ bool DiLeptonMassSelection::IsSelected(const InputCollections& input,Cutflow& cu
       mumu_mass=(input.selectedMuonsDL[0].p4()+input.selectedMuonsDL[1].p4()).M();
     }
     if(input.selectedMuonsDL.size()>=1 && input.selectedElectronsDL.size()>=1) {
-      if(cutForDifferentFlavors) elmu_mass=(input.selectedElectronsDL[0].p4()+input.selectedMuonsDL[1].p4()).M();
+      if(cutForDifferentFlavors) elmu_mass=(input.selectedElectronsDL[0].p4()+input.selectedMuonsDL[0].p4()).M();
       else{
         cutflow.EventSurvivedStep(selectionName,input.weights.at("Weight"));
         return true;
@@ -47,9 +47,7 @@ bool DiLeptonMassSelection::IsSelected(const InputCollections& input,Cutflow& cu
     
     if(!invertCut){
       // both dilepton masses are outside of the window
-      std::cout<<elel_mass<<" "<<mumu_mass<<" "<<elmu_mass<<std::endl;
       if( (elel_mass<minMass||elel_mass>maxMass) && (mumu_mass<minMass||mumu_mass>maxMass) && (cutForDifferentFlavors && (elmu_mass<minMass||elmu_mass>maxMass))){
-        std::cout<<"false"<<std::endl;
 	return false;
       }
     }

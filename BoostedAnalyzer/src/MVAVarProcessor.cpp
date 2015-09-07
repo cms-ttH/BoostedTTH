@@ -68,6 +68,8 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   
   vars.InitVar( "Evt_Pt_MET" );
   vars.InitVar( "Evt_Phi_MET" );
+  vars.InitVar( "Evt_Pt_GenMET" );
+  vars.InitVar( "Evt_Phi_GenMET" );
 
   vars.InitVar("Evt_M3");
   vars.InitVar("Evt_M3_OneJetTagged");
@@ -343,6 +345,8 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   
   vars.FillVar( "Evt_Pt_MET",input.pfMET.pt() );
   vars.FillVar( "Evt_Phi_MET",input.pfMET.phi() );
+  vars.FillVar( "Evt_Pt_GenMET",input.pfMET.genMET()->pt() );
+  vars.FillVar( "Evt_Phi_GenMET",input.pfMET.genMET()->phi() );
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
   math::XYZTLorentzVector metvec = input.pfMET.p4();

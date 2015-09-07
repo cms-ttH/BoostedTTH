@@ -59,7 +59,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
 	}
 	if(step<0||step==2){
 	    if( !elel_step2 ) return false;
-	    else cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+	    else cutflow.EventSurvivedStep(">= 2 opposite sign leptons",input.weights.at("Weight"));
 	}
     }
     else  if(channel=="mumu"){
@@ -69,7 +69,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
 	}
 	if(step<0||step==2){
 	    if( !mumu_step2 ) return false;
-	    else cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+	    else cutflow.EventSurvivedStep(">= 2 opposite sign leptons",input.weights.at("Weight"));
 	}
     }
     else  if(channel=="elmu"){
@@ -79,7 +79,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
 	}
 	if(step<0||step==2){
 	    if( !elmu_step2 ) return false;
-	    else cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+	    else cutflow.EventSurvivedStep(">= 2 opposite sign leptons",input.weights.at("Weight"));
 	}
     }
     else  if(channel=="all"){
@@ -89,7 +89,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
 	}
 	if(step<0||step==2){
 	    if( !elmu_step2&&!elel_step2&&!mumu_step2 ) return false;
-	    else cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+	    else cutflow.EventSurvivedStep(">= 2 opposite sign leptons",input.weights.at("Weight"));
 	}
     }
     else {
