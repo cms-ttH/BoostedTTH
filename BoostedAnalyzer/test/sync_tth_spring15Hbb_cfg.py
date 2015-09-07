@@ -6,7 +6,6 @@ process = cms.Process("analysis")
 
 # set input, output, maxevents
 filenames=['/store/user/shwillia/Spring15_HbbSync/ttHTobb_Spring15_HbbSync.root']
-#filenames=['/store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/141B9915-1F08-E511-B9FF-001E675A6AB3.root'] # TODO: need to use boosted file
 outfilename='sync_tth_spring15Hbb'
 maxevents=10000000
 
@@ -57,7 +56,7 @@ process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.outfileName=outfilename
 # can be set to true because the necessary tt+x input is generated above
 process.BoostedAnalyzer.useGenHadronMatch=True
-process.BoostedAnalyzer.useFatJets=True # TODO: activate this
+process.BoostedAnalyzer.useFatJets=True
 process.BoostedAnalyzer.dumpSyncExe2=True
 # JES systematics for sync
 process.BoostedAnalyzer.makeSystematicsTrees=True
