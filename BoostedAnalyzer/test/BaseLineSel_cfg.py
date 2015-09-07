@@ -122,7 +122,7 @@ process.BoostedAnalyzer.muonTriggers=["any"]
 process.BoostedAnalyzer.electronTriggers=["any"]
 
 if ISDATA==None or ISDATA=="FALSE":
-	process.p = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.BoostedAnalyzer)
+	process.p = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar*process.BoostedAnalyzer)
 elif ISDATA=="TRUE":
 	process.p = cms.Path(process.BoostedAnalyzer)
 
