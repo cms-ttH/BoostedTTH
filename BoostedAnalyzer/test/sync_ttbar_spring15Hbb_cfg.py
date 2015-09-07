@@ -5,7 +5,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("analysis")
 
 # set input, output, maxevents
-filenames=['/store/user/shwillia/Spring15_HbbSync/ttbar_Spring15_HbbSync.root']
+filenames=['/store/user/shwillia/Spring15_HbbSync/ttbar_Spring15_HbbSync_NewBoostedJets.root']
 outfilename='sync_ttbar_spring15Hbb'
 maxevents=10000000
 
