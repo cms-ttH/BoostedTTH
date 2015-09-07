@@ -20,8 +20,8 @@ bool BoostedSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
   int n_toptags=0;  
   int n_higgstags=0;  
 
-  vector<boosted::HTTTopJet> syncTopJets;
-  for(auto topjet = input.selectedHTTTopJets.begin() ; topjet != input.selectedHTTTopJets.end(); topjet++ ){
+  vector<boosted::BoostedJet> syncTopJets;
+  for(auto topjet = input.selectedBoostedJets.begin() ; topjet != input.selectedBoostedJets.end(); topjet++ ){
     // pt and eta requirements on top jet
     if( !(topjet->fatjet.pt() > 200. && abs(topjet->fatjet.eta()) < 2.) ) continue;
     std::vector<pat::Jet> subjets;
@@ -50,7 +50,7 @@ bool BoostedSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
   }
 
 
-  for( auto higgsJet = input.selectedSubFilterJets.begin() ; higgsJet != input.selectedSubFilterJets.end(); ++higgsJet ){
+  for( auto higgsJet = input.selectedBoostedJets.begin() ; higgsJet != input.selectedBoostedJets.end(); ++higgsJet ){
     // pt and eta requirements on higgs jet
     if( !(higgsJet->fatjet.pt() > 200. && abs(higgsJet->fatjet.eta()) < 2) ) continue;
     bool overlapping=false;
