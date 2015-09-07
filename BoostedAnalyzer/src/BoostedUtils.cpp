@@ -324,6 +324,19 @@ float BoostedUtils::GetJetAverageJetEtaMax(const std::vector<pat::Jet>& jets1, c
   return etamax;
 }
 
+boosted::JetType BoostedUtils::GetBoostedJetType(const boosted::BoostedJet boostedJet, const BoostedJetDisc::Mode mode){
+  
+  switch(mode){
+    case BoostedJetDisc::None:
+    {
+      return boosted::NA;
+      break;
+    }
+    default:
+      return boosted::NA; 
+  }  
+}
+
 
 void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
   std::sort(subjets.begin(), subjets.end(),BoostedUtils::FirstHasHigherCSV);

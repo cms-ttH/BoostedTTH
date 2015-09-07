@@ -7,7 +7,7 @@ config.General.workArea = 'crab_projects'
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = '/nfs/dust/cms/user/shwillia/CMSSW_7_4_6_patch6/src/BoostedTTH/BoostedProducer/test/boostedProducer_cfg.py'
+config.JobType.psetName = '/nfs/dust/cms/user/shwillia/AddHiggsTagger/CMSSW_7_4_6_patch6/src/BoostedTTH/BoostedProducer/test/boostedProducer_cfg.py'
 config.JobType.outputFiles = ['BoostedTTH_MiniAOD.root']
 
 config.section_("Data")
@@ -15,7 +15,7 @@ config.Data.inputDataset = '/ttHTobb_M125_13TeV_powheg_pythia8/RunIISpring15DR74
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
-config.Data.publication = True
+config.Data.publication = False
 #config.Data.totalUnits = 5
 config.Data.publishDBS = 'phys03'
 config.Data.publishDataName = 'BoostedTTH_MiniAOD'

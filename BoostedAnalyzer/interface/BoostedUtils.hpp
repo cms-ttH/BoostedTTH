@@ -19,6 +19,10 @@
 
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
+namespace BoostedJetDisc{
+  enum Mode{ None };
+}
+
 class BoostedUtils{
   
   public:
@@ -67,11 +71,14 @@ class BoostedUtils{
     static void GetFoxWolframMoments(std::vector<math::XYZTLorentzVector> jetVecs, float &h0, float &h1, float &h2, float &h3, float &h4);
     static void GetAplanaritySphericity(math::XYZTLorentzVector leptonVec, math::XYZTLorentzVector metVec, std::vector<math::XYZTLorentzVector> jetVecs, float &aplanarity, float &sphericity);
     
+    static boosted::JetType GetBoostedJetType(const boosted::BoostedJet boostedJet, const BoostedJetDisc::Mode mode);
+    
     static void TopSubjetCSVDef(std::vector<pat::Jet> &subjets);
     
     static std::vector<pat::Jet> GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets = 2);
     static std::vector<pat::Jet> GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets = 2);
     static float GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets = 2, const int& nCSVJets = 2);
+    
     static std::vector<pat::Jet> GetSingleTopJets(const std::vector<pat::Jet>& centralJets, const std::vector<pat::Jet>& forwardJets, float etacut=2.4);
 
     static float GetMuonRelIso(const pat::Muon& iMuon);

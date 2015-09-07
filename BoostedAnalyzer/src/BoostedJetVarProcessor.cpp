@@ -414,7 +414,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "BoostedJet_Dr_W1_W",i,BoostedUtils::DeltaR(W1.p4(),WVec) );
       vars.FillVars( "BoostedJet_Dr_W2_W",i,BoostedUtils::DeltaR(W2.p4(),WVec) );
       vars.FillVars( "BoostedJet_Dr_W1_W2",i,BoostedUtils::DeltaR(W1.p4(),W2.p4()) );
-    
+      
       vars.FillVars( "BoostedJet_ERatio_Top",i,topVec.E()/fatjet.energy() );
       vars.FillVars( "BoostedJet_ERatio_B",i,nonW.energy()/fatjet.energy() );
       vars.FillVars( "BoostedJet_ERatio_W1",i,W1.energy()/fatjet.energy() );
@@ -518,7 +518,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "BoostedJet_Dr_W1btag_Bbtag",i,BoostedUtils::DeltaR(subjets[1],subjets[0]));
       vars.FillVars( "BoostedJet_Dr_W2btag_Bbtag",i,BoostedUtils::DeltaR(subjets[2],subjets[0]));
       vars.FillVars( "BoostedJet_Dr_W1btag_W2btag",i,BoostedUtils::DeltaR(subjets[1],subjets[2]));
-
+      
       vars.FillVars( "BoostedJet_ERatio_Bbtag",i,subjets[0].energy()/fatjet.energy() );
       vars.FillVars( "BoostedJet_ERatio_W1btag",i,subjets[1].energy()/fatjet.energy() );
       vars.FillVars( "BoostedJet_ERatio_W2btag",i,subjets[2].energy()/fatjet.energy() );
@@ -598,7 +598,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
 	        break;
         }
       }
-
+      
       vars.FillVars( "BoostedJet_W1_IdxAk5",i,idxW1 );
       vars.FillVars( "BoostedJet_W2_IdxAk5",i,idxW2 );
       vars.FillVars( "BoostedJet_B_IdxAk5",i,idxB );
@@ -642,6 +642,7 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "BoostedJet_M2",i,(input.selectedBoostedJets[i].filterjets[0].p4()+input.selectedBoostedJets[i].filterjets[1].p4()).M() );
       vars.FillVars( "BoostedJet_Pt2",i,(input.selectedBoostedJets[i].filterjets[0].p4()+input.selectedBoostedJets[i].filterjets[1].p4()).Pt() );
     }
+    
     if(input.selectedBoostedJets[i].filterjets.size()>2){
       vars.FillVars( "BoostedJet_Dr_Filterjet23",i,BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[1],input.selectedBoostedJets[i].filterjets[2]) );
       vars.FillVars( "BoostedJet_Dr_Filterjet13",i,BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[0],input.selectedBoostedJets[i].filterjets[2]) );
