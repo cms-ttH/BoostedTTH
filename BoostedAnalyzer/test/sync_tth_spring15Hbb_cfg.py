@@ -63,7 +63,7 @@ process.BoostedAnalyzer.makeSystematicsTrees=True
 # only minimal selections applied
 process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
 # run some basic processors
-process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MVAVarProcessor","DiLeptonVarProcessor")
+process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MVAVarProcessor","DiLeptonVarProcessor","MCMatchVarProcessor")
 
 # evaluate some triggers but do not use them for the lepton selection
 process.BoostedAnalyzer.relevantTriggers = ["HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1","HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1","HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1","HLT_Ele27_eta2p1_WP85_Gsf_HT200_v1","HLT_IsoMu24_eta2p1_v1"]
