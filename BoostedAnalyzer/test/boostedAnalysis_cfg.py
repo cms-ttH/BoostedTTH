@@ -42,7 +42,8 @@ default['nickname'] = 'MC_Pythia_TTHbb'
 #default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/Spring15_Sync/ttHbb_spring15_25ns_plusboostedjets.root'
 #default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/Spring15_HbbSync/ttbar_Spring15_HbbSync_NewBoostedJets.root '
 #default['filenames'] = 'file:/nfs/dust/cms/user/shwillia/AddHiggsTagger/CMSSW_7_4_6_patch6/src/ttbar_Spring15_HbbSync_NewBoostedJets.root'
-default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150901_160547/0000/BoostedTTH_MiniAOD_99.root'
+#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150901_160547/0000/BoostedTTH_MiniAOD_99.root'
+default['filenames'] = 'root://xrootd-cms.infn.it//store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0AB045B5-BB0C-E511-81FD-0025905A60B8.root'
 
 default['outfilename'] = None
 default['skip'] = '0'
@@ -106,7 +107,7 @@ process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 process.ttbarCategorizationPath = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar)
 
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_Analysis_cfi")
-process.BoostedAnalyzer.useFatJets=True
+process.BoostedAnalyzer.useFatJets=False
 process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 
 if values['outfilename'] is not None:

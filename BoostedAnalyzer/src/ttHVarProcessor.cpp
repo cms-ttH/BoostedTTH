@@ -48,6 +48,7 @@ void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& v
 
 void ttHVarProcessor::InitHiggsCandidateVars(VariableContainer& vars){
   
+  vars.InitVar(prefix+"HiggsCandidate_Index",-9);
   vars.InitVar(prefix+"HiggsCandidate_HiggsTag",-9.);
   vars.InitVar(prefix+"HiggsCandidate_E",-9.);
   vars.InitVar(prefix+"HiggsCandidate_Pt",-9.);
@@ -103,7 +104,9 @@ void ttHVarProcessor::InitHiggsCandidateVars(VariableContainer& vars){
 
 
 void ttHVarProcessor::InitTopHadCandidateVars(VariableContainer& vars){
-
+  
+  vars.InitVar(prefix+"TopHadCandidate_Index",-9);
+  
   vars.InitVar(prefix+"TopHadCandidate_TopMVAOutput",-9.);
   vars.InitVar(prefix+"TopHadCandidate_Chi2",-9.);
   
@@ -317,10 +320,10 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
   math::XYZTLorentzVector nu1CandVec = ttHEvent.GetNeutrino1Vec();
   math::XYZTLorentzVector nu2CandVec = ttHEvent.GetNeutrino2Vec();
   
-  float higgsCandTag=-1.1;
-  higgsCandTag = ttHEvent.GetHiggsCandTag();
-  
   // Fill Variables
+  vars.FillVar(prefix+"HiggsCandidate_Index",ttHEvent.GetHiggsCandIndex());
+  vars.FillVar(prefix+"HiggsCandidate_HiggsTag",ttHEvent.GetHiggsCandTag());
+  
   if(higgsCand.fatjet.pt()>0){
     vars.FillVar(prefix+"HiggsCandidate_E",higgsCand.fatjet.energy());
     vars.FillVar(prefix+"HiggsCandidate_Pt",higgsCand.fatjet.pt());
@@ -412,8 +415,6 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
     vars.FillVar(prefix+"HiggsCandidate_M_TopLep",mtoplep_higgs3);
   else if(fabs(mtoplep_higgs4-173)<fabs(mtoplep_higgs1-173)&&fabs(mtoplep_higgs4-173)<fabs(mtoplep_higgs2-173)&&fabs(mtoplep_higgs4-173)<fabs(mtoplep_higgs3-173))
     vars.FillVar(prefix+"HiggsCandidate_M_TopLep",mtoplep_higgs4);
-  
-  vars.FillVar(prefix+"HiggsCandidate_HiggsTag",higgsCandTag);
 }
 
 
@@ -436,6 +437,7 @@ void ttHVarProcessor::FillTopHadCandidateVars(VariableContainer& vars, Boostedtt
   math::XYZTLorentzVector nu2CandVec = ttHEvent.GetNeutrino2Vec();
   
   // Fill Variables
+  vars.FillVar(prefix+"TopHadCandidate_Index", ttHEvent.GetTopHadCandIndex());
   vars.FillVar(prefix+"TopHadCandidate_TopMVAOutput", ttHEvent.GetTopHadCandTag());
   
   if(topHadCand.fatjet.pt()>0){
