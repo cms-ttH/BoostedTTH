@@ -609,12 +609,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // selected jets with jet ID cuts
   std::vector<pat::Jet> idJets = helper.GetSelectedJets(pfjets, 0., 9999., jetID::jetLoose, '-' );
   // Get the jets for MET correction
-  std::vector<pat::Jet> idJetsForMET = helper.GetSelectedJets(pfjets, 10., 9999., jetID::jetLoose, '-' );
-  std::vector<pat::Jet> cleanJetsForMET = helper.GetDeltaRCleanedJets(idJetsForMET,selectedMuonsLoose,selectedElectronsLoose,0.4);
-  std::vector<pat::Jet> rawJetsForMET = helper.GetUncorrectedJets(cleanJetsForMET);
+  std::vector<pat::Jet> idJetsForMET = helper.GetSelectedJets(pfjets, 0., 5.4, jetID::jetMETcorrection, '-' );
+  std::vector<pat::Jet> rawJetsForMET = helper.GetUncorrectedJets(idJetsForMET);
   std::vector<pat::Jet> correctedJetsForMET_nominal = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::NA);
   //correct MET 
-  std::vector<pat::MET> correctedMETs_nominal = helper.CorrectMET(cleanJetsForMET,correctedJetsForMET_nominal,pfMETs);
+  std::vector<pat::MET> correctedMETs_nominal = helper.CorrectMET(idJetsForMET,correctedJetsForMET_nominal,pfMETs);
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
   // Clean muons and electrons from jets
@@ -671,8 +670,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
  
     correctedJetsForMET_jesup = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::JESup);
     correctedJetsForMET_jesdown = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::JESdown);
-    correctedMETs_jesup = helper.CorrectMET(cleanJetsForMET,correctedJetsForMET_jesup,pfMETs);
-    correctedMETs_jesdown = helper.CorrectMET(cleanJetsForMET,correctedJetsForMET_jesdown,pfMETs);
+    correctedMETs_jesup = helper.CorrectMET(idJetsForMET,correctedJetsForMET_jesup,pfMETs);
+    correctedMETs_jesdown = helper.CorrectMET(idJetsForMET,correctedJetsForMET_jesdown,pfMETs);
 
     selectedJets_unsorted_jesup = helper.GetSelectedJets(correctedJets_unsorted_jesup, jetptcut, jetetacut, jetID::none, '-' );
     selectedJets_unsorted_jesdown = helper.GetSelectedJets(correctedJets_unsorted_jesdown, jetptcut, jetetacut, jetID::none, '-' );
@@ -732,8 +731,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     correctedJetsForMET_jerup = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::JERup);
     correctedJetsForMET_jerdown = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::JERdown);
-    correctedMETs_jerup = helper.CorrectMET(cleanJetsForMET,correctedJetsForMET_jerup,pfMETs);
-    correctedMETs_jerdown = helper.CorrectMET(cleanJetsForMET,correctedJetsForMET_jerdown,pfMETs);
+    correctedMETs_jerup = helper.CorrectMET(idJetsForMET,correctedJetsForMET_jerup,pfMETs);
+    correctedMETs_jerdown = helper.CorrectMET(idJetsForMET,correctedJetsForMET_jerdown,pfMETs);
 
     selectedJets_unsorted_jerup = helper.GetSelectedJets(correctedJets_unsorted_jerup, jetptcut, jetetacut, jetID::none, '-' );
     selectedJets_unsorted_jerdown = helper.GetSelectedJets(correctedJets_unsorted_jerdown, jetptcut, jetetacut, jetID::none, '-' );
