@@ -38,9 +38,10 @@ bool DiLeptonMassSelection::IsSelected(const InputCollections& input,Cutflow& cu
       mumu_mass=(input.selectedMuonsDL[0].p4()+input.selectedMuonsDL[1].p4()).M();
     }
     if(input.selectedMuonsDL.size()>=1 && input.selectedElectronsDL.size()>=1) {
-      if(cutForDifferentFlavors) 
-      std::vector<math::XYZTLorentzVector> lepVecs =  BoostedUtils::GetLepVecs(selectedElectronsDL, selectedMuonsDL);
+      if(cutForDifferentFlavors){ 
+      std::vector<math::XYZTLorentzVector> lepVecs =  BoostedUtils::GetLepVecs(input.selectedElectronsDL, input.selectedMuonsDL);
       elmu_mass=(lepVecs.at(0)+lepVecs.at(1)).M();
+      }
       else{
         cutflow.EventSurvivedStep(selectionName,input.weights.at("Weight"));
         return true;
