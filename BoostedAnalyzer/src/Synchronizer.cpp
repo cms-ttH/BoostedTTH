@@ -162,7 +162,7 @@ void Synchronizer::DumpSyncExe2Header(std::ostream &out){
 }
 
 
-void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL){
+void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL){
   
   // Setup Selections
   // Single Lepton Selection
@@ -191,7 +191,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& he
     dileptonSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
     dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true));
     dileptonSelections.push_back(new DiLeptonMETSelection(40,99999));
-    dileptonSelections.push_back(new JetTagSelection(2,1));
+    dileptonSelections.push_back(new DiLeptonJetTagSelection(2,1));
   }
   if(!initializedCutflowsWithSelections){
     for(uint i=0; i<dileptonSelections.size(); i++){
@@ -236,9 +236,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& he
   int n_jets=0;
   int n_btags=0;
 
-  float bWeight=input.weights.at("Weight_CSV");
+  float bWeight=0;
 
-  int ttHFCategory=input.genTopEvt.GetTTxIdFromHelper();
+  int ttHFCategory=0;
 
   float final_discriminant1=0;
   float final_discriminant2=0;
@@ -266,9 +266,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& he
 	  break;
       }
   }
-  cutflowDL.EventSurvivedStep("all",input.weights.at("Weight"));
+  cutflowDL.EventSurvivedStep("all",input_DL.weights.at("Weight"));
   for(uint i=0; i<dileptonSelections.size(); i++){
-      if(!dileptonSelections[i]->IsSelected(input,cutflowDL)){
+      if(!dileptonSelections[i]->IsSelected(input_DL,cutflowDL)){
 	  is_DL=false;
 	  break;
       }
@@ -318,7 +318,32 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& he
     }
   }
   
+  if(is_DL){
+  if(input_DL.selectedJets.size()>0){
+    jet1_pt=input_DL.selectedJets.at(0).pt();
+    jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(0));
+  }
   
+  if(input_DL.selectedJets.size()>1){
+    jet2_pt=input_DL.selectedJets.at(1).pt();
+    jet2_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(1));
+  }
+  
+  if(input_DL.selectedJets.size()>2){
+    jet3_pt=input_DL.selectedJets.at(2).pt();
+    jet3_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(2));
+  }
+  
+  if(input_DL.selectedJets.size()>3){
+    jet4_pt=input_DL.selectedJets.at(3).pt();
+    jet4_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(3));
+  }
+  n_jets=int(input_DL.selectedJets.size());
+  for(auto jet=input_DL.selectedJets.begin();jet!=input_DL.selectedJets.end(); jet++){
+    if(helper.PassesCSV(*jet,'M')) n_btags++;
+  }
+  }
+  else{
   if(input.selectedJets.size()>0){
     jet1_pt=input.selectedJets.at(0).pt();
     jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
@@ -341,6 +366,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& he
   n_jets=int(input.selectedJets.size());
   for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
     if(helper.PassesCSV(*jet,'M')) n_btags++;
+  }
   }
 
   MET_pt=input.pfMET.pt();
@@ -379,7 +405,16 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& he
       higgstag_fatjet_2 = MiniAODHelper::GetJetCSV(filterjets.at(1));
     }
   }
-  
+
+  if(is_DL){
+    bWeight=input_DL.weights.at("Weight_CSV");
+    ttHFCategory=input_DL.genTopEvt.GetTTxIdFromHelper();
+  }
+  else{
+    bWeight=input.weights.at("Weight_CSV");
+    ttHFCategory=input.genTopEvt.GetTTxIdFromHelper();
+  }
+
   if(is_SL||is_DL){
       out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
 	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId
@@ -399,11 +434,11 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input, MiniAODHelper& he
 }
 
 
-void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw, MiniAODHelper& helper){
-  DumpSyncExe2(input,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal);
-  DumpSyncExe2(input_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup);
-  DumpSyncExe2(input_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown);
-  DumpSyncExe2(input_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw);
+void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper){
+  DumpSyncExe2(input,input_DL,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal);
+  DumpSyncExe2(input_jesup,input_DL_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup);
+  DumpSyncExe2(input_jesdown,input_DL_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown);
+  DumpSyncExe2(input_raw,input_DL_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw);
   initializedCutflowsWithSelections=true;
 }
 

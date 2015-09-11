@@ -14,6 +14,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonMassSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonMETSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonJetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
@@ -25,8 +26,8 @@ public:
     ~Synchronizer ();
     void DumpSyncExe1(int nfile,const InputCollections& input);
     void DumpSyncExe1(const InputCollections& input, std::ostream &out);
-    void DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw, MiniAODHelper& helper);
-    void DumpSyncExe2(const InputCollections& input, MiniAODHelper& helper, std::ostream &out, Cutflow& cutflowSL,Cutflow& cutflowDL);
+    void DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper);
+    void DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out, Cutflow& cutflowSL,Cutflow& cutflowDL);
     void InitDumpSyncFile1(std::string filename);
     void InitDumpSyncFile2(std::string filename);
     void DumpSyncExe2Header(std::ostream &out);

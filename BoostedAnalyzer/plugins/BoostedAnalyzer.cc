@@ -916,6 +916,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   map<string,float> weights_jerup = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
   map<string,float> weights_jerdown = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
   map<string,float> weights_uncorrjets = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+     //Only needed for Hbb synch exercise: dilepton uses loose jet selection -> different csv weights
+  map<string,float> weights_DL_nominal = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+  map<string,float> weights_DL_jesup = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_jesup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESup);
+  map<string,float> weights_DL_jesdown = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_jesdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESdown);
+  map<string,float> weights_DL_jerup = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
+  map<string,float> weights_DL_jerdown = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
+  map<string,float> weights_DL_uncorrjets = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
 
   // DEFINE INPUT
   InputCollections input_nominal( eventInfo,
@@ -949,6 +956,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   InputCollections input_jerup( input_nominal,selectedJets_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],weights_jerup);
   InputCollections input_jerdown( input_nominal,selectedJets_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],weights_jerdown);
   InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],weights_uncorrjets);
+     //Only needed for Hbb synch exercise: dilepton uses loose jet selection -> different csv weights and input collection
+  InputCollections input_DL_nominal( input_nominal,selectedJetsLoose_nominal,selectedJetsLoose_nominal,selectedJetsSingleTop_nominal,correctedMETs_nominal[0],weights_DL_nominal);
+  InputCollections input_DL_jesup( input_nominal,selectedJetsLoose_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],weights_DL_jesup);
+  InputCollections input_DL_jesdown( input_nominal,selectedJetsLoose_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],weights_DL_jesdown);
+  InputCollections input_DL_jerup( input_nominal,selectedJetsLoose_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],weights_DL_jerup);
+  InputCollections input_DL_jerdown( input_nominal,selectedJetsLoose_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],weights_DL_jerdown);
+  InputCollections input_DL_uncorrjets( input_nominal,selectedJetsLoose_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],weights_DL_uncorrjets);
 
   // DO SELECTION
 
@@ -969,7 +983,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   // dump globl Hbb sync exe for all events
   if(dumpSyncExe2){
-      synchronizer.DumpSyncExe2(0,input_nominal,input_jesup,input_jesdown,input_uncorrjets,helper);
+      synchronizer.DumpSyncExe2(0,input_nominal,input_jesup,input_jesdown,input_uncorrjets,input_DL_nominal,input_DL_jesup,input_DL_jesdown,input_DL_uncorrjets,helper);
   }
 
   for(size_t i=0; i<selections.size() && selected_nominal; i++){
