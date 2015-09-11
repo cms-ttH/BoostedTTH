@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
 class DiLeptonMassSelection: public Selection{
     
