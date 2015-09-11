@@ -2,8 +2,8 @@ import sys
 
 filename1 = sys.argv[1]
 
-outfileSL=open("onlySL/SL_"+filename1,"w")
-outfileDL=open("onlyDL/DL_"+filename1,"w")
+outfileSL=open("KIT_syncHBB/onlySL/SL_"+filename1.split("/",1)[1],"w")
+outfileDL=open("KIT_syncHBB/onlyDL/DL_"+filename1.split("/",1)[1],"w")
 
 f1=open(filename1,"r")
 list1=list(f1)
