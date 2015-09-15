@@ -10,7 +10,7 @@ SelectedElectronProducer = cms.EDProducer(
     isData       = cms.bool(False),
 
     leptons = cms.InputTag("slimmedElectrons"),
-    ptMin   = cms.double(5),
+    ptMin   = cms.double(20),
     etaMax  = cms.double(2.5),
     )
 
@@ -25,7 +25,7 @@ SelectedMuonProducer = cms.EDProducer(
     isData       = cms.bool(False),
 
     leptons = cms.InputTag("slimmedMuons"),
-    ptMin   = cms.double(5),
+    ptMin   = cms.double(10),
     etaMax  = cms.double(2.5),
     )
 
