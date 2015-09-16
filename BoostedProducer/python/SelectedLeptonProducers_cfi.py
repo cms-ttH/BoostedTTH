@@ -13,7 +13,7 @@ SelectedElectronProducer = cms.EDProducer(
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     ptMin   = cms.double(10),
     etaMax  = cms.double(2.5),
-    leptonID = cms.string("loose"),
+    leptonID = cms.string("loosePhys14"),
     isoConeSize = cms.string("R04"),
     isoCorrType = cms.string("rhoEA")
     )

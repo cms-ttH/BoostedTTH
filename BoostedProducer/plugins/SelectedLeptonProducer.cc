@@ -116,8 +116,10 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   electronID_ = electronID::electronLoose;
   muonID_ = muonID::muonLoose;
   if(leptonType_ == Electron){
-    if(      leptonID == "loose"  ) electronID_ = electronID::electronLoose;
-    else if( leptonID == "tight"  ) electronID_ = electronID::electronTight;
+    if(      leptonID == "loose"        ) electronID_ = electronID::electronLoose;
+    else if( leptonID == "tight"        ) electronID_ = electronID::electronTight;
+    else if( leptonID == "loosePhys14"  ) electronID_ = electronID::electronPhys14L;
+    else if( leptonID == "tightPhys14"  ) electronID_ = electronID::electronPhys14T;
     else {
       std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonID << std::endl;
       throw std::exception();
