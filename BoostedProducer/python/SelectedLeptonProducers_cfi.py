@@ -1,3 +1,6 @@
+# Default lepton selection of the "loose electrons/muons" defined at
+# https://twiki.cern.ch/twiki/bin/view/CMS/TTbarHbbRun2ReferenceAnalysis#Object_selection_SPRING15
+
 import FWCore.ParameterSet.Config as cms
 
 SelectedElectronProducer = cms.EDProducer(
@@ -12,9 +15,13 @@ SelectedElectronProducer = cms.EDProducer(
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     ptMin   = cms.double(10),
-    etaMax  = cms.double(2.5),
+    etaMax  = cms.double(2.4),
     leptonID = cms.string("loosePhys14"),
-    isoConeSize = cms.string("R04"),
+
+    # The following two parameters are dummies in case of electrons
+    # they are not used for the electron selection, which is defined
+    # via the 'leptonID' value
+    isoConeSize = cms.string("R03"), 
     isoCorrType = cms.string("rhoEA")
     )
 
@@ -31,7 +38,7 @@ SelectedMuonProducer = cms.EDProducer(
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     ptMin   = cms.double(10),
-    etaMax  = cms.double(2.5),
+    etaMax  = cms.double(2.4),
     leptonID = cms.string("loose"),
     isoConeSize = cms.string("R04"),
     isoCorrType = cms.string("deltaBeta")    
