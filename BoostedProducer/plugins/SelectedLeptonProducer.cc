@@ -182,12 +182,6 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
       iEvent.getByToken(EDMElectronsToken,hElectrons);
       
       std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(*hElectrons,ptMin_,electronID_,etaMax_)) );
-      
-      std::cout << ">>>>> SELECTED Electrons: " << selectedLeptons->size() << " electrons" << std::endl;
-      for(pat::ElectronCollection::const_iterator iObj = selectedLeptons->begin(); iObj != selectedLeptons->end(); ++iObj) {
-	      std::cout << "  pt = " << iObj->pt() << std::endl;
-      }
-      
       iEvent.put(selectedLeptons);
     }
     else if( leptonType_ == Muon ) {
@@ -197,12 +191,6 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
       iEvent.getByToken(EDMMuonsToken,hMuons);
       
       std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(*hMuons,ptMin_,muonID_,isoConeSize_,isoCorrType_,etaMax_)) );
-      
-      std::cout << ">>>>> SELECTED MUONS: " << selectedLeptons->size() << " muons" << std::endl;
-      for(pat::MuonCollection::const_iterator iObj = selectedLeptons->begin(); iObj != selectedLeptons->end(); ++iObj) {
-	      std::cout << "  pt = " << iObj->pt() << std::endl;
-      }
-      
       iEvent.put(selectedLeptons);
     }
   }
