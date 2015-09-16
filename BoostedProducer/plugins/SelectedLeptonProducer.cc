@@ -65,7 +65,11 @@ private:
   // lepton selection criteria
   double ptMin_;
   double etaMax_;
-
+  muonID::muonID muonID_;
+  electronID::electronID electronID_;
+  coneSize::coneSize isoConeSize_;
+  corrType::corrType isoCorrType_;
+  
   // data access tokens
   edm::EDGetTokenT< double >                  EDMRhoToken; //  pileup density
   edm::EDGetTokenT< reco::VertexCollection >  EDMVertexToken; // vertex
@@ -99,28 +103,60 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     std::cerr << "\n\nERROR: No matching analysis type found for: " << analysisType << std::endl;
     throw std::exception();
   }
-  const bool isData = iConfig.getParameter<bool>("isData");
-  const int sampleID = iConfig.getParameter<int>("sampleID");
-
-  EDMRhoToken    = consumes< double > (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
-  EDMVertexToken = consumes< reco::VertexCollection > (edm::InputTag("offlineSlimmedPrimaryVertices","",""));
-  EDMMuonsToken      = consumes< pat::MuonCollection >     (iConfig.getParameter<edm::InputTag>("leptons"));
-  EDMElectronsToken  = consumes< pat::ElectronCollection > (iConfig.getParameter<edm::InputTag>("leptons"));
-
+  
+  EDMElectronsToken  = consumes< pat::ElectronCollection >  (iConfig.getParameter<edm::InputTag>("leptons"));
+  EDMMuonsToken      = consumes< pat::MuonCollection >      (iConfig.getParameter<edm::InputTag>("leptons"));
+  EDMVertexToken = consumes< reco::VertexCollection >       (iConfig.getParameter<edm::InputTag>("vertices"));
+  EDMRhoToken    = consumes< double >                       (iConfig.getParameter<edm::InputTag>("rho"));
+  
   ptMin_ = iConfig.getParameter<double>("ptMin");
   etaMax_ = iConfig.getParameter<double>("etaMax");
-
+  
+  const std::string leptonID = iConfig.getParameter<std::string>("leptonID");
+  electronID_ = electronID::electronLoose;
+  muonID_ = muonID::muonLoose;
+  if(leptonType_ == Electron){
+    if(      leptonID == "loose"  ) electronID_ = electronID::electronLoose;
+    else if( leptonID == "tight"  ) electronID_ = electronID::electronTight;
+    else {
+      std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonID << std::endl;
+      throw std::exception();
+    }
+  }
+  if(leptonType_ == Muon){
+    if(      leptonID == "loose"  ) muonID_ = muonID::muonLoose;
+    else if( leptonID == "tight"  ) muonID_ = muonID::muonTight;
+    else {
+      std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonID << std::endl;
+      throw std::exception();
+    }
+  }
+  
+  const std::string isoConeSize = iConfig.getParameter<std::string>("isoConeSize");
+  isoConeSize_ = coneSize::R04;
+  if(      isoConeSize == "R03"  ) isoConeSize_ = coneSize::R03;
+  else if( isoConeSize == "R04"  ) isoConeSize_ = coneSize::R04;
+  else {
+    std::cerr << "\n\nERROR: No matching isolation cone size found for: " << isoConeSize << std::endl;
+    throw std::exception();
+  }
+  
+  const std::string isoCorrType = iConfig.getParameter<std::string>("isoCorrType");
+  isoCorrType_ = corrType::deltaBeta;
+  if(      isoCorrType == "deltaBeta" ) isoCorrType_ = corrType::deltaBeta;
+  else if( isoCorrType == "rhoEA"     ) isoCorrType_ = corrType::rhoEA;
+  else {
+    std::cerr << "\n\nERROR: No matching isolation correction type found for: " << isoCorrType << std::endl;
+    throw std::exception();
+  }
+  
   // Set up MiniAODHelper
+  const bool isData = iConfig.getParameter<bool>("isData");
+  const int sampleID = -1;
   helper_.SetUp(era,sampleID,iAnalysisType,isData);
 
-  // do we need to set up those?
-  // helper_.SetJetCorrectorUncertainty();
-  // helper_.SetJetCorrector(const JetCorrector*);
-  // helper_.SetFactorizedJetCorrector();
-  // helper_.SetPackedCandidates(const std::vector<pat::PackedCandidate> & all, int fromPV_thresh=1, float dz_thresh=9999., bool also_leptons=false);
-
-  if(      leptonType_ == Electron ) produces<pat::ElectronCollection>();
-  else if( leptonType_ == Muon     ) produces<pat::MuonCollection>();
+  if( leptonType_ == Electron ) produces<pat::ElectronCollection>();
+  if( leptonType_ == Muon     ) produces<pat::MuonCollection>();
 }
 
 
@@ -143,28 +179,26 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
       edm::Handle<pat::ElectronCollection> hElectrons;
       iEvent.getByToken(EDMElectronsToken,hElectrons);
       
-      // do we want to have these configurable?
-      const electronID::electronID iElectronID = electronID::electronLoose;
-
-      std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(*hElectrons,ptMin_,iElectronID,etaMax_)) );
-      iEvent.put(selectedLeptons);
-
+      std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(*hElectrons,ptMin_,electronID_,etaMax_)) );
       
-    } else if( leptonType_ == Muon ) {
+      std::cout << ">>>>> SELECTED Electrons: " << selectedLeptons->size() << " electrons" << std::endl;
+      for(pat::ElectronCollection::const_iterator iObj = selectedLeptons->begin(); iObj != selectedLeptons->end(); ++iObj) {
+	      std::cout << "  pt = " << iObj->pt() << std::endl;
+      }
+      
+      iEvent.put(selectedLeptons);
+    }
+    else if( leptonType_ == Muon ) {
       // select and produce muon collection
 
       edm::Handle<pat::MuonCollection> hMuons;
       iEvent.getByToken(EDMMuonsToken,hMuons);
       
-      // do we want to have these configurable?
-      const muonID::muonID iMuonID = muonID::muonLoose;
-      const coneSize::coneSize iconeSize = coneSize::R04;
-      const corrType::corrType icorrType = corrType::rhoEA;
-
-      std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(*hMuons,ptMin_,iMuonID,iconeSize,icorrType,etaMax_)) );
+      std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(*hMuons,ptMin_,muonID_,isoConeSize_,isoCorrType_,etaMax_)) );
+      
       std::cout << ">>>>> SELECTED MUONS: " << selectedLeptons->size() << " muons" << std::endl;
       for(pat::MuonCollection::const_iterator iObj = selectedLeptons->begin(); iObj != selectedLeptons->end(); ++iObj) {
-	std::cout << "  pt = " << iObj->pt() << std::endl;
+	      std::cout << "  pt = " << iObj->pt() << std::endl;
       }
       
       iEvent.put(selectedLeptons);

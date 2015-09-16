@@ -6,12 +6,16 @@ SelectedElectronProducer = cms.EDProducer(
 
     era          = cms.string("2015_74x"),
     analysisType = cms.string("LJ"),
-    sampleID     = cms.int32(9125),
     isData       = cms.bool(False),
 
     leptons = cms.InputTag("slimmedElectrons"),
-    ptMin   = cms.double(20),
+    vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    ptMin   = cms.double(10),
     etaMax  = cms.double(2.5),
+    leptonID = cms.string("loose"),
+    isoConeSize = cms.string("R04"),
+    isoCorrType = cms.string("rhoEA")
     )
 
 
@@ -21,11 +25,16 @@ SelectedMuonProducer = cms.EDProducer(
 
     era          = cms.string("2015_74x"),
     analysisType = cms.string("LJ"),
-    sampleID     = cms.int32(9125),
     isData       = cms.bool(False),
 
     leptons = cms.InputTag("slimmedMuons"),
+    vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
     ptMin   = cms.double(10),
     etaMax  = cms.double(2.5),
+    leptonID = cms.string("loose"),
+    isoConeSize = cms.string("R04"),
+    isoCorrType = cms.string("deltaBeta")    
     )
 
+SelectedLeptonProducerPath = cms.Path(SelectedElectronProducer*SelectedMuonProducer)
