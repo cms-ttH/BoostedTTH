@@ -39,7 +39,8 @@ default['nickname'] = 'MC_Pythia_TTHbb'
 #default['filenames'] = 'file:/nfs/dust/cms/user/shwillia/CMSSW_7_4_6_patch6/src/BoostedTTH_MiniAOD.root'
 #default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150731_155453/0000/BoostedTTH_MiniAOD_75.root'
 #default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150731_155453/0000/BoostedTTH_MiniAOD_75.root'
-default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/Spring15_Sync/ttHbb_spring15_25ns_plusboostedjets.root'
+#default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/Spring15_Sync/ttHbb_spring15_25ns_plusboostedjets.root'
+default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/Spring15_HbbSync/ttbar_Spring15_HbbSync.root'
 
 default['outfilename'] = None
 default['skip'] = '0'
@@ -64,7 +65,7 @@ values['filenames'] = map(lambda s: s.strip('" '), values['filenames'].split(","
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = 'MCRUN2_74_V9'
