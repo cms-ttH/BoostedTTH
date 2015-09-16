@@ -129,6 +129,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       vector<std::string> relevantTriggers;
         
       std::string outfileName;
+      std::string outfileNameNominal;
+      std::string outfileNameJESup;
+      std::string outfileNameJESdown;
 
       /** sample ID */
       int sampleID;
@@ -282,6 +285,21 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   makeSystematicsTrees = iConfig.getParameter<bool>("makeSystematicsTrees");
 
   outfileName = iConfig.getParameter<std::string>("outfileName");
+  outfileNameNominal=outfileName;
+  outfileNameJESup=outfileName;
+  outfileNameJESdown=outfileName;
+  // the default filename should contain nominal
+  size_t stringIndex = outfileName.find("nominal");
+  if(stringIndex!=std::string::npos){
+      outfileNameJESup.replace(stringIndex,7,"JESUP");
+      outfileNameJESdown.replace(stringIndex,7,"JESDOWN");
+  }
+  else{
+      outfileNameNominal=outfileName+"_nominal";
+      outfileNameJESup=outfileName+"_JESUP";
+      outfileNameJESdown=outfileName+"_JESDOWN";
+  }
+
 
   // REGISTER DATA ACCESS
   EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","",""));
@@ -374,25 +392,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
 
   // INITIALIZE TREEWRITER
-  treewriter_nominal.Init(outfileName);  
+  treewriter_nominal.Init(outfileNameNominal);  
   // in case of systematics
   if(makeSystematicsTrees){
-    std::string jesDownName = outfileName;
-    std::string jesUpName = outfileName;
-    // some filename changing for Karim
-    size_t stringIndex = outfileName.find("nominal");
-    if(stringIndex!=std::string::npos){
-      jesUpName.replace(stringIndex,7,"JESUP");
-      jesDownName.replace(stringIndex,7,"JESDOWN");
-      std::cout<<jesUpName<<" "<<jesDownName<<std::endl;
-      treewriter_jesup.Init(jesUpName);
-      treewriter_jesdown.Init(jesDownName);
-    }
-    else{
       // this is are the usual tree names
-      treewriter_jesup.Init(outfileName+"_JESup");
-      treewriter_jesdown.Init(outfileName+"_JESdown");
-    }
+      treewriter_jesup.Init(outfileNameJESup);
+      treewriter_jesdown.Init(outfileNameJESdown);
   }
 
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
@@ -1004,26 +1009,12 @@ void BoostedAnalyzer::beginJob()
 // ------------ method called once each job just after ending the event loop  ------------
 void BoostedAnalyzer::endJob() 
 {
-  std::ofstream fout_nominal(outfileName+"_Cutflow.txt");
+  std::ofstream fout_nominal(outfileNameNominal+"_Cutflow.txt");
   cutflow_nominal.Print(fout_nominal);
   fout_nominal.close();
   if(makeSystematicsTrees){
-    size_t stringIndex = outfileName.find("nominal");
-    std::string jesDownName = outfileName;
-    std::string jesUpName = outfileName;
-    if(stringIndex==std::string::npos){
-      jesUpName=outfileName+"_JESup_Cutflow.txt";
-      jesDownName=outfileName+"_JESdown_Cutflow.txt";
-    }
-    else{
-      jesUpName.replace(stringIndex,7,"JESUP");
-      jesUpName+="_Cutflow.txt";
-      jesDownName.replace(stringIndex,7,"JESDOWN");
-      jesDownName+="_Cutflow.txt";
-      std::cout<<jesUpName<<" "<<jesDownName<<std::endl;
-    }
-    std::ofstream fout_jesup(jesUpName);
-    std::ofstream fout_jesdown(jesDownName);
+    std::ofstream fout_jesup(outfileNameJESup+"_Cutflow.txt");
+    std::ofstream fout_jesdown(outfileNameJESdown+"_Cutflow.txt");
     cutflow_jesup.Print(fout_jesup);
     cutflow_jesdown.Print(fout_jesdown);
     fout_jesup.close();
