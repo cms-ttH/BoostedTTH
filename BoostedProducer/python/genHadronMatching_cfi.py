@@ -5,11 +5,16 @@ genJetCollection = 'ak4GenJetsCustom'
 genParticleCollection = 'prunedGenParticles'
 genJetInputParticleCollection = 'packedGenParticles'
 
+## producing a subset of particles to be used for jet clustering
+from RecoJets.Configuration.GenJetParticles_cff import genParticlesForJetsNoNu
+genParticlesForJetsNoNu = genParticlesForJetsNoNu.clone(
+    src = genJetInputParticleCollection
+)
 
 # Producing own jets for testing purposes
 from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
 ak4GenJetsCustom = ak4GenJets.clone(
-    src = genJetInputParticleCollection,
+    src = 'genParticlesForJetsNoNu',
     rParam = cms.double(0.4),
     jetAlgorithm = cms.string("AntiKt"),
 #    jetPtMin = 20.

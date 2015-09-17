@@ -9,6 +9,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Cutflow.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonMassSelection.hpp"

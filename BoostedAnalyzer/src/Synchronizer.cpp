@@ -167,6 +167,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   // Setup Selections
   // Single Lepton Selection
   if(leptonSelections.size()==0){
+    leptonSelections.push_back(new VertexSelection());
     leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WP85_Gsf_HT200_v1","HLT_IsoMu24_eta2p1_v1"));
     leptonSelections.push_back(new JetTagSelection(4,2));
   }
@@ -187,6 +188,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1");
     elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1");
 
+    dileptonSelections.push_back(new VertexSelection());
     dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers));
     dileptonSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
     dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true));
