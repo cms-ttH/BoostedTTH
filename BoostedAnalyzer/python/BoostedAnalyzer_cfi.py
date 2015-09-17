@@ -3,29 +3,33 @@ from BoostedTTH.BoostedAnalyzer.Selection_cff import *
 
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
-    LeptonSelection,
-    JetTagSelection, 
-    checkNoTriggers,
-    mumuTriggers = cms.vstring("None"),
-    elelTriggers = cms.vstring("None"),
-    elmuTriggers = cms.vstring("None"),
-    minMET = cms.double(-1),
-    maxMET = cms.double(800),
-    dlchannel = cms.string("all"),
-    era = cms.string("2015_74x"),
-    analysisType = cms.string("LJ"),
+    LeptonSelectionMC, # defined in Selection_cff
+    DiLeptonSelectionMC, # defined in Selection_cff
+    JetTagSelection, # defined in Selection_cff
+    METSelection, # defined in Selection_cff
+    checkBasicMCTriggers, # defined in Selection_cff
+
+    era = cms.string("2015_74x"), # has little effect so far, might become important for MiniAODhelper
+    analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
+    sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
+
     luminosity = cms.double(10000),
-    sampleID = cms.int32(9125),
     xs = cms.double(831.76),
-    nMCEvents = cms.int32(25446993),
+    nMCEvents = cms.int32(25446993), 
+
     isData = cms.bool(False),
+
+    makeSystematicsTrees = cms.bool(False),
+
     useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(False),
+
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
-    outfileName = cms.string("BoostedTTH"),
+
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    makeSystematicsTrees = cms.bool(False),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","MVAVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","MVAVarProcessor","DiLeptonVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor"),
+
+    outfileName = cms.string("BoostedTTH"),
 )
