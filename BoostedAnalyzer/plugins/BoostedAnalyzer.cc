@@ -420,7 +420,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   }
 
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
-
   cout << "using processors:" << endl; 
   for(vector<string>::const_iterator itPro = processorNames.begin();itPro != processorNames.end();++itPro) {
     cout << *itPro << endl;
@@ -433,7 +432,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
     treewriter_nominal.AddTreeProcessor(new BasicVarProcessor());
   }
   if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new MVAVarProcessor());
+      if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
+          cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl; 
+          treewriter_nominal.AddTreeProcessor(new BasicVarProcessor());
+      }
+      treewriter_nominal.AddTreeProcessor(new MVAVarProcessor());
   }
   if(std::find(processorNames.begin(),processorNames.end(),"RawVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new RawVarProcessor());
