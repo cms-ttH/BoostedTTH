@@ -315,6 +315,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   float dktJetsAverage = 0;
   
   int nPairsJets = 0;
+  std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
   for(std::vector<math::XYZTLorentzVector>::iterator itJetVec1 = jetvecs.begin();itJetVec1 != jetvecs.end();++itJetVec1){
     mJetsAverage += itJetVec1->M();
     eJetsAverage += itJetVec1->E();
@@ -654,7 +655,15 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     if(detamax_j4j < deta_j4j){
       detamax_j4j = deta_j4j;
     }
-    
+    math::XYZTLorentzVector p4all;
+    for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin() ; itJetVec != jetvecs.end(); ++itJetVec){
+	p4all += *itJetVec;
+    }
+
+    p4all += primLepVec;
+
+    p4all += input.pfMET.p4();
+
     float costheta_jcm= BoostedUtils::CosThetaCM(*itJetVec,p4all);
     vars.FillVars("Jet_CosTheta_cm",iJetVec,costheta_jcm  );
     if(costhetamax_jcm<fabs(costheta_jcm)){

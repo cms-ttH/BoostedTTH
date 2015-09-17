@@ -1,12 +1,12 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BasicVarProcessor.hpp"
 
 using namespace std;
 
-MVAVarProcessor::MVAVarProcessor(){}
-MVAVarProcessor::~MVAVarProcessor(){}
+BasicVarProcessor::BasicVarProcessor(){}
+BasicVarProcessor::~BasicVarProcessor(){}
 
 
-void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
+void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
  
   vars.InitVar("Evt_ID","I");
   vars.InitVar("Evt_Odd","I");
@@ -78,7 +78,7 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   initialized=true;
 }
 
-void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
+void BasicVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
   //also write the event ID for splitting purposes
@@ -221,8 +221,8 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     }
   }
   vars.FillVar("Evt_M3_OneJetTagged",m3tagged);
-  
   // Fill MTW
+  math::XYZTLorentzVector primLepVec = math::XYZTLorentzVector();
   float mtw = -1.;
   if(input.selectedElectrons.size()>0 || input.selectedMuons.size()>0){
     mtw = sqrt(2*(primLepVec.Pt()*input.pfMET.pt() - primLepVec.Px()*input.pfMET.px() - primLepVec.Py()*input.pfMET.py()));
