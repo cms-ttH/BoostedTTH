@@ -106,6 +106,7 @@ class BoostedttHEvent{
     
     // Higgs Candidate
     bool                    GetFoundHiggsCand();
+    int                     GetHiggsCandIndex();
     float                   GetHiggsCandTag();
     boosted::BoostedJet     GetHiggsCandBoosted();
     pat::Jet                GetHiggsB1Cand();
@@ -116,6 +117,7 @@ class BoostedttHEvent{
     
     // Hadronic Top Candidate
     bool                    GetFoundTopHadCand();
+    int                     GetTopHadCandIndex();
     float                   GetTopHadCandTag();
     boosted::BoostedJet     GetTopHadCandBoosted();
     pat::Jet                GetTopHadBCand();

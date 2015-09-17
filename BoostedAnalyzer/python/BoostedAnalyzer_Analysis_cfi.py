@@ -19,7 +19,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     xs = cms.double(831.76),
     nMCEvents = cms.int32(25446993),
     isData = cms.bool(False),
-    useFatJets = cms.bool(True),
+    useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(False),
     dumpSyncExe = cms.bool(False),
@@ -27,6 +27,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     outfileName = cms.string("BoostedTTH"),
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
     makeSystematicsTrees = cms.bool(False),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
+#    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","MVAVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor")
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","MVAVarProcessor")
 )
 

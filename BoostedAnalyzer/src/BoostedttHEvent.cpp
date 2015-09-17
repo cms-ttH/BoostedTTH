@@ -790,6 +790,11 @@ bool BoostedttHEvent::GetFoundHiggsCand(){
 }
 
 
+int BoostedttHEvent::GetHiggsCandIndex(){
+  return higgsCandIndex;
+}
+
+
 float BoostedttHEvent::GetHiggsCandTag(){
   if(foundHiggsCand) return higgsCandTag; 
   else return -1.1;
@@ -844,6 +849,11 @@ math::XYZTLorentzVector BoostedttHEvent::GetHiggsCandVec2(){
 
 bool BoostedttHEvent::GetFoundTopHadCand(){
   return foundTopHadCand;
+}
+
+
+int BoostedttHEvent::GetTopHadCandIndex(){
+  return topHadCandIndex;
 }
 
 
