@@ -90,6 +90,7 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 )
 
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+# these two options can only be activated on reprocessed miniaod
 process.BoostedAnalyzer.useFatJets=True
 process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
 
