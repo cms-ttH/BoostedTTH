@@ -9,7 +9,7 @@ filenames=['/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MIN
 # name and path of the output files (without extension)
 outfilename='testrun'
 # number of events ofthis file to analyze
-maxevents=1000
+maxevents=10000
 # total number of mcevents in sample
 #in case of positive and negative weights (of same absolut value, like in MC@NLO): nevents with weight >0 minus nevents with weight <0
 mcevents=10000
@@ -19,6 +19,8 @@ isData=False
 isBoostedMiniAOD=False
 # do you need all systematics (e.g. to calculate limits)?
 makeSystematicsTrees=False
+# analysisType ('SL' or 'DL')
+analysisType='SL'
 
 #------------------------------------------------------------------------------------------------------------------------------------
 # End of configuration
@@ -53,16 +55,25 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 # load and run the boosted analyzer
 if isData:
-    process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")        
+    if analysisType=='SL':
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")        
+    if analysisType=='DL':
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")        
 else:
-    process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+    if analysisType=='SL':
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+    if analysisType=='DL':
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
+
     if not isBoostedMiniAOD:
         # Supplies PDG ID to real name resolution of MC particles
         process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD 
         process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+
 if isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
+
 process.BoostedAnalyzer.outfileName=outfilename
 if not isData:
     process.BoostedAnalyzer.luminosity = 10000.
