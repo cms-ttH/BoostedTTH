@@ -5,7 +5,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("analysis")
 
 # set input, output, maxevents
-filenames=['/store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/141B9915-1F08-E511-B9FF-001E675A6AB3.root'] # TODO: need to use boosted file
+filenames=['/store/user/shwillia/Spring15_HbbSync/ttHTobb_Spring15_HbbSync.root']
 outfilename='sync_tth_spring15Hbb'
 maxevents=10000000
 
@@ -56,14 +56,14 @@ process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.outfileName=outfilename
 # can be set to true because the necessary tt+x input is generated above
 process.BoostedAnalyzer.useGenHadronMatch=True
-process.BoostedAnalyzer.useFatJets=False # TODO: activate this
+process.BoostedAnalyzer.useFatJets=True
 process.BoostedAnalyzer.dumpSyncExe2=True
 # JES systematics for sync
 process.BoostedAnalyzer.makeSystematicsTrees=True
 # only minimal selections applied
 process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
 # run some basic processors
-process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MVAVarProcessor","DiLeptonVarProcessor")
+process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MVAVarProcessor","DiLeptonVarProcessor","MCMatchVarProcessor")
 
 # evaluate some triggers but do not use them for the lepton selection
 process.BoostedAnalyzer.relevantTriggers = ["HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1","HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1","HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1","HLT_Ele27_eta2p1_WP85_Gsf_HT200_v1","HLT_IsoMu24_eta2p1_v1"]
