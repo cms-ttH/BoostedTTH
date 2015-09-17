@@ -68,6 +68,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AdditionalJetProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BasicVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/RawVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
@@ -383,6 +384,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
     else if(*itSel == "DiLeptonSelection") selections.push_back(new DiLeptonSelection(iConfig));
     else if(*itSel == "MinDiLeptonMassSelection") selections.push_back(new DiLeptonMassSelection(20.,9999.));
     else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true));
+    else if(*itSel == "ZWindowSelection") selections.push_back(new DiLeptonMassSelection(76.,106));
     else if(*itSel == "METSelection") selections.push_back(new METSelection(iConfig));
     else if(*itSel == "FastSimMETSelection") selections.push_back(new METSelection(-1,800));
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
@@ -426,6 +428,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   // add processors that have been requested in the config
   if(std::find(processorNames.begin(),processorNames.end(),"WeightProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new WeightProcessor());
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new BasicVarProcessor());
   }
   if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new MVAVarProcessor());
