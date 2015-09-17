@@ -1,79 +1,41 @@
 import FWCore.ParameterSet.Config as cms
 import os
 
-# Set Process and Variables
+process = cms.Process("analysis")
+# Start of configuration
 #------------------------------------------------------------------------------------------------------------------------------------
-process = cms.Process("boosted")
+# list of input files
+filenames=['/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0AB045B5-BB0C-E511-81FD-0025905A60B8.root']
+# name and path of the output files (without extension)
+outfilename='testrun'
+# number of events ofthis file to analyze
+maxevents=1000
+# total number of mcevents in sample
+#in case of positive and negative weights (of same absolut value, like in MC@NLO): nevents with weight >0 minus nevents with weight <0
+mcevents=10000
+xs=1 # cross section of the process in pb
+isData=False
+# has the file been prepared with the BoostedProducer?
+isBoostedMiniAOD=False
+# do you need all systematics (e.g. to calculate limits)?
+makeSystematicsTrees=False
 
-# grid-control variables
-gc = {}
-gc['nickname'] = '__NICK__'
-gc['filenames'] = '__FILE_NAMES__'
-gc['outfilename'] = '__OUT_FILE__'
-gc['skip'] = '__SKIP_EVENTS__'
-gc['max'] = '__MAX_EVENTS__'
+#------------------------------------------------------------------------------------------------------------------------------------
+# End of configuration
 
-gc['sampletype'] = '__SAMPLE_TYPE__'
-gc['xs'] = '__XS__'
-gc['mcevents'] = '__MCEVENTS__'
-
-# envoirnment variables
-env = {}
-env['nickname'] = os.getenv('NICK_NAME')
-env['filenames'] = os.getenv('FILE_NAMES')
-env['outfilename'] = os.getenv('OUTFILE_NAME')
-env['skip'] = os.getenv('SKIP_EVENTS')
-env['max'] = os.getenv('MAX_EVENTS')
-
-env['sampletype'] = os.getenv('SAMPLE_TYPE')
-env['xs'] = os.getenv('XS')
-env['mcevents'] = os.getenv('MCEVENTS')
-
-# default variables
-default = {}
-default['nickname'] = 'MC_Pythia_TTHbb'
-default['filenames'] = 'file:/nfs/dust/cms/user/hmildner/BoostedTTH_MiniAOD.root'
-
-default['outfilename'] = None
-default['skip'] = '0'
-default['max'] = '10000'
-
-default['sampletype'] = '9125'
-default['xs'] = '831.76'
-default['mcevents'] = '25446993'
-
-# fill in default values if not set by gc
-values = gc.copy()
-for key, value in values.iteritems():
-    if value.startswith('__'):
-        if env[key] is None:
-            values[key] = default[key]
-        else:
-            values[key] = env[key]
-
-# convert strings
-values['filenames'] = values['filenames'].strip(',')
-values['filenames'] = map(lambda s: s.strip('" '), values['filenames'].split(","))
-
-# initialize MessageLogger and output report
+# cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
-
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = 'MCRUN2_74_V9'
-
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(values['max'])))
-
+process.options.allowUnscheduled = cms.untracked.bool(True)
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(maxevents)))
 process.source = cms.Source(  "PoolSource",
-                              fileNames = cms.untracked.vstring(values['filenames']),
-                              skipEvents = cms.untracked.uint32(int(values['skip']))
+                              fileNames = cms.untracked.vstring(filenames),
 )
-
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
 from JetMETCorrections.Configuration.JetCorrectionCondDB_cff import *
-
 process.ak4PFCHSL1Fastjet = cms.ESProducer(
   'L1FastjetCorrectionESProducer',
   level = cms.string('L1FastJet'),
@@ -89,18 +51,23 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
     'ak4PFchsL3Absolute')
 )
 
-process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
-# these two options can only be activated on reprocessed miniaod
-process.BoostedAnalyzer.useFatJets=True
-process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
-
-if values['outfilename'] is not None:
-    process.BoostedAnalyzer.outfileName=values['outfilename']
-if values['sampletype'] is not None:
-    process.BoostedAnalyzer.sampleID=cms.int32(int(values['sampletype']))
-if values['xs'] is not None:
-    process.BoostedAnalyzer.xs=cms.double(float(values['xs']))
-if values['mcevents'] is not None:
-    process.BoostedAnalyzer.nMCEvents=cms.int32(int(values['mcevents']))
+# load and run the boosted analyzer
+if isData:
+    process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")        
+else:
+    process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+    if not isBoostedMiniAOD:
+        # Supplies PDG ID to real name resolution of MC particles
+        process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+        # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD 
+        process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+if isBoostedMiniAOD:
+    process.BoostedAnalyzer.useFatJets=True
+process.BoostedAnalyzer.outfileName=outfilename
+if not isData:
+    process.BoostedAnalyzer.luminosity = 10000.
+    process.BoostedAnalyzer.xs = xs
+    process.BoostedAnalyzer.nMCEvents = int(mcevents)
+process.BoostedAnalyzer.makeSystematicsTrees=makeSystematicsTrees
 
 process.p = cms.Path(process.BoostedAnalyzer)
