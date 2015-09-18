@@ -29,6 +29,7 @@ analysisType='SL'
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+# global tag, you need to change this for data
 process.GlobalTag.globaltag = 'MCRUN2_74_V9'
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)

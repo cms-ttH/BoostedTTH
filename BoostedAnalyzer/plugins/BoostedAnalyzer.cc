@@ -386,6 +386,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
     else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true,false));
     else if(*itSel == "ZWindowSelection") selections.push_back(new DiLeptonMassSelection(76.,106,false));
     else if(*itSel == "METSelection") selections.push_back(new METSelection(iConfig));
+    else if(*itSel == "DiLeptonMETSelection") selections.push_back(new DiLeptonMETSelection(iConfig));
     else if(*itSel == "FastSimMETSelection") selections.push_back(new METSelection(-1,800));
     else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
     else if(*itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));

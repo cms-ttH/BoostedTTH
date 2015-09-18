@@ -42,6 +42,11 @@ METSelection = cms.PSet(
     maxMET = cms.double(800),
 )
 
+DiLeptonMETSelection = cms.PSet(
+    minMET = cms.double(-1),
+    maxMET = cms.double(800),
+)
+
 JetTagSelection = cms.PSet(
     minJets = cms.vint32(4,6),
     maxJets = cms.vint32(-1,-1),

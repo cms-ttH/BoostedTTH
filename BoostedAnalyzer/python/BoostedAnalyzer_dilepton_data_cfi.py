@@ -6,7 +6,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     LeptonSelectionData, # defined in Selection_cff
     DiLeptonSelectionData, # defined in Selection_cff
     JetTagSelection, # defined in Selection_cff
-    METSelection, # defined in Selection_cff
+    DiLeptonMETSelection, # defined in Selection_cff
     checkBasicDataTriggers, # defined in Selection_cff
 
     era = cms.string("2015_74x"), # has little effect so far, might become important for MiniAODhelper
