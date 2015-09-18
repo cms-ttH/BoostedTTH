@@ -10,7 +10,7 @@ class DiLeptonMassSelection: public Selection{
     
 public:
     
-    DiLeptonMassSelection(float minMass,float maxMass,bool invertCut=false,bool cutForDifferentFlavors=false);
+    DiLeptonMassSelection(float minMass,float maxMass,bool invertCut=false,bool cutForDifferentFlavors=true);
     ~DiLeptonMassSelection();
     void InitCutflow(Cutflow& cutflow);
     bool IsSelected(const InputCollections& input,Cutflow& cutflow);
