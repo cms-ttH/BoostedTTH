@@ -7,7 +7,7 @@ config.General.workArea = 'crab_projects'
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = '/nfs/dust/cms/user/shwillia/AddHiggsTagger/CMSSW_7_4_6_patch6/src/BoostedTTH/BoostedProducer/test/boostedProducer_cfg.py'
+config.JobType.psetName = '/nfs/dust/cms/user/shwillia/BoostedJets/CMSSW_7_4_6_patch6/src/BoostedTTH/BoostedProducer/test/boostedProducer_cfg.py'
 config.JobType.outputFiles = ['BoostedTTH_MiniAOD.root']
 
 config.section_("Data")
