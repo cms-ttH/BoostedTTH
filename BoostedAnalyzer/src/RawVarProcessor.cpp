@@ -49,14 +49,12 @@ void RawVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVars( "RawMuon_Pt","N_RawMuons" );
   vars.InitVars( "RawMuon_Eta","N_RawMuons" );
   vars.InitVars( "RawMuon_Phi","N_RawMuons" );
-  vars.InitVars( "RawMuon_Iso","N_RawMuons" );
   
   vars.InitVars( "RawElectron_E","N_RawElectrons" );
   vars.InitVars( "RawElectron_M","N_RawElectrons" );
   vars.InitVars( "RawElectron_Pt","N_RawElectrons" );
   vars.InitVars( "RawElectron_Eta","N_RawElectrons" );
   vars.InitVars( "RawElectron_Phi","N_RawElectrons" );
-  vars.InitVars( "RawElectron_Iso","N_RawElectrons" );
 
 
   initialized=true;
@@ -136,8 +134,6 @@ void RawVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "RawElectron_Pt",iEle,itEle->pt() );
     vars.FillVars( "RawElectron_Eta",iEle,itEle->eta() );
     vars.FillVars( "RawElectron_Phi",iEle,itEle->phi() );
-    float RawElectron_Iso = BoostedUtils::GetElectronRelIso(*itEle);
-    vars.FillVars( "RawElectron_Iso",iEle,RawElectron_Iso );
   }
 
   for(std::vector<pat::Muon>::const_iterator itMu = input.rawMuons.begin(); itMu != input.rawMuons.end(); ++itMu){
@@ -147,9 +143,6 @@ void RawVarProcessor::Process(const InputCollections& input,VariableContainer& v
     vars.FillVars( "RawMuon_Pt",iMu,itMu->pt() );
     vars.FillVars( "RawMuon_Eta",iMu,itMu->eta() );
     vars.FillVars( "RawMuon_Phi",iMu,itMu->phi() );
-    float RawMuon_Iso = BoostedUtils::GetMuonRelIso(*itMu);
-    vars.FillVars( "RawMuon_Iso",iMu,RawMuon_Iso );
-//     vars.FillVars( "RawLepton_Iso",iMu+input.rawElectrons.size(),MiniAODHelper::GetMuonRelIso(*itMu, coneSize::R04, corrType::deltaBeta) );
   }
 
 }
