@@ -309,8 +309,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
       outfileNameNominal=outfileName+"_nominal";
       outfileNameJESup=outfileName+"_JESUP";
       outfileNameJESdown=outfileName+"_JESDOWN";
-      outfileNameJESup=outfileName+"_JERUP";
-      outfileNameJESdown=outfileName+"_JERDOWN";
+      outfileNameJERup=outfileName+"_JERUP";
+      outfileNameJERdown=outfileName+"_JERDOWN";
   }
 
 
