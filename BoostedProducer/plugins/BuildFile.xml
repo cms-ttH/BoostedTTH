@@ -20,4 +20,5 @@
   <use   name="JetMETCorrections/Objects"/>
   <use   name="fastjet"/>
   <use   name="fastjet-contrib"/>
+  <use   name="MiniAOD/MiniAODHelper"/>
 </library>

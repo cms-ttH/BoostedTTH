@@ -14,24 +14,12 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 # select loose lepton collections
-process.selectedMuons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedMuons"), cut = cms.string('''abs(eta)<2.5 && pt>10. &&
-(pfIsolationR03().sumChargedHadronPt+
-max(0.,pfIsolationR03().sumNeutralHadronEt+
-pfIsolationR03().sumPhotonEt-
-0.50*pfIsolationR03().sumPUPt))/pt < 0.20 &&
-(isPFMuon && (isGlobalMuon || isTrackerMuon) )'''))
-process.selectedElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>20. &&
-gsfTrack.isAvailable() &&
-gsfTrack.hitPattern().numberOfLostHits(\'MISSING_INNER_HITS\') < 2 &&
-(pfIsolationVariables().sumChargedHadronPt+
-max(0.,pfIsolationVariables().sumNeutralHadronEt+
-pfIsolationVariables().sumPhotonEt-
-0.5*pfIsolationVariables().sumPUPt))/pt < 0.15'''))
+process.load('BoostedTTH.BoostedProducer.SelectedLeptonProducers_cfi')
 
 #do projections
 process.pfCHS = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("fromPV"))
-process.pfNoMuonCHS =  cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfCHS"), veto = cms.InputTag("selectedMuons"))
-process.pfNoElectronsCHS = cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfNoMuonCHS"), veto =  cms.InputTag("selectedElectrons"))
+process.pfNoMuonCHS =  cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfCHS"), veto = cms.InputTag("SelectedMuonProducer"))
+process.pfNoElectronsCHS = cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfNoMuonCHS"), veto =  cms.InputTag("SelectedElectronProducer"))
 
 # make patJets
 process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff")
