@@ -1,3 +1,5 @@
+#include "FWCore/Utilities/interface/Exception.h"
+
 #include "BoostedTTH/BoostedAnalyzer/interface/VariableContainer.hpp"
 
 using namespace std;
@@ -10,19 +12,17 @@ VariableContainer::VariableContainer(){
 VariableContainer::~VariableContainer(){
 
 }
-bool VariableContainer::DoesVarExist( TString name ){
+bool VariableContainer::DoesVarExist( const TString& name ) const {
   return (intMap.count(name)>0||floatMap.count(name)>0||arrayMap.count(name)>0);
 }
 
-bool VariableContainer::IsVarFilled( TString name ){
-  return floatMapFilled[name]||intMapFilled[name]||arrayMapFilled[name];
+bool VariableContainer::IsVarFilled( const TString& name ) const {
+  return floatMapFilled.find(name) != floatMapFilled.end() || intMapFilled.find(name) != intMapFilled.end() || arrayMapFilled.find(name) != arrayMapFilled.end();
 }
 
 
-void VariableContainer::InitVar( TString name,float defaultValue, std::string type ) {
-  if(intMap.count(name)>0||floatMap.count(name)>0||arrayMap.count(name)>0){
-    cerr << name << " already initialized!" << endl;
-  }
+void VariableContainer::InitVar( const TString& name,float defaultValue, const std::string& type ) {
+  checkIfVariableAlreadyInit(name);
   if(type=="F"){
     floatMap[name] = 0;
     floatMapDefaults[name] = defaultValue;
@@ -38,16 +38,13 @@ void VariableContainer::InitVar( TString name,float defaultValue, std::string ty
 }
 
 
-void VariableContainer::InitVar( TString name, std::string type ) {
-  if(intMap.count(name)>0||floatMap.count(name)>0||arrayMap.count(name)>0){
-    cerr << name << " already initialized!" << endl;
-  }
-
+void VariableContainer::InitVar( const TString& name, const std::string& type ) {
+  checkIfVariableAlreadyInit(name);
   InitVar(name,-1.,type);
 }
 
 
-void VariableContainer::FillVar( TString name, float value ) {
+void VariableContainer::FillVar( const TString& name, float value ) {
   bool isInt=intMap.count(name)!=0;
   bool isFloat=floatMap.count(name)!=0;
   if(isFloat){
@@ -61,7 +58,7 @@ void VariableContainer::FillVar( TString name, float value ) {
   }
 }
 
-void VariableContainer::FillIntVar( TString name, int value, bool checkIfExists) {
+void VariableContainer::FillIntVar( const TString& name, int value, bool checkIfExists) {
     if(checkIfExists&&intMap.count(name)==0){
         cerr << name << " does not exist!" << endl;
         return;
@@ -73,7 +70,7 @@ void VariableContainer::FillIntVar( TString name, int value, bool checkIfExists)
     intMapFilled[name] = true;
 }
 
-void VariableContainer::FillFloatVar( TString name, float value, bool checkIfExists) {
+void VariableContainer::FillFloatVar( const TString& name, float value, bool checkIfExists) {
     if(checkIfExists&&floatMap.count(name)==0){
         cerr << name << " does not exist!" << endl;
         return;
@@ -87,10 +84,8 @@ void VariableContainer::FillFloatVar( TString name, float value, bool checkIfExi
 
 
 
-void VariableContainer::InitVars( TString name, float defaultValue, TString nEntryVariable, int maxentries ){
-  if(intMap.count(name)>0 || floatMap.count(name)>0 || arrayMap.count(name)>0){
-    cerr << name << " already initialized!" << endl;
-  }
+void VariableContainer::InitVars( const TString& name, float defaultValue, const TString& nEntryVariable, int maxentries ){
+  checkIfVariableAlreadyInit(name);
   if(!DoesVarExist(nEntryVariable)){
     cerr << nEntryVariable << " not filled, needed for " << name << ", will not initialize" << endl;
     return;
@@ -104,12 +99,12 @@ void VariableContainer::InitVars( TString name, float defaultValue, TString nEnt
 }
 
 
-void VariableContainer::InitVars( TString name, TString nEntryVariable, int maxentries ){
+void VariableContainer::InitVars( const TString& name, const TString& nEntryVariable, int maxentries ){
   InitVars(name,-1.,nEntryVariable,maxentries);
 }
 
 
-void VariableContainer::FillVars( TString name, int index, float value ) {
+void VariableContainer::FillVars( const TString& name, int index, float value ) {
   if(arrayMap.count(name)==0){
     cerr << name << " does not exist!" << endl;
   }
@@ -184,19 +179,16 @@ void VariableContainer::ConnectTree(TTree* tree){
   }
 }
 
-void VariableContainer::PrintArrayValue(TString name){
-  
+void VariableContainer::PrintArrayValue(const TString& name) {
   float* printArray = arrayMap[name];
   int nEntries = intMap[entryVariableOf[name]];
-  
-  
   for(int i=0;i<nEntries;++i){
     cout << name+"[" << i << "] : " << printArray[i] << std::endl;
   }
 }
 
 
-void VariableContainer::Dump(){
+void VariableContainer::Dump() const {
   auto itF= floatMap.begin();
   auto itFdefault = floatMapDefaults.begin();
   cout << "floats: " << endl;
@@ -216,7 +208,7 @@ void VariableContainer::Dump(){
 }
 
 
-float* VariableContainer::GetFloatVarPointer(TString name){
+float* VariableContainer::GetFloatVarPointer(const TString& name){
   if(floatMap.count(name)==0){
     cerr << name << " does not exist!" << endl;
     return 0;
@@ -224,7 +216,7 @@ float* VariableContainer::GetFloatVarPointer(TString name){
   return &(floatMap[name]);
 }
 
-float* VariableContainer::GetArrayVarPointer(TString name, int entry){
+float* VariableContainer::GetArrayVarPointer(const TString& name, int entry){
   if(arrayMap.count(name)==0){
     cerr << name << " does not exist!" << endl;
     return 0;
@@ -233,7 +225,7 @@ float* VariableContainer::GetArrayVarPointer(TString name, int entry){
 }
 
 
-int* VariableContainer::GetIntVarPointer(TString name){
+int* VariableContainer::GetIntVarPointer(const TString& name){
   if(intMap.count(name)==0&&floatMap.count(name)==0&&arrayMap.count(name)==0){
     cerr << name << " does not exist!" << endl;
     return 0;
@@ -242,7 +234,7 @@ int* VariableContainer::GetIntVarPointer(TString name){
 }
 
 
-float VariableContainer::GetFloatVar(TString name){
+float VariableContainer::GetFloatVar(const TString& name) {
   float* x=GetFloatVarPointer(name);
   if(x!=0)
     return *x;
@@ -251,7 +243,7 @@ float VariableContainer::GetFloatVar(TString name){
 }
 
 
-float VariableContainer::GetArrayVar(TString name, int entry){
+float VariableContainer::GetArrayVar(const TString& name, int entry) {
   float* x=GetArrayVarPointer(name,entry);
   if(x!=0)
     return *x;
@@ -260,10 +252,17 @@ float VariableContainer::GetArrayVar(TString name, int entry){
 }
 
 
-int VariableContainer::GetIntVar(TString name){
+int VariableContainer::GetIntVar(const TString& name) {
   int* x=GetIntVarPointer(name);
   if(x!=0)
     return *x;
   else 
     return -999;
+}
+
+
+void VariableContainer::checkIfVariableAlreadyInit(const TString& name) const {
+  if( intMap.count(name)>0 || floatMap.count(name)>0 || arrayMap.count(name)>0 ) {
+    throw cms::Exception("BadProcessor") << "Variable '" << name << "' already initialized!";
+  }
 }
