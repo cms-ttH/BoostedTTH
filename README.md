@@ -7,8 +7,8 @@ CMSSW tools for analyzing TTH events with boosted objects
 Follow These Steps:
  
     export SCRAM_ARCH=slc6_amd64_gcc491
-    scram project CMSSW_7_4_6_patch6
-    cd CMSSW_7_4_6_patch6/src
+    scram project CMSSW_7_4_12_patch4
+    cd CMSSW_7_4_12_patch4/src
     cmsenv   
     git cms-addpkg PhysicsTools/JetMCAlgos/
     cd PhysicsTools/JetMCAlgos/plugins/
