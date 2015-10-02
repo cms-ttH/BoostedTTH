@@ -1,5 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 
+# To execute test, run
+#  cmsRun mktrees_run2_dijets_cfg.py isData=False label=Test
+
 # parse command-line arguments
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideCommandLineParsing
 from FWCore.ParameterSet.VarParsing import VarParsing
@@ -22,6 +25,8 @@ if options.globalTag is "NONE":
 		options.globalTag = "74X_dataRun2_Prompt_v2"
 	else:
 		options.globalTag = "74X_mcRun2_asymptotic_v2"
+if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
+	options.maxEvents = 1000
 
 
 # print settings
@@ -81,7 +86,10 @@ process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
 process.source = cms.Source(
 	"PoolSource",
 	fileNames = cms.untracked.vstring(
-		'/store/mc/RunIISpring15DR74/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/221B185A-3502-E511-AC72-0025905C4262.root'
+		#'/store/mc/RunIISpring15DR74/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/221B185A-3502-E511-AC72-0025905C4262.root'
+
+		# /QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM
+		'/store/mc/RunIISpring15DR74/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/50000/6E887F0F-EDFB-E411-875B-BCAEC54B303A.root'
 		)
 	)
 
@@ -90,7 +98,7 @@ process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.outfileName = "DiJets_"+options.label
 process.BoostedAnalyzer.processorNames = ["TriggerVarProcessor","DiJetVarProcessor","WeightProcessor"]
-process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","DiJetSelection"]
 process.BoostedAnalyzer.useGenHadronMatch = False
 process.BoostedAnalyzer.era = options.era
 process.BoostedAnalyzer.analysisType = "LJ"

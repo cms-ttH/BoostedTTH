@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "DataFormats/PatCandidates/interface/Jet.h"
+
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 
 class DiJetVarProcessor: public TreeProcessor {
@@ -17,5 +19,9 @@ public:
 private:
   std::string bTagger_;
   std::string puJetIDDiscr_;
+  std::string jetTagInfoSV_;
+  double minSVFlightDistSig_;
+
+  void fillSecondaryVertexInfo(VariableContainer& vars, const pat::Jet& jet, const size_t iJet) const;
 };
 #endif

@@ -63,6 +63,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/THQJetSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DiJetSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -394,6 +395,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
     else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
     else if(*itSel == "BoostedTopSelection") selections.push_back(new BoostedSelection(1,0));
     else if(*itSel == "BoostedSelection") selections.push_back(new BoostedSelection(0,1));
+    else if(*itSel == "DiJetSelection") selections.push_back(new DiJetSelection());
     else cout << "No matching selection found for: " << *itSel << endl;    
     selections.back()->InitCutflow(cutflow_nominal);
     if(makeSystematicsTrees){
@@ -952,6 +954,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedElectrons,
 				  selectedElectronsDL,
 				  selectedElectronsLoose,
+				  idJets,
 				  rawJets,
 				  selectedJets_nominal,
 				  selectedJetsLoose_nominal,
