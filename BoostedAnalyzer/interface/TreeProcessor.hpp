@@ -5,14 +5,15 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/VariableContainer.hpp"
 
 class TreeProcessor{
-  public:
+public:
+  TreeProcessor() : initialized(false) {}
+  virtual ~TreeProcessor() {}
   
-    virtual void Init(const InputCollections& input,VariableContainer& var)=0;
-    virtual void Process(const InputCollections& input,VariableContainer& var) =0;
-
-  protected:
+  virtual void Init(const InputCollections& input,VariableContainer& var)=0;
+  virtual void Process(const InputCollections& input,VariableContainer& var) =0;
   
-    bool initialized;
+protected:
+  bool initialized;
 };
 
 #endif

@@ -3,6 +3,9 @@
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
+<use name="FWCore/Utilities"/>
+<use name="DataFormats/BTauReco"/>
+<use name="DataFormats/Math"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="DataFormats/HepMCCandidate"/>
 <use name="PhysicsTools/Utilities"/>
