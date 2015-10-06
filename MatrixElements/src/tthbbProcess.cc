@@ -24,8 +24,8 @@ void tthbbProcess::initProc(string param_card_name)
   SLHAReader slha(param_card_name); 
   pars->setIndependentParameters(slha); 
   pars->setIndependentCouplings(); 
-  pars->printIndependentParameters(); 
-  pars->printIndependentCouplings(); 
+  //  pars->printIndependentParameters(); 
+  //  pars->printIndependentCouplings(); 
   // Set external particle masses for this matrix element
   mME.push_back(pars->ZERO); 
   mME.push_back(pars->ZERO); 
@@ -47,8 +47,8 @@ void tthbbProcess::sigmaKin()
   static bool firsttime = true; 
   if (firsttime)
   {
-    pars->printDependentParameters(); 
-    pars->printDependentCouplings(); 
+    //    pars->printDependentParameters(); 
+    //    pars->printDependentCouplings(); 
     firsttime = false; 
   }
 
