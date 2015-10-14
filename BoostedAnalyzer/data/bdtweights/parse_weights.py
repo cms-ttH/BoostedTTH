@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
-def addVar(v,c):
-    print 'readerMap["'+c[0]+'j'+c[1]+'t"]->AddVariable("'+v+'", &variableMap["'+v+'"]);'
+def addVar(v,ov,c):
+    print 'readerMap["'+c[0]+'j'+c[1]+'t"]->AddVariable("'+ov+'", &variableMap["'+v+'"]);'
 
 cats=['62','43','53','63','44','54','64']
 
@@ -11,14 +11,16 @@ vars_used=[]
 for cat in cats:
     print
     print '// '+cat
-    root = ET.parse('weights_Final_'+cat+'_KITV3.xml').getroot()
+    path='/afs/desy.de/user/h/hmildner/CMSSW_7_4_12_patch4/src/MiniAOD/MiniAODHelper/data/bdtweights/V4weights/weights_Final_'+cat+'_V4.xml'
+    root = ET.parse(path).getroot()
     for var in root.iter('Variable'):
         expr=var.get('Expression')
+        original_expr=expr
         if expr.find('input_') > -1:
             expr=expr[expr.find('input_')+len('input_'):]
         if expr not in vars_used:
             vars_used.append(expr)
-        addVar(expr,cat)
+        addVar(expr,original_expr,cat)
 
 print
 for v in vars_used:
