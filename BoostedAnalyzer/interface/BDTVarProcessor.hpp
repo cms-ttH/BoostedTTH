@@ -4,6 +4,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v2.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
+#include "MiniAOD/MiniAODHelper/interface/LJ_BDT_v4.hpp"
 #include "TMVA/Reader.h"
 
 class BDTVarProcessor: public TreeProcessor{
@@ -16,6 +17,7 @@ public:
 private:
   BDTOhio_v2 bdtohio2;
   BDT_v3 bdt3;
+  LJ_BDT_v4 bdt4;
   
   
 };
