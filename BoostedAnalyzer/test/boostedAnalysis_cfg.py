@@ -9,7 +9,8 @@ defconf = {}
 # name of sample
 defconf['nickname'] = 'MC_Pythia_TTHbb'
 # list of input files
-defconf['filenames'] = 'file:/nfs/dust/cms/user/shwillia/BoostedJets/CMSSW_7_4_6_patch6/src/ttHTobb_Spring15_HbbSync_NewBoostedJets.root'
+defconf['filenames'] = 'file:/nfs/dust/cms/user/shwillia/BoostedJets/CMSSW_7_4_6_patch6/src/BoostedTTH_MiniAOD.root'
+#defconf['filenames'] = 'file:/nfs/dust/cms/user/shwillia/BoostedJets/CMSSW_7_4_6_patch6/src/ttHTobb_Spring15_HbbSync_NewBoostedJets.root'
 #defconf['filenames'] = 'file:/nfs/dust/cms/user/shwillia/BoostedJets/CMSSW_7_4_6_patch6/src/ttbar_Spring15_HbbSync_NewBoostedJets.root'
 # name and path of the output files (without extension)
 defconf['outfilename'] = 'BoostedTTH'
@@ -19,7 +20,7 @@ defconf['maxevents'] = '100000'
 defconf['skipevents'] = '0'
 # total number of mcevents in sample
 #in case of positive and negative weights (of same absolut value, like in MC@NLO): nevents with weight >0 minus nevents with weight <0
-defconf['mcevents'] = '10000'
+defconf['mcevents'] = '1000'
 # cross section of the process in pb
 defconf['xs'] = '1'
 # is this a data sample
@@ -33,14 +34,41 @@ defconf['analysisType'] = 'SL'
 
 # envoirnment variables
 envconf = {}
-envconf['nickname'] = str(os.getenv('NICK_NAME'))
-envconf['filenames'] = str(os.getenv('FILE_NAMES'))
-envconf['outfilename'] = str(os.getenv('OUTFILE_NAME'))
-envconf['skipevents'] = int(os.getenv('SKIP_EVENTS'))
-envconf['maxevents'] = int(os.getenv('MAX_EVENTS'))
+if os.getenv('NICK_NAME') is None:
+  envconf['nickname'] = None
+else:
+  envconf['nickname'] = str(os.getenv('NICK_NAME'))
+  
+if os.getenv('FILE_NAMES') is None:
+  envconf['filenames'] = None
+else:  
+  envconf['filenames'] = str(os.getenv('FILE_NAMES'))
 
-envconf['mcevents'] = int(os.getenv('MCEVENTS'))
-envconf['xs'] = float(os.getenv('XS'))
+
+if os.getenv('OUTFILE_NAME') is None:
+  envconf['outfilename'] = None
+else:
+  envconf['outfilename'] = str(os.getenv('OUTFILE_NAME'))  
+
+if os.getenv('SKIP_EVENTS') is None:
+  envconf['skipevents'] = None
+else:
+  envconf['skipevents'] = int(os.getenv('SKIP_EVENTS'))
+
+if os.getenv('MAX_EVENTS') is None:
+  envconf['maxevents'] = None
+else:
+  envconf['maxevents'] = int(os.getenv('MAX_EVENTS'))  
+
+if os.getenv('MCEVENTS') is None:
+  envconf['mcevents'] = None
+else:
+  envconf['mcevents'] = int(os.getenv('MCEVENTS'))
+
+if os.getenv('XS') is None:
+  envconf['xs'] = None
+else:
+  envconf['xs'] = float(os.getenv('XS'))
 
 isData = str(os.getenv('ISDATA'))
 if isData == 'True':
@@ -66,8 +94,11 @@ elif makeSystematicsTrees == 'False':
 else:
   envconf['makeSystematicsTrees'] = None
 
-envconf['analysisType'] = str(os.getenv('ANALYSISTYPE'))
-
+if os.getenv('ANALYSISTYPE') is None:
+  envconf['analysisType'] = None
+else:
+  envconf['analysisType'] = str(os.getenv('ANALYSISTYPE'))
+  
 # fill in default conf if not set by gc
 conf = defconf.copy()
 for key, value in conf.iteritems():  
@@ -77,12 +108,13 @@ for key, value in conf.iteritems():
 # convert strings
 conf['filenames'] = conf['filenames'].strip(',')
 conf['filenames'] = map(lambda s: s.strip('" '), conf['filenames'].split(","))
+
 #------------------------------------------------------------------------------------------------------------------------------------
 # End of configuration
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 # global tag, you need to change this for data
 process.GlobalTag.globaltag = 'MCRUN2_74_V9'
