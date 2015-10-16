@@ -429,20 +429,6 @@ float BoostedUtils::GetMuonRelIso(const pat::Muon& iMuon){
 }
 
 
-float BoostedUtils::GetElectronRelIso(const pat::Electron& iElectron){
-  float result = 9999; 
-
-  double pfIsoCharged = iElectron.pfIsolationVariables().sumChargedHadronPt;
-  double pfIsoNeutral = iElectron.pfIsolationVariables().sumNeutralHadronEt + iElectron.pfIsolationVariables().sumPhotonEt;
-
-  double pfIsoPUSubtracted = std::max( 0.0, pfIsoNeutral - 0.5*iElectron.pfIsolationVariables().sumPUPt );
-
-  result = (pfIsoCharged + pfIsoPUSubtracted)/iElectron.pt();
-  
-  return result;
-}
-
-
 std::vector<pat::MET> BoostedUtils::GetCorrectedMET(const std::vector<pat::Jet>& cleanIdJetsForMET, const std::vector<pat::Jet>& correctedJets, const std::vector<pat::MET>& pfMETs){
   std::vector<pat::MET> outputMets;
 

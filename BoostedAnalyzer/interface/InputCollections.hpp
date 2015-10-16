@@ -42,6 +42,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Electron>&             selectedElectrons_,
                     const std::vector<pat::Electron>&             selectedElectronsDL_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
+                    const std::vector<pat::Jet>&                  idJets_,
                     const std::vector<pat::Jet>&                  rawJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
@@ -65,6 +66,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedElectrons(selectedElectrons_),
                     selectedElectronsDL(selectedElectronsDL_),
                     selectedElectronsLoose(selectedElectronsLoose_),
+		    idJets(idJets_),
                     rawJets(rawJets_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
@@ -99,6 +101,7 @@ InputCollections(   const InputCollections&                       input,
                     selectedElectrons(input.selectedElectrons),
                     selectedElectronsDL(input.selectedElectronsDL),
                     selectedElectronsLoose(input.selectedElectronsLoose),
+                    idJets(input.idJets),
                     rawJets(input.rawJets),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
@@ -123,6 +126,7 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Electron>&             selectedElectrons;
   const std::vector<pat::Electron>&             selectedElectronsDL;
   const std::vector<pat::Electron>&             selectedElectronsLoose;
+  const std::vector<pat::Jet>&                  idJets; // all input jets that pass the jet-ID cuts
   const std::vector<pat::Jet>&                  rawJets;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;

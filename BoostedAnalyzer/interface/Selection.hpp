@@ -1,6 +1,8 @@
 #ifndef SELECTION_HPP
 #define SELECTION_HPP
 
+#include <string>
+
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -16,6 +18,8 @@
 class Selection{
 
 public:
+  virtual ~Selection() {}
+
   /**
      Initialize a Cutflow, i.e., write all the selection steps that will be performed in it
      @param cutflow the cutflow that is being initialized
@@ -30,9 +34,9 @@ public:
   virtual bool IsSelected(const InputCollections& input,Cutflow& cutflow)=0;
 
 protected:
+  void checkIfIsInit(const std::string& name) const;
+
   bool initialized;
-
-
 };
 
 

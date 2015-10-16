@@ -82,7 +82,6 @@ class BoostedUtils{
     static std::vector<pat::Jet> GetSingleTopJets(const std::vector<pat::Jet>& centralJets, const std::vector<pat::Jet>& forwardJets, float etacut=2.4);
 
     static float GetMuonRelIso(const pat::Muon& iMuon);
-    static float GetElectronRelIso(const pat::Electron& iElectron);
 
     static std::vector<pat::MET> GetCorrectedMET(const std::vector<pat::Jet>& cleanIdJetsForMET, const std::vector<pat::Jet>& correctedJets, const std::vector<pat::MET>& pfMETs);
 

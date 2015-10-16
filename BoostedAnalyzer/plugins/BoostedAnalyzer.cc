@@ -63,6 +63,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/THQJetSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DiJetSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -76,6 +77,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
@@ -306,8 +308,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
       outfileNameNominal=outfileName+"_nominal";
       outfileNameJESup=outfileName+"_JESUP";
       outfileNameJESdown=outfileName+"_JESDOWN";
-      outfileNameJESup=outfileName+"_JERUP";
-      outfileNameJESdown=outfileName+"_JERDOWN";
+      outfileNameJERup=outfileName+"_JERUP";
+      outfileNameJERdown=outfileName+"_JERDOWN";
   }
 
 
@@ -389,6 +391,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
     else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
     else if(*itSel == "BoostedTopSelection") selections.push_back(new BoostedSelection(1,0));
     else if(*itSel == "BoostedSelection") selections.push_back(new BoostedSelection(0,1));
+    else if(*itSel == "DiJetSelection") selections.push_back(new DiJetSelection());
     else cout << "No matching selection found for: " << *itSel << endl;    
     selections.back()->InitCutflow(cutflow_nominal);
     if(makeSystematicsTrees){
@@ -492,6 +495,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   if(std::find(processorNames.begin(),processorNames.end(),"ReconstructionVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new ReconstructionVarProcessor());
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"DiJetVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new DiJetVarProcessor());
+  }
 
 
   // the systematics tree writers use the same processors that are used for the nominal trees
@@ -593,16 +599,14 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Electron> const &electrons = *h_electrons;
   std::vector<pat::Electron> rawElectrons = electrons;
   // note: electron eta cuts no longer as in synch exe, revert as soon as miniAODhelper os updated
-  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronPhys14M, 2.1 );
-  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronPhys14M, 2.4 );
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., electronID::electronPhys14L, 2.4 );
+  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronSpring15M, 2.1 );
+  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronSpring15M, 2.4 );
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., electronID::electronSpring15L, 2.4 );
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
   iEvent.getByToken( EDMMETsToken,h_pfmet );
   std::vector<pat::MET> const &pfMETs = *h_pfmet;
-  // type I met corrections?
-  assert(pfMETs.size()>0);
 
   /**** GET JETS ****/
   edm::Handle< std::vector<pat::Jet> > h_pfjets;
@@ -939,6 +943,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedElectrons,
 				  selectedElectronsDL,
 				  selectedElectronsLoose,
+				  idJets,
 				  rawJets,
 				  selectedJets_nominal,
 				  selectedJetsLoose_nominal,

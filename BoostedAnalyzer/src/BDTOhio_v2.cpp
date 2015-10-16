@@ -41,13 +41,13 @@ BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.89){
   variableMap["third_jet_pt"]=-999.;
   // ==================================================
   ///init readers for all categories
-  readerMap["6j4t"]=new TMVA::Reader();
-  readerMap["5j4t"]=new TMVA::Reader();
-  readerMap["4j4t"]=new TMVA::Reader();
-  readerMap["6j3t"]=new TMVA::Reader();
-  readerMap["5j3t"]=new TMVA::Reader();
-  readerMap["4j3t"]=new TMVA::Reader();
-  readerMap["6j2t"]=new TMVA::Reader();
+  readerMap["6j4t"]=new TMVA::Reader("Silent");
+  readerMap["5j4t"]=new TMVA::Reader("Silent");
+  readerMap["4j4t"]=new TMVA::Reader("Silent");
+  readerMap["6j3t"]=new TMVA::Reader("Silent");
+  readerMap["5j3t"]=new TMVA::Reader("Silent");
+  readerMap["4j3t"]=new TMVA::Reader("Silent");
+  readerMap["6j2t"]=new TMVA::Reader("Silent");
 
   // ==================================================
   //add variables to corresponding readers

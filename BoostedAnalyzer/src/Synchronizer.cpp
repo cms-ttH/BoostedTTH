@@ -308,14 +308,14 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
       lep1_pt=iEle->pt();
       lep1_eta=iEle->eta();
       lep1_phi=iEle->phi();
-      lep1_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA);
+      lep1_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
       lep1_pdgId=iEle->pdgId();
     }
     else if(iEle->pt()>lep2_pt){
       lep2_pt=iEle->pt();
       lep2_eta=iEle->eta();
       lep2_phi=iEle->phi();
-      lep2_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA);
+      lep2_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
       lep2_pdgId=iEle->pdgId();
     }
   }
