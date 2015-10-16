@@ -1,90 +1,100 @@
 import FWCore.ParameterSet.Config as cms
 import os
 
-# Set Process and Variables
+process = cms.Process("analysis")
+
+# Start of configuration
 #------------------------------------------------------------------------------------------------------------------------------------
-process = cms.Process("boosted")
-
-# grid-control variables
-gc = {}
-gc['nickname'] = '__NICK__'
-gc['filenames'] = '__FILE_NAMES__'
-gc['outfilename'] = '__OUT_FILE__'
-gc['skip'] = '__SKIP_EVENTS__'
-gc['max'] = '__MAX_EVENTS__'
-
-gc['sampletype'] = '__SAMPLE_TYPE__'
-gc['xs'] = '__XS__'
-gc['mcevents'] = '__MCEVENTS__'
+defconf = {}
+# name of sample
+defconf['nickname'] = 'MC_Pythia_TTHbb'
+# list of input files
+defconf['filenames'] = 'file:/nfs/dust/cms/user/shwillia/BoostedJets/CMSSW_7_4_6_patch6/src/ttHTobb_Spring15_HbbSync_NewBoostedJets.root'
+#defconf['filenames'] = 'file:/nfs/dust/cms/user/shwillia/BoostedJets/CMSSW_7_4_6_patch6/src/ttbar_Spring15_HbbSync_NewBoostedJets.root'
+# name and path of the output files (without extension)
+defconf['outfilename'] = 'BoostedTTH'
+# number of events ofthis file to analyze
+defconf['maxevents'] = '100000'
+# number of events to skip
+defconf['skipevents'] = '0'
+# total number of mcevents in sample
+#in case of positive and negative weights (of same absolut value, like in MC@NLO): nevents with weight >0 minus nevents with weight <0
+defconf['mcevents'] = '10000'
+# cross section of the process in pb
+defconf['xs'] = '1'
+# is this a data sample
+defconf['isData'] = False
+# has the file been prepared with the BoostedProducer?
+defconf['isBoostedMiniAOD'] = True
+# do you need all systematics (e.g. to calculate limits)?
+defconf['makeSystematicsTrees'] = False
+# analysisType ('SL' or 'DL')
+defconf['analysisType'] = 'SL'
 
 # envoirnment variables
-env = {}
-env['nickname'] = os.getenv('NICK_NAME')
-env['filenames'] = os.getenv('FILE_NAMES')
-env['outfilename'] = os.getenv('OUTFILE_NAME')
-env['skip'] = os.getenv('SKIP_EVENTS')
-env['max'] = os.getenv('MAX_EVENTS')
+envconf = {}
+envconf['nickname'] = str(os.getenv('NICK_NAME'))
+envconf['filenames'] = str(os.getenv('FILE_NAMES'))
+envconf['outfilename'] = str(os.getenv('OUTFILE_NAME'))
+envconf['skipevents'] = int(os.getenv('SKIP_EVENTS'))
+envconf['maxevents'] = int(os.getenv('MAX_EVENTS'))
 
-env['sampletype'] = os.getenv('SAMPLE_TYPE')
-env['xs'] = os.getenv('XS')
-env['mcevents'] = os.getenv('MCEVENTS')
+envconf['mcevents'] = int(os.getenv('MCEVENTS'))
+envconf['xs'] = float(os.getenv('XS'))
 
-# default variables
-default = {}
-default['nickname'] = 'MC_Pythia_TTHbb'
-#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/BoostedTTH_MiniAOD/150223_082502/0000/BoostedMiniAOD_4.root'
-#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/BoostedTTH_MiniAOD/150421_084810/0000/BoostedTTH_MiniAOD_4.root'
-#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/BoostedTTH_MiniAOD/150505_132803/0000/BoostedTTH_MiniAOD_6.root'
-#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/BoostedTTH_MiniAOD/150227_111650/0000/BoostedTTH_MiniAOD_15.root'
-#default['filenames'] = 'file:/nfs/dust/cms/user/shwillia/CMSSW_7_4_6_patch6/src/BoostedTTH_MiniAOD.root'
-#default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150731_155453/0000/BoostedTTH_MiniAOD_75.root'
-#default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150731_155453/0000/BoostedTTH_MiniAOD_75.root'
-#default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/Spring15_Sync/ttHbb_spring15_25ns_plusboostedjets.root'
-#default['filenames'] = 'root://xrootd-cms.infn.it//store/user/shwillia/Spring15_HbbSync/ttbar_Spring15_HbbSync_NewBoostedJets.root '
-default['filenames'] = 'file:/nfs/dust/cms/user/shwillia/AddHiggsTagger/CMSSW_7_4_6_patch6/src/ttbar_Spring15_HbbSync_NewBoostedJets.root'
-#default['filenames'] = 'file:/pnfs/desy.de/cms/tier2/store/user/shwillia/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedTTH_MiniAOD/150901_160547/0000/BoostedTTH_MiniAOD_99.root'
-#default['filenames'] = 'root://xrootd-cms.infn.it//store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0AB045B5-BB0C-E511-81FD-0025905A60B8.root'
+isData = str(os.getenv('ISDATA'))
+if isData == 'True':
+  envconf['isData'] = True
+elif isData == 'False':
+  envconf['isData'] = False
+else:
+  envconf['isData'] = None
 
-default['outfilename'] = None
-default['skip'] = '0'
-default['max'] = '10000'
+isBoostedMiniAOD = str(os.getenv('ISBOOSTEDMINIAOD'))
+if isBoostedMiniAOD == 'True':
+  envconf['isBoostedMiniAOD'] = True
+elif isBoostedMiniAOD == 'False':
+  envconf['isBoostedMiniAOD'] = False
+else:
+  envconf['isBoostedMiniAOD'] = None
+  
+makeSystematicsTrees = str(os.getenv('MAKESYSTEMATICSTREE'))
+if makeSystematicsTrees == 'True':
+  envconf['makeSystematicsTrees'] = True
+elif makeSystematicsTrees == 'False':
+  envconf['makeSystematicsTrees'] = False
+else:
+  envconf['makeSystematicsTrees'] = None
 
-default['sampletype'] = '9125'
-default['xs'] = '831.76'
-default['mcevents'] = '25446993'
+envconf['analysisType'] = str(os.getenv('ANALYSISTYPE'))
 
-# fill in default values if not set by gc
-values = gc.copy()
-for key, value in values.iteritems():
-    if value.startswith('__'):
-        if env[key] is None:
-            values[key] = default[key]
-        else:
-            values[key] = env[key]
+# fill in default conf if not set by gc
+conf = defconf.copy()
+for key, value in conf.iteritems():  
+  if not envconf[key] is None:
+    conf[key] = envconf[key]
 
 # convert strings
-values['filenames'] = values['filenames'].strip(',')
-values['filenames'] = map(lambda s: s.strip('" '), values['filenames'].split(","))
+conf['filenames'] = conf['filenames'].strip(',')
+conf['filenames'] = map(lambda s: s.strip('" '), conf['filenames'].split(","))
+#------------------------------------------------------------------------------------------------------------------------------------
+# End of configuration
 
-# initialize MessageLogger and output report
+# cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
-
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+# global tag, you need to change this for data
 process.GlobalTag.globaltag = 'MCRUN2_74_V9'
-
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(values['max'])))
-
+process.options.allowUnscheduled = cms.untracked.bool(True)
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(conf['maxevents'])))
 process.source = cms.Source(  "PoolSource",
-                              fileNames = cms.untracked.vstring(values['filenames']),
-                              skipEvents = cms.untracked.uint32(int(values['skip']))
+                              fileNames = cms.untracked.vstring(conf['filenames']),
+                              skipEvents = cms.untracked.uint32(int(conf['skipevents']))
 )
-
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
 from JetMETCorrections.Configuration.JetCorrectionCondDB_cff import *
-
 process.ak4PFCHSL1Fastjet = cms.ESProducer(
   'L1FastjetCorrectionESProducer',
   level = cms.string('L1FastJet'),
@@ -100,26 +110,36 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
     'ak4PFchsL3Absolute')
 )
 
-# ttbar categorization
-process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+# load and run the boosted analyzer
+if conf['isData']:
+    if conf['analysisType']=='SL':
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")        
+    if conf['analysisType']=='DL':
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")        
+else:
+    if conf['analysisType']=='SL':
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+    if conf['analysisType']=='DL':
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
 
-process.ttbarCategorizationPath = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar)
+    if not conf['isBoostedMiniAOD']:
+        # Supplies PDG ID to real name resolution of MC particles
+        process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+        # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD 
+        process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
-process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_Analysis_cfi")
-process.BoostedAnalyzer.useFatJets=True
-process.BoostedAnalyzer.useGenHadronMatch = cms.bool(True)
+if conf['isBoostedMiniAOD']:
+    process.BoostedAnalyzer.useFatJets=True
 
-if values['outfilename'] is not None:
-    process.BoostedAnalyzer.outfileName=values['outfilename']
-if values['sampletype'] is not None:
-    process.BoostedAnalyzer.sampleID=cms.int32(int(values['sampletype']))
-if values['xs'] is not None:
-    process.BoostedAnalyzer.xs=cms.double(float(values['xs']))
-if values['mcevents'] is not None:
-    process.BoostedAnalyzer.nMCEvents=cms.int32(int(values['mcevents']))
+if conf['outfilename'] is not None:
+    process.BoostedAnalyzer.outfileName=conf['outfilename']
     
-#process.content = cms.EDAnalyzer("EventContentAnalyzer")
-#process.p = cms.Path(process.content*process.BoostedAnalyzer)
+if not conf['isData']:
+    process.BoostedAnalyzer.luminosity = 10000.
+    process.BoostedAnalyzer.xs = cms.double(float(conf['xs']))
+    process.BoostedAnalyzer.nMCEvents = cms.int32(int(conf['mcevents']))
+    
+process.BoostedAnalyzer.makeSystematicsTrees = conf['makeSystematicsTrees']
 
 process.p = cms.Path(process.BoostedAnalyzer)
+

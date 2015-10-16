@@ -19,7 +19,7 @@ DOSYSTEMATICS=os.getenv("DOSYSTEMATICS")
 OUTFILE = os.getenv("OUTFILE_NAME")
 INFILE = os.getenv("FILE_NAMES")
 
-print ISDATA, type(ISDATA)
+#print ISDATA, type(ISDATA)
 List_FileNames=[]
 if INFILE!=None:
 	List_INFILES = INFILE.split(" ")
@@ -95,14 +95,15 @@ process.BoostedAnalyzer.useFatJets=False
 #process.BoostedAnalyzer.disableObjectSelections=False
 if OUTFILE!=None:
 	process.BoostedAnalyzer.outfileName = OUTFILE
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
-process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MVAVarProcessor","DiLeptonVarProcessor","MCMatchVarProcessor","BDTVarProcessor")
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MVAVarProcessor","MCMatchVarProcessor","BDTVarProcessor","TriggerVarProcessor")
 process.BoostedAnalyzer.era = ERA
 process.BoostedAnalyzer.analysisType = cms.string("LJ")
 process.BoostedAnalyzer.luminosity = cms.double(10000.0)
 process.BoostedAnalyzer.sampleID = cms.int32(int(INSAMPLE))
 process.BoostedAnalyzer.xs = cms.double(float(XS))
 process.BoostedAnalyzer.nMCEvents = cms.int32(int(MCEvents))
+process.BoostedAnalyzer.relevantTriggers = ["HLT_Ele22_eta2p1_WP75_Gsf_v1", "HLT_Ele27_eta2p1_WP75_Gsf_TriCentralPFJet30_v1", "HLT_Ele27_eta2p1_WP75_Gsf_TriCentralPFJet50_40_30_v1", "HLT_Ele27_eta2p1_WP85_Gsf_HT200_v1", "HLT_IsoMu24_eta2p1_TriCentralPFJet30_v1", "HLT_IsoMu24_eta2p1_v1", "HLT_IsoMu17_eta2p1_v1", "HLT_IsoMu20_v1", "HLT_IsoMu20_eta2p1_v1", "HLT_IsoMu27_v1"]
 if ISDATA=="TRUE":
 	process.BoostedAnalyzer.isData = cms.bool(True)
 	process.BoostedAnalyzer.useGenHadronMatch = cms.bool(False)
@@ -118,8 +119,8 @@ elif DOSYSTEMATICS=="FALSE":
 	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(False)
 elif DOSYSTEMATICS=="TRUE":
 	process.BoostedAnalyzer.makeSystematicsTrees=cms.bool(True)
-process.BoostedAnalyzer.muonTriggers=["any"]
-process.BoostedAnalyzer.electronTriggers=["any"]
+process.BoostedAnalyzer.muonTriggers=["HLT_IsoMu24_eta2p1_v1"]
+process.BoostedAnalyzer.electronTriggers=["HLT_Ele27_eta2p1_WP85_Gsf_HT200_v1"]
 
 if ISDATA==None or ISDATA=="FALSE":
 	process.p = cms.Path(process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar*process.BoostedAnalyzer)
