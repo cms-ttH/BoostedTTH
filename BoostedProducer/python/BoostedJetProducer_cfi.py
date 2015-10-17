@@ -54,4 +54,4 @@ SFJetProducer = cms.EDProducer(
     asymmCutLater	  = cms.bool(True)	
 )
 
-BoostedProducerPath = cms.Path(HTTTopJetProducer*SFJetProducer)
+#BoostedProducerPath = cms.Path(HTTTopJetProducer*SFJetProducer)

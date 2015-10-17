@@ -9,7 +9,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 process.MessageLogger.suppressWarning = cms.untracked.vstring('ecalLaserCorrFilter','manystripclus53X','toomanystripclus53X')
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
@@ -139,10 +139,6 @@ process.patJetPartonMatchSFFilterjetsPF.matched = "prunedGenParticles"
 # all
 process.patJetPartons.particles = "prunedGenParticles"
 
-
-# create Path for PAT Jets
-process.patJetsBoostedJetsPath = cms.Path(process.patJetsHTTTopJetsPF * process.patJetsHTTSubjetsPF*process.patJetsSFFatJetsPF * process.patJetsSFSubjetsPF * process.patJetsSFFilterjetsPF)
-
 #from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
 #process.ak4PFJetsCHS = ak4PFJets.clone(src = 'pfNoElectronsCHS', doAreaFastjet = True)
@@ -155,10 +151,27 @@ process.load('BoostedTTH.BoostedProducer.BoostedJetMatcher_cfi')
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
+# skim
+process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
+process.boosted_skimmed=cms.Path(process.LeptonJetsSkim
+                                 *process.SelectedElectronProducer
+                                 *process.SelectedMuonProducer
+                                 *process.HTTTopJetProducer
+                                 *process.SFJetProducer
+                                 *process.patJetsHTTTopJetsPF
+                                 *process.patJetsHTTSubjetsPF
+                                 *process.patJetsSFFatJetsPF
+                                 *process.patJetsSFSubjetsPF
+                                 *process.patJetsSFFilterjetsPF
+                                 *process.BoostedJetMatcher)
+
+
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('BoostedTTH_MiniAOD.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*BoostedJetMatcher*_*_*','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*'])
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*BoostedJetMatcher*_*_*','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*']),
+    SelectEvents = cms.untracked.PSet( 
+        SelectEvents = cms.vstring("boosted_skimmed")
+    )    
 )
-
 process.endpath = cms.EndPath(process.OUT)

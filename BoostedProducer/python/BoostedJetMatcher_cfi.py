@@ -13,4 +13,4 @@ BoostedJetMatcher = cms.EDProducer(
     patSFFilterJetsTag  = cms.InputTag('selectedPatJetsSFFilterjetsPF')
 )
 
-BoostedJetMatcherPath = cms.Path(BoostedJetMatcher)
+#BoostedJetMatcherPath = cms.Path(BoostedJetMatcher)
