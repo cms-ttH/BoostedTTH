@@ -96,7 +96,7 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
 
   minJets_ = iConfig.getParameter<int>("minJets");
   jetPtMin_ = iConfig.getParameter<double>("jetPtMin");
-  jetEtaMax_ = iConfig.getParameter<double>("jetEtaMin");
+  jetEtaMax_ = iConfig.getParameter<double>("jetEtaMax");
   muonPtMin_ = iConfig.getParameter<double>("muonPtMin");
   muonEtaMax_ = iConfig.getParameter<double>("muonEtaMax");
   electronPtMin_ = iConfig.getParameter<double>("electronPtMin");
@@ -147,8 +147,9 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	pat::JetCollection selectedJets =  helper_.GetSelectedJets(*hJets,jetPtMin_,jetEtaMax_,jetID::jetLoose,'-');
 	// TODO: correct jets (maybe even with JESUP) to make sure the jetcuts are loose enough
 
-	if( (selectedMuons.size()+selectedElectrons.size())>=1 && int(selectedJets.size())>minJets_);
-	return true;
+	if( (selectedMuons.size()+selectedElectrons.size())>=1 && int(selectedJets.size())>minJets_){
+	    return true;
+	}
 	
     }
     return false;
