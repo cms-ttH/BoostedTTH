@@ -75,30 +75,30 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
   
   if(input.selectedJets.size()>0){
     jet1_pt=input.selectedJets.at(0).pt();
-    jet1_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(0),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(input.selectedJets.size()>1){
     jet2_pt=input.selectedJets.at(1).pt();
-    jet2_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(1),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet2_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(1),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(input.selectedJets.size()>2){
     jet3_pt=input.selectedJets.at(2).pt();
-    jet3_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(2),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet3_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(2),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   
   if(input.selectedJets.size()>3){
     jet4_pt=input.selectedJets.at(3).pt();
-    jet4_CSVv2=BoostedUtils::GetJetCSV(input.selectedJets.at(3),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    jet4_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(3),"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   }
   n_jets=int(input.selectedJets.size());
   for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
     if(BoostedUtils::PassesCSV(*jet)) n_btags++;
   }
   
-  vector<boosted::HTTTopJet> syncTopJets;
-  for(auto topjet = input.selectedHTTTopJets.begin() ; topjet != input.selectedHTTTopJets.end(); topjet++ ){
+  vector<boosted::BoostedJet> syncTopJets;
+  for(auto topjet = input.selectedBoostedJets.begin() ; topjet != input.selectedBoostedJets.end(); topjet++ ){
     // pt and eta requirements on top jet
     if( !(topjet->fatjet.pt() > 200. && abs(topjet->fatjet.eta()) < 2.) ) continue;
     std::vector<pat::Jet> subjets;
@@ -118,7 +118,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
       syncTopJets.push_back(*topjet);
     }
   }
-  for( auto higgsJet = input.selectedSubFilterJets.begin() ; higgsJet != input.selectedSubFilterJets.end(); ++higgsJet ){
+  for( auto higgsJet = input.selectedBoostedJets.begin() ; higgsJet != input.selectedBoostedJets.end(); ++higgsJet ){
     // pt and eta requirements on higgs jet
     if( !(higgsJet->fatjet.pt() > 200. && abs(higgsJet->fatjet.eta()) < 2) ) continue;
     bool overlapping=false;
@@ -377,33 +377,33 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     final_discriminant1=bdt3.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
   }
    
-  n_fatjets = int(input.selectedHTTTopJets.size());
-  if(input.selectedHTTTopJets.size()>0){
-    pt_fatjet_1=input.selectedHTTTopJets.at(0).fatjet.pt();
-    pt_nonW_1=input.selectedHTTTopJets.at(0).nonW.pt();
-    pt_W1_1=input.selectedHTTTopJets.at(0).W1.pt();
-    pt_W2_1=input.selectedHTTTopJets.at(0).W2.pt();
-    m_top_1=input.selectedHTTTopJets.at(0).topjet.mass();
+  n_fatjets = int(input.selectedBoostedJets.size());
+  if(input.selectedBoostedJets.size()>0){
+    pt_fatjet_1=input.selectedBoostedJets.at(0).fatjet.pt();
+    pt_nonW_1=input.selectedBoostedJets.at(0).nonW.pt();
+    pt_W1_1=input.selectedBoostedJets.at(0).W1.pt();
+    pt_W2_1=input.selectedBoostedJets.at(0).W2.pt();
+    m_top_1=input.selectedBoostedJets.at(0).topjet.mass();
   }
   
-  if(input.selectedHTTTopJets.size()>1){
-    pt_fatjet_2=input.selectedHTTTopJets.at(1).fatjet.pt();
-    pt_nonW_2=input.selectedHTTTopJets.at(1).nonW.pt();
-    pt_W1_2=input.selectedHTTTopJets.at(1).W1.pt();
-    pt_W2_2=input.selectedHTTTopJets.at(1).W2.pt();
-    m_top_2=input.selectedHTTTopJets.at(1).topjet.mass();
+  if(input.selectedBoostedJets.size()>1){
+    pt_fatjet_2=input.selectedBoostedJets.at(1).fatjet.pt();
+    pt_nonW_2=input.selectedBoostedJets.at(1).nonW.pt();
+    pt_W1_2=input.selectedBoostedJets.at(1).W1.pt();
+    pt_W2_2=input.selectedBoostedJets.at(1).W2.pt();
+    m_top_2=input.selectedBoostedJets.at(1).topjet.mass();
   }
   
-  if(input.selectedSubFilterJets.size()>0){
-    if(input.selectedSubFilterJets.at(0).filterjets.size()>1){
-      std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedSubFilterJets.at(0));
+  if(input.selectedBoostedJets.size()>0){
+    if(input.selectedBoostedJets.at(0).filterjets.size()>1){
+      std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets.at(0));
       higgstag_fatjet_1 = MiniAODHelper::GetJetCSV(filterjets.at(1));
     }
   }
   
-  if(input.selectedSubFilterJets.size()>1){
-    if(input.selectedSubFilterJets.at(1).filterjets.size()>1){
-      std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedSubFilterJets.at(1));
+  if(input.selectedBoostedJets.size()>1){
+    if(input.selectedBoostedJets.at(1).filterjets.size()>1){
+      std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets.at(1));
       higgstag_fatjet_2 = MiniAODHelper::GetJetCSV(filterjets.at(1));
     }
   }

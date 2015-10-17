@@ -21,7 +21,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     makeSystematicsTrees = cms.bool(False),
 
-    useFatJets = cms.bool(False),
+    useFatJets = cms.bool(True),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),
 
