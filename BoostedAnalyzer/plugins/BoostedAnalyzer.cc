@@ -85,7 +85,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionVarProcessor.hpp"
 
-#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
 //
 // class declaration
@@ -188,12 +187,10 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** hcal noise data access token **/
       edm::EDGetTokenT< HcalNoiseSummary > EDMHcalNoiseToken;
       
-      /** selected trigger data access token **/
-      edm::EDGetTokenT< pat::TriggerObjectStandAloneCollection > EDMSelectedTriggerToken;
-      
-      /** trigger results data access token **/
-      edm::EDGetTokenT< edm::TriggerResults > EDMTriggerResultToken;
-      HLTConfigProvider hlt_config;
+
+      edm::EDGetTokenT<edm::TriggerResults> triggerBitsToken;
+      edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsToken;
+      edm::EDGetTokenT<pat::PackedTriggerPrescales> triggerPrescalesToken;
 
       /** beam spot data access token **/
       edm::EDGetTokenT< reco::BeamSpot > EDMBeamSpotToken;
@@ -307,10 +304,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
 
   // REGISTER DATA ACCESS
   EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","",""));
-  EDMRhoToken             = consumes <double> (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
+  EDMRhoToken             = consumes<double> (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
-  EDMSelectedTriggerToken = consumes< pat::TriggerObjectStandAloneCollection > (edm::InputTag("selectedPatTrigger","",""));
-  EDMTriggerResultToken   = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","HLT"));
+  triggerBitsToken        = consumes< edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
+  triggerObjectsToken     = consumes< pat::TriggerObjectStandAloneCollection>(edm::InputTag("selectedPatTrigger","",""));
+  triggerPrescalesToken   = consumes< pat::PackedTriggerPrescales>(edm::InputTag("patTrigger","",""));
   EDMBeamSpotToken        = consumes< reco::BeamSpot > (edm::InputTag("offlineBeamSpot","",""));
   EDMVertexToken          = consumes< reco::VertexCollection > (edm::InputTag("offlineSlimmedPrimaryVertices","",""));
   EDMMuonsToken           = consumes< std::vector<pat::Muon> >(edm::InputTag("slimmedMuons","",""));
@@ -482,7 +480,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
     treewriter_nominal.AddTreeProcessor(new DiLeptonVarProcessor(),"DiLeptonVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"TriggerVarProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new TriggerVarProcessor(),"TriggerVarProcessor");
+      // TODO how to handle this?
+    treewriter_nominal.AddTreeProcessor(new TriggerVarProcessor(relevantTriggers),"TriggerVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"ReconstructionVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new ReconstructionVarProcessor(),"ReconstructionVarProcessor");
@@ -543,10 +542,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle<HcalNoiseSummary> h_hcalnoisesummary;
   iEvent.getByToken( EDMHcalNoiseToken,h_hcalnoisesummary );
 
-  /**** GET TRIGGER ****/ 
-  edm::Handle<edm::TriggerResults> h_triggerresults;
-  iEvent.getByToken( EDMTriggerResultToken,h_triggerresults );
-  edm::TriggerResults const &triggerResults = *h_triggerresults;
 
   /**** GET BEAMSPOT ****/
   edm::Handle<reco::BeamSpot> h_beamspot;
@@ -808,19 +803,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
   // Fill Event Info Object
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
-  // Fill Trigger Info -- a map with bools and some helper functions
-  map<string,bool> triggerMap;
-  for(auto name=relevantTriggers.begin(); name!=relevantTriggers.end();name++){
-    unsigned int TriggerID =  hlt_config.triggerIndex(*name);
-    if( TriggerID >= triggerResults.size() ) { 
-      std::cerr <<"triggerID > trigger results.size, trigger name: "<< *name<<std::endl; 
-      triggerMap[*name]=false;
-    }
-    else{
-      triggerMap[*name]=triggerResults.accept(TriggerID);
-    }
-  }
-  TriggerInfo triggerInfo(triggerMap);
+  TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
 
   // FIGURE OUT SAMPLE
     
@@ -1154,17 +1137,10 @@ void BoostedAnalyzer::endJob()
   }
 }
 // ------------ method called when starting to processes a run ------------
-// needed for the hlt_config
+
 
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
-
-  std::string hltTag="HLT";
-  bool hltchanged = true;
-  if (!hlt_config.init(iRun, iSetup, hltTag, hltchanged)) {
-    std::cout << "Warning, didn't find trigger process HLT,\t" << hltTag << std::endl;
-    return;
-  }
 
 }
 
