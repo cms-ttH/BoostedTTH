@@ -182,8 +182,10 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   
   vars.FillVar( "Evt_Pt_MET",input.pfMET.pt() );
   vars.FillVar( "Evt_Phi_MET",input.pfMET.phi() );
-  vars.FillVar( "Evt_Pt_GenMET",input.pfMET.genMET()->pt() );
-  vars.FillVar( "Evt_Phi_GenMET",input.pfMET.genMET()->phi() );
+  if(input.pfMET.genMET()!=0){
+      vars.FillVar( "Evt_Pt_GenMET",input.pfMET.genMET()->pt() );
+      vars.FillVar( "Evt_Phi_GenMET",input.pfMET.genMET()->phi() );
+  }
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
   math::XYZTLorentzVector metvec = input.pfMET.p4();
