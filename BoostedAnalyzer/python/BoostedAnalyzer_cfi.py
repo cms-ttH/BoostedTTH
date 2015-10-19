@@ -13,10 +13,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
     sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
 
-    luminosity = cms.double(10000),
-    xs = cms.double(831.76),
-    nMCEvents = cms.int32(25446993), 
 
+    eventWeight = cms.double(1.),
     isData = cms.bool(False),
 
     makeSystematicsTrees = cms.bool(False),
