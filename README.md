@@ -7,8 +7,8 @@ CMSSW tools for analyzing TTH events with boosted objects
 Follow These Steps:
  
     export SCRAM_ARCH=slc6_amd64_gcc491
-    scram project CMSSW_7_4_12_patch4
-    cd CMSSW_7_4_12_patch4/src
+    scram project CMSSW_7_4_14
+    cd CMSSW_7_4_14/src
     cmsenv   
     git cms-addpkg PhysicsTools/JetMCAlgos/
     cd PhysicsTools/JetMCAlgos/plugins/
@@ -22,7 +22,13 @@ Follow These Steps:
     cd -
     git cms-merge-topic gkasieczka:htt-v2-74X
     git clone https://github.com/cms-ttH/MiniAOD.git
+    cd MiniAOD
+    git checkout --track origin/MergeBoostedObjects
+    cd -
     git clone https://github.com/cms-ttH/BoostedTTH.git
+    cd BoostedTTH
+    git checkout --track origin/CMSSW_7_4_14
+    cd -
     ln -s $CMSSW_RELEASE_BASE/src/RecoJets/JetProducers/plugins/VirtualJetProducer.h BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.h
     ln -s $CMSSW_RELEASE_BASE/src/RecoJets/JetProducers/plugins/VirtualJetProducer.cc BoostedTTH/BoostedProducer/plugins/VirtualJetProducer.cc
     scram b -j10
