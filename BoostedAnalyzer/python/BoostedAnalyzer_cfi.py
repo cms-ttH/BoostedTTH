@@ -1,13 +1,19 @@
 import FWCore.ParameterSet.Config as cms
 from BoostedTTH.BoostedAnalyzer.Selection_cff import *
+from BoostedTTH.BoostedAnalyzer.VarProcessors_cff import *
 
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
-    LeptonSelectionMC, # defined in Selection_cff
-    DiLeptonSelectionMC, # defined in Selection_cff
-    JetTagSelection, # defined in Selection_cff
-    METSelection, # defined in Selection_cff
-    checkBasicMCTriggers, # defined in Selection_cff
+
+    # Selection-specific config blocks, # defined in Selection_cff
+    LeptonSelectionMC,
+    DiLeptonSelectionMC,
+    JetTagSelection,
+    METSelection,
+    checkBasicMCTriggers, 
+    
+    # VarProcessor-specific config blocks, defined in VarProcessors_cff
+    DiJetVarProcessor,
 
     era = cms.string("2015_74x"), # has little effect so far, might become important for MiniAODhelper
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
@@ -31,4 +37,9 @@ BoostedAnalyzer = cms.EDAnalyzer(
     #,"DiJetVarProcessor"), -- conflict
 
     outfileName = cms.string("BoostedTTH"),
+
+    # Input collections
+    # Not yet fully configurable, only change for dijet analysis
+    # Else, keep default values to guarantee consistency
+    jets = cms.InputTag("slimmedJets","",""),
 )

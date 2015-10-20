@@ -4,12 +4,13 @@
 #include <string>
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 
 class DiJetVarProcessor: public TreeProcessor {
 public:
-  DiJetVarProcessor() {}
+  explicit DiJetVarProcessor(const edm::ParameterSet& cfg);
   ~DiJetVarProcessor() {}
   
   void Init(const InputCollections& input,VariableContainer& var);
@@ -18,9 +19,9 @@ public:
 
 private:
   std::string bTagger_;
-  std::string puJetIDDiscr_;
   std::string jetTagInfoSV_;
   double minSVFlightDistSig_;
+  std::string puJetIDDiscr_;
 
   void fillSecondaryVertexInfo(VariableContainer& vars, const pat::Jet& jet, const size_t iJet) const;
 };

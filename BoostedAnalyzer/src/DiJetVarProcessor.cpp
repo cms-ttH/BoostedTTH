@@ -1,12 +1,22 @@
 #include <vector>
 
-#include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
+#include "DataFormats/BTauReco/interface/CandSecondaryVertexTagInfo.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
+#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
+
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
+
+
+DiJetVarProcessor::DiJetVarProcessor(const edm::ParameterSet& cfg) {
+  bTagger_            = cfg.getParameter<std::string>("bTagger");
+  jetTagInfoSV_       = cfg.getParameter<std::string>("jetTagInfoSV");
+  minSVFlightDistSig_ = cfg.getParameter<double>("minSVFlightDistSig");
+  puJetIDDiscr_       = cfg.getParameter<std::string>("puJetIDDiscr");
+}
 
 
 void DiJetVarProcessor::Init(const InputCollections& input, VariableContainer& vars) {
@@ -37,12 +47,6 @@ void DiJetVarProcessor::Init(const InputCollections& input, VariableContainer& v
   vars.InitVar( "DeltaPhi","F" );
   vars.InitVar( "PtAve","F" );
 
-  bTagger_ = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
-  puJetIDDiscr_ = "pileupJetId:fullDiscriminant";
-  jetTagInfoSV_ = "pfSecondaryVertex";
-
-  minSVFlightDistSig_ = 1.;
-
   initialized=true;
 }
 
@@ -71,6 +75,23 @@ void DiJetVarProcessor::Process(const InputCollections& input, VariableContainer
     fillSecondaryVertexInfo(vars,*itJet,iJet);
     if( itJet->genJet() != 0 ) {
       // Info on jet flavour: https://indico.cern.ch/event/448366/session/0/contribution/5/attachments/1159737/1669162/BTVSWNews_24_9_2015.pdf
+      // partonFlavour: 
+      // - algorithmic defintion
+      // - try to find the parton that most likely determines the properties of the jet
+      //   and assign that flavour as the true flavour, using final partons after
+      //   showering or radiation
+      // - can see gluon splitting
+      // hadronFlavour:
+      // - optimal for b tagging
+      // - to avoid defining generator-specific jet flavour algorithms, b and c hadrons
+      //   are used to define b and c jets
+      // - the jet flavour is determined by re-clustering the jet contituents with the
+      //   selected hadrons: optimal for substructure flavor (subjet flavor)
+      // - no distinction between different light flavors (uds) or gluons (all flavors = 0)
+      // genParton:
+      // - physics definition
+      // - match reconstructed jets to 'initial' partons from the primary physics process
+      // - e.g. gluon splitting to bb = gluon
       vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
       vars.FillVars( "Jet_HadronFlav",iJet,itJet->hadronFlavour() );
       vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
@@ -111,16 +132,13 @@ void DiJetVarProcessor::fillSecondaryVertexInfo(VariableContainer& vars, const p
   // }
 
   if( jet.hasTagInfo(jetTagInfoSV_) ) {
-    std::cout << "Jet has SVInfo" << std::endl;
-    const reco::SecondaryVertexTagInfo* svti = jet.tagInfoSecondaryVertex(jetTagInfoSV_);
+    const reco::CandSecondaryVertexTagInfo* svti = jet.tagInfoCandSecondaryVertex(jetTagInfoSV_);
     if( svti != 0 ) {
-      std::cout << "  Jet has SVInfo objec" << std::endl;
       // Vertices in a jet are not ordered in flight distance significance!!!
       for(size_t isv = 0; isv < svti->nVertices(); ++isv) {
 	// Consider only SV with a minimum significance
 	if( svti->flightDistance(isv).significance() > minSVFlightDistSig_ ) {
-	  const reco::Vertex& sv = svti->secondaryVertex(isv);
-	  sumSVM += sv.p4().mass();
+	  sumSVM += svti->secondaryVertex(isv).p4().mass();
 	  ++nSV;
 	}
       }	// end of loop over SV
