@@ -54,6 +54,7 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/LooseLeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonMassSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
@@ -363,6 +364,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
     cout << "Initializing " << *itSel << endl;
     if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
     else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
+    else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
     else if(*itSel == "THQJetSelection") selections.push_back(new THQJetSelection());
     else if(*itSel == "LeptonSelection1") selections.push_back(new LeptonSelection(iConfig,1));
