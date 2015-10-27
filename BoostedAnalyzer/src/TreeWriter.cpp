@@ -11,7 +11,7 @@ TreeWriter::TreeWriter(){
 
 TreeWriter::~TreeWriter(){
   for(uint i=0; i<stopwatches.size(); i++){
-    cout << "times spent in " << processorNames[i] << " -- real time: " << stopwatches[i].RealTime() << ", cpu time: " << stopwatches[i].CpuTime() << endl;
+    cout << "time spent in " << processorNames[i] << " -- real time: " << stopwatches[i].RealTime() << ", cpu time: " << stopwatches[i].CpuTime() << endl;
   }
   if(outFile!=0){
     outFile->cd();
@@ -66,7 +66,7 @@ bool TreeWriter::Process(const InputCollections& input) {
   vars.SetDefaultValues();
   
   for(uint i=0; i<processors.size(); i++){
-    stopwatches[i].Start();
+    stopwatches[i].Start(false);
     processors[i]->Process(input,vars);
     stopwatches[i].Stop();
   }
