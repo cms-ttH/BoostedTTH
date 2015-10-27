@@ -34,7 +34,7 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 
 void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
-
+  if(input.selectedMuons.size()+input.selectedElectrons.size()!=1) return;
   float bdtoutput2=bdtohio2.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
   vars.FillVar("BDTOhio_v2_output",bdtoutput2);
   if(bdtohio2.GetCategory(input.selectedJets)!="none"){

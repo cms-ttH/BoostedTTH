@@ -175,7 +175,8 @@ std::string BDTOhio_v1::GetCategory(const std::vector<pat::Jet>& selectedJets) c
 float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
 
   if(selectedMuons.size()+selectedElectrons.size()!=1){
-    cerr << "BDTOhio_v1: not a SL event" << endl;
+    //    cerr << "BDTOhio_v1: not a SL event" << endl;
+    return -2;
   }
   // ==================================================
   // construct object vectors etc
