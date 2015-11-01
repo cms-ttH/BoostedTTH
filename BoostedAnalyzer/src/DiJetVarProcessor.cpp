@@ -8,6 +8,7 @@
 
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
+#include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
 
 
@@ -24,6 +25,7 @@ void DiJetVarProcessor::Init(const InputCollections& input, VariableContainer& v
   vars.InitVar("Evt_ID","I"); // Possible conflict because of same-name variables in BasicVarProcessor
 
   vars.InitVar( "N_PrimaryVertices","I" );
+  vars.InitVar( "TrueNumInteractions","F" ); 
 
   vars.InitVar( "N_Jets","I" );
   vars.InitVars( "Jet_E","N_Jets" );
@@ -56,7 +58,8 @@ void DiJetVarProcessor::Process(const InputCollections& input, VariableContainer
 
   // event variables
   vars.FillIntVar( "Evt_ID", input.eventInfo.evt );
-  vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
+  vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size() );  
+  vars.FillVar( "TrueNumInteractions",input.eventInfo.numTruePV );
 
   // jet variables
   // use "selectedJetsLoose" --> pt>20 GeV  

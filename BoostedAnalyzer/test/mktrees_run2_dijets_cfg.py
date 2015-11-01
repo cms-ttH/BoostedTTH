@@ -21,7 +21,7 @@ if options.globalTag is "NONE":
 	else:
 		options.globalTag = "74X_mcRun2_asymptotic_v2"
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-	options.maxEvents = 1000
+	options.maxEvents = 100
 
 
 # print settings
@@ -153,8 +153,10 @@ process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
 process.source = cms.Source(
 	"PoolSource",
 	fileNames = cms.untracked.vstring(
-		# Spring15 MiniAOVv2
+		## Spring15 MiniAOVv2
 		'/store/mc/RunIISpring15MiniAODv2/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/80000/02E34E6D-3475-E511-9E34-003048CB87A4.root'
+		## /JetHT/Run2015D-PromptReco-v4/MINIAOD
+		#'/store/data/Run2015D/JetHT/MINIAOD/PromptReco-v4/000/258/159/00000/0075E33B-3B6C-E511-BCC8-02163E01455C.root'
 		)
 	)
 
@@ -208,7 +210,8 @@ if options.isData:
 		'HLT_PFJet60_v*',
 		'HLT_PFJet80_v*',
 		)
-
+else:
+	process.BoostedAnalyzer.relevantTriggers = cms.vstring()
 
 process.p = cms.Path(
 	process.HBHENoiseFilterResultProducer *

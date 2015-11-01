@@ -25,8 +25,9 @@ public:
   bool hcalnoiseLoose, hcalnoiseTight;
   
   // Pile Up Information
-  int sumNVtx, numGenPV, nm1, n0, np1;
-  int sumTrueNVtx, numTruePV, nm1_true, n0_true, np1_true;
+  float numGenPV, numTruePV;
+  int sumNVtx, nm1, n0, np1;
+  int sumTrueNVtx, nm1_true, n0_true, np1_true;
 
   bool firstVertexIsGood;
 

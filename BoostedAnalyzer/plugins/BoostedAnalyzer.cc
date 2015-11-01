@@ -303,7 +303,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
 
 
   // REGISTER DATA ACCESS
-  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","",""));
+  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo","",""));
   EDMRhoToken             = consumes<double> (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
   triggerBitsToken        = consumes< edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
