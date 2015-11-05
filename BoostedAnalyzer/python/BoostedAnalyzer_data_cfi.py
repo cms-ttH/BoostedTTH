@@ -13,10 +13,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
     sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
 
-    luminosity = cms.double(1),
-    xs = cms.double(1),
-    nMCEvents = cms.int32(1), 
-
+    eventWeight = cms.double(1.),
     isData = cms.bool(True),
 
     makeSystematicsTrees = cms.bool(False),
@@ -29,7 +26,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpSyncExe2 = cms.bool(False),
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","DiLeptonVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor"),
+    processorNames = cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","DiLeptonVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor"),
 
     outfileName = cms.string("BoostedTTH"),
 )

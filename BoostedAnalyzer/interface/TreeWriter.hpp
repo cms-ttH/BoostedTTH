@@ -5,6 +5,7 @@
 
 #include "TFile.h"
 #include "TTree.h"
+#include "TStopwatch.h"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/VariableContainer.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
@@ -35,12 +36,17 @@ class TreeWriter{
        Before the event loop different processors can be added to the TreeWriter. These will write into the trees whenever Process is called
        @param processor the TreeProcessor to add
     */
-    void AddTreeProcessor(TreeProcessor* processor);
+    void AddTreeProcessor(TreeProcessor* processor, std::string name);
 
     /**
        Returns references to all used Processors (in case you want to use them in a different TreeWriter)
     */
     std::vector<TreeProcessor*> GetTreeProcessors() const;
+
+    /**
+       Returns names of all used Processors (in case you want to use them in a different TreeWriter)
+    */
+    std::vector<std::string> GetTreeProcessorNames() const;
 
   private:
   
@@ -50,6 +56,8 @@ class TreeWriter{
     bool initialized;
     VariableContainer vars;
     std::vector<TreeProcessor*> processors;
+    std::vector<TStopwatch> stopwatches;
+    std::vector<std::string> processorNames;
 
 };
 #endif

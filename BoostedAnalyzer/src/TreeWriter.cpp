@@ -10,6 +10,9 @@ TreeWriter::TreeWriter(){
 
 
 TreeWriter::~TreeWriter(){
+  for(uint i=0; i<stopwatches.size(); i++){
+    cout << "time spent in " << processorNames[i] << " -- real time: " << stopwatches[i].RealTime() << ", cpu time: " << stopwatches[i].CpuTime() << endl;
+  }
   if(outFile!=0){
     outFile->cd();
   }
@@ -23,6 +26,7 @@ TreeWriter::~TreeWriter(){
   if(tree!=0){
     cout << "Tree Written to " << outFile->GetPath() << endl;
   }
+
 }
 
 void TreeWriter::Init( std::string fileName){
@@ -34,12 +38,18 @@ void TreeWriter::Init( std::string fileName){
 }
 
 
-void TreeWriter::AddTreeProcessor(TreeProcessor* processor){
+void TreeWriter::AddTreeProcessor(TreeProcessor* processor,string name){
   processors.push_back(processor);
+  processorNames.push_back(name);
+  stopwatches.push_back(TStopwatch());
 }
 
 std::vector<TreeProcessor*> TreeWriter::GetTreeProcessors() const{
   return processors;
+}
+
+std::vector<std::string> TreeWriter::GetTreeProcessorNames() const{
+  return processorNames;
 }
 
 bool TreeWriter::Process(const InputCollections& input) {  
@@ -56,7 +66,9 @@ bool TreeWriter::Process(const InputCollections& input) {
   vars.SetDefaultValues();
   
   for(uint i=0; i<processors.size(); i++){
+    stopwatches[i].Start(false);
     processors[i]->Process(input,vars);
+    stopwatches[i].Stop();
   }
 
   FillTree();

@@ -5,8 +5,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "MiniAOD/BoostedObjects/interface/SubFilterJet.h"
-#include "MiniAOD/BoostedObjects/interface/HTTTopJet.h"
+#include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
 
@@ -42,11 +41,11 @@ class BoostedttHEvent{
     void ak5JetsClean(bool cleanHiggsCand = false, bool cleanTopHadCand = false, bool cleanTopLepCand = false);    
     
     // Higgs Candidate Reconstruction
-    void HiggsCandBoostedRec(HiggsTagger higgstagger, const float higgsjetptcut = 200., const float higgsjetetacut = 2., bool cleanTopHadCand = false, bool cleanTopLepCand = false,  const float fatjetCleaningThreshold = 1.5, const float subjetCleaningThreshold = .4);
+    void HiggsCandBoostedRec(HiggsTagger higgstagger, bool cleanTopHadCand = false, bool cleanTopLepCand = false, const float subjetCleaningThreshold = .4);
     void HiggsCandRec();
     
     // Hadronic Top Candidate Reconstruction
-    void TopHadCandBoostedRec(TopTagger toptagger, const float topjetptcut = 200., const float topjetetacut = 2.);
+    void TopHadCandBoostedRec(TopTagger toptagger, bool cleanTopLepCand = false, bool cleanHiggsCand = false, const float subjetCleaningThreshold = .4);
     void TopHadCandRec();
     
     // Leptonic Top Candidate Reconstruction
@@ -106,28 +105,32 @@ class BoostedttHEvent{
     float           GetAverageCSVClean();
     
     // Higgs Candidate
-    boosted::SubFilterJet  GetHiggsCandBoosted();
-    pat::Jet           GetHiggsB1Cand();
-    pat::Jet           GetHiggsB2Cand();
-    pat::Jet           GetHiggsGCand();
-    math::XYZTLorentzVector  GetHiggsCandVec3();
-    math::XYZTLorentzVector  GetHiggsCandVec2();   
+    bool                    GetFoundHiggsCand();
+    int                     GetHiggsCandIndex();
+    float                   GetHiggsCandTag();
+    boosted::BoostedJet     GetHiggsCandBoosted();
+    pat::Jet                GetHiggsB1Cand();
+    pat::Jet                GetHiggsB2Cand();
+    pat::Jet                GetHiggsGCand();
+    math::XYZTLorentzVector GetHiggsCandVec3();
+    math::XYZTLorentzVector GetHiggsCandVec2();   
     
     // Hadronic Top Candidate
-    boosted::HTTTopJet     GetTopHadCandBoosted();
-    pat::Jet           GetTopHadBCand();
-    pat::Jet           GetTopHadW1Cand();
-    pat::Jet           GetTopHadW2Cand();
-    math::XYZTLorentzVector  GetTopHadCandVec();
-    math::XYZTLorentzVector  GetWHadCandVec();
+    bool                    GetFoundTopHadCand();
+    int                     GetTopHadCandIndex();
+    float                   GetTopHadCandTag();
+    boosted::BoostedJet     GetTopHadCandBoosted();
+    pat::Jet                GetTopHadBCand();
+    pat::Jet                GetTopHadW1Cand();
+    pat::Jet                GetTopHadW2Cand();
+    math::XYZTLorentzVector GetTopHadCandVec();
+    math::XYZTLorentzVector GetWHadCandVec();
     
     // Leptonic Top Candidate
-    pat::Jet           GetTopLepBCand();
-    math::XYZTLorentzVector  GetTopLepCandVec();
-    math::XYZTLorentzVector  GetWLepCandVec();
-    
-    bool            GetFoundTopHad();
-    float           GetHiggsTag();
+    bool                    GetFoundTopLepCand();
+    pat::Jet                GetTopLepBCand();
+    math::XYZTLorentzVector GetTopLepCandVec();
+    math::XYZTLorentzVector GetWLepCandVec();
     
   private:
     
@@ -179,16 +182,19 @@ class BoostedttHEvent{
     int nCleanedBTagT;
     
     // Higgs Candidate
-    bool                  foundHiggsCand;
-    float                 HiggsTag_HiggsCand;
-    boosted::SubFilterJet higgsCand;
-    pat::Jet              higgsB1Cand;
-    pat::Jet              higgsB2Cand;
-    pat::Jet              higgsGCand;
+    bool                foundHiggsCand;
+    int                 higgsCandIndex;
+    float               higgsCandTag;
+    boosted::BoostedJet higgsCand;
+    pat::Jet            higgsB1Cand;
+    pat::Jet            higgsB2Cand;
+    pat::Jet            higgsGCand;
     
     // Hadronic Top Candidate
     bool                foundTopHadCand;
-    boosted::HTTTopJet  topHadCand;
+    int                 topHadCandIndex;
+    float               topHadCandTag;
+    boosted::BoostedJet topHadCand;
     pat::Jet            topHadBCand;
     pat::Jet            topHadW1Cand;
     pat::Jet            topHadW2Cand;

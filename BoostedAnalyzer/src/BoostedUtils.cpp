@@ -55,8 +55,13 @@ bool BoostedUtils::FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2){
 }
 
 
+bool BoostedUtils::FirstBoostedJetIsHarder(boosted::BoostedJet jet1, boosted::BoostedJet jet2){
+  return BoostedUtils::FirstJetIsHarder(jet1.fatjet,jet2.fatjet);
+}
+
+
 bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
-  return GetJetCSV(jet1,"pfCombinedInclusiveSecondaryVertexV2BJetTags") > GetJetCSV(jet2,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  return MiniAODHelper::GetJetCSV(jet1,"pfCombinedInclusiveSecondaryVertexV2BJetTags") > MiniAODHelper::GetJetCSV(jet2,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
 }
 
 
@@ -142,21 +147,6 @@ float BoostedUtils::DeltaKt(const pat::Jet& jet1,const pat::Jet& jet2){
   math::XYZTLorentzVector vec2 = jet2.p4();
   
   return BoostedUtils::DeltaKt(vec1,vec2);
-}
-
-
-float BoostedUtils::GetJetCSV(const pat::Jet& jet, const std::string& taggername){
-  
-  float defaultFailure = -.1;
-  
-  float bTagVal = jet.bDiscriminator(taggername);
-
-  if(isnan(bTagVal)) return defaultFailure;
-  
-  if(bTagVal > 1.) return 1.;
-  if(bTagVal < 0.) return defaultFailure;
-  
-  return bTagVal;
 }
 
 
@@ -251,16 +241,9 @@ vector<math::XYZTLorentzVector> BoostedUtils::GetJetVecs(const std::vector<pat::
 }
 
 
-boosted::SubFilterJetCollection BoostedUtils::GetSortedByPt(boosted::SubFilterJetCollection const &subfilterjets){
-  boosted::SubFilterJetCollection result = subfilterjets;
-  std::sort(result.begin(), result.end(),BoostedUtils::FirstFatJetIsHarder<boosted::SubFilterJet>);
-  return result;
-}
-
-
-boosted::HTTTopJetCollection BoostedUtils::GetSortedByPt(boosted::HTTTopJetCollection const &htttopjets){
-  boosted::HTTTopJetCollection result = htttopjets;
-  std::sort(result.begin(), result.end(),BoostedUtils::FirstFatJetIsHarder<boosted::HTTTopJet>);
+boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCollection const &boostedJets){
+  boosted::BoostedJetCollection result = boostedJets;
+  std::sort(result.begin(), result.end(),static_cast<bool (*)(boosted::BoostedJet,boosted::BoostedJet)>(&BoostedUtils::FirstBoostedJetIsHarder));
   return result;
 }
 
@@ -271,7 +254,7 @@ bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   float CSVMv2wp = 0.89;
   float CSVTv2wp = 0.97;
   
-  float csvValue = GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  float csvValue = MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   
   switch(workingPoint){
     case 'L': if(csvValue > CSVLv2wp){ return true; } break;
@@ -341,6 +324,19 @@ float BoostedUtils::GetJetAverageJetEtaMax(const std::vector<pat::Jet>& jets1, c
   return etamax;
 }
 
+boosted::JetType BoostedUtils::GetBoostedJetType(const boosted::BoostedJet boostedJet, const BoostedJetDisc::Mode mode){
+  
+  switch(mode){
+    case BoostedJetDisc::None:
+    {
+      return boosted::NA;
+      break;
+    }
+    default:
+      return boosted::NA; 
+  }  
+}
+
 
 void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
   std::sort(subjets.begin(), subjets.end(),BoostedUtils::FirstHasHigherCSV);
@@ -364,9 +360,9 @@ void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
 }
 
 
-std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::SubFilterJet& higgsJet, const int& nCSVJets){
+std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets){
 
-  std::vector<pat::Jet> subJets = higgsJet.filterjets;
+  std::vector<pat::Jet> subJets = boostedJet.filterjets;
   
   return GetHiggsFilterJets(subJets,nCSVJets);
 }
@@ -378,7 +374,7 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
   
   std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstHasHigherCSV);
   
-  if((nCSVJets+1) < (int)subJets.size()){
+  if((int)subJets.size() > (nCSVJets+1)){
     std::sort(subJets.begin()+nCSVJets, subJets.end(),BoostedUtils::FirstJetIsHarder);
   }
   
@@ -386,9 +382,9 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
 }
 
 
-float BoostedUtils::GetHiggsMass(const boosted::SubFilterJet& higgsJet, const int& nJets, const int& nCSVJets){
+float BoostedUtils::GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets, const int& nCSVJets){
   
-  std::vector<pat::Jet> filterJets = GetHiggsFilterJets(higgsJet,nCSVJets);
+  std::vector<pat::Jet> filterJets = GetHiggsFilterJets(boostedJet,nCSVJets);
   
   if(filterJets.size()<2 || nCSVJets>nJets) return -1.;
   

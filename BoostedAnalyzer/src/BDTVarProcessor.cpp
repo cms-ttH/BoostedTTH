@@ -3,7 +3,8 @@ using namespace std;
 
 BDTVarProcessor::BDTVarProcessor():
     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
-    bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/"))
+    bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
+    bdt4(LJ_BDT_v4(string(getenv("CMSSW_BASE"))+"/src/MiniAOD/MiniAODHelper/data/bdtweights/V4weights"))
 {}
 BDTVarProcessor::~BDTVarProcessor(){}
 
@@ -11,6 +12,7 @@ BDTVarProcessor::~BDTVarProcessor(){}
 void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
   vars.InitVar("BDTOhio_v2_output");
   vars.InitVar("BDT_v3_output");
+  vars.InitVar("BDT_v4_output");
 
   map<string,float> bdtinputs2=bdtohio2.GetVariablesOfLastEvaluation();
   for(auto it=bdtinputs2.begin(); it!=bdtinputs2.end(); it++){
@@ -22,12 +24,17 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
     vars.InitVar("BDT_v3_input_"+it->first);
   }
 
+  map<string,float> bdtinputs4=bdt4.GetVariablesOfLastEvaluation();
+  for(auto it=bdtinputs4.begin(); it!=bdtinputs4.end(); it++){
+    vars.InitVar("BDT_v4_input_"+it->first);
+  }
+
   initialized=true;
 }
 
 void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
-
+  if(input.selectedMuons.size()+input.selectedElectrons.size()!=1) return;
   float bdtoutput2=bdtohio2.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
   vars.FillVar("BDTOhio_v2_output",bdtoutput2);
   if(bdtohio2.GetCategory(input.selectedJets)!="none"){
@@ -45,5 +52,15 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
       vars.FillVar("BDT_v3_input_"+it->first,it->second);
     }
   }
+
+  float bdtoutput4=bdt4.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
+  vars.FillVar("BDT_v4_output",bdtoutput4);
+  if(bdt4.GetCategory(input.selectedJets)!="none"){
+    map<string,float> bdtinputs4=bdt4.GetVariablesOfLastEvaluation();
+    for(auto it=bdtinputs4.begin(); it!=bdtinputs4.end(); it++){
+      vars.FillVar("BDT_v4_input_"+it->first,it->second);
+    }
+  }
+
 
 }

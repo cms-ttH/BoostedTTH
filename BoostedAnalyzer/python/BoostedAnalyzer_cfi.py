@@ -13,15 +13,13 @@ BoostedAnalyzer = cms.EDAnalyzer(
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
     sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
 
-    luminosity = cms.double(10000),
-    xs = cms.double(831.76),
-    nMCEvents = cms.int32(25446993), 
 
+    eventWeight = cms.double(1.),
     isData = cms.bool(False),
 
     makeSystematicsTrees = cms.bool(False),
 
-    useFatJets = cms.bool(False),
+    useFatJets = cms.bool(True),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),
 
@@ -29,7 +27,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpSyncExe2 = cms.bool(False),
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","DiLeptonVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor","DiJetVarProcessor"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","DiLeptonVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor"),
+    #,"DiJetVarProcessor"), -- conflict
 
     outfileName = cms.string("BoostedTTH"),
 )

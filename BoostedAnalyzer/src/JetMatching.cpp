@@ -2,23 +2,19 @@
 
 using namespace std;
 
-std::vector<pat::Jet> JetMatching::GetFilterjets(const boosted::SubFilterJetCollection &subfilterJets, const float& ptcut, const float& etacut){
+std::vector<pat::Jet> JetMatching::GetFilterjets(const boosted::BoostedJetCollection &boostedJets, const float& ptcut, const float& etacut){
   std::vector<pat::Jet> filterjets;
-  for(size_t j=0; j< subfilterJets.size(); j++){
-    for(size_t k=0; k< subfilterJets[j].filterjets.size(); k++){
-      if(subfilterJets[j].filterjets[k].pt()>=ptcut && subfilterJets[j].filterjets[k].eta()<etacut) filterjets.push_back(subfilterJets[j].filterjets[k]);
+  
+  for(size_t j=0; j< boostedJets.size(); j++){
+    if(boostedJets[j].nonW.pt()>ptcut && boostedJets[j].nonW.eta()<etacut) filterjets.push_back(boostedJets[j].nonW);
+    if(boostedJets[j].W1.pt()>ptcut && boostedJets[j].W1.eta()<etacut) filterjets.push_back(boostedJets[j].W1);
+    if(boostedJets[j].W2.pt()>ptcut && boostedJets[j].W2.eta()<etacut) filterjets.push_back(boostedJets[j].W2);
+    
+    for(size_t k=0; k< boostedJets[j].filterjets.size(); k++){
+      if(boostedJets[j].filterjets[k].pt()>=ptcut && boostedJets[j].filterjets[k].eta()<etacut) filterjets.push_back(boostedJets[j].filterjets[k]);
     }
   }
-  return filterjets;
-}
-
-std::vector<pat::Jet> JetMatching::GetFilterjets(const boosted::HTTTopJetCollection &htttopjets, const float& ptcut, const float& etacut){
-  std::vector<pat::Jet> filterjets;
-  for(size_t j=0; j< htttopjets.size(); j++){
-    if(htttopjets[j].nonW.pt()>ptcut && htttopjets[j].nonW.eta()<etacut) filterjets.push_back(htttopjets[j].nonW);
-    if(htttopjets[j].W1.pt()>ptcut && htttopjets[j].W1.eta()<etacut) filterjets.push_back(htttopjets[j].W1);
-    if(htttopjets[j].W2.pt()>ptcut && htttopjets[j].W2.eta()<etacut) filterjets.push_back(htttopjets[j].W2);
-  }
+  
   return filterjets;
 }
 
@@ -39,7 +35,7 @@ std::vector<TLorentzVector> JetMatching::GetMatchedVecs(const std::vector<pat::J
       TLorentzVector mjet;
       mjet.SetPtEtaPhiE(itmJet->pt()/itJet->pt(), itJet->eta()-itmJet->eta(), itJet->phi()-itmJet->phi(), itmJet->energy()/itJet->energy());
       matchjetdiff.push_back(mjet);
-      DCSV_Matchedfilterjets.push_back(BoostedUtils::GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")-BoostedUtils::GetJetCSV(*itmJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+      DCSV_Matchedfilterjets.push_back(MiniAODHelper::GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")-MiniAODHelper::GetJetCSV(*itmJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
       Dr_Matchedfilterjets.push_back(drmin);
 //       fjets.erase(itmJet);
     }

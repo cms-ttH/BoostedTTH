@@ -128,7 +128,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
-    vars.FillVars( "Jet_CSV",iJet,BoostedUtils::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
@@ -182,8 +182,10 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   
   vars.FillVar( "Evt_Pt_MET",input.pfMET.pt() );
   vars.FillVar( "Evt_Phi_MET",input.pfMET.phi() );
-  vars.FillVar( "Evt_Pt_GenMET",input.pfMET.genMET()->pt() );
-  vars.FillVar( "Evt_Phi_GenMET",input.pfMET.genMET()->phi() );
+  if(input.pfMET.genMET()!=0){
+      vars.FillVar( "Evt_Pt_GenMET",input.pfMET.genMET()->pt() );
+      vars.FillVar( "Evt_Phi_GenMET",input.pfMET.genMET()->phi() );
+  }
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
   math::XYZTLorentzVector metvec = input.pfMET.p4();
@@ -278,7 +280,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   // All Jets
   std::vector<double> csvJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
-    csvJets.push_back(BoostedUtils::GetJetCSV(*itJet,btagger));
+    csvJets.push_back(MiniAODHelper::GetJetCSV(*itJet,btagger));
   }
   std::vector<double> csvJetsSorted=csvJets;
   std::sort(csvJetsSorted.begin(),csvJetsSorted.end(),std::greater<double>());

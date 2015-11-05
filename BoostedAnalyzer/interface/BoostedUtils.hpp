@@ -15,8 +15,13 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "MiniAOD/BoostedObjects/interface/SubFilterJet.h"
-#include "MiniAOD/BoostedObjects/interface/HTTTopJet.h"
+#include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
+
+#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
+
+namespace BoostedJetDisc{
+  enum Mode{ None };
+}
 
 class BoostedUtils{
   
@@ -31,10 +36,7 @@ class BoostedUtils{
     static bool FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2);
     static bool FirstHasHigherCSVold(pat::Jet jet1,pat::Jet jet2);
     static bool FirstJetIsHarder(pat::Jet jet1, pat::Jet jet2);
-    template<typename boostedJetType>
-    static bool FirstFatJetIsHarder(boostedJetType jet1, boostedJetType jet2){
-      return BoostedUtils::FirstJetIsHarder(jet1.fatjet,jet2.fatjet);
-    }
+    static bool FirstBoostedJetIsHarder(boosted::BoostedJet jet1, boosted::BoostedJet jet2);
     
     static float DeltaEta(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2);
     static float DeltaEta(const pat::Jet& jet1,const pat::Jet& jet2);
@@ -57,8 +59,7 @@ class BoostedUtils{
     
     static std::vector<math::XYZTLorentzVector> GetJetVecs(const std::vector<pat::Jet>& jets);
     
-    static boosted::SubFilterJetCollection GetSortedByPt(boosted::SubFilterJetCollection const &subfilterjets);
-    static boosted::HTTTopJetCollection GetSortedByPt(boosted::HTTTopJetCollection const &htttopjets);
+    static boosted::BoostedJetCollection GetSortedByPt(boosted::BoostedJetCollection const &boostedjets);
     
     static bool PassesCSV(const pat::Jet& jet, const char workingPoint='M');
     
@@ -70,13 +71,14 @@ class BoostedUtils{
     static void GetFoxWolframMoments(std::vector<math::XYZTLorentzVector> jetVecs, float &h0, float &h1, float &h2, float &h3, float &h4);
     static void GetAplanaritySphericity(math::XYZTLorentzVector leptonVec, math::XYZTLorentzVector metVec, std::vector<math::XYZTLorentzVector> jetVecs, float &aplanarity, float &sphericity);
     
-    static bool GetTopTag(const boosted::HTTTopJet& topJet,const double& fW = 0.15, const double& mTopMin = 120, const bool& altConf = false);
-
+    static boosted::JetType GetBoostedJetType(const boosted::BoostedJet boostedJet, const BoostedJetDisc::Mode mode);
+    
     static void TopSubjetCSVDef(std::vector<pat::Jet> &subjets);
     
-    static std::vector<pat::Jet> GetHiggsFilterJets(const boosted::SubFilterJet& higgsJet, const int& nCSVJets = 2);
+    static std::vector<pat::Jet> GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets = 2);
     static std::vector<pat::Jet> GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets = 2);
-    static float GetHiggsMass(const boosted::SubFilterJet& higgsJet, const int& nJets = 2, const int& nCSVJets = 2);
+    static float GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets = 2, const int& nCSVJets = 2);
+    
     static std::vector<pat::Jet> GetSingleTopJets(const std::vector<pat::Jet>& centralJets, const std::vector<pat::Jet>& forwardJets, float etacut=2.4);
 
     static float GetMuonRelIso(const pat::Muon& iMuon);

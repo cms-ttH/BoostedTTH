@@ -16,7 +16,7 @@ SelectedElectronProducer = cms.EDProducer(
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     ptMin   = cms.double(10),
     etaMax  = cms.double(2.4),
-    leptonID = cms.string("loosePhys14"),
+    leptonID = cms.string("looseSpring15"),
 
     # The following two parameters are dummies in case of electrons
     # they are not used for the electron selection, which is defined

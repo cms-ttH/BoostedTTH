@@ -172,7 +172,7 @@ std::string BDTOhio_v2::GetCategory(const std::vector<pat::Jet>& selectedJets) c
   int njets=selectedJets.size();
   int ntagged=0;
   for(auto jet=selectedJets.begin(); jet!=selectedJets.end(); jet++){
-    if(BoostedUtils::GetJetCSV(*jet)>btagMcut) ntagged++;
+    if(MiniAODHelper::GetJetCSV(*jet)>btagMcut) ntagged++;
   }
   if(ntagged>=4&&njets>=6){
     return "6j4t"; 
@@ -206,7 +206,8 @@ std::string BDTOhio_v2::GetCategory(const std::vector<pat::Jet>& selectedJets) c
 float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
 
   if(selectedMuons.size()+selectedElectrons.size()!=1){
-    cerr << "BDTOhio_v2: not a SL event" << endl;
+    //    cerr << "BDTOhio_v2: not a SL event" << endl;
+    return -2;
   }
   // ==================================================
   // construct object vectors etc
@@ -226,7 +227,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
     TLorentzVector jetvec;
     jetvec.SetPtEtaPhiE(jet->pt(),jet->eta(),jet->phi(),jet->energy());
     jet_vecs.push_back(jetvec);
-    if(BoostedUtils::GetJetCSV(*jet)>btagMcut){
+    if(MiniAODHelper::GetJetCSV(*jet)>btagMcut){
       tagged_jet_vecs.push_back(jetvec);
     }
     vector<double> pxpypzE;
@@ -235,7 +236,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
     pxpypzE.push_back(jet->pz());
     pxpypzE.push_back(jet->energy());
     jets_vvdouble.push_back(pxpypzE);
-    jetCSV.push_back(BoostedUtils::GetJetCSV(*jet));
+    jetCSV.push_back(MiniAODHelper::GetJetCSV(*jet));
   }
   sortedCSV=jetCSV;
   std::sort(sortedCSV.begin(),sortedCSV.end(),std::greater<float>());
@@ -243,7 +244,7 @@ float BDTOhio_v2::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
     TLorentzVector jetvec;
     jetvec.SetPtEtaPhiE(jet->pt(),jet->eta(),jet->phi(),jet->energy());
     jet_loose_vecs.push_back(jetvec);
-    jetCSV_loose.push_back(BoostedUtils::GetJetCSV(*jet));
+    jetCSV_loose.push_back(MiniAODHelper::GetJetCSV(*jet));
   }
 
   // TODO loose jet and csv defintion
