@@ -5,8 +5,8 @@ CSVHelper::CSVHelper(){
   btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   std::string path=BoostedUtils::GetAnalyzerPath();
 
-  std::string inputFileHF = "/data/csvweights/csv_rwt_hf_IT_FlatSF_2015_07_27.root";
-  std::string inputFileLF = "/data/csvweights/csv_rwt_lf_IT_FlatSF_2015_07_27.root";
+  std::string inputFileHF = "/data/csvweights/csv_rwt_hf_IT_FlatSF_2015_11_03.root";
+  std::string inputFileLF = "/data/csvweights/csv_rwt_lf_IT_FlatSF_2015_11_03.root";
 
   TFile* f_CSVwgt_HF = new TFile(std::string(path + inputFileHF).c_str());
   TFile* f_CSVwgt_LF = new TFile(std::string(path + inputFileLF).c_str());
