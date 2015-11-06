@@ -195,6 +195,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
       /** beam spot data access token **/
       edm::EDGetTokenT< reco::BeamSpot > EDMBeamSpotToken;
+
+      /** Conversions data access token **/
+      edm::EDGetTokenT< reco::ConversionCollection > EDMConversionCollectionToken;
       
       /** vertex data access token **/
       edm::EDGetTokenT< reco::VertexCollection > EDMVertexToken;
@@ -321,7 +324,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
   EDMCustomGenJetsToken   = consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
-
+  EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
 
   // tt+X CATEGORIZATION data
   genBHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadJetIndex",""));
@@ -343,6 +346,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   helper.SetJetCorrectorUncertainty();
+  helper.SetUpElectronMVA("MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
 
   //initialize CSVHelper
   csvReweighter = CSVHelper("BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_hf_IT_FlatSF_2015_11_03.root","BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_lf_IT_FlatSF_2015_11_03.root");
@@ -552,6 +556,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   /**** GET BEAMSPOT ****/
   edm::Handle<reco::BeamSpot> h_beamspot;
   iEvent.getByToken( EDMBeamSpotToken,h_beamspot );
+
+  /**** GET Conversions ****/
+  edm::Handle<reco::ConversionCollection> h_conversioncollection;
+  iEvent.getByToken( EDMConversionCollectionToken,h_conversioncollection );
   
   /**** GET PRIMARY VERTICES ****/
   edm::Handle< reco::VertexCollection > h_vtxs;
@@ -593,9 +601,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Electron> const &electrons = *h_electrons;
   std::vector<pat::Electron> rawElectrons = electrons;
   // note: electron eta cuts no longer as in synch exe, revert as soon as miniAODhelper os updated
-  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronSpring15M, 2.1 );
-  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronSpring15M, 2.4 );
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., electronID::electronSpring15L, 2.4 );
+  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVAmedium, h_conversioncollection, h_beamspot, 2.1 );
+  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVAmedium, h_conversioncollection, h_beamspot, 2.4 );
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVAmedium, h_conversioncollection, h_beamspot, 2.4 );
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
