@@ -168,6 +168,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
        /** use GenBmatching info? this is only possible if the miniAOD contains them */
       bool useGenHadronMatch;
+
+     /**recorrect the jets and MET that were in MiniAOD? **/
+      bool recorrectMET;
       
       /** dump some event content for synchronization */
       bool dumpSyncExe;
@@ -274,6 +277,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   useForwardJets = iConfig.getParameter<bool>("useForwardJets");
   useGenHadronMatch = iConfig.getParameter<bool>("useGenHadronMatch");
   if(isData) useGenHadronMatch=false;
+
+  recorrectMET = iConfig.getParameter<bool>("recorrectMET");
 
   dumpSyncExe = iConfig.getParameter<bool>("dumpSyncExe");
   dumpSyncExe2 = iConfig.getParameter<bool>("dumpSyncExe2");
@@ -621,7 +626,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> rawJetsForMET = helper.GetUncorrectedJets(idJetsForMET);
   std::vector<pat::Jet> correctedJetsForMET_nominal = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::NA);
   //correct MET 
-  std::vector<pat::MET> correctedMETs_nominal = helper.CorrectMET(idJetsForMET,correctedJetsForMET_nominal,pfMETs);
+  std::vector<pat::MET> correctedMETs_nominal = recorrectMET ? helper.CorrectMET(idJetsForMET,correctedJetsForMET_nominal,pfMETs) : pfMETs;
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
   // Clean muons and electrons from jets
@@ -678,8 +683,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
  
     correctedJetsForMET_jesup = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::JESup);
     correctedJetsForMET_jesdown = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::JESdown);
-    correctedMETs_jesup = helper.CorrectMET(idJetsForMET,correctedJetsForMET_jesup,pfMETs);
-    correctedMETs_jesdown = helper.CorrectMET(idJetsForMET,correctedJetsForMET_jesdown,pfMETs);
+    correctedMETs_jesup = recorrectMET ? helper.CorrectMET(idJetsForMET,correctedJetsForMET_jesup,pfMETs) : pfMETs;
+    correctedMETs_jesdown = recorrectMET ? helper.CorrectMET(idJetsForMET,correctedJetsForMET_jesdown,pfMETs) : pfMETs;
 
     selectedJets_unsorted_jesup = helper.GetSelectedJets(correctedJets_unsorted_jesup, jetptcut, jetetacut, jetID::none, '-' );
     selectedJets_unsorted_jesdown = helper.GetSelectedJets(correctedJets_unsorted_jesdown, jetptcut, jetetacut, jetID::none, '-' );
@@ -739,8 +744,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     correctedJetsForMET_jerup = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::JERup);
     correctedJetsForMET_jerdown = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::JERdown);
-    correctedMETs_jerup = helper.CorrectMET(idJetsForMET,correctedJetsForMET_jerup,pfMETs);
-    correctedMETs_jerdown = helper.CorrectMET(idJetsForMET,correctedJetsForMET_jerdown,pfMETs);
+    correctedMETs_jerup = recorrectMET ? helper.CorrectMET(idJetsForMET,correctedJetsForMET_jerup,pfMETs) : pfMETs;
+    correctedMETs_jerdown = recorrectMET ? helper.CorrectMET(idJetsForMET,correctedJetsForMET_jerdown,pfMETs) : pfMETs;
 
     selectedJets_unsorted_jerup = helper.GetSelectedJets(correctedJets_unsorted_jerup, jetptcut, jetetacut, jetID::none, '-' );
     selectedJets_unsorted_jerdown = helper.GetSelectedJets(correctedJets_unsorted_jerdown, jetptcut, jetetacut, jetID::none, '-' );
