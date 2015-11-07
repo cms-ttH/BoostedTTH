@@ -46,7 +46,6 @@
 #include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
-//#include "BoostedTTH/BoostedAnalyzer/interface/CSVHelper.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Cutflow.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeWriter.hpp"
@@ -260,7 +259,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc")
+BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_hf_IT_FlatSF_2015_11_03.root","BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_lf_IT_FlatSF_2015_11_03.root")),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc")
 {
   // get all configurations from the python config
   std::string era = iConfig.getParameter<std::string>("era");
@@ -353,10 +352,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   helper.SetJetCorrectorUncertainty();
   helper.SetUpElectronMVA("MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
 
-  //initialize CSVHelper
-  csvReweighter = CSVHelper("BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_hf_IT_FlatSF_2015_11_03.root","BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_lf_IT_FlatSF_2015_11_03.root");
- 
-  // INITIALIZE SELECTION & CUTFLOW
+   // INITIALIZE SELECTION & CUTFLOW
   cutflow_nominal.Init();
   if(makeSystematicsTrees){
     cutflow_jesup.Init();
@@ -595,7 +591,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   std::vector<pat::Muon> const &muons = *h_muons;
   std::vector<pat::Muon> rawMuons = muons;
-  // note: muon eta cuts and muonLoose ID no longer as in synch exe
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 25., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.1);
   std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( muons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4 );
   std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 15., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4);
@@ -605,10 +600,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByToken( EDMElectronsToken,h_electrons );
   std::vector<pat::Electron> const &electrons = *h_electrons;
   std::vector<pat::Electron> rawElectrons = electrons;
-  // note: electron eta cuts no longer as in synch exe, revert as soon as miniAODhelper os updated
-  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVAmedium, h_conversioncollection, h_beamspot, 2.1 );
-  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVAmedium, h_conversioncollection, h_beamspot, 2.4 );
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVAmedium, h_conversioncollection, h_beamspot, 2.4 );
+  helper.SetElectronMVAinfo(h_conversioncollection, h_beamspot);
+  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVAmedium, 2.1 );
+  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVAmedium, 2.4 );
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVAmedium, 2.4 );
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
