@@ -18,6 +18,7 @@ options.register( "isBoostedMiniAOD", True, VarParsing.multiplicity.singleton, V
 options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
 options.register( "globalTag", "74X_mcRun2_asymptotic_v2", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "useJson",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.parseArguments()
 
 # re-set some defaults
@@ -115,4 +116,9 @@ if not options.isData:
     process.BoostedAnalyzer.eventWeight = options.weight
 process.BoostedAnalyzer.makeSystematicsTrees=options.makeSystematicsTrees
 
+if options.isData and options.useJson:
+    import FWCore.PythonUtilities.LumiList as LumiList
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/desy.de/user/h/hmildner/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/data/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
+
+process.BoostedAnalyzer.selectionNames=["VertexSelection","LooseLeptonSelection"]
 process.p = cms.Path(process.BoostedAnalyzer)
