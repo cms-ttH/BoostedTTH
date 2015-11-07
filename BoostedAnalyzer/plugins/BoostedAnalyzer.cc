@@ -43,9 +43,10 @@
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
+#include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/CSVHelper.hpp"
+//#include "BoostedTTH/BoostedAnalyzer/interface/CSVHelper.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Cutflow.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeWriter.hpp"
@@ -111,7 +112,6 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** the miniAODhelper is used for selections and reweighting */
       MiniAODHelper helper;
 
-  
       CSVHelper csvReweighter;
       HistoReweighter pvWeight;
       
@@ -198,6 +198,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
       /** beam spot data access token **/
       edm::EDGetTokenT< reco::BeamSpot > EDMBeamSpotToken;
+
+      /** Conversions data access token **/
+      edm::EDGetTokenT< reco::ConversionCollection > EDMConversionCollectionToken;
       
       /** vertex data access token **/
       edm::EDGetTokenT< reco::VertexCollection > EDMVertexToken;
@@ -326,6 +329,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
   EDMCustomGenJetsToken   = consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
+  EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
 
   // tt+X CATEGORIZATION data
   genBHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadJetIndex",""));
@@ -347,6 +351,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):pvWeight((Boo
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   helper.SetJetCorrectorUncertainty();
+  helper.SetUpElectronMVA("MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
+
+  //initialize CSVHelper
+  csvReweighter = CSVHelper("BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_hf_IT_FlatSF_2015_11_03.root","BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_lf_IT_FlatSF_2015_11_03.root");
  
   // INITIALIZE SELECTION & CUTFLOW
   cutflow_nominal.Init();
@@ -553,6 +561,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   /**** GET BEAMSPOT ****/
   edm::Handle<reco::BeamSpot> h_beamspot;
   iEvent.getByToken( EDMBeamSpotToken,h_beamspot );
+
+  /**** GET Conversions ****/
+  edm::Handle<reco::ConversionCollection> h_conversioncollection;
+  iEvent.getByToken( EDMConversionCollectionToken,h_conversioncollection );
   
   /**** GET PRIMARY VERTICES ****/
   edm::Handle< reco::VertexCollection > h_vtxs;
@@ -584,9 +596,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Muon> const &muons = *h_muons;
   std::vector<pat::Muon> rawMuons = muons;
   // note: muon eta cuts and muonLoose ID no longer as in synch exe
-  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 30., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.1);
+  std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( muons, 25., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.1);
   std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( muons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4 );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 10., muonID::muonLoose, coneSize::R04, corrType::deltaBeta, 2.4);
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 15., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4);
 
   // ELECTRONS
   edm::Handle< std::vector<pat::Electron> > h_electrons;
@@ -594,9 +606,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Electron> const &electrons = *h_electrons;
   std::vector<pat::Electron> rawElectrons = electrons;
   // note: electron eta cuts no longer as in synch exe, revert as soon as miniAODhelper os updated
-  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronSpring15M, 2.1 );
-  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronSpring15M, 2.4 );
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 10., electronID::electronSpring15L, 2.4 );
+  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVAmedium, h_conversioncollection, h_beamspot, 2.1 );
+  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVAmedium, h_conversioncollection, h_beamspot, 2.4 );
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVAmedium, h_conversioncollection, h_beamspot, 2.4 );
 
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
@@ -1056,19 +1068,33 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
      weight *= (genEventInfo.weights()[i]>0 ? 1.: -1.); // overwrite intransparent MC weights, use \pm 1 instead
   }
   
-  //dummy variables for the get_csv_wgt function, might be useful for checks
+  //dummy variables for the getCSVWeight function, might be useful for checks
   double csvWgtHF, csvWgtLF, csvWgtCF;
 
   float xsweight = eventWeight;
   float csvweight = 1.;
   float puweight = 1.;
   float topptweight = 1.;
-  if(systype==sysType::JESup)csvweight= csvReweighter.get_csv_wgt(selectedJets,7, csvWgtHF, csvWgtLF, csvWgtCF);
-  else if(systype==sysType::JESdown)csvweight= csvReweighter.get_csv_wgt(selectedJets,8, csvWgtHF, csvWgtLF, csvWgtCF);
-  else if(systype==sysType::JERup)csvweight= csvReweighter.get_csv_wgt(selectedJets,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
-  else if(systype==sysType::JERdown)csvweight= csvReweighter.get_csv_wgt(selectedJets,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
-  else csvweight= csvReweighter.get_csv_wgt(selectedJets,0, csvWgtHF, csvWgtLF, csvWgtCF);
-  //float puweight = beanHelper.GetPUweight(event[0].numTruePV);
+
+  //get vectors of jet properties
+  std::vector<double> jetPts;
+  std::vector<double> jetEtas;
+  std::vector<double> jetCSVs;
+  std::vector<int> jetFlavors;
+  for(std::vector<pat::Jet>::const_iterator itJet = selectedJets.begin(); itJet != selectedJets.end(); ++itJet){
+  jetPts.push_back(itJet->pt());
+  jetEtas.push_back(itJet->eta());
+  jetCSVs.push_back(helper.GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+  jetFlavors.push_back(itJet->hadronFlavour());
+  }
+
+  if(systype==sysType::JESup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,7, csvWgtHF, csvWgtLF, csvWgtCF);
+  else if(systype==sysType::JESdown)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,8, csvWgtHF, csvWgtLF, csvWgtCF);
+  else if(systype==sysType::JERup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
+  else if(systype==sysType::JERdown)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
+  else csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF);
+  
+//float puweight = beanHelper.GetPUweight(event[0].numTruePV);
   //float topptweight = beanHelper.GetTopPtweight(mcparticlesStatus3);
   //float q2scaleweight = beanHelper.GetQ2ScaleUp(const BNevent&);
   
@@ -1085,22 +1111,22 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
     //weights["Weight_TopPtup"] = beanHelper.GetTopPtweightUp(mcparticlesStatus3)/topptweight;
     //weights["Weight_TopPtdown"] = beanHelper.GetTopPtweightDown(mcparticlesStatus3)/topptweight;
 
-    weights["Weight_CSVLFup"] = csvReweighter.get_csv_wgt(selectedJets,9, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFdown"] = csvReweighter.get_csv_wgt(selectedJets,10, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFup"] = csvReweighter.get_csv_wgt(selectedJets,11, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFdown"] = csvReweighter.get_csv_wgt(selectedJets,12, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFStats1up"] = csvReweighter.get_csv_wgt(selectedJets,13, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFStats1down"] = csvReweighter.get_csv_wgt(selectedJets,14, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFStats1up"] = csvReweighter.get_csv_wgt(selectedJets,17, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFStats1down"] = csvReweighter.get_csv_wgt(selectedJets,18, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFStats2up"] = csvReweighter.get_csv_wgt(selectedJets,15, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVHFStats2down"] = csvReweighter.get_csv_wgt(selectedJets,16, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFStats2up"] = csvReweighter.get_csv_wgt(selectedJets,19, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVLFStats2down"] = csvReweighter.get_csv_wgt(selectedJets,20, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVCErr1up"] = csvReweighter.get_csv_wgt(selectedJets,21, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVCErr1down"] = csvReweighter.get_csv_wgt(selectedJets,22, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVCErr2up"] = csvReweighter.get_csv_wgt(selectedJets,23, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    weights["Weight_CSVCErr2down"] = csvReweighter.get_csv_wgt(selectedJets,24, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVLFup"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,9, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVLFdown"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,10, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVHFup"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,11, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVHFdown"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,12, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVHFStats1up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,13, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVHFStats1down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,14, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVLFStats1up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,17, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVLFStats1down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,18, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVHFStats2up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,15, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVHFStats2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,16, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVLFStats2up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,19, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVLFStats2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,20, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVCErr1up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,21, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVCErr1down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,22, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVCErr2up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,23, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_CSVCErr2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,24, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
     
     //weights["Weight_Q2up"] = beanHelper.GetQ2ScaleUp(event[0]);
     //weights["Weight_Q2down"] = beanHelper.GetQ2ScaleDown(event[0]);
