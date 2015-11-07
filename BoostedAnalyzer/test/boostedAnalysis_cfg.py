@@ -120,5 +120,4 @@ if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
     process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/desy.de/user/h/hmildner/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/data/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
 
-process.BoostedAnalyzer.selectionNames=["VertexSelection","LooseLeptonSelection"]
 process.p = cms.Path(process.BoostedAnalyzer)
