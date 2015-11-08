@@ -17,7 +17,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     eventWeight = cms.double(1.),
     isData = cms.bool(False),
 
-    recorrectMET = cms.bool(False),
+    recorrectMET = cms.bool(True),
 
     makeSystematicsTrees = cms.bool(False),
 
