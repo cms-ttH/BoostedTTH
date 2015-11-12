@@ -158,7 +158,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
 }
 void Synchronizer::DumpSyncExe2Header(std::ostream &out){
-  out <<"run,lumi,event,is_SL,is_DL,lep1_pt,lep1_eta,lep1_phi,lep1_iso,lep1_pdgId,lep2_pt,lep2_eta,lep2_phi,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet3_pt,jet4_pt,jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,MET_pt,MET_phi,n_jets,n_btags,bWeight,ttHFCategory,final_discriminant1,final_discriminant2,n_fatjets,pt_fatjet_1,pt_fatjet_2,pt_nonW_1,pt_nonW_2,pt_W1_1,pt_W1_2,pt_W2_1,pt_W2_2,m_top_1,m_top_2,higgstag_fatjet_1,higgstag_fatjet_2\n";
+  out <<"run,lumi,event,is_SL,is_DL,lep1_pt,lep1_eta,lep1_phi,lep1_iso,lep1_pdgId,lep2_pt,lep2_eta,lep2_phi,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet3_pt,jet4_pt,jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,MET_pt,MET_phi,n_jets,n_btags,bWeight,ttHFCategory,final_discriminant1,final_discriminant2,n_fatjets,pt_fatjet_1,pt_fatjet_2,pt_nonW_1,pt_nonW_2,pt_W1_1,pt_W1_2,pt_W2_1,pt_W2_2,pt_top_1,pt_top_2,m_top_1,m_top_2,higgstag_fatjet_1,higgstag_fatjet_2,csv2_fatjet_1,csv2_fatjet_2\n";
 }
 
 
@@ -168,7 +168,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   // Single Lepton Selection
   if(leptonSelections.size()==0){
     leptonSelections.push_back(new VertexSelection());
-    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WP85_Gsf_HT200_v1","HLT_IsoMu24_eta2p1_v1"));
+    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_WP85_Gsf_v*","HLT_IsoMu17_eta2p1_v*"));
     leptonSelections.push_back(new JetTagSelection(4,2));
   }
   if(!initializedCutflowsWithSelections){
@@ -182,11 +182,11 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     vector<string> elel_triggers;
     vector<string> mumu_triggers;
     vector<string> elmu_triggers;
-    elel_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1");
-    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1");
-    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1");
-    elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1");
-    elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1");
+    elel_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
+    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
+    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
+    elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
+    elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*");
 
     dileptonSelections.push_back(new VertexSelection());
     dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers));
@@ -195,6 +195,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     dileptonSelections.push_back(new DiLeptonMETSelection(40,99999));
     dileptonSelections.push_back(new DiLeptonJetTagSelection(2,1));
   }
+  
   if(!initializedCutflowsWithSelections){
     for(uint i=0; i<dileptonSelections.size(); i++){
       dileptonSelections[i]->InitCutflow(cutflowDL);
@@ -255,26 +256,38 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   float pt_W1_2=0;
   float pt_W2_1=0;
   float pt_W2_2=0;
+  float pt_top_1=0;
+  float pt_top_2=0;
   float m_top_1=0;
   float m_top_2=0;
   
   float higgstag_fatjet_1=0;
   float higgstag_fatjet_2=0;
+  float csv2_fatjet_1=0;
+  float csv2_fatjet_2=0;
+  
+  //std::cout << "Event: " << event << std::endl;
   
   cutflowSL.EventSurvivedStep("all",input.weights.at("Weight"));
   for(uint i=0; i<leptonSelections.size(); i++){
-      if(!leptonSelections[i]->IsSelected(input,cutflowSL)){
-	  is_SL=false;
-	  break;
-      }
+    if(!leptonSelections[i]->IsSelected(input,cutflowSL)){
+      //cout << "Event failed SL Selection: " << i << endl;
+	    is_SL=false;
+	    break;
+    }
   }
+  
   cutflowDL.EventSurvivedStep("all",input_DL.weights.at("Weight"));
   for(uint i=0; i<dileptonSelections.size(); i++){
-      if(!dileptonSelections[i]->IsSelected(input_DL,cutflowDL)){
-	  is_DL=false;
-	  break;
-      }
+    if(!dileptonSelections[i]->IsSelected(input_DL,cutflowDL)){
+      //cout << "Event failed DL Selection: " << i << endl;
+	    is_DL=false;
+	    break;
+    }
   }
+  
+  //std::cout << "is_SL: " << is_SL  << "   is_DL: " << is_DL<< std::endl;
+  
   for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
     if(iMuon->pt()>lep1_pt){
       lep2_pt=lep1_pt;
@@ -321,54 +334,54 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   }
   
   if(is_DL){
-  if(input_DL.selectedJets.size()>0){
-    jet1_pt=input_DL.selectedJets.at(0).pt();
-    jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(0));
-  }
-  
-  if(input_DL.selectedJets.size()>1){
-    jet2_pt=input_DL.selectedJets.at(1).pt();
-    jet2_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(1));
-  }
-  
-  if(input_DL.selectedJets.size()>2){
-    jet3_pt=input_DL.selectedJets.at(2).pt();
-    jet3_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(2));
-  }
-  
-  if(input_DL.selectedJets.size()>3){
-    jet4_pt=input_DL.selectedJets.at(3).pt();
-    jet4_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(3));
-  }
-  n_jets=int(input_DL.selectedJets.size());
-  for(auto jet=input_DL.selectedJets.begin();jet!=input_DL.selectedJets.end(); jet++){
-    if(helper.PassesCSV(*jet,'M')) n_btags++;
-  }
+    if(input_DL.selectedJets.size()>0){
+      jet1_pt=input_DL.selectedJets.at(0).pt();
+      jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(0));
+    }
+
+    if(input_DL.selectedJets.size()>1){
+      jet2_pt=input_DL.selectedJets.at(1).pt();
+      jet2_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(1));
+    }
+
+    if(input_DL.selectedJets.size()>2){
+      jet3_pt=input_DL.selectedJets.at(2).pt();
+      jet3_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(2));
+    }
+
+    if(input_DL.selectedJets.size()>3){
+      jet4_pt=input_DL.selectedJets.at(3).pt();
+      jet4_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(3));
+    }
+    n_jets=int(input_DL.selectedJets.size());
+    for(auto jet=input_DL.selectedJets.begin();jet!=input_DL.selectedJets.end(); jet++){
+      if(helper.PassesCSV(*jet,'M')) n_btags++;
+    }
   }
   else{
-  if(input.selectedJets.size()>0){
-    jet1_pt=input.selectedJets.at(0).pt();
-    jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
-  }
-  
-  if(input.selectedJets.size()>1){
-    jet2_pt=input.selectedJets.at(1).pt();
-    jet2_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
-  }
-  
-  if(input.selectedJets.size()>2){
-    jet3_pt=input.selectedJets.at(2).pt();
-    jet3_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(2));
-  }
-  
-  if(input.selectedJets.size()>3){
-    jet4_pt=input.selectedJets.at(3).pt();
-    jet4_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(3));
-  }
-  n_jets=int(input.selectedJets.size());
-  for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
-    if(helper.PassesCSV(*jet,'M')) n_btags++;
-  }
+    if(input.selectedJets.size()>0){
+      jet1_pt=input.selectedJets.at(0).pt();
+      jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
+    }
+
+    if(input.selectedJets.size()>1){
+      jet2_pt=input.selectedJets.at(1).pt();
+      jet2_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
+    }
+
+    if(input.selectedJets.size()>2){
+      jet3_pt=input.selectedJets.at(2).pt();
+      jet3_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(2));
+    }
+
+    if(input.selectedJets.size()>3){
+      jet4_pt=input.selectedJets.at(3).pt();
+      jet4_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(3));
+    }
+    n_jets=int(input.selectedJets.size());
+    for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
+      if(helper.PassesCSV(*jet,'M')) n_btags++;
+    }
   }
 
   MET_pt=input.pfMET.pt();
@@ -383,6 +396,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     pt_nonW_1=input.selectedBoostedJets.at(0).nonW.pt();
     pt_W1_1=input.selectedBoostedJets.at(0).W1.pt();
     pt_W2_1=input.selectedBoostedJets.at(0).W2.pt();
+    pt_top_1=input.selectedBoostedJets.at(0).topjet.mass();
     m_top_1=input.selectedBoostedJets.at(0).topjet.mass();
   }
   
@@ -391,20 +405,27 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     pt_nonW_2=input.selectedBoostedJets.at(1).nonW.pt();
     pt_W1_2=input.selectedBoostedJets.at(1).W1.pt();
     pt_W2_2=input.selectedBoostedJets.at(1).W2.pt();
+    pt_top_2=input.selectedBoostedJets.at(1).topjet.mass();
     m_top_2=input.selectedBoostedJets.at(1).topjet.mass();
   }
   
   if(input.selectedBoostedJets.size()>0){
+    
+    higgstag_fatjet_1 = input.selectedBoostedJets.at(0).fatjet.bDiscriminator("pfBoostedDoubleSecondaryVertexCA15BJetTags");
+    
     if(input.selectedBoostedJets.at(0).filterjets.size()>1){
       std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets.at(0));
-      higgstag_fatjet_1 = MiniAODHelper::GetJetCSV(filterjets.at(1));
+      csv2_fatjet_1 = MiniAODHelper::GetJetCSV(filterjets.at(1));
     }
   }
   
   if(input.selectedBoostedJets.size()>1){
+  
+    higgstag_fatjet_2 = input.selectedBoostedJets.at(1).fatjet.bDiscriminator("pfBoostedDoubleSecondaryVertexCA15BJetTags");
+    
     if(input.selectedBoostedJets.at(1).filterjets.size()>1){
       std::vector<pat::Jet> filterjets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets.at(1));
-      higgstag_fatjet_2 = MiniAODHelper::GetJetCSV(filterjets.at(1));
+      csv2_fatjet_2 = MiniAODHelper::GetJetCSV(filterjets.at(1));
     }
   }
 
@@ -415,8 +436,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   else{
     bWeight=input.weights.at("Weight_CSV");
     ttHFCategory=input.genTopEvt.GetTTxIdFromHelper();
-  }
-
+  }  
+  
   if(is_SL||is_DL){
       out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
 	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId
@@ -430,8 +451,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
 	  << pt_nonW_1<<","<< pt_nonW_2<<","
 	  <<pt_W1_1<<","<< pt_W1_2<<","
 	  <<pt_W2_1<<","<< pt_W2_2<<","
+    <<pt_top_1<<","<< pt_top_2<<","
 	  <<m_top_1<<","<< m_top_2<<","
-	  <<higgstag_fatjet_1<<","<< higgstag_fatjet_2 << "\n";
+    <<higgstag_fatjet_1<<","<< higgstag_fatjet_2 <<","
+	  <<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";
   }
 }
 
