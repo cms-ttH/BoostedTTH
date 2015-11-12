@@ -29,8 +29,11 @@ Synchronizer::~Synchronizer (){
   for(auto f = dumpFiles2_raw.begin(); f!=dumpFiles2_raw.end(); f++){
     (*f)->close();
   }
+  cutflowSL_nominal.Print(*cutflowFile);
   cutflowSL_nominal.Print(cout);
+  cutflowDL_nominal.Print(*cutflowFile);
   cutflowDL_nominal.Print(cout);
+  cutflowFile->close();
 }
 
 void Synchronizer::DumpSyncExe1(int nfile,const InputCollections& input){
@@ -468,10 +471,12 @@ void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const I
 }
 
 void Synchronizer::InitDumpSyncFile1(std::string filename){
+    cutflowFile = new ofstream((filename+"-cutflow.log").c_str());
     dumpFiles1.push_back(new ofstream((filename+".txt").c_str()));
 }
 
 void Synchronizer::InitDumpSyncFile2(std::string filename){
+    cutflowFile = new ofstream((filename+"-cutflow.log").c_str());
     dumpFiles2.push_back(new ofstream((filename+".csv").c_str()));
     dumpFiles2_jesup.push_back(new ofstream((filename+"_JESup.csv").c_str()));
     dumpFiles2_jesdown.push_back(new ofstream((filename+"_JESdown.csv").c_str()));

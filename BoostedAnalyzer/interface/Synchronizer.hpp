@@ -34,6 +34,7 @@ public:
     void DumpSyncExe2Header(std::ostream &out);
 
 private:
+    ofstream* cutflowFile;
     vector<ofstream*> dumpFiles1;
     vector<ofstream*> dumpFiles2;
     vector<ofstream*> dumpFiles2_jesup;
