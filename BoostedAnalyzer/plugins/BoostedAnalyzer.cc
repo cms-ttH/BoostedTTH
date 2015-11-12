@@ -820,6 +820,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
   TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
   
+  /*
   if(eventInfo.evt == 3821537){
     for(size_t ijet=0;ijet<pfjets.size();ijet++){
       std::cout<<ijet<<","<<pfjets[ijet].pt()<<","<<pfjets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(pfjets[ijet])<<std::endl; 
@@ -834,6 +835,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       std::cout<<ijet<<","<<correctedJets_unsorted_nominal[ijet].pt()<<","<<correctedJets_unsorted_nominal[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(correctedJets_unsorted_nominal[ijet])<<std::endl; 
     }
   }
+  */
   
   // FIGURE OUT SAMPLE
     
