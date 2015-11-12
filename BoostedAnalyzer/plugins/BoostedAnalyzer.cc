@@ -655,8 +655,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       std::vector<pat::Jet> selectedJetsSingleTop_unsorted_nominal = BoostedUtils::GetSingleTopJets(selectedJetsLoose_nominal,selectedJetsForward_unsorted_nominal,jetetacut_loose);
       selectedJetsSingleTop_nominal= helper.GetSortedByPt(selectedJetsSingleTop_unsorted_nominal);
   }
-
-
+  
   // Apply systematically shifted jet corrections -- these vector stay empty if you dont use makeSystematicsTrees
   std::vector<pat::Jet> correctedJets_unsorted_jesup;
   std::vector<pat::Jet> correctedJets_unsorted_jesdown;
@@ -810,6 +809,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	selectedGenJets.push_back(genjets[i]);
     }
   }
+  
+  
   // custom genjets for tt+X categorization
   edm::Handle< std::vector<reco::GenJet> > h_customgenjets;
   if(!isData){
@@ -818,7 +819,22 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // Fill Event Info Object
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
   TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
-
+  
+  if(eventInfo.evt == 3821537){
+    for(size_t ijet=0;ijet<pfjets.size();ijet++){
+      std::cout<<ijet<<","<<pfjets[ijet].pt()<<","<<pfjets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(pfjets[ijet])<<std::endl; 
+    }
+    for(size_t ijet=0;ijet<idJets.size();ijet++){
+      std::cout<<ijet<<","<<idJets[ijet].pt()<<","<<idJets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(idJets[ijet])<<std::endl; 
+    }
+    for(size_t ijet=0;ijet<cleanJets.size();ijet++){
+      std::cout<<ijet<<","<<cleanJets[ijet].pt()<<","<<cleanJets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(cleanJets[ijet])<<std::endl; 
+    }
+    for(size_t ijet=0;ijet<correctedJets_unsorted_nominal.size();ijet++){
+      std::cout<<ijet<<","<<correctedJets_unsorted_nominal[ijet].pt()<<","<<correctedJets_unsorted_nominal[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(correctedJets_unsorted_nominal[ijet])<<std::endl; 
+    }
+  }
+  
   // FIGURE OUT SAMPLE
     
   bool foundT=false;

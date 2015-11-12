@@ -170,6 +170,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     leptonSelections.push_back(new VertexSelection());
     leptonSelections.push_back(new LeptonSelection("HLT_Ele27_WP85_Gsf_v*","HLT_IsoMu17_eta2p1_v*"));
     leptonSelections.push_back(new JetTagSelection(4,2));
+    
+    cout << "SL Selection Step 0: VertexSelection" << endl;
+    cout << "SL Selection Step 1: LeptonSelection" << endl;
+    cout << "SL Selection Step 2: JetTagSelection" << endl;
   }
   if(!initializedCutflowsWithSelections){
     for(uint i=0; i<leptonSelections.size(); i++){
@@ -194,6 +198,13 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true,false));
     dileptonSelections.push_back(new DiLeptonMETSelection(40,99999));
     dileptonSelections.push_back(new DiLeptonJetTagSelection(2,1));
+    
+    cout << "DL Selection Step 0: VertexSelection" << endl;
+    cout << "DL Selection Step 1: DiLeptonSelection" << endl;
+    cout << "DL Selection Step 2: DiLeptonMassSelection 20 GeV cut" << endl;
+    cout << "DL Selection Step 3: DiLeptonMassSelection Z Veto" << endl;
+    cout << "DL Selection Step 4: DiLeptonMETSelection" << endl;
+    cout << "DL Selection Step 5: DiLeptonJetTagSelection" << endl;
   }
   
   if(!initializedCutflowsWithSelections){
@@ -266,12 +277,24 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   float csv2_fatjet_1=0;
   float csv2_fatjet_2=0;
   
-  //std::cout << "Event: " << event << std::endl;
+  const int nEntries = 21;
+  int comparisonList[] = {277215, 324990, 332287, 904458, 1040332, 1059298, 1067268, 1078294, 2111395, 2259390, 2640002, 2844708, 2991300, 3118161, 3808647, 3833513, 3837984, 3838481, 3855514, 3878522, 3896777}; 
+
+  bool compare = false;
+                 
+  for(int i = 0;i<nEntries;i++){
+    if(event == comparisonList[i]){
+      compare = true;
+      break;
+    }
+  }
+  
+  if(compare) std::cout << "Event: " << event << std::endl;
   
   cutflowSL.EventSurvivedStep("all",input.weights.at("Weight"));
   for(uint i=0; i<leptonSelections.size(); i++){
     if(!leptonSelections[i]->IsSelected(input,cutflowSL)){
-      //cout << "Event failed SL Selection: " << i << endl;
+      if(compare) cout << "Event failed SL Selection at step " << i << endl;
 	    is_SL=false;
 	    break;
     }
@@ -280,13 +303,13 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   cutflowDL.EventSurvivedStep("all",input_DL.weights.at("Weight"));
   for(uint i=0; i<dileptonSelections.size(); i++){
     if(!dileptonSelections[i]->IsSelected(input_DL,cutflowDL)){
-      //cout << "Event failed DL Selection: " << i << endl;
+      if(compare) cout << "Event failed DL Selection at step " << i << endl;
 	    is_DL=false;
 	    break;
     }
   }
   
-  //std::cout << "is_SL: " << is_SL  << "   is_DL: " << is_DL<< std::endl;
+  if(compare) std::cout << "is_SL: " << is_SL  << "   is_DL: " << is_DL<< std::endl;
   
   for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
     if(iMuon->pt()>lep1_pt){
@@ -437,6 +460,23 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     bWeight=input.weights.at("Weight_CSV");
     ttHFCategory=input.genTopEvt.GetTTxIdFromHelper();
   }  
+  
+  if(compare) cout <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
+	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId
+	  <<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","
+	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
+	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
+	  <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","
+	  <<bWeight<<","<<ttHFCategory<<","
+	  <<final_discriminant1<<","<< final_discriminant2<<","
+	  <<n_fatjets<<","<< pt_fatjet_1<<","<< pt_fatjet_2<<","
+	  << pt_nonW_1<<","<< pt_nonW_2<<","
+	  <<pt_W1_1<<","<< pt_W1_2<<","
+	  <<pt_W2_1<<","<< pt_W2_2<<","
+    <<pt_top_1<<","<< pt_top_2<<","
+	  <<m_top_1<<","<< m_top_2<<","
+    <<higgstag_fatjet_1<<","<< higgstag_fatjet_2 <<","
+	  <<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";
   
   if(is_SL||is_DL){
       out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
