@@ -1,8 +1,8 @@
-cmsenv
+eval `scramv1 runtime -sh`
 
-cmsRun /nfs/dust/cms/user/shwillia/EndOf2015HbbSync/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/test/sync_tth_endof15Hbb_cfg.py
+cmsRun /nfs/dust/cms/user/mharrend/ttHanalysis/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/test/sync_tth_endof15Hbb_cfg.py
 
-cmsRun /nfs/dust/cms/user/shwillia/EndOf2015HbbSync/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/test/sync_ttbar_endof15Hbb_cfg.py
+cmsRun /nfs/dust/cms/user/mharrend/ttHanalysis/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/test/sync_ttbar_endof15Hbb_cfg.py
 
 mkdir KIT_syncHBB
 mkdir KIT_syncHBB/onlySL
@@ -19,4 +19,4 @@ cp sync_ttbar_endof15Hbb_JESup.csv KIT_syncHBB/ttjets_JESUp.csv
 cp sync_ttbar_endof15Hbb.csv KIT_syncHBB/ttjets.csv
 
 
-for i in KIT_syncHBB/*.csv; do echo "$i"; python /nfs/dust/cms/user/shwillia/EndOf2015HbbSync/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/test/splitSLDL.py "$i"; done
+for i in KIT_syncHBB/*.csv; do echo "$i"; python /nfs/dust/cms/user/mharrend/ttHanalysis/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/test/splitSLDL.py "$i"; done
