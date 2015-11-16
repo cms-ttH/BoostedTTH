@@ -281,8 +281,6 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   float higgstag_fatjet_2=0;
   float csv2_fatjet_1=0;
   float csv2_fatjet_2=0;
-
-  //float eleMVAID=0;
   
   const int nEntries = 7;
   int comparisonList[] = {324990, 904458,2259390, 2844708,277215,1059298,304512}; 
@@ -472,8 +470,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   }  
   
   if(compare) cout <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
-	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep1_MVAID
-	  <<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","<<lep2_MVAID<<","
+	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","<<lep2_MVAID<<","
 	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
 	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
 	  <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","
@@ -490,8 +487,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   
   if(is_SL||is_DL){
       out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
-	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep1_MVAID
-	  <<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","<<lep2_MVAID<<","
+	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","<<lep2_MVAID<<","
 	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
 	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
 	  <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","

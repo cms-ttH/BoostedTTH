@@ -540,6 +540,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   eventcount++;
   
+
   /**** GET PILEUPSUMMARYINFO ****/
   edm::Handle< std::vector<PileupSummaryInfo> >  h_puinfosummary;
   iEvent.getByToken( EDMPUInfoToken, h_puinfosummary);
@@ -836,7 +837,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
   }
   */
-  
+
   // FIGURE OUT SAMPLE
     
   bool foundT=false;
