@@ -284,8 +284,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
 
   //float eleMVAID=0;
   
-  const int nEntries = 13;
-  int comparisonList[] = {324990, 904458,2259390, 2844708,277215,1059298}; 
+  const int nEntries = 7;
+  int comparisonList[] = {324990, 904458,2259390, 2844708,277215,1059298,304512}; 
 
   bool compare = false;
                  
