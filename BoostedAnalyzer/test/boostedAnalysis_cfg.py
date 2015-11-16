@@ -120,4 +120,9 @@ if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
     process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/desy.de/user/h/hmildner/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/data/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
 
-process.p = cms.Path(process.BoostedAnalyzer)
+### electron MVA ####
+# Load the producer for MVA IDs
+process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+## check the event content 
+process.content = cms.EDAnalyzer("EventContentAnalyzer")
+process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)

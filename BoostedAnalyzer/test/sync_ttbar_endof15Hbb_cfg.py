@@ -78,4 +78,9 @@ process.load("BoostedTTH.BoostedAnalyzer.EndOf2015HbbSync_cfi")
 
 process.BoostedAnalyzer.outfileName = "sync_ttbar_endof15Hbb"
 
+# load ele MVA producer
+process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+
+process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
+
 process.p = cms.Path(process.BoostedAnalyzer)

@@ -38,6 +38,7 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/METReco/interface/HcalNoiseSummary.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/Common/interface/View.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
@@ -208,7 +209,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       edm::EDGetTokenT< std::vector<pat::Muon> > EDMMuonsToken;
       
       /** electrons data access token **/
-      edm::EDGetTokenT< std::vector<pat::Electron> > EDMElectronsToken;
+      edm::EDGetTokenT< edm::View<pat::Electron> > EDMElectronsToken;
       
       /** jets data access token **/
       edm::EDGetTokenT< std::vector<pat::Jet> > EDMJetsToken;
@@ -246,6 +247,15 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       edm::EDGetTokenT<std::vector<int> > genCHadIndexToken;
       edm::EDGetTokenT<std::vector<reco::GenParticle> > genCHadPlusMothersToken;
       edm::EDGetTokenT<int> genTtbarIdToken;
+
+    /** electron MVA id tokens (implementation B) **/
+    // TODO: the bools can only accessed with 
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pa_AN1
+    //      edm::EDGetTokenT<edm::ValueMap<bool> > EDMele90idsToken;
+    //      edm::EDGetTokenT<edm::ValueMap<bool> > EDMele80idsToken;
+      // MVA values and categories
+      edm::EDGetTokenT<edm::ValueMap<float> > EDMeleMVAvaluesToken;
+      edm::EDGetTokenT<edm::ValueMap<int> > EDMeleMVAcategoriesToken;
 };
 
 //
@@ -320,7 +330,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   EDMBeamSpotToken        = consumes< reco::BeamSpot > (edm::InputTag("offlineBeamSpot","",""));
   EDMVertexToken          = consumes< reco::VertexCollection > (edm::InputTag("offlineSlimmedPrimaryVertices","",""));
   EDMMuonsToken           = consumes< std::vector<pat::Muon> >(edm::InputTag("slimmedMuons","",""));
-  EDMElectronsToken       = consumes< std::vector<pat::Electron> >(edm::InputTag("slimmedElectrons","",""));
+  EDMElectronsToken       = consumes< edm::View<pat::Electron> >(edm::InputTag("slimmedElectrons","",""));
   EDMJetsToken            = consumes< std::vector<pat::Jet> >(edm::InputTag("slimmedJets","",""));
   EDMMETsToken            = consumes< std::vector<pat::MET> >(edm::InputTag("slimmedMETs","",""));
   EDMBoostedJetsToken     = consumes< boosted::BoostedJetCollection >(edm::InputTag("BoostedJetMatcher","boostedjets","p"));
@@ -347,6 +357,15 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   genCHadPlusMothersToken        = consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenCHadron","genCHadPlusMothers",""));
   genTtbarIdToken                = consumes<int>              (edm::InputTag("categorizeGenTtbar","genTtbarId",""));
 
+  // electron MVA info (version B)
+  // TODO: these (and many of the names above) shouldn't be hard coded but set in python cfg
+  // TODO: the bools can only accessed with 
+  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pa_AN1
+  //  EDMele90idsToken               = consumes<edm::ValueMap<bool> >(edm::InputTag("egmGsfElectronIDs","mvaEleID-Spring15-25ns-Trig-V1-wp90",""));
+  //  EDMele80idsToken               = consumes<edm::ValueMap<bool> >(edm::InputTag("egmGsfElectronIDs","mvaEleID-Spring15-25ns-Trig-V1-wp80",""));
+  EDMeleMVAvaluesToken           = consumes<edm::ValueMap<float> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Values",""));
+  EDMeleMVAcategoriesToken       = consumes<edm::ValueMap<int> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories",""));
+  
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   helper.SetJetCorrectorUncertainty();
@@ -596,15 +615,24 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( muons, 15., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4);
 
   // ELECTRONS
-  edm::Handle< std::vector<pat::Electron> > h_electrons;
+  edm::Handle< edm::View<pat::Electron> > h_electrons;
   iEvent.getByToken( EDMElectronsToken,h_electrons );
-  std::vector<pat::Electron> const &electrons = *h_electrons;
-  std::vector<pat::Electron> rawElectrons = electrons;
+  // from mva ID implementation A
   helper.SetElectronMVAinfo(h_conversioncollection, h_beamspot);
-  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVAmedium, 2.1 );
-  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVAmedium, 2.4 );
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVAmedium, 2.4 );
-
+  // add electron mva info to electrons (implementation B)
+  //  edm::Handle<edm::ValueMap<bool> > h_id_decisions_wp80;
+  //  edm::Handle<edm::ValueMap<bool> > h_id_decisions_wp90; 
+  edm::Handle<edm::ValueMap<float> > h_mvaValues; 
+  edm::Handle<edm::ValueMap<int> > h_mvaCategories;
+  //  iEvent.getByToken(EDMele90idsToken,h_id_decisions_wp80);
+  //  iEvent.getByToken(EDMele80idsToken,h_id_decisions_wp90);
+  iEvent.getByToken(EDMeleMVAvaluesToken,h_mvaValues);
+  iEvent.getByToken(EDMeleMVAcategoriesToken,h_mvaCategories);  
+  std::vector<pat::Electron> electrons = helper.GetElectronsWithMVAid(h_electrons,h_mvaValues,h_mvaCategories);
+  std::vector<pat::Electron> rawElectrons = electrons;
+  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVA80, 2.1 );
+  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVA80, 2.4 );
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVA80, 2.4 );
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
   iEvent.getByToken( EDMMETsToken,h_pfmet );
