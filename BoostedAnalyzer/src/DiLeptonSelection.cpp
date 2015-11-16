@@ -33,8 +33,12 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   int nleadelectrons_n = 0;
   
   for(auto e=input.selectedElectronsDL.begin();e!=input.selectedElectronsDL.end();e++){
-    if(e->charge()>0) nleadelectrons_p++;      
-    else nleadelectrons_n++;
+    if(e->charge()>0) {
+    	nleadelectrons_p++;      
+    }
+    else{ 
+    	nleadelectrons_n++;
+    }
   }
   
   int nleadelectrons = nleadelectrons_p+nleadelectrons_n;
@@ -55,8 +59,12 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
     
     if(leadID) continue;
     
-    if(e->charge()>0) nsubleadelectrons_p++;      
-    else nsubleadelectrons_n++;
+    if(e->charge()>0) { 
+    	nsubleadelectrons_p++;      
+    }
+    else {
+    	nsubleadelectrons_n++;
+    }
   }
   
   int nelectrons_p = nleadelectrons_p + nsubleadelectrons_p;
@@ -66,8 +74,12 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   int nleadmuons_n = 0;
   
   for(auto e=input.selectedMuonsDL.begin();e!=input.selectedMuonsDL.end();e++){
-    if(e->charge()>0) nleadmuons_p++;      
-    else nleadmuons_n++;
+    if(e->charge()>0) {
+    	nleadmuons_p++;      
+    }
+    else { 
+    	nleadmuons_n++;
+    }
   }
   
   int nleadmuons = nleadmuons_p+nleadmuons_n;
@@ -88,8 +100,12 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
     
     if(leadID) continue;
     
-    if(mu->charge()>0) nsubleadmuons_p++;      
-    else nsubleadmuons_n++;
+    if(mu->charge()>0) {
+    	nsubleadmuons_p++;      
+    }
+    else {
+    	nsubleadmuons_n++;
+    }
   }
   
   int nmuons_p = nleadmuons_p + nsubleadmuons_p;
@@ -113,42 +129,74 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   
   if(channel=="elel"){
     if(step<0||step==1){
-      if(!elelTriggered) return false;
-      else cutflow.EventSurvivedStep("Dilepton trigger",input.weights.at("Weight"));
+      if(!elelTriggered) {
+      	return false;
+      }
+      else {
+      	cutflow.EventSurvivedStep("Dilepton trigger",input.weights.at("Weight"));
+      }
     }
     if(step<0||step==2){
-      if( !elel_step2 ) return false;
-      else cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+      if( !elel_step2 ) {
+      	return false;
+      }
+      else {
+      	cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+      }
     }
   }
   else  if(channel=="mumu"){
     if(step<0||step==1){
-      if(!mumuTriggered) return false;
-      else cutflow.EventSurvivedStep("Dilepton trigger",input.weights.at("Weight"));
+      if(!mumuTriggered) {
+      	return false;
+      }
+      else {
+      	cutflow.EventSurvivedStep("Dilepton trigger",input.weights.at("Weight"));
+      }
     }
     if(step<0||step==2){
-      if( !mumu_step2 ) return false;
-      else cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+      if( !mumu_step2 ) {
+      	return false;
+      }
+      else {
+      	cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+      }
     }
   }
   else  if(channel=="elmu"){
     if(step<0||step==1){
-      if(!elmuTriggered) return false;
-      else cutflow.EventSurvivedStep("Dilepton trigger",input.weights.at("Weight"));
+      if(!elmuTriggered) {
+      	return false;
+      }
+      else {
+      	cutflow.EventSurvivedStep("Dilepton trigger",input.weights.at("Weight"));
+      }
     }
     if(step<0||step==2){
-      if( !elmu_step2 ) return false;
-      else cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+      if( !elmu_step2 ) {
+      	return false;
+      }
+      else {
+      	cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+      }
     }
   }
   else  if(channel=="all"){
     if(step<0||step==1){
-      if(!elmuTriggered&&!elelTriggered&&!mumuTriggered) return false;
-      else cutflow.EventSurvivedStep("Dilepton trigger",input.weights.at("Weight"));
+      if(!elmuTriggered&&!elelTriggered&&!mumuTriggered) {
+      	return false;
+      }
+      else {
+      	cutflow.EventSurvivedStep("Dilepton trigger",input.weights.at("Weight"));
+      }
     }
     if(step<0||step==2){
-      if( !elmu_step2&&!elel_step2&&!mumu_step2 ) return false;
-      else cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+      if( !elmu_step2&&!elel_step2&&!mumu_step2 ) {
+      	return false;
+      }
+      else {
+      	cutflow.EventSurvivedStep("== 2 opposite sign leptons",input.weights.at("Weight"));
+      }
     }
   }
   else {
