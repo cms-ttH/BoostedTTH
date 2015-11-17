@@ -161,7 +161,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
 }
 void Synchronizer::DumpSyncExe2Header(std::ostream &out){
-  out <<"run,lumi,event,is_SL,is_DL,lep1_pt,lep1_eta,lep1_phi,lep1_iso,lep1_pdgId,lep2_pt,lep2_eta,lep2_phi,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet3_pt,jet4_pt,jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,MET_pt,MET_phi,n_jets,n_btags,bWeight,ttHFCategory,final_discriminant1,final_discriminant2,n_fatjets,pt_fatjet_1,pt_fatjet_2,pt_nonW_1,pt_nonW_2,pt_W1_1,pt_W1_2,pt_W2_1,pt_W2_2,pt_top_1,pt_top_2,m_top_1,m_top_2,higgstag_fatjet_1,higgstag_fatjet_2,csv2_fatjet_1,csv2_fatjet_2\n";
+  out <<"run,lumi,event,is_SL,is_DL,lep1_pt,lep1_eta,lep1_phi,lep1_iso,lep1_pdgId,lep2_pt,lep2_eta,lep2_phi,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet3_pt,jet4_pt,jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,MET_pt,MET_phi,met_passed,n_jets,n_btags,bWeight,ttHFCategory,final_discriminant1,final_discriminant2,n_fatjets,pt_fatjet_1,pt_fatjet_2,pt_nonW_1,pt_nonW_2,pt_W1_1,pt_W1_2,pt_W2_1,pt_W2_2,pt_top_1,pt_top_2,m_top_1,m_top_2,higgstag_fatjet_1,higgstag_fatjet_2,csv2_fatjet_1,csv2_fatjet_2\n";
 }
 
 
@@ -251,6 +251,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
 
   float MET_pt=0;
   float MET_phi=0;
+  bool met_passed=false;
 
   int n_jets=0;
   int n_btags=0;
@@ -417,8 +418,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     }
   }
 
-  MET_pt=input.pfMET.pt();
-  MET_phi=input.pfMET.phi();
+  MET_pt = input.pfMET.pt();
+  MET_phi = input.pfMET.phi();
+  met_passed = MET_pt > 40.;  
+  
   if(is_SL&&( (n_jets>=4&&n_btags>=3) || (n_jets>=6&&n_btags>=2))){
     final_discriminant1=bdt3.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
   }
@@ -487,12 +490,13 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     <<higgstag_fatjet_1<<","<< higgstag_fatjet_2 <<","
 	  <<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";
   
-  if(is_SL||is_DL){
-      out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
+  //if(is_SL||is_DL)
+    out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
 	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","
 	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
 	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
-	  <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","
+	  <<MET_pt<<","<<MET_phi<<","<<met_passed<<","
+    <<n_jets<<","<<n_btags<<","
 	  <<bWeight<<","<<ttHFCategory<<","
 	  <<final_discriminant1<<","<< final_discriminant2<<","
 	  <<n_fatjets<<","<< pt_fatjet_1<<","<< pt_fatjet_2<<","
@@ -503,7 +507,6 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
 	  <<m_top_1<<","<< m_top_2<<","
     <<higgstag_fatjet_1<<","<< higgstag_fatjet_2 <<","
 	  <<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";
-  }
 }
 
 
