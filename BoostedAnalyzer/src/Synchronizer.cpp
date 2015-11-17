@@ -280,17 +280,19 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   float csv2_fatjet_1=0;
   float csv2_fatjet_2=0;
   
-  const int nEntries = 21;
-  int comparisonList[] = {277215, 324990, 332287, 904458, 1040332, 1059298, 1067268, 1078294, 2111395, 2259390, 2640002, 2844708, 2991300, 3118161, 3808647, 3833513, 3837984, 3838481, 3855514, 3878522, 3896777}; 
+  //const int nEntries = 21;
+  //int comparisonList[] = {277215, 324990, 332287, 904458, 1040332, 1059298, 1067268, 1078294, 2111395, 2259390, 2640002, 2844708, 2991300, 3118161, 3808647, 3833513, 3837984, 3838481, 3855514, 3878522, 3896777}; 
 
   bool compare = false;
-                 
+  
+  /*               
   for(int i = 0;i<nEntries;i++){
     if(event == comparisonList[i]){
       compare = true;
       break;
     }
   }
+  */
   
   if(compare) std::cout << "Event: " << event << std::endl;
   

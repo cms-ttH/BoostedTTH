@@ -816,10 +816,54 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   if(!isData){
     iEvent.getByToken( EDMCustomGenJetsToken,h_customgenjets );
   }
+  
   // Fill Event Info Object
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
   TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
   
+  // Sync Output
+  /*
+  bool compare = false;
+  int compevent = -1;
+                 
+  const int nEntries = 8;
+  int comparisonList[] = {277215,324990,332287,1059298,1078294,2111395,2259390,2844708}; 
+  
+  for(int i = 0;i<nEntries;i++){
+    if(eventInfo.evt == comparisonList[i]){
+      compare = true;
+      compevent = eventInfo.evt;
+      break;
+    }
+  }
+  
+  if(compare){
+    std::cout<<"Comparing Event "<<compevent<<std::endl;
+    /*
+    for(size_t i=0;i<muons.size();i++){
+      std::cout<<"muon "<<i<<","<<muons[i].pt()<<","<<muons[i].eta()<<std::endl; 
+    }
+    for(size_t i=0;i<selectedMuonsDL.size();i++){
+      std::cout<<"lead muon "<<i<<","<<selectedMuonsDL[i].pt()<<","<<selectedMuonsDL[i].eta()<<std::endl; 
+    }
+    for(size_t i=0;i<selectedMuonsLoose.size();i++){
+      std::cout<<"sub muon "<<i<<","<<selectedMuonsLoose[i].pt()<<","<<selectedMuonsLoose[i].eta()<<std::endl; 
+    }
+    *7
+    
+    for(size_t i=0;i<electrons.size();i++){
+      std::cout<<"electron "<<i<<","<<electrons[i].pt()<<","<<electrons[i].eta()<<std::endl; 
+    }
+    /*
+    for(size_t i=0;i<selectedElectronsDL.size();i++){
+      std::cout<<"lead electron "<<i<<","<<selectedElectronsDL[i].pt()<<","<<selectedElectronsDL[i].eta()<<std::endl; 
+    }
+    for(size_t i=0;i<selectedElectronsLoose.size();i++){
+      std::cout<<"sub electron "<<i<<","<<selectedElectronsLoose[i].pt()<<","<<selectedElectronsLoose[i].eta()<<std::endl; 
+    }
+    */
+  }
+  */
   /*
   if(eventInfo.evt == 3821537){
     for(size_t ijet=0;ijet<pfjets.size();ijet++){
