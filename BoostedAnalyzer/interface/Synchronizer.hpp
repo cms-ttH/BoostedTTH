@@ -28,7 +28,7 @@ public:
     void DumpSyncExe1(int nfile,const InputCollections& input);
     void DumpSyncExe1(const InputCollections& input, std::ostream &out);
     void DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper);
-    void DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out, Cutflow& cutflowSL,Cutflow& cutflowDL);
+    void DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out, Cutflow& cutflowSL,Cutflow& cutflowDL, Cutflow& DummyMETcutflowDL, Cutflow& DummyMllcutflowDL);
     void InitDumpSyncFile1(std::string filename);
     void InitDumpSyncFile2(std::string filename);
     void DumpSyncExe2Header(std::ostream &out);
@@ -53,8 +53,15 @@ private:
     Cutflow cutflowDL_raw;
     Cutflow cutflowDL_nominal;
 
-    Cutflow dummyMll_cutflowDL;    
-    Cutflow dummyMET_cutflowDL;
+    Cutflow dummyMll_cutflowDL_nominal;    
+    Cutflow dummyMET_cutflowDL_nominal;
+
+    Cutflow dummyMll_cutflowDL_jesup;    
+    Cutflow dummyMET_cutflowDL_jesup;
+    Cutflow dummyMll_cutflowDL_jesdown;    
+    Cutflow dummyMET_cutflowDL_jesdown;
+    Cutflow dummyMll_cutflowDL_raw;    
+    Cutflow dummyMET_cutflowDL_raw;
 
     TopTagger toptagger;
     BDT_v3 bdt3;

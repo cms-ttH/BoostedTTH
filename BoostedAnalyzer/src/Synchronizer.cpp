@@ -12,9 +12,14 @@ Synchronizer::Synchronizer ():toptagger(TopTag::Likelihood,TopTag::CSV,"toplikel
     cutflowDL_jesdown.Init();
     cutflowDL_raw.Init();
 
-    dummyMll_cutflowDL.Init();
-    dummyMET_cutflowDL.Init();
-
+    dummyMll_cutflowDL_nominal.Init();
+    dummyMET_cutflowDL_nominal.Init();
+    dummyMll_cutflowDL_jesup.Init();
+    dummyMET_cutflowDL_jesup.Init();
+    dummyMll_cutflowDL_jesdown.Init();
+    dummyMET_cutflowDL_jesdown.Init();
+    dummyMll_cutflowDL_raw.Init();
+    dummyMET_cutflowDL_raw.Init();
 }
 Synchronizer::~Synchronizer (){
   for(auto f = dumpFiles1.begin(); f!=dumpFiles1.end(); f++){
@@ -168,7 +173,7 @@ void Synchronizer::DumpSyncExe2Header(std::ostream &out){
 }
 
 
-void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL){
+void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, Cutflow& DummyMETcutflowDL, Cutflow& DummyMllcutflowDL){
   
   // Setup Selections
   // Single Lepton Selection
@@ -226,14 +231,17 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     dileptonMllSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
     dileptonMllSelections.push_back(new DiLeptonMassSelection(76,106,true,false));
   }
-  for(uint i=0; i<dileptonMllSelections.size(); i++){
-      dileptonMllSelections[i]->InitCutflow(dummyMll_cutflowDL);
-  }
-  
+  if(!initializedCutflowsWithSelections){
+    for(uint i=0; i<dileptonMllSelections.size(); i++){
+      dileptonMllSelections[i]->InitCutflow(DummyMllcutflowDL);
+    }
+  } 
+
   //dummy selection for MET flag
   dileptonMETSelection = new DiLeptonMETSelection(40,99999);
-  dileptonMETSelection->InitCutflow(dummyMET_cutflowDL);
-
+  if(!initializedCutflowsWithSelections){
+    dileptonMETSelection->InitCutflow(DummyMETcutflowDL);
+  }
 
   // Declare Variables
   int run=input.eventInfo.run;
@@ -476,7 +484,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   if(is_DL){
     passedMll=true;
     for(uint i=0; i<dileptonMllSelections.size(); i++){
-    if(!dileptonMllSelections[i]->IsSelected(input_DL,dummyMll_cutflowDL)){
+    if(!dileptonMllSelections[i]->IsSelected(input_DL,DummyMllcutflowDL)){
       passedMll=false;
       break;
       }
@@ -486,7 +494,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
 //check if DL events pass MET selection
   if(is_DL){
     passedMET=true;
-    if(!dileptonMETSelection->IsSelected(input_DL,dummyMET_cutflowDL)){
+    if(!dileptonMETSelection->IsSelected(input_DL,DummyMETcutflowDL)){
       passedMET=false;
       }
   }
@@ -582,10 +590,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
 
 
 void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper){
-  DumpSyncExe2(input,input_DL,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal);
-  DumpSyncExe2(input_jesup,input_DL_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup);
-  DumpSyncExe2(input_jesdown,input_DL_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown);
-  DumpSyncExe2(input_raw,input_DL_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw);
+  DumpSyncExe2(input,input_DL,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal, dummyMET_cutflowDL_nominal, dummyMll_cutflowDL_nominal);
+  DumpSyncExe2(input_jesup,input_DL_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup, dummyMET_cutflowDL_jesup, dummyMll_cutflowDL_jesup );
+  DumpSyncExe2(input_jesdown,input_DL_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown, dummyMET_cutflowDL_jesdown, dummyMll_cutflowDL_jesdown);
+  DumpSyncExe2(input_raw,input_DL_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw, dummyMET_cutflowDL_raw, dummyMll_cutflowDL_raw);
   initializedCutflowsWithSelections=true;
 }
 
