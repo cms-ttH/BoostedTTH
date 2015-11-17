@@ -230,12 +230,14 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   float lep1_phi=0;
   float lep1_iso=0;
   float lep1_pdgId=0;
+  float lep1_MVAID=0;
 
   float lep2_pt=0;
   float lep2_eta=0;
   float lep2_phi=0;
   float lep2_iso=0;
   float lep2_pdgId=0;
+  float lep2_MVAID=0;
 
   float jet1_pt=0;
   float jet2_pt=0;
@@ -280,12 +282,12 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   float csv2_fatjet_1=0;
   float csv2_fatjet_2=0;
   
-  //const int nEntries = 21;
-  //int comparisonList[] = {277215, 324990, 332287, 904458, 1040332, 1059298, 1067268, 1078294, 2111395, 2259390, 2640002, 2844708, 2991300, 3118161, 3808647, 3833513, 3837984, 3838481, 3855514, 3878522, 3896777}; 
-
   bool compare = false;
   
   /*               
+  const int nEntries = 21;
+  int comparisonList[] = {277215, 324990, 332287, 904458, 1040332, 1059298, 1067268, 1078294, 2111395, 2259390, 2640002, 2844708, 2991300, 3118161, 3808647, 3833513, 3837984, 3838481, 3855514, 3878522, 3896777}; 
+
   for(int i = 0;i<nEntries;i++){
     if(event == comparisonList[i]){
       compare = true;
@@ -345,12 +347,14 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
       lep2_phi=lep1_phi;
       lep2_iso=lep1_iso;
       lep2_pdgId=lep1_pdgId;
-
+      lep2_MVAID=lep1_MVAID;
+      
       lep1_pt=iEle->pt();
       lep1_eta=iEle->eta();
       lep1_phi=iEle->phi();
       lep1_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
       lep1_pdgId=iEle->pdgId();
+      lep1_MVAID=helper.GetElectronMVAIDValue(*iEle);
     }
     else if(iEle->pt()>lep2_pt){
       lep2_pt=iEle->pt();
@@ -358,6 +362,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
       lep2_phi=iEle->phi();
       lep2_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
       lep2_pdgId=iEle->pdgId();
+      lep2_MVAID=helper.GetElectronMVAIDValue(*iEle);
     }
   }
   
@@ -467,8 +472,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   }  
   
   if(compare) cout <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
-	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId
-	  <<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","
+	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep1_MVAID<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","<<lep2_MVAID<<","
 	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
 	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
 	  <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","
@@ -485,8 +489,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   
   if(is_SL||is_DL){
       out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
-	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId
-	  <<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","
+	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","
 	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
 	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
 	  <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","

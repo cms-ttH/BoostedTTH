@@ -350,7 +350,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   helper.SetJetCorrectorUncertainty();
-  helper.SetUpElectronMVA("MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
+  helper.SetUpElectronMVA("RecoEgamma/ElectronIdentification/data/Spring15/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","RecoEgamma/ElectronIdentification/data/Spring15/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","RecoEgamma/ElectronIdentification/data/Spring15/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
 
    // INITIALIZE SELECTION & CUTFLOW
   cutflow_nominal.Init();
@@ -540,6 +540,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   eventcount++;
   
+
   /**** GET PILEUPSUMMARYINFO ****/
   edm::Handle< std::vector<PileupSummaryInfo> >  h_puinfosummary;
   iEvent.getByToken( EDMPUInfoToken, h_puinfosummary);
@@ -822,10 +823,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
   
   // Sync Output
-  /*
+  
   bool compare = false;
   int compevent = -1;
-                 
+  
+  /*               
   const int nEntries = 8;
   int comparisonList[] = {277215,324990,332287,1059298,1078294,2111395,2259390,2844708}; 
   
@@ -836,6 +838,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       break;
     }
   }
+  */
   
   if(compare){
     std::cout<<"Comparing Event "<<compevent<<std::endl;
@@ -849,7 +852,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     for(size_t i=0;i<selectedMuonsLoose.size();i++){
       std::cout<<"sub muon "<<i<<","<<selectedMuonsLoose[i].pt()<<","<<selectedMuonsLoose[i].eta()<<std::endl; 
     }
-    *7
+    */
     
     for(size_t i=0;i<electrons.size();i++){
       std::cout<<"electron "<<i<<","<<electrons[i].pt()<<","<<electrons[i].eta()<<std::endl; 
@@ -863,7 +866,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
     */
   }
-  */
+  
   /*
   if(eventInfo.evt == 3821537){
     for(size_t ijet=0;ijet<pfjets.size();ijet++){
@@ -880,7 +883,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
   }
   */
-  
+
   // FIGURE OUT SAMPLE
     
   bool foundT=false;
