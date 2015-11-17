@@ -42,6 +42,8 @@ private:
     vector<ofstream*> dumpFiles2_raw;
     vector<Selection*> leptonSelections;
     vector<Selection*> dileptonSelections;
+    Selection* dileptonMETSelection;
+    vector<Selection*> dileptonMllSelections;
     Cutflow cutflowSL_jesup;
     Cutflow cutflowSL_jesdown;
     Cutflow cutflowSL_raw;
@@ -50,6 +52,10 @@ private:
     Cutflow cutflowDL_jesdown;
     Cutflow cutflowDL_raw;
     Cutflow cutflowDL_nominal;
+
+    Cutflow dummyMll_cutflowDL;    
+    Cutflow dummyMET_cutflowDL;
+
     TopTagger toptagger;
     BDT_v3 bdt3;
     bool initializedCutflowsWithSelections;

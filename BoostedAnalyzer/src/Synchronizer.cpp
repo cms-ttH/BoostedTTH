@@ -12,6 +12,9 @@ Synchronizer::Synchronizer ():toptagger(TopTag::Likelihood,TopTag::CSV,"toplikel
     cutflowDL_jesdown.Init();
     cutflowDL_raw.Init();
 
+    dummyMll_cutflowDL.Init();
+    dummyMET_cutflowDL.Init();
+
 }
 Synchronizer::~Synchronizer (){
   for(auto f = dumpFiles1.begin(); f!=dumpFiles1.end(); f++){
@@ -161,7 +164,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
 }
 void Synchronizer::DumpSyncExe2Header(std::ostream &out){
-  out <<"run,lumi,event,is_SL,is_DL,lep1_pt,lep1_eta,lep1_phi,lep1_iso,lep1_pdgId,lep2_pt,lep2_eta,lep2_phi,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet3_pt,jet4_pt,jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,MET_pt,MET_phi,n_jets,n_btags,bWeight,ttHFCategory,final_discriminant1,final_discriminant2,n_fatjets,pt_fatjet_1,pt_fatjet_2,pt_nonW_1,pt_nonW_2,pt_W1_1,pt_W1_2,pt_W2_1,pt_W2_2,pt_top_1,pt_top_2,m_top_1,m_top_2,higgstag_fatjet_1,higgstag_fatjet_2,csv2_fatjet_1,csv2_fatjet_2\n";
+  out <<"run,lumi,event,is_SL,is_DL,lep1_pt,lep1_eta,lep1_phi,lep1_iso,lep1_pdgId,lep2_pt,lep2_eta,lep2_phi,lep2_iso,lep2_pdgId,mll, mll_passed,jet1_pt,jet2_pt,jet3_pt,jet4_pt,jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,MET_pt,MET_phi,met_passed,n_jets,n_btags,bWeight,ttHFCategory,final_discriminant1,final_discriminant2,n_fatjets,pt_fatjet_1,pt_fatjet_2,pt_nonW_1,pt_nonW_2,pt_W1_1,pt_W1_2,pt_W2_1,pt_W2_2,pt_top_1,pt_top_2,m_top_1,m_top_2,higgstag_fatjet_1,higgstag_fatjet_2,csv2_fatjet_1,csv2_fatjet_2\n";
 }
 
 
@@ -197,24 +200,39 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
 
     dileptonSelections.push_back(new VertexSelection());
     dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers));
-    dileptonSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
-    dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true,false));
-    dileptonSelections.push_back(new DiLeptonMETSelection(40,99999));
+   // dileptonSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
+   // dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true,false));
+   // dileptonSelections.push_back(new DiLeptonMETSelection(40,99999));
     dileptonSelections.push_back(new DiLeptonJetTagSelection(2,1));
     
     cout << "DL Selection Step 0: VertexSelection" << endl;
     cout << "DL Selection Step 1: DiLeptonSelection" << endl;
-    cout << "DL Selection Step 2: DiLeptonMassSelection 20 GeV cut" << endl;
-    cout << "DL Selection Step 3: DiLeptonMassSelection Z Veto" << endl;
-    cout << "DL Selection Step 4: DiLeptonMETSelection" << endl;
-    cout << "DL Selection Step 5: DiLeptonJetTagSelection" << endl;
+   // cout << "DL Selection Step 2: DiLeptonMassSelection 20 GeV cut" << endl;
+   // cout << "DL Selection Step 3: DiLeptonMassSelection Z Veto" << endl;
+   // cout << "DL Selection Step 4: DiLeptonMETSelection" << endl;
+    cout << "DL Selection Step 2: DiLeptonJetTagSelection" << endl;
   }
-  
+
+
   if(!initializedCutflowsWithSelections){
     for(uint i=0; i<dileptonSelections.size(); i++){
       dileptonSelections[i]->InitCutflow(cutflowDL);
     }
   }
+
+  //dummy selection for Mll flag
+  // Dilepton Selection
+  if(dileptonMllSelections.size()==0){
+    dileptonMllSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
+    dileptonMllSelections.push_back(new DiLeptonMassSelection(76,106,true,false));
+  }
+  for(uint i=0; i<dileptonMllSelections.size(); i++){
+      dileptonMllSelections[i]->InitCutflow(dummyMll_cutflowDL);
+  }
+  
+  //dummy selection for MET flag
+  dileptonMETSelection = new DiLeptonMETSelection(40,99999);
+  dileptonMETSelection->InitCutflow(dummyMET_cutflowDL);
 
 
   // Declare Variables
@@ -281,6 +299,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   float higgstag_fatjet_2=0;
   float csv2_fatjet_1=0;
   float csv2_fatjet_2=0;
+  
+  float mll=0;
+  bool passedMET=false;
+  bool passedMll=false;
   
   const int nEntries = 6;
   int comparisonList[] = {324990, 904458,2259390, 2844708,277215,1059298}; 
@@ -363,6 +385,12 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
       lep2_MVAID=helper.GetElectronMVAIDValue(*iEle);
     }
   }
+
+  //i hate scram unsused variable error !!!!11111
+  if(false){
+    std::cout<<"MVAIDs "<<lep1_MVAID<<" "<<lep2_MVAID<<std::endl;
+  }
+
   
   if(is_DL){
     if(input_DL.selectedJets.size()>0){
@@ -413,6 +441,54 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
     for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
+  }
+
+//calculate mll
+  if(is_DL){
+    math::XYZTLorentzVector vec1;
+    math::XYZTLorentzVector vec2;
+    bool calculateMll=false;
+    if(input.selectedMuonsLoose.size()==2 and input.selectedElectronsLoose.size()==0){
+      vec1=input.selectedMuonsLoose[0].p4();
+      vec2=input.selectedMuonsLoose[1].p4();
+      calculateMll=true;
+    }
+    else if(input.selectedMuonsLoose.size()==0 and input.selectedElectronsLoose.size()==2){
+      vec1=input.selectedElectronsLoose[0].p4();
+      vec2=input.selectedElectronsLoose[1].p4();
+      calculateMll=true;
+    }
+    else if(input.selectedMuonsLoose.size()==1 and input.selectedElectronsLoose.size()==1){
+      vec1=input.selectedMuonsLoose[0].p4();
+      vec2=input.selectedElectronsLoose[0].p4();
+      calculateMll=true;
+    }
+    else { 
+      std::cout<<"PROBLEM we have !=2 leptons in DiLeptonSelection"<<std::endl;
+    }
+    
+    if(calculateMll){
+      mll=(vec1+vec2).M();
+    }
+  }
+
+// check if DL events pass Mll selection steps
+  if(is_DL){
+    passedMll=true;
+    for(uint i=0; i<dileptonMllSelections.size(); i++){
+    if(!dileptonMllSelections[i]->IsSelected(input_DL,dummyMll_cutflowDL)){
+      passedMll=false;
+      break;
+      }
+    }
+  }
+
+//check if DL events pass MET selection
+  if(is_DL){
+    passedMET=true;
+    if(!dileptonMETSelection->IsSelected(input_DL,dummyMET_cutflowDL)){
+      passedMET=false;
+      }
   }
 
   MET_pt=input.pfMET.pt();
@@ -470,10 +546,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   }  
   
   if(compare) cout <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
-	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep1_MVAID<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","<<lep2_MVAID<<","
+	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","<<mll<<","<<passedMll<<","
 	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
 	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
-	  <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","
+	  <<MET_pt<<","<<MET_phi<<","<<passedMET<<","<<n_jets<<","<<n_btags<<","
 	  <<bWeight<<","<<ttHFCategory<<","
 	  <<final_discriminant1<<","<< final_discriminant2<<","
 	  <<n_fatjets<<","<< pt_fatjet_1<<","<< pt_fatjet_2<<","
@@ -487,10 +563,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
   
   if(is_SL||is_DL){
       out <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
-	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","
+	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","<<mll<<","<<passedMll<<","
 	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
 	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
-	  <<MET_pt<<","<<MET_phi<<","<<n_jets<<","<<n_btags<<","
+	  <<MET_pt<<","<<MET_phi<<","<<passedMET<<","<<n_jets<<","<<n_btags<<","
 	  <<bWeight<<","<<ttHFCategory<<","
 	  <<final_discriminant1<<","<< final_discriminant2<<","
 	  <<n_fatjets<<","<< pt_fatjet_1<<","<< pt_fatjet_2<<","
