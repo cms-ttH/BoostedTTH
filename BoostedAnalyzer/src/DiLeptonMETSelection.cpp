@@ -90,7 +90,7 @@ bool DiLeptonMETSelection::IsSelected(const InputCollections& input,Cutflow& cut
   int nleadleptons = nleadelectrons+nleadmuons;
   
   
-  if(nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1)||(nelectrons_n==1&&nmuons_p==1))){
+  if(nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1 && nelectrons_n==0&&nmuons_p==0)||(nelectrons_n==1&&nmuons_p==1 && nelectrons_p==0&&nmuons_n==0))){
     cutflow.EventSurvivedStep(selectionName ,input.weights.at("Weight"));
     return true;
   }
