@@ -117,10 +117,10 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   bool mumuTriggered = input.triggerInfo.IsAnyTriggered(mumuTriggers);
   bool elmuTriggered = input.triggerInfo.IsAnyTriggered(elmuTriggers);
 
-  bool elel_step2 = elelTriggered && nleadelectrons>=1 && (nelectrons_p==1&&nelectrons_n==1);
-  bool elmu_step2 = elmuTriggered && nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1)||(nelectrons_n==1&&nmuons_p==1));
-  bool mumu_step2 = mumuTriggered && nleadmuons>=1 && (nmuons_p==1&&nmuons_n==1);
-  
+  bool elel_step2 = elelTriggered && nleadelectrons>=1 && (nelectrons_p==1&&nelectrons_n==1 && nmuons_p==0&&nmuons_n==0);
+  bool elmu_step2 = elmuTriggered && nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1 && nelectrons_n==0&&nmuons_p==0)||(nelectrons_n==1&&nmuons_p==1 && nelectrons_p==0&&nmuons_n==0));
+  bool mumu_step2 = mumuTriggered && nleadmuons>=1 && (nmuons_p==1&&nmuons_n==1 && nelectrons_p==0 && nelectrons_n==0);
+
   /*
   std::cout << "elelTriggered: " << elelTriggered << "   mumuTriggered: " << mumuTriggered << "   elmuTriggered: " << elmuTriggered << std::endl;
   std::cout << "nleadelectrons: " << nleadelectrons << "   nelectrons_p: " << nelectrons_p << "   nelectrons_n: " << nelectrons_n << std::endl;
