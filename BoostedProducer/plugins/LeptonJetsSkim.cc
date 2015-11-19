@@ -71,11 +71,14 @@ class LeptonJetsSkim : public edm::EDFilter {
 
   
   // data access tokens
-    edm::EDGetTokenT< double >                  EDMRhoToken; //  pileup density
-    edm::EDGetTokenT< reco::VertexCollection >  EDMVertexToken; // vertex
-    edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  // muons
-    edm::EDGetTokenT< pat::ElectronCollection > EDMElectronsToken;  // electrons
-    edm::EDGetTokenT< pat::JetCollection >      EDMJetsToken;  // jets
+    edm::EDGetTokenT< double >                   EDMRhoToken; //  pileup density
+    edm::EDGetTokenT< reco::VertexCollection >   EDMVertexToken; // vertex
+    edm::EDGetTokenT< pat::MuonCollection >      EDMMuonsToken;  // muons
+    edm::EDGetTokenT< pat::ElectronCollection >  EDMElectronsToken;  // electrons
+    edm::EDGetTokenT< pat::JetCollection >       EDMJetsToken;  // jets
+    edm::EDGetTokenT<reco::ConversionCollection> EDMConversionCollectionToken; // conversion (for electron ID)
+    edm::EDGetTokenT<reco::BeamSpot>             EDMBeamSpotToken; // beamspot (for electron ID)
+
 
 };
 
@@ -93,6 +96,9 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   EDMJetsToken      = consumes< pat::JetCollection >       (iConfig.getParameter<edm::InputTag>("jets"));
   EDMVertexToken = consumes< reco::VertexCollection >       (iConfig.getParameter<edm::InputTag>("vertices"));
   EDMRhoToken    = consumes< double >                       (iConfig.getParameter<edm::InputTag>("rho"));
+  EDMConversionCollectionToken = consumes<reco::ConversionCollection> (iConfig.getParameter<edm::InputTag>("conversions"));
+  EDMBeamSpotToken = consumes<reco::BeamSpot> (iConfig.getParameter<edm::InputTag>("beamspot"));
+
 
   minJets_ = iConfig.getParameter<int>("minJets");
   jetPtMin_ = iConfig.getParameter<double>("jetPtMin");
@@ -103,7 +109,7 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
   
   
-  electronID_ = electronID::electronSpring15M;
+  electronID_ = electronID::electronEndOf15MVAmedium;
   muonID_ = muonID::muonTight;
   
   muonIsoConeSize_ = coneSize::R04;
@@ -111,6 +117,7 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   const bool isData = iConfig.getParameter<bool>("isData");
   const int sampleID = isData? -1 : 1;
   helper_.SetUp(era,sampleID,iAnalysisType,isData);
+  helper_.SetUpElectronMVA("MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
 
 }
 
@@ -166,6 +173,7 @@ LeptonJetsSkim::setUpHelper(const edm::Event& iEvent)
   if( hRho.isValid() ) {
     helper_.SetRho(*hRho);
   } else {
+    cout << "could not find rho" << endl;
     return false;
   }
 
@@ -175,9 +183,26 @@ LeptonJetsSkim::setUpHelper(const edm::Event& iEvent)
   if( hVtxs->size()>0 ) {
     helper_.SetVertex( hVtxs->at(0) );
   } else {
+    cout << "could not find vertices" << endl;
     return false;
   }
+  // setup beamspot and conversions for electron MVA
+  edm::Handle<reco::BeamSpot> hBeamspot;
+  iEvent.getByToken( EDMBeamSpotToken,hBeamspot );
+  edm::Handle<reco::ConversionCollection> hConversioncollection;
+  iEvent.getByToken( EDMConversionCollectionToken,hConversioncollection );
+  if( hBeamspot.isValid() && hConversioncollection.isValid() ) {
+    helper_.SetElectronMVAinfo(hConversioncollection, hBeamspot);
+  } else {
+    if(!hBeamspot.isValid()){
+      cout << "could not find beamspot" << endl;
+    }
+    if(!hConversioncollection.isValid()){
+      cout << "could not find conversions" << endl;
+    }
 
+    return false;
+  }
   return true;
 }
 
