@@ -153,7 +153,11 @@ process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
 # skim
 process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
-process.boosted_skimmed=cms.Path(process.LeptonJetsSkim
+# Load the producer for MVA IDs
+process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+# execute in the right order
+process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
+                                 *process.LeptonJetsSkim
                                  *process.SelectedElectronProducer
                                  *process.SelectedMuonProducer
                                  *process.HTTTopJetProducer

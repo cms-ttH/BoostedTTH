@@ -33,6 +33,7 @@
 
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
+#include "DataFormats/Common/interface/View.h"
 #include "DataFormats/PatCandidates/interface/Lepton.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
@@ -71,13 +72,13 @@ class LeptonJetsSkim : public edm::EDFilter {
 
   
   // data access tokens
-    edm::EDGetTokenT< double >                   EDMRhoToken; //  pileup density
-    edm::EDGetTokenT< reco::VertexCollection >   EDMVertexToken; // vertex
-    edm::EDGetTokenT< pat::MuonCollection >      EDMMuonsToken;  // muons
-    edm::EDGetTokenT< pat::ElectronCollection >  EDMElectronsToken;  // electrons
-    edm::EDGetTokenT< pat::JetCollection >       EDMJetsToken;  // jets
-    edm::EDGetTokenT<reco::ConversionCollection> EDMConversionCollectionToken; // conversion (for electron ID)
-    edm::EDGetTokenT<reco::BeamSpot>             EDMBeamSpotToken; // beamspot (for electron ID)
+    edm::EDGetTokenT< double >                  EDMRhoToken; //  pileup density
+    edm::EDGetTokenT< reco::VertexCollection >  EDMVertexToken; // vertex
+    edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  // muons
+    edm::EDGetTokenT< edm::View <pat::Electron> > EDMElectronsToken;  // electrons
+    edm::EDGetTokenT< pat::JetCollection >      EDMJetsToken;  // jets
+    edm::EDGetTokenT<edm::ValueMap<float> > EDMeleMVAvaluesToken; // values of electron mva
+    edm::EDGetTokenT<edm::ValueMap<int> > EDMeleMVAcategoriesToken;  // category of electron mva
 
 
 };
@@ -91,13 +92,18 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   const std::string era = iConfig.getParameter<std::string>("era");
   analysisType::analysisType iAnalysisType = analysisType::LJ;
   
-  EDMElectronsToken  = consumes< pat::ElectronCollection >  (iConfig.getParameter<edm::InputTag>("electrons"));
+  EDMElectronsToken  = consumes< edm::View <pat::Electron> >(iConfig.getParameter<edm::InputTag>("electrons"));
   EDMMuonsToken      = consumes< pat::MuonCollection >      (iConfig.getParameter<edm::InputTag>("muons"));
   EDMJetsToken      = consumes< pat::JetCollection >       (iConfig.getParameter<edm::InputTag>("jets"));
   EDMVertexToken = consumes< reco::VertexCollection >       (iConfig.getParameter<edm::InputTag>("vertices"));
   EDMRhoToken    = consumes< double >                       (iConfig.getParameter<edm::InputTag>("rho"));
+<<<<<<< HEAD
   EDMConversionCollectionToken = consumes<reco::ConversionCollection> (iConfig.getParameter<edm::InputTag>("conversions"));
   EDMBeamSpotToken = consumes<reco::BeamSpot> (iConfig.getParameter<edm::InputTag>("beamspot"));
+=======
+  EDMeleMVAvaluesToken = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
+  EDMeleMVAcategoriesToken = consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
+>>>>>>> CMSSW_7_4_14_AlternativeEleID
 
 
   minJets_ = iConfig.getParameter<int>("minJets");
@@ -107,9 +113,14 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   muonEtaMax_ = iConfig.getParameter<double>("muonEtaMax");
   electronPtMin_ = iConfig.getParameter<double>("electronPtMin");
   electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
+<<<<<<< HEAD
   
   
   electronID_ = electronID::electronEndOf15MVAmedium;
+=======
+ 
+  electronID_ = electronID::electronEndOf15MVA80;
+>>>>>>> CMSSW_7_4_14_AlternativeEleID
   muonID_ = muonID::muonTight;
   
   muonIsoConeSize_ = coneSize::R04;
@@ -141,9 +152,16 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     if( setUpHelper(iEvent) ) {
 	
-	edm::Handle<pat::ElectronCollection> hElectrons;
-	iEvent.getByToken(EDMElectronsToken,hElectrons);	    
-	pat::ElectronCollection selectedElectrons = helper_.GetSelectedElectrons(*hElectrons,electronPtMin_,electronID_,electronEtaMax_);
+	edm::Handle< edm::View<pat::Electron> > h_electrons;
+	iEvent.getByToken(EDMElectronsToken,h_electrons);	    
+	// add electron mva info to electrons
+	edm::Handle<edm::ValueMap<float> > h_mvaValues; 
+	edm::Handle<edm::ValueMap<int> > h_mvaCategories;
+	iEvent.getByToken(EDMeleMVAvaluesToken,h_mvaValues);
+	iEvent.getByToken(EDMeleMVAcategoriesToken,h_mvaCategories);  
+	std::vector<pat::Electron> electronsWithMVAid = helper_.GetElectronsWithMVAid(h_electrons,h_mvaValues,h_mvaCategories);
+	// select electrons
+	pat::ElectronCollection selectedElectrons = helper_.GetSelectedElectrons(electronsWithMVAid,electronPtMin_,electronID_,electronEtaMax_);
 
 	edm::Handle<pat::MuonCollection> hMuons;
 	iEvent.getByToken(EDMMuonsToken,hMuons);
