@@ -29,11 +29,12 @@ Synchronizer::~Synchronizer (){
   for(auto f = dumpFiles2_raw.begin(); f!=dumpFiles2_raw.end(); f++){
     (*f)->close();
   }
-  cutflowSL_nominal.Print(*cutflowFile);
-  cutflowSL_nominal.Print(cout);
-  cutflowDL_nominal.Print(*cutflowFile);
-  cutflowDL_nominal.Print(cout);
-  cutflowFile->close();
+  if(cutflowFile!=0){
+      cutflowSL_nominal.Print(*cutflowFile);
+      cutflowSL_nominal.Print(cout);
+      cutflowDL_nominal.Print(*cutflowFile);
+      cutflowDL_nominal.Print(cout);
+  }
 }
 
 void Synchronizer::DumpSyncExe1(int nfile,const InputCollections& input){
@@ -352,7 +353,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
       lep1_phi=iEle->phi();
       lep1_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
       lep1_pdgId=iEle->pdgId();
-      lep1_MVAID=helper.GetElectronMVAIDValue(*iEle);
+      lep1_MVAID=iEle->userFloat("mvaValue");
     }
     else if(iEle->pt()>lep2_pt){
       lep2_pt=iEle->pt();
@@ -360,7 +361,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollect
       lep2_phi=iEle->phi();
       lep2_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
       lep2_pdgId=iEle->pdgId();
-      lep2_MVAID=helper.GetElectronMVAIDValue(*iEle);
+      lep2_MVAID=iEle->userFloat("mvaValue");
     }
   }
   
