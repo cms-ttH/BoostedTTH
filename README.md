@@ -34,7 +34,6 @@ CMSSW_7_4_14:
     scram b -j10
 
 CMSSW_7_4_15:
-
     export SCRAM_ARCH=slc6_amd64_gcc491
     scram project CMSSW_7_4_15
     cd CMSSW_7_4_15/src
@@ -49,19 +48,20 @@ CMSSW_7_4_15:
     wget https://twiki.cern.ch/twiki/pub/CMSPublic/GenHFHadronMatcher/GenTtbarCategorizer_cfi.py.txt
     mv GenTtbarCategorizer_cfi.py.txt GenTtbarCategorizer_cfi.py
     cd -
+    git cms-merge-topic ikrav:egm_id_7.4.12_v1
     git cms-merge-topic gkasieczka:htt-v2-74X
     git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git
     git fetch --tags btv-cmssw
     git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV2-WithWeightFiles-v1_from-CMSSW_7_4_15
     git clone https://github.com/cms-ttH/MiniAOD.git
     cd MiniAOD
-    git checkout --track origin/MergeBoostedObjects
+    git checkout --track origin/EndOf15AlternativeEleID
     cd -
     git clone https://github.com/cms-ttH/BoostedTTH.git
     cd BoostedTTH
-    git checkout --track origin/CMSSW_7_4_14
+    git checkout --track origin/CMSSW_7_4_15
     cd -
-    scram b -j10
+    scram b -j10 
 
 ## Overview
 BoostedObjects contains the classes needed for subjet-analysis. They associate fat jets with the corresponding filtered objects.
