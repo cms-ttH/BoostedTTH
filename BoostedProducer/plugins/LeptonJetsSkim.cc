@@ -97,13 +97,8 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   EDMJetsToken      = consumes< pat::JetCollection >       (iConfig.getParameter<edm::InputTag>("jets"));
   EDMVertexToken = consumes< reco::VertexCollection >       (iConfig.getParameter<edm::InputTag>("vertices"));
   EDMRhoToken    = consumes< double >                       (iConfig.getParameter<edm::InputTag>("rho"));
-<<<<<<< HEAD
-  EDMConversionCollectionToken = consumes<reco::ConversionCollection> (iConfig.getParameter<edm::InputTag>("conversions"));
-  EDMBeamSpotToken = consumes<reco::BeamSpot> (iConfig.getParameter<edm::InputTag>("beamspot"));
-=======
   EDMeleMVAvaluesToken = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
   EDMeleMVAcategoriesToken = consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
->>>>>>> CMSSW_7_4_14_AlternativeEleID
 
 
   minJets_ = iConfig.getParameter<int>("minJets");
@@ -113,14 +108,7 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   muonEtaMax_ = iConfig.getParameter<double>("muonEtaMax");
   electronPtMin_ = iConfig.getParameter<double>("electronPtMin");
   electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
-<<<<<<< HEAD
-  
-  
-  electronID_ = electronID::electronEndOf15MVAmedium;
-=======
- 
   electronID_ = electronID::electronEndOf15MVA80;
->>>>>>> CMSSW_7_4_14_AlternativeEleID
   muonID_ = muonID::muonTight;
   
   muonIsoConeSize_ = coneSize::R04;
@@ -128,7 +116,6 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   const bool isData = iConfig.getParameter<bool>("isData");
   const int sampleID = isData? -1 : 1;
   helper_.SetUp(era,sampleID,iAnalysisType,isData);
-  helper_.SetUpElectronMVA("MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml","MiniAOD/MiniAODHelper/data/ElectronMVA/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
 
 }
 
@@ -202,23 +189,6 @@ LeptonJetsSkim::setUpHelper(const edm::Event& iEvent)
     helper_.SetVertex( hVtxs->at(0) );
   } else {
     cout << "could not find vertices" << endl;
-    return false;
-  }
-  // setup beamspot and conversions for electron MVA
-  edm::Handle<reco::BeamSpot> hBeamspot;
-  iEvent.getByToken( EDMBeamSpotToken,hBeamspot );
-  edm::Handle<reco::ConversionCollection> hConversioncollection;
-  iEvent.getByToken( EDMConversionCollectionToken,hConversioncollection );
-  if( hBeamspot.isValid() && hConversioncollection.isValid() ) {
-    helper_.SetElectronMVAinfo(hConversioncollection, hBeamspot);
-  } else {
-    if(!hBeamspot.isValid()){
-      cout << "could not find beamspot" << endl;
-    }
-    if(!hConversioncollection.isValid()){
-      cout << "could not find conversions" << endl;
-    }
-
     return false;
   }
   return true;
