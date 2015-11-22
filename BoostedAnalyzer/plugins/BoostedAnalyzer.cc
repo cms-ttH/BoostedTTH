@@ -269,7 +269,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_hf_IT_FlatSF_2015_11_03.root","BoostedTTH/BoostedAnalyzer/data/csvweights/csv_rwt_lf_IT_FlatSF_2015_11_03.root")),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc")
+BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_2015_11_20.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_2015_11_20.root",5)),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc")
 {
   // get all configurations from the python config
   std::string era = iConfig.getParameter<std::string>("era");
