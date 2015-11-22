@@ -85,7 +85,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionMEvarProcessor.hpp"
 
 
 //
@@ -508,8 +508,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
       // TODO how to handle this?
     treewriter_nominal.AddTreeProcessor(new TriggerVarProcessor(relevantTriggers),"TriggerVarProcessor");
   }
-  if(std::find(processorNames.begin(),processorNames.end(),"ReconstructionVarProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new ReconstructionVarProcessor(),"ReconstructionVarProcessor");
+  if(std::find(processorNames.begin(),processorNames.end(),"ReconstructionMEvarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new ReconstructionMEvarProcessor(),"ReconstructionMEvarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"DiJetVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new DiJetVarProcessor(),"DiJetVarProcessor");
