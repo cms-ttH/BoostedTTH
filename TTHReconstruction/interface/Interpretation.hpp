@@ -27,6 +27,7 @@ public:
   TLorentzVector Nu();
   TLorentzVector TopHad();
   TLorentzVector WHad();
+  TLorentzVector WLep();
   TLorentzVector TopLep();
   TLorentzVector Higgs();
   TLorentzVector Total();
