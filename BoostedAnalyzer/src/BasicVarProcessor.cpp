@@ -53,12 +53,14 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Muon_Pt","N_LooseMuons" );
   vars.InitVars( "Muon_Eta","N_LooseMuons" );
   vars.InitVars( "Muon_Phi","N_LooseMuons" );
+  vars.InitVars( "Muon_RelIso","N_LooseMuons" );
   
   vars.InitVars( "Electron_E","N_LooseElectrons" );
   vars.InitVars( "Electron_M","N_LooseElectrons" );
   vars.InitVars( "Electron_Pt","N_LooseElectrons" );
   vars.InitVars( "Electron_Eta","N_LooseElectrons" );
   vars.InitVars( "Electron_Phi","N_LooseElectrons" );
+  vars.InitVars( "Electron_RelIso","N_LooseElectrons" );
   
   vars.InitVar( "Evt_Pt_MET" );
   vars.InitVar( "Evt_Phi_MET" );
@@ -170,6 +172,9 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Electron_Pt",iEle,itEle->pt() );
     vars.FillVars( "Electron_Eta",iEle,itEle->eta() );
     vars.FillVars( "Electron_Phi",iEle,itEle->phi() ); 
+    if(itEle->hasUserFloat("relIso")){
+	vars.FillVars( "Electron_RelIso",iEle,itEle->userFloat("relIso") );
+    }
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     int iMu = itMu - input.selectedMuonsLoose.begin();
@@ -178,6 +183,9 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Muon_Pt",iMu,itMu->pt() );
     vars.FillVars( "Muon_Eta",iMu,itMu->eta() );
     vars.FillVars( "Muon_Phi",iMu,itMu->phi() );
+    if(itMu->hasUserFloat("relIso")){
+	vars.FillVars( "Muon_RelIso",iMu,itMu->userFloat("relIso") );
+    }
   }
   
   vars.FillVar( "Evt_Pt_MET",input.pfMET.pt() );
