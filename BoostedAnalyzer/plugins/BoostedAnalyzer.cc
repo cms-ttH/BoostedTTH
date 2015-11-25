@@ -52,6 +52,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeWriter.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/HistoReweighter.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/PUWeights.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
@@ -115,6 +116,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
       CSVHelper csvReweighter;
       HistoReweighter pvWeight;
+      PUWeights puWeights_;
       
       /** writes flat trees for MVA analysis */
       TreeWriter treewriter_nominal;
@@ -322,7 +324,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
 
 
   // REGISTER DATA ACCESS
-  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","",""));
+  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo","",""));
   EDMRhoToken             = consumes<double> (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
   triggerBitsToken        = consumes< edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
@@ -367,7 +369,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   helper.SetJetCorrectorUncertainty();
 
-   // INITIALIZE SELECTION & CUTFLOW
+  // INITIALIZE PU WEIGHTS
+  puWeights_.init(iConfig);
+
+  // INITIALIZE SELECTION & CUTFLOW
   cutflow_nominal.Init();
   if(makeSystematicsTrees){
     cutflow_jesup.Init();
@@ -1173,9 +1178,9 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   else if(systype==sysType::JERdown)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
   else csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF);
   
-//float puweight = beanHelper.GetPUweight(event[0].numTruePV);
-  //float topptweight = beanHelper.GetTopPtweight(mcparticlesStatus3);
-  //float q2scaleweight = beanHelper.GetQ2ScaleUp(const BNevent&);
+  // compute PU weights, and set nominal weight
+  puWeights_.compute(eventInfo);
+  puweight = puWeights_.nominalWeight();
   
   weight *= xsweight*csvweight*puweight*topptweight;
   weights["Weight"] = weight;
@@ -1210,6 +1215,11 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
     //weights["Weight_Q2up"] = beanHelper.GetQ2ScaleUp(event[0]);
     //weights["Weight_Q2down"] = beanHelper.GetQ2ScaleDown(event[0]);
 
+    // set optional additional PU weights
+    for(std::vector<PUWeights::Weight>::const_iterator it = puWeights_.additionalWeightsBegin();
+	it != puWeights_.additionalWeightsEnd(); ++it) {
+      weights[it->name()] = it->value();
+    }
   }
   
   
