@@ -32,10 +32,14 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
+#include "FWCore/Utilities/interface/Exception.h"
+#include "FWCore/Utilities/interface/EDMException.h"
+
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "DataFormats/METReco/interface/HcalNoiseSummary.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/Common/interface/View.h"
@@ -106,7 +110,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
       virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;    
-      map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles, sysType::sysType systype=sysType::NA);
+  map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles, sysType::sysType systype=sysType::NA);
 
       // ----------member data ---------------------------
       
@@ -224,6 +228,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** gen info data access token **/
       edm::EDGetTokenT< GenEventInfoProduct > EDMGenInfoToken;
       
+      /** LHE data access token **/
+      edm::EDGetTokenT< LHEEventProduct > EDMLHEToken;
+
       /** gen particles data access token **/
       edm::EDGetTokenT< std::vector<reco::GenParticle> > EDMGenParticlesToken;
       
@@ -336,6 +343,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   EDMMETsToken            = consumes< std::vector<pat::MET> >(edm::InputTag("slimmedMETs","",""));
   EDMBoostedJetsToken     = consumes< boosted::BoostedJetCollection >(edm::InputTag("BoostedJetMatcher","boostedjets","p"));
   EDMGenInfoToken         = consumes< GenEventInfoProduct >(edm::InputTag("generator","",""));
+  EDMLHEToken             = consumes< LHEEventProduct >(edm::InputTag("externalLHEProducer","",""));
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
   EDMCustomGenJetsToken   = consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
@@ -816,6 +824,24 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( EDMGenInfoToken, h_geneventinfo );
   }
 
+  /**** GET LHEEVENTPRODUCT ****/
+  edm::Handle<LHEEventProduct> h_lheevent;
+  if(!isData){
+    //h_lheevent.isValid();
+    
+    bool flag = true;
+    try {
+      iEvent.getByToken( EDMLHEToken, h_lheevent );
+    } 
+    catch (...) {
+      flag = false ;
+    }
+    if (flag == true){
+      //iEvent.getByToken( EDMLHEToken, h_lheevent );
+    }
+  }
+
+
   /**** GET GENPARTICLES ****/
   edm::Handle< std::vector<reco::GenParticle> > h_genParticles;
   if(!isData){
@@ -991,19 +1017,19 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
   // DO REWEIGHTING
-  map<string,float> weights = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
-  map<string,float> weights_jesup = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_jesup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESup);
-  map<string,float> weights_jesdown = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_jesdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESdown);
-  map<string,float> weights_jerup = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
-  map<string,float> weights_jerdown = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
-  map<string,float> weights_uncorrjets = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJets_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+  map<string,float> weights = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+  map<string,float> weights_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESup);
+  map<string,float> weights_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESdown);
+  map<string,float> weights_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
+  map<string,float> weights_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
+  map<string,float> weights_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
      //Only needed for Hbb synch exercise: dilepton uses loose jet selection -> different csv weights
-  map<string,float> weights_DL_nominal = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
-  map<string,float> weights_DL_jesup = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_jesup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESup);
-  map<string,float> weights_DL_jesdown = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_jesdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESdown);
-  map<string,float> weights_DL_jerup = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
-  map<string,float> weights_DL_jerdown = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
-  map<string,float> weights_DL_uncorrjets = GetWeights(*h_geneventinfo,eventInfo,selectedPVs,selectedJetsLoose_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+  map<string,float> weights_DL_nominal = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+  map<string,float> weights_DL_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESup);
+  map<string,float> weights_DL_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESdown);
+  map<string,float> weights_DL_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
+  map<string,float> weights_DL_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
+  map<string,float> weights_DL_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
 
   // DEFINE INPUT
   InputCollections input_nominal( eventInfo,
@@ -1128,7 +1154,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 }
 
 
-map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEventInfo,const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles, sysType::sysType systype){
+map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles, sysType::sysType systype){
   map<string,float> weights;
   
   if(isData){
@@ -1209,6 +1235,18 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
     
     //weights["Weight_Q2up"] = beanHelper.GetQ2ScaleUp(event[0]);
     //weights["Weight_Q2down"] = beanHelper.GetQ2ScaleDown(event[0]);
+    /*
+    if(h_lheevent.isValid()){
+      if(LHEEvent.size() >= 100)  {
+    //Weight for Scale Variations: Weight_muR_muF
+    weights["Weight_muRnmuFup"] = LHEEvent.weights()[1].wgt;
+    weights["Weight_muRnmuFdown"] = LHEEvent.weights()[2].wgt;
+    weights["Weight_muRupmuFn"] = LHEEvent.weights()[3].wgt;
+    weights["Weight_muRupmuFup"] = LHEEvent.weights()[4].wgt;
+    weights["Weight_muRdownmuFn"] = LHEEvent.weights()[6].wgt;
+    weights["Weight_muRdownmuFdown"] = LHEEvent.weights()[8].wgt;
+      }
+      }*/
 
   }
   
