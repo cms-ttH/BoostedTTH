@@ -24,6 +24,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     additionalPUWeights = cms.VPSet(AdditionalPUWeights),
 
     makeSystematicsTrees = cms.bool(False),
+    sampleHasLHEEventInfo = cms.bool(False),
 
     useFatJets = cms.bool(True),
     useForwardJets = cms.bool(False),
