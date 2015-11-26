@@ -34,6 +34,14 @@ void BoostedMCMatchVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "BoostedJet_Dr_GenQ2_Filterjet",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenB1_Filterjet",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenB2_Filterjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ1_CSV1",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ2_CSV1",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenB_CSV1",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ1_CSV2",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ2_CSV2",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenB_CSV2",-9.,"N_BoostedJets" );
+
+
   
   initialized = true;
 }
@@ -69,7 +77,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     higgs=input.genTopEvt.GetHiggs();
     higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
   }
-  
+ 
   reco::GenParticle b1;
   reco::GenParticle b2;
   
@@ -77,6 +85,15 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     if(p->pdgId()==5) b1=*p;
     if(p->pdgId()==-5) b2=*p;
   }
+  if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()){
+      std::vector<reco::GenParticle> additional_bs=input.genTopEvt.GetAdditionalBHadrons();
+      if(additional_bs.size()>0)
+	  b1=additional_bs[0];
+      if(additional_bs.size()>1)
+	  b2=additional_bs[1];
+
+  }
+
   
   for(size_t i=0; i< input.selectedBoostedJets.size(); i++){
 	  
@@ -154,9 +171,9 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
       vars.FillVars("BoostedJet_Dr_GenHiggs",i,BoostedUtils::DeltaR(higgs.p4(),input.selectedBoostedJets[i].fatjet.p4()));	  
     
     if(b1.pt()>0.){
-      
+
       vars.FillVars("BoostedJet_Dr_GenB1",i,BoostedUtils::DeltaR(b1.p4(),input.selectedBoostedJets[i].fatjet.p4()));
-      vars.FillVars("BoostedJet_Dr_GenB2",i,BoostedUtils::DeltaR(b2.p4(),input.selectedBoostedJets[i].fatjet.p4()));
+      if(b2.pt()>0.) vars.FillVars("BoostedJet_Dr_GenB2",i,BoostedUtils::DeltaR(b2.p4(),input.selectedBoostedJets[i].fatjet.p4()));
       
       double minDrB1 = 999;
       double minDrB2 = 999;
@@ -167,7 +184,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
           minDrB1 = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b1.p4());
         }
         if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4())<minDrB2){
-          minDrB2 = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4());
+          if(b2.pt()>0.) minDrB2 = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4());
         }
       }
       
@@ -177,18 +194,18 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     
     float minDr_WHad = 999;
     float minDr_Q1 = 999;
-	  float minDr_Q2 = 999;
+    float minDr_Q2 = 999;
     float minDr_Q1_FilterJet = 999;
     float minDr_Q2_FilterJet = 999;
-    
+   
     for(size_t j=0;j<whad.size();j++){
     
       float Dr_temp = BoostedUtils::DeltaR(whad[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
       
 	    if(Dr_temp<minDr_WHad){
 	  	  minDr_WHad = Dr_temp;
-		    minDr_Q1 = BoostedUtils::DeltaR(q1[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
-		    minDr_Q2 = BoostedUtils::DeltaR(q2[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+		  minDr_Q1 = BoostedUtils::DeltaR(q1[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+		  minDr_Q2 = BoostedUtils::DeltaR(q2[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
         
         for(size_t k=0;k<input.selectedBoostedJets[i].filterjets.size();k++){
 	      
@@ -201,11 +218,40 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         }
 	    }
 	  }
+
     
     if(minDr_WHad<999) vars.FillVars("BoostedJet_Dr_GenW",i,minDr_WHad);
     if(minDr_Q1<999) vars.FillVars("BoostedJet_Dr_GenQ1",i,minDr_Q1);
     if(minDr_Q2<999) vars.FillVars("BoostedJet_Dr_GenQ2",i,minDr_Q2);
     if(minDr_Q1_FilterJet<999) vars.FillVars("BoostedJet_Dr_GenQ1_Filterjet",i,minDr_Q1_FilterJet);
     if(minDr_Q2_FilterJet<999) vars.FillVars("BoostedJet_Dr_GenQ2_Filterjet",i,minDr_Q2_FilterJet);
+
+    std::vector<pat::Jet> filterJets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets[i], 4);
+    float dr_GenQ1_CSV1=999;
+    float dr_GenQ2_CSV1=999;
+    float dr_GenB_CSV1=999;
+    float dr_GenQ1_CSV2=999;
+    float dr_GenQ2_CSV2=999;
+    float dr_GenB_CSV2=999;
+
+    for(size_t j=0;j<tophad.size();j++){
+	if(filterJets.size()>0){
+	    dr_GenQ1_CSV1=fmin(BoostedUtils::DeltaR(filterJets[0].p4(),q1[j].p4()),dr_GenQ1_CSV1);
+	    dr_GenQ2_CSV1=fmin(BoostedUtils::DeltaR(filterJets[0].p4(),q2[j].p4()),dr_GenQ2_CSV1);
+	    dr_GenB_CSV1=fmin(BoostedUtils::DeltaR(filterJets[0].p4(),bhad[j].p4()),dr_GenB_CSV1);	    
+	}
+	if(filterJets.size()>1){
+	    dr_GenQ1_CSV2=fmin(BoostedUtils::DeltaR(filterJets[1].p4(),q1[j].p4()),dr_GenQ1_CSV2);
+	    dr_GenQ2_CSV2=fmin(BoostedUtils::DeltaR(filterJets[1].p4(),q2[j].p4()),dr_GenQ2_CSV2);
+	    dr_GenB_CSV2=fmin(BoostedUtils::DeltaR(filterJets[1].p4(),bhad[j].p4()),dr_GenB_CSV2);
+	}
+    }
+    vars.FillVars( "BoostedJet_Dr_GenQ1_CSV1",i,dr_GenQ1_CSV1);
+    vars.FillVars( "BoostedJet_Dr_GenQ2_CSV1",i,dr_GenQ2_CSV1);
+    vars.FillVars( "BoostedJet_Dr_GenB_CSV1",i,dr_GenB_CSV1);
+    vars.FillVars( "BoostedJet_Dr_GenQ1_CSV2",i,dr_GenQ1_CSV2);
+    vars.FillVars( "BoostedJet_Dr_GenQ2_CSV2",i,dr_GenQ2_CSV2);
+    vars.FillVars( "BoostedJet_Dr_GenB_CSV2",i,dr_GenB_CSV2);
+
   }
 }

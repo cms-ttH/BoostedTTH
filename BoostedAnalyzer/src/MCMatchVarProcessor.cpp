@@ -12,6 +12,8 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "GenEvt_I_TTPlusCC",-1,"I" );
   vars.InitVar( "GenEvt_I_TTPlusBB",-1,"I" );
   vars.InitVar( "GenEvt_TTxId_FromHelper",-1,"I" );
+  vars.InitVar( "N_GoodTagsM",-1,"I" );
+  vars.InitVar( "N_MisTagsM",-1,"I" );
   
   vars.InitVar( "N_GenTopHad", -1, "I" );
   vars.InitVars( "GenTopHad_Pt",-9.,"N_GenTopHad" );
@@ -119,6 +121,17 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   vars.FillVar( "GenEvt_I_TTPlusCC",iCC );
   vars.FillVar( "GenEvt_I_TTPlusBB",iBB );
   vars.FillVar( "GenEvt_TTxId_FromHelper",input.genTopEvt.GetTTxIdFromHelper());
+  int nGoodTagsM=0;
+  int nMisTagsM=0;
+  for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
+      if (!(BoostedUtils::PassesCSV(*j, 'M'))) continue;
+      if(abs(j->hadronFlavour())==5) nGoodTagsM++;
+      if(abs(j->hadronFlavour())!=5) nMisTagsM++;
+  }  
+  vars.FillVar( "N_GoodTagsM",nGoodTagsM);
+  vars.FillVar( "N_MisTagsM",nMisTagsM);
+
+
   std::vector<reco::GenParticle> tophad;
   std::vector<reco::GenParticle> whad;
   std::vector<reco::GenParticle> bhad;

@@ -633,7 +633,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // Get the jets for MET correction
   std::vector<pat::Jet> idJetsForMET = helper.GetSelectedJets(pfjets, 0., 5.4, jetID::jetMETcorrection, '-' );
   std::vector<pat::Jet> rawJetsForMET = helper.GetUncorrectedJets(idJetsForMET);
-  std::vector<pat::Jet> correctedJetsForMET_nominal = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::NA);
+  std::vector<pat::Jet> correctedJetsForMET_nominal = helper.GetCorrectedJets(rawJetsForMET, iEvent, iSetup, sysType::NA, true, false);
   //correct MET 
   std::vector<pat::MET> correctedMETs_nominal = recorrectMET ? helper.CorrectMET(idJetsForMET,correctedJetsForMET_nominal,pfMETs) : pfMETs;
   // Get raw jets

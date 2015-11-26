@@ -709,6 +709,15 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
     if(abs(p->pdgId())==5) b1_mc=p->p4();
     if(abs(p->pdgId())==-5) b2_mc=p->p4();
   }
+  if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()){
+      std::vector<reco::GenParticle> additional_bs=input.genTopEvt.GetAdditionalBHadrons();
+      if(additional_bs.size()>0)
+	  b1_mc=additional_bs[0].p4();
+      if(additional_bs.size()>1)
+	  b2_mc=additional_bs[1].p4();
+
+  }
+
   
   // Higgs Candidate
   math::XYZTLorentzVector higgsCandVec2 = ttHEvent.GetHiggsCandVec2();
