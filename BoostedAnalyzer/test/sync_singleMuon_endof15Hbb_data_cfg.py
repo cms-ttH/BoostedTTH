@@ -11,7 +11,7 @@ options = VarParsing ('analysis')
 # The following variables are already defined in VarParsing class:
 # maxEvents: singleton, int; default = -1
 # inputFiles: (comma separated, no spaces!) list, string: default empty
-options.register( "globalTag", "75X_dataRun2_Prompt_v4", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "74X_dataRun2_v5", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.parseArguments()
 
 # re-set some defaults
