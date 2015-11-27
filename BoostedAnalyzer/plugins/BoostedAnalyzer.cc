@@ -32,9 +32,6 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
-#include "FWCore/Utilities/interface/Exception.h"
-#include "FWCore/Utilities/interface/EDMException.h"
-
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
@@ -185,7 +182,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** write systematics trees */
       bool makeSystematicsTrees;
 
-      
+      /** write generator weigths */
+      bool dogenweights = true;
+
   // TOKENS =========================
       /** pu summary data access token **/
       edm::EDGetTokenT< std::vector<PileupSummaryInfo> > EDMPUInfoToken;
@@ -825,24 +824,22 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
   /**** GET LHEEVENTPRODUCT ****/
+
   edm::Handle<LHEEventProduct> h_lheevent;
+  edm::Handle<LHEEventProduct> h_dummie;
   if(!isData){
-    //h_lheevent.isValid();
-    
-    bool flag = true;
-    try {
+    iEvent.getByToken( EDMLHEToken, h_dummie );
+    if (h_dummie.isValid()){
       iEvent.getByToken( EDMLHEToken, h_lheevent );
-    } 
-    catch (...) {
-      flag = false ;
+      dogenweights = true;
     }
-    if (flag == true){
-      //iEvent.getByToken( EDMLHEToken, h_lheevent );
+    else {
+      dogenweights = false;
     }
   }
 
 
-  /**** GET GENPARTICLES ****/
+  /**** Get GENPARTICLES ****/
   edm::Handle< std::vector<reco::GenParticle> > h_genParticles;
   if(!isData){
     iEvent.getByToken( EDMGenParticlesToken,h_genParticles );
@@ -1030,7 +1027,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   map<string,float> weights_DL_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
   map<string,float> weights_DL_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
   map<string,float> weights_DL_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
-
   // DEFINE INPUT
   InputCollections input_nominal( eventInfo,
 				  triggerInfo,
@@ -1235,18 +1231,29 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
     
     //weights["Weight_Q2up"] = beanHelper.GetQ2ScaleUp(event[0]);
     //weights["Weight_Q2down"] = beanHelper.GetQ2ScaleDown(event[0]);
-    /*
-    if(h_lheevent.isValid()){
-      if(LHEEvent.size() >= 100)  {
+    if(dogenweights)  {
+      if (LHEEvent.weights().size() >= 98) {
     //Weight for Scale Variations: Weight_muR_muF
-    weights["Weight_muRnmuFup"] = LHEEvent.weights()[1].wgt;
-    weights["Weight_muRnmuFdown"] = LHEEvent.weights()[2].wgt;
-    weights["Weight_muRupmuFn"] = LHEEvent.weights()[3].wgt;
-    weights["Weight_muRupmuFup"] = LHEEvent.weights()[4].wgt;
-    weights["Weight_muRdownmuFn"] = LHEEvent.weights()[6].wgt;
-    weights["Weight_muRdownmuFdown"] = LHEEvent.weights()[8].wgt;
+	weights["Weight_muRnmuFup"] = LHEEvent.weights()[1].wgt;
+	weights["Weight_muRnmuFdown"] = LHEEvent.weights()[2].wgt;
+	weights["Weight_muRupmuFn"] = LHEEvent.weights()[3].wgt;
+	weights["Weight_muRupmuFup"] = LHEEvent.weights()[4].wgt;
+	weights["Weight_muRdownmuFn"] = LHEEvent.weights()[6].wgt;
+	weights["Weight_muRdownmuFdown"] = LHEEvent.weights()[8].wgt;
       }
-      }*/
+      else {
+	dogenweights = false;
+      }
+    }
+    if (dogenweights == false) {
+      weights["Weight_muRnmuFup"] = -2.0;
+      weights["Weight_muRnmuFdown"] = -2.0;
+      weights["Weight_muRupmuFn"] = -2.0;
+      weights["Weight_muRupmuFup"] = -2.0;
+      weights["Weight_muRdownmuFn"] = -2.0;
+      weights["Weight_muRdownmuFdown"] = -2.0;
+    }
+ 
 
   }
   
