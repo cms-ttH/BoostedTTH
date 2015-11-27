@@ -21,8 +21,8 @@ if not options.inputFiles:
     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/data/Run2015D/SingleMuon/MINIAOD/05Oct2015-v1/10000/021FD3F0-876F-E511-99D2-0025905A6060.root']
 
 # checks for correct values and consistency
-if "data" in options.globalTag.lower():
-    print "\n\nConfig ERROR: GT contains seems to be for data\n\n"
+if "mc" in options.globalTag.lower():
+    print "\n\nConfig ERROR: GT contains seems to be for mc\n\n"
     sys.exit()
 if not options.inputFiles:
     print "\n\nConfig ERROR: no inputFiles specified\n\n"
