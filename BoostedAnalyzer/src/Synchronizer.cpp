@@ -169,11 +169,17 @@ void Synchronizer::DumpSyncExe2Header(std::ostream &out){
 
 void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, const int number){
   
+bool runOverData = true;
+
   // Setup Selections
   // Single Lepton Selection
   if(leptonSelections.size()==0){
     leptonSelections.push_back(new VertexSelection());
-    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_WP85_Gsf_v*","HLT_IsoMu17_eta2p1_v*"));
+    if(runOverData) {
+	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*","HLT_IsoMu18_v*"));
+    } else {
+	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_WP85_Gsf_v*","HLT_IsoMu17_eta2p1_v*"));
+    }
     leptonSelections.push_back(new JetTagSelection(4,2));
     
     cout << "SL Selection Step 0: VertexSelection" << endl;
