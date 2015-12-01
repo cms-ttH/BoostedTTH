@@ -18,7 +18,7 @@ options.parseArguments()
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     options.maxEvents = 10000000 # reset to 100 for testing
 if not options.inputFiles:
-    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/data/Run2015D/MuonEG/MINIAOD/05Oct2015-v2/60000/00D43A12-C573-E511-8F4C-0025905A60E0.root']
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/EndOf2015_HbbSync/mueg_EndOf2015_HbbSync.root']
 
 # checks for correct values and consistency
 if "mc" in options.globalTag.lower():

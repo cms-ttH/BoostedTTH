@@ -8,15 +8,15 @@ mkdir KIT_syncHBB_data
 mkdir KIT_syncHBB_data/onlySL
 mkdir KIT_syncHBB_data/onlyDL
 
-cp sync_singleMuon_endof15Hbb_data_raw.csv KIT_syncHBB_data/tth_raw.csv
-cp sync_singleMuon_endof15Hbb_data_JESdown.csv KIT_syncHBB_data/tth_JESDown.csv
-cp sync_singleMuon_endof15Hbb_data_JESup.csv KIT_syncHBB_data/tth_JESUp.csv
-cp sync_singleMuon_endof15Hbb_data.csv KIT_syncHBB_data/tth.csv
+cp sync_singleMuon_endof15Hbb_data_raw.csv KIT_syncHBB_data/singleMuon_raw.csv
+cp sync_singleMuon_endof15Hbb_data_JESdown.csv KIT_syncHBB_data/singleMuon_JESDown.csv
+cp sync_singleMuon_endof15Hbb_data_JESup.csv KIT_syncHBB_data/singleMuon_JESUp.csv
+cp sync_singleMuon_endof15Hbb_data.csv KIT_syncHBB_data/singleMuon.csv
 
-cp sync_muonEG_endof15Hbb_data_raw.csv KIT_syncHBB_data/ttjets_raw.csv
-cp sync_muonEG_endof15Hbb_data_JESdown.csv KIT_syncHBB_data/ttjets_JESDown.csv
-cp sync_muonEG_endof15Hbb_data_JESup.csv KIT_syncHBB_data/ttjets_JESUp.csv
-cp sync_muonEG_endof15Hbb_data.csv KIT_syncHBB_data/ttjets.csv
+cp sync_muonEG_endof15Hbb_data_raw.csv KIT_syncHBB_data/muonEG_raw.csv
+cp sync_muonEG_endof15Hbb_data_JESdown.csv KIT_syncHBB_data/muonEG_JESDown.csv
+cp sync_muonEG_endof15Hbb_data_JESup.csv KIT_syncHBB_data/muonEG_JESUp.csv
+cp sync_muonEG_endof15Hbb_data.csv KIT_syncHBB_data/muonEG.csv
 
 
-for i in KIT_syncHBB_data/*.csv; do echo "$i"; python /nfs/dust/cms/user/mharrend/ttHanalysis/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/test/splitSLDL.py "$i"; done
+for i in KIT_syncHBB_data/*.csv; do echo "$i"; python /nfs/dust/cms/user/mharrend/ttHanalysis/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/test/splitSLDL_data.py "$i"; done
