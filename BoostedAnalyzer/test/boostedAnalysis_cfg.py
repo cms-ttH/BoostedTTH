@@ -16,6 +16,7 @@ options.register( "weight", 0.01, VarParsing.multiplicity.singleton, VarParsing.
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "isBoostedMiniAOD", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
 options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
+options.register( "generatorName", "notSpecified", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
 options.register( "globalTag", "74X_mcRun2_asymptotic_v2", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
@@ -115,6 +116,8 @@ process.BoostedAnalyzer.outfileName=options.outName
 if not options.isData:
     process.BoostedAnalyzer.eventWeight = options.weight
 process.BoostedAnalyzer.makeSystematicsTrees=options.makeSystematicsTrees
+process.BoostedAnalyzer.generatorName=options.generatorName
+
 
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList

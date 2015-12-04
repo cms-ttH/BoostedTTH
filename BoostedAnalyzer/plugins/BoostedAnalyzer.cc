@@ -51,6 +51,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Cutflow.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeWriter.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenWeights.hpp"
+
 
 #include "BoostedTTH/BoostedAnalyzer/interface/HistoReweighter.hpp"
 
@@ -182,8 +184,10 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** write systematics trees */
       bool makeSystematicsTrees;
 
-      /** write generator weigths */
-      bool dogenweights = true;
+      /** generator weigths */
+      bool dogenweights;
+      GenWeights genweights;
+      std::string usedGenerator;
 
   // TOKENS =========================
       /** pu summary data access token **/
@@ -303,7 +307,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   dumpSyncExe2 = iConfig.getParameter<bool>("dumpSyncExe2");
 
   makeSystematicsTrees = iConfig.getParameter<bool>("makeSystematicsTrees");
-
+  usedGenerator = iConfig.getParameter<std::string>("generatorName");
   outfileName = iConfig.getParameter<std::string>("outfileName");
   outfileNameNominal=outfileName;
   outfileNameJESup=outfileName;
@@ -539,6 +543,16 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
       treewriter_jerdown.AddTreeProcessor(tps[i],tpsn[i]);
     }
   }
+  // Genweights: Initialize the weightnames for the generator, that was used for this sample
+  bool generatorflag;
+  if (usedGenerator == "POWHEG"){ generatorflag = genweights.SetGenerator(Generator::POWHEG); }
+  else if (usedGenerator == "aMC"){ generatorflag = genweights.SetGenerator(Generator::aMC);}
+  else if (usedGenerator == "MadGraph"){ generatorflag = genweights.SetGenerator(Generator::MadGraph);}
+  else if (usedGenerator == "pythia8"){ generatorflag = genweights.SetGenerator(Generator::pythia8);}
+  else{ generatorflag = false; }
+  
+  if (generatorflag) { std::cout << usedGenerator << " was set as Generator" << endl; }
+  else { std::cout << "No Generator was set for Genweight -> no GenWeights are written in tree" << endl; }
 }
 
 
@@ -1231,30 +1245,10 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
     
     //weights["Weight_Q2up"] = beanHelper.GetQ2ScaleUp(event[0]);
     //weights["Weight_Q2down"] = beanHelper.GetQ2ScaleDown(event[0]);
-    if(dogenweights)  {
-      if (LHEEvent.weights().size() >= 98) {
-    //Weight for Scale Variations: Weight_muR_muF
-	weights["Weight_muRnmuFup"] = LHEEvent.weights()[1].wgt;
-	weights["Weight_muRnmuFdown"] = LHEEvent.weights()[2].wgt;
-	weights["Weight_muRupmuFn"] = LHEEvent.weights()[3].wgt;
-	weights["Weight_muRupmuFup"] = LHEEvent.weights()[4].wgt;
-	weights["Weight_muRdownmuFn"] = LHEEvent.weights()[6].wgt;
-	weights["Weight_muRdownmuFdown"] = LHEEvent.weights()[8].wgt;
-      }
-      else {
-	dogenweights = false;
-      }
-    }
-    if (dogenweights == false) {
-      weights["Weight_muRnmuFup"] = -2.0;
-      weights["Weight_muRnmuFdown"] = -2.0;
-      weights["Weight_muRupmuFn"] = -2.0;
-      weights["Weight_muRupmuFup"] = -2.0;
-      weights["Weight_muRdownmuFn"] = -2.0;
-      weights["Weight_muRdownmuFdown"] = -2.0;
-    }
- 
+    
 
+    //Add Genweights to the weight map
+    genweights.GetGenWeights(weights, LHEEvent, dogenweights);
   }
   
   
