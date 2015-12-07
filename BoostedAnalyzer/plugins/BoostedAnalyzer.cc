@@ -1182,18 +1182,16 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   puWeights_.compute(eventInfo);
   puweight = puWeights_.nominalWeight();
   
-  weight *= xsweight*csvweight*puweight*topptweight;
+  weight *= xsweight*csvweight*puweight;
   weights["Weight"] = weight;
   weights["Weight_XS"] = xsweight;
   weights["Weight_CSV"] = csvweight;
   weights["Weight_PU"] = puweight;
-  weights["Weight_TopPt"] = topptweight;
+  //  weights["Weight_TopPt"] = topptweight;
   weights["Weight_PV"] = pvWeight.GetWeight(selectedPVs.size());
   
   bool doSystematics=true;  
   if(doSystematics && systype != sysType::JESup && systype != sysType::JESup && systype != sysType::JERup && systype != sysType::JERdown) {
-    //weights["Weight_TopPtup"] = beanHelper.GetTopPtweightUp(mcparticlesStatus3)/topptweight;
-    //weights["Weight_TopPtdown"] = beanHelper.GetTopPtweightDown(mcparticlesStatus3)/topptweight;
 
     weights["Weight_CSVLFup"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,9, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
     weights["Weight_CSVLFdown"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,10, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
