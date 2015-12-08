@@ -13,7 +13,7 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVar("BDTOhio_v2_output");
   vars.InitVar("BDT_v3_output");
   vars.InitVar("BDT_v4_output");
-  vars.InitVar("BDT_common");
+  vars.InitVar("BDT_common_output");
 
   map<string,float> bdtinputs2=bdtohio2.GetVariablesOfLastEvaluation();
   for(auto it=bdtinputs2.begin(); it!=bdtinputs2.end(); it++){
@@ -32,7 +32,7 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 
   map<string,float> bdtinputs_common=bdt4.GetVariablesOfLastEvaluation();
   for(auto it=bdtinputs_common.begin(); it!=bdtinputs_common.end(); it++){
-    vars.InitVar("BDT_common_"+it->first);
+    vars.InitVar("BDT_common_input_"+it->first);
   }
 
   initialized=true;
@@ -82,11 +82,11 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
   }
 
   float bdtoutput_common=commonBDT.GetBDTOutput(lepvecs, jetvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
-  vars.FillVar("BDT_v_common_output",bdtoutput_common);
+  vars.FillVar("BDT_common_output",bdtoutput_common);
   if(commonBDT.GetCategoryOfLastEvaluation()!="none"){
       map<string,float> bdtinputs_common=commonBDT.GetVariablesOfLastEvaluation();
       for(auto it=bdtinputs_common.begin(); it!=bdtinputs_common.end(); it++){
-	  vars.FillVar("BDT_v_common_input_"+it->first,it->second);
+	  vars.FillVar("BDT_common_input_"+it->first,it->second);
       }
   }
 
