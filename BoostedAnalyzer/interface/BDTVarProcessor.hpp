@@ -4,8 +4,9 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v2.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
-#include "TTH/StandaloneBDT/interface/BDTClassifier.hpp"
+#include "TTH/StandaloneBDT/interface/BDTClassifier.h"
 #include "MiniAOD/MiniAODHelper/interface/LJ_BDT_v4.hpp"
+#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "TMVA/Reader.h"
 
 class BDTVarProcessor: public TreeProcessor{
