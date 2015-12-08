@@ -16,6 +16,7 @@
 <use name="MiniAOD/MiniAODHelper"/>
 <use name="BoostedTTH/TTHReconstruction"/>
 <use name="BoostedTTH/MatrixElements"/>
+<use name="TTH/StandaloneBDT"/>
 <export>
   <lib   name="1"/>
 </export>
