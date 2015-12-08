@@ -4,7 +4,9 @@ using namespace std;
 BDTVarProcessor::BDTVarProcessor():
     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
-    bdt4(LJ_BDT_v4(string(getenv("CMSSW_BASE"))+"/src/MiniAOD/MiniAODHelper/data/bdtweights/V4weights"))
+    bdt4(LJ_BDT_v4(string(getenv("CMSSW_BASE"))+"/src/MiniAOD/MiniAODHelper/data/bdtweights/V4weights")),
+    commonBDT4(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/StandaloneBDT/data/bdtweights_v4/")),
+    commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/StandaloneBDT/data/bdtweights_v5/"))
 {}
 BDTVarProcessor::~BDTVarProcessor(){}
 
@@ -13,7 +15,8 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVar("BDTOhio_v2_output");
   vars.InitVar("BDT_v3_output");
   vars.InitVar("BDT_v4_output");
-  vars.InitVar("BDT_common_output");
+  vars.InitVar("BDT_common4_output");
+  vars.InitVar("BDT_common5_output");
 
   map<string,float> bdtinputs2=bdtohio2.GetVariablesOfLastEvaluation();
   for(auto it=bdtinputs2.begin(); it!=bdtinputs2.end(); it++){
@@ -30,9 +33,13 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
     vars.InitVar("BDT_v4_input_"+it->first);
   }
 
-  map<string,float> bdtinputs_common=bdt4.GetVariablesOfLastEvaluation();
-  for(auto it=bdtinputs_common.begin(); it!=bdtinputs_common.end(); it++){
-    vars.InitVar("BDT_common_input_"+it->first);
+  map<string,float> bdtinputs_common4=commonBDT4.GetVariablesOfLastEvaluation();
+  for(auto it=bdtinputs_common4.begin(); it!=bdtinputs_common4.end(); it++){
+    vars.InitVar("BDT_common4_input_"+it->first);
+  }
+  map<string,float> bdtinputs_common5=commonBDT4.GetVariablesOfLastEvaluation();
+  for(auto it=bdtinputs_common5.begin(); it!=bdtinputs_common5.end(); it++){
+    vars.InitVar("BDT_common5_input_"+it->first);
   }
 
   initialized=true;
@@ -81,14 +88,24 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
       loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
   }
 
-  float bdtoutput_common=commonBDT.GetBDTOutput(lepvecs, jetvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
-  vars.FillVar("BDT_common_output",bdtoutput_common);
-  if(commonBDT.GetCategoryOfLastEvaluation()!="none"){
-      map<string,float> bdtinputs_common=commonBDT.GetVariablesOfLastEvaluation();
-      for(auto it=bdtinputs_common.begin(); it!=bdtinputs_common.end(); it++){
-	  vars.FillVar("BDT_common_input_"+it->first,it->second);
+  float bdtoutput_common4=commonBDT4.GetBDTOutput(lepvecs, jetvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
+  vars.FillVar("BDT_common4_output",bdtoutput_common4);
+  if(commonBDT4.GetCategoryOfLastEvaluation()!="none"){
+      map<string,float> bdtinputs_common4=commonBDT4.GetVariablesOfLastEvaluation();
+      for(auto it=bdtinputs_common4.begin(); it!=bdtinputs_common4.end(); it++){
+	  vars.FillVar("BDT_common4_input_"+it->first,it->second);
       }
   }
+
+  float bdtoutput_common5=commonBDT5.GetBDTOutput(lepvecs, jetvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
+  vars.FillVar("BDT_common5_output",bdtoutput_common5);
+  if(commonBDT5.GetCategoryOfLastEvaluation()!="none"){
+      map<string,float> bdtinputs_common5=commonBDT5.GetVariablesOfLastEvaluation();
+      for(auto it=bdtinputs_common5.begin(); it!=bdtinputs_common5.end(); it++){
+	  vars.FillVar("BDT_common5_input_"+it->first,it->second);
+      }
+  }
+
 
 
 }
