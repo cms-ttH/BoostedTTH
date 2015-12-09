@@ -185,6 +185,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
       /** write systematics trees */
       bool makeSystematicsTrees;
+      bool doJERsystematic;
 
       /** generator weigths */
       bool dogenweights;
@@ -309,6 +310,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   dumpSyncExe2 = iConfig.getParameter<bool>("dumpSyncExe2");
 
   makeSystematicsTrees = iConfig.getParameter<bool>("makeSystematicsTrees");
+  doJERsystematic = iConfig.getParameter<bool>("doJERsystematic");
   usedGenerator = iConfig.getParameter<std::string>("generatorName");
   outfileName = iConfig.getParameter<std::string>("outfileName");
   outfileNameNominal=outfileName;
@@ -388,8 +390,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   if(makeSystematicsTrees){
     cutflow_jesup.Init();
     cutflow_jesdown.Init();
-    cutflow_jerup.Init();
-    cutflow_jerdown.Init();
+    if(doJERsystematic){
+	cutflow_jerup.Init();
+	cutflow_jerdown.Init();
+    }
   }
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
   int nselection=0;
@@ -429,8 +433,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     if(makeSystematicsTrees){
       selections.back()->InitCutflow(cutflow_jesup);
       selections.back()->InitCutflow(cutflow_jesdown);
-      selections.back()->InitCutflow(cutflow_jerup);
-      selections.back()->InitCutflow(cutflow_jerdown);
+      if(doJERsystematic){
+	  selections.back()->InitCutflow(cutflow_jerup);
+	  selections.back()->InitCutflow(cutflow_jerdown);
+      }
     }
     
     nselection++;     
@@ -447,8 +453,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
       // this is are the usual tree names
       treewriter_jesup.Init(outfileNameJESup);
       treewriter_jesdown.Init(outfileNameJESdown);
-      treewriter_jerup.Init(outfileNameJERup);
-      treewriter_jerdown.Init(outfileNameJERdown);
+      if(doJERsystematic){
+	  treewriter_jerup.Init(outfileNameJERup);
+	  treewriter_jerdown.Init(outfileNameJERdown);
+      }
   }
 
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
@@ -544,8 +552,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     for(uint i=0; i<tps.size();i++){
       treewriter_jesup.AddTreeProcessor(tps[i],tpsn[i]);
       treewriter_jesdown.AddTreeProcessor(tps[i],tpsn[i]);
-      treewriter_jerup.AddTreeProcessor(tps[i],tpsn[i]);
-      treewriter_jerdown.AddTreeProcessor(tps[i],tpsn[i]);
+      if(doJERsystematic){
+	  treewriter_jerup.AddTreeProcessor(tps[i],tpsn[i]);
+	  treewriter_jerdown.AddTreeProcessor(tps[i],tpsn[i]);
+      }
     }
   }
   // Genweights: Initialize the weightnames for the generator, that was used for this sample
@@ -794,7 +804,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> selectedJetsSingleTop_jerup;
   std::vector<pat::Jet> selectedJetsSingleTop_jerdown;
   
-  if(makeSystematicsTrees){
+  if(makeSystematicsTrees && doJERsystematic){
     correctedJets_unsorted_jerup = helper.GetCorrectedJets(cleanJets, iEvent, iSetup, sysType::JERup);
     correctedJets_unsorted_jerdown = helper.GetCorrectedJets(cleanJets, iEvent, iSetup, sysType::JERdown);
 
@@ -1093,8 +1103,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   if(makeSystematicsTrees){
     cutflow_jesup.EventSurvivedStep("all",input_jesup.weights.at("Weight"));
     cutflow_jesdown.EventSurvivedStep("all",input_jesdown.weights.at("Weight"));
-    cutflow_jerup.EventSurvivedStep("all",input_jerup.weights.at("Weight"));
-    cutflow_jerdown.EventSurvivedStep("all",input_jerdown.weights.at("Weight"));
+    if(doJERsystematic){
+	cutflow_jerup.EventSurvivedStep("all",input_jerup.weights.at("Weight"));
+	cutflow_jerdown.EventSurvivedStep("all",input_jerdown.weights.at("Weight"));
+    }
   }
   bool selected_nominal=true;
 
@@ -1139,18 +1151,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	selected_jesdown=false;
       }
     }
-    bool selected_jerdown=true;
-    for(size_t i=0; i<selections.size() && selected_jerdown; i++){
-      if(!selections.at(i)->IsSelected(input_jerdown,cutflow_jerdown)){
-	selected_jerdown=false;
-      }
-    }
-    bool selected_jerup=true;
-    for(size_t i=0; i<selections.size() && selected_jerup; i++){
-      if(!selections.at(i)->IsSelected(input_jerup,cutflow_jerup)){
-	selected_jerup=false;
-      }
-    }
     // write systematically shifted trees
     if(selected_jesup){
       treewriter_jesup.Process(input_jesup);
@@ -1158,11 +1158,25 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if(selected_jesdown){
       treewriter_jesdown.Process(input_jesdown);
     }
-    if(selected_jerup){
-      treewriter_jerup.Process(input_jerup);
-    }
-    if(selected_jerdown){
-      treewriter_jerdown.Process(input_jerdown);
+    if(doJERsystematic){
+	bool selected_jerdown=true;
+	for(size_t i=0; i<selections.size() && selected_jerdown; i++){
+	    if(!selections.at(i)->IsSelected(input_jerdown,cutflow_jerdown)){
+		selected_jerdown=false;
+	    }
+	}
+	bool selected_jerup=true;
+	for(size_t i=0; i<selections.size() && selected_jerup; i++){
+	    if(!selections.at(i)->IsSelected(input_jerup,cutflow_jerup)){
+		selected_jerup=false;
+	    }
+	}
+	if(selected_jerup){
+	    treewriter_jerup.Process(input_jerup);
+	}
+	if(selected_jerdown){
+	    treewriter_jerdown.Process(input_jerdown);
+	}
     }
   }
 
@@ -1282,17 +1296,20 @@ void BoostedAnalyzer::endJob()
   if(makeSystematicsTrees){
     std::ofstream fout_jesup(outfileNameJESup+"_Cutflow.txt");
     std::ofstream fout_jesdown(outfileNameJESdown+"_Cutflow.txt");
-    std::ofstream fout_jerup(outfileNameJERup+"_Cutflow.txt");
-    std::ofstream fout_jerdown(outfileNameJERdown+"_Cutflow.txt");
     cutflow_jesup.Print(fout_jesup);
     cutflow_jesdown.Print(fout_jesdown);
-    cutflow_jerup.Print(fout_jerup);
-    cutflow_jerdown.Print(fout_jerdown);
-        
     fout_jesup.close();
     fout_jesdown.close();
-    fout_jerup.close();
-    fout_jerdown.close();
+
+    if(doJERsystematic){
+	std::ofstream fout_jerup(outfileNameJERup+"_Cutflow.txt");
+	std::ofstream fout_jerdown(outfileNameJERdown+"_Cutflow.txt");
+	cutflow_jerup.Print(fout_jerup);
+	cutflow_jerdown.Print(fout_jerdown);
+	fout_jerup.close();
+	fout_jerdown.close();
+    
+    }
   }
 }
 // ------------ method called when starting to processes a run ------------
