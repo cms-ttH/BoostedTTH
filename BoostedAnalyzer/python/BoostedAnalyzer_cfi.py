@@ -24,6 +24,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     additionalPUWeights = cms.VPSet(AdditionalPUWeights),
 
     makeSystematicsTrees = cms.bool(False),
+    doJERsystematic = cms.bool(False),
     generatorName = cms.string("notSpecified"),
 
     useFatJets = cms.bool(True),
