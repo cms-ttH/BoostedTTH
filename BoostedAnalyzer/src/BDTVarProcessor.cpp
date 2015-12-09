@@ -5,8 +5,8 @@ BDTVarProcessor::BDTVarProcessor():
     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
     bdt4(LJ_BDT_v4(string(getenv("CMSSW_BASE"))+"/src/MiniAOD/MiniAODHelper/data/bdtweights/V4weights")),
-    commonBDT4(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/StandaloneBDT/data/bdtweights_v4/")),
-    commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/StandaloneBDT/data/bdtweights_v5/"))
+    commonBDT4(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_v4/")),
+    commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_v5/"))
 {}
 BDTVarProcessor::~BDTVarProcessor(){}
 
