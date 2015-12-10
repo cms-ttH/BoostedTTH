@@ -81,6 +81,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SingleTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/MEMProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
@@ -517,6 +518,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new MEMProcessor(),"MEMProcessor");
+  }
   if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
   }
@@ -530,7 +534,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     treewriter_nominal.AddTreeProcessor(new DiLeptonVarProcessor(),"DiLeptonVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"TriggerVarProcessor")!=processorNames.end()) {
-      // TODO how to handle this?
+      // TODO how to handle this? -- what?
     treewriter_nominal.AddTreeProcessor(new TriggerVarProcessor(relevantTriggers),"TriggerVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"TTbarReconstructionVarProcessor")!=processorNames.end()) {
