@@ -88,7 +88,7 @@ void TTbarReconstructionVarProcessor::Process(const InputCollections& input,Vari
     if(input.genTopEvt.IsSemiLepton()){
       vector<TLorentzVector> bs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetHiggsDecayProductVecs());
       vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());
-      if(qs_true.size()==2){
+      if(bs_true.size()==2){
 	TLorentzVector bhad_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopHadDecayQuarkVec());
 	TLorentzVector blep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopLepDecayQuarkVec());
 	TLorentzVector lep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetLeptonVec());
