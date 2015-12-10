@@ -37,7 +37,7 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   for(auto it=bdtinputs_common4.begin(); it!=bdtinputs_common4.end(); it++){
     vars.InitVar("BDT_common4_input_"+it->first);
   }
-  map<string,float> bdtinputs_common5=commonBDT4.GetVariablesOfLastEvaluation();
+  map<string,float> bdtinputs_common5=commonBDT5.GetVariablesOfLastEvaluation();
   for(auto it=bdtinputs_common5.begin(); it!=bdtinputs_common5.end(); it++){
     vars.InitVar("BDT_common5_input_"+it->first);
   }
