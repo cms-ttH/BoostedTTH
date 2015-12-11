@@ -19,6 +19,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     recorrectMET = cms.bool(True),
 
     makeSystematicsTrees = cms.bool(False),
+    doJERsystematic = cms.bool(False),
     generatorName = cms.string("notSpecified"),
 
     useFatJets = cms.bool(False),
