@@ -33,6 +33,11 @@ Follow These Steps:
     cd BoostedTTH
     git checkout --track origin/CMSSW_7_4_15
     cd -
+    mkdir TTH
+    cd TTH
+    git clone https://github.com/cms-ttH/CommonClassifier.git
+    source CommonClassifier/setup/install_mem.sh
+    cd ../..
     scram b -j10 
     
 ## Overview
