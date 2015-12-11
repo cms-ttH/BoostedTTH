@@ -1,9 +1,9 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionMEvarProcessor.hpp"
 
 using namespace std;
 
 // all configurations should be done in constructor
-ReconstructionVarProcessor::ReconstructionVarProcessor(){
+ReconstructionMEvarProcessor::ReconstructionMEvarProcessor(){
     tags_tth.push_back("TTHLikelihood");
     tags_ttbb.push_back("TTBBLikelihood");
     tags_tt.push_back("TTLikelihood");
@@ -20,10 +20,10 @@ ReconstructionVarProcessor::ReconstructionVarProcessor(){
     ratiotags_name.push_back("Likelihood");
     ratiotags_name.push_back("LikelihoodTimesME");
 }
-ReconstructionVarProcessor::~ReconstructionVarProcessor(){}
+ReconstructionMEvarProcessor::~ReconstructionMEvarProcessor(){}
 
 
-void ReconstructionVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
+void ReconstructionMEvarProcessor::Init(const InputCollections& input,VariableContainer& vars){
     vars.InitVar("Reco_highest_TopAndWHadLikelihood");
 
     for(auto tagname=alltags.begin();tagname!=alltags.end();tagname++){
@@ -96,7 +96,7 @@ void ReconstructionVarProcessor::Init(const InputCollections& input,VariableCont
     initialized=true;
 }
 
-void ReconstructionVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
+void ReconstructionMEvarProcessor::Process(const InputCollections& input,VariableContainer& vars){
     if(!initialized) cerr << "tree processor not initialized" << endl;
 
     if(input.selectedJets.size()<6) return;

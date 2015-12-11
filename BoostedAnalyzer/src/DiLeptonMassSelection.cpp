@@ -22,42 +22,91 @@ void DiLeptonMassSelection::InitCutflow(Cutflow& cutflow){
 
 bool DiLeptonMassSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     if(!initialized) cerr << "DiLeptonMassSelection not initialized" << endl;
-
+    
+    /*
     if((input.selectedMuonsDL.size()+input.selectedElectronsDL.size())<2) {
       return false;
     }
-
+    */
+    
     float mumu_mass=-1;
     float elel_mass=-1;
     float elmu_mass=-1;
     
-    if(input.selectedElectronsDL.size()>=2){
-      elel_mass=(input.selectedElectronsDL[0].p4()+input.selectedElectronsDL[1].p4()).M();
+    bool leadingele = false;
+    std::vector<math::XYZTLorentzVector> elevecs;
+    
+    if(input.selectedElectronsDL.size()>0){
+      elevecs.push_back(input.selectedElectronsDL[0].p4());
+      leadingele = true;
     }
-    if(input.selectedMuonsDL.size()>=2){
-      mumu_mass=(input.selectedMuonsDL[0].p4()+input.selectedMuonsDL[1].p4()).M();
+    
+    for(auto e=input.selectedElectronsLoose.begin();e!=input.selectedElectronsLoose.end();e++){
+
+      if(leadingele){
+        if(BoostedUtils::DeltaR(elevecs[0],e->p4())<0.001){
+          continue;
+        }
+      }
+      
+      elevecs.push_back(e->p4());
     }
-    if(input.selectedMuonsDL.size()>=1 && input.selectedElectronsDL.size()>=1) {
+    
+    bool leadingmu = false;
+    std::vector<math::XYZTLorentzVector> muvecs;
+    
+    if(input.selectedMuonsDL.size()>0){
+      muvecs.push_back(input.selectedMuonsDL[0].p4());
+      leadingmu = true;
+    }
+    
+    for(auto mu=input.selectedMuonsLoose.begin();mu!=input.selectedMuonsLoose.end();mu++){
+
+      if(leadingmu){
+        if(BoostedUtils::DeltaR(muvecs[0],mu->p4())<0.001){
+          continue;
+        }
+      }
+      
+      muvecs.push_back(mu->p4());
+    }
+    
+    if((elevecs.size()+muvecs.size())<2) {
+      return false;
+    }
+    
+    if(leadingele && elevecs.size()>=2){
+      elel_mass=(elevecs[0]+elevecs[1]).M();
+    }
+    if(leadingmu && muvecs.size()>=2){
+      mumu_mass=(muvecs[0]+muvecs[1]).M();
+    }
+    if((leadingele || leadingmu) && elevecs.size()>=1 && muvecs.size()>=1) {
+      elmu_mass=(elevecs[0]+muvecs[0]).M();
+      
+      /*
       if(cutForDifferentFlavors){ 
-      std::vector<math::XYZTLorentzVector> lepVecs =  BoostedUtils::GetLepVecs(input.selectedElectronsDL, input.selectedMuonsDL);
-      elmu_mass=(lepVecs.at(0)+lepVecs.at(1)).M();
+        elmu_mass=(elevecs[0]+muvecs[0]).M();
       }
       else{
         cutflow.EventSurvivedStep(selectionName,input.weights.at("Weight"));
         return true;
       }
+      */
     }
     
+    //cout << "elel_mass: " << elel_mass << "   mumu_mass: " << mumu_mass  << "   elmu_mass: " << elmu_mass << endl;
+    
     if(!invertCut){
-      // both dilepton masses are outside of the window
+      // both/all dilepton masses are outside of the window
       if( (elel_mass<minMass||elel_mass>maxMass) && (mumu_mass<minMass||mumu_mass>maxMass) && (cutForDifferentFlavors && (elmu_mass<minMass||elmu_mass>maxMass))){
-	return false;
+        return false;
       }
     }
     if(invertCut){
       // one dilepton mass is inside of the window
       if( (elel_mass>minMass&&elel_mass<maxMass) || (mumu_mass>minMass&&mumu_mass<maxMass) || (cutForDifferentFlavors && elmu_mass>minMass&&elmu_mass<maxMass) ){
-	return false;
+      	return false;
       }
     }
 

@@ -35,6 +35,19 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Jet_PileUpID","N_Jets" );
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
+
+  vars.InitVars( "LooseJet_E","N_LooseJets" );
+  vars.InitVars( "LooseJet_M","N_LooseJets" );
+  vars.InitVars( "LooseJet_Pt","N_LooseJets" );
+  vars.InitVars( "LooseJet_Phi","N_LooseJets" );
+  vars.InitVars( "LooseJet_Eta","N_LooseJets" );
+  vars.InitVars( "LooseJet_CSV","N_LooseJets" );
+  vars.InitVars( "LooseJet_Flav","N_LooseJets" );
+  vars.InitVars( "LooseJet_Charge","N_LooseJets" );
+  vars.InitVars( "LooseJet_PileUpID","N_LooseJets" );
+  vars.InitVars( "LooseJet_GenJet_Pt","N_LooseJets" );
+  vars.InitVars( "LooseJet_GenJet_Eta","N_LooseJets" );
+
   
   vars.InitVars( "TaggedJet_E","N_BTagsM" );
   vars.InitVars( "TaggedJet_M","N_BTagsM" );
@@ -53,12 +66,16 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Muon_Pt","N_LooseMuons" );
   vars.InitVars( "Muon_Eta","N_LooseMuons" );
   vars.InitVars( "Muon_Phi","N_LooseMuons" );
+  vars.InitVars( "Muon_RelIso","N_LooseMuons" );
+  vars.InitVars( "Muon_Charge","N_LooseMuons" );
   
   vars.InitVars( "Electron_E","N_LooseElectrons" );
   vars.InitVars( "Electron_M","N_LooseElectrons" );
   vars.InitVars( "Electron_Pt","N_LooseElectrons" );
   vars.InitVars( "Electron_Eta","N_LooseElectrons" );
   vars.InitVars( "Electron_Phi","N_LooseElectrons" );
+  vars.InitVars( "Electron_RelIso","N_LooseElectrons" );
+  vars.InitVars( "Electron_Charge","N_LooseElectrons" );
   
   vars.InitVar( "Evt_Pt_MET" );
   vars.InitVar( "Evt_Phi_MET" );
@@ -141,6 +158,29 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
       vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
     }
   }
+  // Loose Jets
+  for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){
+    int iJet = itJet - input.selectedJetsLoose.begin();
+    vars.FillVars( "LooseJet_E",iJet,itJet->energy() );
+    vars.FillVars( "LooseJet_M",iJet,itJet->mass() );
+    vars.FillVars( "LooseJet_Pt",iJet,itJet->pt() );
+    vars.FillVars( "LooseJet_Eta",iJet,itJet->eta() );
+    vars.FillVars( "LooseJet_Phi",iJet,itJet->phi() );
+    vars.FillVars( "LooseJet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "LooseJet_Flav",iJet,itJet->partonFlavour() );
+    vars.FillVars( "LooseJet_Charge",iJet,itJet->jetCharge() );
+    vars.FillVars( "LooseJet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
+    if(itJet->genJet()!=NULL){
+      vars.FillVars( "LooseJet_GenJet_Pt",iJet,itJet->genJet()->pt());
+      vars.FillVars( "LooseJet_GenJet_Eta",iJet,itJet->genJet()->eta());
+    }
+    else {
+      vars.FillVars( "LooseJet_GenJet_Pt",iJet,-9.0);
+      vars.FillVars( "LooseJet_GenJet_Eta",iJet,-9.0);
+    }
+  }
+
+  
   
   // Tagged Jets
   for(std::vector<pat::Jet>::iterator itTaggedJet = selectedTaggedJets.begin() ; itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet){
@@ -170,6 +210,10 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Electron_Pt",iEle,itEle->pt() );
     vars.FillVars( "Electron_Eta",iEle,itEle->eta() );
     vars.FillVars( "Electron_Phi",iEle,itEle->phi() ); 
+    if(itEle->hasUserFloat("relIso")){
+	vars.FillVars( "Electron_RelIso",iEle,itEle->userFloat("relIso") );
+    }
+    vars.FillVars( "Electron_Charge",iEle,itEle->charge() ); 
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     int iMu = itMu - input.selectedMuonsLoose.begin();
@@ -178,6 +222,10 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Muon_Pt",iMu,itMu->pt() );
     vars.FillVars( "Muon_Eta",iMu,itMu->eta() );
     vars.FillVars( "Muon_Phi",iMu,itMu->phi() );
+    if(itMu->hasUserFloat("relIso")){
+	vars.FillVars( "Muon_RelIso",iMu,itMu->userFloat("relIso") );
+    }
+    vars.FillVars( "Muon_Charge",iMu,itMu->charge() );
   }
   
   vars.FillVar( "Evt_Pt_MET",input.pfMET.pt() );

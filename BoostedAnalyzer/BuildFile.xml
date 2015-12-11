@@ -1,6 +1,7 @@
 <use name="root"/>
 <lib name="TMVA"/>
 <use name="FWCore/Framework"/>
+<use name="FWCore/MessageLogger"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
 <use name="FWCore/Utilities"/>
@@ -15,6 +16,7 @@
 <use name="MiniAOD/MiniAODHelper"/>
 <use name="BoostedTTH/TTHReconstruction"/>
 <use name="BoostedTTH/MatrixElements"/>
+<use name="TTH/CommonClassifier"/>
 <export>
   <lib   name="1"/>
 </export>

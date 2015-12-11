@@ -13,6 +13,11 @@ void ReconstructionMCMatching::Setup(TLorentzVector b_had_, TLorentzVector q1_, 
   b_lep=b_lep_;
   lep=lep_;
   nu=nu_;
+  w_had=q1+q2;
+  w_lep=lep+nu;
+  top_had=b_had+q1+q2;
+  top_lep=b_lep+lep+nu;
+  higgs=b1+b2;
   setupMC=2;
 }
 void ReconstructionMCMatching::Setup(TLorentzVector b_had_, TLorentzVector q1_, TLorentzVector q2_, TLorentzVector b_lep_, TLorentzVector lep_, TLorentzVector nu_){
@@ -22,6 +27,10 @@ void ReconstructionMCMatching::Setup(TLorentzVector b_had_, TLorentzVector q1_, 
   b_lep=b_lep_;
   lep=lep_;
   nu=nu_;
+  w_had=q1+q2;
+  w_lep=lep+nu;
+  top_had=b_had+q1+q2;
+  top_lep=b_lep+lep+nu;
   setupMC=1;
 }
 
@@ -162,3 +171,94 @@ float ReconstructionMCMatching::SumDrTTH(Interpretation& i){
   return sumDr;
 }
 
+float ReconstructionMCMatching::DrH(Interpretation& i){
+    float dr=999;
+    if(higgs.Pt()>0.01 && i.Higgs().Pt()>0.01){
+	dr=higgs.DeltaR(i.Higgs());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrB1(Interpretation& i){
+    float dr=999;
+    if(b1.Pt()>0.01 && i.B1().Pt()>0.01){
+	dr=b1.DeltaR(i.B1());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrB2(Interpretation& i){
+    float dr=999;
+    if(b2.Pt()>0.01 && i.B2().Pt()>0.01){
+	dr=b2.DeltaR(i.B2());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrWHad(Interpretation& i){
+    float dr=999;
+    if(w_had.Pt()>0.01 && i.WHad().Pt()>0.01){
+	dr=w_had.DeltaR(i.WHad());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrQ1(Interpretation& i){
+    float dr=999;
+    if(q1.Pt()>0.01 && i.Q1().Pt()>0.01){
+	dr=q1.DeltaR(i.Q1());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrQ2(Interpretation& i){
+    float dr=999;
+    if(q2.Pt()>0.01 && i.Q2().Pt()>0.01){
+	dr=q2.DeltaR(i.Q2());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrWLep(Interpretation& i){
+    float dr=999;
+    if(w_lep.Pt()>0.01 && i.WLep().Pt()>0.01){
+	dr=w_lep.DeltaR(i.WLep());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrLep(Interpretation& i){
+    float dr=999;
+    if(lep.Pt()>0.01 && i.Lep().Pt()>0.01){
+	dr=lep.DeltaR(i.Lep());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrNu(Interpretation& i){
+    float dr=999;
+    if(nu.Pt()>0.01 && i.Nu().Pt()>0.01){
+	dr=nu.DeltaR(i.Nu());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrBLep(Interpretation& i){
+    float dr=999;
+    if(b_lep.Pt()>0.01 && i.BLep().Pt()>0.01){
+	dr=b_lep.DeltaR(i.BLep());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrBHad(Interpretation& i){
+    float dr=999;
+    if(b_had.Pt()>0.01 && i.BHad().Pt()>0.01){
+	dr=b_had.DeltaR(i.BHad());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrTopLep(Interpretation& i){
+    float dr=999;
+    if(top_lep.Pt()>0.01 && i.TopLep().Pt()>0.01){
+	dr=top_lep.DeltaR(i.TopLep());
+    }
+    return dr;
+}
+float ReconstructionMCMatching::DrTopHad(Interpretation& i){
+    float dr=999;
+    if(top_had.Pt()>0.01 && i.TopHad().Pt()>0.01){
+	dr=top_had.DeltaR(i.TopHad());
+    }
+    return dr;
+}

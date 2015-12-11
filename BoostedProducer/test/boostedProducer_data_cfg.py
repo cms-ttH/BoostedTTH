@@ -1,8 +1,11 @@
 import FWCore.ParameterSet.Config as cms
 # input
+isData=True
+
 process = cms.Process("p")
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('file:/pnfs/desy.de/cms/tier2/store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/141B9915-1F08-E511-B9FF-001E675A6AB3.root')
+                            fileNames = cms.untracked.vstring('/store/data/Run2015D/SingleElectron/MINIAOD/PromptReco-v4/000/258/159/00000/D0E6617B-186C-E511-8FEE-02163E01452F.root')
+#/store/mc/RunIISpring15MiniAODv2/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/00E46E74-C56D-E511-AA32-00266CFADD94.root')
                             #fileNames = cms.untracked.vstring('file:/pnfs/desy.de/cms/tier2/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0AB045B5-BB0C-E511-81FD-0025905A60B8.root')
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
@@ -120,36 +123,36 @@ addJetCollection(
 
 
 #adjust MC matching for all Boosted Jet collections
+if not isData:
 #HTT topjets
-process.patJetsHTTTopJetsPF.addGenJetMatch=False
-process.patJetPartonMatchHTTTopJetsPF.matched = "prunedGenParticles"
+    process.patJetsHTTTopJetsPF.addGenJetMatch=False
+    process.patJetPartonMatchHTTTopJetsPF.matched = "prunedGenParticles"
 #HTT subjets
-process.patJetsHTTSubjetsPF.addGenJetMatch=False
-process.patJetPartonMatchHTTSubjetsPF.matched = "prunedGenParticles"
+    process.patJetsHTTSubjetsPF.addGenJetMatch=False
+    process.patJetPartonMatchHTTSubjetsPF.matched = "prunedGenParticles"
 #SF fatjets
-process.patJetsSFFatJetsPF.addGenJetMatch=False
-process.patJetPartonMatchSFFatJetsPF.matched = "prunedGenParticles"
+    process.patJetsSFFatJetsPF.addGenJetMatch=False
+    process.patJetPartonMatchSFFatJetsPF.matched = "prunedGenParticles"
 #SF subjets
-process.patJetsSFSubjetsPF.addGenJetMatch=False
-process.patJetPartonMatchSFSubjetsPF.matched = "prunedGenParticles"
+    process.patJetsSFSubjetsPF.addGenJetMatch=False
+    process.patJetPartonMatchSFSubjetsPF.matched = "prunedGenParticles"
 #SF filterjets
-process.patJetsSFFilterjetsPF.addGenJetMatch=False
-process.patJetPartonMatchSFFilterjetsPF.matched = "prunedGenParticles"
+    process.patJetsSFFilterjetsPF.addGenJetMatch=False
+    process.patJetPartonMatchSFFilterjetsPF.matched = "prunedGenParticles"
 
 # all
-process.patJetPartons.particles = "prunedGenParticles"
+    process.patJetPartons.particles = "prunedGenParticles"
 
-#from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
-from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
-#process.ak4PFJetsCHS = ak4PFJets.clone(src = 'pfNoElectronsCHS', doAreaFastjet = True)
-process.ak4GenJets = ak4GenJets.clone(src = 'packedGenParticles')
+    from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
+    process.ak4GenJets = ak4GenJets.clone(src = 'packedGenParticles')
 
 # match boosted reco Jets to pat jets
 process.load('BoostedTTH.BoostedProducer.BoostedJetMatcher_cfi')
 
-# gen hadron matching for tt+X categorization
-process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+if not isData:
+    # gen hadron matching for tt+X categorization
+    process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+    process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
 # skim
 process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
@@ -168,7 +171,6 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.patJetsSFSubjetsPF
                                  *process.patJetsSFFilterjetsPF
                                  *process.BoostedJetMatcher)
-
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",

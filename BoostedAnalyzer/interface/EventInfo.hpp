@@ -26,7 +26,7 @@ public:
   
   // Pile Up Information
   int sumNVtx, numGenPV, nm1, n0, np1;
-  int sumTrueNVtx, numTruePV, nm1_true, n0_true, np1_true;
+  float sumTrueNVtx, numTruePV, nm1_true, n0_true, np1_true;
 
   bool firstVertexIsGood;
 
