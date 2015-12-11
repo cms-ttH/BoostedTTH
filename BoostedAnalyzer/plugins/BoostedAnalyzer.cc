@@ -652,8 +652,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Muon> rawMuons = muons;
   helper.AddMuonRelIso(rawMuons, coneSize::R04, corrType::deltaBeta,"relIso");
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( rawMuons, 25., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.1);
-  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( rawMuons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4 );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( rawMuons, 15., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4);
+  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( rawMuons, 20., muonID::muonTightDL, coneSize::R04, corrType::deltaBeta, 2.4 );
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( rawMuons, 15., muonID::muonTightDL, coneSize::R04, corrType::deltaBeta, 2.4);
 
   // ELECTRONS
   edm::Handle< edm::View<pat::Electron> > h_electrons;
@@ -666,9 +666,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Electron> electrons = helper.GetElectronsWithMVAid(h_electrons,h_mvaValues,h_mvaCategories);
   helper.AddElectronRelIso(electrons,coneSize::R03, corrType::rhoEA,effAreaType::spring15,"relIso");
   std::vector<pat::Electron> rawElectrons = electrons;
-  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVA80iso0p1, 2.1 );
-  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVA80, 2.4 );
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVA80, 2.4 );
+  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVA80iso0p15, 2.1 );
+  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVA80iso0p15, 2.4 );
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVA80iso0p15, 2.4 );
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
   iEvent.getByToken( EDMMETsToken,h_pfmet );
@@ -900,64 +900,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // Fill Event Info Object
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
   TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
-  
-  // Sync Output
-  
-  bool compare = false;
-  int compevent = -1;
-               
-  const int nEntries = 2;
-  int comparisonList[] = {3856066,304664}; 
-  
-  for(int i = 0;i<nEntries;i++){
-    if(eventInfo.evt == comparisonList[i]){
-      compare = true;
-      compevent = eventInfo.evt;
-      break;
-    }
-  }
-  
-  if(compare){
-    std::cout<<"Comparing Event "<<compevent<<std::endl;
-    
-    for(size_t i=0;i<muons.size();i++){
-      std::cout<<"muon "<<i<<","<<muons[i].pt()<<","<<muons[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedMuonsDL.size();i++){
-      std::cout<<"lead muon "<<i<<","<<selectedMuonsDL[i].pt()<<","<<selectedMuonsDL[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedMuonsLoose.size();i++){
-      std::cout<<"sub muon "<<i<<","<<selectedMuonsLoose[i].pt()<<","<<selectedMuonsLoose[i].eta()<<std::endl; 
-    }
-    
-    
-    for(size_t i=0;i<electrons.size();i++){
-      std::cout<<"electron "<<i<<","<<electrons[i].pt()<<","<<electrons[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedElectronsDL.size();i++){
-      std::cout<<"lead electron "<<i<<","<<selectedElectronsDL[i].pt()<<","<<selectedElectronsDL[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedElectronsLoose.size();i++){
-      std::cout<<"sub electron "<<i<<","<<selectedElectronsLoose[i].pt()<<","<<selectedElectronsLoose[i].eta()<<std::endl; 
-    }
-  }
-  
-  /*
-  if(eventInfo.evt == 3821537){
-    for(size_t ijet=0;ijet<pfjets.size();ijet++){
-      std::cout<<ijet<<","<<pfjets[ijet].pt()<<","<<pfjets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(pfjets[ijet])<<std::endl; 
-    }
-    for(size_t ijet=0;ijet<idJets.size();ijet++){
-      std::cout<<ijet<<","<<idJets[ijet].pt()<<","<<idJets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(idJets[ijet])<<std::endl; 
-    }
-    for(size_t ijet=0;ijet<cleanJets.size();ijet++){
-      std::cout<<ijet<<","<<cleanJets[ijet].pt()<<","<<cleanJets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(cleanJets[ijet])<<std::endl; 
-    }
-    for(size_t ijet=0;ijet<correctedJets_unsorted_nominal.size();ijet++){
-      std::cout<<ijet<<","<<correctedJets_unsorted_nominal[ijet].pt()<<","<<correctedJets_unsorted_nominal[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(correctedJets_unsorted_nominal[ijet])<<std::endl; 
-    }
-  }
-  */
 
   // FIGURE OUT SAMPLE
     
