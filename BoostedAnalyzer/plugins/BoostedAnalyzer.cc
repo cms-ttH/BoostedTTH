@@ -900,64 +900,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // Fill Event Info Object
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
   TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
-  
-  // Sync Output
-  
-  bool compare = false;
-  int compevent = -1;
-               
-  const int nEntries = 2;
-  int comparisonList[] = {3856066,304664}; 
-  
-  for(int i = 0;i<nEntries;i++){
-    if(eventInfo.evt == comparisonList[i]){
-      compare = true;
-      compevent = eventInfo.evt;
-      break;
-    }
-  }
-  
-  if(compare){
-    std::cout<<"Comparing Event "<<compevent<<std::endl;
-    
-    for(size_t i=0;i<muons.size();i++){
-      std::cout<<"muon "<<i<<","<<muons[i].pt()<<","<<muons[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedMuonsDL.size();i++){
-      std::cout<<"lead muon "<<i<<","<<selectedMuonsDL[i].pt()<<","<<selectedMuonsDL[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedMuonsLoose.size();i++){
-      std::cout<<"sub muon "<<i<<","<<selectedMuonsLoose[i].pt()<<","<<selectedMuonsLoose[i].eta()<<std::endl; 
-    }
-    
-    
-    for(size_t i=0;i<electrons.size();i++){
-      std::cout<<"electron "<<i<<","<<electrons[i].pt()<<","<<electrons[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedElectronsDL.size();i++){
-      std::cout<<"lead electron "<<i<<","<<selectedElectronsDL[i].pt()<<","<<selectedElectronsDL[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedElectronsLoose.size();i++){
-      std::cout<<"sub electron "<<i<<","<<selectedElectronsLoose[i].pt()<<","<<selectedElectronsLoose[i].eta()<<std::endl; 
-    }
-  }
-  
-  /*
-  if(eventInfo.evt == 3821537){
-    for(size_t ijet=0;ijet<pfjets.size();ijet++){
-      std::cout<<ijet<<","<<pfjets[ijet].pt()<<","<<pfjets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(pfjets[ijet])<<std::endl; 
-    }
-    for(size_t ijet=0;ijet<idJets.size();ijet++){
-      std::cout<<ijet<<","<<idJets[ijet].pt()<<","<<idJets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(idJets[ijet])<<std::endl; 
-    }
-    for(size_t ijet=0;ijet<cleanJets.size();ijet++){
-      std::cout<<ijet<<","<<cleanJets[ijet].pt()<<","<<cleanJets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(cleanJets[ijet])<<std::endl; 
-    }
-    for(size_t ijet=0;ijet<correctedJets_unsorted_nominal.size();ijet++){
-      std::cout<<ijet<<","<<correctedJets_unsorted_nominal[ijet].pt()<<","<<correctedJets_unsorted_nominal[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(correctedJets_unsorted_nominal[ijet])<<std::endl; 
-    }
-  }
-  */
 
   // FIGURE OUT SAMPLE
     
