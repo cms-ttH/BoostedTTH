@@ -652,8 +652,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Muon> rawMuons = muons;
   helper.AddMuonRelIso(rawMuons, coneSize::R04, corrType::deltaBeta,"relIso");
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( rawMuons, 25., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.1);
-  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( rawMuons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4 );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( rawMuons, 15., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4);
+  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( rawMuons, 20., muonID::muonTightDL, coneSize::R04, corrType::deltaBeta, 2.4 );
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( rawMuons, 15., muonID::muonTightDL, coneSize::R04, corrType::deltaBeta, 2.4);
 
   // ELECTRONS
   edm::Handle< edm::View<pat::Electron> > h_electrons;
@@ -666,9 +666,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Electron> electrons = helper.GetElectronsWithMVAid(h_electrons,h_mvaValues,h_mvaCategories);
   helper.AddElectronRelIso(electrons,coneSize::R03, corrType::rhoEA,effAreaType::spring15,"relIso");
   std::vector<pat::Electron> rawElectrons = electrons;
-  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVA80iso0p1, 2.1 );
-  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVA80, 2.4 );
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVA80, 2.4 );
+  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVA80iso0p15, 2.1 );
+  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVA80iso0p15, 2.4 );
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVA80iso0p15, 2.4 );
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
   iEvent.getByToken( EDMMETsToken,h_pfmet );
