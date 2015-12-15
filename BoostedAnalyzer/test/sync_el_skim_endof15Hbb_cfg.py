@@ -11,18 +11,18 @@ options = VarParsing ('analysis')
 # The following variables are already defined in VarParsing class:
 # maxEvents: singleton, int; default = -1
 # inputFiles: (comma separated, no spaces!) list, string: default empty
-options.register( "globalTag", "74X_mcRun2_asymptotic_v4", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "74X_dataRun2_v5", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     options.maxEvents = 10000000 # reset to 100 for testing
 if not options.inputFiles:
-    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/EndOf2015_HbbSync/ttHTobb_EndOf2015_HbbSync.root']
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/EndOf2015_HbbSync/el_skim_EndOf2015_HbbSync.root']
 
 # checks for correct values and consistency
-if "data" in options.globalTag.lower():
-    print "\n\nConfig ERROR: GT contains seems to be for data\n\n"
+if "mc" in options.globalTag.lower():
+    print "\n\nConfig ERROR: GT contains seems to be for mc\n\n"
     sys.exit()
 if not options.inputFiles:
     print "\n\nConfig ERROR: no inputFiles specified\n\n"
@@ -75,11 +75,8 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 )
 
 # load and run the boosted analyzer
-process.load("BoostedTTH.BoostedAnalyzer.EndOf2015HbbSync_cfi")
+process.load("BoostedTTH.BoostedAnalyzer.EndOf2015HbbSync_data_cfi")
 
-process.BoostedAnalyzer.outfileName = "sync_tth_endof15Hbb"
+process.BoostedAnalyzer.outfileName = "sync_el_skim_endof15Hbb"
 
-# load ele MVA producer
-process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
-
-process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
+process.p = cms.Path(process.BoostedAnalyzer)
