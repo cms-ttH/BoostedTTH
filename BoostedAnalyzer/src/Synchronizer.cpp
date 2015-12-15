@@ -170,7 +170,7 @@ void Synchronizer::DumpSyncExe2Header(std::ostream &out){
 
 void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, const int number){
   
-bool runOverData = true;
+bool runOverData = (input.sampleType == SampleType::data);
 
   // Setup Selections
   // Single Lepton Selection
@@ -330,6 +330,7 @@ bool runOverData = true;
   float mll=0;
   
   bool compare = false;
+  //bool compare = true;
   
   /*               
   const int nEntries = 6;
