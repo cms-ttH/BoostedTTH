@@ -27,17 +27,15 @@ Follow These Steps:
     git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV2-WithWeightFiles-v1_from-CMSSW_7_4_15
     git clone https://github.com/cms-ttH/MiniAOD.git
     cd MiniAOD
-    git checkout --track origin/EndOf15AlternativeEleID
     cd -
     git clone https://github.com/cms-ttH/BoostedTTH.git
     cd BoostedTTH
-    git checkout --track origin/CMSSW_7_4_15
     cd -
     mkdir TTH
     cd TTH
     git clone https://github.com/cms-ttH/CommonClassifier.git
     source CommonClassifier/setup/install_mem.sh
-    cd ../..
+    cd $CMSSW_BASE/src
     scram b -j10 
     
 ## Overview
