@@ -16,7 +16,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonMETSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonJetTagSelection.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
+#include "TTH/CommonClassifier/interface/MEMClassifier.h"
+#include "TTH/CommonClassifier/interface/BDTClassifier.h"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 
@@ -61,7 +62,8 @@ private:
     std::vector<Cutflow> dummycutflow_MET;
     
     TopTagger toptagger;
-    BDT_v3 bdt3;
+    MEMClassifier mem;
+    BDTClassifier bdt;
     bool initializedCutflowsWithSelections;
 };
 

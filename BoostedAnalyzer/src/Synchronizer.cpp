@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Synchronizer::Synchronizer ():toptagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root"),bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),initializedCutflowsWithSelections(false){
+Synchronizer::Synchronizer ():toptagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root"),initializedCutflowsWithSelections(false){
   cutflowSL_nominal.Init();
   cutflowSL_jesup.Init();
   cutflowSL_jesdown.Init();
@@ -516,9 +516,8 @@ bool runOverData = (input.sampleType == SampleType::data);
   MET_pt=input.pfMET.pt();
   MET_phi=input.pfMET.phi();
 
-  if(is_SL&&( (n_jets>=4&&n_btags>=3) || (n_jets>=6&&n_btags>=2))){
-    final_discriminant1=bdt3.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
-  }
+  //  final_discriminant1=
+  
    
   n_fatjets = int(input.selectedBoostedJets.size());
   if(input.selectedBoostedJets.size()>0){
