@@ -69,6 +69,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/THQJetSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/JetRegression.hpp"
+
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -188,6 +190,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       bool dogenweights;
       GenWeights genweights;
       std::string usedGenerator;
+
+
+      JetRegression bjetRegression;
 
   // TOKENS =========================
       /** pu summary data access token **/
@@ -553,6 +558,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   
   if (generatorflag) { std::cout << usedGenerator << " was set as Generator" << endl; }
   else { std::cout << "No Generator was set for Genweight -> no GenWeights are written in tree" << endl; }
+
+  //b-Jet Regression
+  //bjetRegression = JetRegression bjetRegression();
+
 }
 
 
@@ -1026,6 +1035,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // fill genTopEvt with tt(H) information
     genTopEvt.Fill(*h_genParticles,ttid_full);
   }
+
+
+  std::cout << "Vor evaluateRegressiion" << endl;
+  bjetRegression.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMRhoToken,  EDMJetsToken, selectedJets_nominal);
+  std::cout << "nach evaluateRegressiion" << endl;
+
 
   // DO REWEIGHTING
   map<string,float> weights = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
