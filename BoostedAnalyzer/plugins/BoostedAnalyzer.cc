@@ -1037,9 +1037,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
 
-  std::cout << "Vor evaluateRegressiion" << endl;
   bjetRegression.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMRhoToken,  EDMJetsToken, selectedJets_nominal);
-  std::cout << "nach evaluateRegressiion" << endl;
 
 
   // DO REWEIGHTING

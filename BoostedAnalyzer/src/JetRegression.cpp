@@ -89,9 +89,11 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
   vector<pat::Jet> const &pfjets = *h_pfjets;
   
   //Use alle pfjets for the lepton-jet-matching
+  
   matchLeptonswithJets(electrons, muons, pfjets);
+
   //cout << "Laufe über Jets" << endl;
-  //Toss stuff in Tree to evaluate
+  //Set variables for regression evaluation
   //cout << *h_rho << endl;
   //cout << &treevars[2] << endl;
   //cout << treevars[2] << endl;
@@ -99,7 +101,7 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
   //cout << Jets.size() << endl;
   for (size_t i = 0; i<Jets.size(); i++) {
     if (Jets.at(i).hadronFlavour() == 5){
-      cout << "Jet: " << i << "at " << &(Jets.at(i)) << " " << Jets.at(i).pt() << " "<< Jets.at(i).eta() << " " << Jets.at(i).mt() << " " << Jets.at(i).hadronFlavour()<< " " << Jets.at(i).charge() <<  endl;
+      cout << "Jet: " << i<< " - "<< &(Jets.at(i)) << " - " << (Jets.at(i)) << " " << Jets.at(i).charge() << " " << Jets.at(i).hadronFlavour() <<   endl;
       cout << "jet pT: " <<  Jets.at(i).pt() << endl;
       treevars[0] = Jets.at(i).pt();
       treevars[1] = Jets.at(i).pt() * Jets.at(i).jecFactor("Uncorrected");
@@ -112,21 +114,19 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
 	vector<pat::Electron*> JetElectrons; 
 	vector<pat::Muon*> JetMuons;
 	for(map<pat::Electron*, const pat::Jet*>::iterator eit= ElectronJetPairs.begin(); eit != ElectronJetPairs.end(); eit++) {
-	  cout << "e- " << eit->first << "| j " << eit->second << endl;
-	  //	  cout << "e- " << eit->first << "| j " << eit->second << " " << (eit->second)->pt() << " "<< (eit->second)->eta() << " " << (eit->second)->mt() << " " << (eit->second)->hadronFlavour() << " " << (eit->second)->charge() << " " <<  endl;
+	  cout << "e- " << eit->first << "| j " << eit->second << " - " << *(eit->second) << " " << eit->second->charge() << " " << eit->second->hadronFlavour() << endl;
 	  if( eit->second == &(Jets.at(i))  ){
 	    JetElectrons.push_back(eit->first);
 	  }
 	}
 	//cout << MuonJetPairs.size() << endl;
 	for(map<pat::Muon*, const pat::Jet*>::iterator mit= MuonJetPairs.begin(); mit != MuonJetPairs.end(); mit++) {
-	  cout << "m- " << mit->first <<  "| j " << mit->second << endl;
-	  //	  cout << "m- " << mit->first <<  endl;/*"| j " << mit->second << " " << (mit->second)->pt() << " "<< (mit->second)->eta() << " " << (mit->second)->mt() << " " << (mit->second)->hadronFlavour() << " " << (mit->second)->charge() << " " <<*/
-	  
+	  cout << "m- " << mit->first <<  "| j " << mit->second << " - " << *(mit->second) <<" " << mit->second->charge() << " " << mit->second->hadronFlavour() << endl;
 	  if( mit->second == &(Jets.at(i))  ){
 	    JetMuons.push_back(mit->first);
-	    }
-	}  
+	  }
+
+	}
 	if(JetElectrons.size() > 0 || JetMuons.size() > 0){
 	  if(JetElectrons.size() > 0){
 	    treevars[6] = BoostedUtils::GetTLorentzVector(JetElectrons.at(0)->p4()).Perp(TVector3(Jets.at(i).p4().x(),Jets.at(i).p4().y(),Jets.at(i).p4().z()));
@@ -172,7 +172,6 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
   inclusiveMuons.clear();
   ElectronJetPairs.clear();
   MuonJetPairs.clear();
-  
 }
 
 
@@ -229,10 +228,10 @@ void JetRegression::matchLeptonswithJets(const vector<pat::Electron>& electrons,
     }
     if (deltaR2Min < deltaR2Max && jmatch != -1){
       ElectronJetPairs[&(inclusiveElectrons[i])] = &(jets[jmatch]);
-    }
+    }/*
     else {
       ElectronJetPairs[&(inclusiveElectrons[i])] = 0;
-    }
+      }*/
   }
   //Match Muons with Jets
   for (size_t i = 0; i < inclusiveMuons.size(); i++) {
@@ -248,10 +247,10 @@ void JetRegression::matchLeptonswithJets(const vector<pat::Electron>& electrons,
     }
     if (deltaR2Min < deltaR2Max && jmatch != -1){
       MuonJetPairs[&(inclusiveMuons[i])] = &(jets[jmatch]);
-    }
+    }/*
     else {
-      MuonJetPairs[&(inclusiveMuons[i])] = 0;
-    }
+      MuonJetPairs[&(inclusiveMuons[i])] = &(NULL);
+      }*/
   }
 }
 
