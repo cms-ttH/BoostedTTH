@@ -73,6 +73,7 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
     'ak4PFchsL2Relative',
     'ak4PFchsL3Absolute')
 )
+process.ak4PFchsL1L2L3.correctors.append('ak4PFchsResidual') # add residual JEC for data
 
 # load and run the boosted analyzer
 process.load("BoostedTTH.BoostedAnalyzer.EndOf2015HbbSync_data_cfi")
