@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Synchronizer::Synchronizer ():toptagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root"),initializedCutflowsWithSelections(false){
+Synchronizer::Synchronizer (bool calcFinalDiscriminant_):toptagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root"),initializedCutflowsWithSelections(false),calcFinalDiscriminant(calcFinalDiscriminant_){
   cutflowSL_nominal.Init();
   cutflowSL_jesup.Init();
   cutflowSL_jesdown.Init();
@@ -516,9 +516,68 @@ bool runOverData = (input.sampleType == SampleType::data);
   MET_pt=input.pfMET.pt();
   MET_phi=input.pfMET.phi();
 
-  //  final_discriminant1=
-  
-   
+
+  // FINAL DISCRIMINANT
+  if(calcFinalDiscriminant){
+      vector<TLorentzVector> lepvecs;
+      vector<double> lepcharges;
+      for(auto& el: input.selectedElectrons){
+	  lepcharges.push_back(el.charge());
+	  lepvecs.push_back(BoostedUtils::GetTLorentzVector(el.p4()));
+      }
+      for(auto& mu: input.selectedMuons){
+	  lepcharges.push_back(mu.charge());
+	  lepvecs.push_back(BoostedUtils::GetTLorentzVector(mu.p4()));
+      }
+      vector<TLorentzVector> jetvecs;
+      vector<TLorentzVector> loose_jetvecs;
+      TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.pfMET.p4());
+      vector<double> jetcsvs;
+      int ntags=0;
+      vector<double> loose_jetcsvs;
+      for(uint i=0; i<input.selectedJets.size(); i++){
+	  if(i==8) break;
+	  jetvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedJets[i].p4()));
+	  jetcsvs.push_back(MiniAODHelper::GetJetCSV(input.selectedJets[i]));
+	  if(jetcsvs.back()>0.89) ntags++;
+      }
+      if( ( (jetvecs.size()>=4 && ntags>=3) || (jetvecs.size()>=6 && ntags>=2) ) && lepvecs.size()==1 ){
+	  //calculate MEM
+	  bool verbose=true;
+	  if(verbose){
+	      cout << "event:run:lumi" << endl;
+	      cout << input.eventInfo.evt <<":"<<input.eventInfo.run <<":"<<input.eventInfo.lumiBlock << endl;
+	      cout << "leptons (pt,eta,phi,m)" << endl;
+	      for(auto& v: lepvecs){      
+	  cout << v.Pt() << ", " << v.Eta() << ", " << v.Phi() << ", " << v.M() <<endl;
+	      }
+	      cout << "charges" << endl;
+	      for(auto& c: lepcharges){
+		  cout << c << endl;
+	      }
+	      cout << "jets (pt,eta,phi,m)" << endl;
+	      for(auto& v: jetvecs){
+		  cout << v.Pt() << ", " << v.Eta() << ", " << v.Phi() << ", " << v.M() <<endl;
+	      }
+	      cout << "csvs" << endl;
+	      for(auto& c: jetcsvs){
+		  cout << c << endl;
+	      }
+	      cout << "met" << endl;
+	      auto v=metP4;
+	      cout << v.Pt() << ", " << v.Eta() << ", " << v.Phi() << ", " << v.M() <<endl;
+	      
+	  }
+	  
+	  MEMResult result=mem.GetOutput(lepvecs,lepcharges, jetvecs, jetcsvs, jetvecs, jetcsvs,metP4);
+	  final_discriminant1=bdt.GetBDTOutput(lepvecs, jetvecs, jetcsvs, jetvecs, jetcsvs,metP4);
+	  final_discriminant2=result.p;
+	  if(verbose){
+	      cout <<"mem: " << result.p << endl;
+	  }
+      }
+  }
+      
   n_fatjets = int(input.selectedBoostedJets.size());
   if(input.selectedBoostedJets.size()>0){
     pt_fatjet_1=input.selectedBoostedJets.at(0).fatjet.pt();

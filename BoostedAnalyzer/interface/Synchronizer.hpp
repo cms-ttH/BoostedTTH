@@ -24,7 +24,7 @@
 class Synchronizer{
 
 public:
-    Synchronizer();
+    Synchronizer(bool calcFinalDiscriminant=false);
     ~Synchronizer ();
     void DumpSyncExe1(int nfile,const InputCollections& input);
     void DumpSyncExe1(const InputCollections& input, std::ostream &out);
@@ -65,6 +65,8 @@ private:
     MEMClassifier mem;
     BDTClassifier bdt;
     bool initializedCutflowsWithSelections;
+
+    bool calcFinalDiscriminant;
 };
 
 
