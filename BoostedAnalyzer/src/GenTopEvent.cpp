@@ -37,6 +37,11 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
   std::vector<int> c_aftertoptype_of_genjet(customGenJets.size(),3);
   std::vector<const reco::GenParticle*> genjet_leading_chadron(customGenJets.size(),0);
 
+  if(!isFilled){
+      std::cerr << "fill top info before filling addtional info" << std::endl;
+  }
+  auto tt_decay_leptons=GetAllLeptonVecs();
+  auto tt_decay_quarks=GetAllWQuarkVecs();
 
   // loop over all bhadrons
   for(uint i=0; i<genBHadIndex.size();i++){
@@ -152,6 +157,31 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
       additional_c_genjet_nc_aftertop.push_back(additionalnc_aftertop_per_genjet[i]);
       additional_c_genjet_aftertoptype.push_back(c_aftertoptype_of_genjet[i]);
       additional_c_genjet_hadron.push_back(genjet_leading_chadron[i] != 0 ? *(genjet_leading_chadron[i]) : reco::GenParticle());
+    }
+    // no b and no c hadron in jet
+    else {
+	bool match=false;
+	for(auto const &v : tt_decay_leptons){
+	    if(BoostedUtils::DeltaR(v,customGenJets[i].p4())<wMatchR){
+		match=true;
+		break;
+	    }
+	}
+	if(!match){
+	    for(auto const &v : tt_decay_quarks){
+		if(BoostedUtils::DeltaR(v,customGenJets[i].p4())<wMatchR){
+		    match=true;
+		    break;
+		}
+		
+	    }
+	}
+	if(match){
+	    w_genjets.push_back(customGenJets[i]);
+	}
+	else{
+	    additional_light_genjets.push_back(customGenJets[i]);
+	}
     }
   }
   ttxIsFilled=true;

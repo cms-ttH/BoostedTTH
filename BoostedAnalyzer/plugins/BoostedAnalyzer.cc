@@ -926,6 +926,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   GenTopEvent genTopEvt;
   int ttid=-1;
   int ttid_full=-1;
+  if(!isData&&foundT&&foundTbar) {
+    // fill genTopEvt with tt(H) information
+    genTopEvt.Fill(*h_genParticles,ttid_full);
+  }
   if(!isData&&useGenHadronMatch&&foundT&&foundTbar){
     /**** tt+X categorization ****/
     // Reading gen jets from the event
@@ -983,10 +987,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     else if(ttid==43||ttid==44||ttid==45) sampleType = SampleType::ttcc;    
   }
   else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
-  if(!isData&&foundT&&foundTbar) {
-    // fill genTopEvt with tt(H) information
-    genTopEvt.Fill(*h_genParticles,ttid_full);
-  }
 
   // DO REWEIGHTING
   map<string,float> weights = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);

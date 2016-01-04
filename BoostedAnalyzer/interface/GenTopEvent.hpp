@@ -1,6 +1,7 @@
 #ifndef BOOSTEDTTH_BOOSTEDANALYZER_GENTOPEVENT_HPP
 #define BOOSTEDTTH_BOOSTEDANALYZER_GENTOPEVENT_HPP
 #include <vector>
+#include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
 
@@ -183,6 +184,10 @@ private:
   std::vector<int> additional_c_hadron_mother;
 
   reco::GenParticle w_c_hadron;
+
+  std::vector<reco::GenJet> w_genjets;
+  std::vector<reco::GenJet> additional_light_genjets;
+  const float wMatchR=0.4;
 
   bool topIsHadronic;
   bool topbarIsHadronic;
