@@ -170,22 +170,22 @@ void Synchronizer::DumpSyncExe2Header(std::ostream &out){
 
 void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, const int number){
   
-bool runOverData = (input.sampleType == SampleType::data);
+    bool runOverData = (input.sampleType == SampleType::data);
 
   // Setup Selections
   // Single Lepton Selection
-  if(leptonSelections.size()==0){
-    leptonSelections.push_back(new VertexSelection());
-    if(runOverData) {
+    if(leptonSelections.size()==0){
+	leptonSelections.push_back(new VertexSelection());
+	if(runOverData) {
 	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*","HLT_IsoMu18_v*"));
-    } else {
+	} else {
 	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_WP85_Gsf_v*","HLT_IsoMu17_eta2p1_v*"));
-    }
-    leptonSelections.push_back(new JetTagSelection(4,2));
+	}
+	leptonSelections.push_back(new JetTagSelection(4,2));
     
-    cout << "SL Selection Step 0: VertexSelection" << endl;
-    cout << "SL Selection Step 1: LeptonSelection" << endl;
-    cout << "SL Selection Step 2: JetTagSelection" << endl;
+	cout << "SL Selection Step 0: VertexSelection" << endl;
+	cout << "SL Selection Step 1: LeptonSelection" << endl;
+	cout << "SL Selection Step 2: JetTagSelection" << endl;
   }
   if(!initializedCutflowsWithSelections){
     for(uint i=0; i<leptonSelections.size(); i++){
@@ -662,9 +662,11 @@ bool runOverData = (input.sampleType == SampleType::data);
 
 void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper){
   DumpSyncExe2(input,input_DL,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal,0);
-  DumpSyncExe2(input_jesup,input_DL_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup,1);
-  DumpSyncExe2(input_jesdown,input_DL_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown,2);
-  DumpSyncExe2(input_raw,input_DL_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw,3);
+  if(input.sampleType != SampleType::data){
+      DumpSyncExe2(input_jesup,input_DL_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup,1);
+      DumpSyncExe2(input_jesdown,input_DL_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown,2);
+      DumpSyncExe2(input_raw,input_DL_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw,3);
+  }
   initializedCutflowsWithSelections=true;
 }
 
