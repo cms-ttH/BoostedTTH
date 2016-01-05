@@ -193,6 +193,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       GenWeights genweights;
       std::string usedGenerator;
 
+      GenTopEventProducer genTopEvtProd;
+
   // TOKENS =========================
       /** pu summary data access token **/
       edm::EDGetTokenT< std::vector<PileupSummaryInfo> > EDMPUInfoToken;
@@ -244,26 +246,6 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** gen jets data access token **/
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
 
-      // custom genjets for tt+X categorization
-      edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsToken;   
-      /** tt+X categorization tokens **/
-      edm::EDGetTokenT<std::vector<int> > genBHadJetIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadFlavourToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadFromTopWeakDecayToken;
-      edm::EDGetTokenT<std::vector<reco::GenParticle> > genBHadPlusMothersToken;
-      edm::EDGetTokenT<std::vector<std::vector< int > > > genBHadPlusMothersIndicesToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadLeptonHadronIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadLeptonViaTauToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadJetIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadFlavourToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadFromTopWeakDecayToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadBHadronIdToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadIndexToken;
-      edm::EDGetTokenT<std::vector<reco::GenParticle> > genCHadPlusMothersToken;
-      edm::EDGetTokenT<int> genTtbarIdToken;
-      edm::EDGetTokenT<std::vector<reco::GenParticle> > prunedGenParticlesToken;
-
     /** electron MVA id tokens (implementation B) **/
     // TODO: the bools can only accessed with 
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pa_AN1
@@ -285,7 +267,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_2015_11_20.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_2015_11_20.root",5)),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc")
+BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_2015_11_20.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_2015_11_20.root",5)),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc"),genTopEvtProd(GenTopEventProducer(consumesCollector()))
 {
   // get all configurations from the python config
   std::string era = iConfig.getParameter<std::string>("era");
@@ -356,26 +338,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
   EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
-  // tt+X categorization data
-  customGenJetsToken             = consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
-  genBHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadJetIndex",""));
-  genBHadFlavourToken            = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFlavour",""));
-  genBHadFromTopWeakDecayToken   = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFromTopWeakDecay",""));
-  genBHadPlusMothersToken        = consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenBHadron","genBHadPlusMothers",""));
-  genBHadPlusMothersIndicesToken = consumes<std::vector<std::vector<int> > >(edm::InputTag("matchGenBHadron","genBHadPlusMothersIndices",""));
-  genBHadIndexToken              = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadIndex"));
-  genBHadLeptonHadronIndexToken  = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonHadronIndex",""));
-  genBHadLeptonViaTauToken       = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonViaTau",""));
-  genCHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadJetIndex",""));
-  genCHadFlavourToken            = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFlavour",""));
-  genCHadFromTopWeakDecayToken   = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFromTopWeakDecay",""));
-  genCHadBHadronIdToken          = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadBHadronId",""));
-  genCHadIndexToken              = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadIndex"));
-  genCHadPlusMothersToken        = consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenCHadron","genCHadPlusMothers",""));
-  genTtbarIdToken                = consumes<int>              (edm::InputTag("categorizeGenTtbar","genTtbarId",""));
-  prunedGenParticlesToken        = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
-
-
   // electron MVA info
   // TODO: these (and many of the names above) shouldn't be hard coded but set in python cfg
   EDMeleMVAvaluesToken           = consumes<edm::ValueMap<float> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Values",""));
@@ -920,21 +882,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       }
     }
   }
-  GenTopEvent genTopEvt;
-  int ttid=-1;
-  if(!isData&&foundT&&foundTbar) {
-      genTopEvt.Fill(iEvent,useGenHadronMatch,
-		     customGenJetsToken,genBHadJetIndexToken,
-		     genBHadFlavourToken,genBHadFromTopWeakDecayToken,
-		     genBHadPlusMothersToken,genBHadPlusMothersIndicesToken,
-		     genBHadIndexToken,genBHadLeptonHadronIndexToken,
-		     genBHadLeptonViaTauToken,genCHadJetIndexToken,
-		     genCHadFlavourToken,genCHadFromTopWeakDecayToken,
-		     genCHadBHadronIdToken,genCHadIndexToken,
-		     genCHadPlusMothersToken,genTtbarIdToken,
-		     prunedGenParticlesToken);
-      ttid = genTopEvt.GetTTxIdFromProducer();
-  }    
+  GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!isData&&foundT&&foundTbar);
+  int ttid = genTopEvt.GetTTxIdFromProducer();
+      
   SampleType sampleType= SampleType::nonttbkg;
   if(isData) sampleType = SampleType::data;
   else if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;

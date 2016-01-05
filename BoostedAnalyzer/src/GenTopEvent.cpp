@@ -1,32 +1,29 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
-GenTopEvent::GenTopEvent (){
-  isFilled=false;
-  ttxIsFilled=false;
-  ttXid=-1;
-
+GenTopEventProducer::GenTopEventProducer (edm::ConsumesCollector && iC){
+  customGenJetsToken             = iC.consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
+  genBHadJetIndexToken           = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadJetIndex",""));
+  genBHadFlavourToken            = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFlavour",""));
+  genBHadFromTopWeakDecayToken   = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFromTopWeakDecay",""));
+  genBHadPlusMothersToken        = iC.consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenBHadron","genBHadPlusMothers",""));
+  genBHadPlusMothersIndicesToken = iC.consumes<std::vector<std::vector<int> > >(edm::InputTag("matchGenBHadron","genBHadPlusMothersIndices",""));
+  genBHadIndexToken              = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadIndex"));
+  genBHadLeptonHadronIndexToken  = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonHadronIndex",""));
+  genBHadLeptonViaTauToken       = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonViaTau",""));
+  genCHadJetIndexToken           = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadJetIndex",""));
+  genCHadFlavourToken            = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFlavour",""));
+  genCHadFromTopWeakDecayToken   = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFromTopWeakDecay",""));
+  genCHadBHadronIdToken          = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadBHadronId",""));
+  genCHadIndexToken              = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadIndex"));
+  genCHadPlusMothersToken        = iC.consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenCHadron","genCHadPlusMothers",""));
+  genTtbarIdToken                = iC.consumes<int>              (edm::InputTag("categorizeGenTtbar","genTtbarId",""));
+  prunedGenParticlesToken        = iC.consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
 }
-GenTopEvent::~GenTopEvent(){}
+GenTopEventProducer::~GenTopEventProducer(){}
 
-void GenTopEvent::Fill(const edm::Event& iEvent, bool doGenHadronMatch, 
-		       edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsToken,
-		       edm::EDGetTokenT<std::vector<int> > genBHadJetIndexToken,
-		       edm::EDGetTokenT<std::vector<int> > genBHadFlavourToken,
-		       edm::EDGetTokenT<std::vector<int> > genBHadFromTopWeakDecayToken,
-		       edm::EDGetTokenT<std::vector<reco::GenParticle> > genBHadPlusMothersToken,
-		       edm::EDGetTokenT<std::vector<std::vector< int > > > genBHadPlusMothersIndicesToken,
-		       edm::EDGetTokenT<std::vector<int> > genBHadIndexToken,
-		       edm::EDGetTokenT<std::vector<int> > genBHadLeptonHadronIndexToken,
-		       edm::EDGetTokenT<std::vector<int> > genBHadLeptonViaTauToken,
-		       edm::EDGetTokenT<std::vector<int> > genCHadJetIndexToken,
-		       edm::EDGetTokenT<std::vector<int> > genCHadFlavourToken,
-		       edm::EDGetTokenT<std::vector<int> > genCHadFromTopWeakDecayToken,
-		       edm::EDGetTokenT<std::vector<int> > genCHadBHadronIdToken,
-		       edm::EDGetTokenT<std::vector<int> > genCHadIndexToken,
-		       edm::EDGetTokenT<std::vector<reco::GenParticle> > genCHadPlusMothersToken,
-		       edm::EDGetTokenT<int> genTtbarIdToken,
-		       edm::EDGetTokenT<std::vector<reco::GenParticle> > prunedGenParticlesToken){
-
+GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHadronMatch, bool returnDummy){
+    GenTopEvent genTopEvt;
+    if(returnDummy) return genTopEvt;
     edm::Handle< std::vector<reco::GenJet> > h_customgenjets;
     iEvent.getByToken( customGenJetsToken,h_customgenjets );
     edm::Handle<std::vector<int> > genBHadFlavour;
@@ -64,20 +61,30 @@ void GenTopEvent::Fill(const edm::Event& iEvent, bool doGenHadronMatch,
 
     int ttid_full = *genTtbarId;
     int ttid = ttid_full%100;
-    FillTTdecay(*prunedGenParticles,ttid);
+    genTopEvt.FillTTdecay(*prunedGenParticles,ttid);
     if(doGenHadronMatch){
-	FillTTxDetails(*h_customgenjets, 
-		       *genBHadIndex, *genBHadJetIndex, 
-		       *genBHadFlavour, *genBHadFromTopWeakDecay, 
-		       *genBHadPlusMothers, 
-		       *genCHadIndex, *genCHadJetIndex, 
-		       *genCHadFlavour, *genCHadFromTopWeakDecay, 
-		       *genCHadPlusMothers,
-		       *genCHadBHadronId); 
+	genTopEvt.FillTTxDetails(*h_customgenjets, 
+				 *genBHadIndex, *genBHadJetIndex, 
+				 *genBHadFlavour, *genBHadFromTopWeakDecay, 
+				 *genBHadPlusMothers, 
+				 *genCHadIndex, *genCHadJetIndex, 
+				 *genCHadFlavour, *genCHadFromTopWeakDecay, 
+				 *genCHadPlusMothers,
+				 *genCHadBHadronId); 
     }
 
-
+    return genTopEvt;
 }
+
+
+GenTopEvent::GenTopEvent (){
+  isFilled=false;
+  ttxIsFilled=false;
+  ttXid=-1;
+}
+
+GenTopEvent::~GenTopEvent(){}
+
 
 bool GenTopEvent::IsFilled() const{
   return isFilled;
