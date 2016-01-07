@@ -58,7 +58,6 @@ GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHad
     iEvent.getByToken(genCHadIndexToken, genCHadIndex);
     iEvent.getByToken(genTtbarIdToken, genTtbarId);
     iEvent.getByToken(prunedGenParticlesToken, prunedGenParticles);
-
     int ttid_full = *genTtbarId;
     int ttid = ttid_full%100;
     genTopEvt.FillTTdecay(*prunedGenParticles,ttid);
@@ -72,7 +71,6 @@ GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHad
 				 *genCHadPlusMothers,
 				 *genCHadBHadronId); 
     }
-
     return genTopEvt;
 }
 
@@ -314,7 +312,14 @@ std::vector<int> GenTopEvent::GetAdditionalCGenJetsNHadrons() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
   return additional_c_genjet_nc;
 }
-
+std::vector<reco::GenJet> GenTopEvent::GetAdditionalLightGenJets() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  return additional_light_genjets;
+}
+std::vector<reco::GenJet> GenTopEvent::GetWGenJets() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  return w_genjets;
+}
 std::vector<reco::GenJet> GenTopEvent::GetAdditionalCGenJets() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
   return additional_c_genjets;
@@ -787,7 +792,7 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllWleps() const{
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllLeptons() const{
-  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+  if(!isFilled) std::cerr << "Trying to access GenTopEvent Leptons but it is not filled" << std::endl;
   std::vector<reco::GenParticle> leptons;
   for(auto p=wplus_decay_products.begin();isFilled&& p!=wplus_decay_products.end();p++){
     if(abs(p->pdgId())==11||abs(p->pdgId())==13||abs(p->pdgId())==15) leptons.push_back(*p);
@@ -810,7 +815,7 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllNeutrinos() const{
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllWQuarks() const{
-  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+  if(!isFilled) std::cerr << "Trying to access GenTopEvent Quarks but it is not filled" << std::endl;
   std::vector<reco::GenParticle> quarks;
   for(auto p=wplus_decay_products.begin();isFilled&& p!=wplus_decay_products.end();p++){
     if(p->pdgId()>0&&p->pdgId()<6) quarks.push_back(*p);
@@ -822,7 +827,7 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllWQuarks() const{
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllWAntiQuarks() const{
-  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+  if(!isFilled) std::cerr << "Trying to access GenTopEvent AntiQuarks but it is not filled" << std::endl;
   std::vector<reco::GenParticle> quarks;
   for(auto p=wplus_decay_products.begin();isFilled&& p!=wplus_decay_products.end();p++){
     if(p->pdgId()<0&&p->pdgId()>-6) quarks.push_back(*p);

@@ -91,6 +91,8 @@ public:
 
   std::vector<reco::GenJet> GetAdditionalBGenJets() const;
   std::vector<reco::GenJet> GetAdditionalCGenJets() const;
+  std::vector<reco::GenJet> GetAdditionalLightGenJets() const;
+  std::vector<reco::GenJet> GetWGenJets() const;
   std::vector<reco::GenParticle> GetAdditionalBGenJetsHadron() const;
   std::vector<reco::GenParticle> GetAdditionalCGenJetsHadron() const;
 
