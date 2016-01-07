@@ -8,7 +8,7 @@
 #include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
-
+#include "BoostedTTH/TTHReconstruction/interface/MECalculator.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
@@ -131,6 +131,11 @@ class BoostedttHEvent{
     pat::Jet                GetTopLepBCand();
     math::XYZTLorentzVector GetTopLepCandVec();
     math::XYZTLorentzVector GetWLepCandVec();
+
+    // Matrix Element
+    float                   GetTTHBB_ME();
+    float                   GetTTBB_ME();
+    float                   Get_MEratio();
     
   private:
     
@@ -205,6 +210,8 @@ class BoostedttHEvent{
 
     bool verbose;
     const char* btagger;
+    MECalculator recoME;
+                   
 };
 
 #endif

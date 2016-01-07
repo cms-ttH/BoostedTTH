@@ -1,11 +1,88 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
+GenTopEventProducer::GenTopEventProducer (edm::ConsumesCollector && iC){
+  customGenJetsToken             = iC.consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
+  genBHadJetIndexToken           = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadJetIndex",""));
+  genBHadFlavourToken            = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFlavour",""));
+  genBHadFromTopWeakDecayToken   = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFromTopWeakDecay",""));
+  genBHadPlusMothersToken        = iC.consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenBHadron","genBHadPlusMothers",""));
+  genBHadPlusMothersIndicesToken = iC.consumes<std::vector<std::vector<int> > >(edm::InputTag("matchGenBHadron","genBHadPlusMothersIndices",""));
+  genBHadIndexToken              = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadIndex"));
+  genBHadLeptonHadronIndexToken  = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonHadronIndex",""));
+  genBHadLeptonViaTauToken       = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonViaTau",""));
+  genCHadJetIndexToken           = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadJetIndex",""));
+  genCHadFlavourToken            = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFlavour",""));
+  genCHadFromTopWeakDecayToken   = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFromTopWeakDecay",""));
+  genCHadBHadronIdToken          = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadBHadronId",""));
+  genCHadIndexToken              = iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadIndex"));
+  genCHadPlusMothersToken        = iC.consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenCHadron","genCHadPlusMothers",""));
+  genTtbarIdToken                = iC.consumes<int>              (edm::InputTag("categorizeGenTtbar","genTtbarId",""));
+  prunedGenParticlesToken        = iC.consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
+}
+GenTopEventProducer::~GenTopEventProducer(){}
+
+GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHadronMatch, bool returnDummy){
+    GenTopEvent genTopEvt;
+    if(returnDummy) return genTopEvt;
+    edm::Handle< std::vector<reco::GenJet> > h_customgenjets;
+    iEvent.getByToken( customGenJetsToken,h_customgenjets );
+    edm::Handle<std::vector<int> > genBHadFlavour;
+    edm::Handle<std::vector<int> > genBHadJetIndex;
+    edm::Handle<std::vector<int> > genBHadFromTopWeakDecay;
+    edm::Handle<std::vector<reco::GenParticle> > genBHadPlusMothers;
+    edm::Handle<std::vector<std::vector<int> > > genBHadPlusMothersIndices;
+    edm::Handle<std::vector<reco::GenParticle> > genCHadPlusMothers;
+    edm::Handle<std::vector<int> > genBHadIndex;
+    edm::Handle<std::vector<int> > genBHadLeptonHadronIndex;
+    edm::Handle<std::vector<int> > genBHadLeptonViaTau;
+    edm::Handle<std::vector<int> > genCHadIndex;
+    edm::Handle<std::vector<int> > genCHadFlavour;
+    edm::Handle<std::vector<int> > genCHadJetIndex;
+    edm::Handle<std::vector<int> > genCHadFromTopWeakDecay;
+    edm::Handle<std::vector<int> > genCHadBHadronId;
+    edm::Handle<int> genTtbarId;
+    edm::Handle<std::vector<reco::GenParticle> > prunedGenParticles;
+    iEvent.getByToken(genCHadBHadronIdToken, genCHadBHadronId);
+    iEvent.getByToken(genBHadFlavourToken, genBHadFlavour);
+    iEvent.getByToken(genBHadJetIndexToken, genBHadJetIndex);  
+    iEvent.getByToken(genBHadFromTopWeakDecayToken, genBHadFromTopWeakDecay);  
+    iEvent.getByToken(genBHadPlusMothersToken, genBHadPlusMothers);    
+    iEvent.getByToken(genBHadPlusMothersIndicesToken, genBHadPlusMothersIndices);
+    iEvent.getByToken(genCHadPlusMothersToken, genCHadPlusMothers);    
+    iEvent.getByToken(genBHadIndexToken, genBHadIndex);
+    iEvent.getByToken(genBHadLeptonHadronIndexToken, genBHadLeptonHadronIndex);
+    iEvent.getByToken(genBHadLeptonViaTauToken, genBHadLeptonViaTau);
+    iEvent.getByToken(genCHadFlavourToken, genCHadFlavour);
+    iEvent.getByToken(genCHadJetIndexToken, genCHadJetIndex);
+    iEvent.getByToken(genCHadFromTopWeakDecayToken, genCHadFromTopWeakDecay);
+    iEvent.getByToken(genCHadIndexToken, genCHadIndex);
+    iEvent.getByToken(genTtbarIdToken, genTtbarId);
+    iEvent.getByToken(prunedGenParticlesToken, prunedGenParticles);
+    int ttid_full = *genTtbarId;
+    int ttid = ttid_full%100;
+    genTopEvt.FillTTdecay(*prunedGenParticles,ttid);
+    if(doGenHadronMatch){
+	genTopEvt.FillTTxDetails(*h_customgenjets, 
+				 *genBHadIndex, *genBHadJetIndex, 
+				 *genBHadFlavour, *genBHadFromTopWeakDecay, 
+				 *genBHadPlusMothers, 
+				 *genCHadIndex, *genCHadJetIndex, 
+				 *genCHadFlavour, *genCHadFromTopWeakDecay, 
+				 *genCHadPlusMothers,
+				 *genCHadBHadronId); 
+    }
+    return genTopEvt;
+}
+
+
 GenTopEvent::GenTopEvent (){
   isFilled=false;
   ttxIsFilled=false;
   ttXid=-1;
 }
+
 GenTopEvent::~GenTopEvent(){}
+
 
 bool GenTopEvent::IsFilled() const{
   return isFilled;
@@ -21,8 +98,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
 				 const std::vector<int>& genCHadIndex, const std::vector<int>& genCHadJetIndex, 
 				 const std::vector<int>& genCHadFlavour, const std::vector<int>& genCHadFromTopWeakDecay, 
 				 const std::vector<reco::GenParticle>& genCHadPlusMothers,
-				 const std::vector<int>& genCHadBHadronId,
-				 const float ttxptcut,const float  ttxetacut){
+				 const std::vector<int>& genCHadBHadronId){
   
   std::vector<int> nb_per_genjet(customGenJets.size(),0);
   std::vector<int> mother_of_genjet_b(customGenJets.size(),0);
@@ -37,6 +113,11 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
   std::vector<int> c_aftertoptype_of_genjet(customGenJets.size(),3);
   std::vector<const reco::GenParticle*> genjet_leading_chadron(customGenJets.size(),0);
 
+  if(!isFilled){
+      std::cerr << "fill top info before filling addtional info" << std::endl;
+  }
+  auto tt_decay_leptons=GetAllLeptonVecs();
+  auto tt_decay_quarks=GetAllWQuarkVecs();
 
   // loop over all bhadrons
   for(uint i=0; i<genBHadIndex.size();i++){
@@ -153,6 +234,31 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
       additional_c_genjet_aftertoptype.push_back(c_aftertoptype_of_genjet[i]);
       additional_c_genjet_hadron.push_back(genjet_leading_chadron[i] != 0 ? *(genjet_leading_chadron[i]) : reco::GenParticle());
     }
+    // no b and no c hadron in jet
+    else {
+	bool match=false;
+	for(auto const &v : tt_decay_leptons){
+	    if(BoostedUtils::DeltaR(v,customGenJets[i].p4())<wMatchR){
+		match=true;
+		break;
+	    }
+	}
+	if(!match){
+	    for(auto const &v : tt_decay_quarks){
+		if(BoostedUtils::DeltaR(v,customGenJets[i].p4())<wMatchR){
+		    match=true;
+		    break;
+		}
+		
+	    }
+	}
+	if(match){
+	    w_genjets.push_back(customGenJets[i]);
+	}
+	else{
+	    additional_light_genjets.push_back(customGenJets[i]);
+	}
+    }
   }
   ttxIsFilled=true;
 }
@@ -206,7 +312,14 @@ std::vector<int> GenTopEvent::GetAdditionalCGenJetsNHadrons() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
   return additional_c_genjet_nc;
 }
-
+std::vector<reco::GenJet> GenTopEvent::GetAdditionalLightGenJets() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  return additional_light_genjets;
+}
+std::vector<reco::GenJet> GenTopEvent::GetWGenJets() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  return w_genjets;
+}
 std::vector<reco::GenJet> GenTopEvent::GetAdditionalCGenJets() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
   return additional_c_genjets;
@@ -274,7 +387,7 @@ std::vector<int> GenTopEvent::GetAdditionalCHadronAfterTopType() const{
   return additional_c_hadron_aftertop;
 }
 
-void GenTopEvent::Fill(const std::vector<reco::GenParticle>& prunedGenParticles, int ttXid_){
+void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenParticles, int ttXid_){
 
   ttXid=ttXid_;
   for(auto p=prunedGenParticles.begin(); p!=prunedGenParticles.end(); p++){
@@ -443,8 +556,8 @@ void GenTopEvent::PrintTTX() const{
   std::cout << "tt+x id" << std::endl;
   std::cout << GetTTxId() << std::endl;
   std::cout << "tt+x id miniaodhelper" << std::endl;
-  std::cout << GetTTxIdFromHelper() << std::endl;
-  assert(GetTTxId(true)==GetTTxIdFromHelper());
+  std::cout << GetTTxIdFromProducer() << std::endl;
+  assert(GetTTxId(true)==GetTTxIdFromProducer());
 
   std::cout << "============================" << std::endl;
 }
@@ -679,7 +792,7 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllWleps() const{
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllLeptons() const{
-  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+  if(!isFilled) std::cerr << "Trying to access GenTopEvent Leptons but it is not filled" << std::endl;
   std::vector<reco::GenParticle> leptons;
   for(auto p=wplus_decay_products.begin();isFilled&& p!=wplus_decay_products.end();p++){
     if(abs(p->pdgId())==11||abs(p->pdgId())==13||abs(p->pdgId())==15) leptons.push_back(*p);
@@ -702,7 +815,7 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllNeutrinos() const{
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllWQuarks() const{
-  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+  if(!isFilled) std::cerr << "Trying to access GenTopEvent Quarks but it is not filled" << std::endl;
   std::vector<reco::GenParticle> quarks;
   for(auto p=wplus_decay_products.begin();isFilled&& p!=wplus_decay_products.end();p++){
     if(p->pdgId()>0&&p->pdgId()<6) quarks.push_back(*p);
@@ -714,7 +827,7 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllWQuarks() const{
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllWAntiQuarks() const{
-  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+  if(!isFilled) std::cerr << "Trying to access GenTopEvent AntiQuarks but it is not filled" << std::endl;
   std::vector<reco::GenParticle> quarks;
   for(auto p=wplus_decay_products.begin();isFilled&& p!=wplus_decay_products.end();p++){
     if(p->pdgId()<0&&p->pdgId()>-6) quarks.push_back(*p);
@@ -842,7 +955,7 @@ std::vector<math::XYZTLorentzVector> GenTopEvent::GetLVs(const std::vector<reco:
   return vecs;
 }
 
-int GenTopEvent::GetTTxIdFromHelper() const{
+int GenTopEvent::GetTTxIdFromProducer() const{
   return ttXid%100;
 }
 

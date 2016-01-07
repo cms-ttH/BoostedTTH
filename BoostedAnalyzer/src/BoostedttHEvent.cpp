@@ -936,3 +936,36 @@ math::XYZTLorentzVector BoostedttHEvent::GetWLepCandVec(){
 
   return WLepCandVec;
 }
+
+
+float BoostedttHEvent::GetTTHBB_ME(){
+    if(!(foundHiggsCand&&foundTopLepCand&&foundTopHadCand)) return -1;
+    TLorentzVector top=BoostedUtils::GetTLorentzVector(topHadBCand.p4()+topHadW1Cand.p4()+topHadW2Cand.p4());
+    TLorentzVector topbar=BoostedUtils::GetTLorentzVector(lepVecCand+nuVecCand+topLepBCand.p4());
+    TLorentzVector b=BoostedUtils::GetTLorentzVector(higgsB1Cand.p4());
+    TLorentzVector bbar=BoostedUtils::GetTLorentzVector(higgsB2Cand.p4());
+    return  recoME.GetTTHBBMEsq(top,topbar,b,bbar);
+
+}
+float BoostedttHEvent::GetTTBB_ME(){
+    if(!(foundHiggsCand&&foundTopLepCand&&foundTopHadCand)) return -1;
+    TLorentzVector top=BoostedUtils::GetTLorentzVector(topHadBCand.p4()+topHadW1Cand.p4()+topHadW2Cand.p4());
+    TLorentzVector topbar=BoostedUtils::GetTLorentzVector(lepVecCand+nuVecCand+topLepBCand.p4());
+    TLorentzVector b=BoostedUtils::GetTLorentzVector(higgsB1Cand.p4());
+    TLorentzVector bbar=BoostedUtils::GetTLorentzVector(higgsB2Cand.p4());
+    return  recoME.GetTTBBMEsq_onshell(top,topbar,b,bbar);
+
+    
+}
+float BoostedttHEvent::Get_MEratio(){
+    if(!(foundHiggsCand&&foundTopLepCand&&foundTopHadCand)) return -1;
+    TLorentzVector top=BoostedUtils::GetTLorentzVector(topHadBCand.p4()+topHadW1Cand.p4()+topHadW2Cand.p4());
+    TLorentzVector topbar=BoostedUtils::GetTLorentzVector(lepVecCand+nuVecCand+topLepBCand.p4());
+    TLorentzVector b=BoostedUtils::GetTLorentzVector(higgsB1Cand.p4());
+    TLorentzVector bbar=BoostedUtils::GetTLorentzVector(higgsB2Cand.p4());
+    float tth_me = recoME.GetTTHBBMEsq(top,topbar,b,bbar);
+    float ttbb_me = recoME.GetTTBBMEsq_onshell(top,topbar,b,bbar);
+    ttbb_me*=3e3; // make both mes same order
+    return  tth_me/(tth_me+ttbb_me);
+    
+}
