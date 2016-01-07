@@ -10,6 +10,8 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
  
   vars.InitVar("Evt_ID","I");
   vars.InitVar("Evt_Odd","I");
+  vars.InitVar("Evt_Run","I");
+  vars.InitVar("Evt_Lumi","I");
 
   vars.InitVar( "N_Jets","I" );
   vars.InitVar( "N_LooseJets","I" );
@@ -100,9 +102,13 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
 
   //also write the event ID for splitting purposes
   long evt_id = input.eventInfo.evt;
+  long run_id = input.eventInfo.run;
+  long lumi_section = input.eventInfo.lumiBlock;
 
   vars.FillIntVar("Evt_ID",evt_id);
   vars.FillIntVar("Evt_Odd",evt_id%2);
+  vars.FillIntVar("Evt_Run",run_id);
+  vars.FillIntVar("Evt_Lumi",lumi_section);
 
 
   const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";

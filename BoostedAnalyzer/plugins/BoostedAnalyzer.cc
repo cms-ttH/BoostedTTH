@@ -122,6 +122,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       CSVHelper csvReweighter;
       HistoReweighter pvWeight;
       PUWeights puWeights_;
+      HistoReweighter njetWeight;
       
       /** writes flat trees for MVA analysis */
       TreeWriter treewriter_nominal;
@@ -268,7 +269,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_2015_11_20.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_2015_11_20.root",5)),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc"),genTopEvtProd(GenTopEventProducer(consumesCollector()))
+BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_2015_11_20.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_2015_11_20.root",5)),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc"),njetWeight((BoostedUtils::GetAnalyzerPath()+"/data/njetweights/NJEThistos.root").c_str(),"data","mc"),genTopEvtProd(GenTopEventProducer(consumesCollector()))
 {
   // get all configurations from the python config
   std::string era = iConfig.getParameter<std::string>("era");
@@ -1102,6 +1103,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   weights["Weight_PU"] = puweight;
   weights["Weight_TopPt"] = topptweight;
   weights["Weight_PV"] = pvWeight.GetWeight(selectedPVs.size());
+  weights["Weight_NJets"] = njetWeight.GetWeight(selectedJets.size());
   
   bool doSystematics=true;  
   if(doSystematics && systype != sysType::JESup && systype != sysType::JESup && systype != sysType::JERup && systype != sysType::JERdown) {
