@@ -19,8 +19,10 @@ class BoostedttHEvent{
   public:
     
     // Constructor & Destructor
-    BoostedttHEvent(const InputCollections& input);
+    BoostedttHEvent();
     ~BoostedttHEvent();
+
+    void SetInput(const InputCollections* input);
     
     // Manage Event
     void ResetEvent();
@@ -140,7 +142,7 @@ class BoostedttHEvent{
   private:
     
     // Inhput Collection
-    const InputCollections& input;
+    const InputCollections* input;
     
     // Analysis Settings
     

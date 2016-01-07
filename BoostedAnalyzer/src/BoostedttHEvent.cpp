@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedttHEvent.hpp"
 
 
-BoostedttHEvent::BoostedttHEvent(const InputCollections& input_):input(input_),verbose(false),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
+BoostedttHEvent::BoostedttHEvent():input(0),verbose(false),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
   ResetEvent();
 }
 
@@ -10,6 +10,9 @@ BoostedttHEvent::~BoostedttHEvent(){
 
 }
 
+void BoostedttHEvent::SetInput(const InputCollections* input_){
+    input = input_;
+}
 
 void BoostedttHEvent::ResetEvent(){
 
@@ -80,12 +83,12 @@ void BoostedttHEvent::ResetEvent(){
 
 
 void BoostedttHEvent::LeptonRec(){
-  lepVecCand = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
+  lepVecCand = BoostedUtils::GetPrimLepVec(input->selectedElectronsLoose,input->selectedMuonsLoose);
 }
 
 
 void BoostedttHEvent::NeutrinoRec(){
-  TVector2 metvec(input.pfMET.px(),input.pfMET.py());
+  TVector2 metvec(input->pfMET.px(),input->pfMET.py());
   
   if(lepVecCand.Pt()<=0.001) return;
   
@@ -112,7 +115,7 @@ void BoostedttHEvent::ak5JetsRec(){
   nCleanedBTagM = 0;
   nCleanedBTagT = 0;
   
-  for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJets.begin();itJet!=input.selectedJets.end();++itJet){
+  for(std::vector<pat::Jet>::const_iterator itJet=input->selectedJets.begin();itJet!=input->selectedJets.end();++itJet){
     if(lepVecCand.Pt()>0.001 && BoostedUtils::DeltaR(lepVecCand,itJet->p4())<.5) continue;
     
     nJets++;
@@ -239,10 +242,10 @@ void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger higgstagger, const bool cl
   higgsB2Cand = pat::Jet();
   higgsGCand = pat::Jet();
   
-  if(verbose) std::cout << input.selectedBoostedJets.size() << " CA 1.2 jets"  << std::endl;
-  for(std::vector<boosted::BoostedJet>::const_iterator itJet=input.selectedBoostedJets.begin();itJet!=input.selectedBoostedJets.end();++itJet){
+  if(verbose) std::cout << input->selectedBoostedJets.size() << " CA 1.2 jets"  << std::endl;
+  for(std::vector<boosted::BoostedJet>::const_iterator itJet=input->selectedBoostedJets.begin();itJet!=input->selectedBoostedJets.end();++itJet){
     
-    int iJet = itJet-input.selectedBoostedJets.begin();
+    int iJet = itJet-input->selectedBoostedJets.begin();
     
     boosted::JetType jetType = BoostedUtils::GetBoostedJetType(*itJet,BoostedJetDisc::None);
     if(jetType != boosted::Higgs && jetType != boosted::NA) continue;
@@ -309,9 +312,9 @@ void BoostedttHEvent::TopHadCandBoostedRec(TopTagger toptagger, const bool clean
   topHadW1Cand = pat::Jet();
   topHadW2Cand = pat::Jet();
   
-  for(std::vector<boosted::BoostedJet>::const_iterator itJet=input.selectedBoostedJets.begin();itJet!=input.selectedBoostedJets.end();++itJet){
+  for(std::vector<boosted::BoostedJet>::const_iterator itJet=input->selectedBoostedJets.begin();itJet!=input->selectedBoostedJets.end();++itJet){
     
-    int iJet = itJet-input.selectedBoostedJets.begin();
+    int iJet = itJet-input->selectedBoostedJets.begin();
     
     boosted::JetType jetType = BoostedUtils::GetBoostedJetType(*itJet,BoostedJetDisc::None);
     if(jetType != boosted::Top && jetType != boosted::NA) continue;
@@ -593,7 +596,7 @@ void BoostedttHEvent::BoostedTopEventRec(TopTagger toptagger){
 
 
 const InputCollections& BoostedttHEvent::GetInput(){
-  return input;
+  return *input;
 } 
 
 

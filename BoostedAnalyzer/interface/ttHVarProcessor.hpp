@@ -45,6 +45,8 @@ class ttHVarProcessor: public TreeProcessor{
       
     TopTagger     toptagger;
     HiggsTagger   higgstagger;
+
+    BoostedttHEvent ttHEvent;
 };
 
 #endif
