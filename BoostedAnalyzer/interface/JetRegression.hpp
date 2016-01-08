@@ -29,7 +29,7 @@ public:
 			  const edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
 			  const edm::EDGetTokenT <double>& rhoToken,
 			  const edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
-			  const std::vector<pat::Jet>& Jets);   //evaluate regression: Input: event, add new pt als userfloat after evaluation
+			  std::vector<pat::Jet>& Jets);   //evaluate regression: Input: event, add new pt als userfloat after evaluation
 private:
   //void SetUpRegression(); //getInclusiveLeptons, matchLeptonswithJets 
   void setInclusiveLeptons(const std::vector<pat::Electron>& electrons, 

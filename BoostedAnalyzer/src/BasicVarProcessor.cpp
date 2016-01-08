@@ -10,6 +10,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
  
   vars.InitVar("Evt_ID","I");
   vars.InitVar("Evt_Odd","I");
+  vars.InitVar("Evt_Rho","F");
 
   vars.InitVar( "N_Jets","I" );
   vars.InitVar( "N_LooseJets","I" );
@@ -23,7 +24,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVar( "N_BTagsT","I" );
   vars.InitVar( "N_BTagsL" ,"I");
   vars.InitVar( "N_PrimaryVertices","I" );
-  
+
   vars.InitVars( "Jet_E","N_Jets" );
   vars.InitVars( "Jet_M","N_Jets" );
   vars.InitVars( "Jet_Pt","N_Jets" );
@@ -33,6 +34,22 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
   vars.InitVars( "Jet_PileUpID","N_Jets" );
+  vars.InitVars( "Jet_vtxMass","N_Jets" );
+  vars.InitVars( "Jet_vtx3DVal","N_Jets" );
+  vars.InitVars( "Jet_vtxNtracks","N_Jets" );
+  vars.InitVars( "Jet_vtx3DSig","N_Jets" );
+  vars.InitVars( "Jet_vtxPt","N_Jets" );
+  vars.InitVars( "Jet_nHEFrac","N_Jets" );
+  vars.InitVars( "Jet_nEmEFrac","N_Jets" );
+  vars.InitVars( "Jet_chargedMult","N_Jets" );
+  vars.InitVars( "Jet_leadTrackPt","N_Jets" );
+  vars.InitVars( "Jet_leptonPtRel","N_Jets" );
+  vars.InitVars( "Jet_leptonPt","N_Jets" );
+  vars.InitVars( "Jet_leptonDeltaR","N_Jets" );
+  vars.InitVars( "Jet_corr","N_Jets" );
+  vars.InitVars( "Jet_regPt","N_Jets" );
+  vars.InitVars( "Jet_regcorr","N_Jets" );
+
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
   
@@ -88,7 +105,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
 
   vars.FillIntVar("Evt_ID",evt_id);
   vars.FillIntVar("Evt_Odd",evt_id%2);
-
+  vars.FillFloatVar("Evt_Rho",input.eventInfo.rho);
 
   const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   std::vector<pat::Jet> selectedTaggedJets;
@@ -131,9 +148,24 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
-    vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );
+    vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
+    vars.FillVars( "Jet_vtxMass",iJet,itJet->userFloat("vtxMass"));
+    vars.FillVars( "Jet_vtx3DVal",iJet,itJet->userFloat("vtx3DVal"));
+    vars.FillVars( "Jet_vtxNtracks",iJet,itJet->userFloat("vtxNtracks"));
+    vars.FillVars( "Jet_vtx3DSig",iJet,itJet->userFloat("vtx3DSig"));
+    vars.FillVars( "Jet_vtxPt",iJet,sqrt(itJet->userFloat("vtxPx")*itJet->userFloat("vtxPx") + itJet->userFloat("vtxPy")*itJet->userFloat("vtxPy")));
+    vars.FillVars( "Jet_nHEFrac",iJet, itJet->neutralHadronEnergyFraction());
+    vars.FillVars( "Jet_nEmEFrac",iJet, itJet->neutralEmEnergyFraction());
+    vars.FillVars( "Jet_chargedMult",iJet, itJet->chargedMultiplicity());
+    vars.FillVars( "Jet_leadTrackPt",iJet,itJet->userFloat("Jet_leadTrackPt"));
+    vars.FillVars( "Jet_leptonPtRel",iJet,itJet->userFloat("Jet_leptonPtRel"));
+    vars.FillVars( "Jet_leptonPt",iJet,itJet->userFloat("Jet_leptonPt"));
+    vars.FillVars( "Jet_leptonDeltaR",iJet,itJet->userFloat("Jet_leptonDeltaR"));
+    vars.FillVars( "Jet_corr",iJet,1/itJet->jecFactor("Uncorrected"));
+    vars.FillVars( "Jet_regPt",iJet,itJet->userFloat("jetregressionPT"));
+    vars.FillVars( "Jet_regcorr",iJet,itJet->userFloat("jetregressionPT")/itJet->pt());
     if(itJet->genJet()!=NULL){
       vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
       vars.FillVars( "Jet_GenJet_Eta",iJet,itJet->genJet()->eta());

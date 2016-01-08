@@ -12,23 +12,23 @@ JetRegression::JetRegression(){
   //TMVA Stuff
   reader = new TMVA::Reader();
  
-  reader->AddVariable("Jet_pt",&treevars[0]); //y
-  reader->AddVariable("Jet_corr",&treevars[1]); //y
-  reader->AddVariable("rho",&treevars[2]); //y
-  reader->AddVariable("Jet_eta",&treevars[3]); //y
-  reader->AddVariable("Jet_mt",&treevars[4]); //y
-  reader->AddVariable("Jet_leadTrackPt",&treevars[5]); //y
-  reader->AddVariable("Jet_leptonPtRel",&treevars[6]); //y
-  reader->AddVariable("Jet_leptonPt",&treevars[7]); //y
-  reader->AddVariable("Jet_leptonDeltaR",&treevars[8]); //y
-  reader->AddVariable("Jet_neHEF",&treevars[9]); //y
-  reader->AddVariable("Jet_neEmEF",&treevars[10]); //y
-  reader->AddVariable("Jet_chMult",&treevars[11]); //y
-  reader->AddVariable("Jet_vtxPt",&treevars[12]); //y
-  reader->AddVariable("Jet_vtxMass",&treevars[13]); //y
-  reader->AddVariable("Jet_vtx3dL",&treevars[14]); //y
-  reader->AddVariable("Jet_vtxNtrk",&treevars[15]); //y
-  reader->AddVariable("Jet_vtx3deL",&treevars[16]); //y
+  reader->AddVariable("Jet_pt",&treevars[0]); 
+  reader->AddVariable("Jet_corr",&treevars[1]);
+  reader->AddVariable("rho",&treevars[2]);
+  reader->AddVariable("Jet_eta",&treevars[3]);
+  reader->AddVariable("Jet_mt",&treevars[4]); 
+  reader->AddVariable("Jet_leadTrackPt",&treevars[5]); 
+  reader->AddVariable("Jet_leptonPtRel",&treevars[6]);
+  reader->AddVariable("Jet_leptonPt",&treevars[7]); 
+  reader->AddVariable("Jet_leptonDeltaR",&treevars[8]);
+  reader->AddVariable("Jet_neHEF",&treevars[9]); 
+  reader->AddVariable("Jet_neEmEF",&treevars[10]);
+  reader->AddVariable("Jet_chMult",&treevars[11]);
+  reader->AddVariable("Jet_vtxPt",&treevars[12]);
+  reader->AddVariable("Jet_vtxMass",&treevars[13]);
+  reader->AddVariable("Jet_vtx3dL",&treevars[14]);
+  reader->AddVariable("Jet_vtxNtrk",&treevars[15]);
+  reader->AddVariable("Jet_vtx3deL",&treevars[16]);
  
   reader->BookMVA(name,weightfile);
   
@@ -51,11 +51,11 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
 					const edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
 					const edm::EDGetTokenT <double>& rhoToken,
 					const edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
-					const std::vector<pat::Jet>& Jets){
+					std::vector<pat::Jet>& Jets){
 
-  //Switch: Which jets should be used for lepton/jet matching  
-  bool domatchingwithselectedJets = true;
-  //Evaluate Regression
+
+  bool domatchingwithselectedJets = true;   //Switch: Which jets should be used for lepton/jet matching  
+
   edm::Handle< edm::View<pat::Electron> > h_electrons;
   edm::Handle< vector<pat::Muon> > h_muons;
   edm::Handle< vector<pat::Jet> > h_pfjets;
@@ -82,15 +82,16 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
     matchLeptonswithJets(electrons, muons, pfjets);
   }
   //Set variables for regression evaluation
-  cout << endl << "run/event " << iEvent.eventAuxiliary().run() << " / " << iEvent.eventAuxiliary().event() << endl;
+  //cout << endl << "run/event " << iEvent.eventAuxiliary().run() << " / " << iEvent.eventAuxiliary().event() << endl;
   treevars[2] = (float)(*h_rho);
   for (size_t i = 0; i<Jets.size(); i++) {
-    if (Jets.at(i).hadronFlavour() == 5){
-      cout << "Jet: " << i << endl;
-      cout << "jet pT: " <<  Jets.at(i).pt() << endl;
+    //if (abs(Jets.at(i).hadronFlavour()) == 5){
+    if (true){
+      //cout << "Jet: " << i << endl;
+      //cout << "jet pT: " <<  Jets.at(i).pt() << endl;
 
       treevars[0] = Jets.at(i).pt();
-      treevars[1] = Jets.at(i).pt() * Jets.at(i).jecFactor("Uncorrected");
+      treevars[1] = 1.0/Jets.at(i).jecFactor("Uncorrected");
       treevars[3] = Jets.at(i).eta();
       treevars[4] = Jets.at(i).mt();
       treevars[5] = leadingTrackpT(Jets.at(i));
@@ -140,25 +141,29 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
 	treevars[7] = -99;
 	treevars[8] = -99;
       }
-
-      treevars[9] = Jets.at(i).chargedEmEnergyFraction();
-      treevars[10] = Jets.at(i).chargedHadronEnergyFraction();
-      treevars[11] = Jets.at(i).neutralHadronEnergyFraction();
-      treevars[12] = Jets.at(i).neutralEmEnergyFraction();
-      treevars[13] = Jets.at(i).chargedMultiplicity();
-      treevars[14] = sqrt(Jets.at(i).userFloat("vtxPx")*Jets.at(i).userFloat("vtxPx") + Jets.at(i).userFloat("vtxPy")*Jets.at(i).userFloat("vtxPy"));
-      treevars[15] = Jets.at(i).userFloat("vtxMass");
-      treevars[16] = Jets.at(i).userFloat("vtx3DVal");
-      treevars[17] = Jets.at(i).userFloat("vtxNtracks");
-      treevars[18] = Jets.at(i).userFloat("vtx3DSig");
-
       
-      for(int l = 0; l < 17; l++) { cout <<  treevars[l] << " "; }
-      cout << endl;
-      
-      float regressionresult = (reader->EvaluateRegression(name)).at(0);
-      //write result of evaluation in Jet as userFloat("")
-      cout << "New pT: " << regressionresult << endl;
+      treevars[9] = Jets.at(i).neutralHadronEnergyFraction();
+      treevars[10] = Jets.at(i).neutralEmEnergyFraction();
+      treevars[11] = Jets.at(i).chargedMultiplicity();
+      treevars[12] = sqrt(Jets.at(i).userFloat("vtxPx")*Jets.at(i).userFloat("vtxPx") + Jets.at(i).userFloat("vtxPy")*Jets.at(i).userFloat("vtxPy"));
+      treevars[13] = Jets.at(i).userFloat("vtxMass");
+      treevars[14] = Jets.at(i).userFloat("vtx3DVal");
+      treevars[15] = Jets.at(i).userFloat("vtxNtracks");
+      treevars[16] = Jets.at(i).userFloat("vtx3DSig");
+
+      //Only do regression for b-jets
+      if (abs(Jets.at(i).hadronFlavour()) == 5){
+	float result = (reader->EvaluateRegression(name)).at(0);
+	Jets.at(i).addUserFloat("jetregressionPT", result);
+      }
+      else{
+	Jets.at(i).addUserFloat("jetregressionPT", -99);
+      }
+      Jets.at(i).addUserFloat("Jet_leadTrackPt",treevars[5]);
+      Jets.at(i).addUserFloat("Jet_leptonPtRel",treevars[6]);
+      Jets.at(i).addUserFloat("Jet_leptonPt",treevars[7]);
+      Jets.at(i).addUserFloat("Jet_leptonDeltaR",treevars[8]);
+
     }
   }
 
