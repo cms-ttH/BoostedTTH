@@ -176,6 +176,133 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
 
 
 
+void JetRegression::evaluateRegression (const edm::Event& iEvent,
+					const edm::EDGetTokenT< edm::View<pat::Electron> >& electronToken,
+					const edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
+					const edm::EDGetTokenT <double>& rhoToken,
+					std::vector<pat::Jet>& rawjets,
+					std::vector<pat::Jet>& Jets){
+
+
+  bool domatchingwithselectedJets = false;   //Switch: Which jets should be used for lepton/jet matching  
+
+  edm::Handle< edm::View<pat::Electron> > h_electrons;
+  edm::Handle< vector<pat::Muon> > h_muons;
+  edm::Handle<double> h_rho;
+  
+  iEvent.getByToken(electronToken, h_electrons);
+  iEvent.getByToken(muonToken, h_muons);
+  iEvent.getByToken(rhoToken,h_rho);
+
+  vector<pat::Electron> electrons;
+  for (size_t i = 0; i < h_electrons->size(); ++i){
+    electrons.push_back(h_electrons->at(i));
+  }
+
+  vector<pat::Muon> const &muons = *h_muons;
+
+
+  if(domatchingwithselectedJets){
+    matchLeptonswithJets(electrons, muons, Jets); 
+  }
+  else {
+    matchLeptonswithJets(electrons, muons, rawjets);
+  }
+  //Set variables for regression evaluation
+  //cout << endl << "run/event " << iEvent.eventAuxiliary().run() << " / " << iEvent.eventAuxiliary().event() << endl;
+  treevars[2] = (float)(*h_rho);
+  for (size_t i = 0; i<Jets.size(); i++) {
+    //if (abs(Jets.at(i).hadronFlavour()) == 5){
+    if (true){
+      //cout << "Jet: " << i << endl;
+      //cout << "jet pT: " <<  Jets.at(i).pt() << endl;
+
+      treevars[0] = Jets.at(i).pt();
+      treevars[1] = 1.0/Jets.at(i).jecFactor("Uncorrected");
+      treevars[3] = Jets.at(i).eta();
+      treevars[4] = Jets.at(i).mt();
+      treevars[5] = leadingTrackpT(Jets.at(i));
+      if (!(ElectronJetPairs.empty()) || !(MuonJetPairs.empty())) {	
+	vector<pat::Electron*> JetElectrons; 
+	vector<pat::Muon*> JetMuons;
+	float jeta = Jets.at(i).eta();
+	float jphi = Jets.at(i).phi();
+	float jcharge = Jets.at(i).charge();
+	float jflav = Jets.at(i).hadronFlavour();
+	for(map<pat::Electron*, const pat::Jet*>::iterator eit= ElectronJetPairs.begin(); eit != ElectronJetPairs.end(); eit++) {
+	  float eeta = eit->second->eta();
+	  float ephi = eit->second->phi();
+	  float echarge = eit->second->charge();
+	  float eflav = eit->second->hadronFlavour();
+	  if( eeta == jeta  && ephi == jphi && 
+	      echarge == jcharge && eflav == jflav ){
+	    JetElectrons.push_back(eit->first);
+	  }
+	}
+	for(map<pat::Muon*, const pat::Jet*>::iterator mit= MuonJetPairs.begin(); mit != MuonJetPairs.end(); mit++) {
+	  float meta = mit->second->eta();
+	  float mphi = mit->second->phi();
+	  float mcharge = mit->second->charge();
+	  float mflav = mit->second->hadronFlavour();
+	  if( meta == jeta  && mphi == jphi && 
+	      mcharge == jcharge && mflav == jflav ){
+	    JetMuons.push_back(mit->first);
+	  }
+	}
+	if(JetElectrons.size() > 0 || JetMuons.size() > 0){
+	  if(JetElectrons.size() > 0){
+	    treevars[6] = BoostedUtils::GetTLorentzVector(JetElectrons.at(0)->p4()).Perp(TVector3(Jets.at(i).p4().x(),Jets.at(i).p4().y(),Jets.at(i).p4().z()));
+	    treevars[7] = JetElectrons.at(0)->pt();
+	    treevars[8] = BoostedUtils::DeltaR(JetElectrons.at(0)->p4(), Jets.at(i).p4());
+	  }
+	  else{
+	    treevars[6] = BoostedUtils::GetTLorentzVector(JetMuons.at(0)->p4()).Perp(TVector3(Jets.at(i).p4().x(),Jets.at(i).p4().y(),Jets.at(i).p4().z()));
+	    treevars[7] = JetMuons.at(0)->pt();
+	    treevars[8] = BoostedUtils::DeltaR(JetMuons.at(0)->p4(), Jets.at(i).p4());
+	  }
+
+	}
+      }
+      else {
+	treevars[6] = -99;
+	treevars[7] = -99;
+	treevars[8] = -99;
+      }
+      
+      treevars[9] = Jets.at(i).neutralHadronEnergyFraction();
+      treevars[10] = Jets.at(i).neutralEmEnergyFraction();
+      treevars[11] = Jets.at(i).chargedMultiplicity();
+      treevars[12] = sqrt(Jets.at(i).userFloat("vtxPx")*Jets.at(i).userFloat("vtxPx") + Jets.at(i).userFloat("vtxPy")*Jets.at(i).userFloat("vtxPy"));
+      treevars[13] = Jets.at(i).userFloat("vtxMass");
+      treevars[14] = Jets.at(i).userFloat("vtx3DVal");
+      treevars[15] = Jets.at(i).userFloat("vtxNtracks");
+      treevars[16] = Jets.at(i).userFloat("vtx3DSig");
+
+      //Only do regression for b-jets
+      if (abs(Jets.at(i).hadronFlavour()) == 5){
+	float result = (reader->EvaluateRegression(name)).at(0);
+	Jets.at(i).addUserFloat("jetregressionPT", result);
+      }
+      else{
+	Jets.at(i).addUserFloat("jetregressionPT", -99);
+      }
+      Jets.at(i).addUserFloat("Jet_leadTrackPt",treevars[5]);
+      Jets.at(i).addUserFloat("Jet_leptonPtRel",treevars[6]);
+      Jets.at(i).addUserFloat("Jet_leptonPt",treevars[7]);
+      Jets.at(i).addUserFloat("Jet_leptonDeltaR",treevars[8]);
+
+    }
+  }
+
+  //Clear Members
+  inclusiveElectrons.clear();
+  inclusiveMuons.clear();
+  ElectronJetPairs.clear();
+  MuonJetPairs.clear();
+}
+
+
+
 
 //PRIVATE
 

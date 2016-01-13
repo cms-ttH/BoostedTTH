@@ -30,6 +30,13 @@ public:
 			  const edm::EDGetTokenT <double>& rhoToken,
 			  const edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
 			  std::vector<pat::Jet>& Jets);   //evaluate regression: Input: event, add new pt als userfloat after evaluation
+
+  void evaluateRegression(const edm::Event& iEvent,
+			  const edm::EDGetTokenT< edm::View<pat::Electron> >& electronToken,
+			  const edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
+			  const edm::EDGetTokenT <double>& rhoToken,
+			  std::vector<pat::Jet>& rawjets,
+			  std::vector<pat::Jet>& Jets);   //evaluate regression: Input: event, add new pt als userfloat after evaluation
 private:
   //void SetUpRegression(); //getInclusiveLeptons, matchLeptonswithJets 
   void setInclusiveLeptons(const std::vector<pat::Electron>& electrons, 

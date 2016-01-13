@@ -92,6 +92,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionMEvarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/QuarkMatchingVarProcessor.hpp"
 
 
 //
@@ -533,6 +534,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   }
   if(std::find(processorNames.begin(),processorNames.end(),"DiJetVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new DiJetVarProcessor(),"DiJetVarProcessor");
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"QuarkMatchingVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new QuarkMatchingVarProcessor(),"QuarkMatchingVarProcessor");
   }
 
 
@@ -1038,6 +1042,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
 
   bjetRegression.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMRhoToken,  EDMJetsToken, selectedJets_nominal);
+  //bjetRegression.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMRhoToken,  rawJets, selectedJets_nominal);
 
 
   // DO REWEIGHTING
