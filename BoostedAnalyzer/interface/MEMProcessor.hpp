@@ -8,7 +8,7 @@
 
 class MEMProcessor: public TreeProcessor{
 public:
-    MEMProcessor(int minJets=4, int maxJets=8, int minTags=3);
+    MEMProcessor(int minJets, int maxJets, int minTags);
     MEMProcessor(const edm::ParameterSet& iConfig);
     ~MEMProcessor();
     void Init(const InputCollections& input, VariableContainer& var);

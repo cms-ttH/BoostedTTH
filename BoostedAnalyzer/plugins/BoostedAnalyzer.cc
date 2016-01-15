@@ -485,7 +485,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     treewriter_nominal.AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new MEMProcessor(),"MEMProcessor");
+    treewriter_nominal.AddTreeProcessor(new MEMProcessor(iConfig),"MEMProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
@@ -1073,7 +1073,6 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   float csvweight = 1.;
   float puweight = 1.;
   float topptweight = genTopEvt.IsTTbar()? GetTopPtWeight(genTopEvt.GetTop().pt(),genTopEvt.GetTopBar().pt()) : 1.;
-
   //get vectors of jet properties
   std::vector<double> jetPts;
   std::vector<double> jetEtas;
