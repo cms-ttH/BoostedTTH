@@ -150,8 +150,6 @@ process.load('BoostedTTH.BoostedProducer.BoostedJetMatcher_cfi')
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
-#process.content = cms.EDAnalyzer("EventContentAnalyzer")
-
 # skim
 process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
 # Load the producer for MVA IDs
@@ -168,7 +166,6 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.patJetsSFFatJetsPF
                                  *process.patJetsSFSubjetsPF
                                  *process.patJetsSFFilterjetsPF
-#                                 *process.content
                                  *process.BoostedJetMatcher)
 
 

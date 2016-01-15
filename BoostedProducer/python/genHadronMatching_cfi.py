@@ -1,8 +1,24 @@
 import FWCore.ParameterSet.Config as cms
 
 # Setting input particle collections to be used by the tools
+genJetCollection = 'ak4GenJetsCustom'
 genParticleCollection = 'prunedGenParticles'
-genJetCollection = 'slimmedGenJets'
+genJetInputParticleCollection = 'packedGenParticles'
+
+## producing a subset of particles to be used for jet clustering
+from RecoJets.Configuration.GenJetParticles_cff import genParticlesForJetsNoNu
+genParticlesForJetsNoNu = genParticlesForJetsNoNu.clone(
+    src = genJetInputParticleCollection
+)
+
+# Producing own jets for testing purposes
+from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
+ak4GenJetsCustom = ak4GenJets.clone(
+    src = 'genParticlesForJetsNoNu',
+    rParam = cms.double(0.4),
+    jetAlgorithm = cms.string("AntiKt"),
+#    jetPtMin = 20.
+)
 
 # Ghost particle collection used for Hadron-Jet association 
 # MUST use proper input particle collection
