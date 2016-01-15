@@ -64,16 +64,17 @@ class BoostedJetMatcher : public edm::EDProducer {
     template<typename recojettype>
     const int deltarTopJetMatching(const recojettype & recofatjet, const std::vector<reco::BasicJet> & recotopjets);
 
-  
-    // ----------member data ---------------------------
-    edm::InputTag recoFatJetsTag_;
-    edm::InputTag patFatJetsTag_;
-    edm::InputTag recoTopJetsTag_;
-    edm::InputTag patTopJetsTag_;
-    edm::InputTag patTopSubjetsTag_;
-    edm::InputTag httInfosTag_;
-    edm::InputTag patSFSubJetsTag_;
-    edm::InputTag patSFFilterJetsTag_;
+    // ---------- member data ---------------------------
+    
+    /** Jet Collection Access Tokens **/
+    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoFatJetsToken;
+    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoTopJetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patFatJetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patTopJetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patTopSubjetsToken;
+    edm::EDGetTokenT< std::vector<reco::HTTTopJetTagInfo> > httInfosToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patSFSubJetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patSFFilterJetsToken;
 };
 
 #endif
