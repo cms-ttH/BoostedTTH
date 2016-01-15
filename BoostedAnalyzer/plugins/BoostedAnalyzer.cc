@@ -355,7 +355,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   EDMLHEToken             = consumes< LHEEventProduct >(edm::InputTag("externalLHEProducer","",""));
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
-  EDMCustomGenJetsToken   = consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
+  EDMCustomGenJetsToken   = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
   EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
 
   // tt+X CATEGORIZATION data
