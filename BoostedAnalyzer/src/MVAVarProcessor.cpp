@@ -161,6 +161,8 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVar("Evt_3b2bLikelihoodRatio");
   vars.InitVar("Evt_2b1bLikelihoodRatio");
 
+  vars.InitVar("Evt_blr_ETH");
+
 
   initialized=true;
 }
@@ -757,5 +759,18 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vars.FillVar("Evt_4b2bLikelihoodRatio",r_42);
   vars.FillVar("Evt_3b2bLikelihoodRatio",r_32);
   vars.FillVar("Evt_2b1bLikelihoodRatio",r_21);
+  vector<TLorentzVector> jettvecs;
+  vector<double> jetcsvs;
+  for(uint i=0; i<input.selectedJets.size(); i++){
+      jettvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedJets[i].p4()));
+      jetcsvs.push_back(MiniAODHelper::GetJetCSV(input.selectedJets[i]));
+  }
+  std::vector<unsigned int> out_best_perm;
+  float eth_blr=mem.GetBTagLikelihoodRatio(jettvecs,
+					   jetcsvs,
+					   out_best_perm);
+
+  vars.FillVar("Evt_blr_ETH",eth_blr);
+
 
 }
