@@ -150,7 +150,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
   MET=input.pfMET.pt();
 
-  ttHFCategory=input.genTopEvt.GetTTxIdFromHelper();
+  ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   
   out << boost::format("%6d %8d %10d   %6.2f %+4.2f %+4.2f   %6.2f %6.2f %6.2f %6.2f   %+7.3f %+7.3f %+7.3f %+7.3f   %+7.3f   %2d  %2d   %2d   %2d  %2d\n")%
 	 run% lumi% event%
@@ -560,11 +560,11 @@ bool runOverData = true;
 
   if(is_DL){
     bWeight=input_DL.weights.at("Weight_CSV");
-    ttHFCategory=input_DL.genTopEvt.GetTTxIdFromHelper();
+    ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
   else{
     bWeight=input.weights.at("Weight_CSV");
-    ttHFCategory=input.genTopEvt.GetTTxIdFromHelper();
+    ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }  
   
   if(compare) cout <<run<<","<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","

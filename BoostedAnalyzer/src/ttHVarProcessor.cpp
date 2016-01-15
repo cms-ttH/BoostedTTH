@@ -26,7 +26,7 @@ void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& v
 
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
-  BoostedttHEvent ttHEvent = BoostedttHEvent(input);  
+  ttHEvent.SetInput(&input);  
   
   if(recotype == BoostedRecoType::BoostedTopHiggs)
     ttHEvent.BoostedTopHiggsEventRec(toptagger, higgstagger);
@@ -277,6 +277,9 @@ void ttHVarProcessor::InitCombinationVars(VariableContainer& vars){
   vars.InitVar(prefix+"HiggsCandidate_Deta_TopHadCandidate",-9.);
   vars.InitVar(prefix+"HiggsCandidate_Deta_TopLepCandidate",-9.);
   vars.InitVar(prefix+"TopHadCandidate_Deta_TopLepCandidate",-9.);
+  vars.InitVar(prefix+"TTHBB_ME",-.1);
+  vars.InitVar(prefix+"TTBB_ME",-.1);
+  vars.InitVar(prefix+"MEratio",-.1);
 }
 
 
@@ -667,6 +670,12 @@ void ttHVarProcessor::FillCombinationVars(VariableContainer& vars,BoostedttHEven
     vars.FillVar(prefix+"TopHadCandidate_Dphi_TopLepCandidate",BoostedUtils::DeltaPhi(topLepCandVec,topHadCandVec));
     vars.FillVar(prefix+"TopHadCandidate_Deta_TopLepCandidate",BoostedUtils::DeltaEta(topLepCandVec,topHadCandVec));
   }
+  if(topHadCandVec.Pt()>0 && topLepCandVec.Pt()>0 && higgsCandVec2.Pt()){
+      vars.FillVar(prefix+"TTHBB_ME",ttHEvent.GetTTHBB_ME());
+      vars.FillVar(prefix+"TTBB_ME",ttHEvent.GetTTBB_ME());
+      vars.FillVar(prefix+"MEratio",ttHEvent.Get_MEratio());
+  }
+
 }
 
 
