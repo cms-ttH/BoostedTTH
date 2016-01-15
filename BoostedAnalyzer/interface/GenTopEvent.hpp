@@ -120,7 +120,8 @@ public:
   int GetTTxId(bool countAdditionalAfterTop=true) const;
   int GetTTxIdFromProducer() const;
 
-
+  bool IsTTbar() const;
+  bool IsTTH() const;
   bool IsAllHadron() const;
   bool IsDiLepton() const;
   bool IsSemiLepton() const;
@@ -193,6 +194,8 @@ private:
   const float wMatchR=0.4;
   const float ttxptcut=20;
   const float ttxetacut=2.4;
+  bool isTTbar=false;
+  bool isTTH=false;
   bool topIsHadronic;
   bool topbarIsHadronic;
   bool isFilled;

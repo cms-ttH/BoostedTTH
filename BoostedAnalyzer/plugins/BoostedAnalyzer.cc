@@ -885,7 +885,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
   }
   GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!(!isData&&foundT&&foundTbar));
-  int ttid = genTopEvt.GetTTxIdFromProducer();
+  int ttid = genTopEvt.IsFilled()? genTopEvt.GetTTxIdFromProducer() : -1;
       
   SampleType sampleType= SampleType::nonttbkg;
   if(isData) sampleType = SampleType::data;
@@ -1072,7 +1072,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   float xsweight = eventWeight;
   float csvweight = 1.;
   float puweight = 1.;
-  float topptweight = GetTopPtWeight(genTopEvt.GetTop().pt(),genTopEvt.GetTopBar().pt());
+  float topptweight = genTopEvt.IsTTbar()? GetTopPtWeight(genTopEvt.GetTop().pt(),genTopEvt.GetTopBar().pt()) : 1.;
 
   //get vectors of jet properties
   std::vector<double> jetPts;

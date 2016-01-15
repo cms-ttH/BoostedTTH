@@ -388,10 +388,14 @@ std::vector<int> GenTopEvent::GetAdditionalCHadronAfterTopType() const{
 }
 
 void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenParticles, int ttXid_){
-
+  bool foundT=false;
+  bool foundTbar=false;
+  bool foundH=false;
   ttXid=ttXid_;
   for(auto p=prunedGenParticles.begin(); p!=prunedGenParticles.end(); p++){
     if (abs(p->pdgId())==6){
+      if(p->pdgId()==6) foundT=true;
+      if(p->pdgId()==-6) foundTbar=true;
       bool lastTop=true;
       for(uint i=0;i<p->numberOfDaughters();i++){
 	if (abs(p->daughter(i)->pdgId())==6)
@@ -449,6 +453,7 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
 
     if (abs(p->pdgId())==25){
       bool lastH=true;
+      foundH=true;
       for(uint i=0;i<p->numberOfDaughters();i++){
 	if (abs(p->daughter(i)->pdgId())==25)
 	  lastH=false;
@@ -477,6 +482,8 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
   }
   topIsHadronic=nquarks_from_wplus==2;
   topbarIsHadronic=nquarks_from_wminus==2;
+  isTTbar=foundT&&foundTbar;
+  isTTbar=foundT&&foundTbar&&foundH;
   isFilled=true;
 }
 
@@ -570,18 +577,22 @@ void GenTopEvent::PrintParticles(std::vector<reco::GenParticle> ps) const{
   }
 }
 reco::GenParticle GenTopEvent::GetHiggs() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return higgs;
 }
 reco::GenParticle GenTopEvent::GetTop() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return top;
 }
 reco::GenParticle GenTopEvent::GetTopBar() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return topbar;
 }
 reco::GenParticle GenTopEvent::GetTopHad() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic) return top;
   else if(!topIsHadronic&&topbarIsHadronic) return topbar;
@@ -591,6 +602,7 @@ reco::GenParticle GenTopEvent::GetTopHad() const{
   }
 }
 reco::GenParticle GenTopEvent::GetTopLep() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic) return topbar;
   else if(!topIsHadronic&&topbarIsHadronic) return top;
@@ -600,14 +612,17 @@ reco::GenParticle GenTopEvent::GetTopLep() const{
   }
 }
 reco::GenParticle GenTopEvent::GetWplus() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return wplus;
 }
 reco::GenParticle GenTopEvent::GetWminus() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return wminus;
 }
 reco::GenParticle GenTopEvent::GetWhad() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic) return wplus;
   else if(!topIsHadronic&&topbarIsHadronic) return wminus;
@@ -617,6 +632,7 @@ reco::GenParticle GenTopEvent::GetWhad() const{
   }
 }
 reco::GenParticle GenTopEvent::GetWlep() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic) return wminus;
   else if(!topIsHadronic&&topbarIsHadronic) return wplus;
@@ -626,6 +642,7 @@ reco::GenParticle GenTopEvent::GetWlep() const{
   }
 }
 std::vector<reco::GenParticle> GenTopEvent::GetWLeptons() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic) return wminus_decay_products;
   else if(!topIsHadronic&&topbarIsHadronic) return wplus_decay_products;
@@ -635,6 +652,7 @@ std::vector<reco::GenParticle> GenTopEvent::GetWLeptons() const{
   }
 }
 reco::GenParticle GenTopEvent::GetLepton() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic){
     for(auto p=wminus_decay_products.begin();p!=wminus_decay_products.end();p++){
@@ -658,6 +676,7 @@ reco::GenParticle GenTopEvent::GetLepton() const{
 }
 
 reco::GenParticle GenTopEvent::GetNeutrino() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic){
     for(auto p=wminus_decay_products.begin();p!=wminus_decay_products.end();p++){
@@ -680,6 +699,7 @@ reco::GenParticle GenTopEvent::GetNeutrino() const{
 }
 
 std::vector<reco::GenParticle>  GenTopEvent::GetWQuarks() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic) return wplus_decay_products;
   else if(!topIsHadronic&&topbarIsHadronic) return wminus_decay_products;
@@ -689,18 +709,22 @@ std::vector<reco::GenParticle>  GenTopEvent::GetWQuarks() const{
   }
 }
 std::vector<reco::GenParticle> GenTopEvent::GetHiggsDecayProducts() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return higgs_decay_products;
 }
 reco::GenParticle GenTopEvent::GetTopDecayQuark() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return top_decay_quark;
 }
 reco::GenParticle GenTopEvent::GetTopBarDecayQuark() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return topbar_decay_quark;
 }
 reco::GenParticle GenTopEvent::GetTopHadDecayQuark() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic) return top_decay_quark;
   else if(!topIsHadronic&&topbarIsHadronic) return topbar_decay_quark;
@@ -710,6 +734,7 @@ reco::GenParticle GenTopEvent::GetTopHadDecayQuark() const{
   }
 }
 reco::GenParticle GenTopEvent::GetTopLepDecayQuark() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   if(topIsHadronic&&!topbarIsHadronic) return topbar_decay_quark;
   else if(!topIsHadronic&&topbarIsHadronic) return top_decay_quark;
@@ -719,6 +744,7 @@ reco::GenParticle GenTopEvent::GetTopLepDecayQuark() const{
   }
 }
 std::vector<reco::GenParticle> GenTopEvent::GetQuarks() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   std::vector<reco::GenParticle> quarks;
   quarks.push_back(top_decay_quark);
@@ -735,68 +761,85 @@ std::vector<reco::GenParticle> GenTopEvent::GetQuarks() const{
   return quarks;
 }
 std::vector<reco::GenParticle> GenTopEvent::GetWplusDecayProducts() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return wplus_decay_products;
 }
 std::vector<reco::GenParticle> GenTopEvent::GetWminusDecayProducts() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return wminus_decay_products;
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllTopHads() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   std::vector<reco::GenParticle> tophads;
+    assert(isFilled);
   if(isFilled&&topIsHadronic) tophads.push_back(top);
   if(isFilled&&topbarIsHadronic) tophads.push_back(topbar);
   return tophads;
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllTopLeps() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   std::vector<reco::GenParticle> topleps;
+    assert(isFilled);
   if(isFilled&&!topIsHadronic) topleps.push_back(top);
   if(isFilled&&!topbarIsHadronic) topleps.push_back(topbar);
   return topleps;
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllTopHadDecayQuarks() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   std::vector<reco::GenParticle> quarks;
+    assert(isFilled);
   if(isFilled&&topIsHadronic) quarks.push_back(top_decay_quark);
   if(isFilled&&topbarIsHadronic) quarks.push_back(topbar_decay_quark);
   return quarks;
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllTopLepDecayQuarks() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   std::vector<reco::GenParticle> quarks;
+    assert(isFilled);
   if(isFilled&&!topIsHadronic) quarks.push_back(top_decay_quark);
   if(isFilled&&!topbarIsHadronic) quarks.push_back(topbar_decay_quark);
   return quarks;
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllWhads() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   std::vector<reco::GenParticle> ws;
+    assert(isFilled);
   if(isFilled&&topIsHadronic) ws.push_back(wplus);
   if(isFilled&&topbarIsHadronic) ws.push_back(wminus);
   return ws;
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllWleps() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   std::vector<reco::GenParticle> ws;
+    assert(isFilled);
   if(isFilled&&!topIsHadronic) ws.push_back(wplus);
   if(isFilled&&!topbarIsHadronic) ws.push_back(wminus);
   return ws;
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllLeptons() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent Leptons but it is not filled" << std::endl;
   std::vector<reco::GenParticle> leptons;
+    assert(isFilled);
   for(auto p=wplus_decay_products.begin();isFilled&& p!=wplus_decay_products.end();p++){
     if(abs(p->pdgId())==11||abs(p->pdgId())==13||abs(p->pdgId())==15) leptons.push_back(*p);
   }
+    assert(isFilled);
   for(auto p=wminus_decay_products.begin();isFilled&& p!=wminus_decay_products.end();p++){
     if(abs(p->pdgId())==11||abs(p->pdgId())==13||abs(p->pdgId())==15) leptons.push_back(*p);
   }
@@ -805,9 +848,11 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllLeptons() const{
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllNeutrinos() const{
   std::vector<reco::GenParticle> neutrinos;
+    assert(isFilled);
   for(auto p=wplus_decay_products.begin(); isFilled&&p!=wplus_decay_products.end();p++){
     if(abs(p->pdgId())==12||abs(p->pdgId())==14||abs(p->pdgId())==16) neutrinos.push_back(*p);
   }
+    assert(isFilled);
   for(auto p=wminus_decay_products.begin(); isFilled&&p!=wminus_decay_products.end();p++){
     if(abs(p->pdgId())==12||abs(p->pdgId())==14||abs(p->pdgId())==16) neutrinos.push_back(*p);
   }
@@ -815,11 +860,14 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllNeutrinos() const{
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllWQuarks() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent Quarks but it is not filled" << std::endl;
   std::vector<reco::GenParticle> quarks;
+    assert(isFilled);
   for(auto p=wplus_decay_products.begin();isFilled&& p!=wplus_decay_products.end();p++){
     if(p->pdgId()>0&&p->pdgId()<6) quarks.push_back(*p);
   }
+    assert(isFilled);
   for(auto p=wminus_decay_products.begin();isFilled&& p!=wminus_decay_products.end();p++){
     if(p->pdgId()>0&&p->pdgId()<6) quarks.push_back(*p);
   }
@@ -827,11 +875,14 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllWQuarks() const{
 }
 // always top first, tobar second if both exist
 std::vector<reco::GenParticle> GenTopEvent::GetAllWAntiQuarks() const{
+    assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent AntiQuarks but it is not filled" << std::endl;
   std::vector<reco::GenParticle> quarks;
+    assert(isFilled);
   for(auto p=wplus_decay_products.begin();isFilled&& p!=wplus_decay_products.end();p++){
     if(p->pdgId()<0&&p->pdgId()>-6) quarks.push_back(*p);
   }
+    assert(isFilled);
   for(auto p=wminus_decay_products.begin();isFilled&& p!=wminus_decay_products.end();p++){
     if(p->pdgId()<0&&p->pdgId()>-6) quarks.push_back(*p);
   }
@@ -933,7 +984,12 @@ std::vector<math::XYZTLorentzVector> GenTopEvent::GetWminusDecayProductsVecs() c
   return GetLVs(GetWminusDecayProducts());
 }
 
-
+bool GenTopEvent::IsTTbar() const{
+  return isTTbar;
+}
+bool GenTopEvent::IsTTH() const{
+  return isTTH;
+}
 bool GenTopEvent::IsAllHadron() const{
   return topIsHadronic&&topbarIsHadronic;
 }

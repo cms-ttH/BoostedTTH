@@ -91,7 +91,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
   if(input.genTopEvt.TTxIsFilled()){
     std::vector<reco::GenJet> additional_b_genjets = input.genTopEvt.GetAdditionalBGenJets();
     std::vector<reco::GenJet> additional_c_genjets = input.genTopEvt.GetAdditionalCGenJets();
-    std::vector<reco::GenJet> additional_light_genjets = input.genTopEvt.GetAdditionalCGenJets();
+    std::vector<reco::GenJet> additional_light_genjets = input.genTopEvt.GetAdditionalLightGenJets();
     std::vector<reco::GenJet> w_genjets = input.genTopEvt.GetWGenJets();
     std::vector<const pat::Jet*> additional_b_genjets_recojets;
     std::vector<const pat::Jet*> additional_c_genjets_recojets;
@@ -210,7 +210,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalLightGenJet_Phi", i, additional_light_genjets[i].phi());
       vars.FillVars( "AdditionalLightGenJet_E", i, additional_light_genjets[i].energy());
       vars.FillVars( "AdditionalLightGenJet_RecoJetPt", i, additional_light_genjets_recojets[i]!=0 ? additional_light_genjets_recojets[i]->pt() : -1);
-      vars.FillVars( "AdditionalLightGenJet_RecoJetCSV", i, additional_light_genjets_recojets[i]!=0 ? MiniAODHelper::GetJetCSV(*additional_c_genjets_recojets[i],btagger) : -2);
+      vars.FillVars( "AdditionalLightGenJet_RecoJetCSV", i, additional_light_genjets_recojets[i]!=0 ? MiniAODHelper::GetJetCSV(*additional_light_genjets_recojets[i],btagger) : -2);
     }
     
     vars.FillVar( "GenEvt_TTxId_FromGenTopEvt",input.genTopEvt.GetTTxId());
