@@ -40,7 +40,15 @@ void BJetnessProcessor::Process(const InputCollections& input,VariableContainer&
     double avip3d_sig=-999;
     double avsip3d_sig=-999;
     double avip1d_sig=-999;
-    bjetness.get_bjetness_vars(input.selectedJets,input.selectedPVs[0],*ttrkbuilder,h_electrons,h_muons,
+    
+    vector<pat::Jet> jets_by_csv=GetSortedByCSV(input.selectedJets);
+    vector<pat::Jet> bjetness_jets;
+    const uint maxjets=0;
+    for(uint i=1; i<jets_by_csv.size() && i<=maxjets; i++){
+	bjetness_jets.push_back(jets_by_csv[i]);
+    }
+    
+    bjetness.get_bjetness_vars(bjetness_jets,input.selectedPVs[0],*ttrkbuilder,h_electrons,h_muons,
 			       num_loosenoipnoiso_leps, numjettrksnopv, 
 			       pvTrkOVcollTrk, avip3d_val, avip3d_sig, 
 			       avsip3d_sig, avip1d_sig);

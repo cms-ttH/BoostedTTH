@@ -20,8 +20,14 @@ private:
   BJetness bjetness;
   edm::EDGetTokenT< edm::View<pat::Electron> > EDMElectronsToken;
   edm::EDGetTokenT< edm::View<pat::Muon> > EDMMuonsToken;
-
+  template <typename T> T GetSortedByCSV(const T&);
 
 };
+template <typename T> T BJetnessProcessor::GetSortedByCSV(const T& collection){
+  T result = collection;
+  std::sort(result.begin(), result.end(), [] (typename T::value_type a, typename T::value_type b) { return
+	      a.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>b.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");});
+  return result;
+}
 
 #endif
