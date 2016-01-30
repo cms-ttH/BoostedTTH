@@ -17,6 +17,7 @@
 <use name="BoostedTTH/TTHReconstruction"/>
 <use name="BoostedTTH/MatrixElements"/>
 <use name="TTH/CommonClassifier"/>
+<use name="Other/BJetness"/>
 <export>
   <lib   name="1"/>
 </export>
