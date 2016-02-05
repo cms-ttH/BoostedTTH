@@ -134,7 +134,6 @@ process.BoostedAnalyzer.maxJets = [-1,-1]
 process.BoostedAnalyzer.minTags = [3,2]
 process.BoostedAnalyzer.maxTags = [-1,-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
-process.BoostedAnalyzer.maxJetsForMEM = 8
 process.BoostedAnalyzer.minTagsForMEM = 3
 process.BoostedAnalyzer.doJERsystematic = False
 
