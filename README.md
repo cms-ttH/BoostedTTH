@@ -26,7 +26,12 @@ Follow These Steps:
     git fetch --tags btv-cmssw
     git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV2-WithWeightFiles-v1_from-CMSSW_7_4_15
     git clone https://github.com/cms-ttH/MiniAOD.git
-    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_7_4_15
+    git clone https://github.com/cms-ttH/BoostedTTH.git -b postFreeze
+    mkdir Other
+    cd Other
+    git clone https://github.com/kit-cn-cms/bjetness-code.git .
+    cd -
+    mkdir
     mkdir TTH
     cd TTH
     git clone https://github.com/cms-ttH/CommonClassifier.git -b kit
