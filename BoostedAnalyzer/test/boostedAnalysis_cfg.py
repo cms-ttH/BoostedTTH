@@ -24,7 +24,7 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 100 # reset to 100 for testing
+    options.maxEvents = 1000 # reset to 100 for testing
 if not options.inputFiles:
     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_1.root']
 
@@ -56,7 +56,7 @@ process = cms.Process("analysis")
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )

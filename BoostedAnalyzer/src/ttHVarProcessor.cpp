@@ -904,11 +904,12 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
 
 void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHEvent, const InputCollections& input){
   if(!initialized) cerr << "tree processor not initialized" << endl;
-
   
-  int minJets;
-  int maxJets = 4;
-  int minTags;
+  MEMClassifier mem = MEMClassifier();
+  
+  size_t minJets = 4;
+  size_t maxJets = 4;
+  size_t minTags = 3;
 
   // leptons
   vector<TLorentzVector> lepvecs;
@@ -938,101 +939,95 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
   pat::Jet topHadW2Cand = ttHEvent.GetTopHadW2Cand();
   
   // Preselect Events for MEM Calculation
-  if(ttHEvent.GetHiggsCand().pt()<=0. || ttHEvent.GetHiggsCandTag()<.5) return;
-  if(ttHEvent.GetTopHadCand().pt()<=0. || ttHEvent.GetTopHadCandTag()<-.5) return;
-  
+  if(!ttHEvent.GetFoundHiggsCand()  || ttHEvent.GetHiggsCandTag()<.5) return;
+  if(!ttHEvent.GetFoundTopHadCand() || ttHEvent.GetTopHadCandTag()<-.5) return;
   
   // Match ak4 Jets to Top Candidate Subjets
-  if(input.selectedJets.size()<maxJets) return;
-  selectedJetsbyCSV = GetSortedByCSV(input.selectedJets);
-  selectedJetsbyCSV.resize(maxJets);
+  if(input.selectedJets.size()<3) return;
   
-  int matchedJet = -1;
+  std::vector<pat::Jet> unmatchedJets;
   
-  bool doBoostedMEM = true;
-  
-  
-  for(auto itJet=selectedJetsbyCSV.begin(); itJet!=selectedJetsbyCSV.end(); itJet++){
-    if (BoostedUtils::DeltaR(*itJet,topHadBCand)<0.3 ||
-        BoostedUtils::DeltaR(*itJet,topHadW1Cand)<0.3 ||
-        BoostedUtils::DeltaR(*itJet,topHadW2Cand)<0.3){
+  for(auto itJet=input.selectedJets.begin(); itJet!=input.selectedJets.end(); itJet++){
+    if (BoostedUtils::DeltaR(*itJet,topHadBCand)>0.3  &&
+        BoostedUtils::DeltaR(*itJet,topHadW1Cand)>0.3 &&
+        BoostedUtils::DeltaR(*itJet,topHadW2Cand)>0.3){
       
-      if(matchedJet<0) matchedJet = itJet-selectedJetsbyCSV.begin();
-      else{
-        doBoostedMEM = false;
-        break;
-      }
+      unmatchedJets.push_back(*itJet);
     }
   }
-        
-  if(doBoostedMEM && matchedJet>=0) selectedJetsbyCSV.erase(selectedJetsbyCSV.begin()+matchedJet);
   
+  std::sort(unmatchedJets.begin(), unmatchedJets.end(),BoostedUtils::FirstHasHigherCSV);
+  
+  bool doBoostedMEM = true;
+  if(unmatchedJets.size()<3){
+    doBoostedMEM = false; 
+  }
+  else{
+    unmatchedJets.resize(3);
+  }  
+        
   // Define MEM Input
-  Hypothesis hypo;
+  MEMClassifier::Hypothesis hypo;
   
   std::vector<TLorentzVector> jetvecs;
   std::vector<double> jetcsvs;
-  std::vector<JetType>& jettype;
+  std::vector<MEMClassifier::JetType> jettype;
   
   int ntags=0;
-  
-  std::vector<TLorentzVector> loose_jetvecs;
-  std::vector<double> loose_jetcsvs;
   
   MEMResult result;
   if(doBoostedMEM){
     // Set MEM Run Mode to Boosted
-    hypo = SL_2W2H2T_SJ;
+    hypo = MEMClassifier::Hypothesis::SL_2W2H2T_SJ;
     
     // Add W1 and W2 of Top Candiadte to jetvecs
     jetvecs.push_back(BoostedUtils::GetTLorentzVector(topHadW1Cand.p4()));
-    jetcsvs.push_back(0):
-    jettype.push_back(BOOSTED_LIGHT);
+    jetcsvs.push_back(0);
+    jettype.push_back(MEMClassifier::JetType::BOOSTED_LIGHT);
     
     jetvecs.push_back(BoostedUtils::GetTLorentzVector(topHadW2Cand.p4()));
-    jetcsvs.push_back(0):
-    jettype.push_back(BOOSTED_LIGHT);
+    jetcsvs.push_back(0);
+    jettype.push_back(MEMClassifier::JetType::BOOSTED_LIGHT);
     
     // Add B of Top Candiadte to jetvecs
     jetvecs.push_back(BoostedUtils::GetTLorentzVector(topHadBCand.p4()));
-    jetcsvs.push_back(1):
-    jettype.push_back(BOOSTED_B);
+    jetcsvs.push_back(1);
+    jettype.push_back(MEMClassifier::JetType::BOOSTED_B);
     
     // Add resolved jets
-    for(auto itJet=selectedJetsbyCSV.begin();itJet!=.end();itJet++){
-      if(itJet-selectedJetsbyCSV.begin()>=maxJets-1) break;
-    
-      jetvecs.push_back(BoostedUtils::GetTLorentzVector(*itJet));
+    for(auto itJet=unmatchedJets.begin();itJet!=unmatchedJets.end();itJet++){
+      
+      jetvecs.push_back(BoostedUtils::GetTLorentzVector(itJet->p4()));
       jetcsvs.push_back(1);
-      jettype.push_back(RESOLVED);
+      jettype.push_back(MEMClassifier::JetType::RESOLVED);
     }
   }
   else{
-    hypo = SL_0W2H2T;
+    hypo = MEMClassifier::Hypothesis::SL_0W2H2T;
     
     for(auto itJet=input.selectedJets.begin(); itJet!=input.selectedJets.end(); itJet++){
-        if(itJet-input.selectedJets.begin()==maxJets) break;
+        if(itJet-input.selectedJets.begin()==int(maxJets)) break;
 
         jetvecs.push_back(BoostedUtils::GetTLorentzVector(itJet->p4()));
         jetcsvs.push_back(MiniAODHelper::GetJetCSV(*itJet));
-        jettype.push_back(RESOLVED);
+        jettype.push_back(MEMClassifier::JetType::RESOLVED);
         
-        if(jetcsvs.back()>btagMcut) ntags++;
+        if(jetcsvs.back()>0.89) ntags++;
     }
 
-    if(int(jetvecs.size())<minJets) return;
-    if(ntags<minTags) return;
+    if(jetvecs.size()<minJets) return;
+    if(ntags<int(minTags)) return;
   }
   
   // Calculate MEM Output
-  result=mem.GetOutput(hypo, lepvecs, lepcharges, jetvecs, jetcsvs, jettype, jetvecs, jetcsvs, metP4);
+  result = mem.GetOutput(hypo, lepvecs, lepcharges, jetvecs, jetcsvs, jettype, jetvecs, jetcsvs, metP4);
   
-  vars.FillVar("MEM_p",result.p);
-  vars.FillVar("MEM_p_sig",result.p_sig);
-  vars.FillVar("MEM_p_bkg",result.p_bkg);
-  vars.FillVar("MEM_p_err_sig",result.p_err_sig);
-  vars.FillVar("MEM_p_err_bkg",result.p_err_bkg);
-  vars.FillVar("MEM_n_perm_sig",result.n_perm_sig);
-  vars.FillVar("MEM_n_perm_bkg",result.n_perm_bkg);
+  vars.FillVar(prefix+"MEM_p",result.p);
+  vars.FillVar(prefix+"MEM_p_sig",result.p_sig);
+  vars.FillVar(prefix+"MEM_p_bkg",result.p_bkg);
+  vars.FillVar(prefix+"MEM_p_err_sig",result.p_err_sig);
+  vars.FillVar(prefix+"MEM_p_err_bkg",result.p_err_bkg);
+  vars.FillVar(prefix+"MEM_n_perm_sig",result.n_perm_sig);
+  vars.FillVar(prefix+"MEM_n_perm_bkg",result.n_perm_bkg);
   
 }
