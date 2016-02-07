@@ -483,7 +483,7 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
   topIsHadronic=nquarks_from_wplus==2;
   topbarIsHadronic=nquarks_from_wminus==2;
   isTTbar=foundT&&foundTbar;
-  isTTbar=foundT&&foundTbar&&foundH;
+  isTTH=foundT&&foundTbar&&foundH;
   isFilled=true;
 }
 

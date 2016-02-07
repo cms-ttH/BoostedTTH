@@ -162,6 +162,7 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVar("Evt_2b1bLikelihoodRatio");
 
   vars.InitVar("Evt_blr_ETH");
+  vars.InitVar("Evt_blr_ETH_transformed");
 
 
   initialized=true;

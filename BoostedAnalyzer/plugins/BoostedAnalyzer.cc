@@ -1073,6 +1073,11 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   float csvweight = 1.;
   float puweight = 1.;
   float topptweight = genTopEvt.IsTTbar()? GetTopPtWeight(genTopEvt.GetTop().pt(),genTopEvt.GetTopBar().pt()) : 1.;
+  float topptweightUp = 1.0 + 2.0*(topptweight-1.0);
+  float topptweightDown = 1.0;
+//   std::cout<<genTopEvt.IsTTbar()<<" "<<genTopEvt.GetTop().pt()<<" "<<genTopEvt.GetTopBar().pt()<<" "<<topptweight<<std::endl;
+
+  
   //get vectors of jet properties
   std::vector<double> jetPts;
   std::vector<double> jetEtas;
@@ -1123,6 +1128,9 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
     weights["Weight_CSVCErr1down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,22, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
     weights["Weight_CSVCErr2up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,23, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
     weights["Weight_CSVCErr2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,24, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    weights["Weight_TopPtup"] = topptweightUp;
+    weights["Weight_TopPtdown"] = topptweightDown;
+
     
     //weights["Weight_Q2up"] = beanHelper.GetQ2ScaleUp(event[0]);
     //weights["Weight_Q2down"] = beanHelper.GetQ2ScaleDown(event[0]);
