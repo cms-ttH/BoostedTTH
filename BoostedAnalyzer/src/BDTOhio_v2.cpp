@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v2.hpp"
 using namespace std;
 
-BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.89){
+BDTOhio_v2::BDTOhio_v2 (TString weightPath):btagMcut(0.8){
   // ==================================================
   //init all variables used in BDT set
   variableMap["all_sum_pt_with_met"]=-999.;

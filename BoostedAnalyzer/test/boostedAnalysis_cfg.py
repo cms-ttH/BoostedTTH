@@ -111,6 +111,8 @@ else:
 
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
+else:
+    process.BoostedAnalyzer.useFatJets=False
 
 process.BoostedAnalyzer.outfileName=options.outName
 if not options.isData:
