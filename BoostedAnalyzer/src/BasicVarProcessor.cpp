@@ -27,6 +27,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
 
   vars.InitVars( "Jet_E","N_Jets" );
   vars.InitVars( "Jet_M","N_Jets" );
+  vars.InitVars( "Jet_Mt","N_Jets" );
   vars.InitVars( "Jet_Pt","N_Jets" );
   vars.InitVars( "Jet_Phi","N_Jets" );
   vars.InitVars( "Jet_Eta","N_Jets" );
@@ -47,6 +48,8 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Jet_leptonPt","N_Jets" );
   vars.InitVars( "Jet_leptonDeltaR","N_Jets" );
   vars.InitVars( "Jet_corr","N_Jets" );
+  vars.InitVars( "Jet_rawPt","N_Jets" );
+  vars.InitVars( "Jet_corr_rawJet","N_Jets" );
   vars.InitVars( "Jet_regPt","N_Jets" );
   vars.InitVars( "Jet_regcorr","N_Jets" );
 
@@ -144,6 +147,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     int iJet = itJet - input.selectedJets.begin();
     vars.FillVars( "Jet_E",iJet,itJet->energy() );
     vars.FillVars( "Jet_M",iJet,itJet->mass() );
+    vars.FillVars( "Jet_Mt",iJet,itJet->mt() );
     vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
@@ -164,6 +168,8 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Jet_leptonPt",iJet,itJet->userFloat("Jet_leptonPt"));
     vars.FillVars( "Jet_leptonDeltaR",iJet,itJet->userFloat("Jet_leptonDeltaR"));
     vars.FillVars( "Jet_corr",iJet,1/itJet->jecFactor("Uncorrected"));
+    vars.FillVars( "Jet_rawPt",iJet,itJet->userFloat("Jet_rawPt"));
+    vars.FillVars( "Jet_corr_rawJet",iJet,itJet->pt()/itJet->userFloat("Jet_rawPt"));
     vars.FillVars( "Jet_regPt",iJet,itJet->userFloat("jetregressionPT"));
     vars.FillVars( "Jet_regcorr",iJet,itJet->userFloat("jetregressionPT")/itJet->pt());
     if(itJet->genJet()!=NULL){

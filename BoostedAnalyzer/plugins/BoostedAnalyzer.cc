@@ -694,6 +694,15 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::MET> correctedMETs_nominal = recorrectMET ? helper.CorrectMET(idJetsForMET,correctedJetsForMET_nominal,pfMETs) : pfMETs;
   // Get raw jets
   std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
+  
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  //Jet Correction Factor testing:
+
+  for(size_t i = 0; i < rawJets.size(); i++){
+    rawJets.at(i).addUserFloat("Jet_rawPt",rawJets.at(i).pt());
+  }
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
   // Clean muons and electrons from jets
   std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets,selectedMuonsLoose,selectedElectronsLoose,0.4);
   // Apply nominal jet corrections
@@ -1041,9 +1050,17 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
 
-  bjetRegression.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMRhoToken,  EDMJetsToken, selectedJets_nominal);
-  //bjetRegression.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMRhoToken,  rawJets, selectedJets_nominal);
-
+  bjetRegression.evaluateRegression(iEvent,selectedPVs, EDMElectronsToken, EDMMuonsToken, EDMRhoToken,  EDMJetsToken, selectedJets_nominal);
+  /*
+  std::vector<pat::Jet> selectedJets_bReg_nominal;
+  if(bjetRegression.IsRegressionDone()){
+    selectedJets_bReg_nominal = bjetRegression.GetCorrectedJetswbReg(selectedJets_nominal);
+  }
+  else {
+    std::cout << "b-Jet Regression not done -> selectedJets_bReg_nominal not filled" << endl;
+  }
+  */
+  
 
   // DO REWEIGHTING
   map<string,float> weights = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
@@ -1080,6 +1097,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedBoostedJets,
 				  genTopEvt,
 				  selectedGenJets,
+				  //				  selectedJets_bReg_nominal,
 				  sampleType,
 				  higgsdecay,
 				  weights

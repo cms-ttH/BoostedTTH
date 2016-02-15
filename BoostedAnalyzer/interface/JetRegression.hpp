@@ -4,14 +4,14 @@
 #include <map>
 #include <vector>
 #include <cmath>
-//#include <string>
 #include <typeinfo>
-//#include "TLorentzVector.h"
 
 #include "TMVA/Reader.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+
+#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -23,32 +23,30 @@
 class JetRegression {
 
 public:
-  JetRegression();   //Constructor: Read Wight file
-  void evaluateRegression(const edm::Event& iEvent,
-			  const edm::EDGetTokenT< edm::View<pat::Electron> >& electronToken,
-			  const edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
-			  const edm::EDGetTokenT <double>& rhoToken,
-			  const edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
+  JetRegression( );   //Constructor: Read Wight file
+
+  void evaluateRegression(const  edm::Event& iEvent,
+			  const reco::VertexCollection& Vertices,
+			  const  edm::EDGetTokenT< edm::View<pat::Electron> >& electronToken,
+			  const  edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
+			  const  edm::EDGetTokenT <double>& rhoToken,
+			  const  edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
 			  std::vector<pat::Jet>& Jets);   //evaluate regression: Input: event, add new pt als userfloat after evaluation
 
-  void evaluateRegression(const edm::Event& iEvent,
-			  const edm::EDGetTokenT< edm::View<pat::Electron> >& electronToken,
-			  const edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
-			  const edm::EDGetTokenT <double>& rhoToken,
-			  std::vector<pat::Jet>& rawjets,
-			  std::vector<pat::Jet>& Jets);   //evaluate regression: Input: event, add new pt als userfloat after evaluation
+  std::vector<pat::Jet> GetCorrectedJetswbReg(const std::vector<pat::Jet>& Jets);
+
+  bool IsRegressionDone();
+
 private:
-  //void SetUpRegression(); //getInclusiveLeptons, matchLeptonswithJets 
-  void setInclusiveLeptons(const std::vector<pat::Electron>& electrons, 
-			   const std::vector<pat::Muon>& muons);
-  void matchLeptonswithJets(const std::vector<pat::Electron>& electrons, 
+  bool setInclusiveLeptons(const std::vector<pat::Electron>& electrons, 
+			   const std::vector<pat::Muon>& muons,
+			   const reco::VertexCollection& Vertices);
+
+  bool matchLeptonswithJets(const std::vector<pat::Electron>& electrons, 
 			    const std::vector<pat::Muon>& muons, 
-			    const std::vector<pat::Jet>& jets); //Match Leptons with Jets for small dR differences
-  //float deltaPhi(const float phi1, const float phi2);
-  //float deltaR();
-  //float deltaR2(const float eta1, const float phi1, const float eta2, const float phi2);
-  //void bestMatch();
-  //void pTrel(const ROOT::LorentzVector vec1, const ROOT::LorentzVector vec2);
+			    const std::vector<pat::Jet>& jets,
+			    const reco::VertexCollection& Vertices); //Match Leptons with Jets for small dR differences
+
   float leadingTrackpT(const pat::Jet& jet);
   
 
@@ -63,11 +61,14 @@ private:
   std::string name = "";
   std::string weightfile = "";
   std::vector<float> treevars;
+  std::vector<float> treespec;
 
   float epTCut;
   float eetaCut;
   float edxyCut;
   float edzCut;
+  float elostHits;
+
 
   float mupTCut;
   float muetaCut;
@@ -75,5 +76,9 @@ private:
   float mudzCut;
   
   float deltaR2Max;
+  
+  bool isDone;
 };
+
+
 #endif
