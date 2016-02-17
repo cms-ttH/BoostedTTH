@@ -70,6 +70,9 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/THQJetSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenTopDLSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenTopSLSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenTopFHSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -374,6 +377,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {    
     cout << "Initializing " << *itSel << endl;
     if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
+    else if(*itSel == "GenTopFHSelection") selections.push_back(new GenTopFHSelection());
+    else if(*itSel == "GenTopSLSelection") selections.push_back(new GenTopSLSelection());
+    else if(*itSel == "GenTopDLSelection") selections.push_back(new GenTopDLSelection());
     else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
     else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));

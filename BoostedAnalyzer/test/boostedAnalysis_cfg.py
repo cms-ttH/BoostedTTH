@@ -20,6 +20,7 @@ options.register( "generatorName", "notSpecified", VarParsing.multiplicity.singl
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
 options.register( "globalTag", "74X_mcRun2_asymptotic_v2", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
+options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.parseArguments()
 
 # re-set some defaults
@@ -121,6 +122,16 @@ process.BoostedAnalyzer.makeSystematicsTrees=options.makeSystematicsTrees
 process.BoostedAnalyzer.generatorName=options.generatorName
 
 
+process.BoostedAnalyzer.minJets = cms.vint32(4)
+process.BoostedAnalyzer.maxJets = cms.vint32(-1)
+process.BoostedAnalyzer.minTags = cms.vint32(2)
+process.BoostedAnalyzer.maxTags = cms.vint32(-1)
+process.BoostedAnalyzer.selectionNames = cms.vstring("VertexSelection","LeptonSelection","JetTagSelection")
+process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","AdditionalJetProcessor")
+
+if options.additionalSelection!="NONE":
+  process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
+    
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
     process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/kelmorab/JSONS/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
