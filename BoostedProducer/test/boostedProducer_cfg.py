@@ -2,7 +2,8 @@ import FWCore.ParameterSet.Config as cms
 # input
 process = cms.Process("p")
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIIFall15MiniAODv2/TT_TuneEE5C_13TeV-amcatnlo-herwigpp/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/00129514-9FB8-E511-9C7A-00266CFFC544.root')
+                            fileNames = cms.untracked.vstring('file:/pnfs/desy.de/cms/tier2/store/mc/RunIIFall15MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext3-v1/00000/0634456A-08C2-E511-A0C1-001E6739722E.root')
+                            #fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIIFall15MiniAODv2/TT_TuneEE5C_13TeV-amcatnlo-herwigpp/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/00129514-9FB8-E511-9C7A-00266CFFC544.root')
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
@@ -12,6 +13,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.MessageLogger.suppressWarning = cms.untracked.vstring('ecalLaserCorrFilter','manystripclus53X','toomanystripclus53X')
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
+
+# Load the producer for MVA IDs
+process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
 
 # select loose lepton collections
 process.load('BoostedTTH.BoostedProducer.SelectedLeptonProducers_cfi')
@@ -152,8 +156,9 @@ process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
 # skim
 process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
-# Load the producer for MVA IDs
-process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+
+process.content = cms.EDAnalyzer("EventContentAnalyzer")
+
 # execute in the right order
 process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.LeptonJetsSkim
@@ -166,7 +171,8 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.patJetsSFFatJetsPF
                                  *process.patJetsSFSubjetsPF
                                  *process.patJetsSFFilterjetsPF
-                                 *process.BoostedJetMatcher)
+                                 *process.BoostedJetMatcher
+                                 )
 
 
 process.OUT = cms.OutputModule(

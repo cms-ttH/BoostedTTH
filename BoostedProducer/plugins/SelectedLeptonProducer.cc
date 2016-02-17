@@ -74,7 +74,9 @@ private:
   edm::EDGetTokenT< double >                  EDMRhoToken; //  pileup density
   edm::EDGetTokenT< reco::VertexCollection >  EDMVertexToken; // vertex
   edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  // muons
-  edm::EDGetTokenT< pat::ElectronCollection > EDMElectronsToken;  // electrons
+  edm::EDGetTokenT< edm::View<pat::Electron> >EDMElectronsToken;  // electrons
+  edm::EDGetTokenT< edm::ValueMap<float> >    EDMeleMVAvaluesToken; // values of electron mva
+  edm::EDGetTokenT< edm::ValueMap<int> >      EDMeleMVAcategoriesToken;  // category of electron mva
 };
 
 
@@ -104,11 +106,13 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     throw std::exception();
   }
   
-  EDMElectronsToken  = consumes< pat::ElectronCollection >  (iConfig.getParameter<edm::InputTag>("leptons"));
-  EDMMuonsToken      = consumes< pat::MuonCollection >      (iConfig.getParameter<edm::InputTag>("leptons"));
-  EDMVertexToken = consumes< reco::VertexCollection >       (iConfig.getParameter<edm::InputTag>("vertices"));
-  EDMRhoToken    = consumes< double >                       (iConfig.getParameter<edm::InputTag>("rho"));
-  
+  EDMElectronsToken         = consumes< edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("leptons"));
+  EDMMuonsToken             = consumes< pat::MuonCollection >     (iConfig.getParameter<edm::InputTag>("leptons"));
+  EDMVertexToken            = consumes< reco::VertexCollection >  (iConfig.getParameter<edm::InputTag>("vertices"));
+  EDMRhoToken               = consumes< double >                  (iConfig.getParameter<edm::InputTag>("rho"));
+  EDMeleMVAvaluesToken      = consumes<edm::ValueMap<float> >     (iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
+  EDMeleMVAcategoriesToken  = consumes<edm::ValueMap<int> >       (iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
+
   ptMin_ = iConfig.getParameter<double>("ptMin");
   etaMax_ = iConfig.getParameter<double>("etaMax");
   
@@ -116,21 +120,28 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   electronID_ = electronID::electronLoose;
   muonID_ = muonID::muonLoose;
   if(leptonType_ == Electron){
-    if(      leptonID == "loose"        ) electronID_ = electronID::electronLoose;
-    else if( leptonID == "tight"        ) electronID_ = electronID::electronTight;
-    else if( leptonID == "loosePhys14"  ) electronID_ = electronID::electronPhys14L;
-    else if( leptonID == "tightPhys14"  ) electronID_ = electronID::electronPhys14T;
-    else if( leptonID == "tightSpring15"  ) electronID_ = electronID::electronSpring15T;
-    else if( leptonID == "mediumSpring15"  ) electronID_ = electronID::electronSpring15M;
-    else if( leptonID == "looseSpring15"  ) electronID_ = electronID::electronSpring15L;
+    if(      leptonID == "loose"        )         electronID_ = electronID::electronLoose;
+    else if( leptonID == "tight"        )         electronID_ = electronID::electronTight;
+    else if( leptonID == "loosePhys14"  )         electronID_ = electronID::electronPhys14L;
+    else if( leptonID == "tightPhys14"  )         electronID_ = electronID::electronPhys14T;
+    else if( leptonID == "tightSpring15"  )       electronID_ = electronID::electronSpring15T;
+    else if( leptonID == "mediumSpring15"  )      electronID_ = electronID::electronSpring15M;
+    else if( leptonID == "looseSpring15"  )       electronID_ = electronID::electronSpring15L;
+    else if( leptonID == "EndOf15MVA80"  )        electronID_ = electronID::electronEndOf15MVA80;
+    else if( leptonID == "EndOf15MVA90"  )        electronID_ = electronID::electronEndOf15MVA90;
+    else if( leptonID == "EndOf15MVA80iso0p1"  )  electronID_ = electronID::electronEndOf15MVA80iso0p1;
+    else if( leptonID == "EndOf15MVA90iso0p1"  )  electronID_ = electronID::electronEndOf15MVA90iso0p1;
+    else if( leptonID == "EndOf15MVA80iso0p15"  ) electronID_ = electronID::electronEndOf15MVA80iso0p15;
+    else if( leptonID == "EndOf15MVA90iso0p15"  ) electronID_ = electronID::electronEndOf15MVA90iso0p15;
     else {
       std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonID << std::endl;
       throw std::exception();
     }
   }
   if(leptonType_ == Muon){
-    if(      leptonID == "loose"  ) muonID_ = muonID::muonLoose;
-    else if( leptonID == "tight"  ) muonID_ = muonID::muonTight;
+    if(      leptonID == "loose"  )   muonID_ = muonID::muonLoose;
+    else if( leptonID == "tight"  )   muonID_ = muonID::muonTight;
+    else if( leptonID == "tightDL"  ) muonID_ = muonID::muonTightDL;
     else {
       std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonID << std::endl;
       throw std::exception();
@@ -179,20 +190,30 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
   if( setUpHelper(iEvent) ) {
     
     if( leptonType_ == Electron ) {
-      // select and produce electron collection
-
-      edm::Handle<pat::ElectronCollection> hElectrons;
+      // get electron collection
+      edm::Handle< edm::View<pat::Electron> > hElectrons;
       iEvent.getByToken(EDMElectronsToken,hElectrons);
       
-      std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(*hElectrons,ptMin_,electronID_,etaMax_)) );
+      // get electron mva info
+	    edm::Handle<edm::ValueMap<float> > h_mvaValues;
+      iEvent.getByToken(EDMeleMVAvaluesToken,h_mvaValues);
+	    edm::Handle<edm::ValueMap<int> > h_mvaCategories;
+	    iEvent.getByToken(EDMeleMVAcategoriesToken,h_mvaCategories);
+      
+      // add electron mva info to electrons
+	    std::vector<pat::Electron> electronsWithMVAid = helper_.GetElectronsWithMVAid(hElectrons,h_mvaValues,h_mvaCategories);
+	    
+      // select electron collection
+      std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(electronsWithMVAid,ptMin_,electronID_,etaMax_)) );
       iEvent.put(selectedLeptons);
     }
     else if( leptonType_ == Muon ) {
-      // select and produce muon collection
-
+      
+      // get muon collection
       edm::Handle<pat::MuonCollection> hMuons;
       iEvent.getByToken(EDMMuonsToken,hMuons);
       
+      // select muon collection
       std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(*hMuons,ptMin_,muonID_,isoConeSize_,isoCorrType_,etaMax_)) );
       iEvent.put(selectedLeptons);
     }
