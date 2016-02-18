@@ -16,6 +16,9 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring('ecalLaserCorrFilt
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
+# Load the producer for MVA IDs
+process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+
 # select loose lepton collections
 process.load('BoostedTTH.BoostedProducer.SelectedLeptonProducers_cfi')
 
@@ -157,8 +160,7 @@ if not isData:
 
 # skim
 process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
-# Load the producer for MVA IDs
-process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+
 # execute in the right order
 process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.LeptonJetsSkim
