@@ -24,9 +24,9 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 100 # reset to 100 for testing
+    options.maxEvents = 500 # reset to 100 for testing
 if not options.inputFiles:
-    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_1.root']
+    options.inputFiles=['file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_911.root','file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_912.root','file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_913.root','file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_914.root','file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_915.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:

@@ -18,6 +18,7 @@ void ttHVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   InitAk5JetsVars(vars);
   InitCombinationVars(vars);
   InitMCVars(vars);
+  InitAk4JetsVars(vars);
   initialized = true;
 }
 
@@ -43,6 +44,7 @@ void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& v
   FillAk5JetsVars(vars,ttHEvent);
   FillCombinationVars(vars,ttHEvent);
   FillMCVars(vars,ttHEvent,input);
+  FillAk4JetsVars(vars,ttHEvent,input);
 }
 
 
@@ -304,6 +306,19 @@ void ttHVarProcessor::InitMCVars(VariableContainer& vars){
   vars.InitVar(prefix+"Dr_Blep",-9.);
   vars.InitVar(prefix+"Dr_Nu",-9.);
   vars.InitVar(prefix+"Dr_Lep",-9.);
+}
+
+void ttHVarProcessor::InitAk4JetsVars(VariableContainer& vars){
+  vars.InitVar(prefix+"HiggsCandidate_B1_Ak4Id",-1.);
+  vars.InitVar(prefix+"HiggsCandidate_B2_Ak4Id",-1.);
+  vars.InitVar(prefix+"HiggsCandidate_G_Ak4Id",-1.);
+  vars.InitVar(prefix+"TopHadCandidate_B_Ak4Id",-1.);
+  vars.InitVar(prefix+"TopHadCandidate_W1_Ak4Id",-1.);
+  vars.InitVar(prefix+"TopHadCandidate_W2_Ak4Id",-1.);
+  vars.InitVar(prefix+"NBoostedJetsMatchedWithAK4",-1.);
+  vars.InitVar(prefix+"NBoostedJetsNotMatchedWithAK4",-1.);
+  vars.InitVar(prefix+"HiggsCandidate_Matching",-1.);
+  vars.InitVar(prefix+"TopHadCandidate_Matching",-1.);
 }
 
 
@@ -885,4 +900,162 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
     if(nuCandVec.Pt()>0) vars.FillVar(prefix+"Dr_Nu",BoostedUtils::DeltaR(nu_mc[topLepMCID],nuCandVec));
     if(lepCandVec.Pt()>0) vars.FillVar(prefix+"Dr_Lep",BoostedUtils::DeltaR(lep_mc[topLepMCID],lepCandVec));
   }
+}
+
+void ttHVarProcessor::FillAk4JetsVars(VariableContainer& vars, BoostedttHEvent& ttHEvent,const InputCollections& input)
+{
+  // Get Objects
+  // - boosted subjets
+  std::vector<pat::Jet> subJets = {ttHEvent.GetHiggsB1Cand(), ttHEvent.GetHiggsB2Cand(), ttHEvent.GetHiggsGCand(), ttHEvent.GetTopHadBCand(), ttHEvent.GetTopHadW1Cand(), ttHEvent.GetTopHadW2Cand()};
+  // - ak4 jets
+  std::vector<pat::Jet> selectedJets = input.selectedJets;
+  
+  // Best ID value for every component of the vector subJets
+  std::vector<int> bestID(subJets.size(),-1);
+
+  // Minimal Delta R between two jets
+  const double minDr = 0.3;
+
+  // Assign an ak4 jet to every boosted subjet
+  for(unsigned int ak4jet=0; ak4jet<selectedJets.size(); ak4jet++)
+    {
+      for(int subjet=0; subjet<6; subjet++) // instead of 6 one could write subJets.size()
+	{
+	  if(selectedJets.at(ak4jet).pt() != 0 && subJets.at(subjet).pt() !=0 ) // if one does not ask for subJets.at(subjet).pt() != 0, one gets much more matches. why is that???
+	    {
+	      if( BoostedUtils::DeltaR(subJets.at(subjet),selectedJets.at(ak4jet))< minDr)
+		{
+		  if(bestID.at(subjet) > -1 )
+		    {
+		      if(BoostedUtils::DeltaR(subJets.at(subjet),selectedJets.at(ak4jet)) < BoostedUtils::DeltaR(subJets.at(subjet),selectedJets.at(bestID.at(subjet))))
+			{
+			  bestID.at(subjet) = ak4jet;
+			}
+		    }
+		  else bestID.at(subjet) = ak4jet; 
+		}
+	    }
+	}
+    }
+    
+    
+  // Check, if there are subjets with the same asigned ak4 jet
+  for(int jet1 = 0; jet1<6; jet1++)
+    {
+      for(int jet2 = 0; jet2<6; jet2++)
+	{
+	  if(bestID.at(jet1)==bestID.at(jet2) && bestID.at(jet1) != -1 && bestID.at(jet2) != -1 && jet1 != jet2)
+	    {
+	      // look for a better match for jet 2 if jet 1 is the better match
+	      if(BoostedUtils::DeltaR(subJets.at(jet1),selectedJets.at(bestID.at(jet1))) < BoostedUtils::DeltaR(subJets.at(jet2),selectedJets.at(bestID.at(jet2)))) // FATAL EXCEPTION HIER
+		{
+		  // look for the next-nearest ak4jet for jet 2 by looping through all ak4jets
+		  bestID.at(jet2) = -1;
+		  for(unsigned int ak4jet=0; ak4jet<selectedJets.size(); ak4jet++) 
+		    {
+		      if(selectedJets.at(ak4jet).pt() > 0)
+			{
+			  // next-nearest jet should be near enough (dR < 0.3) and not equal to one already assigned ak4jet
+			  if( BoostedUtils::DeltaR(subJets.at(jet2),selectedJets.at(ak4jet))< minDr && find(bestID.begin(),bestID.end(),(int)ak4jet) == bestID.end()) // if == bestID.end(), then object not in vector
+			    {
+			      if(bestID.at(jet2) > -1)
+				{
+				  if(BoostedUtils::DeltaR(subJets.at(jet2),selectedJets.at(ak4jet)) < BoostedUtils::DeltaR(subJets.at(jet2),selectedJets.at(bestID.at(jet2))))
+				    {
+				      bestID.at(jet2) = ak4jet;
+				      cout << "Successfully changed!" << endl;
+				      cout << "-> Subjet No." << jet2 << " changed from ak4 jet" << bestID.at(jet1) << " to " << bestID.at(jet2) << "."  << endl;
+				    }
+				}
+			      else
+				{
+				  cout << "Successfully changed!" << endl;
+				  cout << "-> Subjet No." << jet2 << " changed from ak4 jet" << bestID.at(jet2) << " to " << ak4jet << "."  << endl;
+				  bestID.at(jet2) = ak4jet;
+				}	  
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    
+
+  // Fill best ak4 ID per candidate
+  vars.FillVar(prefix+"HiggsCandidate_B1_Ak4Id",bestID.at(0));
+  vars.FillVar(prefix+"HiggsCandidate_B2_Ak4Id",bestID.at(1));
+  vars.FillVar(prefix+"HiggsCandidate_G_Ak4Id",bestID.at(2));
+  vars.FillVar(prefix+"TopHadCandidate_B_Ak4Id",bestID.at(3));
+  vars.FillVar(prefix+"TopHadCandidate_W1_Ak4Id",bestID.at(4));
+  vars.FillVar(prefix+"TopHadCandidate_W2_Ak4Id",bestID.at(5));
+
+  // calculate the number of matched and not matched jets 
+  int MatchedJets = 0;
+  int NotMatchedJets = 0;
+  for(int cand = 0; cand<6; cand++)
+    {
+      if(bestID.at(cand) > -1) MatchedJets++;
+      else NotMatchedJets++;
+    }
+  vars.FillVar(prefix+"NBoostedJetsMatchedWithAK4",MatchedJets);
+  vars.FillVar(prefix+"NBoostedJetsNotMatchedWithAK4",NotMatchedJets);
+  
+
+
+  // For further tests. Activate the sections with "if(... && true)", deactivate them with "if(... && false)"
+  if(MatchedJets == 1 && false)
+    {
+
+      // calculate the number of subjets in this event
+      int NSubJets = 0;
+      for(unsigned int i =0; i<subJets.size(); i++)
+	{
+	  if(subJets.at(i).pt()>0) NSubJets++;
+	}
+
+      cout << endl << "------------------" <<  endl;
+      cout << "NSubJets      = " << NSubJets << endl;
+      cout << "NSelectedJets = " << selectedJets.size() << endl;
+      cout << "MatchedJets   = " << MatchedJets << endl;
+      cout << "subJet pt: ";
+      for(int i=0; i<6; i++)
+	{
+	  cout << subJets.at(i).pt() << "; ";
+	}
+      cout << endl;
+      cout << "Best IDs: ";
+      for(int i=0; i<6; i++)
+	{
+	  cout << bestID.at(i) << "; ";
+	}
+      cout << endl;  
+      
+      for(int i=0; i<6; i++)
+	{
+	  if(bestID.at(i) == -1 && subJets.at(i).pt() > 0)
+	    {
+	      for(unsigned int j = 0; j<selectedJets.size();j++)
+		{
+		  cout << "DeltaR("<< i << "," << j << ") = " << BoostedUtils::DeltaR(subJets.at(i),selectedJets.at(j)) << endl;
+		}
+	    }
+	  else if(bestID.at(i)>-1) cout << "Matched Jet No. " << i << " with "<< bestID.at(i) << ": " << BoostedUtils::DeltaR(subJets.at(i),selectedJets.at(bestID.at(i))) << endl;
+	}
+      cout << "------------------" << endl << endl;
+    }
+
+
+  // count number of matched jets to Higgs Candidate or Had Top Candidate
+  int matchedHiggs = 0;
+  int matchedTopHad = 0;
+  for(unsigned int subjet=0; subjet < subJets.size(); subjet++)
+    {
+      if(bestID.at(subjet) >-1 && bestID.at(subjet) < 3) matchedHiggs++;
+      else if(bestID.at(subjet) > 2 && bestID.at(subjet)<6) matchedTopHad++;
+    }
+
+  vars.FillVar(prefix+"HiggsCandidate_Matching",matchedHiggs);
+  vars.FillVar(prefix+"TopHadCandidate_Matching",matchedTopHad);
 }
