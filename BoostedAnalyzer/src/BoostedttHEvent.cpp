@@ -115,13 +115,10 @@ void BoostedttHEvent::ak5JetsRec(){
   nCleanedBTagM = 0;
   nCleanedBTagT = 0;
   
-  for(std::vector<pat::Jet>::const_iterator itJet=input->selectedJets.begin();itJet!=input->selectedJets.end();++itJet){
-    if(lepVecCand.Pt()>0.001 && BoostedUtils::DeltaR(lepVecCand,itJet->p4())<.5) continue;
+  selectedJets = input->selectedJets;
+  cleanedak5Jets = input->selectedJets;
+  nJets = selectedJets.size();
     
-    nJets++;
-    selectedJets.push_back(*itJet);
-    cleanedak5Jets.push_back(*itJet);
-  }
   for(std::vector<pat::Jet>::const_iterator itJet=selectedJets.begin();itJet!=selectedJets.end();++itJet){
     if(BoostedUtils::PassesCSV(*itJet,'L')) nBTagL++;
     BTagL.push_back(BoostedUtils::PassesCSV(*itJet,'L'));
@@ -152,13 +149,15 @@ void BoostedttHEvent::ak5JetsIdentifyHiggsCand(const float jetMatchingThreshold)
       
       HiggsCandak5Jet.push_back(true);
       nHiggsak5Jets++;
+      
       int iJet = itJet-selectedJets.begin();
       if(BTagL[iJet]) nHiggsCandBTagL++;
       if(BTagM[iJet]) nHiggsCandBTagM++;
       if(BTagT[iJet]) nHiggsCandBTagT++;
     }
-    else
+    else{
       HiggsCandak5Jet.push_back(false);
+    }
   }
 }
 
@@ -175,15 +174,19 @@ void BoostedttHEvent::ak5JetsIdentifyTopHadCand(const float jetMatchingThreshold
     if((topHadBCand.pt()>.001 && BoostedUtils::DeltaR(topHadBCand,*itJet) < jetMatchingThreshold)
     || (topHadW1Cand.pt()>.001 && BoostedUtils::DeltaR(topHadW1Cand,*itJet) < jetMatchingThreshold)
     || (topHadW2Cand.pt()>.001 && BoostedUtils::DeltaR(topHadW2Cand,*itJet) < jetMatchingThreshold)){
+      
       TopHadCandak5Jet.push_back(true);
       nTopHadak5Jets++;
+      
       int iJet = itJet-selectedJets.begin();
+      
       if(BTagL[iJet]) nTopHadCandBTagL++;
       if(BTagM[iJet]) nTopHadCandBTagM++;
       if(BTagT[iJet]) nTopHadCandBTagT++;
     }
-    else
+    else{
       TopHadCandak5Jet.push_back(false);
+    }
   }
 }
 
@@ -198,15 +201,18 @@ void BoostedttHEvent::ak5JetsIdentifyTopLepCand(const float jetMatchingThreshold
   
   for(std::vector<pat::Jet>::const_iterator itJet=selectedJets.begin();itJet!=selectedJets.end();++itJet){
     if(topLepBCand.pt()>0.001 && BoostedUtils::DeltaR(topLepBCand,*itJet) < jetMatchingThreshold){
+      
       TopLepCandak5Jet.push_back(true);
       nTopLepak5Jets++;
+      
       int iJet = itJet-selectedJets.begin();
       if(BTagL[iJet]) nTopLepCandBTagL++;
       if(BTagM[iJet]) nTopLepCandBTagM++;
       if(BTagT[iJet]) nTopLepCandBTagT++;
     }
-    else
+    else{
       TopLepCandak5Jet.push_back(false);
+    }
   }
 }
 
@@ -221,6 +227,7 @@ void BoostedttHEvent::ak5JetsClean(bool cleanHiggsCand, bool cleanTopHadCand, bo
 
   for(std::vector<pat::Jet>::const_iterator itJet=selectedJets.begin();itJet!=selectedJets.end();++itJet){
     int iJet = itJet-selectedJets.begin();
+    
     if(cleanHiggsCand && HiggsCandak5Jet[iJet]) continue;
     if(cleanTopHadCand && TopHadCandak5Jet[iJet]) continue;
     if(cleanTopLepCand && TopLepCandak5Jet[iJet]) continue;

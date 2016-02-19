@@ -41,25 +41,31 @@ void MEMProcessor::Process(const InputCollections& input,VariableContainer& vars
       lepvecs.push_back(BoostedUtils::GetTLorentzVector(mu.p4()));
   }
   if(lepvecs.size()!=1) return;
-
+  
+  // MET
+  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.pfMET.p4());
+  
   // jets
   vector<TLorentzVector> jetvecs;
-  vector<TLorentzVector> loose_jetvecs;
-  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.pfMET.p4());
   vector<double> jetcsvs;
+  std::vector<MEMClassifier::JetType> jettype;
+  
   int ntags=0;
-  vector<double> loose_jetcsvs;
+  
   for(uint i=0; i<input.selectedJets.size(); i++){
+
       jetvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedJets[i].p4()));
       jetcsvs.push_back(MiniAODHelper::GetJetCSV(input.selectedJets[i]));
       float cMVAv2=input.selectedJets[i].bDiscriminator("pfCombinedMVAV2BJetTags");
       if(jetcsvs.back()>btagMcut || cMVAv2 > btagMcutCMVA) ntags++;
+
   }
   if(int(jetvecs.size())<minJets) return;
   if(ntags<minTags) return;
 
   //calculate MEM
-  MEMResult result=mem.GetOutput(lepvecs,lepcharges, jetvecs, jetcsvs, jetvecs, jetcsvs,metP4);
+  MEMResult result=mem.GetOutput(MEMClassifier::Hypothesis::SL_0W2H2T, lepvecs, lepcharges, jetvecs, jetcsvs, jettype, jetvecs, jetcsvs,metP4);
+  
   vars.FillVar("MEM_p",result.p);
   vars.FillVar("MEM_p_sig",result.p_sig);
   vars.FillVar("MEM_p_bkg",result.p_bkg);
