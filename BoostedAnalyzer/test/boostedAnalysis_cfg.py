@@ -148,13 +148,12 @@ process.BoostedAnalyzer.maxJets = [-1,-1]
 process.BoostedAnalyzer.minTags = [3,2]
 process.BoostedAnalyzer.maxTags = [-1,-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
-process.BoostedAnalyzer.maxJetsForMEM = 8
 process.BoostedAnalyzer.minTagsForMEM = 3
 process.BoostedAnalyzer.doJERsystematic = False
 
 
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedTopHiggsVarProcessor","AdditionalJetProcessor","BJetnessProcessor"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor"]
 
 ## check the event content 
 process.content = cms.EDAnalyzer("EventContentAnalyzer")
