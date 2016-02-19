@@ -351,7 +351,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   helper.SetJetCorrectorUncertainty();
-
+  helper.SetBoostedJetCorrectorUncertainty();
+  
   // INITIALIZE PU WEIGHTS
   puWeights_.init(iConfig);
 
@@ -813,13 +814,41 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
   /**** GET BOOSTEDJETS ****/
+  const JetCorrector* ak8corrector = JetCorrector::getJetCorrector( "ak8PFchsL1L2L3", iSetup );
+  helper.SetBoostedJetCorrector(ak8corrector);
+  
   edm::Handle<boosted::BoostedJetCollection> h_boostedjet;
   boosted::BoostedJetCollection selectedBoostedJets;
+  boosted::BoostedJetCollection selectedBoostedJets_uncorrected;
+  boosted::BoostedJetCollection selectedBoostedJets_jesup;
+  boosted::BoostedJetCollection selectedBoostedJets_jesdown;
+  boosted::BoostedJetCollection selectedBoostedJets_jerup;
+  boosted::BoostedJetCollection selectedBoostedJets_jerdown;
   if(useFatJets){
     iEvent.getByToken( EDMBoostedJetsToken,h_boostedjet);
     boosted::BoostedJetCollection const &boostedjets_unsorted = *h_boostedjet;
     boosted::BoostedJetCollection boostedjets = BoostedUtils::GetSortedByPt(boostedjets_unsorted);
-    selectedBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
+    boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999., jetID::jetLoose);
+    boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::NA, true, true);
+    selectedBoostedJets = helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
+    //selectedBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
+    selectedBoostedJets_uncorrected = helper.GetSelectedBoostedJets(idBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
+    
+    if(makeSystematicsTrees){
+      boosted::BoostedJetCollection correctedBoostedJets_jesup = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JESup, true, true);
+      boosted::BoostedJetCollection correctedBoostedJets_jesdown = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JESdown, true, true);
+      
+      selectedBoostedJets_jesup = helper.GetSelectedBoostedJets(correctedBoostedJets_jesup, 200., 2.0, 20., 2.4, jetID::none);
+      selectedBoostedJets_jesdown = helper.GetSelectedBoostedJets(correctedBoostedJets_jesdown, 200., 2.0, 20., 2.4, jetID::none);
+      
+      if(makeSystematicsTrees){
+        boosted::BoostedJetCollection correctedBoostedJets_jerup = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JERup, true, true);
+        boosted::BoostedJetCollection correctedBoostedJets_jerdown = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JERdown, true, true);
+      
+        selectedBoostedJets_jerup = helper.GetSelectedBoostedJets(correctedBoostedJets_jerup, 200., 2.0, 20., 2.4, jetID::none);
+        selectedBoostedJets_jerdown = helper.GetSelectedBoostedJets(correctedBoostedJets_jerdown, 200., 2.0, 20., 2.4, jetID::none);
+      }
+    }
   }
   
   /**** GET GENEVENTINFO ****/
@@ -948,18 +977,18 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  );
 
   // define systematically shifted input (replace quantaties affected by jets)
-  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],weights_jesup);
-  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],weights_jesdown);
-  InputCollections input_jerup( input_nominal,selectedJets_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],weights_jerup);
-  InputCollections input_jerdown( input_nominal,selectedJets_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],weights_jerdown);
-  InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],weights_uncorrjets);
+  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],selectedBoostedJets_jesup,weights_jesup);
+  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],selectedBoostedJets_jesdown,weights_jesdown);
+  InputCollections input_jerup( input_nominal,selectedJets_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],selectedBoostedJets_jerup,weights_jerup);
+  InputCollections input_jerdown( input_nominal,selectedJets_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],selectedBoostedJets_jerdown,weights_jerdown);
+  InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],selectedBoostedJets_uncorrected,weights_uncorrjets);
      //Only needed for Hbb synch exercise: dilepton uses loose jet selection -> different csv weights and input collection
-  InputCollections input_DL_nominal( input_nominal,selectedJetsLoose_nominal,selectedJetsLoose_nominal,selectedJetsSingleTop_nominal,correctedMETs_nominal[0],weights_DL_nominal);
-  InputCollections input_DL_jesup( input_nominal,selectedJetsLoose_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],weights_DL_jesup);
-  InputCollections input_DL_jesdown( input_nominal,selectedJetsLoose_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],weights_DL_jesdown);
-  InputCollections input_DL_jerup( input_nominal,selectedJetsLoose_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],weights_DL_jerup);
-  InputCollections input_DL_jerdown( input_nominal,selectedJetsLoose_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],weights_DL_jerdown);
-  InputCollections input_DL_uncorrjets( input_nominal,selectedJetsLoose_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],weights_DL_uncorrjets);
+  InputCollections input_DL_nominal( input_nominal,selectedJetsLoose_nominal,selectedJetsLoose_nominal,selectedJetsSingleTop_nominal,correctedMETs_nominal[0],selectedBoostedJets,weights_DL_nominal);
+  InputCollections input_DL_jesup( input_nominal,selectedJetsLoose_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],selectedBoostedJets_jesup,weights_DL_jesup);
+  InputCollections input_DL_jesdown( input_nominal,selectedJetsLoose_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],selectedBoostedJets_jesdown,weights_DL_jesdown);
+  InputCollections input_DL_jerup( input_nominal,selectedJetsLoose_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],selectedBoostedJets_jerup,weights_DL_jerup);
+  InputCollections input_DL_jerdown( input_nominal,selectedJetsLoose_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],selectedBoostedJets_jerdown,weights_DL_jerdown);
+  InputCollections input_DL_uncorrjets( input_nominal,selectedJetsLoose_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],selectedBoostedJets_uncorrected,weights_DL_uncorrjets);
 
   // DO SELECTION
 
