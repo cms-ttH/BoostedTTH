@@ -50,8 +50,12 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
-            		    const HiggsDecay::HiggsDecay                  higgsDecay_,
-                    const std::map<std::string,float>&            weights_
+		    const HiggsDecay::HiggsDecay                  higgsDecay_,
+                    const std::map<std::string,float>&            weights_,
+		    const edm::Event& iEvent_,
+		    const edm::EventSetup& iSetup_
+		      /**** bjetness code ****/
+
 		            ): 
                     eventInfo(eventInfo_),
                     triggerInfo(triggerInfo_),
@@ -75,7 +79,9 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedGenJets(selectedGenJets_),
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
-                    weights(weights_)
+                    weights(weights_),
+		    iEvent(iEvent_),
+		    iSetup(iSetup_)
                     {}
 
 /**
@@ -110,7 +116,10 @@ InputCollections(   const InputCollections&                       input,
                     selectedGenJets(input.selectedGenJets),
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
-                    weights(weights_)
+                    weights(weights_),
+		    iEvent(input.iEvent),
+		    iSetup(input.iSetup)
+
                     {}
 
   const EventInfo&                              eventInfo;
@@ -136,6 +145,8 @@ InputCollections(   const InputCollections&                       input,
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>&            weights;
+  const edm::Event & iEvent;
+  const edm::EventSetup & iSetup;
 
 };
 

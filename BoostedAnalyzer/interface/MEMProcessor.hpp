@@ -8,7 +8,7 @@
 
 class MEMProcessor: public TreeProcessor{
 public:
-    MEMProcessor(int minJets, int maxJets, int minTags);
+    MEMProcessor(int minJets, int minTags);
     MEMProcessor(const edm::ParameterSet& iConfig);
     ~MEMProcessor();
     void Init(const InputCollections& input, VariableContainer& var);
@@ -16,7 +16,6 @@ public:
 
 private:
     int minJets;
-    int maxJets;
     int minTags;
     MEMClassifier mem;
     const double btagMcut=0.8;

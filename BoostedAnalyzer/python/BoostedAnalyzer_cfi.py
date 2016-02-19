@@ -35,7 +35,6 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpSyncExe2 = cms.bool(False),
 
     minJetsForMEM = cms.int32(4),
-    maxJetsForMEM = cms.int32(8),
     minTagsForMEM = cms.int32(3),
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),

@@ -13,6 +13,10 @@ Follow These Steps:
     git cms-merge-topic gkasieczka:htt-v2-76X
     git clone https://github.com/cms-ttH/MiniAOD.git
     git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_7_6_3
+    mkdir Other
+    cd Other
+    git clone https://github.com/kit-cn-cms/bjetness-code.git .
+    cd -
     mkdir TTH
     cd TTH
     git clone https://github.com/cms-ttH/CommonClassifier.git -b kit
