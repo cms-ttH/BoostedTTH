@@ -257,14 +257,14 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     else {
 	bool match=false;
 	for(auto const &v : tt_decay_leptons){
-	    if(BoostedUtils::DeltaR(v,customGenJets[i].p4())<wMatchR){
+	    if(v.Pt()>0.1&&BoostedUtils::DeltaR(v,customGenJets[i].p4())<wMatchR){
 		match=true;
 		break;
 	    }
 	}
 	if(!match){
 	    for(auto const &v : tt_decay_quarks){
-		if(BoostedUtils::DeltaR(v,customGenJets[i].p4())<wMatchR){
+		if(v.Pt()>0.1&&BoostedUtils::DeltaR(v,customGenJets[i].p4())<wMatchR){
 		    match=true;
 		    break;
 		}
