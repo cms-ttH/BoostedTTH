@@ -105,6 +105,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
   std::vector<int> nb_aftertop_per_genjet(customGenJets.size(),0);
   std::vector<int> b_aftertoptype_of_genjet(customGenJets.size(),3);
   std::vector<const reco::GenParticle*> genjet_leading_bhadron(customGenJets.size(),0);
+  std::vector<const reco::GenParticle*> genjet_subleading_bhadron(customGenJets.size(),0);
   std::vector<const reco::GenParticle*> genjet_leading_bhadron_from_tth(customGenJets.size(),0);
 
   std::vector<int> additionalnc_per_genjet(customGenJets.size(),0);
@@ -112,6 +113,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
   std::vector<int> additionalnc_aftertop_per_genjet(customGenJets.size(),0);
   std::vector<int> c_aftertoptype_of_genjet(customGenJets.size(),3);
   std::vector<const reco::GenParticle*> genjet_leading_chadron(customGenJets.size(),0);
+  std::vector<const reco::GenParticle*> genjet_subleading_chadron(customGenJets.size(),0);
 
   if(!isFilled){
       std::cerr << "fill top info before filling addtional info" << std::endl;
@@ -155,9 +157,17 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
       }
 
       // find leading hadron of genjets
-      if(genjet_leading_bhadron[genjetidx]==0 || (genjet_leading_bhadron[genjetidx]!=0&&genjet_leading_bhadron[genjetidx]->pt()<bhadron->pt())){
+      if(genjet_leading_bhadron[genjetidx]==0){
 	genjet_leading_bhadron[genjetidx]=bhadron;
       }
+      else if( genjet_leading_bhadron[genjetidx]->pt()<bhadron->pt()){
+	  genjet_subleading_bhadron[genjetidx]=genjet_leading_bhadron[genjetidx];
+	  genjet_leading_bhadron[genjetidx]=bhadron;
+      }
+      else if( genjet_subleading_bhadron[genjetidx]==0 || genjet_subleading_bhadron[genjetidx]->pt()<bhadron->pt()){
+	  genjet_subleading_bhadron[genjetidx]=bhadron;
+      }
+
       // leading ttH-hadron determines "mother of genjet"
       if(from_tth && (genjet_leading_bhadron_from_tth[genjetidx]==0 || (genjet_leading_bhadron_from_tth[genjetidx]!=0 && genjet_leading_bhadron_from_tth[genjetidx]->pt()<bhadron->pt()))){
 	mother_of_genjet_b[genjetidx]=motherflav;
@@ -189,8 +199,15 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
 	  additionalnc_aftertop_per_genjet[genjetidx]++;
 	}
 	// find leading hadron of genjets
-	if(genjet_leading_chadron[genjetidx]==0 || (genjet_leading_chadron[genjetidx]!=0&&genjet_leading_chadron[genjetidx]->pt()<chadron->pt())){
-	  genjet_leading_chadron[genjetidx]=chadron;
+	if(genjet_leading_chadron[genjetidx]==0){
+	    genjet_leading_chadron[genjetidx]=chadron;
+	}
+	else if( genjet_leading_chadron[genjetidx]->pt()<chadron->pt()){
+	    genjet_subleading_chadron[genjetidx]=genjet_leading_chadron[genjetidx];
+	    genjet_leading_chadron[genjetidx]=chadron;
+	}
+	else if( genjet_subleading_chadron[genjetidx]==0 || genjet_subleading_chadron[genjetidx]->pt()<chadron->pt()){
+	    genjet_subleading_chadron[genjetidx]=chadron;
 	}
       }
     }
@@ -225,6 +242,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
 	additional_b_genjet_nb_aftertop.push_back(nb_aftertop_per_genjet[i]);
 	additional_b_genjet_aftertoptype.push_back(b_aftertoptype_of_genjet[i]);
 	additional_b_genjet_hadron.push_back(genjet_leading_bhadron[i]!=0 ? *(genjet_leading_bhadron[i]) : reco::GenParticle());
+	additional_b_genjet_hadron2.push_back(genjet_subleading_bhadron[i]!=0 ? *(genjet_subleading_bhadron[i]) : reco::GenParticle());
       }
     }
     else if(additionalnc_per_genjet[i]>0){
@@ -233,6 +251,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
       additional_c_genjet_nc_aftertop.push_back(additionalnc_aftertop_per_genjet[i]);
       additional_c_genjet_aftertoptype.push_back(c_aftertoptype_of_genjet[i]);
       additional_c_genjet_hadron.push_back(genjet_leading_chadron[i] != 0 ? *(genjet_leading_chadron[i]) : reco::GenParticle());
+      additional_c_genjet_hadron2.push_back(genjet_subleading_chadron[i]!=0 ? *(genjet_subleading_chadron[i]) : reco::GenParticle());
     }
     // no b and no c hadron in jet
     else {
@@ -368,6 +387,15 @@ std::vector<reco::GenParticle> GenTopEvent::GetAdditionalCGenJetsHadron() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
   return additional_c_genjet_hadron;
 }
+std::vector<reco::GenParticle> GenTopEvent::GetAdditionalBGenJetsHadron2() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  return additional_b_genjet_hadron2;
+}
+std::vector<reco::GenParticle> GenTopEvent::GetAdditionalCGenJetsHadron2() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  return additional_c_genjet_hadron2;
+}
+
 std::vector<reco::GenParticle> GenTopEvent::GetAdditionalBHadrons() const{
   return additional_b_hadrons;
 }
@@ -469,7 +497,12 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
     }
 
   }
-  if(wminus_decay_products.size()!=2 || wplus_decay_products.size()!=2) std::cerr << "GenTopEvent: error 2"<<std::endl;
+  if(wminus_decay_products.size()!=2 || wplus_decay_products.size()!=2) {
+      std::cerr << "GenTopEvent: error 2"<<std::endl;
+      while(wminus_decay_products.size()<2){
+	  wminus_decay_products.push_back(reco::GenParticle());
+      }
+  }
   if(top.energy()<1||topbar.energy()<1||wplus.energy()<1||wminus.energy()<1||top_decay_quark.energy()<1||topbar_decay_quark.energy()<1) std::cerr << "GenTopEvent: error 4"<<std::endl;
 
   int nquarks_from_wplus=0;
@@ -613,7 +646,7 @@ reco::GenParticle GenTopEvent::GetTopLep() const{
 }
 reco::GenParticle GenTopEvent::GetWplus() const{
     assert(isFilled);
-  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+      if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return wplus;
 }
 reco::GenParticle GenTopEvent::GetWminus() const{
@@ -843,6 +876,10 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllLeptons() const{
   for(auto p=wminus_decay_products.begin();isFilled&& p!=wminus_decay_products.end();p++){
     if(abs(p->pdgId())==11||abs(p->pdgId())==13||abs(p->pdgId())==15) leptons.push_back(*p);
   }
+  for(int i=0; i+(isFilled&&!topIsHadronic) + (isFilled&&!topbarIsHadronic)<2; i++){
+      leptons.push_back(reco::GenParticle());
+  }
+
   return leptons;
 }
 // always top first, tobar second if both exist
@@ -855,6 +892,9 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllNeutrinos() const{
     assert(isFilled);
   for(auto p=wminus_decay_products.begin(); isFilled&&p!=wminus_decay_products.end();p++){
     if(abs(p->pdgId())==12||abs(p->pdgId())==14||abs(p->pdgId())==16) neutrinos.push_back(*p);
+  }
+  for(int i=0; i+(isFilled&&!topIsHadronic) + (isFilled&&!topbarIsHadronic)<2; i++){
+      neutrinos.push_back(reco::GenParticle());
   }
   return neutrinos;
 }
@@ -871,6 +911,9 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllWQuarks() const{
   for(auto p=wminus_decay_products.begin();isFilled&& p!=wminus_decay_products.end();p++){
     if(p->pdgId()>0&&p->pdgId()<6) quarks.push_back(*p);
   }
+  for(int i=0; i+(isFilled&&!topIsHadronic) + (isFilled&&!topbarIsHadronic)<2; i++){
+      quarks.push_back(reco::GenParticle());
+  }
   return quarks;
 }
 // always top first, tobar second if both exist
@@ -885,6 +928,9 @@ std::vector<reco::GenParticle> GenTopEvent::GetAllWAntiQuarks() const{
     assert(isFilled);
   for(auto p=wminus_decay_products.begin();isFilled&& p!=wminus_decay_products.end();p++){
     if(p->pdgId()<0&&p->pdgId()>-6) quarks.push_back(*p);
+  }
+  for(int i=0; i+(isFilled&&!topIsHadronic) + (isFilled&&!topbarIsHadronic)<2; i++){
+      quarks.push_back(reco::GenParticle());
   }
   return quarks;
 }

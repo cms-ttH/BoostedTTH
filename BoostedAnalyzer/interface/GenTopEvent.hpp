@@ -95,6 +95,8 @@ public:
   std::vector<reco::GenJet> GetWGenJets() const;
   std::vector<reco::GenParticle> GetAdditionalBGenJetsHadron() const;
   std::vector<reco::GenParticle> GetAdditionalCGenJetsHadron() const;
+  std::vector<reco::GenParticle> GetAdditionalBGenJetsHadron2() const;
+  std::vector<reco::GenParticle> GetAdditionalCGenJetsHadron2() const;
 
 
   std::vector<int> GetAdditionalCGenJetsFromTopType() const;
@@ -167,6 +169,7 @@ private:
   std::vector<int> additional_b_genjet_nb_aftertop;
   std::vector<int> additional_b_genjet_aftertoptype;
   std::vector<reco::GenParticle> additional_b_genjet_hadron;
+  std::vector<reco::GenParticle> additional_b_genjet_hadron2;
 
   reco::GenParticle higgs_b_hadron;
   reco::GenParticle higgs_bbar_hadron;
@@ -182,6 +185,7 @@ private:
   std::vector<int> additional_c_genjet_nc_aftertop;
   std::vector<int> additional_c_genjet_aftertoptype;
   std::vector<reco::GenParticle> additional_c_genjet_hadron;
+  std::vector<reco::GenParticle> additional_c_genjet_hadron2;
 
   std::vector<reco::GenParticle> additional_c_hadrons;
   std::vector<int> additional_c_hadron_aftertop;
