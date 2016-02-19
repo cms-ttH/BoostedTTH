@@ -95,7 +95,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionMEvarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 
 //
 // class declaration
@@ -518,6 +518,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   }
   if(std::find(processorNames.begin(),processorNames.end(),"DiJetVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new DiJetVarProcessor(),"DiJetVarProcessor");
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
   }
 
 
@@ -973,7 +976,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedGenJets,
 				  sampleType,
 				  higgsdecay,
-				  weights
+				  weights,
+				  iEvent,
+				  iSetup
 				  );
 
   // define systematically shifted input (replace quantaties affected by jets)
@@ -1096,9 +1101,8 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   }
 
   float weight = 1.;
-  assert(genEventInfo.weights().size()<=1); // before we multiply any weights we should understand what they mean
-  for(size_t i=0;i<genEventInfo.weights().size();i++){
-     weight *= (genEventInfo.weights()[i]>0 ? 1.: -1.); // overwrite intransparent MC weights, use \pm 1 instead
+  if(genEventInfo.weights().size()>0){
+      weight = genEventInfo.weights()[0]>0 ? 1.: -1.;
   }
   
   //dummy variables for the getCSVWeight function, might be useful for checks

@@ -2,14 +2,12 @@
 using namespace std;
 
 
-MEMProcessor::MEMProcessor(int minJets_,int maxJets_,int minTags_):
+MEMProcessor::MEMProcessor(int minJets_,int minTags_):
     minJets(minJets_),
-    maxJets(maxJets_),
     minTags(minTags_)
 {}
 
-MEMProcessor::MEMProcessor(const edm::ParameterSet& iConfig):MEMProcessor(iConfig.getParameter< int >("minJetsForMEM"),
-									  iConfig.getParameter< int >("maxJetsForMEM"),
+MEMProcessor::MEMProcessor(const edm::ParameterSet& iConfig):MEMProcessor(iConfig.getParameter< int >("minJetsForMEM"),									  
 									  iConfig.getParameter< int >("minTagsForMEM"))
 									  {}
 
@@ -55,13 +53,12 @@ void MEMProcessor::Process(const InputCollections& input,VariableContainer& vars
   int ntags=0;
   
   for(uint i=0; i<input.selectedJets.size(); i++){
-      if(int(i)==maxJets) break;
-      
+
       jetvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedJets[i].p4()));
       jetcsvs.push_back(MiniAODHelper::GetJetCSV(input.selectedJets[i]));
-      jettype.push_back(MEMClassifier::JetType::RESOLVED);
-      
-      if(jetcsvs.back()>btagMcut) ntags++;
+      float cMVAv2=input.selectedJets[i].bDiscriminator("pfCombinedMVAV2BJetTags");
+      if(jetcsvs.back()>btagMcut || cMVAv2 > btagMcutCMVA) ntags++;
+
   }
   if(int(jetvecs.size())<minJets) return;
   if(ntags<minTags) return;

@@ -25,7 +25,8 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 2000 # reset to 100 for testing
+    options.maxEvents = 2000 # reset for testing
+
 if not options.inputFiles:
     options.inputFiles=['file:/pnfs/desy.de/cms/tier2//store/user/shwillia/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv5MiniAOD/160217_174112/0000/BoostedTTH_MiniAOD_1.root']
 
@@ -157,6 +158,21 @@ if options.isData and options.useJson:
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+process.load('Configuration.Geometry.GeometryRecoDB_cff')
+process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
+process.load("Configuration.StandardSequences.MagneticField_38T_cff")
+process.BoostedAnalyzer.minJets = [4,6]
+process.BoostedAnalyzer.maxJets = [-1,-1]
+process.BoostedAnalyzer.minTags = [3,2]
+process.BoostedAnalyzer.maxTags = [-1,-1]
+process.BoostedAnalyzer.minJetsForMEM = 4
+process.BoostedAnalyzer.minTagsForMEM = 3
+process.BoostedAnalyzer.doJERsystematic = False
+
+
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor"]
+
 ## check the event content 
 process.content = cms.EDAnalyzer("EventContentAnalyzer")
 process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)

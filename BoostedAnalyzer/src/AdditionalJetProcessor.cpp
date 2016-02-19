@@ -68,6 +68,15 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVar( "GenEvt_TTxId_wo_PseudoAdditional",-1,"I" );
   vars.InitVar( "GenEvt_TTxId_w_PseudoAdditional",-1,"I" );
 
+  vars.InitVar( "AdditionalBHadrons_M",-9);
+  vars.InitVar( "AdditionalBHadrons_GenJet_M",-9);
+  vars.InitVar( "AdditionalBHadrons_Dr",-9);
+  vars.InitVar( "AdditionalBHadrons_GenJet_Dr",-9);
+  vars.InitVar( "AdditionalCHadrons_M",-9);
+  vars.InitVar( "AdditionalCHadrons_GenJet_M",-9);
+  vars.InitVar( "AdditionalCHadrons_Dr",-9);
+  vars.InitVar( "AdditionalCHadrons_GenJet_Dr",-9);
+
   initialized = true;
 }
 
@@ -113,6 +122,9 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 
     std::vector<reco::GenParticle> additional_b_genjets_hadron = input.genTopEvt.GetAdditionalBGenJetsHadron();
     std::vector<reco::GenParticle> additional_c_genjets_hadron = input.genTopEvt.GetAdditionalCGenJetsHadron();
+    std::vector<reco::GenParticle> additional_b_genjets_hadron2 = input.genTopEvt.GetAdditionalBGenJetsHadron2();
+    std::vector<reco::GenParticle> additional_c_genjets_hadron2 = input.genTopEvt.GetAdditionalCGenJetsHadron2();
+
     std::vector<reco::GenParticle> q1;
     std::vector<reco::GenParticle> q2;
     std::vector<reco::GenParticle> btth;
@@ -293,6 +305,68 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       }
     }
     vars.FillVar( "WCHadron_Dr_CfromW",drQ);
+    //    additional_b_genjets
+    // additional_c_genjets
+    ///additional_b_genjets_hadron
+    //additional_c_genjets_hadron
+
+    float mbhad=-1;
+    float mbhadjets=-1;
+    float drbhad=-1;
+    float drbhadjets=-1;
+    
+    float mchad=-1;
+    float mchadjets=-1;
+    float drchad=-1;
+    float drchadjets=-1;
+
+    if(additional_b_genjets.size()==1&&additional_b_genjets_hadron.size()==1){
+	auto hadr1=additional_b_genjets_hadron[0];
+	auto hadr2=additional_b_genjets_hadron2[0];
+	mbhad=(hadr1.p4()+hadr2.p4()).M();
+	drbhad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
+	mbhadjets=additional_b_genjets[0].p4().M();
+	drbhadjets=0;
+    }
+    if(additional_b_genjets.size()>1&&additional_b_genjets_hadron.size()>1){
+	auto hadr1=additional_b_genjets_hadron[0];
+	auto hadr2=additional_b_genjets_hadron[1];
+	mbhad=(hadr1.p4()+hadr2.p4()).M();
+	drbhad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
+	mbhadjets=(additional_b_genjets[0].p4()+additional_b_genjets[1].p4()).M();
+	drbhadjets=BoostedUtils::DeltaR(additional_b_genjets[0].p4(),additional_b_genjets[1].p4());
+    }
+    if(additional_c_genjets.size()==1&&additional_c_genjets_hadron.size()==1){
+	auto hadr1=additional_c_genjets_hadron[0];
+	auto hadr2=additional_c_genjets_hadron2[0];
+	mchad=(hadr1.p4()+hadr2.p4()).M();
+	drchad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
+	mchadjets=additional_c_genjets[0].p4().M();
+	drchadjets=0;
+    }
+    if(additional_c_genjets.size()>1&&additional_c_genjets_hadron.size()>1){
+	auto hadr1=additional_c_genjets_hadron[0];
+	auto hadr2=additional_c_genjets_hadron[1];
+	mchad=(hadr1.p4()+hadr2.p4()).M();
+	drchad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
+	mchadjets=(additional_c_genjets[0].p4()+additional_c_genjets[1].p4()).M();
+	drchadjets=BoostedUtils::DeltaR(additional_c_genjets[0].p4(),additional_c_genjets[1].p4());
+    }
+    
+
+
+  vars.FillVar( "AdditionalBHadrons_M",mbhad);
+  vars.FillVar( "AdditionalBHadrons_GenJet_M",mbhadjets);
+  vars.FillVar( "AdditionalBHadrons_Dr",drbhad);
+  vars.FillVar( "AdditionalBHadrons_GenJet_Dr",drbhadjets);
+
+  vars.FillVar( "AdditionalCHadrons_M",mchad);
+  vars.FillVar( "AdditionalCHadrons_GenJet_M",mchadjets);
+  vars.FillVar( "AdditionalCHadrons_Dr",drchad);
+  vars.FillVar( "AdditionalCHadrons_GenJet_Dr",drchadjets);
+
   }
+
+
 
 }

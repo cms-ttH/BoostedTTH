@@ -66,7 +66,10 @@ process.options.allowUnscheduled = cms.untracked.bool(True)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
+<<<<<<< HEAD
+=======
                               skipEvents=cms.untracked.uint32(int(options.skipEvents)),
+>>>>>>> c3f35037ea6358cbb78373dac4dc1c51546314d5
 )
 
 
@@ -124,9 +127,14 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/desy.de/user/h/hmildner/CMSSW_7_4_14/src/BoostedTTH/BoostedAnalyzer/data/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/kelmorab/JSONS/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
 
-
+### electron MVA ####
+# Load the producer for MVA IDs
+process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+process.load('Configuration.Geometry.GeometryRecoDB_cff')
+process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
+process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.BoostedAnalyzer.minJets = [4,6]
 process.BoostedAnalyzer.maxJets = [-1,-1]
 process.BoostedAnalyzer.minTags = [3,2]
@@ -143,6 +151,7 @@ process.BoostedAnalyzer.processorNames = ["WeightProcessor","MCMatchVarProcessor
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+
 ## check the event content 
 process.content = cms.EDAnalyzer("EventContentAnalyzer")
 process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
