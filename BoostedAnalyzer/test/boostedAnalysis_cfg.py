@@ -18,7 +18,7 @@ options.register( "isBoostedMiniAOD", True, VarParsing.multiplicity.singleton, V
 options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "generatorName", "notSpecified", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
-options.register( "globalTag", "74X_mcRun2_asymptotic_v2", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "76X_mcRun2_asymptotic_RunIIFall15DR76_v0", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.parseArguments()
