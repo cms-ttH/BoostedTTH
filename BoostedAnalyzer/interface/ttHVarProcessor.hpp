@@ -51,6 +51,8 @@ class ttHVarProcessor: public TreeProcessor{
     HiggsTagger   higgstagger;
 
     BoostedttHEvent ttHEvent;
+    
+    MEMClassifier mem;  
 };
 
 #endif

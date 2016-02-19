@@ -905,8 +905,6 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
 void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHEvent, const InputCollections& input){
   if(!initialized) cerr << "tree processor not initialized" << endl;
   
-  MEMClassifier mem = MEMClassifier();
-  
   size_t minJets = 4;
   size_t maxJets = 4;
   size_t minTags = 3;
@@ -939,8 +937,8 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
   pat::Jet topHadW2Cand = ttHEvent.GetTopHadW2Cand();
   
   // Preselect Events for MEM Calculation
-  if(!ttHEvent.GetFoundHiggsCand()  || ttHEvent.GetHiggsCandTag()<.5) return;
-  if(!ttHEvent.GetFoundTopHadCand() || ttHEvent.GetTopHadCandTag()<-.5) return;
+  if(!ttHEvent.GetFoundHiggsCand()  || ttHEvent.GetHiggsCandTag()<.85) return;
+  if(!ttHEvent.GetFoundTopHadCand() || ttHEvent.GetTopHadCandTag()<-.55) return;
   
   // Match ak4 Jets to Top Candidate Subjets
   if(input.selectedJets.size()<3) return;
@@ -978,7 +976,8 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
   MEMResult result;
   if(doBoostedMEM){
     // Set MEM Run Mode to Boosted
-    hypo = MEMClassifier::Hypothesis::SL_2W2H2T_SJ;
+    //hypo = MEMClassifier::Hypothesis::SL_2W2H2T_SJ;
+    hypo = MEMClassifier::Hypothesis::SL_2W2H2T_SJ_RESTPERM;
     
     // Add W1 and W2 of Top Candiadte to jetvecs
     jetvecs.push_back(BoostedUtils::GetTLorentzVector(topHadW1Cand.p4()));
