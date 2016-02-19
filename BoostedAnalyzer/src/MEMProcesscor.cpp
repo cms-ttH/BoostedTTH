@@ -52,7 +52,8 @@ void MEMProcessor::Process(const InputCollections& input,VariableContainer& vars
   for(uint i=0; i<input.selectedJets.size(); i++){
       jetvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedJets[i].p4()));
       jetcsvs.push_back(MiniAODHelper::GetJetCSV(input.selectedJets[i]));
-      if(jetcsvs.back()>btagMcut) ntags++;
+      float cMVAv2=input.selectedJets[i].bDiscriminator("pfCombinedMVAV2BJetTags");
+      if(jetcsvs.back()>btagMcut || cMVAv2 > btagMcutCMVA) ntags++;
   }
   if(int(jetvecs.size())<minJets) return;
   if(ntags<minTags) return;
