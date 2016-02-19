@@ -15,7 +15,7 @@ Follow These Steps:
     git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_7_6_3
     mkdir TTH
     cd TTH
-    git clone https://github.com/cms-ttH/CommonClassifier.git -b kit
+    git clone https://github.com/cms-ttH/CommonClassifier.git -b subjet-restricted-perms-kit
     source CommonClassifier/setup/install_mem.sh
     cd $CMSSW_BASE/src
     scram b -j 10

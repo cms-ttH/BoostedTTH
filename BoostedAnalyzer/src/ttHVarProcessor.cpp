@@ -976,8 +976,8 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
   MEMResult result;
   if(doBoostedMEM){
     // Set MEM Run Mode to Boosted
-    //hypo = MEMClassifier::Hypothesis::SL_2W2H2T_SJ;
-    hypo = MEMClassifier::Hypothesis::SL_2W2H2T_SJ_RESTPERM;
+    hypo = MEMClassifier::Hypothesis::SL_2W2H2T_SJ;
+    //hypo = MEMClassifier::Hypothesis::SL_2W2H2T_SJ_RESTPERM;
     
     // Add W1 and W2 of Top Candiadte to jetvecs
     jetvecs.push_back(BoostedUtils::GetTLorentzVector(topHadW1Cand.p4()));
