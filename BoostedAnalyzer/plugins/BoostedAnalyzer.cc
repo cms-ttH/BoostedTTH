@@ -1066,9 +1066,8 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   }
 
   float weight = 1.;
-  assert(genEventInfo.weights().size()<=1); // before we multiply any weights we should understand what they mean
-  for(size_t i=0;i<genEventInfo.weights().size();i++){
-     weight *= (genEventInfo.weights()[i]>0 ? 1.: -1.); // overwrite intransparent MC weights, use \pm 1 instead
+  if(genEventInfo.weights().size()>0){
+      weight = genEventInfo.weights()[0]>0 ? 1.: -1.;
   }
   
   //dummy variables for the getCSVWeight function, might be useful for checks
