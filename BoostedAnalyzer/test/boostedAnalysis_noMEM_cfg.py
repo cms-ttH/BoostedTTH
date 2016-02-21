@@ -193,7 +193,7 @@ process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
 process.BoostedAnalyzer.doBoostedMEM = False
-process.BoostedAnalyzer.doJERsystematic = False
+process.BoostedAnalyzer.doJERsystematic = True
 
 
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
