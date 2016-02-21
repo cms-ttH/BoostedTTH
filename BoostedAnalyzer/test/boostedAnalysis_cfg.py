@@ -1,5 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 import sys
+import os
 
 # To execute test, run
 #  cmsRun boostedAnalysis_cfg.py isData=False outputFile=testrun maxEvents=100 inputFiles=file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_1.root,file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_2.root
@@ -111,6 +112,38 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
 
+#=================================== JEC from DB file for data ===============
+if options.isData:
+    process.load("CondCore.DBCommon.CondDBCommon_cfi")
+    from CondCore.DBCommon.CondDBSetup_cfi import *
+    process.jec = cms.ESSource("PoolDBESSource",
+                               DBParameters = cms.PSet(
+            messageLevel = cms.untracked.int32(0)
+            ),
+#                               timetype = cms.string('runnumber'), # what does this do?
+                               toGet = cms.VPSet(
+            cms.PSet(
+                record = cms.string('JetCorrectionsRecord'),
+                tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PFchs'),
+                label  = cms.untracked.string('AK4PFchs')
+                ),
+            cms.PSet(
+                record = cms.string('JetCorrectionsRecord'),
+                tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK8PFchs'),
+                label  = cms.untracked.string('AK8PFchs')
+                ),
+#        ..................................................
+            ## here you add as many jet types as you need
+            ## note that the tag name is specific for the particular sqlite file 
+            ), 
+                               connect = cms.string('sqlite:'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Fall15_25nsV2_DATA.db')
+                               )
+## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+    process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
+#===============================================================
+
+
 # load and run the boosted analyzer
 if options.isData:
     if options.analysisType=='SL':
@@ -141,38 +174,28 @@ process.BoostedAnalyzer.makeSystematicsTrees=options.makeSystematicsTrees
 process.BoostedAnalyzer.generatorName=options.generatorName
 
 
-process.BoostedAnalyzer.minJets = cms.vint32(4)
-process.BoostedAnalyzer.maxJets = cms.vint32(-1)
-process.BoostedAnalyzer.minTags = cms.vint32(2)
-process.BoostedAnalyzer.maxTags = cms.vint32(-1)
-process.BoostedAnalyzer.selectionNames = cms.vstring("VertexSelection","LeptonSelection","JetTagSelection")
-process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","AdditionalJetProcessor")
-
-if options.additionalSelection!="NONE":
-  process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
-    
+   
 if options.isData and options.useJson:
-    import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/kelmorab/JSONS/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
-
+    print 'use JSON is no longer supported'
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
-process.BoostedAnalyzer.minJets = [4,6]
-process.BoostedAnalyzer.maxJets = [-1,-1]
-process.BoostedAnalyzer.minTags = [3,2]
-process.BoostedAnalyzer.maxTags = [-1,-1]
+process.BoostedAnalyzer.minJets = [4]
+process.BoostedAnalyzer.maxJets = [-1]
+process.BoostedAnalyzer.minTags = [2]
+process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
 process.BoostedAnalyzer.doJERsystematic = False
 
 
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor"]
+if options.additionalSelection!="NONE":
+  process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-## check the event content 
-process.content = cms.EDAnalyzer("EventContentAnalyzer")
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor"]
+
 process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
