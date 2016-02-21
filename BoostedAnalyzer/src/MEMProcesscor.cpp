@@ -56,6 +56,7 @@ void MEMProcessor::Process(const InputCollections& input,VariableContainer& vars
 
       jetvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedJets[i].p4()));
       jetcsvs.push_back(MiniAODHelper::GetJetCSV(input.selectedJets[i]));
+      jettype.push_back(MEMClassifier::JetType::RESOLVED);
       float cMVAv2=input.selectedJets[i].bDiscriminator("pfCombinedMVAV2BJetTags");
       if(jetcsvs.back()>btagMcut || cMVAv2 > btagMcutCMVA) ntags++;
 
