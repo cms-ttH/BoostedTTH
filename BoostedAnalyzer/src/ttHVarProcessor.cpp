@@ -2,8 +2,8 @@
 
 using namespace std;
 
-ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix_)
-  : recotype(recotype_), prefix(prefix_), btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"), toptagger(topTaggerMode_,subjetAssign_,topTaggerfilePath_),higgstagger(higgsTaggerMode_,higgsTaggerFilePath_)
+ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix_, bool doBoostedMEM_)
+    : recotype(recotype_), prefix(prefix_), btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"), toptagger(topTaggerMode_,subjetAssign_,topTaggerfilePath_),higgstagger(higgsTaggerMode_,higgsTaggerFilePath_),doBoostedMEM(doBoostedMEM_)
 {  
 }
 
@@ -956,7 +956,6 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
   
   std::sort(unmatchedJets.begin(), unmatchedJets.end(),BoostedUtils::FirstHasHigherCSV);
   
-  bool doBoostedMEM = true;
   if(unmatchedJets.size()<3){
     doBoostedMEM = false; 
   }
