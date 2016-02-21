@@ -14,6 +14,7 @@ options = VarParsing ('analysis')
 # inputFiles: (comma separated, no spaces!) list, string: default empty
 options.register( "outName", "testrun", VarParsing.multiplicity.singleton, VarParsing.varType.string, "name and path of the output files (without extension)" )
 options.register( "weight", 0.01, VarParsing.multiplicity.singleton, VarParsing.varType.float, "xs*lumi/(nPosEvents-nNegEvents)" )
+options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
 options.register( "isData", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "isBoostedMiniAOD", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
 options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
@@ -67,6 +68,7 @@ process.options.allowUnscheduled = cms.untracked.bool(True)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
+                              skipEvents=cms.untracked.uint32(int(options.skipEvents)),
 )
 
 
@@ -197,6 +199,6 @@ process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","J
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 
 process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
