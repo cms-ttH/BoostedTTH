@@ -33,6 +33,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
+  vars.InitVars( "Jet_PartonFlav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
   vars.InitVars( "Jet_PileUpID","N_Jets" );
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
@@ -45,6 +46,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "LooseJet_Eta","N_LooseJets" );
   vars.InitVars( "LooseJet_CSV","N_LooseJets" );
   vars.InitVars( "LooseJet_Flav","N_LooseJets" );
+  vars.InitVars( "LooseJet_PartonFlav","N_LooseJets" );
   vars.InitVars( "LooseJet_Charge","N_LooseJets" );
   vars.InitVars( "LooseJet_PileUpID","N_LooseJets" );
   vars.InitVars( "LooseJet_GenJet_Pt","N_LooseJets" );
@@ -152,7 +154,8 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
-    vars.FillVars( "Jet_Flav",iJet,itJet->partonFlavour() );
+    vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
+    vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
     if(itJet->genJet()!=NULL){
@@ -173,7 +176,8 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "LooseJet_Eta",iJet,itJet->eta() );
     vars.FillVars( "LooseJet_Phi",iJet,itJet->phi() );
     vars.FillVars( "LooseJet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
-    vars.FillVars( "LooseJet_Flav",iJet,itJet->partonFlavour() );
+    vars.FillVars( "LooseJet_PartonFlav",iJet,itJet->partonFlavour() );
+    vars.FillVars( "LooseJet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "LooseJet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "LooseJet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
     if(itJet->genJet()!=NULL){
