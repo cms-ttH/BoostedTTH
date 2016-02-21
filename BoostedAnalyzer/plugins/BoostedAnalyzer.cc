@@ -65,6 +65,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/EvenOddSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/THQJetSelection.hpp"
@@ -200,6 +201,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
       GenTopEventProducer genTopEvtProd;
 
+      bool doBoostedMEM;
+
   // TOKENS =========================
       /** pu summary data access token **/
       edm::EDGetTokenT< std::vector<PileupSummaryInfo> > EDMPUInfoToken;
@@ -301,6 +304,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   makeSystematicsTrees = iConfig.getParameter<bool>("makeSystematicsTrees");
   doJERsystematic = iConfig.getParameter<bool>("doJERsystematic");
   usedGenerator = iConfig.getParameter<std::string>("generatorName");
+  doBoostedMEM = iConfig.getParameter<bool>("doBoostedMEM");
+
   outfileName = iConfig.getParameter<std::string>("outfileName");
   outfileNameNominal=outfileName;
   outfileNameJESup=outfileName;
@@ -378,6 +383,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {    
     cout << "Initializing " << *itSel << endl;
     if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
+    else if(*itSel == "EvenSelection") selections.push_back(new EvenOddSelection(true));
+    else if(*itSel == "OddSelection") selections.push_back(new EvenOddSelection(false));
     else if(*itSel == "GenTopFHSelection") selections.push_back(new GenTopFHSelection());
     else if(*itSel == "GenTopSLSelection") selections.push_back(new GenTopSLSelection());
     else if(*itSel == "GenTopDLSelection") selections.push_back(new GenTopDLSelection());
@@ -465,7 +472,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     treewriter_nominal.AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::SecondCSV,"","BoostedTopHiggs_"),"BoostedTopHiggsVarProcessor");
+      treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::Pt,"",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::CSV,"",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
