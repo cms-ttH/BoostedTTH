@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
 using namespace std;
 
-BDT_v3::BDT_v3 (TString weightPath):btagMcut(0.89){
+BDT_v3::BDT_v3 (TString weightPath):btagMcut(0.8){
   // ==================================================
   //init all variables used in BDT set
   variableMap["all_sum_pt_with_met"]=-999.;

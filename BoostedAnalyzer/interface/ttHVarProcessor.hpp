@@ -10,6 +10,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedttHEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
+#include "TTH/CommonClassifier/interface/MEMClassifier.h"
+
 enum BoostedRecoType {BoostedTop,BoostedTopHiggs,BoostedHiggs};
 
 
@@ -17,7 +19,7 @@ class ttHVarProcessor: public TreeProcessor{
   
   public:
   
-    ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix="");
+    ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix="",bool doMEM=true);
     ~ttHVarProcessor();
     
     void Init(const InputCollections& input,VariableContainer& var);
@@ -29,6 +31,7 @@ class ttHVarProcessor: public TreeProcessor{
     void InitAk5JetsVars(VariableContainer& vars);
     void InitCombinationVars(VariableContainer& vars);
     void InitMCVars(VariableContainer& vars);
+    void InitMEMVars(VariableContainer& vars);
     
     void FillHiggsCandidateVars(VariableContainer& vars, BoostedttHEvent& ttHevent);
     void FillTopHadCandidateVars(VariableContainer& vars, BoostedttHEvent& ttHevent);
@@ -36,6 +39,7 @@ class ttHVarProcessor: public TreeProcessor{
     void FillAk5JetsVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
     void FillCombinationVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
     void FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHevent,const InputCollections& input);
+    void FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHEvent, const InputCollections& input);
     
   private:
   
@@ -45,6 +49,11 @@ class ttHVarProcessor: public TreeProcessor{
       
     TopTagger     toptagger;
     HiggsTagger   higgstagger;
+
+    BoostedttHEvent ttHEvent;
+    
+    MEMClassifier mem;  
+    bool doMEM;
 };
 
 #endif

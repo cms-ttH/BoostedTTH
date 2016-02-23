@@ -12,7 +12,7 @@ namespace IntType{enum IntType{tth,tt,tth_plus,tt_plus,tth5,tth5_plus};};
 
 class InterpretationGenerator{
 public:
-  InterpretationGenerator(IntType::IntType type=IntType::tth, int allowedMistags=1, int maxJets=10, float minMWHad=-99999,float maxMWHad=99999,float btagCut=0.89);
+  InterpretationGenerator(IntType::IntType type=IntType::tth, int allowedMistags=1, int maxJets=10, float minMWHad=-99999,float maxMWHad=99999,float btagCut=0.8);
 
   Interpretation** GenerateTTHInterpretations(std::vector<TLorentzVector> jetvecs, std::vector<float> jetcsvs, TLorentzVector lepvec, TVector2 metvec);
 

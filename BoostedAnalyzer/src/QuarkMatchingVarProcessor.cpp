@@ -12,10 +12,10 @@ QuarkMatchingVarProcessor::~QuarkMatchingVarProcessor(){}
 
 void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableContainer& vars){
 
-  vars.InitVars("Jet_PartonPt","N_Jets");
-  vars.InitVars("Jet_PartonDeltaR","N_Jets");
-  vars.InitVars("Jet_PartonMotherId","N_Jets");
-  vars.InitVars("Jet_PartonFlav","N_Jets");
+  vars.InitVars("Jet_MatchedPartonPt","N_Jets");
+  vars.InitVars("Jet_MatchedPartonDeltaR","N_Jets");
+  vars.InitVars("Jet_MatchedPartonMotherId","N_Jets");
+  vars.InitVars("Jet_MatchedPartonFlav","N_Jets");
 
   vars.InitVar("Evt_bbMass","F");
   vars.InitVar("Evt_regbbMass","F");
@@ -82,16 +82,16 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
       }
     }
     if(foundquark){
-      vars.FillVars("Jet_PartonPt",iJet,MatchedParton.pt());
-      vars.FillVars("Jet_PartonDeltaR",iJet,DeltaRMin);
-      vars.FillVars("Jet_PartonMotherId",iJet,MatchedParton.mother()->pdgId());
-      vars.FillVars("Jet_PartonFlav",iJet,MatchedParton.pdgId());
+      vars.FillVars("Jet_MatchedPartonPt",iJet,MatchedParton.pt());
+      vars.FillVars("Jet_MatchedPartonDeltaR",iJet,DeltaRMin);
+      vars.FillVars("Jet_MatchedPartonMotherId",iJet,MatchedParton.mother()->pdgId());
+      vars.FillVars("Jet_MatchedPartonFlav",iJet,MatchedParton.pdgId());
     }
     else {
-      vars.FillVars("Jet_PartonPt",iJet,-99);
-      vars.FillVars("Jet_PartonDeltaR",iJet,-99);
-      vars.FillVars("Jet_PartonMotherId",iJet,-99);
-      vars.FillVars("Jet_PartonFlav",iJet,-99);
+      vars.FillVars("Jet_MatchedPartonPt",iJet,-99);
+      vars.FillVars("Jet_MatchedPartonDeltaR",iJet,-99);
+      vars.FillVars("Jet_MatchedPartonMotherId",iJet,-99);
+      vars.FillVars("Jet_MatchedPartonFlav",iJet,-99);
     }
   }
   if(higgsjets.size() >= 2){

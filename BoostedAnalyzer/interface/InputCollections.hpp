@@ -14,8 +14,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/Cutflow.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 
@@ -52,8 +50,12 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              selectedGenJets_,
                     const SampleType                              sampleType_,
-            		    const HiggsDecay::HiggsDecay                  higgsDecay_,
-                    const std::map<std::string,float>&            weights_
+		    const HiggsDecay::HiggsDecay                  higgsDecay_,
+                    const std::map<std::string,float>&            weights_,
+		    const edm::Event& iEvent_,
+		    const edm::EventSetup& iSetup_
+		      /**** bjetness code ****/
+
 		            ): 
                     eventInfo(eventInfo_),
                     triggerInfo(triggerInfo_),
@@ -77,7 +79,9 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedGenJets(selectedGenJets_),
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
-                    weights(weights_)
+                    weights(weights_),
+		    iEvent(iEvent_),
+		    iSetup(iSetup_)
                     {}
 
 /**
@@ -88,6 +92,7 @@ InputCollections(   const InputCollections&                       input,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     const std::vector<pat::Jet>&                  selectedJetsSingleTop_,
                     const pat::MET&                               pfMET_,
+                    const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const std::map<std::string,float>&            weights_
         		    ): 
                     eventInfo(input.eventInfo),
@@ -107,12 +112,15 @@ InputCollections(   const InputCollections&                       input,
                     selectedJetsLoose(selectedJetsLoose_),
                     selectedJetsSingleTop(selectedJetsSingleTop_),
                     pfMET(pfMET_),
-                    selectedBoostedJets(input.selectedBoostedJets),
+                    selectedBoostedJets(selectedBoostedJets_),
                     genTopEvt(input.genTopEvt),
                     selectedGenJets(input.selectedGenJets),
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
-                    weights(weights_)
+                    weights(weights_),
+		    iEvent(input.iEvent),
+		    iSetup(input.iSetup)
+
                     {}
 
   const EventInfo&                              eventInfo;
@@ -138,6 +146,8 @@ InputCollections(   const InputCollections&                       input,
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>&            weights;
+  const edm::Event & iEvent;
+  const edm::EventSetup & iSetup;
 
 };
 

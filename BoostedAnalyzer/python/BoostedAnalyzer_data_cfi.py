@@ -19,6 +19,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     recorrectMET = cms.bool(True),
 
     makeSystematicsTrees = cms.bool(False),
+    doJERsystematic = cms.bool(False),
+    generatorName = cms.string("notSpecified"),
 
     useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
@@ -27,8 +29,13 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
 
+    doBoostedMEM = cms.bool(True),
+
+    minJetsForMEM = cms.int32(4),
+    minTagsForMEM = cms.int32(3),
+
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","DiLeptonVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopVarProcessor","BoostedHiggsVarProcessor"),
+    processorNames = cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor"),
 
     outfileName = cms.string("BoostedTTH"),
 )

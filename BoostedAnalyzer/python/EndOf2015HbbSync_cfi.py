@@ -1,5 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 from BoostedTTH.BoostedAnalyzer.Selection_cff import *
+from BoostedTTH.BoostedAnalyzer.Weights_cff import *
 
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
@@ -13,13 +14,18 @@ BoostedAnalyzer = cms.EDAnalyzer(
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
     sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
 
-
     eventWeight = cms.double(1.),
     isData = cms.bool(False),
 
     recorrectMET = cms.bool(True),
 
+    # PU weights, defined in Weights_cff
+    nominalPUWeight = cms.PSet(NominalPUWeight),
+    additionalPUWeights = cms.VPSet(AdditionalPUWeights),
+
     makeSystematicsTrees = cms.bool(True),
+    doJERsystematic = cms.bool(True),
+    generatorName = cms.string("notSpecified"),
 
     useFatJets = cms.bool(True),
     useForwardJets = cms.bool(False),
@@ -30,7 +36,6 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     selectionNames = cms.vstring("VertexSelection"),
     processorNames = cms.vstring(),
-    #,"DiJetVarProcessor"), -- conflict
 
     outfileName = cms.string("BoostedTTH"),
 )

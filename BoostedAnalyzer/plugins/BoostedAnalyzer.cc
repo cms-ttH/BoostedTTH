@@ -55,6 +55,7 @@
 
 
 #include "BoostedTTH/BoostedAnalyzer/interface/HistoReweighter.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/PUWeights.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
@@ -64,13 +65,17 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/EvenOddSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/THQJetSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetSelection.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/JetRegression.hpp"
 
+#include "BoostedTTH/BoostedAnalyzer/interface/JetRegression.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenTopDLSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenTopSLSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenTopFHSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -82,6 +87,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SingleTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/MEMProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
@@ -94,6 +100,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/QuarkMatchingVarProcessor.hpp"
 
+#include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 
 //
 // class declaration
@@ -112,7 +119,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
       virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;    
-  map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles, sysType::sysType systype=sysType::NA);
+    float GetTopPtWeight(float toppt1, float toppt2);
+  map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype=sysType::NA);
 
       // ----------member data ---------------------------
       
@@ -121,6 +129,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
       CSVHelper csvReweighter;
       HistoReweighter pvWeight;
+      PUWeights puWeights_;
+      HistoReweighter njetWeight;
       
       /** writes flat trees for MVA analysis */
       TreeWriter treewriter_nominal;
@@ -186,6 +196,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
       /** write systematics trees */
       bool makeSystematicsTrees;
+      bool doJERsystematic;
 
       /** generator weigths */
       bool dogenweights;
@@ -194,6 +205,10 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
 
       JetRegression bjetRegression;
+
+      GenTopEventProducer genTopEvtProd;
+
+      bool doBoostedMEM;
 
   // TOKENS =========================
       /** pu summary data access token **/
@@ -245,25 +260,6 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** gen jets data access token **/
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
-     // custom genjets for tt+X categorization
-      edm::EDGetTokenT< std::vector<reco::GenJet> > EDMCustomGenJetsToken;
-    
-     /** tt+X categorization tokens **/
-      edm::EDGetTokenT<std::vector<int> > genBHadJetIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadFlavourToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadFromTopWeakDecayToken;
-      edm::EDGetTokenT<std::vector<reco::GenParticle> > genBHadPlusMothersToken;
-      edm::EDGetTokenT<std::vector<std::vector< int > > > genBHadPlusMothersIndicesToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadLeptonHadronIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadLeptonViaTauToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadJetIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadFlavourToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadFromTopWeakDecayToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadBHadronIdToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadIndexToken;
-      edm::EDGetTokenT<std::vector<reco::GenParticle> > genCHadPlusMothersToken;
-      edm::EDGetTokenT<int> genTtbarIdToken;
 
     /** electron MVA id tokens (implementation B) **/
     // TODO: the bools can only accessed with 
@@ -286,7 +282,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_2015_11_20.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_2015_11_20.root",5)),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc")
+BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_76x_2016_02_08.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_76x_2016_02_08.root",5)),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc"),njetWeight((BoostedUtils::GetAnalyzerPath()+"/data/njetweights/NJEThistos.root").c_str(),"data","mc"),genTopEvtProd(GenTopEventProducer(consumesCollector()))
 {
   // get all configurations from the python config
   std::string era = iConfig.getParameter<std::string>("era");
@@ -313,7 +309,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   dumpSyncExe2 = iConfig.getParameter<bool>("dumpSyncExe2");
 
   makeSystematicsTrees = iConfig.getParameter<bool>("makeSystematicsTrees");
+  doJERsystematic = iConfig.getParameter<bool>("doJERsystematic");
   usedGenerator = iConfig.getParameter<std::string>("generatorName");
+  doBoostedMEM = iConfig.getParameter<bool>("doBoostedMEM");
+
   outfileName = iConfig.getParameter<std::string>("outfileName");
   outfileNameNominal=outfileName;
   outfileNameJESup=outfileName;
@@ -338,7 +337,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
 
 
   // REGISTER DATA ACCESS
-  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo","",""));
+  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo","",""));
   EDMRhoToken             = consumes<double> (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
   EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
   triggerBitsToken        = consumes< edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
@@ -355,26 +354,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   EDMLHEToken             = consumes< LHEEventProduct >(edm::InputTag("externalLHEProducer","",""));
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
-  EDMCustomGenJetsToken   = consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
   EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
-
-  // tt+X CATEGORIZATION data
-  genBHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadJetIndex",""));
-  genBHadFlavourToken            = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFlavour",""));
-  genBHadFromTopWeakDecayToken   = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFromTopWeakDecay",""));
-  genBHadPlusMothersToken        = consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenBHadron","genBHadPlusMothers",""));
-  genBHadPlusMothersIndicesToken = consumes<std::vector<std::vector<int> > >(edm::InputTag("matchGenBHadron","genBHadPlusMothersIndices",""));
-  genBHadIndexToken              = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadIndex"));
-  genBHadLeptonHadronIndexToken  = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonHadronIndex",""));
-  genBHadLeptonViaTauToken       = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonViaTau",""));
-  genCHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadJetIndex",""));
-  genCHadFlavourToken            = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFlavour",""));
-  genCHadFromTopWeakDecayToken   = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFromTopWeakDecay",""));
-  genCHadBHadronIdToken          = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadBHadronId",""));
-  genCHadIndexToken              = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadIndex"));
-  genCHadPlusMothersToken        = consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenCHadron","genCHadPlusMothers",""));
-  genTtbarIdToken                = consumes<int>              (edm::InputTag("categorizeGenTtbar","genTtbarId",""));
-
   // electron MVA info
   // TODO: these (and many of the names above) shouldn't be hard coded but set in python cfg
   EDMeleMVAvaluesToken           = consumes<edm::ValueMap<float> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Values",""));
@@ -383,14 +363,20 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   helper.SetJetCorrectorUncertainty();
+  helper.SetBoostedJetCorrectorUncertainty();
+  
+  // INITIALIZE PU WEIGHTS
+  puWeights_.init(iConfig);
 
-   // INITIALIZE SELECTION & CUTFLOW
+  // INITIALIZE SELECTION & CUTFLOW
   cutflow_nominal.Init();
   if(makeSystematicsTrees){
     cutflow_jesup.Init();
     cutflow_jesdown.Init();
-    cutflow_jerup.Init();
-    cutflow_jerdown.Init();
+    if(doJERsystematic){
+	cutflow_jerup.Init();
+	cutflow_jerdown.Init();
+    }
   }
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
   int nselection=0;
@@ -404,6 +390,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {    
     cout << "Initializing " << *itSel << endl;
     if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
+    else if(*itSel == "EvenSelection") selections.push_back(new EvenOddSelection(true));
+    else if(*itSel == "OddSelection") selections.push_back(new EvenOddSelection(false));
+    else if(*itSel == "GenTopFHSelection") selections.push_back(new GenTopFHSelection());
+    else if(*itSel == "GenTopSLSelection") selections.push_back(new GenTopSLSelection());
+    else if(*itSel == "GenTopDLSelection") selections.push_back(new GenTopDLSelection());
     else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
     else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
     else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
@@ -430,8 +421,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     if(makeSystematicsTrees){
       selections.back()->InitCutflow(cutflow_jesup);
       selections.back()->InitCutflow(cutflow_jesdown);
-      selections.back()->InitCutflow(cutflow_jerup);
-      selections.back()->InitCutflow(cutflow_jerdown);
+      if(doJERsystematic){
+	  selections.back()->InitCutflow(cutflow_jerup);
+	  selections.back()->InitCutflow(cutflow_jerdown);
+      }
     }
     
     nselection++;     
@@ -448,8 +441,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
       // this is are the usual tree names
       treewriter_jesup.Init(outfileNameJESup);
       treewriter_jesdown.Init(outfileNameJESdown);
-      treewriter_jerup.Init(outfileNameJERup);
-      treewriter_jerdown.Init(outfileNameJERdown);
+      if(doJERsystematic){
+	  treewriter_jerup.Init(outfileNameJERup);
+	  treewriter_jerdown.Init(outfileNameJERdown);
+      }
   }
 
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
@@ -484,7 +479,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     treewriter_nominal.AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::SecondCSV,"","BoostedTopHiggs_"),"BoostedTopHiggsVarProcessor");
+      treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::Pt,"",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::CSV,"",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
@@ -510,6 +505,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new MEMProcessor(iConfig),"MEMProcessor");
+  }
   if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
   }
@@ -523,7 +521,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     treewriter_nominal.AddTreeProcessor(new DiLeptonVarProcessor(),"DiLeptonVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"TriggerVarProcessor")!=processorNames.end()) {
-      // TODO how to handle this?
+      // TODO how to handle this? -- what?
     treewriter_nominal.AddTreeProcessor(new TriggerVarProcessor(relevantTriggers),"TriggerVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"TTbarReconstructionVarProcessor")!=processorNames.end()) {
@@ -538,6 +536,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   if(std::find(processorNames.begin(),processorNames.end(),"QuarkMatchingVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new QuarkMatchingVarProcessor(),"QuarkMatchingVarProcessor");
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
+  }
 
 
   // the systematics tree writers use the same processors that are used for the nominal trees
@@ -548,8 +549,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     for(uint i=0; i<tps.size();i++){
       treewriter_jesup.AddTreeProcessor(tps[i],tpsn[i]);
       treewriter_jesdown.AddTreeProcessor(tps[i],tpsn[i]);
-      treewriter_jerup.AddTreeProcessor(tps[i],tpsn[i]);
-      treewriter_jerdown.AddTreeProcessor(tps[i],tpsn[i]);
+      if(doJERsystematic){
+	  treewriter_jerup.AddTreeProcessor(tps[i],tpsn[i]);
+	  treewriter_jerdown.AddTreeProcessor(tps[i],tpsn[i]);
+      }
     }
   }
   // Genweights: Initialize the weightnames for the generator, that was used for this sample
@@ -646,8 +649,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Muon> rawMuons = muons;
   helper.AddMuonRelIso(rawMuons, coneSize::R04, corrType::deltaBeta,"relIso");
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( rawMuons, 25., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.1);
-  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( rawMuons, 20., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4 );
-  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( rawMuons, 15., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.4);
+  std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( rawMuons, 20., muonID::muonTightDL, coneSize::R04, corrType::deltaBeta, 2.4 );
+  std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( rawMuons, 15., muonID::muonTightDL, coneSize::R04, corrType::deltaBeta, 2.4);
 
   // ELECTRONS
   edm::Handle< edm::View<pat::Electron> > h_electrons;
@@ -660,9 +663,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Electron> electrons = helper.GetElectronsWithMVAid(h_electrons,h_mvaValues,h_mvaCategories);
   helper.AddElectronRelIso(electrons,coneSize::R03, corrType::rhoEA,effAreaType::spring15,"relIso");
   std::vector<pat::Electron> rawElectrons = electrons;
-  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVA80iso0p1, 2.1 );
-  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVA80, 2.4 );
-  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVA80, 2.4 );
+  std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVA80iso0p15, 2.1 );
+  std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVA80iso0p15, 2.4 );
+  std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVA80iso0p15, 2.4 );
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
   iEvent.getByToken( EDMMETsToken,h_pfmet );
@@ -811,7 +814,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Jet> selectedJetsSingleTop_jerup;
   std::vector<pat::Jet> selectedJetsSingleTop_jerdown;
   
-  if(makeSystematicsTrees){
+  if(makeSystematicsTrees && doJERsystematic){
     correctedJets_unsorted_jerup = helper.GetCorrectedJets(cleanJets, iEvent, iSetup, sysType::JERup);
     correctedJets_unsorted_jerdown = helper.GetCorrectedJets(cleanJets, iEvent, iSetup, sysType::JERdown);
 
@@ -844,13 +847,41 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
   /**** GET BOOSTEDJETS ****/
+  const JetCorrector* ak8corrector = JetCorrector::getJetCorrector( "ak8PFchsL1L2L3", iSetup );
+  helper.SetBoostedJetCorrector(ak8corrector);
+  
   edm::Handle<boosted::BoostedJetCollection> h_boostedjet;
   boosted::BoostedJetCollection selectedBoostedJets;
+  boosted::BoostedJetCollection selectedBoostedJets_uncorrected;
+  boosted::BoostedJetCollection selectedBoostedJets_jesup;
+  boosted::BoostedJetCollection selectedBoostedJets_jesdown;
+  boosted::BoostedJetCollection selectedBoostedJets_jerup;
+  boosted::BoostedJetCollection selectedBoostedJets_jerdown;
   if(useFatJets){
     iEvent.getByToken( EDMBoostedJetsToken,h_boostedjet);
     boosted::BoostedJetCollection const &boostedjets_unsorted = *h_boostedjet;
     boosted::BoostedJetCollection boostedjets = BoostedUtils::GetSortedByPt(boostedjets_unsorted);
-    selectedBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
+    boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999., jetID::jetLoose);
+    boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::NA, true, true);
+    selectedBoostedJets = helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
+    //selectedBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
+    selectedBoostedJets_uncorrected = helper.GetSelectedBoostedJets(idBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
+    
+    if(makeSystematicsTrees){
+      boosted::BoostedJetCollection correctedBoostedJets_jesup = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JESup, true, true);
+      boosted::BoostedJetCollection correctedBoostedJets_jesdown = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JESdown, true, true);
+      
+      selectedBoostedJets_jesup = helper.GetSelectedBoostedJets(correctedBoostedJets_jesup, 200., 2.0, 20., 2.4, jetID::none);
+      selectedBoostedJets_jesdown = helper.GetSelectedBoostedJets(correctedBoostedJets_jesdown, 200., 2.0, 20., 2.4, jetID::none);
+      
+      if(makeSystematicsTrees){
+        boosted::BoostedJetCollection correctedBoostedJets_jerup = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JERup, true, true);
+        boosted::BoostedJetCollection correctedBoostedJets_jerdown = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JERdown, true, true);
+      
+        selectedBoostedJets_jerup = helper.GetSelectedBoostedJets(correctedBoostedJets_jerup, 200., 2.0, 20., 2.4, jetID::none);
+        selectedBoostedJets_jerdown = helper.GetSelectedBoostedJets(correctedBoostedJets_jerdown, 200., 2.0, 20., 2.4, jetID::none);
+      }
+    }
   }
   
   /**** GET GENEVENTINFO ****/
@@ -894,73 +925,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
   
   
-  // custom genjets for tt+X categorization
-  edm::Handle< std::vector<reco::GenJet> > h_customgenjets;
-  if(!isData){
-    iEvent.getByToken( EDMCustomGenJetsToken,h_customgenjets );
-  }
-  
+ 
   // Fill Event Info Object
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
   TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
-  
-  // Sync Output
-  
-  bool compare = false;
-  int compevent = -1;
-               
-  const int nEntries = 2;
-  int comparisonList[] = {3856066,304664}; 
-  
-  for(int i = 0;i<nEntries;i++){
-    if(eventInfo.evt == comparisonList[i]){
-      compare = true;
-      compevent = eventInfo.evt;
-      break;
-    }
-  }
-  
-  if(compare){
-    std::cout<<"Comparing Event "<<compevent<<std::endl;
-    
-    for(size_t i=0;i<muons.size();i++){
-      std::cout<<"muon "<<i<<","<<muons[i].pt()<<","<<muons[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedMuonsDL.size();i++){
-      std::cout<<"lead muon "<<i<<","<<selectedMuonsDL[i].pt()<<","<<selectedMuonsDL[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedMuonsLoose.size();i++){
-      std::cout<<"sub muon "<<i<<","<<selectedMuonsLoose[i].pt()<<","<<selectedMuonsLoose[i].eta()<<std::endl; 
-    }
-    
-    
-    for(size_t i=0;i<electrons.size();i++){
-      std::cout<<"electron "<<i<<","<<electrons[i].pt()<<","<<electrons[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedElectronsDL.size();i++){
-      std::cout<<"lead electron "<<i<<","<<selectedElectronsDL[i].pt()<<","<<selectedElectronsDL[i].eta()<<std::endl; 
-    }
-    for(size_t i=0;i<selectedElectronsLoose.size();i++){
-      std::cout<<"sub electron "<<i<<","<<selectedElectronsLoose[i].pt()<<","<<selectedElectronsLoose[i].eta()<<std::endl; 
-    }
-  }
-  
-  /*
-  if(eventInfo.evt == 3821537){
-    for(size_t ijet=0;ijet<pfjets.size();ijet++){
-      std::cout<<ijet<<","<<pfjets[ijet].pt()<<","<<pfjets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(pfjets[ijet])<<std::endl; 
-    }
-    for(size_t ijet=0;ijet<idJets.size();ijet++){
-      std::cout<<ijet<<","<<idJets[ijet].pt()<<","<<idJets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(idJets[ijet])<<std::endl; 
-    }
-    for(size_t ijet=0;ijet<cleanJets.size();ijet++){
-      std::cout<<ijet<<","<<cleanJets[ijet].pt()<<","<<cleanJets[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(cleanJets[ijet])<<std::endl; 
-    }
-    for(size_t ijet=0;ijet<correctedJets_unsorted_nominal.size();ijet++){
-      std::cout<<ijet<<","<<correctedJets_unsorted_nominal[ijet].pt()<<","<<correctedJets_unsorted_nominal[ijet].eta()<<","<<MiniAODHelper::GetJetCSV(correctedJets_unsorted_nominal[ijet])<<std::endl; 
-    }
-  }
-  */
 
   // FIGURE OUT SAMPLE
     
@@ -984,53 +952,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       }
     }
   }
-  GenTopEvent genTopEvt;
-  int ttid=-1;
-  int ttid_full=-1;
-  if(!isData&&useGenHadronMatch&&foundT&&foundTbar){
-    /**** tt+X categorization ****/
-    // Reading gen jets from the event
-    // Reading B hadrons related information
-    edm::Handle<std::vector<int> > genBHadFlavour;
-    edm::Handle<std::vector<int> > genBHadJetIndex;
-    edm::Handle<std::vector<int> > genBHadFromTopWeakDecay;
-    edm::Handle<std::vector<reco::GenParticle> > genBHadPlusMothers;
-    edm::Handle<std::vector<std::vector<int> > > genBHadPlusMothersIndices;
-    edm::Handle<std::vector<reco::GenParticle> > genCHadPlusMothers;
-    edm::Handle<std::vector<int> > genBHadIndex;
-    edm::Handle<std::vector<int> > genBHadLeptonHadronIndex;
-    edm::Handle<std::vector<int> > genBHadLeptonViaTau;
-    // Reading C hadrons related information
-    edm::Handle<std::vector<int> > genCHadIndex;
-    edm::Handle<std::vector<int> > genCHadFlavour;
-    edm::Handle<std::vector<int> > genCHadJetIndex;
-    edm::Handle<std::vector<int> > genCHadFromTopWeakDecay;
-    edm::Handle<std::vector<int> > genCHadBHadronId;
-    edm::Handle<int> genTtbarId;
-    iEvent.getByToken(genCHadBHadronIdToken, genCHadBHadronId);
-    iEvent.getByToken(genBHadFlavourToken, genBHadFlavour);
-    iEvent.getByToken(genBHadJetIndexToken, genBHadJetIndex);  
-    iEvent.getByToken(genBHadFromTopWeakDecayToken, genBHadFromTopWeakDecay);  
-    iEvent.getByToken(genBHadPlusMothersToken, genBHadPlusMothers);    
-    iEvent.getByToken(genBHadPlusMothersIndicesToken, genBHadPlusMothersIndices);
-    iEvent.getByToken(genCHadPlusMothersToken, genCHadPlusMothers);    
-    iEvent.getByToken(genBHadIndexToken, genBHadIndex);
-    iEvent.getByToken(genBHadLeptonHadronIndexToken, genBHadLeptonHadronIndex);
-    iEvent.getByToken(genBHadLeptonViaTauToken, genBHadLeptonViaTau);
-    iEvent.getByToken(genCHadFlavourToken, genCHadFlavour);
-    iEvent.getByToken(genCHadJetIndexToken, genCHadJetIndex);
-    iEvent.getByToken(genCHadFromTopWeakDecayToken, genCHadFromTopWeakDecay);
-    iEvent.getByToken(genCHadIndexToken, genCHadIndex);
-    iEvent.getByToken(genTtbarIdToken, genTtbarId);
-    ttid_full = *genTtbarId;
-    ttid = ttid_full%100;
-    // fill additional jet info in genTopEvt
-    genTopEvt.FillTTxDetails(*h_customgenjets, 
-			     *genBHadIndex, *genBHadJetIndex, *genBHadFlavour, *genBHadFromTopWeakDecay, *genBHadPlusMothers, 
-			     *genCHadIndex, *genCHadJetIndex, *genCHadFlavour, *genCHadFromTopWeakDecay, *genCHadPlusMothers,
-			     *genCHadBHadronId,
-			     20,2.4); 
-  }
+  GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!(!isData&&foundT&&foundTbar));
+  int ttid = genTopEvt.IsFilled()? genTopEvt.GetTTxIdFromProducer() : -1;
+      
   SampleType sampleType= SampleType::nonttbkg;
   if(isData) sampleType = SampleType::data;
   else if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
@@ -1044,10 +968,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     else if(ttid==43||ttid==44||ttid==45) sampleType = SampleType::ttcc;    
   }
   else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
-  if(!isData&&foundT&&foundTbar) {
-    // fill genTopEvt with tt(H) information
-    genTopEvt.Fill(*h_genParticles,ttid_full);
-  }
 
 
   bjetRegression.evaluateRegression(iEvent,selectedPVs, EDMElectronsToken, EDMMuonsToken, EDMRhoToken,  EDMJetsToken, selectedJets_nominal);
@@ -1063,19 +983,19 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   
 
   // DO REWEIGHTING
-  map<string,float> weights = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
-  map<string,float> weights_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESup);
-  map<string,float> weights_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESdown);
-  map<string,float> weights_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
-  map<string,float> weights_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
-  map<string,float> weights_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+  map<string,float> weights = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_nominal,selectedElectrons,selectedMuons,genTopEvt,sysType::NA);
+  map<string,float> weights_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesup,selectedElectrons,selectedMuons,genTopEvt,sysType::JESup);
+  map<string,float> weights_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesdown,selectedElectrons,selectedMuons,genTopEvt,sysType::JESdown);
+  map<string,float> weights_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerup,selectedElectrons,selectedMuons,genTopEvt,sysType::JERup);
+  map<string,float> weights_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerdown,selectedElectrons,selectedMuons,genTopEvt,sysType::JERdown);
+  map<string,float> weights_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_uncorrected,selectedElectrons,selectedMuons,genTopEvt,sysType::NA);
      //Only needed for Hbb synch exercise: dilepton uses loose jet selection -> different csv weights
-  map<string,float> weights_DL_nominal = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
-  map<string,float> weights_DL_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESup);
-  map<string,float> weights_DL_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESdown);
-  map<string,float> weights_DL_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
-  map<string,float> weights_DL_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
-  map<string,float> weights_DL_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+  map<string,float> weights_DL_nominal = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_nominal,selectedElectrons,selectedMuons,genTopEvt,sysType::NA);
+  map<string,float> weights_DL_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesup,selectedElectrons,selectedMuons,genTopEvt,sysType::JESup);
+  map<string,float> weights_DL_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesdown,selectedElectrons,selectedMuons,genTopEvt,sysType::JESdown);
+  map<string,float> weights_DL_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerup,selectedElectrons,selectedMuons,genTopEvt,sysType::JERup);
+  map<string,float> weights_DL_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerdown,selectedElectrons,selectedMuons,genTopEvt,sysType::JERdown);
+  map<string,float> weights_DL_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_uncorrected,selectedElectrons,selectedMuons,genTopEvt,sysType::NA);
   // DEFINE INPUT
   InputCollections input_nominal( eventInfo,
 				  triggerInfo,
@@ -1100,22 +1020,24 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  //				  selectedJets_bReg_nominal,
 				  sampleType,
 				  higgsdecay,
-				  weights
+				  weights,
+				  iEvent,
+				  iSetup
 				  );
 
   // define systematically shifted input (replace quantaties affected by jets)
-  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],weights_jesup);
-  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],weights_jesdown);
-  InputCollections input_jerup( input_nominal,selectedJets_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],weights_jerup);
-  InputCollections input_jerdown( input_nominal,selectedJets_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],weights_jerdown);
-  InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],weights_uncorrjets);
+  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],selectedBoostedJets_jesup,weights_jesup);
+  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],selectedBoostedJets_jesdown,weights_jesdown);
+  InputCollections input_jerup( input_nominal,selectedJets_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],selectedBoostedJets_jerup,weights_jerup);
+  InputCollections input_jerdown( input_nominal,selectedJets_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],selectedBoostedJets_jerdown,weights_jerdown);
+  InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],selectedBoostedJets_uncorrected,weights_uncorrjets);
      //Only needed for Hbb synch exercise: dilepton uses loose jet selection -> different csv weights and input collection
-  InputCollections input_DL_nominal( input_nominal,selectedJetsLoose_nominal,selectedJetsLoose_nominal,selectedJetsSingleTop_nominal,correctedMETs_nominal[0],weights_DL_nominal);
-  InputCollections input_DL_jesup( input_nominal,selectedJetsLoose_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],weights_DL_jesup);
-  InputCollections input_DL_jesdown( input_nominal,selectedJetsLoose_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],weights_DL_jesdown);
-  InputCollections input_DL_jerup( input_nominal,selectedJetsLoose_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],weights_DL_jerup);
-  InputCollections input_DL_jerdown( input_nominal,selectedJetsLoose_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],weights_DL_jerdown);
-  InputCollections input_DL_uncorrjets( input_nominal,selectedJetsLoose_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],weights_DL_uncorrjets);
+  InputCollections input_DL_nominal( input_nominal,selectedJetsLoose_nominal,selectedJetsLoose_nominal,selectedJetsSingleTop_nominal,correctedMETs_nominal[0],selectedBoostedJets,weights_DL_nominal);
+  InputCollections input_DL_jesup( input_nominal,selectedJetsLoose_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],selectedBoostedJets_jesup,weights_DL_jesup);
+  InputCollections input_DL_jesdown( input_nominal,selectedJetsLoose_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],selectedBoostedJets_jesdown,weights_DL_jesdown);
+  InputCollections input_DL_jerup( input_nominal,selectedJetsLoose_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],selectedBoostedJets_jerup,weights_DL_jerup);
+  InputCollections input_DL_jerdown( input_nominal,selectedJetsLoose_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],selectedBoostedJets_jerdown,weights_DL_jerdown);
+  InputCollections input_DL_uncorrjets( input_nominal,selectedJetsLoose_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],selectedBoostedJets_uncorrected,weights_DL_uncorrjets);
 
   // DO SELECTION
 
@@ -1124,8 +1046,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   if(makeSystematicsTrees){
     cutflow_jesup.EventSurvivedStep("all",input_jesup.weights.at("Weight"));
     cutflow_jesdown.EventSurvivedStep("all",input_jesdown.weights.at("Weight"));
-    cutflow_jerup.EventSurvivedStep("all",input_jerup.weights.at("Weight"));
-    cutflow_jerdown.EventSurvivedStep("all",input_jerdown.weights.at("Weight"));
+    if(doJERsystematic){
+	cutflow_jerup.EventSurvivedStep("all",input_jerup.weights.at("Weight"));
+	cutflow_jerdown.EventSurvivedStep("all",input_jerdown.weights.at("Weight"));
+    }
   }
   bool selected_nominal=true;
 
@@ -1170,18 +1094,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	selected_jesdown=false;
       }
     }
-    bool selected_jerdown=true;
-    for(size_t i=0; i<selections.size() && selected_jerdown; i++){
-      if(!selections.at(i)->IsSelected(input_jerdown,cutflow_jerdown)){
-	selected_jerdown=false;
-      }
-    }
-    bool selected_jerup=true;
-    for(size_t i=0; i<selections.size() && selected_jerup; i++){
-      if(!selections.at(i)->IsSelected(input_jerup,cutflow_jerup)){
-	selected_jerup=false;
-      }
-    }
     // write systematically shifted trees
     if(selected_jesup){
       treewriter_jesup.Process(input_jesup);
@@ -1189,18 +1101,37 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if(selected_jesdown){
       treewriter_jesdown.Process(input_jesdown);
     }
-    if(selected_jerup){
-      treewriter_jerup.Process(input_jerup);
-    }
-    if(selected_jerdown){
-      treewriter_jerdown.Process(input_jerdown);
+    if(doJERsystematic){
+	bool selected_jerdown=true;
+	for(size_t i=0; i<selections.size() && selected_jerdown; i++){
+	    if(!selections.at(i)->IsSelected(input_jerdown,cutflow_jerdown)){
+		selected_jerdown=false;
+	    }
+	}
+	bool selected_jerup=true;
+	for(size_t i=0; i<selections.size() && selected_jerup; i++){
+	    if(!selections.at(i)->IsSelected(input_jerup,cutflow_jerup)){
+		selected_jerup=false;
+	    }
+	}
+	if(selected_jerup){
+	    treewriter_jerup.Process(input_jerup);
+	}
+	if(selected_jerdown){
+	    treewriter_jerdown.Process(input_jerdown);
+	}
     }
   }
 
 }
 
+float BoostedAnalyzer::GetTopPtWeight(float toppt1,float toppt2){
+    float sf1=exp(0.156-0.00137*toppt1);
+    float sf2=exp(0.156-0.00137*toppt2);
+    return sqrt(sf1*sf2);
+}
 
-map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles, sysType::sysType systype){
+map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype){
   map<string,float> weights;
   
   if(isData){
@@ -1214,9 +1145,8 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   }
 
   float weight = 1.;
-  assert(genEventInfo.weights().size()<=1); // before we multiply any weights we should understand what they mean
-  for(size_t i=0;i<genEventInfo.weights().size();i++){
-     weight *= (genEventInfo.weights()[i]>0 ? 1.: -1.); // overwrite intransparent MC weights, use \pm 1 instead
+  if(genEventInfo.weights().size()>0){
+      weight = genEventInfo.weights()[0]>0 ? 1.: -1.;
   }
   
   //dummy variables for the getCSVWeight function, might be useful for checks
@@ -1225,18 +1155,19 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   float xsweight = eventWeight;
   float csvweight = 1.;
   float puweight = 1.;
-  float topptweight = 1.;
-
+  float topptweight = genTopEvt.IsTTbar()? GetTopPtWeight(genTopEvt.GetTop().pt(),genTopEvt.GetTopBar().pt()) : 1.;
+  float topptweightUp = 1.0 + 2.0*(topptweight-1.0);
+  float topptweightDown = 1.0;
   //get vectors of jet properties
   std::vector<double> jetPts;
   std::vector<double> jetEtas;
   std::vector<double> jetCSVs;
   std::vector<int> jetFlavors;
   for(std::vector<pat::Jet>::const_iterator itJet = selectedJets.begin(); itJet != selectedJets.end(); ++itJet){
-  jetPts.push_back(itJet->pt());
-  jetEtas.push_back(itJet->eta());
-  jetCSVs.push_back(helper.GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-  jetFlavors.push_back(itJet->hadronFlavour());
+      jetPts.push_back(itJet->pt());
+      jetEtas.push_back(itJet->eta());
+      jetCSVs.push_back(helper.GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+      jetFlavors.push_back(itJet->hadronFlavour());
   }
 
   if(systype==sysType::JESup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,7, csvWgtHF, csvWgtLF, csvWgtCF);
@@ -1245,22 +1176,21 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   else if(systype==sysType::JERdown)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
   else csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF);
   
-//float puweight = beanHelper.GetPUweight(event[0].numTruePV);
-  //float topptweight = beanHelper.GetTopPtweight(mcparticlesStatus3);
-  //float q2scaleweight = beanHelper.GetQ2ScaleUp(const BNevent&);
+  // compute PU weights, and set nominal weight
+  puWeights_.compute(eventInfo);
+  puweight = puWeights_.nominalWeight();
   
-  weight *= xsweight*csvweight*puweight*topptweight;
+  weight *= xsweight*csvweight;//*puweight;
   weights["Weight"] = weight;
   weights["Weight_XS"] = xsweight;
   weights["Weight_CSV"] = csvweight;
   weights["Weight_PU"] = puweight;
   weights["Weight_TopPt"] = topptweight;
   weights["Weight_PV"] = pvWeight.GetWeight(selectedPVs.size());
+  weights["Weight_NJets"] = njetWeight.GetWeight(selectedJets.size());
   
   bool doSystematics=true;  
   if(doSystematics && systype != sysType::JESup && systype != sysType::JESup && systype != sysType::JERup && systype != sysType::JERdown) {
-    //weights["Weight_TopPtup"] = beanHelper.GetTopPtweightUp(mcparticlesStatus3)/topptweight;
-    //weights["Weight_TopPtdown"] = beanHelper.GetTopPtweightDown(mcparticlesStatus3)/topptweight;
 
     weights["Weight_CSVLFup"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,9, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
     weights["Weight_CSVLFdown"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,10, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
@@ -1278,11 +1208,17 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
     weights["Weight_CSVCErr1down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,22, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
     weights["Weight_CSVCErr2up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,23, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
     weights["Weight_CSVCErr2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,24, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-    
+    weights["Weight_TopPtup"] = topptweightUp;
+    weights["Weight_TopPtdown"] = topptweightDown;
     //weights["Weight_Q2up"] = beanHelper.GetQ2ScaleUp(event[0]);
     //weights["Weight_Q2down"] = beanHelper.GetQ2ScaleDown(event[0]);
     
 
+    // set optional additional PU weights
+    for(std::vector<PUWeights::Weight>::const_iterator it = puWeights_.additionalWeightsBegin();
+	it != puWeights_.additionalWeightsEnd(); ++it) {
+      weights[it->name()] = it->value();
+    }
     //Add Genweights to the weight map
     genweights.GetGenWeights(weights, LHEEvent, dogenweights);
   }
@@ -1310,17 +1246,20 @@ void BoostedAnalyzer::endJob()
   if(makeSystematicsTrees){
     std::ofstream fout_jesup(outfileNameJESup+"_Cutflow.txt");
     std::ofstream fout_jesdown(outfileNameJESdown+"_Cutflow.txt");
-    std::ofstream fout_jerup(outfileNameJERup+"_Cutflow.txt");
-    std::ofstream fout_jerdown(outfileNameJERdown+"_Cutflow.txt");
     cutflow_jesup.Print(fout_jesup);
     cutflow_jesdown.Print(fout_jesdown);
-    cutflow_jerup.Print(fout_jerup);
-    cutflow_jerdown.Print(fout_jerdown);
-        
     fout_jesup.close();
     fout_jesdown.close();
-    fout_jerup.close();
-    fout_jerdown.close();
+
+    if(doJERsystematic){
+	std::ofstream fout_jerup(outfileNameJERup+"_Cutflow.txt");
+	std::ofstream fout_jerdown(outfileNameJERdown+"_Cutflow.txt");
+	cutflow_jerup.Print(fout_jerup);
+	cutflow_jerdown.Print(fout_jerdown);
+	fout_jerup.close();
+	fout_jerdown.close();
+    
+    }
   }
 }
 // ------------ method called when starting to processes a run ------------

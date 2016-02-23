@@ -72,13 +72,13 @@ class LeptonJetsSkim : public edm::EDFilter {
 
   
   // data access tokens
-    edm::EDGetTokenT< double >                  EDMRhoToken; //  pileup density
-    edm::EDGetTokenT< reco::VertexCollection >  EDMVertexToken; // vertex
-    edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  // muons
+    edm::EDGetTokenT< double >                    EDMRhoToken; //  pileup density
+    edm::EDGetTokenT< reco::VertexCollection >    EDMVertexToken; // vertex
+    edm::EDGetTokenT< pat::MuonCollection >       EDMMuonsToken;  // muons
     edm::EDGetTokenT< edm::View <pat::Electron> > EDMElectronsToken;  // electrons
-    edm::EDGetTokenT< pat::JetCollection >      EDMJetsToken;  // jets
-    edm::EDGetTokenT<edm::ValueMap<float> > EDMeleMVAvaluesToken; // values of electron mva
-    edm::EDGetTokenT<edm::ValueMap<int> > EDMeleMVAcategoriesToken;  // category of electron mva
+    edm::EDGetTokenT< pat::JetCollection >        EDMJetsToken;  // jets
+    edm::EDGetTokenT<edm::ValueMap<float> >       EDMeleMVAvaluesToken; // values of electron mva
+    edm::EDGetTokenT<edm::ValueMap<int> >         EDMeleMVAcategoriesToken;  // category of electron mva
 
 
 };
@@ -92,24 +92,24 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   const std::string era = iConfig.getParameter<std::string>("era");
   analysisType::analysisType iAnalysisType = analysisType::LJ;
   
-  EDMElectronsToken  = consumes< edm::View <pat::Electron> >(iConfig.getParameter<edm::InputTag>("electrons"));
-  EDMMuonsToken      = consumes< pat::MuonCollection >      (iConfig.getParameter<edm::InputTag>("muons"));
-  EDMJetsToken      = consumes< pat::JetCollection >       (iConfig.getParameter<edm::InputTag>("jets"));
-  EDMVertexToken = consumes< reco::VertexCollection >       (iConfig.getParameter<edm::InputTag>("vertices"));
-  EDMRhoToken    = consumes< double >                       (iConfig.getParameter<edm::InputTag>("rho"));
-  EDMeleMVAvaluesToken = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
-  EDMeleMVAcategoriesToken = consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
+  EDMElectronsToken         = consumes< edm::View <pat::Electron> > (iConfig.getParameter<edm::InputTag>("electrons"));
+  EDMMuonsToken             = consumes< pat::MuonCollection >       (iConfig.getParameter<edm::InputTag>("muons"));
+  EDMJetsToken              = consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("jets"));
+  EDMVertexToken            = consumes< reco::VertexCollection >    (iConfig.getParameter<edm::InputTag>("vertices"));
+  EDMRhoToken               = consumes< double >                    (iConfig.getParameter<edm::InputTag>("rho"));
+  EDMeleMVAvaluesToken      = consumes< edm::ValueMap<float> >      (iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
+  EDMeleMVAcategoriesToken  = consumes< edm::ValueMap<int> >        (iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
 
 
-  minJets_ = iConfig.getParameter<int>("minJets");
-  jetPtMin_ = iConfig.getParameter<double>("jetPtMin");
-  jetEtaMax_ = iConfig.getParameter<double>("jetEtaMax");
-  muonPtMin_ = iConfig.getParameter<double>("muonPtMin");
-  muonEtaMax_ = iConfig.getParameter<double>("muonEtaMax");
-  electronPtMin_ = iConfig.getParameter<double>("electronPtMin");
+  minJets_        = iConfig.getParameter<int>("minJets");
+  jetPtMin_       = iConfig.getParameter<double>("jetPtMin");
+  jetEtaMax_      = iConfig.getParameter<double>("jetEtaMax");
+  muonPtMin_      = iConfig.getParameter<double>("muonPtMin");
+  muonEtaMax_     = iConfig.getParameter<double>("muonEtaMax");
+  electronPtMin_  = iConfig.getParameter<double>("electronPtMin");
   electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
-  electronID_ = electronID::electronEndOf15MVA80;
-  muonID_ = muonID::muonTight;
+  electronID_     = electronID::electronEndOf15MVA80;
+  muonID_         = muonID::muonTight;
   
   muonIsoConeSize_ = coneSize::R04;
   muonIsoCorrType_ = corrType::deltaBeta;

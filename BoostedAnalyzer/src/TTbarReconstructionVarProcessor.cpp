@@ -85,10 +85,10 @@ void TTbarReconstructionVarProcessor::Process(const InputCollections& input,Vari
     TVector2 metvec(input.pfMET.px(),input.pfMET.py());
 
     // setup mc matching
-    if(input.genTopEvt.IsSemiLepton()){
+    if(input.genTopEvt.IsFilled()&&input.genTopEvt.IsSemiLepton()){
       vector<TLorentzVector> bs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetHiggsDecayProductVecs());
       vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());
-      if(qs_true.size()==2){
+      if(bs_true.size()==2){
 	TLorentzVector bhad_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopHadDecayQuarkVec());
 	TLorentzVector blep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopLepDecayQuarkVec());
 	TLorentzVector lep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetLeptonVec());
@@ -100,8 +100,6 @@ void TTbarReconstructionVarProcessor::Process(const InputCollections& input,Vari
     //generate interpretations
     Interpretation** ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);
     uint nints = generator.GetNints();
-    cout << "nints " << nints << endl;
-    cout << "njets " << input.selectedJets.size() << endl;
     // find best interpretation
     //    Interpretation* best_int_chi2=0;
     Interpretation* best_int_lr=0;
@@ -147,28 +145,28 @@ void TTbarReconstructionVarProcessor::Process(const InputCollections& input,Vari
 	vars.FillVar("TTbarReco_BLep_Pt",best_int_lr->BLep().Pt());
 	vars.FillVar("TTbarReco_BLep_Eta",best_int_lr->BLep().Eta());
 	vars.FillVar("TTbarReco_BLep_Phi",best_int_lr->BLep().Phi());
-	vars.FillVar("TTbarReco_BLep_Phi",best_int_lr->BLep_CSV());
+	vars.FillVar("TTbarReco_BLep_CSV",best_int_lr->BLep_CSV());
 	vars.FillVar("TTbarReco_BLep_DrGen",mcmatcher.DrBLep(*best_int_lr));
 	
 	vars.FillVar("TTbarReco_BHad_M",best_int_lr->BHad().M());
 	vars.FillVar("TTbarReco_BHad_Pt",best_int_lr->BHad().Pt());
 	vars.FillVar("TTbarReco_BHad_Eta",best_int_lr->BHad().Eta());
 	vars.FillVar("TTbarReco_BHad_Phi",best_int_lr->BHad().Phi());
-	vars.FillVar("TTbarReco_BHad_Phi",best_int_lr->BHad_CSV());
+	vars.FillVar("TTbarReco_BHad_CSV",best_int_lr->BHad_CSV());
 	vars.FillVar("TTbarReco_BHad_DrGen",mcmatcher.DrBHad(*best_int_lr));
 	
 	vars.FillVar("TTbarReco_Q1_M",best_int_lr->Q1().M());
 	vars.FillVar("TTbarReco_Q1_Pt",best_int_lr->Q1().Pt());
 	vars.FillVar("TTbarReco_Q1_Eta",best_int_lr->Q1().Eta());
 	vars.FillVar("TTbarReco_Q1_Phi",best_int_lr->Q1().Phi());
-	vars.FillVar("TTbarReco_Q1_Phi",best_int_lr->Q1_CSV());
+	vars.FillVar("TTbarReco_Q1_CSV",best_int_lr->Q1_CSV());
 	vars.FillVar("TTbarReco_Q1_DrGen",mcmatcher.DrQ1(*best_int_lr));
 
 	vars.FillVar("TTbarReco_Q2_M",best_int_lr->Q2().M());
 	vars.FillVar("TTbarReco_Q2_Pt",best_int_lr->Q2().Pt());
 	vars.FillVar("TTbarReco_Q2_Eta",best_int_lr->Q2().Eta());
 	vars.FillVar("TTbarReco_Q2_Phi",best_int_lr->Q2().Phi());
-	vars.FillVar("TTbarReco_Q2_Phi",best_int_lr->Q2_CSV());
+	vars.FillVar("TTbarReco_Q2_CSV",best_int_lr->Q2_CSV());
 	vars.FillVar("TTbarReco_Q2_DrGen",mcmatcher.DrQ2(*best_int_lr));
     }
 }

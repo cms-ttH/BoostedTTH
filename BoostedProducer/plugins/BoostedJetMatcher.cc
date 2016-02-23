@@ -30,16 +30,17 @@
 //
 // constructors and destructor
 //
-BoostedJetMatcher::BoostedJetMatcher(const edm::ParameterSet& iConfig):
-  recoFatJetsTag_(iConfig.getParameter<edm::InputTag>("recoFatJetsTag")),
-  patFatJetsTag_(iConfig.getParameter<edm::InputTag>("patFatJetsTag")),
-  recoTopJetsTag_(iConfig.getParameter<edm::InputTag>("recoTopJetsTag")),
-  patTopJetsTag_(iConfig.getParameter<edm::InputTag>("patTopJetsTag")),
-  patTopSubjetsTag_(iConfig.getParameter<edm::InputTag>("patTopSubjetsTag")),
-  httInfosTag_(iConfig.getParameter<edm::InputTag>("httInfosTag")),
-  patSFSubJetsTag_(iConfig.getParameter<edm::InputTag>("patSFSubJetsTag")),
-  patSFFilterJetsTag_(iConfig.getParameter<edm::InputTag>("patSFFilterJetsTag"))
+BoostedJetMatcher::BoostedJetMatcher(const edm::ParameterSet& iConfig)
 {
+  recoFatJetsToken      = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoFatJetsTag"));
+  recoTopJetsToken      = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoTopJetsTag"));
+  patFatJetsToken       = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patFatJetsTag"));
+  patTopJetsToken       = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patTopJetsTag"));
+  patTopSubjetsToken    = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patTopSubjetsTag"));
+  httInfosToken         = consumes< std::vector<reco::HTTTopJetTagInfo> > (iConfig.getParameter<edm::InputTag>("httInfosTag"));
+  patSFSubJetsToken     = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSFSubJetsTag"));
+  patSFFilterJetsToken  = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSFFilterJetsTag"));
+
   produces<boosted::BoostedJetCollection>("boostedjets");
 }
 
@@ -63,35 +64,35 @@ BoostedJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   
   edm::Handle< std::vector<reco::BasicJet> > recoFatJetsHandle;
-  iEvent.getByLabel(recoFatJetsTag_, recoFatJetsHandle);
+  iEvent.getByToken(recoFatJetsToken, recoFatJetsHandle);
   std::vector<reco::BasicJet> recofatjets = *recoFatJetsHandle;
   
   edm::Handle< std::vector<reco::BasicJet> > recoTopJetsHandle;
-  iEvent.getByLabel(recoTopJetsTag_, recoTopJetsHandle);
+  iEvent.getByToken(recoTopJetsToken, recoTopJetsHandle);
   std::vector<reco::BasicJet> recotopjets = *recoTopJetsHandle;
   
   edm::Handle<edm::View<pat::Jet> > patFatJetsHandle;
-  iEvent.getByLabel(patFatJetsTag_, patFatJetsHandle);
+  iEvent.getByToken(patFatJetsToken, patFatJetsHandle);
   edm::View<pat::Jet> patfatjets = *patFatJetsHandle;
   
   edm::Handle<edm::View<pat::Jet> > patTopJetsHandle;
-  iEvent.getByLabel(patTopJetsTag_, patTopJetsHandle);
+  iEvent.getByToken(patTopJetsToken, patTopJetsHandle);
   edm::View<pat::Jet> pattopjets = *patTopJetsHandle;
   
   edm::Handle<edm::View<pat::Jet> > patTopSubjetsHandle;
-  iEvent.getByLabel(patTopSubjetsTag_, patTopSubjetsHandle);
+  iEvent.getByToken(patTopSubjetsToken, patTopSubjetsHandle);
   edm::View<pat::Jet> pattopsubjets = *patTopSubjetsHandle;
   
   edm::Handle<std::vector<reco::HTTTopJetTagInfo> > httInfosHandle;
-  iEvent.getByLabel(httInfosTag_, httInfosHandle);
+  iEvent.getByToken(httInfosToken, httInfosHandle);
   std::vector<reco::HTTTopJetTagInfo> httinfos = *httInfosHandle;
   
   edm::Handle<edm::View<pat::Jet> > patSFSubJetsHandle;
-  iEvent.getByLabel(patSFSubJetsTag_, patSFSubJetsHandle);
+  iEvent.getByToken(patSFSubJetsToken, patSFSubJetsHandle);
   edm::View<pat::Jet> patsfsubjets = *patSFSubJetsHandle;
 	
   edm::Handle<edm::View<pat::Jet> > patSFFilterJetsHandle;
-  iEvent.getByLabel(patSFFilterJetsTag_, patSFFilterJetsHandle);
+  iEvent.getByToken(patSFFilterJetsToken, patSFFilterJetsHandle);
   edm::View<pat::Jet> patsffilterjets = *patSFFilterJetsHandle;
   
   std::multimap<double, int> patfatjetindex_by_eta;

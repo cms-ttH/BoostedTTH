@@ -11,7 +11,7 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
  
   vars.InitVar( "GenEvt_I_TTPlusCC",-1,"I" );
   vars.InitVar( "GenEvt_I_TTPlusBB",-1,"I" );
-  vars.InitVar( "GenEvt_TTxId_FromHelper",-1,"I" );
+  vars.InitVar( "GenEvt_TTxId_FromProducer",-1,"I" );
   vars.InitVar( "N_GoodTagsM",-1,"I" );
   vars.InitVar( "N_MisTagsM",-1,"I" );
   
@@ -120,7 +120,9 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   
   vars.FillVar( "GenEvt_I_TTPlusCC",iCC );
   vars.FillVar( "GenEvt_I_TTPlusBB",iBB );
-  vars.FillVar( "GenEvt_TTxId_FromHelper",input.genTopEvt.GetTTxIdFromHelper());
+  if(input.genTopEvt.IsFilled()){
+      vars.FillVar( "GenEvt_TTxId_FromProducer",input.genTopEvt.GetTTxIdFromProducer());
+  }
   int nGoodTagsM=0;
   int nMisTagsM=0;
   for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){

@@ -11,6 +11,8 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVar("Evt_ID","I");
   vars.InitVar("Evt_Odd","I");
   vars.InitVar("Evt_Rho","F");
+  vars.InitVar("Evt_Run","I");
+  vars.InitVar("Evt_Lumi","I");
 
   vars.InitVar( "N_Jets","I" );
   vars.InitVar( "N_LooseJets","I" );
@@ -33,6 +35,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
+  vars.InitVars( "Jet_PartonFlav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
   vars.InitVars( "Jet_PileUpID","N_Jets" );
   vars.InitVars( "Jet_vtxMass","N_Jets" );
@@ -55,6 +58,20 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
 
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
+
+  vars.InitVars( "LooseJet_E","N_LooseJets" );
+  vars.InitVars( "LooseJet_M","N_LooseJets" );
+  vars.InitVars( "LooseJet_Pt","N_LooseJets" );
+  vars.InitVars( "LooseJet_Phi","N_LooseJets" );
+  vars.InitVars( "LooseJet_Eta","N_LooseJets" );
+  vars.InitVars( "LooseJet_CSV","N_LooseJets" );
+  vars.InitVars( "LooseJet_Flav","N_LooseJets" );
+  vars.InitVars( "LooseJet_PartonFlav","N_LooseJets" );
+  vars.InitVars( "LooseJet_Charge","N_LooseJets" );
+  vars.InitVars( "LooseJet_PileUpID","N_LooseJets" );
+  vars.InitVars( "LooseJet_GenJet_Pt","N_LooseJets" );
+  vars.InitVars( "LooseJet_GenJet_Eta","N_LooseJets" );
+
   
   vars.InitVars( "TaggedJet_E","N_BTagsM" );
   vars.InitVars( "TaggedJet_M","N_BTagsM" );
@@ -74,6 +91,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Muon_Eta","N_LooseMuons" );
   vars.InitVars( "Muon_Phi","N_LooseMuons" );
   vars.InitVars( "Muon_RelIso","N_LooseMuons" );
+  vars.InitVars( "Muon_Charge","N_LooseMuons" );
   
   vars.InitVars( "Electron_E","N_LooseElectrons" );
   vars.InitVars( "Electron_M","N_LooseElectrons" );
@@ -81,6 +99,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Electron_Eta","N_LooseElectrons" );
   vars.InitVars( "Electron_Phi","N_LooseElectrons" );
   vars.InitVars( "Electron_RelIso","N_LooseElectrons" );
+  vars.InitVars( "Electron_Charge","N_LooseElectrons" );
   
   vars.InitVar( "Evt_Pt_MET" );
   vars.InitVar( "Evt_Phi_MET" );
@@ -105,10 +124,15 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
 
   //also write the event ID for splitting purposes
   long evt_id = input.eventInfo.evt;
+  long run_id = input.eventInfo.run;
+  long lumi_section = input.eventInfo.lumiBlock;
 
   vars.FillIntVar("Evt_ID",evt_id);
   vars.FillIntVar("Evt_Odd",evt_id%2);
   vars.FillFloatVar("Evt_Rho",input.eventInfo.rho);
+  vars.FillIntVar("Evt_Run",run_id);
+  vars.FillIntVar("Evt_Lumi",lumi_section);
+
 
   const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   std::vector<pat::Jet> selectedTaggedJets;
@@ -153,6 +177,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
+    vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
     vars.FillVars( "Jet_vtxMass",iJet,itJet->userFloat("vtxMass"));
@@ -181,6 +206,30 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
       vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
     }
   }
+  // Loose Jets
+  for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){
+    int iJet = itJet - input.selectedJetsLoose.begin();
+    vars.FillVars( "LooseJet_E",iJet,itJet->energy() );
+    vars.FillVars( "LooseJet_M",iJet,itJet->mass() );
+    vars.FillVars( "LooseJet_Pt",iJet,itJet->pt() );
+    vars.FillVars( "LooseJet_Eta",iJet,itJet->eta() );
+    vars.FillVars( "LooseJet_Phi",iJet,itJet->phi() );
+    vars.FillVars( "LooseJet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "LooseJet_PartonFlav",iJet,itJet->partonFlavour() );
+    vars.FillVars( "LooseJet_Flav",iJet,itJet->hadronFlavour() );
+    vars.FillVars( "LooseJet_Charge",iJet,itJet->jetCharge() );
+    vars.FillVars( "LooseJet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
+    if(itJet->genJet()!=NULL){
+      vars.FillVars( "LooseJet_GenJet_Pt",iJet,itJet->genJet()->pt());
+      vars.FillVars( "LooseJet_GenJet_Eta",iJet,itJet->genJet()->eta());
+    }
+    else {
+      vars.FillVars( "LooseJet_GenJet_Pt",iJet,-9.0);
+      vars.FillVars( "LooseJet_GenJet_Eta",iJet,-9.0);
+    }
+  }
+
+  
   
   // Tagged Jets
   for(std::vector<pat::Jet>::iterator itTaggedJet = selectedTaggedJets.begin() ; itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet){
@@ -213,6 +262,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     if(itEle->hasUserFloat("relIso")){
 	vars.FillVars( "Electron_RelIso",iEle,itEle->userFloat("relIso") );
     }
+    vars.FillVars( "Electron_Charge",iEle,itEle->charge() ); 
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     int iMu = itMu - input.selectedMuonsLoose.begin();
@@ -224,6 +274,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     if(itMu->hasUserFloat("relIso")){
 	vars.FillVars( "Muon_RelIso",iMu,itMu->userFloat("relIso") );
     }
+    vars.FillVars( "Muon_Charge",iMu,itMu->charge() );
   }
   
   vars.FillVar( "Evt_Pt_MET",input.pfMET.pt() );

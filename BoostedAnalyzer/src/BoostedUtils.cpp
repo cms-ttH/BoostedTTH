@@ -250,9 +250,9 @@ boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCol
 
 bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   
-  float CSVLv2wp = 0.605;
-  float CSVMv2wp = 0.89;
-  float CSVTv2wp = 0.97;
+  float CSVLv2wp = 0.460;
+  float CSVMv2wp = 0.800;
+  float CSVTv2wp = 0.935;
   
   float csvValue = MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   
