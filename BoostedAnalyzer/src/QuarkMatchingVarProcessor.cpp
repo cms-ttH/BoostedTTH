@@ -17,11 +17,18 @@ void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableCont
   vars.InitVars("Jet_PartonMotherId","N_Jets");
   vars.InitVars("Jet_PartonFlav","N_Jets");
 
-  vars.InitVar("Evt_bbarMass","F");
-  vars.InitVar("Evt_regbbarMass","F");
+  vars.InitVar("Evt_bbMass","F");
+  vars.InitVar("Evt_regbbMass","F");
+  vars.InitVar("Evt_bbMass2Lep","F");
+  vars.InitVar("Evt_regbbMass2Lep","F");
+  vars.InitVar("Evt_bbMass1Lep","F");
+  vars.InitVar("Evt_regbbMass1Lep","F");
+  vars.InitVar("Evt_bbMass0Lep","F");
+  vars.InitVar("Evt_regbbMass0Lep","F");
 
-  vars.InitVar("Evt_hadtopmass","F");
-  vars.InitVar("Evt_reghadtopmass","F");
+  vars.InitVar("Evt_hadtopMass","F");
+  vars.InitVar("Evt_reghadtopMass","F");
+
 
   initialized = true;
 }
@@ -100,12 +107,48 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
       }
       higgsjets = jettmp;
     }
+
+    //Split bbbar Mass by different multiplicities of matched Leptons
+    //Write Mass for bbbar, if one of the jets has a matched Lepton
+    if ((higgsjets.at(0).userFloat("Jet_leptonPt") > 0 && higgsjets.at(1).userFloat("Jet_leptonPt") <= 0) || (higgsjets.at(0).userFloat("Jet_leptonPt") <= 0 && higgsjets.at(1).userFloat("Jet_leptonPt") > 0)){
+      vars.FillVar("Evt_bbMass1Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
+      vars.FillVar("Evt_regbbMass1Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
+      vars.FillVar("Evt_bbMass2Lep",-99);
+      vars.FillVar("Evt_regbbMass2Lep",-99);
+      vars.FillVar("Evt_bbMass0Lep",-99);
+      vars.FillVar("Evt_regbbMass0Lep",-99);
+    }
+    //Write Mass for bbbar, if both of the jets hava a matched Lepton
+    else if (higgsjets.at(0).userFloat("Jet_leptonPt") > 0 && higgsjets.at(1).userFloat("Jet_leptonPt") > 0) {
+      vars.FillVar("Evt_bbMass2Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
+      vars.FillVar("Evt_regbbMass2Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
+      vars.FillVar("Evt_bbMass1Lep",-99);
+      vars.FillVar("Evt_regbbMass1Lep",-99);
+      vars.FillVar("Evt_bbMass0Lep",-99);
+      vars.FillVar("Evt_regbbMass0Lep",-99);
+    }
+    //Write Mass for bbbar, if none of the jets habe a matched Lepton
+    else {
+      vars.FillVar("Evt_bbMass0Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
+      vars.FillVar("Evt_regbbMass0Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
+      vars.FillVar("Evt_bbMass1Lep",-99);
+      vars.FillVar("Evt_regbbMass1Lep",-99);
+      vars.FillVar("Evt_bbMass2Lep",-99);
+      vars.FillVar("Evt_regbbMass2Lep",-99);
+    }
     vars.FillVar("Evt_bbMass",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
     vars.FillVar("Evt_regbbMass",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
   }
   else {
     vars.FillVar("Evt_bbMass",-99);
     vars.FillVar("Evt_regbbMass",-99);
+    //Splitted by lepton multiplicity
+    vars.FillVar("Evt_bbMass2Lep",-99);
+    vars.FillVar("Evt_regbbMass2Lep",-99);
+    vars.FillVar("Evt_bbMass1Lep",-99);
+    vars.FillVar("Evt_regbbMass1Lep",-99);
+    vars.FillVar("Evt_bbMass0Lep",-99);
+    vars.FillVar("Evt_regbbMass0Lep",-99);
   }
   if(hadWjets.size() == 2 && topjetfound) {
     vars.FillVar("Evt_hadtopMass",GetTopHadMass(hadtopjet,hadWjets, false));
