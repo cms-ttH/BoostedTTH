@@ -940,7 +940,7 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
   
   // Preselect Events for MEM Calculation
   if(!ttHEvent.GetFoundHiggsCand()  || ttHEvent.GetHiggsCandTag()<.85) return;
-  if(!ttHEvent.GetFoundTopHadCand() || ttHEvent.GetTopHadCandTag()<-.55) return;
+  if(!ttHEvent.GetFoundTopHadCand() || ttHEvent.GetTopHadCandTag()<-.45) return;
   
   // Match ak4 Jets to Top Candidate Subjets
   if(input.selectedJets.size()<3) return;
