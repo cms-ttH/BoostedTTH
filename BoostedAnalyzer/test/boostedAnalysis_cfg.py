@@ -24,9 +24,11 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
+
     options.maxEvents = 500 # reset to 100 for testing
 if not options.inputFiles:
     options.inputFiles=['file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_911.root','file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_912.root','file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_913.root','file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_914.root','file:///storage/9/schweiger/miniAOD/ttbar/BoostedminiAOD_74X/BoostedTTH_MiniAOD_915.root']
+
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
@@ -90,6 +92,24 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 if options.isData:
   process.ak4PFchsL1L2L3.correctors.append('ak4PFchsResidual') # add residual JEC for data
 
+process.ak8PFCHSL1Fastjet = cms.ESProducer(
+  'L1FastjetCorrectionESProducer',
+  level = cms.string('L1FastJet'),
+  algorithm = cms.string('AK8PFchs'),
+  srcRho = cms.InputTag( 'fixedGridRhoFastjetAll' )
+  )
+process.ak8PFchsL2Relative = ak4CaloL2Relative.clone( algorithm = 'AK8PFchs' )
+process.ak8PFchsL3Absolute = ak4CaloL3Absolute.clone( algorithm = 'AK8PFchs' )
+process.ak8PFchsResidual = ak4CaloResidual.clone( algorithm = 'AK8PFchs' )
+process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
+  correctors = cms.vstring(
+    'ak8PFCHSL1Fastjet',
+    'ak8PFchsL2Relative',
+    'ak8PFchsL3Absolute')
+)
+
+if options.isData:
+  process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
 
 # load and run the boosted analyzer
 if options.isData:
