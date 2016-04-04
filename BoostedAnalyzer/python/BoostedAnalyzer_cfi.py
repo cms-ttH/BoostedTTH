@@ -1,9 +1,11 @@
 import FWCore.ParameterSet.Config as cms
 from BoostedTTH.BoostedAnalyzer.Selection_cff import *
+from BoostedTTH.BoostedAnalyzer.Inputs_cff import *
 from BoostedTTH.BoostedAnalyzer.Weights_cff import *
 
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
+    Inputs_tth_sl, # defined in Inputs_cff
     LeptonSelectionMC, # defined in Selection_cff
     DiLeptonSelectionMC, # defined in Selection_cff
     JetTagSelection, # defined in Selection_cff

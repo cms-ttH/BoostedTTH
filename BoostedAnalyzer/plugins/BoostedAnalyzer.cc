@@ -330,29 +330,27 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
 
 
   // REGISTER DATA ACCESS
-  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo","",""));
-  EDMRhoToken             = consumes<double> (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
-  EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
-  triggerBitsToken        = consumes< edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
-  triggerObjectsToken     = consumes< pat::TriggerObjectStandAloneCollection>(edm::InputTag("selectedPatTrigger","",""));
-  triggerPrescalesToken   = consumes< pat::PackedTriggerPrescales>(edm::InputTag("patTrigger","",""));
-  EDMBeamSpotToken        = consumes< reco::BeamSpot > (edm::InputTag("offlineBeamSpot","",""));
-  EDMVertexToken          = consumes< reco::VertexCollection > (edm::InputTag("offlineSlimmedPrimaryVertices","",""));
-  EDMMuonsToken           = consumes< std::vector<pat::Muon> >(edm::InputTag("slimmedMuons","",""));
-  EDMElectronsToken       = consumes< edm::View<pat::Electron> >(edm::InputTag("slimmedElectrons","",""));
-  EDMJetsToken            = consumes< std::vector<pat::Jet> >(edm::InputTag("slimmedJets","",""));
-  EDMMETsToken            = consumes< std::vector<pat::MET> >(edm::InputTag("slimmedMETs","",""));
-  EDMBoostedJetsToken     = consumes< boosted::BoostedJetCollection >(edm::InputTag("BoostedJetMatcher","boostedjets","p"));
-  EDMGenInfoToken         = consumes< GenEventInfoProduct >(edm::InputTag("generator","",""));
-  EDMLHEToken             = consumes< LHEEventProduct >(edm::InputTag("externalLHEProducer","",""));
-  EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
-  EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
-  EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
-  // electron MVA info
-  // TODO: these (and many of the names above) shouldn't be hard coded but set in python cfg
-  EDMeleMVAvaluesToken           = consumes<edm::ValueMap<float> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Values",""));
-  EDMeleMVAcategoriesToken       = consumes<edm::ValueMap<int> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories",""));
-  
+  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("puInfo") );
+  EDMRhoToken             = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
+  EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(iConfig.getParameter<edm::InputTag>("hcalNoise"));
+  triggerBitsToken        = consumes< edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerBits"));
+  triggerObjectsToken     = consumes< pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("triggerObjects"));
+  triggerPrescalesToken   = consumes< pat::PackedTriggerPrescales>(iConfig.getParameter<edm::InputTag>("triggerPrescales"));
+  EDMBeamSpotToken        = consumes< reco::BeamSpot > (iConfig.getParameter<edm::InputTag>("beamSpot"));
+  EDMVertexToken          = consumes< reco::VertexCollection > (iConfig.getParameter<edm::InputTag>("primaryVertices"));
+  EDMMuonsToken           = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("muons"));
+  EDMElectronsToken       = consumes< edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("electrons"));
+  EDMJetsToken            = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("jets"));
+  EDMMETsToken            = consumes< std::vector<pat::MET> >(iConfig.getParameter<edm::InputTag>("mets"));
+  EDMBoostedJetsToken     = consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets"));
+  EDMGenInfoToken         = consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo"));
+  EDMLHEToken             = consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lhe"));
+  EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles"));
+  EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets"));
+  EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (iConfig.getParameter<edm::InputTag>("conversionCollection"));
+  EDMeleMVAvaluesToken      = consumes< edm::ValueMap<float> >      (iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
+  EDMeleMVAcategoriesToken  = consumes< edm::ValueMap<int> >        (iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
+
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
   helper.SetJetCorrectorUncertainty();
