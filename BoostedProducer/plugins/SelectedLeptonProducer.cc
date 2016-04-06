@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// Package:    BoostedTTH/BoostedProducer
+// Package:    BoostedTTH/ObjectSelectors
 // Class:      SelectedLeptonProducer
 // 
 /**\class SelectedLeptonProducer SelectedLeptonProducer.cc BoostedTTH/BoostedProducer/plugins/SelectedLeptonProducer.cc
@@ -65,10 +65,11 @@ private:
   // lepton selection criteria
   double ptMin_;
   double etaMax_;
+
   muonID::muonID muonID_;
   electronID::electronID electronID_;
-  coneSize::coneSize isoConeSize_;
-  corrType::corrType isoCorrType_;
+  coneSize::coneSize muonIsoConeSize_;
+  corrType::corrType muonIsoCorrType_;
   
   // data access tokens
   edm::EDGetTokenT< double >                  EDMRhoToken; //  pileup density
@@ -148,21 +149,21 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     }
   }
   
-  const std::string isoConeSize = iConfig.getParameter<std::string>("isoConeSize");
-  isoConeSize_ = coneSize::R04;
-  if(      isoConeSize == "R03"  ) isoConeSize_ = coneSize::R03;
-  else if( isoConeSize == "R04"  ) isoConeSize_ = coneSize::R04;
+  const std::string muonIsoConeSize = iConfig.getParameter<std::string>("muonIsoConeSize");
+  muonIsoConeSize_ = coneSize::R04;
+  if(      muonIsoConeSize == "R03"  ) muonIsoConeSize_ = coneSize::R03;
+  else if( muonIsoConeSize == "R04"  ) muonIsoConeSize_ = coneSize::R04;
   else {
-    std::cerr << "\n\nERROR: No matching isolation cone size found for: " << isoConeSize << std::endl;
+    std::cerr << "\n\nERROR: No matching isolation cone size found for: " << muonIsoConeSize << std::endl;
     throw std::exception();
   }
   
-  const std::string isoCorrType = iConfig.getParameter<std::string>("isoCorrType");
-  isoCorrType_ = corrType::deltaBeta;
-  if(      isoCorrType == "deltaBeta" ) isoCorrType_ = corrType::deltaBeta;
-  else if( isoCorrType == "rhoEA"     ) isoCorrType_ = corrType::rhoEA;
+  const std::string muonIsoCorrType = iConfig.getParameter<std::string>("muonIsoCorrType");
+  muonIsoCorrType_ = corrType::deltaBeta;
+  if(      muonIsoCorrType == "deltaBeta" ) muonIsoCorrType_ = corrType::deltaBeta;
+  else if( muonIsoCorrType == "rhoEA"     ) muonIsoCorrType_ = corrType::rhoEA;
   else {
-    std::cerr << "\n\nERROR: No matching isolation correction type found for: " << isoCorrType << std::endl;
+    std::cerr << "\n\nERROR: No matching isolation correction type found for: " << muonIsoCorrType << std::endl;
     throw std::exception();
   }
   
@@ -205,6 +206,10 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	    
       // select electron collection
       std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(electronsWithMVAid,ptMin_,electronID_,etaMax_)) );
+      for (auto lep : *selectedLeptons){
+	  // TODO conesize and corr type should not be hardcoded
+	  helper_.AddElectronRelIso(lep,coneSize::R03, corrType::rhoEA,effAreaType::spring15,"relIso");
+      }
       iEvent.put(selectedLeptons);
     }
     else if( leptonType_ == Muon ) {
@@ -214,7 +219,10 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
       iEvent.getByToken(EDMMuonsToken,hMuons);
       
       // select muon collection
-      std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(*hMuons,ptMin_,muonID_,isoConeSize_,isoCorrType_,etaMax_)) );
+      std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(*hMuons,ptMin_,muonID_,muonIsoConeSize_,muonIsoCorrType_,etaMax_)) );
+      for (auto lep : *selectedLeptons){
+	  helper_.AddMuonRelIso(lep, muonIsoConeSize_, muonIsoCorrType_,"relIso");
+      }
       iEvent.put(selectedLeptons);
     }
   }
