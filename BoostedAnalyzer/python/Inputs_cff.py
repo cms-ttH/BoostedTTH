@@ -1,0 +1,30 @@
+import FWCore.ParameterSet.Config as cms
+Inputs_tth_sl= cms.PSet(
+
+  puInfo=cms.InputTag("slimmedAddPileupInfo"),
+  rho=cms.InputTag("fixedGridRhoFastjetAll"),
+  hcalNoise=cms.InputTag("hcalnoise"),
+  triggerBits=cms.InputTag("TriggerResults::HLT"),
+  triggerObjects=cms.InputTag("selectedPatTrigger"),
+  triggerPrescales=cms.InputTag("patTrigger"),
+  beamSpot=cms.InputTag("offlineBeamSpot"),
+  primaryVertices=cms.InputTag("offlineSlimmedPrimaryVertices"),
+  selectedMuons=cms.InputTag("slimmedMuons"),
+  selectedMuonsDL=cms.InputTag("slimmedMuons"),
+  selectedMuonsLoose=cms.InputTag("slimmedMuons"),
+  selectedElectrons=cms.InputTag("slimmedElectrons"),
+  selectedElectronsDL=cms.InputTag("slimmedElectrons"),
+  selectedElectronsLoose=cms.InputTag("slimmedElectrons"),
+  selectedJets=cms.InputTag("slimmedJets"),
+  selectedJetsLoose=cms.InputTag("slimmedJets"),
+  correctedMETs=cms.InputTag("slimmedMETs"),
+  boostedJets=cms.InputTag("BoostedJetMatcher:boostedjets:p"),
+  genInfo=cms.InputTag("generator"),
+  lheInfo=cms.InputTag("externalLHEProducer"),
+  genParticles=cms.InputTag("prunedGenParticles"),
+  selectedGenJets=cms.InputTag("slimmedGenJets"),
+  conversionCollection= cms.InputTag("reducedEgamma:reducedConversions"),
+  electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
+  electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
+
+)
