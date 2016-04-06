@@ -172,7 +172,7 @@ std::string BDTOhio_v1::GetCategory(const std::vector<pat::Jet>& selectedJets) c
 
 
 				   
-float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
+float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& correctedMET){
 
   if(selectedMuons.size()+selectedElectrons.size()!=1){
     //    cerr << "BDTOhio_v1: not a SL event" << endl;
@@ -191,7 +191,7 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   vector<double> sortedCSV;
   if(selectedMuons.size()>0) lepton_vec.SetPtEtaPhiE(selectedMuons[0].pt(),selectedMuons[0].eta(),selectedMuons[0].phi(),selectedMuons[0].energy());
   if(selectedElectrons.size()>0) lepton_vec.SetPtEtaPhiE(selectedElectrons[0].pt(),selectedElectrons[0].eta(),selectedElectrons[0].phi(),selectedElectrons[0].energy());
-  met_vec.SetPtEtaPhiE(pfMET.pt(),0,pfMET.phi(),pfMET.pt());
+  met_vec.SetPtEtaPhiE(correctedMET.pt(),0,correctedMET.phi(),correctedMET.pt());
   for(auto jet=selectedJets.begin();jet!=selectedJets.end(); jet++){
     TLorentzVector jetvec;
     jetvec.SetPtEtaPhiE(jet->pt(),jet->eta(),jet->phi(),jet->energy());
@@ -237,7 +237,7 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   TLorentzVector dummy_metv;
   double minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7; 
   TLorentzVector b1,b2;
-  bdtvar.study_tops_bb_syst (pfMET.pt(), pfMET.phi(), dummy_metv, lepton_vec, jets_vvdouble, jetCSV, minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7, b1, b2);
+  bdtvar.study_tops_bb_syst (correctedMET.pt(), correctedMET.phi(), dummy_metv, lepton_vec, jets_vvdouble, jetCSV, minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7, b1, b2);
   float dEta_fn=testquant6;
   // ptE ratio
   float pt_E_ratio = bdtvar.pt_E_ratio_jets(jets_vvdouble);
@@ -261,7 +261,7 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   mht_px+=lepton_vec.Px();
   mht_py+=lepton_vec.Py();
   float sum_pt_wo_met=sum_pt_jets+lepton_vec.Pt();
-  float sum_pt_with_met=pfMET.pt()+sum_pt_wo_met;
+  float sum_pt_with_met=correctedMET.pt()+sum_pt_wo_met;
   float MHT=sqrt( mht_px*mht_px + mht_py*mht_py );
 
   float Mlb=0;   // mass of lepton and closest bt-tagged jet
@@ -355,7 +355,7 @@ float BDTOhio_v1::Evaluate(std::string categoryLabel, const std::vector<pat::Muo
   variableMap["maxeta_jet_jet"]=jet_jet_etamax;
   variableMap["maxeta_jet_tag"]=jet_tag_etamax;
   variableMap["maxeta_tag_tag"]=tag_tag_etamax;
-  variableMap["MET"]=pfMET.pt();
+  variableMap["MET"]=correctedMET.pt();
   variableMap["MHT"]=MHT;
   variableMap["Mlb"]=Mlb;
   variableMap["pt_all_jets_over_E_all_jets"]=pt_E_ratio;
@@ -377,12 +377,12 @@ std::map<std::string,float> BDTOhio_v1::GetAllOutputsOfLastEvaluation() const{
   }
   return outputs;
 }
-float BDTOhio_v1::Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET){
+float BDTOhio_v1::Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& correctedMET){
   std::string category=GetCategory(selectedJets);
   if(category=="none") {
     return -2;
   }
-  return Evaluate(category,selectedMuons,selectedElectrons,selectedJets,selectedJetsLoose,pfMET);
+  return Evaluate(category,selectedMuons,selectedElectrons,selectedJets,selectedJetsLoose,correctedMET);
 }
 
 std::map<std::string,float> BDTOhio_v1::GetVariablesOfLastEvaluation() const{

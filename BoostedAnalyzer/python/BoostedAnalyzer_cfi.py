@@ -15,7 +15,9 @@ BoostedAnalyzer = cms.EDAnalyzer(
     era = cms.string("2015_74x"), # has little effect so far, might become important for MiniAODhelper
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
     sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
-
+    # weight of one event: calculated as 
+    # cross section * lumi / (number of generated events with positive weight  -  number of generated events with negative weight )
+    # so that the sum of weights corresponds to the number of events for the given lumi
     eventWeight = cms.double(1.),
     isData = cms.bool(False),
     

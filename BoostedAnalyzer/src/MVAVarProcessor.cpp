@@ -663,7 +663,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
 
     p4all += primLepVec;
 
-    p4all += input.pfMET.p4();
+    p4all += input.correctedMET.p4();
 
     float costheta_jcm= BoostedUtils::CosThetaCM(*itJetVec,p4all);
     vars.FillVars("Jet_CosTheta_cm",iJetVec,costheta_jcm  );
@@ -707,7 +707,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   float aplanarity=-1;
   float sphericity=-1;
   TLorentzVector primLepVecTL = BoostedUtils::GetTLorentzVector(primLepVec);
-  TLorentzVector metvecTL(input.pfMET.px(),input.pfMET.py(),0,input.pfMET.energy());
+  TLorentzVector metvecTL(input.correctedMET.px(),input.correctedMET.py(),0,input.correctedMET.energy());
   // workaround to avoid bdtvar crashing
   if(jetvecsTL.size()>0)
     bdtvar.getSp(primLepVecTL, metvecTL, jetvecsTL, aplanarity, sphericity) ;
@@ -728,7 +728,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     pxpypzE.push_back(jet->energy());
     jets_vvdouble.push_back(pxpypzE);
   }
-  bdtvar.study_tops_bb_syst (input.pfMET.pt(), input.pfMET.phi(), dummy_metv, primLepVecTL, jets_vvdouble, csvJets, minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7, b1, b2);
+  bdtvar.study_tops_bb_syst (input.correctedMET.pt(), input.correctedMET.phi(), dummy_metv, primLepVecTL, jets_vvdouble, csvJets, minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7, b1, b2);
   float dEta_fn=testquant6;
 
   vars.FillVar("Evt_Best_Higgs_Mass_Ohio",best_higgs_mass);

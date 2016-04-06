@@ -148,7 +148,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
     
   }
 
-  MET=input.pfMET.pt();
+  MET=input.correctedMET.pt();
 
   ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   
@@ -512,11 +512,11 @@ bool runOverData = true;
     }
   }
     
-  MET_pt=input.pfMET.pt();
-  MET_phi=input.pfMET.phi();
+  MET_pt=input.correctedMET.pt();
+  MET_phi=input.correctedMET.phi();
 
   if(is_SL&&( (n_jets>=4&&n_btags>=3) || (n_jets>=6&&n_btags>=2))){
-    final_discriminant1=bdt3.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
+    final_discriminant1=bdt3.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.correctedMET);
   }
    
   n_fatjets = int(input.selectedBoostedJets.size());

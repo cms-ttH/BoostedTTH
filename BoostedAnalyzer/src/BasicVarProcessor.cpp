@@ -238,15 +238,15 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Muon_Charge",iMu,itMu->charge() );
   }
   
-  vars.FillVar( "Evt_Pt_MET",input.pfMET.pt() );
-  vars.FillVar( "Evt_Phi_MET",input.pfMET.phi() );
-  if(input.pfMET.genMET()!=0){
-      vars.FillVar( "Evt_Pt_GenMET",input.pfMET.genMET()->pt() );
-      vars.FillVar( "Evt_Phi_GenMET",input.pfMET.genMET()->phi() );
+  vars.FillVar( "Evt_Pt_MET",input.correctedMET.pt() );
+  vars.FillVar( "Evt_Phi_MET",input.correctedMET.phi() );
+  if(input.correctedMET.genMET()!=0){
+      vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
+      vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
   }
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
-  math::XYZTLorentzVector metvec = input.pfMET.p4();
+  math::XYZTLorentzVector metvec = input.correctedMET.p4();
   
   // Fill M3 Variables
   float m3 = -1.;
@@ -285,7 +285,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   math::XYZTLorentzVector primLepVec = math::XYZTLorentzVector();
   float mtw = -1.;
   if(input.selectedElectrons.size()>0 || input.selectedMuons.size()>0){
-    mtw = sqrt(2*(primLepVec.Pt()*input.pfMET.pt() - primLepVec.Px()*input.pfMET.px() - primLepVec.Py()*input.pfMET.py()));
+    mtw = sqrt(2*(primLepVec.Pt()*input.correctedMET.pt() - primLepVec.Px()*input.correctedMET.px() - primLepVec.Py()*input.correctedMET.py()));
   }
   vars.FillVar("Evt_MTW",mtw);
   
@@ -312,7 +312,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     mht_py += itMu->py();
     
   }
-  ht += input.pfMET.pt();
+  ht += input.correctedMET.pt();
   
   vars.FillVar("Evt_HT",ht);
   vars.FillVar("Evt_MHT",sqrt( mht_px*mht_px + mht_py*mht_py ));

@@ -135,7 +135,7 @@ void StdTopVarProcessor::Process(const InputCollections& input,VariableContainer
   math::XYZTLorentzVector nu1;
   math::XYZTLorentzVector nu2;
   TVector2 MET;
-  MET.Set(input.pfMET.px(),input.pfMET.py());
+  MET.Set(input.correctedMET.px(),input.correctedMET.py());
   math::XYZTLorentzVector PrimLep = BoostedUtils::GetPrimLepVec(input.selectedElectrons, input.selectedMuons);
   BoostedUtils::GetNuVecs(PrimLep, MET, nu1, nu2);
 

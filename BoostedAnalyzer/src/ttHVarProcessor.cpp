@@ -925,7 +925,7 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
   if(lepvecs.size()!=1) return;
   
   // MET 
-  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.pfMET.p4());
+  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.p4());
   
   // jets
   

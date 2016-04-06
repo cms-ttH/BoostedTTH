@@ -429,11 +429,11 @@ float BoostedUtils::GetMuonRelIso(const pat::Muon& iMuon){
 }
 
 
-std::vector<pat::MET> BoostedUtils::GetCorrectedMET(const std::vector<pat::Jet>& cleanIdJetsForMET, const std::vector<pat::Jet>& correctedJets, const std::vector<pat::MET>& pfMETs){
+std::vector<pat::MET> BoostedUtils::GetCorrectedMET(const std::vector<pat::Jet>& cleanIdJetsForMET, const std::vector<pat::Jet>& correctedJets, const std::vector<pat::MET>& correctedMETs){
   std::vector<pat::MET> outputMets;
 
   int i=0;
-  for(std::vector<pat::MET>::const_iterator oldMET=pfMETs.begin();oldMET!=pfMETs.end();++oldMET){
+  for(std::vector<pat::MET>::const_iterator oldMET=correctedMETs.begin();oldMET!=correctedMETs.end();++oldMET){
   pat::MET outMET=*oldMET; 
 
   if(i==0){
