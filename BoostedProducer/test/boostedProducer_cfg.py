@@ -18,7 +18,7 @@ process.options.allowUnscheduled = cms.untracked.bool(True)
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
 
 # select loose lepton collections
-process.load('BoostedTTH.BoostedProducer.SelectedLeptonProducers_cfi')
+process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 
 #do projections
 process.pfCHS = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("fromPV"))

@@ -5,6 +5,7 @@
 <use   name="CommonTools/Utils"/>
 <use   name="fastjet"/>
 <use   name="fastjet-contrib"/>
+<use name="BoostedTTH/Producers"/>
 <export>
   <lib   name="1"/>
 </export>
