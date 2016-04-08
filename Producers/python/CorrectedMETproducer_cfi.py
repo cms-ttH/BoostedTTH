@@ -6,6 +6,6 @@ CorrectedMETproducer = cms.EDProducer(
     oldJets = cms.InputTag("slimmedJets"),
     newJets = cms.InputTag("slimmedJets"),
     mets =cms.InputTag("slimmedMETs"),
-    collectionName=cms.string("correctedMET");
+    collectionName=cms.string("correctedMET"),
       
     )

@@ -121,20 +121,20 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   // setup of outputs
   ptMins_ = iConfig.getParameter< std::vector<double> >("ptMins");
   etaMaxs_ = iConfig.getParameter< std::vector<double> >("etaMaxs");
-  const std::string leptonIDs = iConfig.getParameter< std::vector<std::string> >("leptonID");
-  electronIDs_ = std::vector(leptonIDs.size(),electronID::electronLoose);
-  muonID_ = std::vector(leptonIDs.size(),muonID::muonLoose);
-  const std::string muonIsoConeSize = iConfig.getParameter<std::string>("muonIsoConeSize");
-  muonIsoConeSizes_ = std::vector(leptonIDs.size(),coneSize::R04);
-  const std::string muonIsoCorrType = iConfig.getParameter<std::string>("muonIsoCorrType");
-  muonIsoCorrTypes_ = std::vector(leptonIDs.size(),corrType::deltaBeta);
-  collectionNames_= iConfig.getParameter<std::string>("collectionNames");
+  const std::vector<std::string > leptonIDs= iConfig.getParameter< std::vector<std::string> >("leptonID");
+  electronIDs_ = std::vector<electronID::electronID>(leptonIDs.size(),electronID::electronLoose);
+  muonIDs_ = std::vector<muonID::muonID>(leptonIDs.size(),muonID::muonLoose);
+  const std::vector<std::string> muonIsoConeSizes = iConfig.getParameter<std::vector<std::string> >("muonIsoConeSizes");
+  muonIsoConeSizes_ = std::vector<coneSize::coneSize>(leptonIDs.size(),coneSize::R04);
+  const vector<std::string> muonIsoCorrTypes = iConfig.getParameter<std::vector<std::string> >("muonIsoCorrTypes");
+  muonIsoCorrTypes_ = std::vector<corrType::corrType>(leptonIDs.size(),corrType::deltaBeta);
+  collectionNames_= iConfig.getParameter<std::vector< std::string> >("collectionNames");
 
   assert(ptMins_.size()==etaMaxs_.size());  
   assert(leptonIDs.size()==etaMaxs_.size());  
-  assert(muonIsoConeSize.size()==etaMaxs_.size());  
-  assert(muonIsoCorrType.size()==etaMaxs_.size());  
-  assert(collectionNames.size()==etaMaxs_.size());  
+  assert(muonIsoConeSizes.size()==etaMaxs_.size());  
+  assert(muonIsoCorrTypes.size()==etaMaxs_.size());  
+  assert(collectionNames_.size()==etaMaxs_.size());  
 
   for(uint i=0; i<ptMins_.size(); i++){
       if(leptonType_ == Electron){
@@ -152,7 +152,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	  else if( leptonIDs[i] == "EndOf15MVA80iso0p15"  ) electronIDs_[i] = electronID::electronEndOf15MVA80iso0p15;
 	  else if( leptonIDs[i] == "EndOf15MVA90iso0p15"  ) electronIDs_[i] = electronID::electronEndOf15MVA90iso0p15;
 	  else {
-	      std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonID << std::endl;
+	      std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonIDs[i] << std::endl;
 	      throw std::exception();
 	  }
       }
@@ -161,7 +161,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	  else if( leptonIDs[i] == "tight"  )   muonIDs_[i] = muonID::muonTight;
 	  else if( leptonIDs[i] == "tightDL"  ) muonIDs_[i] = muonID::muonTightDL;
 	  else {
-	      std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonID << std::endl;
+	      std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonIDs[i] << std::endl;
 	      throw std::exception();
 	  }
       }
@@ -169,19 +169,19 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
       if(      muonIsoConeSizes[i] == "R03"  ) muonIsoConeSizes_[i] = coneSize::R03;
       else if( muonIsoConeSizes[i] == "R04"  ) muonIsoConeSizes_[i] = coneSize::R04;
       else {
-	  std::cerr << "\n\nERROR: No matching isolation cone size found for: " << muonIsoConeSize << std::endl;
+	  std::cerr << "\n\nERROR: No matching isolation cone size found for: " << muonIsoConeSizes_[i] << std::endl;
 	  throw std::exception();
       }
       
       if(      muonIsoCorrTypes[i] == "deltaBeta" ) muonIsoCorrTypes_[i] = corrType::deltaBeta;
       else if( muonIsoCorrTypes[i] == "rhoEA"     ) muonIsoCorrTypes_[i] = corrType::rhoEA;
       else {
-	  std::cerr << "\n\nERROR: No matching isolation correction type found for: " << muonIsoCorrType << std::endl;
+	  std::cerr << "\n\nERROR: No matching isolation correction type found for: " << muonIsoCorrTypes_[i] << std::endl;
 	  throw std::exception();
       }
-      for(uint i=0; i<collectionNames.size()i++){
-	  if( leptonType_ == Electron ) produces<pat::ElectronCollection>(collectionNames[i]);
-	  if( leptonType_ == Muon     ) produces<pat::MuonCollection>(collectionNames[i]);
+      for(uint i=0; i<collectionNames_.size();i++){
+	  if( leptonType_ == Electron ) produces<pat::ElectronCollection>(collectionNames_[i]);
+	  if( leptonType_ == Muon     ) produces<pat::MuonCollection>(collectionNames_[i]);
       }
 
   }      
@@ -223,14 +223,14 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	std::vector<pat::Electron> electronsWithMVAid = helper_.GetElectronsWithMVAid(hElectrons,h_mvaValues,h_mvaCategories);
 
 	// produce the different electron collections
-	for(uint i=0; i<ptMins_.size()i++){    
+	for(uint i=0; i<ptMins_.size();i++){    
 	    // select electron collection
 	    std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(electronsWithMVAid,ptMins_[i],electronIDs_[i],etaMaxs_[i])) );
 	    for (auto lep : *selectedLeptons){
 		// TODO conesize and corr type should not be hardcoded
 		helper_.AddElectronRelIso(lep,coneSize::R03, corrType::rhoEA,effAreaType::spring15,"relIso");
 	    }
-	    iEvent.put(selectedLeptons,collectionNames[i]);
+	    iEvent.put(selectedLeptons,collectionNames_[i]);
 	}
     }
     
@@ -241,13 +241,13 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	iEvent.getByToken(EDMMuonsToken,hMuons);
 
 	// produce the different muon collections
-	for(uint i=0; i<ptMins_.size()i++){
+	for(uint i=0; i<ptMins_.size();i++){
 	    // select muon collection
 	    std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(*hMuons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i])) );
 	    for (auto lep : *selectedLeptons){
 		helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
 	    }
-	    iEvent.put(selectedLeptons,collectionNames[i]);
+	    iEvent.put(selectedLeptons,collectionNames_[i]);
 	}
     }    
 }

@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    BoostedTTH/SelectedJetproducer
-// Class:      SelectedJetproducer
+// Package:    BoostedTTH/SelectedJetProducer
+// Class:      SelectedJetProducer
 // 
-/**\class SelectedJetproducer SelectedJetproducer.cc BoostedTTH/SelectedJetproducer/plugins/SelectedJetproducer.cc
+/**\class SelectedJetProducer SelectedJetProducer.cc BoostedTTH/SelectedJetProducer/plugins/SelectedJetProducer.cc
 
  Description: [one line class summary]
 
@@ -38,10 +38,10 @@
 // class declaration
 //
 
-class SelectedJetproducer : public edm::stream::EDProducer<> {
+class SelectedJetProducer : public edm::stream::EDProducer<> {
 public:
-    explicit SelectedJetproducer(const edm::ParameterSet&);
-    ~SelectedJetproducer();
+    explicit SelectedJetProducer(const edm::ParameterSet&);
+    ~SelectedJetProducer();
     
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
     
@@ -62,6 +62,8 @@ private:
     edm::EDGetTokenT< pat::MuonCollection >     muonsToken;  
     /** electrons data access token (for jet cleaning)**/
     edm::EDGetTokenT< pat::ElectronCollection >electronsToken;
+    /** rho data access token (for jet cleaning)**/
+    edm::EDGetTokenT< double >rhoToken;
     
     /** MiniAODHelper, used for jet correction and selection **/
     MiniAODHelper helper;
@@ -70,7 +72,7 @@ private:
     /** max eta of jet collections **/
     std::vector<double> etaMaxs;
     /** min dir to lepton for jets **/
-    std::vector<double> leptonJetDrs;
+    double leptonJetDr;
     /** names of output jet collections **/
     std::vector<std::string> collectionNames;
     /** systematic type **/
@@ -92,11 +94,11 @@ private:
 //
 // constructors and destructor
 //
-SelectedJetproducer::SelectedJetproducer(const edm::ParameterSet& iConfig)
+SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
 {
     jetsToken  = consumes< pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
     electronsToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("electrons"));
-    metsToken  = consumes< pat::MuonCollection >(iConfig.getParameter<edm::InputTag>("muons"));
+    muonsToken  = consumes< pat::MuonCollection >(iConfig.getParameter<edm::InputTag>("muons"));
     ptMins = iConfig.getParameter< std::vector<double> >("ptMins");
     etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");    
     applyCorrection = iConfig.getParameter<bool>("applyCorrection");
@@ -113,13 +115,13 @@ SelectedJetproducer::SelectedJetproducer(const edm::ParameterSet& iConfig)
     helper.SetJetCorrectorUncertainty();
     helper.SetBoostedJetCorrectorUncertainty();
 
-    for(uint i=0; i<collectionNames.size()i++){
+    for(uint i=0; i<collectionNames.size();i++){
 	produces<pat::JetCollection>(collectionNames[i]);
     }  
 }
 
 
-SelectedJetproducer::~SelectedJetproducer()
+SelectedJetProducer::~SelectedJetProducer()
 {
  
    // do anything here that needs to be done at destruction time
@@ -134,12 +136,12 @@ SelectedJetproducer::~SelectedJetproducer()
 
 // ------------ method called to produce the data  ------------
 void
-SelectedJetproducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
    edm::Handle<double> h_rho;
-   iEvent.getByToken(EDMRhoToken,h_rho);
+   iEvent.getByToken(rhoToken,h_rho);
    helper.SetRho(*h_rho);
 
    edm::Handle< pat::JetCollection > h_inputJets;
@@ -173,7 +175,7 @@ SelectedJetproducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    }
    for(uint i=0; i<ptMins.size(); i++ ){
        //Get jet Collection which pass selections
-       std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(*unsortedJets, jetPtCuts[i], jetEtaCuts[i], jetID::none, '-' );
+       std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(*unsortedJets, ptMins[i], etaMaxs[i], jetID::none, '-' );
        // Get jet Collection which pass loose selection
        std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
        iEvent.put(selectedJets,collectionNames[i]);
@@ -183,19 +185,19 @@ SelectedJetproducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 // ------------ method called once each stream before processing any runs, lumis or events  ------------
 void
-SelectedJetproducer::beginStream(edm::StreamID)
+SelectedJetProducer::beginStream(edm::StreamID)
 {
 }
 
 // ------------ method called once each stream after processing all runs, lumis and events  ------------
 void
-SelectedJetproducer::endStream() {
+SelectedJetProducer::endStream() {
 }
 
 // ------------ method called when starting to processes a run  ------------
 /*
 void
-SelectedJetproducer::beginRun(edm::Run const&, edm::EventSetup const&)
+SelectedJetProducer::beginRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 */
@@ -203,7 +205,7 @@ SelectedJetproducer::beginRun(edm::Run const&, edm::EventSetup const&)
 // ------------ method called when ending the processing of a run  ------------
 /*
 void
-SelectedJetproducer::endRun(edm::Run const&, edm::EventSetup const&)
+SelectedJetProducer::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 */
@@ -211,7 +213,7 @@ SelectedJetproducer::endRun(edm::Run const&, edm::EventSetup const&)
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
 void
-SelectedJetproducer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+SelectedJetProducer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
@@ -219,14 +221,14 @@ SelectedJetproducer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::Even
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
 void
-SelectedJetproducer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+SelectedJetProducer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
  
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-SelectedJetproducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+SelectedJetProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -235,4 +237,4 @@ SelectedJetproducer::fillDescriptions(edm::ConfigurationDescriptions& descriptio
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(SelectedJetproducer);
+DEFINE_FWK_MODULE(SelectedJetProducer);

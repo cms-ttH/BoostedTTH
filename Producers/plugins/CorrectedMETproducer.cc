@@ -18,10 +18,10 @@
 // class declaration
 //
 
-class SelectedJetproducer : public edm::stream::EDProducer<> {
+class CorrectedMETproducer : public edm::stream::EDProducer<> {
 public:
-    explicit SelectedJetproducer(const edm::ParameterSet&);
-    ~SelectedJetproducer();
+    explicit CorrectedMETproducer(const edm::ParameterSet&);
+    ~CorrectedMETproducer();
     
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
     
@@ -56,12 +56,11 @@ private:
 //
 // constructors and destructor
 //
-SelectedJetproducer::SelectedJetproducer(const edm::ParameterSet& iConfig)
+CorrectedMETproducer::CorrectedMETproducer(const edm::ParameterSet& iConfig)
 {
     oldJetsToken  = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("oldJets"));
     newJetsToken  = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("newJets"));
     metsToken  = consumes< std::vector<pat::MET> >(iConfig.getParameter<edm::InputTag>("mets"));
-    rhoToken  = consumes<double>(iConfig.getParameter<edm::InputTag>("jets"));
     collectionName = iConfig.getParameter< std::string>("collectionName");
 
     const bool isData = iConfig.getParameter<bool>("isData");
@@ -74,7 +73,7 @@ SelectedJetproducer::SelectedJetproducer(const edm::ParameterSet& iConfig)
 }
 
 
-SelectedJetproducer::~SelectedJetproducer()
+CorrectedMETproducer::~CorrectedMETproducer()
 {
  
    // do anything here that needs to be done at destruction time
@@ -89,7 +88,7 @@ SelectedJetproducer::~SelectedJetproducer()
 
 // ------------ method called to produce the data  ------------
 void
-SelectedJetproducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+CorrectedMETproducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
@@ -102,7 +101,7 @@ SelectedJetproducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    edm::Handle< pat::METCollection > h_inputMETs;
    iEvent.getByToken( metsToken,h_inputMETs );
 
-   std::vector<pat::MET> correctedMETs = helper.CorrectMET(*h_oldJets,*h_newJets,*h_inputMETs);
+   std::auto_ptr<pat::METCollection> correctedMETs( new pat::METCollection(helper.CorrectMET(*h_oldJets,*h_newJets,*h_inputMETs)) );
    iEvent.put(correctedMETs,collectionName);
    
    
@@ -110,19 +109,19 @@ SelectedJetproducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 // ------------ method called once each stream before processing any runs, lumis or events  ------------
 void
-SelectedJetproducer::beginStream(edm::StreamID)
+CorrectedMETproducer::beginStream(edm::StreamID)
 {
 }
 
 // ------------ method called once each stream after processing all runs, lumis and events  ------------
 void
-SelectedJetproducer::endStream() {
+CorrectedMETproducer::endStream() {
 }
 
 // ------------ method called when starting to processes a run  ------------
 /*
 void
-SelectedJetproducer::beginRun(edm::Run const&, edm::EventSetup const&)
+CorrectedMETproducer::beginRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 */
@@ -130,7 +129,7 @@ SelectedJetproducer::beginRun(edm::Run const&, edm::EventSetup const&)
 // ------------ method called when ending the processing of a run  ------------
 /*
 void
-SelectedJetproducer::endRun(edm::Run const&, edm::EventSetup const&)
+CorrectedMETproducer::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 */
@@ -138,7 +137,7 @@ SelectedJetproducer::endRun(edm::Run const&, edm::EventSetup const&)
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
 void
-SelectedJetproducer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+CorrectedMETproducer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
@@ -146,14 +145,14 @@ SelectedJetproducer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::Even
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
 void
-SelectedJetproducer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+CorrectedMETproducer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
  
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-SelectedJetproducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+CorrectedMETproducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -162,4 +161,4 @@ SelectedJetproducer::fillDescriptions(edm::ConfigurationDescriptions& descriptio
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(SelectedJetproducer);
+DEFINE_FWK_MODULE(CorrectedMETproducer);
