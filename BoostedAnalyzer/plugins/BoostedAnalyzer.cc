@@ -259,13 +259,13 @@ private:
     edm::EDGetTokenT< std::vector<pat::Muon> > selectedMuonsLooseToken;
      
     /** tight electrons data access token **/
-    edm::EDGetTokenT< edm::View<pat::Electron> > selectedElectronsToken;
+    edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsToken;
       
     /** medium electrons data access token **/
-    edm::EDGetTokenT< edm::View<pat::Electron> > selectedElectronsDLToken;
+    edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsDLToken;
 
     /** loose electrons data access token **/
-    edm::EDGetTokenT< edm::View<pat::Electron> > selectedElectronsLooseToken;
+    edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsLooseToken;
 
     /** loose jets data access token **/
     edm::EDGetTokenT< std::vector<pat::Jet> > selectedJetsToken;
@@ -359,9 +359,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     selectedMuonsToken      = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuons"));
     selectedMuonsDLToken    = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsDL"));
     selectedMuonsLooseToken      = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsLoose"));
-    selectedElectronsToken       = consumes< edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("selectedElectrons"));
-    selectedElectronsDLToken     = consumes< edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL"));
-    selectedElectronsLooseToken  = consumes< edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose"));
+    selectedElectronsToken       = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons"));
+    selectedElectronsDLToken     = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL"));
+    selectedElectronsLooseToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose"));
     selectedJetsToken            = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedJets"));
     selectedJetsLooseToken       = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedJetsLoose"));
     correctedMETsToken           = consumes< std::vector<pat::MET> >(iConfig.getParameter<edm::InputTag>("correctedMETs"));
@@ -373,7 +373,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     conversionCollectionToken    = consumes< reco::ConversionCollection > (iConfig.getParameter<edm::InputTag>("conversionCollection"));
 
     // initialize helper classes
-    helper.SetUp("", isData ? -1 : 1, analysisType::LJ, isData);
+    helper.SetUp("2015_74x", isData ? -1 : 1, analysisType::LJ, isData);
     helper.SetJetCorrectorUncertainty();
     helper.SetBoostedJetCorrectorUncertainty();
     
