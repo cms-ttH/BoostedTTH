@@ -72,7 +72,7 @@ ca15PFPrunedJetsCHS = ca15PFJetsCHS.clone(
     rcut_factor = cms.double(0.5),
     useExplicitGhosts = cms.bool(True),
     writeCompound = cms.bool(True), # Also write subjets for pruned fj
-    jetCollInstanceName=cms.string("SubJets"),
+    jetCollInstanceName=cms.string("subjets")
 )
 
 ca15PFSoftdropJetsCHS = ca15PFJetsCHS.clone(
@@ -80,7 +80,9 @@ ca15PFSoftdropJetsCHS = ca15PFJetsCHS.clone(
     zcut = cms.double(0.1),
     beta = cms.double(0.0),
     R0 = cms.double(1.5),
-    useExplicitGhosts = cms.bool(True)
+    useExplicitGhosts = cms.bool(True),
+    writeCompound = cms.bool(True),
+    jetCollInstanceName=cms.string("subjets")
 )
 
 ca15PFSoftdropZ2B1JetsCHS = ca15PFJetsCHS.clone(
@@ -88,7 +90,9 @@ ca15PFSoftdropZ2B1JetsCHS = ca15PFJetsCHS.clone(
     zcut = cms.double(0.2),
     beta = cms.double(1.),
     R0 = cms.double(1.5),
-    useExplicitGhosts = cms.bool(True)
+    useExplicitGhosts = cms.bool(True),
+    writeCompound = cms.bool(True),
+    jetCollInstanceName=cms.string("subjets")
 )
 
 #BoostedProducerPath = cms.Path(HTTTopJetProducer*SFJetProducer)
