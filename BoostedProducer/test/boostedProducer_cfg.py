@@ -157,13 +157,21 @@ process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 # skim
 process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
 
+# dump event content
+process.content = cms.EDAnalyzer("EventContentAnalyzer")
+
 # execute in the right order
 process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.LeptonJetsSkim
                                  *process.SelectedElectronProducer
                                  *process.SelectedMuonProducer
+                                 *process.ca15PFJetsCHS
                                  *process.HTTTopJetProducer
                                  *process.SFJetProducer
+                                 *process.ca15PFPrunedJetsCHS
+                                 *process.ca15PFSoftdropJetsCHS
+                                 *process.ca15PFSoftdropZ2B1JetsCHS
+                                 *process.content
                                  *process.patJetsHTTTopJetsPF
                                  *process.patJetsHTTSubjetsPF
                                  *process.patJetsSFFatJetsPF

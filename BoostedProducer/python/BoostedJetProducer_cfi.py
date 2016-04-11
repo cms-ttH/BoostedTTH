@@ -2,6 +2,17 @@ import FWCore.ParameterSet.Config as cms
 
 from RecoJets.JetProducers.PFJetParameters_cfi import *
 from RecoJets.JetProducers.AnomalousCellParameters_cfi import *
+
+ca15PFJetsCHS = cms.EDProducer(
+    "FastjetJetProducer",
+    PFJetParameters.clone(
+      src               = cms.InputTag("pfNoElectronsCHS"),
+      jetPtMin          = cms.double(180.0)
+    ),
+    AnomalousCellParameters,
+    jetAlgorithm = cms.string("CambridgeAachen"),
+    rParam       = cms.double(1.5)
+)
     
 HTTTopJetProducer = cms.EDProducer(
     "HTTTopJetProducer",
@@ -52,6 +63,32 @@ SFJetProducer = cms.EDProducer(
     massDropCut  	  = cms.double(0.67),
     asymmCut     	  = cms.double(0.3),
     asymmCutLater	  = cms.bool(True)	
+)
+
+ca15PFPrunedJetsCHS = ca15PFJetsCHS.clone(
+    usePruning = cms.bool(True),
+    nFilt = cms.int32(2),
+    zcut = cms.double(0.1),
+    rcut_factor = cms.double(0.5),
+    useExplicitGhosts = cms.bool(True),
+    writeCompound = cms.bool(True), # Also write subjets for pruned fj
+    jetCollInstanceName=cms.string("SubJets"),
+)
+
+ca15PFSoftdropJetsCHS = ca15PFJetsCHS.clone(
+    useSoftDrop = cms.bool(True),
+    zcut = cms.double(0.1),
+    beta = cms.double(0.0),
+    R0 = cms.double(1.5),
+    useExplicitGhosts = cms.bool(True)
+)
+
+ca15PFSoftdropZ2B1JetsCHS = ca15PFJetsCHS.clone(
+    useSoftDrop = cms.bool(True),
+    zcut = cms.double(0.2),
+    beta = cms.double(1.),
+    R0 = cms.double(1.5),
+    useExplicitGhosts = cms.bool(True)
 )
 
 #BoostedProducerPath = cms.Path(HTTTopJetProducer*SFJetProducer)
