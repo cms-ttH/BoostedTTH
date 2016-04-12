@@ -60,21 +60,28 @@ class BoostedJetMatcher : public edm::EDProducer {
     virtual void endJob() override;
 
     template<typename recojettype>
-    const pat::Jet & deltarJetMatching(const edm::View<pat::Jet> & patjets, const std::multimap<double, int> & patjetindex_by_eta, const recojettype & rjet);
+    const pat::Jet & patrecoJetMatching(const edm::View<pat::Jet> & patjets, const std::multimap<double, int> & patjetindex_by_eta, const recojettype & rjet);
     template<typename recojettype>
-    const int deltarTopJetMatching(const recojettype & recofatjet, const std::vector<reco::BasicJet> & recotopjets);
+    const int recorecoJetMatching(const recojettype & recofatjet, const std::vector<reco::BasicJet> & recotopjets, const float & matchingdistance = 1.0);
 
     // ---------- member data ---------------------------
     
     /** Jet Collection Access Tokens **/
-    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoFatJetsToken;
-    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoTopJetsToken;
+    edm::EDGetTokenT< std::vector<reco::PFJet> >              recoFatJetsToken;
+    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoHTTJetsToken;
+    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSFJetsToken;
+    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoPrunedJetsToken;
+    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSDJetsToken;
+    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSDZ2B1JetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patFatJetsToken;
-    edm::EDGetTokenT< edm::View<pat::Jet> >                 patTopJetsToken;
-    edm::EDGetTokenT< edm::View<pat::Jet> >                 patTopSubjetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patHTTTopJetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patHTTSubjetsToken;
     edm::EDGetTokenT< std::vector<reco::HTTTopJetTagInfo> > httInfosToken;
-    edm::EDGetTokenT< edm::View<pat::Jet> >                 patSFSubJetsToken;
-    edm::EDGetTokenT< edm::View<pat::Jet> >                 patSFFilterJetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patSFSubjetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patSFFilterjetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patPrunedSubjetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patSDSubjetsToken;
+    edm::EDGetTokenT< edm::View<pat::Jet> >                 patSDZ2B1SubjetsToken;
 };
 
 #endif

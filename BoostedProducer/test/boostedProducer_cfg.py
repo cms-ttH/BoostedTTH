@@ -141,7 +141,7 @@ addJetCollection(
 # softdrop subjets
 addJetCollection(
     process,
-    labelName = 'SoftDropSubjetsPF',
+    labelName = 'SDSubjetsPF',
     postfix = "",
     jetSource = cms.InputTag('ca15PFSoftdropJetsCHS','subjets'),
     pfCandidates = cms.InputTag('packedPFCandidates'),
@@ -158,7 +158,7 @@ addJetCollection(
 # softdrop subjets
 addJetCollection(
     process,
-    labelName = 'SoftDropZ2B1SubjetsPF',
+    labelName = 'SDZ2B1SubjetsPF',
     postfix = "",
     jetSource = cms.InputTag('ca15PFSoftdropZ2B1JetsCHS','subjets'),
     pfCandidates = cms.InputTag('packedPFCandidates'),
@@ -192,11 +192,11 @@ process.patJetPartonMatchSFFilterjetsPF.matched = "prunedGenParticles"
 process.patJetsPrunedSubjetsPF.addGenJetMatch=False
 process.patJetPartonMatchSFFilterjetsPF.matched = "prunedGenParticles"
 #soft drop subjets
-process.patJetsSoftDropSubjetsPF.addGenJetMatch=False
-process.patJetPartonMatchSoftDropSubjetsPF.matched = "prunedGenParticles"
+process.patJetsSDSubjetsPF.addGenJetMatch=False
+process.patJetPartonMatchSDSubjetsPF.matched = "prunedGenParticles"
 #soft drop Z2B1 subjets
-process.patJetsSoftDropZ2B1SubjetsPF.addGenJetMatch=False
-process.patJetPartonMatchSoftDropZ2B1SubjetsPF.matched = "prunedGenParticles"
+process.patJetsSDZ2B1SubjetsPF.addGenJetMatch=False
+process.patJetPartonMatchSDZ2B1SubjetsPF.matched = "prunedGenParticles"
 
 # all
 process.patJetPartons.particles = "prunedGenParticles"
@@ -207,7 +207,7 @@ from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
 process.ak4GenJets = ak4GenJets.clone(src = 'packedGenParticles')
 
 # match boosted reco Jets to pat jets
-#process.load('BoostedTTH.BoostedProducer.BoostedJetMatcher_cfi')
+process.load('BoostedTTH.BoostedProducer.BoostedJetMatcher_cfi')
 
 # gen hadron matching for tt+X categorization
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
@@ -236,10 +236,10 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.patJetsSFSubjetsPF
                                  *process.patJetsSFFilterjetsPF
                                  *process.patJetsPrunedSubjetsPF
-                                 *process.patJetsSoftDropSubjetsPF
-                                 *process.patJetsSoftDropZ2B1SubjetsPF
-                                 *process.content
-#                                 *process.BoostedJetMatcher
+                                 *process.patJetsSDSubjetsPF
+                                 *process.patJetsSDZ2B1SubjetsPF
+#                                 *process.content
+                                 *process.BoostedJetMatcher
 )
 
 process.OUT = cms.OutputModule(
