@@ -970,15 +970,15 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
 
 
-  bjetRegression.evaluateRegression(iEvent,selectedPVs, EDMElectronsToken, EDMMuonsToken, EDMRhoToken,  EDMJetsToken, selectedJets_nominal);
+  bjetRegression.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal);
   /*
-  std::vector<pat::Jet> selectedJets_bReg_nominal;
+  std::vector<pat::Jet> selectedregressedJets_nominal;
   if(bjetRegression.IsRegressionDone()){
-    selectedJets_bReg_nominal = bjetRegression.GetCorrectedJetswbReg(selectedJets_nominal);
+    selectedregressedJets_nominal = bjetRegression.GetRegressedJets(selectedJets_nominal);
   }
   else {
     std::cout << "b-Jet Regression not done -> selectedJets_bReg_nominal not filled" << endl;
-  }
+    }
   */
   
 

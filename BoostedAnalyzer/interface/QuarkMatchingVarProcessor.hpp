@@ -21,8 +21,8 @@ public:
   
 private:
   
-  float GetDijetMass(const pat::Jet& jet1, 
-		     const pat::Jet& jet2, 
+  float GetDijetMass(const pat::Jet& firstjet, 
+		     const pat::Jet& secondjet, 
 		     const bool docorrection);
 
   float GetTopHadMass(const pat::Jet& topJet,

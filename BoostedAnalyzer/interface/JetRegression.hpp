@@ -26,14 +26,13 @@ public:
   JetRegression( );   //Constructor: Read Wight file
 
   void evaluateRegression(const  edm::Event& iEvent,
-			  const reco::VertexCollection& Vertices,
 			  const  edm::EDGetTokenT< edm::View<pat::Electron> >& electronToken,
 			  const  edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
-			  const  edm::EDGetTokenT <double>& rhoToken,
+			  const  edm::EDGetTokenT< reco::VertexCollection>& vertexToken,
 			  const  edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
 			  std::vector<pat::Jet>& Jets);   //evaluate regression: Input: event, add new pt als userfloat after evaluation
 
-  std::vector<pat::Jet> GetCorrectedJetswbReg(const std::vector<pat::Jet>& Jets);
+  std::vector<pat::Jet> GetRegressedJets(const vector<pat::Jet>& Jets);
 
   bool IsRegressionDone();
 

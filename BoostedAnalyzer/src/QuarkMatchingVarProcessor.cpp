@@ -17,26 +17,37 @@ void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableCont
   vars.InitVars("Jet_MatchedPartonMotherId","N_Jets");
   vars.InitVars("Jet_MatchedPartonFlav","N_Jets");
 
-  vars.InitVar("Evt_bbMass","F");
-  vars.InitVar("Evt_regbbMass","F");
-  vars.InitVar("Evt_bbMass2Lep","F");
-  vars.InitVar("Evt_regbbMass2Lep","F");
-  vars.InitVar("Evt_bbMass1Lep","F");
-  vars.InitVar("Evt_regbbMass1Lep","F");
-  vars.InitVar("Evt_bbMass0Lep","F");
-  vars.InitVar("Evt_regbbMass0Lep","F");
+  vars.InitVars("Jet_GenParticleFlav","N_Jets");
+  vars.InitVars("Jet_GenParticleMotherId", "N_Jets");
+  vars.InitVars("Jet_GenParticlePt","N_Jets");  
+  vars.InitVars("Jet_GenParticleEta","N_Jets");  
 
-  vars.InitVar("Evt_hadtopMass","F");
-  vars.InitVar("Evt_reghadtopMass","F");
+  vars.InitVars("Jet_isHiggsJet","N_Jets");
+
+  vars.InitVar("N_MatchedHiggsJets","F");
+
+  vars.InitVar("Evt_MCbbMass","F");
+  vars.InitVar("Evt_MCregbbMass","F");
+  vars.InitVar("Evt_MCbbMass2Lep","F");
+  vars.InitVar("Evt_MCregbbMass2Lep","F");
+  vars.InitVar("Evt_MCbbMass1Lep","F");
+  vars.InitVar("Evt_MCregbbMass1Lep","F");
+  vars.InitVar("Evt_MCbbMass0Lep","F");
+  vars.InitVar("Evt_MCregbbMass0Lep","F");
+
+  vars.InitVar("Evt_MChadtopMass","F");
+  vars.InitVar("Evt_MCreghadtopMass","F");
 
 
   initialized = true;
 }
 
 void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableContainer& vars){
-
-  if(!initialized) cerr << "tree processor not initialized" << endl;
   
+  if(!initialized) cerr << "tree processor not initialized" << endl;
+  if(!input.genTopEvt.IsFilled()) { return; } //Only continue, if genTopEvt is filled
+  
+
   //Get Quarks form W+/- and Top Decays
   vector<reco::GenParticle> quarks;
   quarks = GetQuarksfromTopDecay(input);
@@ -44,7 +55,6 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
     vector<reco::GenParticle> higgsquarks = GetQuarksfromHiggsDecay(input);
     quarks.insert(end(quarks), begin(higgsquarks), end(higgsquarks));
   }
-
   //Loop over all Jet
   float DeltaRtmp;
   
@@ -52,13 +62,17 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
   pat::Jet hadtopjet;
   bool topjetfound = false;
   vector<pat::Jet> hadWjets;
+  vector<int> iHiggsJet;
+
   
   for(vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); itJet++){
     reco::GenParticle MatchedParton;
     int iJet = itJet - input.selectedJets.begin();
     float DeltaRMin = 9999999;
     bool foundquark = false;
-    
+
+
+
     for(vector<reco::GenParticle>::const_iterator itq = quarks.begin(); itq != quarks.end(); itq++){
       DeltaRtmp = BoostedUtils::DeltaR(itJet->p4(),itq->p4());
       if(DeltaRtmp < DeltaRCut && DeltaRtmp < DeltaRMin){
@@ -67,6 +81,7 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
 	foundquark = true;
 	if(MatchedParton.mother()->pdgId() == 25 &&  BoostedUtils::PassesCSV(*itJet, 'M')) {
 	  higgsjets.push_back(*itJet);
+	  iHiggsJet.push_back(iJet);
 	}
 	if(input.genTopEvt.IsSemiLepton()){
 	  //Get to b from hadronic Top matched Jet
@@ -94,6 +109,8 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
       vars.FillVars("Jet_MatchedPartonFlav",iJet,-99);
     }
   }
+  vars.FillVar("N_MatchedHiggsJets",higgsjets.size());
+
   if(higgsjets.size() >= 2){
     if (higgsjets.size() > 2){
       vector<pat::Jet> jettmp;
@@ -111,53 +128,101 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
     //Split bbbar Mass by different multiplicities of matched Leptons
     //Write Mass for bbbar, if one of the jets has a matched Lepton
     if ((higgsjets.at(0).userFloat("Jet_leptonPt") > 0 && higgsjets.at(1).userFloat("Jet_leptonPt") <= 0) || (higgsjets.at(0).userFloat("Jet_leptonPt") <= 0 && higgsjets.at(1).userFloat("Jet_leptonPt") > 0)){
-      vars.FillVar("Evt_bbMass1Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
-      vars.FillVar("Evt_regbbMass1Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
-      vars.FillVar("Evt_bbMass2Lep",-99);
-      vars.FillVar("Evt_regbbMass2Lep",-99);
-      vars.FillVar("Evt_bbMass0Lep",-99);
-      vars.FillVar("Evt_regbbMass0Lep",-99);
+      vars.FillVar("Evt_MCbbMass1Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
+      vars.FillVar("Evt_MCregbbMass1Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
+      vars.FillVar("Evt_MCbbMass2Lep",-99);
+      vars.FillVar("Evt_MCregbbMass2Lep",-99);
+      vars.FillVar("Evt_MCbbMass0Lep",-99);
+      vars.FillVar("Evt_MCregbbMass0Lep",-99);
     }
     //Write Mass for bbbar, if both of the jets hava a matched Lepton
     else if (higgsjets.at(0).userFloat("Jet_leptonPt") > 0 && higgsjets.at(1).userFloat("Jet_leptonPt") > 0) {
-      vars.FillVar("Evt_bbMass2Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
-      vars.FillVar("Evt_regbbMass2Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
-      vars.FillVar("Evt_bbMass1Lep",-99);
-      vars.FillVar("Evt_regbbMass1Lep",-99);
-      vars.FillVar("Evt_bbMass0Lep",-99);
-      vars.FillVar("Evt_regbbMass0Lep",-99);
+      vars.FillVar("Evt_MCbbMass2Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
+      vars.FillVar("Evt_MCregbbMass2Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
+      vars.FillVar("Evt_MCbbMass1Lep",-99);
+      vars.FillVar("Evt_MCregbbMass1Lep",-99);
+      vars.FillVar("Evt_MCbbMass0Lep",-99);
+      vars.FillVar("Evt_MCregbbMass0Lep",-99);
     }
     //Write Mass for bbbar, if none of the jets habe a matched Lepton
     else {
-      vars.FillVar("Evt_bbMass0Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
-      vars.FillVar("Evt_regbbMass0Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
-      vars.FillVar("Evt_bbMass1Lep",-99);
-      vars.FillVar("Evt_regbbMass1Lep",-99);
-      vars.FillVar("Evt_bbMass2Lep",-99);
-      vars.FillVar("Evt_regbbMass2Lep",-99);
+      vars.FillVar("Evt_MCbbMass0Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
+      vars.FillVar("Evt_MCregbbMass0Lep",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
+      vars.FillVar("Evt_MCbbMass1Lep",-99);
+      vars.FillVar("Evt_MCregbbMass1Lep",-99);
+      vars.FillVar("Evt_MCbbMass2Lep",-99);
+      vars.FillVar("Evt_MCregbbMass2Lep",-99);
     }
-    vars.FillVar("Evt_bbMass",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
-    vars.FillVar("Evt_regbbMass",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
+    vars.FillVar("Evt_MCbbMass",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
+    vars.FillVar("Evt_MCregbbMass",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));   
   }
   else {
-    vars.FillVar("Evt_bbMass",-99);
-    vars.FillVar("Evt_regbbMass",-99);
+    vars.FillVar("Evt_MCbbMass",-99);
+    vars.FillVar("Evt_MCregbbMass",-99);
     //Splitted by lepton multiplicity
-    vars.FillVar("Evt_bbMass2Lep",-99);
-    vars.FillVar("Evt_regbbMass2Lep",-99);
-    vars.FillVar("Evt_bbMass1Lep",-99);
-    vars.FillVar("Evt_regbbMass1Lep",-99);
-    vars.FillVar("Evt_bbMass0Lep",-99);
-    vars.FillVar("Evt_regbbMass0Lep",-99);
+    vars.FillVar("Evt_MCbbMass2Lep",-99);
+    vars.FillVar("Evt_MCregbbMass2Lep",-99);
+    vars.FillVar("Evt_MCbbMass1Lep",-99);
+    vars.FillVar("Evt_MCregbbMass1Lep",-99);
+    vars.FillVar("Evt_MCbbMass0Lep",-99);
+    vars.FillVar("Evt_MCregbbMass0Lep",-99);
   }
   if(hadWjets.size() == 2 && topjetfound) {
-    vars.FillVar("Evt_hadtopMass",GetTopHadMass(hadtopjet,hadWjets, false));
-    vars.FillVar("Evt_reghadtopMass",GetTopHadMass(hadtopjet,hadWjets, true));
+    vars.FillVar("Evt_MChadtopMass",GetTopHadMass(hadtopjet,hadWjets, false));
+    vars.FillVar("Evt_MCreghadtopMass",GetTopHadMass(hadtopjet,hadWjets, true));
   }
   else {
-    vars.FillVar("Evt_hadtopMass",-99);
-    vars.FillVar("Evt_reghadtopMass",-99);
+    vars.FillVar("Evt_MChadtopMass",-99);
+    vars.FillVar("Evt_MCreghadtopMass",-99);
   }
+
+  //Save if Jet was used for MC Higgs Mass 
+  for (std::vector<pat::Jet>::const_iterator it = input.selectedJets.begin(), ed = input.selectedJets.end(); it != ed; ++it ) {
+    int iJet = it - input.selectedJets.begin();
+    bool jetset = false;
+    if (iHiggsJet.size() > 1) {
+      for (size_t ih = 0; ih < iHiggsJet.size(); ih++) {
+	if (iHiggsJet.at(ih) == iJet) {
+	  vars.FillVars("Jet_isHiggsJet",iJet,1);
+	  jetset = true;
+	}
+      }
+    }
+    if (jetset == false) {
+      vars.FillVars("Jet_isHiggsJet",iJet,0);
+    }
+  }
+
+  //GenParticle Code:
+  for(vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); itJet++){
+    int iJet = itJet - input.selectedJets.begin();
+
+    const reco::GenParticle *genparticle = itJet->genParticle();
+    
+    if ( genparticle ) {
+      
+
+      const reco::Candidate *mother  = genparticle->mother();
+      
+      vars.FillVars(  "Jet_GenParticleFlav" , iJet, genparticle->pdgId()  );
+      vars.FillVars(  "Jet_GenParticleMotherId" , iJet , mother->pdgId()   );
+      vars.FillVars(  "Jet_GenParticlePt" , iJet , genparticle->pt()  );  
+      vars.FillVars(  "Jet_GenParticleEta" , iJet , genparticle->eta()  );  
+    }
+    
+    else {
+      
+      vars.FillVars(  "Jet_GenParticleFlav" , iJet, -99  );
+      vars.FillVars(  "Jet_GenParticleMotherId" , iJet , -99 );
+      vars.FillVars(  "Jet_GenParticlePt" , iJet , -1  );  
+      vars.FillVars(  "Jet_GenParticleEta" , iJet , -11  );  
+    }
+    
+    
+
+  }
+
+
 }
 
 
@@ -174,13 +239,16 @@ float QuarkMatchingVarProcessor::GetTopHadMass(const pat::Jet& topJet, const vec
   TLorentzVector jet3vec;
 
   if(docorrection){
-    jet1vec.SetPtEtaPhiM(jet1.userFloat("jetregressionPT"),jet1.eta(),jet1.phi(),jet1.mass());
+    float correction = 1;
+    if (jet1.hasUserFloat("bregCorrection")){  correction = jet1.userFloat("bregCorrection");  }
+    jet1.scaleEnergy( correction );
+    jet1vec.SetPtEtaPhiM(  jet1.pt() , jet1.eta() , jet1.phi() , jet1.mass()  );
   }
   else {
-    jet1vec.SetPtEtaPhiM(jet1.pt(),jet1.eta(),jet1.phi(),jet1.mass());
+    jet1vec.SetPtEtaPhiM(  jet1.pt() , jet1.eta() , jet1.phi() , jet1.mass()  );
   }
-  jet2vec.SetPtEtaPhiM(jet2.pt(),jet2.eta(),jet2.phi(),jet2.mass());
-  jet3vec.SetPtEtaPhiM(jet3.pt(),jet3.eta(),jet3.phi(),jet3.mass());
+  jet2vec.SetPtEtaPhiM(  jet2.pt() , jet2.eta() , jet2.phi() , jet2.mass()  );
+  jet3vec.SetPtEtaPhiM(  jet3.pt() , jet3.eta() , jet3.phi() , jet3.mass()  );
   
   mass = (jet1vec+jet2vec+jet3vec).M();
 
@@ -188,29 +256,36 @@ float QuarkMatchingVarProcessor::GetTopHadMass(const pat::Jet& topJet, const vec
   
 } 
 
-float QuarkMatchingVarProcessor::GetDijetMass(const pat::Jet& jet1, const pat::Jet& jet2, const bool docorrection) {
+float QuarkMatchingVarProcessor::GetDijetMass(const pat::Jet& firstjet, const pat::Jet& secondjet, const bool docorrection) {
   
   float dijetmass = 0;
 
   TLorentzVector jet1vec;
   TLorentzVector jet2vec;
-  
+
+  pat::Jet jet1 = firstjet;
+  pat::Jet jet2 = secondjet;  
+
 
   if(docorrection){
-    jet1vec.SetPtEtaPhiM(jet1.userFloat("jetregressionPT"),jet1.eta(),jet1.phi(),jet1.mass());
-    jet2vec.SetPtEtaPhiM(jet2.userFloat("jetregressionPT"),jet2.eta(),jet2.phi(),jet2.mass());
+    float correction1 = 1;
+    float correction2 = 1;
+    if (jet1.hasUserFloat("bregCorrection")) {  correction1 = jet1.userFloat("bregCorrection");  }
+    if (jet2.hasUserFloat("bregCorrection")) {  correction2 = jet2.userFloat("bregCorrection");  }
+    
+    
+    jet1.scaleEnergy(correction1);
+    jet2.scaleEnergy(correction2);
+
+    jet1vec.SetPtEtaPhiM(  jet1.pt() , jet1.eta() , jet1.phi() , jet1.mass()  );
+    jet2vec.SetPtEtaPhiM(  jet2.pt() , jet2.eta() , jet2.phi() , jet2.mass()  );
   }
   else {
-    jet1vec.SetPtEtaPhiM(jet1.pt(),jet1.eta(),jet1.phi(),jet1.mass());
-    jet2vec.SetPtEtaPhiM(jet2.pt(),jet2.eta(),jet2.phi(),jet2.mass());
+    jet1vec.SetPtEtaPhiM(  jet1.pt() , jet1.eta() , jet1.phi() , jet1.mass()  );
+    jet2vec.SetPtEtaPhiM(  jet2.pt() , jet2.eta() , jet2.phi() , jet2.mass()  );
   }
-  //cout << "Higgsvec 1: " << endl;
-  //PrintTLorentz(jet1vec);
-  //cout << "Higgsvec 2: " << endl;
-  //PrintTLorentz(jet2vec);
     
   dijetmass = (jet1vec+jet2vec).M();
-  
 
   return dijetmass;
   
@@ -249,7 +324,7 @@ vector<reco::GenParticle> QuarkMatchingVarProcessor::GetQuarksfromHiggsDecay(con
 
 }
 
-
+// For debugging purposes
 void QuarkMatchingVarProcessor::PrintTLorentz(TLorentzVector& vec) {
   
   cout << "pT : " << vec.Pt() << " ";
