@@ -26,8 +26,8 @@ SelectedElectronProducer = cms.EDProducer(
     # The following two parameters are dummies in case of electrons
     # they are not used for the electron selection, which is defined
     # via the 'leptonID' value
-    muonIsoConeSize = cms.vstring("R03"), 
-    muonIsoCorrType = cms.vstring("rhoEA")
+    muonIsoConeSizes = cms.vstring("R03"), 
+    muonIsoCorrTypes = cms.vstring("rhoEA")
     )
 
 

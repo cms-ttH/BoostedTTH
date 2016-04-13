@@ -27,10 +27,10 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 10 # reset for testing
+    options.maxEvents = 10000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/SingleMuon/Boostedv5MiniAODsilverJson/160217_171824/0000/BoostedTTH_MiniAOD_1.root']
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv5MiniAOD/160217_174112/0000/BoostedTTH_MiniAOD_1.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
@@ -56,7 +56,7 @@ for key in options._register:
 print "*****************************************\n\n"
 
 
-process = cms.Process("analysis")
+process = cms.Process("wtf")
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -64,7 +64,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.options.allowUnscheduled = cms.untracked.bool(True)
+process.options.allowUnscheduled = cms.untracked.bool(False)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
@@ -145,7 +145,26 @@ if options.isData:
     process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 #===============================================================
+#
+process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
+process.SelectedElectronProducer.ptMins=[15.,20.,30.]
+process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
+process.SelectedElectronProducer.leptonIDs=["EndOf15MVA80iso0p15"]*3
+process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
+process.SelectedMuonProducer.ptMins=[15.,20.,25.]
+process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
+process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
+process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
+process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
+process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
+
+process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
+process.SelectedJetProducer.jets='slimmedJets'
+process.SelectedJetProducer.ptMins=[20,30]
+process.SelectedJetProducer.etaMaxs=[2.4,2.4]
+process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
+process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 
 # load and run the boosted analyzer
 if options.isData:
@@ -199,6 +218,14 @@ process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","J
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-
-process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
+# process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor"]
+#process.content = cms.EDAnalyzer("EventContentAnalyzer")
+process.p = cms.Path(process.electronMVAValueMapProducer 
+                     *process.SelectedElectronProducer
+                     *process.SelectedMuonProducer
+ #                    *process.content
+                     *process.SelectedJetProducer
+                     *process.CorrectedMETproducer
+                     *process.BoostedAnalyzer
+                     )

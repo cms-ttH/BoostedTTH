@@ -69,7 +69,7 @@ CorrectedMETproducer::CorrectedMETproducer(const edm::ParameterSet& iConfig)
     const std::string era = "2015_74x";
     helper.SetUp(era, sampleID, iAnalysisType, isData);
 
-    produces<pat::JetCollection>(collectionName);      
+    produces<pat::METCollection>(collectionName);      
 }
 
 

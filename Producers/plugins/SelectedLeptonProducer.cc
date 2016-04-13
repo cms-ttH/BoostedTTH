@@ -121,7 +121,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   // setup of outputs
   ptMins_ = iConfig.getParameter< std::vector<double> >("ptMins");
   etaMaxs_ = iConfig.getParameter< std::vector<double> >("etaMaxs");
-  const std::vector<std::string > leptonIDs= iConfig.getParameter< std::vector<std::string> >("leptonID");
+  const std::vector<std::string > leptonIDs= iConfig.getParameter< std::vector<std::string> >("leptonIDs");
   electronIDs_ = std::vector<electronID::electronID>(leptonIDs.size(),electronID::electronLoose);
   muonIDs_ = std::vector<muonID::muonID>(leptonIDs.size(),muonID::muonLoose);
   const std::vector<std::string> muonIsoConeSizes = iConfig.getParameter<std::vector<std::string> >("muonIsoConeSizes");
@@ -132,8 +132,8 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 
   assert(ptMins_.size()==etaMaxs_.size());  
   assert(leptonIDs.size()==etaMaxs_.size());  
-  assert(muonIsoConeSizes.size()==etaMaxs_.size());  
-  assert(muonIsoCorrTypes.size()==etaMaxs_.size());  
+  if(leptonType_==Muon) assert(muonIsoConeSizes.size()==etaMaxs_.size());  
+  if(leptonType_==Muon) assert(muonIsoCorrTypes.size()==etaMaxs_.size());  
   assert(collectionNames_.size()==etaMaxs_.size());  
 
   for(uint i=0; i<ptMins_.size(); i++){
@@ -164,25 +164,24 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	      std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonIDs[i] << std::endl;
 	      throw std::exception();
 	  }
-      }
-  
-      if(      muonIsoConeSizes[i] == "R03"  ) muonIsoConeSizes_[i] = coneSize::R03;
-      else if( muonIsoConeSizes[i] == "R04"  ) muonIsoConeSizes_[i] = coneSize::R04;
-      else {
-	  std::cerr << "\n\nERROR: No matching isolation cone size found for: " << muonIsoConeSizes_[i] << std::endl;
-	  throw std::exception();
-      }
       
-      if(      muonIsoCorrTypes[i] == "deltaBeta" ) muonIsoCorrTypes_[i] = corrType::deltaBeta;
-      else if( muonIsoCorrTypes[i] == "rhoEA"     ) muonIsoCorrTypes_[i] = corrType::rhoEA;
-      else {
-	  std::cerr << "\n\nERROR: No matching isolation correction type found for: " << muonIsoCorrTypes_[i] << std::endl;
-	  throw std::exception();
+  
+	  if(      muonIsoConeSizes[i] == "R03"  ) muonIsoConeSizes_[i] = coneSize::R03;
+	  else if( muonIsoConeSizes[i] == "R04"  ) muonIsoConeSizes_[i] = coneSize::R04;
+	  else {
+	      std::cerr << "\n\nERROR: No matching isolation cone size found for: " << muonIsoConeSizes_[i] << std::endl;
+	      throw std::exception();
+	  }
+	  
+	  if(      muonIsoCorrTypes[i] == "deltaBeta" ) muonIsoCorrTypes_[i] = corrType::deltaBeta;
+	  else if( muonIsoCorrTypes[i] == "rhoEA"     ) muonIsoCorrTypes_[i] = corrType::rhoEA;
+	  else {
+	      std::cerr << "\n\nERROR: No matching isolation correction type found for: " << muonIsoCorrTypes_[i] << std::endl;
+	      throw std::exception();
+	  }
       }
-      for(uint i=0; i<collectionNames_.size();i++){
-	  if( leptonType_ == Electron ) produces<pat::ElectronCollection>(collectionNames_[i]);
-	  if( leptonType_ == Muon     ) produces<pat::MuonCollection>(collectionNames_[i]);
-      }
+      if( leptonType_ == Electron ) produces<pat::ElectronCollection>(collectionNames_[i]);
+      if( leptonType_ == Muon     ) produces<pat::MuonCollection>(collectionNames_[i]);
 
   }      
   // Set up MiniAODHelper

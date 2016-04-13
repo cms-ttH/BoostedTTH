@@ -674,6 +674,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
        
     /**** GET BOOSTEDJETS ****/
     //TODO: also in external producer?
+    const JetCorrector* ak4corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+    helper.SetJetCorrector(ak4corrector);
+
     const JetCorrector* ak8corrector = JetCorrector::getJetCorrector( "ak8PFchsL1L2L3", iSetup );
     helper.SetBoostedJetCorrector(ak8corrector);
     edm::Handle<boosted::BoostedJetCollection> h_boostedjet;

@@ -99,6 +99,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     jetsToken  = consumes< pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
     electronsToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("electrons"));
     muonsToken  = consumes< pat::MuonCollection >(iConfig.getParameter<edm::InputTag>("muons"));
+    rhoToken  = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
     ptMins = iConfig.getParameter< std::vector<double> >("ptMins");
     etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");    
     applyCorrection = iConfig.getParameter<bool>("applyCorrection");
@@ -148,10 +149,10 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    iEvent.getByToken( jetsToken,h_inputJets );
   
    edm::Handle< pat::ElectronCollection > h_inputElectrons;
-   iEvent.getByToken( jetsToken,h_inputElectrons );
+   iEvent.getByToken( electronsToken,h_inputElectrons );
 
    edm::Handle< pat::MuonCollection > h_inputMuons;
-   iEvent.getByToken( jetsToken,h_inputMuons );
+   iEvent.getByToken( muonsToken,h_inputMuons );
 
    // initialize jetcorrector
    const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
@@ -159,23 +160,22 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    
    // selected jets with jet ID cuts
    const std::vector<pat::Jet> idJets = helper.GetSelectedJets(*h_inputJets, 0., 9999., jetID::jetLoose, '-' );
-   std::vector<pat::Jet> *unsortedJets=0;
+   std::vector<pat::Jet> unsortedJets;
    if(applyCorrection){
        // Get raw jets
        std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
        // Clean muons and electrons from jets
        std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);
    // Apply jet corrections
-       std::vector<pat::Jet> correctedJets_unsorted = helper.GetCorrectedJets(cleanJets, iEvent, iSetup, syst);
-       unsortedJets=&correctedJets_unsorted;
+       unsortedJets = helper.GetCorrectedJets(cleanJets, iEvent, iSetup, syst);
+
    }
    else{
-       std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(idJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);
-       unsortedJets=&cleanJets;
+       unsortedJets = helper.GetDeltaRCleanedJets(idJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);       
    }
    for(uint i=0; i<ptMins.size(); i++ ){
        //Get jet Collection which pass selections
-       std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(*unsortedJets, ptMins[i], etaMaxs[i], jetID::none, '-' );
+       std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets, ptMins[i], etaMaxs[i], jetID::none, '-' );
        // Get jet Collection which pass loose selection
        std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
        iEvent.put(selectedJets,collectionNames[i]);

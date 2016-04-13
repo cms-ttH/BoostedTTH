@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 CorrectedMETproducer = cms.EDProducer(
-    "JetMETprodcuer",
+    "CorrectedMETproducer",
     isData       = cms.bool(False),
     oldJets = cms.InputTag("slimmedJets"),
     newJets = cms.InputTag("slimmedJets"),
