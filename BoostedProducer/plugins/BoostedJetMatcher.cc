@@ -38,6 +38,7 @@ BoostedJetMatcher::BoostedJetMatcher(const edm::ParameterSet& iConfig)
   recoPrunedJetsToken   = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoPrunedJetsTag"));
   recoSDJetsToken       = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoSDJetsTag"));
   recoSDZ2B1JetsToken   = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoSDZ2B1JetsTag"));
+  recoSDZ2B1SubjetsToken= consumes< std::vector<reco::PFJet> >            (iConfig.getParameter<edm::InputTag>("recoSDZ2B1SubjetsTag"));
   patFatJetsToken       = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patFatJetsTag"));
   patHTTTopJetsToken    = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patHTTTopJetsTag"));
   patHTTSubjetsToken    = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patHTTSubjetsTag"));
@@ -47,7 +48,10 @@ BoostedJetMatcher::BoostedJetMatcher(const edm::ParameterSet& iConfig)
   patPrunedSubjetsToken = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patPrunedSubjetsTag"));
   patSDSubjetsToken     = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSDSubjetsTag"));
   patSDZ2B1SubjetsToken = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSDZ2B1SubjetsTag"));
-
+  softdropSubjettiness1Token = consumes< edm::ValueMap<float> >           (iConfig.getParameter<edm::InputTag>("softdropSubjettiness1Tag"));
+  softdropSubjettiness2Token = consumes< edm::ValueMap<float> >           (iConfig.getParameter<edm::InputTag>("softdropSubjettiness2Tag"));
+  softdropSubjettiness3Token = consumes< edm::ValueMap<float> >           (iConfig.getParameter<edm::InputTag>("softdropSubjettiness3Tag"));
+  
   produces<boosted::BoostedJetCollection>("boostedjets");
 }
 
@@ -94,6 +98,10 @@ BoostedJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByToken(recoSDZ2B1JetsToken, recoSDZ2B1JetsHandle);
   std::vector<reco::BasicJet> recosdz2b1jets = *recoSDZ2B1JetsHandle;
   
+  edm::Handle< std::vector<reco::PFJet> > recoSDZ2B1SubjetsHandle;
+  iEvent.getByToken(recoSDZ2B1SubjetsToken, recoSDZ2B1SubjetsHandle);
+  std::vector<reco::PFJet> recosdz2b1subjets = *recoSDZ2B1SubjetsHandle;
+  
   edm::Handle<edm::View<pat::Jet> > patFatJetsHandle;
   iEvent.getByToken(patFatJetsToken, patFatJetsHandle);
   edm::View<pat::Jet> patfatjets = *patFatJetsHandle;
@@ -129,6 +137,18 @@ BoostedJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<edm::View<pat::Jet> > patSDZ2B1SubjetsHandle;
   iEvent.getByToken(patSDZ2B1SubjetsToken, patSDZ2B1SubjetsHandle);
   edm::View<pat::Jet> patsdz2b1subjets = *patSDZ2B1SubjetsHandle;
+  
+  edm::Handle<edm::ValueMap<float> > softdropSubjettiness1Handle;
+  iEvent.getByToken(softdropSubjettiness1Token, softdropSubjettiness1Handle);
+  edm::ValueMap<float> softdropSubjettiness1 = *softdropSubjettiness1Handle;
+  
+  edm::Handle<edm::ValueMap<float> > softdropSubjettiness2Handle;
+  iEvent.getByToken(softdropSubjettiness2Token, softdropSubjettiness2Handle);
+  edm::ValueMap<float> softdropSubjettiness2 = *softdropSubjettiness2Handle;
+  
+  edm::Handle<edm::ValueMap<float> > softdropSubjettiness3Handle;
+  iEvent.getByToken(softdropSubjettiness3Token, softdropSubjettiness3Handle);
+  edm::ValueMap<float> softdropSubjettiness3 = *softdropSubjettiness3Handle;
   
   std::multimap<double, int> patfatjetindex_by_eta;
   std::multimap<double, int> pathtttopjetindex_by_eta;
@@ -238,14 +258,18 @@ BoostedJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     int sdz2b1recojetid = recorecoJetMatching(*it,recosdz2b1jets,1.0);
     
     if(sdz2b1recojetid>=0){
-      std::vector<const reco::Candidate*> recosdz2b1subjets = recosdz2b1jets[sdz2b1recojetid].getJetConstituentsQuick();
+      std::vector<const reco::Candidate*> recofatjetsdz2b1subjets = recosdz2b1jets[sdz2b1recojetid].getJetConstituentsQuick();
       
-      for(std::vector<const reco::Candidate*>::const_iterator itSub=recosdz2b1subjets.begin();itSub!=recosdz2b1subjets.end();++itSub){
+      for(std::vector<const reco::Candidate*>::const_iterator itSub=recofatjetsdz2b1subjets.begin();itSub!=recofatjetsdz2b1subjets.end();++itSub){
         BoostedJets->back().sdz2b1subjets.push_back(patrecoJetMatching(patsdz2b1subjets, patsdz2b1subjetindex_by_eta, **itSub));
+        
+        int sdz2b1recosubjetid = recorecoJetMatching(**itSub,recosdz2b1subjets,0.5);
+        BoostedJets->back().tau1Softdrop = softdropSubjettiness1.get(recoSDZ2B1SubjetsHandle.id(),sdz2b1recosubjetid);
+        BoostedJets->back().tau2Softdrop = softdropSubjettiness2.get(recoSDZ2B1SubjetsHandle.id(),sdz2b1recosubjetid);
+        BoostedJets->back().tau3Softdrop = softdropSubjettiness3.get(recoSDZ2B1SubjetsHandle.id(),sdz2b1recosubjetid);
       }
     }
   }
-  
   iEvent.put(BoostedJets,"boostedjets");
 }
 
@@ -275,15 +299,15 @@ const pat::Jet & BoostedJetMatcher::patrecoJetMatching(const edm::View<pat::Jet>
 }
 
 
-template<typename recojettype>
-const int BoostedJetMatcher::recorecoJetMatching(const recojettype & recojet, const std::vector<reco::BasicJet> & recojets, const float & matchingdistance){
-	std::vector<reco::BasicJet>::const_iterator lower = recojets.begin();
-  std::vector<reco::BasicJet>::const_iterator upper = recojets.end();
+template<typename recojettype1, typename recojettype2>
+const int BoostedJetMatcher::recorecoJetMatching(const recojettype1 & recojet, const std::vector<recojettype2> & recojets, const float & matchingdistance){
+	typename std::vector<recojettype2>::const_iterator lower = recojets.begin();
+  typename std::vector<recojettype2>::const_iterator upper = recojets.end();
   
   double delta_r = 9999;
 	int best_match = -1;
 
-  for(std::vector<reco::BasicJet>::const_iterator it=lower; it!=upper; ++it){
+  for(typename std::vector<recojettype2>::const_iterator it=lower; it!=upper; ++it){
     
     float delta_r_temp = reco::deltaR(*it,recojet);
     

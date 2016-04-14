@@ -9,6 +9,7 @@ BoostedJetMatcher = cms.EDProducer(
     recoPrunedJetsTag   = cms.InputTag('ca15PFPrunedJetsCHS',''),
     recoSDJetsTag       = cms.InputTag('ca15PFSoftdropJetsCHS',''),
     recoSDZ2B1JetsTag   = cms.InputTag('ca15PFSoftdropZ2B1JetsCHS',''),
+    recoSDZ2B1SubjetsTag= cms.InputTag('ca15PFSoftdropZ2B1JetsCHS','subjets'),
     patFatJetsTag       = cms.InputTag('selectedPatJetsFatJetsPF'),
     patHTTTopJetsTag    = cms.InputTag('selectedPatJetsHTTTopJetsPF'),
     patHTTSubjetsTag    = cms.InputTag('selectedPatJetsHTTSubjetsPF'),
@@ -17,7 +18,10 @@ BoostedJetMatcher = cms.EDProducer(
     patSFFilterjetsTag  = cms.InputTag('selectedPatJetsSFFilterjetsPF'),
     patPrunedSubjetsTag = cms.InputTag('selectedPatJetsPrunedSubjetsPF'),
     patSDSubjetsTag     = cms.InputTag('selectedPatJetsSDSubjetsPF'),
-    patSDZ2B1SubjetsTag = cms.InputTag('selectedPatJetsSDZ2B1SubjetsPF')
+    patSDZ2B1SubjetsTag = cms.InputTag('selectedPatJetsSDZ2B1SubjetsPF'),
+    softdropSubjettiness1Tag = cms.InputTag('ca15SoftdropSubjettiness','tau1'),
+    softdropSubjettiness2Tag = cms.InputTag('ca15SoftdropSubjettiness','tau2'),
+    softdropSubjettiness3Tag = cms.InputTag('ca15SoftdropSubjettiness','tau3')
 )
 
 #BoostedJetMatcherPath = cms.Path(BoostedJetMatcher)

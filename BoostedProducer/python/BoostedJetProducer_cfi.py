@@ -2,6 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from RecoJets.JetProducers.PFJetParameters_cfi import *
 from RecoJets.JetProducers.AnomalousCellParameters_cfi import *
+from RecoJets.JetProducers.CATopJetParameters_cfi import *
 
 ca15PFJetsCHS = cms.EDProducer(
     "FastjetJetProducer",
@@ -94,5 +95,21 @@ ca15PFSoftdropZ2B1JetsCHS = ca15PFJetsCHS.clone(
     writeCompound = cms.bool(True),
     jetCollInstanceName=cms.string("subjets")
 )
+
+ca15SoftdropSubjettiness = cms.EDProducer(
+    "NjettinessAdder",
+    src = cms.InputTag("ca15PFSoftdropZ2B1JetsCHS","subjets"),
+    Njets = cms.vuint32(1,2,3),          # compute 1-, 2-, 3- subjettiness
+    # variables for measure definition : 
+    measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
+    beta = cms.double(1.0),              # CMS default is 1
+    R0 = cms.double(1.5),                  # CMS default is jet cone size
+    Rcutoff = cms.double( 999.0),       # not used by default
+    # variables for axes definition :
+    axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
+    nPass = cms.int32(999),             # not used by default
+    akAxesR0 = cms.double(999.0)        # not used by default
+)
+
 
 #BoostedProducerPath = cms.Path(HTTTopJetProducer*SFJetProducer)

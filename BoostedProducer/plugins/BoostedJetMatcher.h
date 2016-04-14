@@ -61,8 +61,8 @@ class BoostedJetMatcher : public edm::EDProducer {
 
     template<typename recojettype>
     const pat::Jet & patrecoJetMatching(const edm::View<pat::Jet> & patjets, const std::multimap<double, int> & patjetindex_by_eta, const recojettype & rjet);
-    template<typename recojettype>
-    const int recorecoJetMatching(const recojettype & recofatjet, const std::vector<reco::BasicJet> & recotopjets, const float & matchingdistance = 1.0);
+    template<typename recojettype1, typename recojettype2>
+    const int recorecoJetMatching(const recojettype1 & recojet, const std::vector<recojettype2> & recojets, const float & matchingdistance);
 
     // ---------- member data ---------------------------
     
@@ -73,6 +73,7 @@ class BoostedJetMatcher : public edm::EDProducer {
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoPrunedJetsToken;
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSDJetsToken;
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSDZ2B1JetsToken;
+    edm::EDGetTokenT< std::vector<reco::PFJet> >            recoSDZ2B1SubjetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patFatJetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patHTTTopJetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patHTTSubjetsToken;
@@ -82,6 +83,9 @@ class BoostedJetMatcher : public edm::EDProducer {
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patPrunedSubjetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patSDSubjetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patSDZ2B1SubjetsToken;
+    edm::EDGetTokenT< edm::ValueMap<float> >                softdropSubjettiness1Token;
+    edm::EDGetTokenT< edm::ValueMap<float> >                softdropSubjettiness2Token;
+    edm::EDGetTokenT< edm::ValueMap<float> >                softdropSubjettiness3Token;
 };
 
 #endif
