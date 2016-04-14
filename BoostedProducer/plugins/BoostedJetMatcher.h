@@ -75,6 +75,11 @@ class BoostedJetMatcher : public edm::EDProducer {
     edm::EDGetTokenT< std::vector<reco::HTTTopJetTagInfo> > httInfosToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patSFSubJetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patSFFilterJetsToken;
+    edm::EDGetTokenT< edm::ValueMap<float> >                softdropSubjettiness1Token;
+    edm::EDGetTokenT< edm::ValueMap<float> >                softdropSubjettiness2Token;
+    edm::EDGetTokenT< edm::ValueMap<float> >                softdropSubjettiness3Token;
+    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSDZ2B1JetsToken;
+    edm::EDGetTokenT< std::vector<reco::PFJet> >            recoSubJetsToken;
 };
 
 #endif
