@@ -360,18 +360,23 @@ void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
 }
 
 
-std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets){
+std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets, const int& nPtJets){
 
   std::vector<pat::Jet> subJets = boostedJet.filterjets;
   
-  return GetHiggsFilterJets(subJets,nCSVJets);
+  return GetHiggsFilterJets(subJets,nCSVJets,nPtJets);
 }
 
 
-std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets){
+std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets, const int& nPtJets){
 
   std::vector<pat::Jet> subJets = higgsDecayJets;
   
+  if(nPtJets>0){
+    std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstJetIsHarder);
+    subJets.resize(nPtJets);
+  }
+    
   std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstHasHigherCSV);
   
   if((int)subJets.size() > (nCSVJets+1)){
@@ -382,9 +387,9 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
 }
 
 
-float BoostedUtils::GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets, const int& nCSVJets){
+float BoostedUtils::GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets, const int& nCSVJets, const int& nPtJets){
   
-  std::vector<pat::Jet> filterJets = GetHiggsFilterJets(boostedJet,nCSVJets);
+  std::vector<pat::Jet> filterJets = GetHiggsFilterJets(boostedJet,nCSVJets,nPtJets);
   
   if(filterJets.size()<2 || nCSVJets>nJets) return -1.;
   

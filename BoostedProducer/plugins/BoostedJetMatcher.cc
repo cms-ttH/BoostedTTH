@@ -264,9 +264,9 @@ BoostedJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         BoostedJets->back().sdz2b1subjets.push_back(patrecoJetMatching(patsdz2b1subjets, patsdz2b1subjetindex_by_eta, **itSub));
         
         int sdz2b1recosubjetid = recorecoJetMatching(**itSub,recosdz2b1subjets,0.5);
-        BoostedJets->back().tau1Softdrop = softdropSubjettiness1.get(recoSDZ2B1SubjetsHandle.id(),sdz2b1recosubjetid);
-        BoostedJets->back().tau2Softdrop = softdropSubjettiness2.get(recoSDZ2B1SubjetsHandle.id(),sdz2b1recosubjetid);
-        BoostedJets->back().tau3Softdrop = softdropSubjettiness3.get(recoSDZ2B1SubjetsHandle.id(),sdz2b1recosubjetid);
+        BoostedJets->back().tau1Softdrop.push_back(softdropSubjettiness1.get(recoSDZ2B1SubjetsHandle.id(),sdz2b1recosubjetid));
+        BoostedJets->back().tau2Softdrop.push_back(softdropSubjettiness2.get(recoSDZ2B1SubjetsHandle.id(),sdz2b1recosubjetid));
+        BoostedJets->back().tau3Softdrop.push_back(softdropSubjettiness3.get(recoSDZ2B1SubjetsHandle.id(),sdz2b1recosubjetid));
       }
     }
   }
