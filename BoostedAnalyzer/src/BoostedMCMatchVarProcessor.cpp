@@ -34,21 +34,45 @@ void BoostedMCMatchVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "BoostedJet_Dr_GenQ2_Filterjet",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenB1_Filterjet",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenB2_Filterjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ1_PrunedSubjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ2_PrunedSubjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenB1_PrunedSubjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenB2_PrunedSubjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenB1_SoftdropSubjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenB2_SoftdropSubjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ1_SoftdropSubjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ2_SoftdropSubjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenB1_Softdropz2b1Subjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenB2_Softdropz2b1Subjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ1_Softdropz2b1Subjet",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_GenQ2_Softdropz2b1Subjet",-9.,"N_BoostedJets" );
+  
   vars.InitVars( "BoostedJet_Dr_GenQ1_CSV1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenQ2_CSV1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenB_CSV1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenQ1_CSV2",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenQ2_CSV2",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenB_CSV2",-9.,"N_BoostedJets" );
-
-
   
+  vars.InitVars( "BoostedJet_Dr_Filterjet1_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Filterjet2_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Filterjet3_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_PrunedSubjet1_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_PrunedSubjet2_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_PrunedSubjet3_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet1_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet2_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet3_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet1_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet2_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet3_B",-9.,"N_BoostedJets" );
+
   initialized = true;
 }
 
 
 void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
-  
+
   if(!initialized) std::cerr << "tree processor not initialized" << std::endl;
   
   std::vector<reco::GenParticle> tophad;
@@ -94,7 +118,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
 
   }
 
-  
+  // Match TopLep jets
   for(size_t i=0; i< input.selectedBoostedJets.size(); i++){
 	  
     float minDr_TopLep = 999;
@@ -109,6 +133,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     }
   }
   
+  // Match TopHad jets
   for(size_t i=0; i< input.selectedBoostedJets.size(); i++){
 	  
     float minDr_TopHad = 999;
@@ -166,6 +191,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     if(minDr_TopQ2_W2<999) vars.FillVars("BoostedJet_Dr_GenQ2_W2",i,minDr_TopQ2_W2);
   }
   
+  // Match Higgs jets
   for(size_t i=0; i< input.selectedBoostedJets.size(); i++){
     if(higgs.pt()>0)
       vars.FillVars("BoostedJet_Dr_GenHiggs",i,BoostedUtils::DeltaR(higgs.p4(),input.selectedBoostedJets[i].fatjet.p4()));	  
@@ -175,21 +201,139 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
       vars.FillVars("BoostedJet_Dr_GenB1",i,BoostedUtils::DeltaR(b1.p4(),input.selectedBoostedJets[i].fatjet.p4()));
       if(b2.pt()>0.) vars.FillVars("BoostedJet_Dr_GenB2",i,BoostedUtils::DeltaR(b2.p4(),input.selectedBoostedJets[i].fatjet.p4()));
       
+      // Filterjets
       double minDrB1 = 999;
       double minDrB2 = 999;
+      double minDrFilterjet[input.selectedBoostedJets[i].filterjets.size()];
+      for(size_t j=0;j<input.selectedBoostedJets[i].filterjets.size();j++) minDrFilterjet[j] = 999;
       
       for(size_t j=0;j<input.selectedBoostedJets[i].filterjets.size();j++){
-	
+        if (j>2) break;
+	      if (input.selectedBoostedJets[i].filterjets[j].pt() == 0.) continue;
+        
         if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b1.p4())<minDrB1){
           minDrB1 = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b1.p4());
         }
-        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4())<minDrB2){
-          if(b2.pt()>0.) minDrB2 = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4());
+        if(b2.pt()>0.){
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4())<minDrB2){
+            minDrB2 = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4());
+          }
         }
+        
+        // Delta R per filterjet
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b1.p4())<minDrFilterjet[j]){
+          minDrFilterjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b1.p4());
+        }
+        
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4())<minDrFilterjet[j]){
+          minDrFilterjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4());
+        }
+        if(minDrFilterjet[j] < 999) vars.FillVars("BoostedJet_Dr_Filterjet"+to_string(j+1)+"_B",i,minDrFilterjet[j]);
       }
       
       if(minDrB1<999) vars.FillVars("BoostedJet_Dr_GenB1_Filterjet",i,minDrB1);
       if(minDrB2<999) vars.FillVars("BoostedJet_Dr_GenB2_Filterjet",i,minDrB2); 
+      
+      // Pruned subjets
+      double minDrB1_Pruned = 999;
+      double minDrB2_Pruned = 999;
+      double minDrPrunedSubjet[input.selectedBoostedJets[i].prunedsubjets.size()];
+      for(size_t j=0;j<input.selectedBoostedJets[i].prunedsubjets.size();j++) minDrPrunedSubjet[j] = 999;
+      
+      for(size_t j=0;j<input.selectedBoostedJets[i].prunedsubjets.size();j++){
+        if (j>2) break;
+        if (input.selectedBoostedJets[i].prunedsubjets[j].pt() == 0.) continue;
+      
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b1.p4())<minDrB1_Pruned){
+          minDrB1_Pruned = BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b1.p4());
+        }
+        if(b2.pt()>0.){
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b2.p4())<minDrB2_Pruned){
+            minDrB2_Pruned = BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b2.p4());
+          }
+        }
+        
+        // Delta R per pruned subjet
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b1.p4())<minDrPrunedSubjet[j]){
+          minDrPrunedSubjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b1.p4());
+        }
+        
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b2.p4())<minDrPrunedSubjet[j]){
+          minDrPrunedSubjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b2.p4());
+        }
+        if(minDrPrunedSubjet[j] < 999) vars.FillVars("BoostedJet_Dr_PrunedSubjet"+to_string(j+1)+"_B",i,minDrPrunedSubjet[j]);
+      }
+      
+      if(minDrB1_Pruned < 999) vars.FillVars("BoostedJet_Dr_GenB1_PrunedSubjet",i,minDrB1_Pruned);
+      if(minDrB2_Pruned < 999) vars.FillVars("BoostedJet_Dr_GenB2_PrunedSubjet",i,minDrB2_Pruned); 
+      
+      
+      // Soft drop jets
+      double minDrB1_Softdrop = 999;
+      double minDrB2_Softdrop = 999;
+      double minDrSoftdropSubjet[input.selectedBoostedJets[i].sdsubjets.size()];
+      for(size_t j=0;j<input.selectedBoostedJets[i].sdsubjets.size();j++) minDrSoftdropSubjet[j] = 999;
+      
+      for(size_t j=0;j<input.selectedBoostedJets[i].sdsubjets.size();j++){
+        if (j>2) break;
+        if (input.selectedBoostedJets[i].sdsubjets[j].pt() == 0.) continue;
+        
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b1.p4())<minDrB1_Softdrop){
+          minDrB1_Softdrop = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b1.p4());
+        }
+        if(b2.pt()>0.){
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b2.p4())<minDrB2_Softdrop){
+            minDrB2_Softdrop = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b2.p4());
+          }
+        }
+        
+        // Delta R per soft drop subjet
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b1.p4())<minDrSoftdropSubjet[j]){
+          minDrSoftdropSubjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b1.p4());
+        }
+        
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b2.p4())<minDrSoftdropSubjet[j]){
+          minDrSoftdropSubjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b2.p4());
+        }
+        if(minDrSoftdropSubjet[j] < 999) vars.FillVars("BoostedJet_Dr_SoftdropSubjet"+to_string(j+1)+"_B",i,minDrSoftdropSubjet[j]);
+      }
+      
+      if(minDrB1_Softdrop < 999) vars.FillVars("BoostedJet_Dr_GenB1_SoftdropSubjet",i,minDrB1_Softdrop);
+      if(minDrB2_Softdrop < 999) vars.FillVars("BoostedJet_Dr_GenB2_SoftdropSubjet",i,minDrB2_Softdrop); 
+      
+      
+      // Soft drop z2 b1 jets
+      double minDrB1_Softdropz2b1 = 999;
+      double minDrB2_Softdropz2b1 = 999;
+      double minDrSoftdropz2b1Subjet[input.selectedBoostedJets[i].sdz2b1subjets.size()];
+      for(size_t j=0;j<input.selectedBoostedJets[i].sdz2b1subjets.size();j++) minDrSoftdropz2b1Subjet[j] = 999;
+      
+      for(size_t j=0;j<input.selectedBoostedJets[i].sdz2b1subjets.size();j++){
+        if (j>2) break;
+        if (input.selectedBoostedJets[i].sdz2b1subjets[j].pt() == 0.) continue;
+        
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b1.p4())<minDrB1_Softdropz2b1){
+          minDrB1_Softdropz2b1 = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b1.p4());
+        }
+        if(b2.pt()>0.){
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b2.p4())<minDrB2_Softdropz2b1){
+            minDrB2_Softdropz2b1 = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b2.p4());
+          }
+        }
+        
+        // Delta R per soft drop z2 b1 subjet
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b1.p4())<minDrSoftdropz2b1Subjet[j]){
+          minDrSoftdropz2b1Subjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b1.p4());
+        }
+        
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b2.p4())<minDrSoftdropz2b1Subjet[j]){
+          minDrSoftdropz2b1Subjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b2.p4());
+        }
+        if(minDrSoftdropz2b1Subjet[j] < 999) vars.FillVars("BoostedJet_Dr_Softdropz2b1Subjet"+to_string(j+1)+"_B",i,minDrSoftdropz2b1Subjet[j]);
+      }
+      
+      if(minDrB1_Softdropz2b1 < 999) vars.FillVars("BoostedJet_Dr_GenB1_Softdropz2b1Subjet",i,minDrB1_Softdropz2b1);
+      if(minDrB2_Softdropz2b1 < 999) vars.FillVars("BoostedJet_Dr_GenB2_Softdropz2b1Subjet",i,minDrB2_Softdropz2b1);
     }
     
     float minDr_WHad = 999;
@@ -197,23 +341,69 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     float minDr_Q2 = 999;
     float minDr_Q1_FilterJet = 999;
     float minDr_Q2_FilterJet = 999;
-   
+    float minDr_Q1_PrunedSubjet = 999;
+    float minDr_Q2_PrunedSubjet = 999;
+    float minDr_Q1_SoftdropSubjet = 999;
+    float minDr_Q2_SoftdropSubjet = 999;
+    float minDr_Q1_Softdropz2b1Subjet = 999;
+    float minDr_Q2_Softdropz2b1Subjet = 999;
+    
     for(size_t j=0;j<whad.size();j++){
     
       float Dr_temp = BoostedUtils::DeltaR(whad[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
       
 	    if(Dr_temp<minDr_WHad){
 	  	  minDr_WHad = Dr_temp;
-		  minDr_Q1 = BoostedUtils::DeltaR(q1[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
-		  minDr_Q2 = BoostedUtils::DeltaR(q2[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+		    minDr_Q1 = BoostedUtils::DeltaR(q1[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+		    minDr_Q2 = BoostedUtils::DeltaR(q2[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
         
+        // Filterjets
         for(size_t k=0;k<input.selectedBoostedJets[i].filterjets.size();k++){
-	      
+          if (input.selectedBoostedJets[i].filterjets[k].pt() == 0.) continue;
+
           if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[k].p4(),q1[j].p4())<minDr_Q1_FilterJet){
             minDr_Q1_FilterJet = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[k].p4(),q1[j].p4());
           }
           if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[k].p4(),q2[j].p4())<minDr_Q2_FilterJet){
             minDr_Q2_FilterJet = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[k].p4(),q2[j].p4());
+          }
+        }
+        
+        // Pruned subjets
+        for(size_t k=0;k<input.selectedBoostedJets[i].prunedsubjets.size();k++){
+          if (input.selectedBoostedJets[i].prunedsubjets[k].pt() == 0.) continue;
+	      
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[k].p4(),q1[j].p4())<minDr_Q1_PrunedSubjet){
+            minDr_Q1_PrunedSubjet = BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[k].p4(),q1[j].p4());
+          }
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[k].p4(),q2[j].p4())<minDr_Q2_PrunedSubjet){
+            minDr_Q2_PrunedSubjet = BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[k].p4(),q2[j].p4());
+          }
+        }
+        
+        // Soft drop subjets
+        for(size_t k=0;k<input.selectedBoostedJets[i].sdsubjets.size();k++){
+          if (input.selectedBoostedJets[i].sdsubjets[k].pt() == 0) continue;
+	      
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[k].p4(),q1[j].p4())<minDr_Q1_SoftdropSubjet){
+            minDr_Q1_SoftdropSubjet = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[k].p4(),q1[j].p4());
+          }
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[k].p4(),q2[j].p4())<minDr_Q2_SoftdropSubjet){
+            minDr_Q2_SoftdropSubjet = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[k].p4(),q2[j].p4());
+          }
+        }
+        
+        // Soft drop z2 b1 subjets
+        for(size_t k=0;k<input.selectedBoostedJets[i].sdz2b1subjets.size();k++){
+          if (input.selectedBoostedJets[i].sdz2b1subjets[k].pt() == 0) continue;
+	      
+          if(q1[j].pt() > 0.){
+            if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[k].p4(),q1[j].p4())<minDr_Q1_Softdropz2b1Subjet){
+              minDr_Q1_Softdropz2b1Subjet = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[k].p4(),q1[j].p4());
+            }
+          }
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[k].p4(),q2[j].p4())<minDr_Q2_Softdropz2b1Subjet){
+            minDr_Q2_Softdropz2b1Subjet = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[k].p4(),q2[j].p4());
           }
         }
 	    }
@@ -225,6 +415,12 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     if(minDr_Q2<999) vars.FillVars("BoostedJet_Dr_GenQ2",i,minDr_Q2);
     if(minDr_Q1_FilterJet<999) vars.FillVars("BoostedJet_Dr_GenQ1_Filterjet",i,minDr_Q1_FilterJet);
     if(minDr_Q2_FilterJet<999) vars.FillVars("BoostedJet_Dr_GenQ2_Filterjet",i,minDr_Q2_FilterJet);
+    if(minDr_Q1_PrunedSubjet<999) vars.FillVars("BoostedJet_Dr_GenQ1_PrunedSubjet",i,minDr_Q1_PrunedSubjet);
+    if(minDr_Q2_PrunedSubjet<999) vars.FillVars("BoostedJet_Dr_GenQ2_PrunedSubjet",i,minDr_Q2_PrunedSubjet);
+    if(minDr_Q1_SoftdropSubjet<999) vars.FillVars("BoostedJet_Dr_GenQ1_SoftdropSubjet",i,minDr_Q1_SoftdropSubjet);
+    if(minDr_Q2_SoftdropSubjet<999) vars.FillVars("BoostedJet_Dr_GenQ2_SoftdropSubjet",i,minDr_Q2_SoftdropSubjet);
+    if(minDr_Q1_Softdropz2b1Subjet<999) vars.FillVars("BoostedJet_Dr_GenQ1_Softdropz2b1Subjet",i,minDr_Q1_Softdropz2b1Subjet);
+    if(minDr_Q2_Softdropz2b1Subjet<999) vars.FillVars("BoostedJet_Dr_GenQ2_Softdropz2b1Subjet",i,minDr_Q2_Softdropz2b1Subjet);
 
     std::vector<pat::Jet> filterJets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets[i], 4);
     float dr_GenQ1_CSV1=999;
@@ -233,18 +429,17 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     float dr_GenQ1_CSV2=999;
     float dr_GenQ2_CSV2=999;
     float dr_GenB_CSV2=999;
-
     for(size_t j=0;j<tophad.size();j++){
-	if(filterJets.size()>0){
-	    dr_GenQ1_CSV1=fmin(BoostedUtils::DeltaR(filterJets[0].p4(),q1[j].p4()),dr_GenQ1_CSV1);
-	    dr_GenQ2_CSV1=fmin(BoostedUtils::DeltaR(filterJets[0].p4(),q2[j].p4()),dr_GenQ2_CSV1);
-	    dr_GenB_CSV1=fmin(BoostedUtils::DeltaR(filterJets[0].p4(),bhad[j].p4()),dr_GenB_CSV1);	    
-	}
-	if(filterJets.size()>1){
-	    dr_GenQ1_CSV2=fmin(BoostedUtils::DeltaR(filterJets[1].p4(),q1[j].p4()),dr_GenQ1_CSV2);
-	    dr_GenQ2_CSV2=fmin(BoostedUtils::DeltaR(filterJets[1].p4(),q2[j].p4()),dr_GenQ2_CSV2);
-	    dr_GenB_CSV2=fmin(BoostedUtils::DeltaR(filterJets[1].p4(),bhad[j].p4()),dr_GenB_CSV2);
-	}
+	    if(filterJets.size()>0 && filterJets[0].pt() > 0){
+        dr_GenQ1_CSV1=fmin(BoostedUtils::DeltaR(filterJets[0].p4(),q1[j].p4()),dr_GenQ1_CSV1);
+	      dr_GenQ2_CSV1=fmin(BoostedUtils::DeltaR(filterJets[0].p4(),q2[j].p4()),dr_GenQ2_CSV1);
+	      dr_GenB_CSV1=fmin(BoostedUtils::DeltaR(filterJets[0].p4(),bhad[j].p4()),dr_GenB_CSV1); 
+	    }
+	    if(filterJets.size()>1 && filterJets[1].pt() > 0){
+	      dr_GenQ1_CSV2=fmin(BoostedUtils::DeltaR(filterJets[1].p4(),q1[j].p4()),dr_GenQ1_CSV2);
+	      dr_GenQ2_CSV2=fmin(BoostedUtils::DeltaR(filterJets[1].p4(),q2[j].p4()),dr_GenQ2_CSV2);
+	      dr_GenB_CSV2=fmin(BoostedUtils::DeltaR(filterJets[1].p4(),bhad[j].p4()),dr_GenB_CSV2);
+	    }
     }
     vars.FillVars( "BoostedJet_Dr_GenQ1_CSV1",i,dr_GenQ1_CSV1);
     vars.FillVars( "BoostedJet_Dr_GenQ2_CSV1",i,dr_GenQ2_CSV1);
