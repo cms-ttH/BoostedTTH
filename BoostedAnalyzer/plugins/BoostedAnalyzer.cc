@@ -908,7 +908,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
 
   // FIGURE OUT SAMPLE
-    
   bool foundT=false;
   bool foundTbar=false;
   bool foundHiggs=false;
@@ -929,9 +928,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       }
     }
   }
+  
   GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!(!isData&&foundT&&foundTbar));
   int ttid = genTopEvt.IsFilled()? genTopEvt.GetTTxIdFromProducer() : -1;
-      
+     
   SampleType sampleType= SampleType::nonttbkg;
   if(isData) sampleType = SampleType::data;
   else if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
@@ -1031,11 +1031,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if(!selections.at(i)->IsSelected(input_nominal,cutflow_nominal)){
       selected_nominal=false;
     }
+    
     // dump lj sync exe after every selection step
     if(dumpSyncExe&&selected_nominal){
       synchronizer.DumpSyncExe1(i+1,input_nominal);
     }
-
   }
 
   // WRITE (nominal) TREE  

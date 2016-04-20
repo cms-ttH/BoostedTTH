@@ -372,9 +372,10 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
 
   std::vector<pat::Jet> subJets = higgsDecayJets;
   
-  if(nPtJets>0){
+  if(nPtJets>0 && nPtJets<int(subJets.size())){
     std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstJetIsHarder);
-    subJets.resize(nPtJets);
+    std::vector<pat::Jet> tempvec(subJets.begin(),subJets.begin()+nPtJets);
+    subJets = tempvec;
   }
     
   std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstHasHigherCSV);

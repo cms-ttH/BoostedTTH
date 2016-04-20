@@ -250,49 +250,76 @@ void BoostedJetVarProcessor::InitSFJetVars(VariableContainer& vars){
   vars.InitVars( "BoostedJet_CSV4",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_Filterjet1_Pt",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_Pt",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_Pt",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_Pt",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_E",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_E",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_E",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_E",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_M",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_M",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_M",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_M",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_Eta",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_Eta",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_Eta",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_Eta",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_Phi",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_Phi",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_Phi",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_Phi",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_CSV",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_CSV",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_CSV",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_CSV",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_Dr",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_Dr",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_Dr",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_Dr",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_Flav",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_Flav",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_Flav",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_Flav",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_Charge",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_Charge",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_Charge",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_Charge",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_PtRatio",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet2_PtRatio",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet3_PtRatio",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_PtRatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_ERatio",-9,"N_BoostedJets" );
+
+  vars.InitVars( "BoostedJet_Filterjet2_Pt",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet2_E",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet2_M",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet2_Eta",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet2_Phi",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet2_CSV",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet2_Dr",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet2_Flav",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet2_Charge",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet2_PtRatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet2_ERatio",-9,"N_BoostedJets" );
+
+  vars.InitVars( "BoostedJet_Filterjet3_Pt",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet3_E",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet3_M",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet3_Eta",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet3_Phi",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet3_CSV",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet3_Dr",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet3_Flav",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet3_Charge",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Filterjet3_PtRatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet3_ERatio",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Filterjet4_ERatio",-9,"N_BoostedJets" );
+  
+  vars.InitVars( "BoostedJet_B1_Pt",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_E",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_M",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_Eta",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_Phi",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_CSV",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_Dr",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_Flav",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_Charge",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_PtRatio",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B1_ERatio",-9,"N_BoostedJets" );
+
+  vars.InitVars( "BoostedJet_B2_Pt",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_E",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_M",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_Eta",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_Phi",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_CSV",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_Dr",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_Flav",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_Charge",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_PtRatio",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_B2_ERatio",-9,"N_BoostedJets" );
+
+  vars.InitVars( "BoostedJet_G_Pt",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_E",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_M",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_Eta",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_Phi",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_CSV",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_Dr",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_Flav",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_Charge",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_PtRatio",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_G_ERatio",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_Dr_Filterjet12",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Filterjet13",-9,"N_BoostedJets" );
@@ -777,22 +804,22 @@ void BoostedJetVarProcessor::FillSFJetVars(const InputCollections& input,Variabl
     vars.FillVars( "N_BoostedJet_Subjets",i,input.selectedBoostedJets[i].subjets.size() );
     vars.FillVars( "N_BoostedJet_Filterjets",i,input.selectedBoostedJets[i].filterjets.size() );
     
-    for(std::vector<pat::Jet>::const_iterator itFiltJet = input.selectedBoostedJets[i].filterjets.begin(); itFiltJet != input.selectedBoostedJets[i].filterjets.end() && itFiltJet-input.selectedBoostedJets[i].filterjets.begin()<4; ++itFiltJet){
+    for(std::vector<pat::Jet>::const_iterator itSub = input.selectedBoostedJets[i].filterjets.begin(); itSub != input.selectedBoostedJets[i].filterjets.end() && itSub-input.selectedBoostedJets[i].filterjets.begin()<3; ++itSub){
 
-      TString SubjetName = "Filterjet";
-      SubjetName += ((itFiltJet-input.selectedBoostedJets[i].filterjets.begin())+1);
+      TString subjetName = "Filterjet";
+      subjetName += ((itSub-input.selectedBoostedJets[i].filterjets.begin())+1);
       
-      vars.FillVars( "BoostedJet_"+SubjetName+"_E",i,itFiltJet->energy() );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_Pt",i,itFiltJet->pt() );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_M",i,itFiltJet->mass() );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_Eta",i,itFiltJet->eta() );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_Phi",i,itFiltJet->phi() );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_CSV",i,MiniAODHelper::GetJetCSV(*itFiltJet,btagger) );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_Dr",i,BoostedUtils::DeltaR(*itFiltJet,input.selectedBoostedJets[i].fatjet) );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_Flav",i,itFiltJet->partonFlavour() );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_Charge",i,itFiltJet->jetCharge() );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_PtRatio",i,itFiltJet->pt()/input.selectedBoostedJets[i].fatjet.pt() );
-      vars.FillVars( "BoostedJet_"+SubjetName+"_ERatio",i,itFiltJet->energy()/input.selectedBoostedJets[i].fatjet.energy() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_E",i,itSub->energy() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Pt",i,itSub->pt() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_M",i,itSub->mass() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Eta",i,itSub->eta() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Phi",i,itSub->phi() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_CSV",i,MiniAODHelper::GetJetCSV(*itSub,btagger) );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Dr",i,BoostedUtils::DeltaR(*itSub,input.selectedBoostedJets[i].fatjet) );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Flav",i,itSub->partonFlavour() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Charge",i,itSub->jetCharge() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_PtRatio",i,itSub->pt()/input.selectedBoostedJets[i].fatjet.pt() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_ERatio",i,itSub->energy()/input.selectedBoostedJets[i].fatjet.energy() );
     }
     
     if(input.selectedBoostedJets[i].filterjets.size()>1){
@@ -840,6 +867,31 @@ void BoostedJetVarProcessor::FillSFJetVars(const InputCollections& input,Variabl
       vars.FillVars( "BoostedJet_bbg_M",i,bbgjet.M() );
       vars.FillVars( "BoostedJet_bbg_Eta",i,bbgjet.Eta() );
       vars.FillVars( "BoostedJet_bbg_Phi",i,bbgjet.Phi() );
+      
+      for(std::vector<pat::Jet>::const_iterator itSub = higgsjets.begin(); itSub != higgsjets.end() && itSub-higgsjets.begin()<3; ++itSub){
+        
+        int subjetIndex = itSub-higgsjets.begin();
+        TString subjetName = "";
+        
+        if(subjetIndex==0)
+          subjetName = "B1";
+        else if(subjetIndex==1)
+          subjetName = "B2";
+        else if(subjetIndex==2)
+          subjetName = "G";
+          
+        vars.FillVars( "BoostedJet_"+subjetName+"_E",i,itSub->energy() );
+        vars.FillVars( "BoostedJet_"+subjetName+"_Pt",i,itSub->pt() );
+        vars.FillVars( "BoostedJet_"+subjetName+"_M",i,itSub->mass() );
+        vars.FillVars( "BoostedJet_"+subjetName+"_Eta",i,itSub->eta() );
+        vars.FillVars( "BoostedJet_"+subjetName+"_Phi",i,itSub->phi() );
+        vars.FillVars( "BoostedJet_"+subjetName+"_CSV",i,MiniAODHelper::GetJetCSV(*itSub,btagger) );
+        vars.FillVars( "BoostedJet_"+subjetName+"_Dr",i,BoostedUtils::DeltaR(*itSub,input.selectedBoostedJets[i].fatjet) );
+        vars.FillVars( "BoostedJet_"+subjetName+"_Flav",i,itSub->partonFlavour() );
+        vars.FillVars( "BoostedJet_"+subjetName+"_Charge",i,itSub->jetCharge() );
+        vars.FillVars( "BoostedJet_"+subjetName+"_PtRatio",i,itSub->pt()/input.selectedBoostedJets[i].fatjet.pt() );
+        vars.FillVars( "BoostedJet_"+subjetName+"_ERatio",i,itSub->energy()/input.selectedBoostedJets[i].fatjet.energy() );
+      }      
     }
 
     std::vector<pat::Jet> filterJets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets[i],4,-1);
