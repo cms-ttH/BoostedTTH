@@ -293,7 +293,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
     float drQ=5;
     reco::GenParticle wchadron=input.genTopEvt.GetWCHadron();
     for(uint k=0; k<q1.size(); k++){
-      if(abs(q1[k].pdgId())==4&&q1[k].pt()>1){
+      if(abs(q1[k].pdgId())==4&&q1[k].pt()>1&&wchadron.pt()>0.){
 	float dr = BoostedUtils::DeltaR(q1[k].p4(),wchadron.p4());
 	if(dr>0&&dr<drQ){
 	  drQ=dr;
@@ -324,7 +324,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 	auto hadr1=additional_b_genjets_hadron[0];
 	auto hadr2=additional_b_genjets_hadron2[0];
 	mbhad=(hadr1.p4()+hadr2.p4()).M();
-	drbhad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
+	if(hadr1.pt() > 0. && hadr2.pt() > 0.) drbhad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
 	mbhadjets=additional_b_genjets[0].p4().M();
 	drbhadjets=0;
     }
@@ -332,7 +332,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 	auto hadr1=additional_b_genjets_hadron[0];
 	auto hadr2=additional_b_genjets_hadron[1];
 	mbhad=(hadr1.p4()+hadr2.p4()).M();
-	drbhad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
+	if(hadr1.pt() > 0. && hadr2.pt() > 0.) drbhad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
 	mbhadjets=(additional_b_genjets[0].p4()+additional_b_genjets[1].p4()).M();
 	drbhadjets=BoostedUtils::DeltaR(additional_b_genjets[0].p4(),additional_b_genjets[1].p4());
     }
@@ -340,7 +340,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 	auto hadr1=additional_c_genjets_hadron[0];
 	auto hadr2=additional_c_genjets_hadron2[0];
 	mchad=(hadr1.p4()+hadr2.p4()).M();
-	drchad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
+	if(hadr1.pt() > 0. && hadr2.pt() > 0.) drchad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
 	mchadjets=additional_c_genjets[0].p4().M();
 	drchadjets=0;
     }
@@ -348,7 +348,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 	auto hadr1=additional_c_genjets_hadron[0];
 	auto hadr2=additional_c_genjets_hadron[1];
 	mchad=(hadr1.p4()+hadr2.p4()).M();
-	drchad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
+  if(hadr1.pt() > 0. && hadr2.pt() > 0.) drchad=BoostedUtils::DeltaR(hadr1.p4(),hadr2.p4());
 	mchadjets=(additional_c_genjets[0].p4()+additional_c_genjets[1].p4()).M();
 	drchadjets=BoostedUtils::DeltaR(additional_c_genjets[0].p4(),additional_c_genjets[1].p4());
     }
