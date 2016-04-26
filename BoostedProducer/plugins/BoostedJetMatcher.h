@@ -73,7 +73,7 @@ class BoostedJetMatcher : public edm::EDProducer {
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoPrunedJetsToken;
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSDJetsToken;
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSDZ2B1JetsToken;
-    edm::EDGetTokenT< std::vector<reco::PFJet> >            recoSDZ2B1SubjetsToken;
+    edm::EDGetTokenT< std::vector<reco::PFJet> >            recoSDZ2B1JetsforSToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patFatJetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patHTTTopJetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patHTTSubjetsToken;

@@ -465,12 +465,6 @@ void BoostedJetVarProcessor::InitSDZ2B1JetVars(VariableContainer& vars){
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_PtRatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_ERatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_ERatio",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_Tau1",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_Tau1",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_Tau2",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_Tau2",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_Tau3",-9,"N_BoostedJets" );  
-  vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_Tau3",-9,"N_BoostedJets" );  
   
   vars.InitVars( "BoostedJet_SDZ2B1_CSV1",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_CSV2",-9,"N_BoostedJets" );
@@ -482,7 +476,10 @@ void BoostedJetVarProcessor::InitSDZ2B1JetVars(VariableContainer& vars){
   vars.InitVars( "BoostedJet_SDZ2B1_Phi",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_Dr_SDZ2B1_Subjet12",-9,"N_BoostedJets" );
-
+  
+  vars.InitVars( "BoostedJet_SDZ2B1_Tau1",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Tau2",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Tau3",-9,"N_BoostedJets" );  
 } 
 
 
@@ -1052,9 +1049,6 @@ void BoostedJetVarProcessor::FillSDZ2B1JetVars(const InputCollections& input,Var
       vars.FillVars( "BoostedJet_SDZ2B1_"+SubjetName+"_Charge",i,itSub->jetCharge() );
       vars.FillVars( "BoostedJet_SDZ2B1_"+SubjetName+"_PtRatio",i,itSub->pt()/input.selectedBoostedJets[i].fatjet.pt() );
       vars.FillVars( "BoostedJet_SDZ2B1_"+SubjetName+"_ERatio",i,itSub->energy()/input.selectedBoostedJets[i].fatjet.energy() );
-      vars.FillVars( "BoostedJet_SDZ2B1_"+SubjetName+"_Tau1",i,input.selectedBoostedJets.at(i).tau1Softdrop.at(itSub-subjets.begin()) );
-      vars.FillVars( "BoostedJet_SDZ2B1_"+SubjetName+"_Tau2",i,input.selectedBoostedJets.at(i).tau2Softdrop.at(itSub-subjets.begin()) );
-      vars.FillVars( "BoostedJet_SDZ2B1_"+SubjetName+"_Tau3",i,input.selectedBoostedJets.at(i).tau3Softdrop.at(itSub-subjets.begin()) );  
     }  
 
     if(subjets.size()>1){
@@ -1074,6 +1068,10 @@ void BoostedJetVarProcessor::FillSDZ2B1JetVars(const InputCollections& input,Var
     
     if(subjets.size()>0) vars.FillVars( "BoostedJet_SDZ2B1_CSV1",i,MiniAODHelper::GetJetCSV(subjets.at(0),btagger) );
     if(subjets.size()>1) vars.FillVars( "BoostedJet_SDZ2B1_CSV2",i,MiniAODHelper::GetJetCSV(subjets.at(1),btagger) );
+    
+    vars.FillVars( "BoostedJet_SDZ2B1_Tau1",i,input.selectedBoostedJets.at(i).tau1Softdrop );
+    vars.FillVars( "BoostedJet_SDZ2B1_Tau2",i,input.selectedBoostedJets.at(i).tau2Softdrop );
+    vars.FillVars( "BoostedJet_SDZ2B1_Tau3",i,input.selectedBoostedJets.at(i).tau3Softdrop );  
   }
 }
 
