@@ -98,9 +98,17 @@ ca15PFSoftdropZ2B1JetsCHS = ca15PFJetsCHS.clone(
     jetCollInstanceName=cms.string("subjets")
 )
 
+ca15PFSoftdropZ2B1JetsCHSforSubjettiness = ca15PFJetsCHS.clone(
+    useSoftDrop = cms.bool(True),
+    zcut = cms.double(0.2),
+    beta = cms.double(1.),
+    R0 = cms.double(1.5),
+    useExplicitGhosts = cms.bool(True)
+)
+
 ca15SoftdropSubjettiness = cms.EDProducer(
     "NjettinessAdder",
-    src = cms.InputTag("ca15PFSoftdropZ2B1JetsCHS","subjets"),
+    src = cms.InputTag("ca15PFSoftdropZ2B1JetsCHSforSubjettiness"),
     Njets = cms.vuint32(1,2,3),          # compute 1-, 2-, 3- subjettiness
     # variables for measure definition : 
     measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
@@ -112,6 +120,3 @@ ca15SoftdropSubjettiness = cms.EDProducer(
     nPass = cms.int32(999),             # not used by default
     akAxesR0 = cms.double(999.0)        # not used by default
 )
-
-
-#BoostedProducerPath = cms.Path(HTTTopJetProducer*SFJetProducer)
