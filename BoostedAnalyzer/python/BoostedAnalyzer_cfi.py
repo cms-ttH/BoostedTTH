@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
-from BoostedTTH.BoostedAnalyzer.Selection_cff import *
-from BoostedTTH.BoostedAnalyzer.Weights_cff import *
+from BoostedTTH.BoostedAnalyzer.Selection_cff import * # contains addional configurations for the selections classes, like triggers to use
+from BoostedTTH.BoostedAnalyzer.Weights_cff import * # defines stuff used for reweighting of the MC to match data PileUp
 
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
