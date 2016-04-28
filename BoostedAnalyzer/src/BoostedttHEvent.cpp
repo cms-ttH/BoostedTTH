@@ -299,6 +299,8 @@ void BoostedttHEvent::HiggsCandBoostedRec(const boosted::SubjetType subjettype, 
       }
     }
     
+    if(cleanedSubjets.size()<2) continue;
+    
     boosted::BoostedJet cleanedBoostedJet = *itJet;
     cleanedBoostedJet.filterjets = cleanedSubjets;
     
