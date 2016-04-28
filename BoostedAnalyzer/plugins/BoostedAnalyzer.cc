@@ -556,39 +556,22 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     const JetCorrector* ak8corrector = JetCorrector::getJetCorrector( "ak8PFchsL1L2L3", iSetup );
     helper.SetBoostedJetCorrector(ak8corrector);
     edm::Handle<boosted::BoostedJetCollection> h_boostedjet;
-    boosted::BoostedJetCollection selectedBoostedJets;
-    boosted::BoostedJetCollection selectedBoostedJets_uncorrected;
-    boosted::BoostedJetCollection selectedBoostedJets_jesup;
-    boosted::BoostedJetCollection selectedBoostedJets_jesdown;
-    boosted::BoostedJetCollection selectedBoostedJets_jerup;
-    boosted::BoostedJetCollection selectedBoostedJets_jerdown;
+    std::vector<boosted::BoostedJetCollection> selectedBoostedJets;
     if(useFatJets){
 	iEvent.getByToken( boostedJetsToken,h_boostedjet);
 	boosted::BoostedJetCollection const &boostedjets_unsorted = *h_boostedjet;
 	boosted::BoostedJetCollection boostedjets = BoostedUtils::GetSortedByPt(boostedjets_unsorted);
 	boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999., jetID::jetLoose);
-	boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::NA, true, true);
-	selectedBoostedJets = helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
-	//selectedBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
-	selectedBoostedJets_uncorrected = helper.GetSelectedBoostedJets(idBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
-	
-	if(true){ //TODO
-	    boosted::BoostedJetCollection correctedBoostedJets_jesup = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JESup, true, true);
-	    boosted::BoostedJetCollection correctedBoostedJets_jesdown = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JESdown, true, true);
-	    
-	    selectedBoostedJets_jesup = helper.GetSelectedBoostedJets(correctedBoostedJets_jesup, 200., 2.0, 20., 2.4, jetID::none);
-	    selectedBoostedJets_jesdown = helper.GetSelectedBoostedJets(correctedBoostedJets_jesdown, 200., 2.0, 20., 2.4, jetID::none);
-	    
-	    if(true) {//TODO
-		boosted::BoostedJetCollection correctedBoostedJets_jerup = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JERup, true, true);
-		boosted::BoostedJetCollection correctedBoostedJets_jerdown = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JERdown, true, true);
-		
-		selectedBoostedJets_jerup = helper.GetSelectedBoostedJets(correctedBoostedJets_jerup, 200., 2.0, 20., 2.4, jetID::none);
-		selectedBoostedJets_jerdown = helper.GetSelectedBoostedJets(correctedBoostedJets_jerdown, 200., 2.0, 20., 2.4, jetID::none);
-	    }
+	for(auto syst : jetSystematics){
+	    boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, syst, true, true);
+	    selectedBoostedJets.push_back(helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none));
 	}
     }
-    
+    else{
+	for(uint i =0; i<jetSystematics.size();i++){
+	    selectedBoostedJets.push_back(boosted::BoostedJetCollection());
+	}
+    }
     
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);
@@ -637,8 +620,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     std::vector<map<string,float> >weightsVector;
     // inputs
     vector<InputCollections> inputs;
-    for(uint i=0; i<jetSystematics.size(); i++){
-	auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[i]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[i]);
+    for(uint isys=0; isys<jetSystematics.size(); isys++){
+	auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
 					  selectedPVs,
@@ -648,10 +631,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectrons,
 					  *h_selectedElectronsDL,
 					  *h_selectedElectronsLoose,
-					  *(hs_selectedJets[i]),
-					  *(hs_selectedJetsLoose[i]),
-					  (*(hs_correctedMETs[i]))[0],
-					  selectedBoostedJets,
+					  *(hs_selectedJets[isys]),
+					  *(hs_selectedJetsLoose[isys]),
+					  (*(hs_correctedMETs[isys]))[0],
+					  selectedBoostedJets[isys],
 					  genTopEvt,
 					  *h_genJets,
 					  sampleType,
