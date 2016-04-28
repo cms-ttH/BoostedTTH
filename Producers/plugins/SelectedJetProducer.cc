@@ -49,6 +49,7 @@ private:
     virtual void beginStream(edm::StreamID) override;
     virtual void produce(edm::Event&, const edm::EventSetup&) override;
     virtual void endStream() override;
+    std::string systName(std::string name, sysType::sysType);
     
     //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
     //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
@@ -75,8 +76,8 @@ private:
     double leptonJetDr;
     /** names of output jet collections **/
     std::vector<std::string> collectionNames;
-    /** systematic type **/
-    sysType::sysType syst;
+    /** systematics used **/
+    std::vector<sysType::sysType> systematics;
     /** apply jet energy correciton? **/
     bool applyCorrection;
     
@@ -102,6 +103,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     rhoToken  = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
     ptMins = iConfig.getParameter< std::vector<double> >("ptMins");
     etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");    
+    leptonJetDr = iConfig.getParameter< double >("leptonJetDr");
     applyCorrection = iConfig.getParameter<bool>("applyCorrection");
     collectionNames = iConfig.getParameter< std::vector<std::string> >("collectionNames");
 
@@ -112,12 +114,28 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     analysisType::analysisType iAnalysisType = analysisType::LJ;
     const int sampleID = isData? -1 : 1;
     const std::string era = "2015_74x";
+    const std::vector<std::string> s_systematics = iConfig.getParameter< std::vector<std::string> >("systematics");
+    for(uint i=0; i<s_systematics.size(); i++){
+	if(s_systematics[i]=="") systematics.push_back(sysType::NA);
+ 	else if(s_systematics[i]=="jesup") systematics.push_back(sysType::JESup);
+	else if(s_systematics[i]=="jesdown") systematics.push_back(sysType::JESdown);
+	else if(s_systematics[i]=="jerup") systematics.push_back(sysType::JERup);
+	else if(s_systematics[i]=="jerdown") systematics.push_back(sysType::JERdown);
+	else{
+	    std::cerr << "SelectedJetProducer: systematic name " << s_systematics[i] << " not recognized" << std::endl;
+	    throw std::exception();
+
+	}
+ 
+    }
     helper.SetUp(era, sampleID, iAnalysisType, isData);
     helper.SetJetCorrectorUncertainty();
     helper.SetBoostedJetCorrectorUncertainty();
 
     for(uint i=0; i<collectionNames.size();i++){
-	produces<pat::JetCollection>(collectionNames[i]);
+	for(uint j=0; j<systematics.size();j++){
+	    produces<pat::JetCollection>(systName(collectionNames[i],systematics[j]));
+	}
     }  
 }
 
@@ -160,27 +178,46 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    
    // selected jets with jet ID cuts
    const std::vector<pat::Jet> idJets = helper.GetSelectedJets(*h_inputJets, 0., 9999., jetID::jetLoose, '-' );
-   std::vector<pat::Jet> unsortedJets;
+   std::vector<std::vector<pat::Jet> > unsortedJets;
    if(applyCorrection){
        // Get raw jets
        std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
        // Clean muons and electrons from jets
        std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);
    // Apply jet corrections
-       unsortedJets = helper.GetCorrectedJets(cleanJets, iEvent, iSetup, syst);
+       for(uint i=0; i<systematics.size(); i++){
+	   unsortedJets.push_back(helper.GetCorrectedJets(cleanJets, iEvent, iSetup, systematics[i]));
+       }
 
    }
    else{
-       unsortedJets = helper.GetDeltaRCleanedJets(idJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);       
+       for(uint i=0; i<systematics.size(); i++){
+	   unsortedJets.push_back(helper.GetDeltaRCleanedJets(idJets,*h_inputMuons,*h_inputElectrons,leptonJetDr));
+       }
    }
    for(uint i=0; i<ptMins.size(); i++ ){
-       //Get jet Collection which pass selections
-       std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets, ptMins[i], etaMaxs[i], jetID::none, '-' );
-       // Get jet Collection which pass loose selection
-       std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
-       iEvent.put(selectedJets,collectionNames[i]);
+       for(uint j=0; j<systematics.size(); j++){
+	   //Get jet Collection which pass selections
+	   std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], jetID::none, '-' );
+	   // Get jet Collection which pass loose selection
+	   std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
+	   iEvent.put(selectedJets,systName(collectionNames[i],systematics[j]));
+       }
    }
    
+}
+
+std::string SelectedJetProducer::systName(std::string name,sysType::sysType sysType){
+    if(sysType==sysType::NA) return name;
+    if(sysType==sysType::JESup) return name+"jesup";
+    if(sysType==sysType::JESdown) return name+"jesdown";
+    if(sysType==sysType::JERup) return name+"jerup";
+    if(sysType==sysType::JERdown) return name+"jerdown";
+    std::cerr << "SelectedJetProducer: systematic #"<< sysType<< " not implemented" << std::endl;
+    throw std::exception();
+    return name;
+
+    
 }
 
 // ------------ method called once each stream before processing any runs, lumis or events  ------------

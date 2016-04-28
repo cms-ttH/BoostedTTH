@@ -27,7 +27,7 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 10000 # reset for testing
+    options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:
     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv5MiniAOD/160217_174112/0000/BoostedTTH_MiniAOD_1.root']
@@ -184,6 +184,13 @@ else:
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD 
         process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
+if options.makeSystematicsTrees:
+    systs=["","jesup","jesdown"]#,"jerup","jerdown"]
+    process.SelectedJetProducer.systematics=systs
+    process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
+    process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
+    process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*len(systs)
+
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
 else:
@@ -192,7 +199,7 @@ else:
 process.BoostedAnalyzer.outfileName=options.outName
 if not options.isData:
     process.BoostedAnalyzer.eventWeight = options.weight
-process.BoostedAnalyzer.makeSystematicsTrees=options.makeSystematicsTrees
+process.BoostedAnalyzer.systematics=process.SelectedJetProducer.systematics
 process.BoostedAnalyzer.generatorName=options.generatorName
 
 

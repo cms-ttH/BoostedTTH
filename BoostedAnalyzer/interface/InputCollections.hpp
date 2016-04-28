@@ -124,7 +124,7 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<reco::GenJet>&              genJets;
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
-  const std::map<std::string,float>&            weights;
+  const std::map<std::string,float>             weights;
   const edm::Event & iEvent;
   const edm::EventSetup & iSetup;
 
