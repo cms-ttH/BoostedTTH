@@ -242,7 +242,7 @@ void BoostedttHEvent::ak5JetsClean(bool cleanHiggsCand, bool cleanTopHadCand, bo
 }
 
 
-void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger higgstagger, const bool cleanTopHadCand, const bool cleanTopLepCand, const float subjetCleaningThreshold){
+void BoostedttHEvent::HiggsCandBoostedRec(const boosted::SubjetType subjettype, HiggsTagger higgstagger, const bool cleanTopHadCand, const bool cleanTopLepCand, const float subjetCleaningThreshold){
   
   higgsCand = boosted::BoostedJet();
   higgsB1Cand = pat::Jet();
@@ -257,23 +257,52 @@ void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger higgstagger, const bool cl
     boosted::JetType jetType = BoostedUtils::GetBoostedJetType(*itJet,BoostedJetDisc::None);
     if(jetType != boosted::Higgs && jetType != boosted::NA) continue;
     
-    std::vector<pat::Jet> cleanedFilterjets = itJet->filterjets;
+    std::vector<pat::Jet> cleanedSubjets;
+    switch(subjettype){
+      case boosted::SubjetType::SF_Sub:
+      {
+        cleanedSubjets = itJet->subjets;
+        break;
+      }
+      case boosted::SubjetType::SF_Filter:
+      {
+        cleanedSubjets = itJet->filterjets;
+        break;
+      }
+      case boosted::SubjetType::Pruned:
+      {
+        cleanedSubjets = itJet->prunedsubjets;
+        break;
+      }
+      case boosted::SubjetType::SD:
+      {
+        cleanedSubjets = itJet->sdsubjets;
+        break;
+      }
+      case boosted::SubjetType::SDZ2B1:
+      {
+        cleanedSubjets = itJet->sdz2b1subjets;
+        break;
+      }
+      default:
+        cleanedSubjets = itJet->filterjets; 
+    }
     
     if(cleanTopHadCand && foundTopHadCand && iJet==topHadCandIndex) continue;
 
     if(cleanTopLepCand && foundTopLepCand){
-      cleanedFilterjets.clear();
+      cleanedSubjets.clear();
 
       for(std::vector<pat::Jet>::const_iterator itFilt=itJet->filterjets.begin();itFilt!=itJet->filterjets.end();++itFilt){
         if(topLepBCand.pt()>0. && BoostedUtils::DeltaR(topLepBCand,*itFilt)<subjetCleaningThreshold) continue;
-        cleanedFilterjets.push_back(*itFilt);
+        cleanedSubjets.push_back(*itFilt);
       }
     }
     
     boosted::BoostedJet cleanedBoostedJet = *itJet;
-    cleanedBoostedJet.filterjets = cleanedFilterjets;
+    cleanedBoostedJet.filterjets = cleanedSubjets;
     
-    if(verbose) std::cout << "found " << cleanedFilterjets.size() << " cleaned filterjets"  << std::endl;
+    if(verbose) std::cout << "found " << cleanedSubjets.size() << " cleaned filterjets"  << std::endl;
     float tag = higgstagger.GetHiggsTaggerOutput(cleanedBoostedJet);
     if(verbose) std::cout << "higgs tag of fat jet is " << tag  << std::endl;    
     
@@ -283,7 +312,7 @@ void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger higgstagger, const bool cl
       higgsCandIndex = iJet;
       
       higgsCand = *itJet;
-      std::vector<pat::Jet> sortedFilterjets = BoostedUtils::GetHiggsFilterJets(cleanedFilterjets);
+      std::vector<pat::Jet> sortedFilterjets = BoostedUtils::GetHiggsFilterJets(cleanedSubjets);
       if(sortedFilterjets.size()>0) higgsB1Cand = sortedFilterjets[0];
       if(sortedFilterjets.size()>1) higgsB2Cand = sortedFilterjets[1];
       if(sortedFilterjets.size()>2) higgsGCand = sortedFilterjets[2];
@@ -539,7 +568,7 @@ void BoostedttHEvent::TopPairCandRec(){
 }
 
 
-void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger higgstagger){
+void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger){
   
   ResetEvent();
   
@@ -550,7 +579,7 @@ void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger h
   TopHadCandBoostedRec(toptagger,false,false,.2);
   ak5JetsIdentifyTopHadCand(.3);
   
-  HiggsCandBoostedRec(higgstagger,true,false,.2);
+  HiggsCandBoostedRec(subjettype,higgstagger,true,false,.2);
   ak5JetsIdentifyHiggsCand(.3);
   
   ak5JetsClean(true,true,false);
@@ -560,7 +589,7 @@ void BoostedttHEvent::BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger h
 }
 
 
-void BoostedttHEvent::BoostedHiggsEventRec(HiggsTagger higgstagger){
+void BoostedttHEvent::BoostedHiggsEventRec(const boosted::SubjetType subjettype, HiggsTagger higgstagger){
   
   ResetEvent();
   
@@ -568,7 +597,7 @@ void BoostedttHEvent::BoostedHiggsEventRec(HiggsTagger higgstagger){
   NeutrinoRec();
   ak5JetsRec();
   
-  HiggsCandBoostedRec(higgstagger,false,false);
+  HiggsCandBoostedRec(subjettype,higgstagger,false,false);
   ak5JetsIdentifyHiggsCand(.3);
   
   ak5JetsClean(true,false,false);

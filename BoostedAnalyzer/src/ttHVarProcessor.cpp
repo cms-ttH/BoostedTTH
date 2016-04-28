@@ -2,8 +2,8 @@
 
 using namespace std;
 
-ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix_, bool doMEM_)
-    : recotype(recotype_), prefix(prefix_), btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"), toptagger(topTaggerMode_,subjetAssign_,topTaggerfilePath_),higgstagger(higgsTaggerMode_,higgsTaggerFilePath_),doMEM(doMEM_)
+ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, const boosted::SubjetType subjettype_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix_, bool doMEM_)
+    : recotype(recotype_), prefix(prefix_), btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"), toptagger(topTaggerMode_,subjetAssign_,topTaggerfilePath_),subjettype(subjettype_),higgstagger(higgsTaggerMode_,higgsTaggerFilePath_),doMEM(doMEM_)
 {  
 }
 
@@ -31,9 +31,9 @@ void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& v
   ttHEvent.SetInput(&input);  
   
   if(recotype == BoostedRecoType::BoostedTopHiggs)
-    ttHEvent.BoostedTopHiggsEventRec(toptagger, higgstagger);
+    ttHEvent.BoostedTopHiggsEventRec(toptagger, subjettype, higgstagger);
   else if(recotype == BoostedRecoType::BoostedHiggs)
-    ttHEvent.BoostedHiggsEventRec(higgstagger);
+    ttHEvent.BoostedHiggsEventRec(subjettype, higgstagger);
   else  if(recotype == BoostedRecoType::BoostedTop)
     ttHEvent.BoostedTopEventRec(toptagger);
   else

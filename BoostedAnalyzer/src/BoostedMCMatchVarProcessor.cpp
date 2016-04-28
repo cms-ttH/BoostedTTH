@@ -54,22 +54,22 @@ void BoostedMCMatchVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "BoostedJet_Dr_GenQ2_CSV2",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenB_CSV2",-9.,"N_BoostedJets" );
   
-  vars.InitVars( "BoostedJet_Dr_Filterjet1_B",-9.,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Dr_Filterjet2_B",-9.,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Dr_Filterjet3_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Filterjet1_GenB",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Filterjet2_GenB",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Filterjet3_GenB",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Filterjet1_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Filterjet2_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Filterjet3_Q",-9.,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Dr_PrunedSubjet1_B",-9.,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Dr_PrunedSubjet2_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_PrunedSubjet1_GenB",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_PrunedSubjet2_GenB",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_PrunedSubjet1_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_PrunedSubjet2_Q",-9.,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet1_B",-9.,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet2_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet1_GenB",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet2_GenB",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet1_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet2_Q",-9.,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet1_B",-9.,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet2_B",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet1_GenB",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet2_GenB",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet1_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet2_Q",-9.,"N_BoostedJets" );
 
@@ -232,7 +232,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4())<minDrFilterjet[j]){
           minDrFilterjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4());
         }
-        if(minDrFilterjet[j] < 999) vars.FillVars("BoostedJet_Dr_Filterjet"+to_string(j+1)+"_B",i,minDrFilterjet[j]);
+        if(minDrFilterjet[j] < 999) vars.FillVars("BoostedJet_Dr_Filterjet"+to_string(j+1)+"_GenB",i,minDrFilterjet[j]);
       }
       
       if(minDrB1<999) vars.FillVars("BoostedJet_Dr_GenB1_Filterjet",i,minDrB1);
@@ -263,7 +263,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b2.p4())<minDrPrunedSubjet[j]){
           minDrPrunedSubjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].prunedsubjets[j].p4(),b2.p4());
         }
-        if(minDrPrunedSubjet[j] < 999) vars.FillVars("BoostedJet_Dr_PrunedSubjet"+to_string(j+1)+"_B",i,minDrPrunedSubjet[j]);
+        if(minDrPrunedSubjet[j] < 999) vars.FillVars("BoostedJet_Dr_PrunedSubjet"+to_string(j+1)+"_GenB",i,minDrPrunedSubjet[j]);
       }
       
       if(minDrB1_Pruned < 999) vars.FillVars("BoostedJet_Dr_GenB1_PrunedSubjet",i,minDrB1_Pruned);
@@ -295,7 +295,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b2.p4())<minDrSoftdropSubjet[j]){
           minDrSoftdropSubjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b2.p4());
         }
-        if(minDrSoftdropSubjet[j] < 999) vars.FillVars("BoostedJet_Dr_SoftdropSubjet"+to_string(j+1)+"_B",i,minDrSoftdropSubjet[j]);
+        if(minDrSoftdropSubjet[j] < 999) vars.FillVars("BoostedJet_Dr_SoftdropSubjet"+to_string(j+1)+"_GenB",i,minDrSoftdropSubjet[j]);
       }
       
       if(minDrB1_Softdrop < 999) vars.FillVars("BoostedJet_Dr_GenB1_SoftdropSubjet",i,minDrB1_Softdrop);
@@ -327,7 +327,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b2.p4())<minDrSoftdropz2b1Subjet[j]){
           minDrSoftdropz2b1Subjet[j] = BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b2.p4());
         }
-        if(minDrSoftdropz2b1Subjet[j] < 999) vars.FillVars("BoostedJet_Dr_Softdropz2b1Subjet"+to_string(j+1)+"_B",i,minDrSoftdropz2b1Subjet[j]);
+        if(minDrSoftdropz2b1Subjet[j] < 999) vars.FillVars("BoostedJet_Dr_Softdropz2b1Subjet"+to_string(j+1)+"_GenB",i,minDrSoftdropz2b1Subjet[j]);
       }
       
       if(minDrB1_Softdropz2b1 < 999) vars.FillVars("BoostedJet_Dr_GenB1_Softdropz2b1Subjet",i,minDrB1_Softdropz2b1);
