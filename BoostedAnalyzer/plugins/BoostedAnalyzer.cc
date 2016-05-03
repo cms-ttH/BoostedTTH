@@ -92,6 +92,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BoostedSynchronizer.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionMEvarProcessor.hpp"
@@ -170,25 +171,29 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** Event counter */
       int eventcount;
       
-       /** is analyzed sample data? */
+      /** is analyzed sample data? */
       bool isData;
 
-       /** use fat jets? this is only possible if the miniAOD contains them */
+      /** use fat jets? this is only possible if the miniAOD contains them */
       bool useFatJets;
 
-       /** use forward jets (for single top studies) */
+      /** use forward jets (for single top studies) */
       bool useForwardJets;
 
-       /** use GenBmatching info? this is only possible if the miniAOD contains them */
+      /** use GenBmatching info? this is only possible if the miniAOD contains them */
       bool useGenHadronMatch;
 
-     /**recorrect the jets and MET that were in MiniAOD? **/
+      /**recorrect the jets and MET that were in MiniAOD? **/
       bool recorrectMET;
       
       /** dump some event content for synchronization */
       bool dumpSyncExe;
       bool dumpSyncExe2;
       Synchronizer synchronizer;
+      
+      /** dump some event content for synchronization */
+      bool dumpBoostedSync;
+      BoostedSynchronizer boostedsynchronizer;
 
       /** write systematics trees */
       bool makeSystematicsTrees;
@@ -254,11 +259,11 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       /** gen jets data access token **/
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
 
-    /** electron MVA id tokens (implementation B) **/
-    // TODO: the bools can only accessed with 
-    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pa_AN1
-    //      edm::EDGetTokenT<edm::ValueMap<bool> > EDMele90idsToken;
-    //      edm::EDGetTokenT<edm::ValueMap<bool> > EDMele80idsToken;
+      /** electron MVA id tokens (implementation B) **/
+      // TODO: the bools can only accessed with 
+      // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pa_AN1
+      //      edm::EDGetTokenT<edm::ValueMap<bool> > EDMele90idsToken;
+      //      edm::EDGetTokenT<edm::ValueMap<bool> > EDMele80idsToken;
       // MVA values and categories
       edm::EDGetTokenT<edm::ValueMap<float> > EDMeleMVAvaluesToken;
       edm::EDGetTokenT<edm::ValueMap<int> > EDMeleMVAcategoriesToken;
@@ -300,7 +305,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
 
   dumpSyncExe = iConfig.getParameter<bool>("dumpSyncExe");
   dumpSyncExe2 = iConfig.getParameter<bool>("dumpSyncExe2");
-
+  dumpBoostedSync = iConfig.getParameter<bool>("dumpBoostedSync");
+  
   makeSystematicsTrees = iConfig.getParameter<bool>("makeSystematicsTrees");
   doJERsystematic = iConfig.getParameter<bool>("doJERsystematic");
   usedGenerator = iConfig.getParameter<std::string>("generatorName");
@@ -330,28 +336,28 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
 
 
   // REGISTER DATA ACCESS
-  EDMPUInfoToken          = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo","",""));
-  EDMRhoToken             = consumes<double> (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
-  EDMHcalNoiseToken       = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
-  triggerBitsToken        = consumes< edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
-  triggerObjectsToken     = consumes< pat::TriggerObjectStandAloneCollection>(edm::InputTag("selectedPatTrigger","",""));
-  triggerPrescalesToken   = consumes< pat::PackedTriggerPrescales>(edm::InputTag("patTrigger","",""));
-  EDMBeamSpotToken        = consumes< reco::BeamSpot > (edm::InputTag("offlineBeamSpot","",""));
-  EDMVertexToken          = consumes< reco::VertexCollection > (edm::InputTag("offlineSlimmedPrimaryVertices","",""));
-  EDMMuonsToken           = consumes< std::vector<pat::Muon> >(edm::InputTag("slimmedMuons","",""));
-  EDMElectronsToken       = consumes< edm::View<pat::Electron> >(edm::InputTag("slimmedElectrons","",""));
-  EDMJetsToken            = consumes< std::vector<pat::Jet> >(edm::InputTag("slimmedJets","",""));
-  EDMMETsToken            = consumes< std::vector<pat::MET> >(edm::InputTag("slimmedMETs","",""));
-  EDMBoostedJetsToken     = consumes< boosted::BoostedJetCollection >(edm::InputTag("BoostedJetMatcher","boostedjets","p"));
-  EDMGenInfoToken         = consumes< GenEventInfoProduct >(edm::InputTag("generator","",""));
-  EDMLHEToken             = consumes< LHEEventProduct >(edm::InputTag("externalLHEProducer","",""));
-  EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
-  EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
-  EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
+  EDMPUInfoToken                = consumes< std::vector<PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo","",""));
+  EDMRhoToken                   = consumes<double> (edm::InputTag(std::string("fixedGridRhoFastjetAll")));
+  EDMHcalNoiseToken             = consumes< HcalNoiseSummary >(edm::InputTag("hcalnoise","",""));
+  triggerBitsToken              = consumes< edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
+  triggerObjectsToken           = consumes< pat::TriggerObjectStandAloneCollection>(edm::InputTag("selectedPatTrigger","",""));
+  triggerPrescalesToken         = consumes< pat::PackedTriggerPrescales>(edm::InputTag("patTrigger","",""));
+  EDMBeamSpotToken              = consumes< reco::BeamSpot > (edm::InputTag("offlineBeamSpot","",""));
+  EDMVertexToken                = consumes< reco::VertexCollection > (edm::InputTag("offlineSlimmedPrimaryVertices","",""));
+  EDMMuonsToken                 = consumes< std::vector<pat::Muon> >(edm::InputTag("slimmedMuons","",""));
+  EDMElectronsToken             = consumes< edm::View<pat::Electron> >(edm::InputTag("slimmedElectrons","",""));
+  EDMJetsToken                  = consumes< std::vector<pat::Jet> >(edm::InputTag("slimmedJets","",""));
+  EDMMETsToken                  = consumes< std::vector<pat::MET> >(edm::InputTag("slimmedMETs","",""));
+  EDMBoostedJetsToken           = consumes< boosted::BoostedJetCollection >(edm::InputTag("BoostedJetMatcher","boostedjets","p"));
+  EDMGenInfoToken               = consumes< GenEventInfoProduct >(edm::InputTag("generator","",""));
+  EDMLHEToken                   = consumes< LHEEventProduct >(edm::InputTag("externalLHEProducer","",""));
+  EDMGenParticlesToken          = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
+  EDMGenJetsToken               = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
+  EDMConversionCollectionToken  = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
   // electron MVA info
   // TODO: these (and many of the names above) shouldn't be hard coded but set in python cfg
-  EDMeleMVAvaluesToken           = consumes<edm::ValueMap<float> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Values",""));
-  EDMeleMVAcategoriesToken       = consumes<edm::ValueMap<int> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories",""));
+  EDMeleMVAvaluesToken          = consumes<edm::ValueMap<float> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Values",""));
+  EDMeleMVAcategoriesToken      = consumes<edm::ValueMap<int> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories",""));
   
   // INITIALIZE MINIAOD HELPER
   helper.SetUp(era, sampleID, iAnalysisType, isData);
@@ -367,8 +373,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     cutflow_jesup.Init();
     cutflow_jesdown.Init();
     if(doJERsystematic){
-	cutflow_jerup.Init();
-	cutflow_jerdown.Init();
+	    cutflow_jerup.Init();
+	    cutflow_jerdown.Init();
     }
   }
   std::vector<std::string> selectionNames = iConfig.getParameter< std::vector<std::string> >("selectionNames");
@@ -378,7 +384,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   }
   if(dumpSyncExe2){
     synchronizer.InitDumpSyncFile2(outfileName);
-  }  
+  }
+  if(dumpBoostedSync){
+    boostedsynchronizer.InitDumpSyncFile(outfileName);
+  }
+  
   // add requested selections
   for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {    
     cout << "Initializing " << *itSel << endl;
@@ -415,15 +425,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
       selections.back()->InitCutflow(cutflow_jesup);
       selections.back()->InitCutflow(cutflow_jesdown);
       if(doJERsystematic){
-	  selections.back()->InitCutflow(cutflow_jerup);
-	  selections.back()->InitCutflow(cutflow_jerdown);
+	      selections.back()->InitCutflow(cutflow_jerup);
+	      selections.back()->InitCutflow(cutflow_jerdown);
       }
     }
     
     nselection++;     
-    if(dumpSyncExe){
-      synchronizer.InitDumpSyncFile1(outfileName+"_Dump1_"+std::to_string(nselection));
-    }  
   }
   relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
 
@@ -431,13 +438,13 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   treewriter_nominal.Init(outfileNameNominal);  
   // in case of systematics
   if(makeSystematicsTrees){
-      // this is are the usual tree names
-      treewriter_jesup.Init(outfileNameJESup);
-      treewriter_jesdown.Init(outfileNameJESdown);
-      if(doJERsystematic){
-	  treewriter_jerup.Init(outfileNameJERup);
-	  treewriter_jerdown.Init(outfileNameJERdown);
-      }
+    // this is are the usual tree names
+    treewriter_jesup.Init(outfileNameJESup);
+    treewriter_jesdown.Init(outfileNameJESdown);
+    if(doJERsystematic){
+      treewriter_jerup.Init(outfileNameJERup);
+      treewriter_jerdown.Init(outfileNameJERdown);
+    }
   }
 
   std::vector<std::string> processorNames = iConfig.getParameter< std::vector<std::string> >("processorNames");
@@ -453,11 +460,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     treewriter_nominal.AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
-      if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
-          cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl; 
-          treewriter_nominal.AddTreeProcessor(new BasicVarProcessor(),"MVAVarProcessor");
-      }
-      treewriter_nominal.AddTreeProcessor(new MVAVarProcessor(),"MVAVarProcessor");
+    if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
+      cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl; 
+      treewriter_nominal.AddTreeProcessor(new BasicVarProcessor(),"MVAVarProcessor");
+    }
+    treewriter_nominal.AddTreeProcessor(new MVAVarProcessor(),"MVAVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"RawVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new RawVarProcessor(),"RawVarProcessor");
@@ -472,7 +479,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     treewriter_nominal.AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
-      treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::Pt,"",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::CSV,"",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
@@ -1024,6 +1031,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   // dump globl Hbb sync exe for all events
   if(dumpSyncExe2){
       synchronizer.DumpSyncExe2(0,input_nominal,input_jesup,input_jesdown,input_uncorrjets,input_DL_nominal,input_DL_jesup,input_DL_jesdown,input_DL_uncorrjets,helper);
+  }
+  
+  // dump boosted sync exe for all events
+  if(dumpBoostedSync){
+      boostedsynchronizer.DumpSyncExe(0,input_nominal,input_jesup,input_jesdown,helper);
   }
 
   for(size_t i=0; i<selections.size() && selected_nominal; i++){
