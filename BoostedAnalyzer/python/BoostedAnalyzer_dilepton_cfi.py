@@ -27,7 +27,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
-
+    dumpBoostedSync = cms.bool(False),
+    
     selectionNames = cms.vstring("VertexSelection","DiLeptonSelection","MinDiLeptonMassSelection"),
     processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","DiLeptonVarProcessor","TriggerVarProcessor"),
 

@@ -33,7 +33,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
-
+    dumpBoostedSync = cms.bool(False),
+    
     doBoostedMEM = cms.bool(False),
 
     minJetsForMEM = cms.int32(4),

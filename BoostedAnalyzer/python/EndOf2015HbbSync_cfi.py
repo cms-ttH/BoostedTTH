@@ -33,7 +33,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(True),
-
+    dumpBoostedSync = cms.bool(False),
+    
     selectionNames = cms.vstring("VertexSelection"),
     processorNames = cms.vstring(),
 

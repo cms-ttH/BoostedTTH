@@ -22,8 +22,11 @@ BoostedAnalyzer = cms.EDAnalyzer(
     useFatJets = cms.bool(True),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(False),
+    
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
+    dumpBoostedSync = cms.bool(False),
+    
     outfileName = cms.string("BoostedTTH"),
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
     makeSystematicsTrees = cms.bool(False),
