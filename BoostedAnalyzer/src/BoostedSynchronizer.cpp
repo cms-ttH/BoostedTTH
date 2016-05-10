@@ -46,6 +46,7 @@ void BoostedSynchronizer::DumpSyncExeHeader(std::ostream &out){
   <<"jet1_CSVv2,jet2_CSVv2,jet3_CSVv2,jet4_CSVv2,"
   <<"n_fatjets,"
   <<"pt_fatjet_1,pt_fatjet_2,"
+  <<"eta_fatjet_1,eta_fatjet_2,"
   <<"pt_nonW_1,pt_nonW_2,"
   <<"pt_W1_1,pt_W1_2,"
   <<"pt_W2_1,pt_W2_2,"
@@ -130,6 +131,8 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
   
   float pt_fatjet_1=0;
   float pt_fatjet_2=0;
+  float eta_fatjet_1=0;
+  float eta_fatjet_2=0;
   
   float pt_nonW_1=0;
   float pt_nonW_2=0;
@@ -263,15 +266,18 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
   n_fatjets = int(input.selectedBoostedJets.size());
   if(input.selectedBoostedJets.size()>0){
     pt_fatjet_1=input.selectedBoostedJets.at(0).fatjet.pt();
+    eta_fatjet_1=input.selectedBoostedJets.at(0).fatjet.eta();
     
-    pt_nonW_1=input.selectedBoostedJets.at(0).nonW.pt();
-    pt_W1_1=input.selectedBoostedJets.at(0).W1.pt();
-    pt_W2_1=input.selectedBoostedJets.at(0).W2.pt();
-    csv_nonW_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).nonW);
-    csv_W1_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).W1);
-    csv_W2_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).W2);
-    
-    m_top_1=input.selectedBoostedJets.at(0).topjet.mass();
+    if(input.selectedBoostedJets.at(0).topjet.pt()>0){
+      pt_nonW_1=input.selectedBoostedJets.at(0).nonW.pt();
+      pt_W1_1=input.selectedBoostedJets.at(0).W1.pt();
+      pt_W2_1=input.selectedBoostedJets.at(0).W2.pt();
+      csv_nonW_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).nonW);
+      csv_W1_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).W1);
+      csv_W2_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).W2);
+
+      m_top_1=input.selectedBoostedJets.at(0).topjet.mass();
+    }
     
     if(input.selectedBoostedJets.at(0).filterjets.size()>0){
       pt_sf_filterjet1_1=input.selectedBoostedJets.at(0).filterjets.at(0).pt();
@@ -316,15 +322,18 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
   
   if(input.selectedBoostedJets.size()>1){
     pt_fatjet_2=input.selectedBoostedJets.at(1).fatjet.pt();
+    eta_fatjet_2=input.selectedBoostedJets.at(1).fatjet.eta();
     
-    pt_nonW_2=input.selectedBoostedJets.at(1).nonW.pt();
-    pt_W1_2=input.selectedBoostedJets.at(1).W1.pt();
-    pt_W2_2=input.selectedBoostedJets.at(1).W2.pt();
-    csv_nonW_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).nonW);
-    csv_W1_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).W1);
-    csv_W2_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).W2);
-    
-    m_top_2=input.selectedBoostedJets.at(1).topjet.mass();
+    if(input.selectedBoostedJets.at(1).topjet.pt()>0){
+      pt_nonW_2=input.selectedBoostedJets.at(1).nonW.pt();
+      pt_W1_2=input.selectedBoostedJets.at(1).W1.pt();
+      pt_W2_2=input.selectedBoostedJets.at(1).W2.pt();
+      csv_nonW_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).nonW);
+      csv_W1_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).W1);
+      csv_W2_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).W2);
+
+      m_top_2=input.selectedBoostedJets.at(1).topjet.mass();
+    }
     
     if(input.selectedBoostedJets.at(1).filterjets.size()>0){
       pt_sf_filterjet1_2=input.selectedBoostedJets.at(1).filterjets.at(0).pt();
@@ -369,71 +378,73 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
     
   if(compare) cout <<run<<","<<lumi<<","<<event<<","
     <<is_SL<<","
-	  <<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","
+	  <<boost::format("%.4f") % lep1_pt<<","<<boost::format("%.4f") % lep1_eta<<","<<boost::format("%.4f") % lep1_phi<<","<<boost::format("%.4f") % lep1_iso<<","<<lep1_pdgId<<","
     <<n_jets<<","<<n_btags<<","
-	  <<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
-	  <<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
+	  <<boost::format("%.4f") % jet1_pt<<","<<boost::format("%.4f") % jet2_pt<<","<<boost::format("%.4f") % jet3_pt<<","<<boost::format("%.4f") % jet4_pt<<","
+	  <<boost::format("%.4f") % jet1_CSVv2<<","<<boost::format("%.4f") % jet2_CSVv2<<","<<boost::format("%.4f") % jet3_CSVv2<<","<<boost::format("%.4f") % jet4_CSVv2<<","
 	  <<n_fatjets<<","
-    <<pt_fatjet_1<<","<<pt_fatjet_2<<","
-	  <<pt_nonW_1<<","<<pt_nonW_2<<","
-	  <<pt_W1_1<<","<<pt_W1_2<<","
-	  <<pt_W2_1<<","<<pt_W2_2<<","
-	  <<csv_nonW_1<<","<<csv_nonW_2<<","
-	  <<csv_W1_1<<","<<csv_W1_2<<","
-	  <<csv_W2_1<<","<<csv_W2_2<<","
-	  <<m_top_1<<","<<m_top_2<<","
-	  <<pt_sf_filterjet1_1<<","<<pt_sf_filterjet1_2<<","
-	  <<pt_sf_filterjet2_1<<","<<pt_sf_filterjet2_2<<","
-	  <<pt_sf_filterjet3_1<<","<<pt_sf_filterjet3_2<<","
-	  <<csv_sf_filterjet1_1<<","<<csv_sf_filterjet1_2<<","
-	  <<csv_sf_filterjet2_1<<","<<csv_sf_filterjet2_2<<","
-	  <<csv_sf_filterjet3_1<<","<<csv_sf_filterjet3_2<<","
-	  <<pt_pruned_subjet1_1<<","<<pt_pruned_subjet1_2<<","
-	  <<pt_pruned_subjet2_1<<","<<pt_pruned_subjet2_2<<","
-	  <<csv_pruned_subjet1_1<<","<<csv_pruned_subjet1_2<<","
-	  <<csv_pruned_subjet2_1<<","<<csv_pruned_subjet2_2<<","
-	  <<pt_sd_subjet1_1<<","<<pt_sd_subjet1_2<<","
-	  <<pt_sd_subjet2_1<<","<<pt_sd_subjet2_2<<","
-	  <<csv_sd_subjet1_1<<","<<csv_sd_subjet1_2<<","
-	  <<csv_sd_subjet2_1<<","<<csv_sd_subjet2_2<<","
-	  <<pt_sdz2b1_subjet1_1<<","<<pt_sdz2b1_subjet1_2<<","
-	  <<pt_sdz2b1_subjet2_1<<","<<pt_sdz2b1_subjet2_2<<","
-	  <<csv_sdz2b1_subjet1_1<<","<<csv_sdz2b1_subjet1_2<<","
-	  <<csv_sdz2b1_subjet2_1<<","<<csv_sdz2b1_subjet2_2<<"\n";
+    <<boost::format("%.4f") % pt_fatjet_1<<","<<boost::format("%.4f") % pt_fatjet_2<<","
+	  <<boost::format("%.4f") % eta_fatjet_1<<","<<boost::format("%.4f") % eta_fatjet_2<<","
+	  <<boost::format("%.4f") % pt_nonW_1<<","<<boost::format("%.4f") % pt_nonW_2<<","
+	  <<boost::format("%.4f") % pt_W1_1<<","<<boost::format("%.4f") % pt_W1_2<<","
+	  <<boost::format("%.4f") % pt_W2_1<<","<<boost::format("%.4f") % pt_W2_2<<","
+	  <<boost::format("%.4f") % csv_nonW_1<<","<<boost::format("%.4f") % csv_nonW_2<<","
+	  <<boost::format("%.4f") % csv_W1_1<<","<<boost::format("%.4f") % csv_W1_2<<","
+	  <<boost::format("%.4f") % csv_W2_1<<","<<boost::format("%.4f") % csv_W2_2<<","
+	  <<boost::format("%.4f") % m_top_1<<","<<boost::format("%.4f") % m_top_2<<","
+	  <<boost::format("%.4f") % pt_sf_filterjet1_1<<","<<boost::format("%.4f") % pt_sf_filterjet1_2<<","
+	  <<boost::format("%.4f") % pt_sf_filterjet2_1<<","<<boost::format("%.4f") % pt_sf_filterjet2_2<<","
+	  <<boost::format("%.4f") % pt_sf_filterjet3_1<<","<<boost::format("%.4f") % pt_sf_filterjet3_2<<","
+	  <<boost::format("%.4f") % csv_sf_filterjet1_1<<","<<boost::format("%.4f") % csv_sf_filterjet1_2<<","
+	  <<boost::format("%.4f") % csv_sf_filterjet2_1<<","<<boost::format("%.4f") % csv_sf_filterjet2_2<<","
+	  <<boost::format("%.4f") % csv_sf_filterjet3_1<<","<<boost::format("%.4f") % csv_sf_filterjet3_2<<","
+	  <<boost::format("%.4f") % pt_pruned_subjet1_1<<","<<boost::format("%.4f") % pt_pruned_subjet1_2<<","
+	  <<boost::format("%.4f") % pt_pruned_subjet2_1<<","<<boost::format("%.4f") % pt_pruned_subjet2_2<<","
+	  <<boost::format("%.4f") % csv_pruned_subjet1_1<<","<<boost::format("%.4f") % csv_pruned_subjet1_2<<","
+	  <<boost::format("%.4f") % csv_pruned_subjet2_1<<","<<boost::format("%.4f") % csv_pruned_subjet2_2<<","
+	  <<boost::format("%.4f") % pt_sd_subjet1_1<<","<<boost::format("%.4f") % pt_sd_subjet1_2<<","
+	  <<boost::format("%.4f") % pt_sd_subjet2_1<<","<<boost::format("%.4f") % pt_sd_subjet2_2<<","
+	  <<boost::format("%.4f") % csv_sd_subjet1_1<<","<<boost::format("%.4f") % csv_sd_subjet1_2<<","
+	  <<boost::format("%.4f") % csv_sd_subjet2_1<<","<<boost::format("%.4f") % csv_sd_subjet2_2<<","
+	  <<boost::format("%.4f") % pt_sdz2b1_subjet1_1<<","<<boost::format("%.4f") % pt_sdz2b1_subjet1_2<<","
+	  <<boost::format("%.4f") % pt_sdz2b1_subjet2_1<<","<<boost::format("%.4f") % pt_sdz2b1_subjet2_2<<","
+	  <<boost::format("%.4f") % csv_sdz2b1_subjet1_1<<","<<boost::format("%.4f") % csv_sdz2b1_subjet1_2<<","
+	  <<boost::format("%.4f") % csv_sdz2b1_subjet2_1<<","<<boost::format("%.4f") % csv_sdz2b1_subjet2_2<<"\n";
   
   out <<run<<","<<lumi<<","<<event<<","
   <<is_SL<<","
-	<<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","
+	<<boost::format("%.4f") % lep1_pt<<","<<boost::format("%.4f") % lep1_eta<<","<<boost::format("%.4f") % lep1_phi<<","<<boost::format("%.4f") % lep1_iso<<","<<lep1_pdgId<<","
   <<n_jets<<","<<n_btags<<","
-	<<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
-	<<jet1_CSVv2<<","<<jet2_CSVv2<<","<<jet3_CSVv2<<","<<jet4_CSVv2<<","
+	<<boost::format("%.4f") % jet1_pt<<","<<boost::format("%.4f") % jet2_pt<<","<<boost::format("%.4f") % jet3_pt<<","<<boost::format("%.4f") % jet4_pt<<","
+	<<boost::format("%.4f") % jet1_CSVv2<<","<<boost::format("%.4f") % jet2_CSVv2<<","<<boost::format("%.4f") % jet3_CSVv2<<","<<boost::format("%.4f") % jet4_CSVv2<<","
 	<<n_fatjets<<","
-  <<pt_fatjet_1<<","<<pt_fatjet_2<<","
-	<<pt_nonW_1<<","<<pt_nonW_2<<","
-	<<pt_W1_1<<","<<pt_W1_2<<","
-	<<pt_W2_1<<","<<pt_W2_2<<","
-	<<csv_nonW_1<<","<<csv_nonW_2<<","
-	<<csv_W1_1<<","<<csv_W1_2<<","
-	<<csv_W2_1<<","<<csv_W2_2<<","
-	<<m_top_1<<","<<m_top_2<<","
-	<<pt_sf_filterjet1_1<<","<<pt_sf_filterjet1_2<<","
-	<<pt_sf_filterjet2_1<<","<<pt_sf_filterjet2_2<<","
-	<<pt_sf_filterjet3_1<<","<<pt_sf_filterjet3_2<<","
-	<<csv_sf_filterjet1_1<<","<<csv_sf_filterjet1_2<<","
-	<<csv_sf_filterjet2_1<<","<<csv_sf_filterjet2_2<<","
-	<<csv_sf_filterjet3_1<<","<<csv_sf_filterjet3_2<<","
-	<<pt_pruned_subjet1_1<<","<<pt_pruned_subjet1_2<<","
-	<<pt_pruned_subjet2_1<<","<<pt_pruned_subjet2_2<<","
-	<<csv_pruned_subjet1_1<<","<<csv_pruned_subjet1_2<<","
-	<<csv_pruned_subjet2_1<<","<<csv_pruned_subjet2_2<<","
-	<<pt_sd_subjet1_1<<","<<pt_sd_subjet1_2<<","
-	<<pt_sd_subjet2_1<<","<<pt_sd_subjet2_2<<","
-	<<csv_sd_subjet1_1<<","<<csv_sd_subjet1_2<<","
-	<<csv_sd_subjet2_1<<","<<csv_sd_subjet2_2<<","
-	<<pt_sdz2b1_subjet1_1<<","<<pt_sdz2b1_subjet1_2<<","
-	<<pt_sdz2b1_subjet2_1<<","<<pt_sdz2b1_subjet2_2<<","
-	<<csv_sdz2b1_subjet1_1<<","<<csv_sdz2b1_subjet1_2<<","
-	<<csv_sdz2b1_subjet2_1<<","<<csv_sdz2b1_subjet2_2<<"\n";
+  <<boost::format("%.4f") % pt_fatjet_1<<","<<boost::format("%.4f") % pt_fatjet_2<<","
+	<<boost::format("%.4f") % eta_fatjet_1<<","<<boost::format("%.4f") % eta_fatjet_2<<","
+	<<boost::format("%.4f") % pt_nonW_1<<","<<boost::format("%.4f") % pt_nonW_2<<","
+	<<boost::format("%.4f") % pt_W1_1<<","<<boost::format("%.4f") % pt_W1_2<<","
+	<<boost::format("%.4f") % pt_W2_1<<","<<boost::format("%.4f") % pt_W2_2<<","
+	<<boost::format("%.4f") % csv_nonW_1<<","<<boost::format("%.4f") % csv_nonW_2<<","
+	<<boost::format("%.4f") % csv_W1_1<<","<<boost::format("%.4f") % csv_W1_2<<","
+	<<boost::format("%.4f") % csv_W2_1<<","<<boost::format("%.4f") % csv_W2_2<<","
+	<<boost::format("%.4f") % m_top_1<<","<<boost::format("%.4f") % m_top_2<<","
+	<<boost::format("%.4f") % pt_sf_filterjet1_1<<","<<boost::format("%.4f") % pt_sf_filterjet1_2<<","
+	<<boost::format("%.4f") % pt_sf_filterjet2_1<<","<<boost::format("%.4f") % pt_sf_filterjet2_2<<","
+	<<boost::format("%.4f") % pt_sf_filterjet3_1<<","<<boost::format("%.4f") % pt_sf_filterjet3_2<<","
+	<<boost::format("%.4f") % csv_sf_filterjet1_1<<","<<boost::format("%.4f") % csv_sf_filterjet1_2<<","
+	<<boost::format("%.4f") % csv_sf_filterjet2_1<<","<<boost::format("%.4f") % csv_sf_filterjet2_2<<","
+	<<boost::format("%.4f") % csv_sf_filterjet3_1<<","<<boost::format("%.4f") % csv_sf_filterjet3_2<<","
+	<<boost::format("%.4f") % pt_pruned_subjet1_1<<","<<boost::format("%.4f") % pt_pruned_subjet1_2<<","
+	<<boost::format("%.4f") % pt_pruned_subjet2_1<<","<<boost::format("%.4f") % pt_pruned_subjet2_2<<","
+	<<boost::format("%.4f") % csv_pruned_subjet1_1<<","<<boost::format("%.4f") % csv_pruned_subjet1_2<<","
+	<<boost::format("%.4f") % csv_pruned_subjet2_1<<","<<boost::format("%.4f") % csv_pruned_subjet2_2<<","
+	<<boost::format("%.4f") % pt_sd_subjet1_1<<","<<boost::format("%.4f") % pt_sd_subjet1_2<<","
+	<<boost::format("%.4f") % pt_sd_subjet2_1<<","<<boost::format("%.4f") % pt_sd_subjet2_2<<","
+	<<boost::format("%.4f") % csv_sd_subjet1_1<<","<<boost::format("%.4f") % csv_sd_subjet1_2<<","
+	<<boost::format("%.4f") % csv_sd_subjet2_1<<","<<boost::format("%.4f") % csv_sd_subjet2_2<<","
+	<<boost::format("%.4f") % pt_sdz2b1_subjet1_1<<","<<boost::format("%.4f") % pt_sdz2b1_subjet1_2<<","
+	<<boost::format("%.4f") % pt_sdz2b1_subjet2_1<<","<<boost::format("%.4f") % pt_sdz2b1_subjet2_2<<","
+	<<boost::format("%.4f") % csv_sdz2b1_subjet1_1<<","<<boost::format("%.4f") % csv_sdz2b1_subjet1_2<<","
+	<<boost::format("%.4f") % csv_sdz2b1_subjet2_1<<","<<boost::format("%.4f") % csv_sdz2b1_subjet2_2<<"\n";
 }
 
 

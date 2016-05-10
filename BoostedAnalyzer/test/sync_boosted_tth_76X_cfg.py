@@ -13,15 +13,16 @@ options = VarParsing ('analysis')
 # maxEvents: singleton, int; default = -1
 # inputFiles: (comma separated, no spaces!) list, string: default empty
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
-options.register( "globalTag", "76X_mcRun2_asymptotic_v12", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "76X_mcRun2_asymptotic_RunIIFall15DR76_v1", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 10000000 # reset for testing
+    options.maxEvents = 1000000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['file:/nfs/dust/cms/user/shwillia/CMSSW_7_6_3/src/BoostedTTH_sync_boosted_tth_76X_MiniAOD.root']
+#    options.inputFiles=['file:/nfs/dust/cms/user/shwillia/CMSSW_7_6_3/src/BoostedTTH_sync_boosted_tth_76X_MiniAOD.root']
+    options.inputFiles=['file:/nfs/dust/cms/user/riese/CMSSW_7_6_3/src/BoostedTTH_MiniAOD_20160509.root']
     
 # print settings
 print "\n\n***** JOB SETUP *************************"
