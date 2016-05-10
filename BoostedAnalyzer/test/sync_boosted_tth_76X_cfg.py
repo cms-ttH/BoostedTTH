@@ -21,7 +21,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 10000000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['file:/nfs/dust/cms/user/shwillia/CMSSW_7_6_3/src/BoostedTTH_sync_boosted_tth_76X_MiniAOD.root']
+    options.inputFiles=['file:/nfs/dust/cms/user/riese/CMSSW_7_6_3/src/BoostedTTH_MiniAOD.root']
     
 # print settings
 print "\n\n***** JOB SETUP *************************"
