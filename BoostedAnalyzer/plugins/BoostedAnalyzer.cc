@@ -837,10 +837,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle<boosted::BoostedJetCollection> h_boostedjet;
   boosted::BoostedJetCollection selectedBoostedJets;
   boosted::BoostedJetCollection selectedBoostedJets_uncorrected;
+  boosted::BoostedJetCollection selectedBoostedJets_sync;
   boosted::BoostedJetCollection selectedBoostedJets_jesup;
   boosted::BoostedJetCollection selectedBoostedJets_jesdown;
   boosted::BoostedJetCollection selectedBoostedJets_jerup;
   boosted::BoostedJetCollection selectedBoostedJets_jerdown;
+  
   if(useFatJets){
     iEvent.getByToken( EDMBoostedJetsToken,h_boostedjet);
     boosted::BoostedJetCollection const &boostedjets_unsorted = *h_boostedjet;
@@ -850,6 +852,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     selectedBoostedJets = helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
     //selectedBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
     selectedBoostedJets_uncorrected = helper.GetSelectedBoostedJets(idBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
+    selectedBoostedJets_sync = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::none);
     
     if(makeSystematicsTrees){
       boosted::BoostedJetCollection correctedBoostedJets_jesup = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JESup, true, true);
@@ -995,6 +998,33 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  iSetup
 				  );
 
+  InputCollections input_boostedsync( eventInfo,
+				  triggerInfo,
+				  selectedPVs,
+				  rawMuons,
+				  selectedMuons,
+				  selectedMuonsDL,
+				  selectedMuonsLoose,
+				  rawElectrons,
+				  selectedElectrons,
+				  selectedElectronsDL,
+				  selectedElectronsLoose,
+				  idJets,
+				  rawJets,
+				  selectedJets_nominal,
+				  selectedJetsLoose_nominal,
+				  selectedJetsSingleTop_nominal,
+				  correctedMETs_nominal[0],
+				  selectedBoostedJets_sync,
+				  genTopEvt,
+				  selectedGenJets,
+				  sampleType,
+				  higgsdecay,
+				  weights,
+				  iEvent,
+				  iSetup
+				  );
+
   // define systematically shifted input (replace quantaties affected by jets)
   InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],selectedBoostedJets_jesup,weights_jesup);
   InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],selectedBoostedJets_jesdown,weights_jesdown);
@@ -1035,7 +1065,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   
   // dump boosted sync exe for all events
   if(dumpBoostedSync){
-      boostedsynchronizer.DumpSyncExe(0,input_nominal,input_jesup,input_jesdown,helper);
+      boostedsynchronizer.DumpSyncExe(0,input_boostedsync,input_jesup,input_jesdown,helper);
   }
 
   for(size_t i=0; i<selections.size() && selected_nominal; i++){

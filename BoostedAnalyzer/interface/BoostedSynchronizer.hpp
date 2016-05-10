@@ -1,6 +1,7 @@
 #ifndef BOOSTEDSYNCHRONIZER_HPP
 #define BOOSTEDSYNCHRONIZER_HPP
 
+#include <iomanip>
 #include <vector>
 #include <map>
 #include <stdio.h>
