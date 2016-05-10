@@ -242,12 +242,32 @@ void BoostedJetVarProcessor::InitTopTagVars(VariableContainer& vars){
 void BoostedJetVarProcessor::InitSFJetVars(VariableContainer& vars){
   
   vars.InitVars( "N_BoostedJet_Subjets",-9,"N_BoostedJets" );
+
+  vars.InitVars( "BoostedJet_Subjet1_Pt",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_E",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_M",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_Eta",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_Phi",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_CSV",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_Dr",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_Flav",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_Charge",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_PtRatio",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet1_ERatio",-9,"N_BoostedJets" );
+
+  vars.InitVars( "BoostedJet_Subjet2_Pt",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_E",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_M",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_Eta",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_Phi",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_CSV",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_Dr",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_Flav",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_Charge",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_PtRatio",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet2_ERatio",-9,"N_BoostedJets" );
+
   vars.InitVars( "N_BoostedJet_Filterjets",-9,"N_BoostedJets" );
-  
-  vars.InitVars( "BoostedJet_CSV1",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_CSV2",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_CSV3",-9,"N_BoostedJets" );
-  vars.InitVars( "BoostedJet_CSV4",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_Filterjet1_Pt",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet1_E",-9,"N_BoostedJets" );
@@ -284,6 +304,11 @@ void BoostedJetVarProcessor::InitSFJetVars(VariableContainer& vars){
   vars.InitVars( "BoostedJet_Filterjet3_Charge",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet3_PtRatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet3_ERatio",-9,"N_BoostedJets" );
+
+  vars.InitVars( "BoostedJet_CSV1",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_CSV2",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_CSV3",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_CSV4",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_B1_Pt",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_B1_E",-9,"N_BoostedJets" );
@@ -799,6 +824,24 @@ void BoostedJetVarProcessor::FillSFJetVars(const InputCollections& input,Variabl
   for(size_t i=0; i< input.selectedBoostedJets.size(); i++){
     
     vars.FillVars( "N_BoostedJet_Subjets",i,input.selectedBoostedJets[i].subjets.size() );
+    
+    for(std::vector<pat::Jet>::const_iterator itSub = input.selectedBoostedJets[i].subjets.begin(); itSub != input.selectedBoostedJets[i].subjets.end() && itSub-input.selectedBoostedJets[i].subjets.begin()<2; ++itSub){
+      TString subjetName = "Subjet";
+      subjetName += ((itSub-input.selectedBoostedJets[i].subjets.begin())+1);
+      
+      vars.FillVars( "BoostedJet_"+subjetName+"_E",i,itSub->energy() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Pt",i,itSub->pt() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_M",i,itSub->mass() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Eta",i,itSub->eta() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Phi",i,itSub->phi() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_CSV",i,MiniAODHelper::GetJetCSV(*itSub,btagger) );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Dr",i,BoostedUtils::DeltaR(*itSub,input.selectedBoostedJets[i].fatjet) );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Flav",i,itSub->partonFlavour() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_Charge",i,itSub->jetCharge() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_PtRatio",i,itSub->pt()/input.selectedBoostedJets[i].fatjet.pt() );
+      vars.FillVars( "BoostedJet_"+subjetName+"_ERatio",i,itSub->energy()/input.selectedBoostedJets[i].fatjet.energy() );
+    }
+
     vars.FillVars( "N_BoostedJet_Filterjets",i,input.selectedBoostedJets[i].filterjets.size() );
     
     for(std::vector<pat::Jet>::const_iterator itSub = input.selectedBoostedJets[i].filterjets.begin(); itSub != input.selectedBoostedJets[i].filterjets.end() && itSub-input.selectedBoostedJets[i].filterjets.begin()<3; ++itSub){
