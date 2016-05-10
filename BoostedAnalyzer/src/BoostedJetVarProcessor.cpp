@@ -267,6 +267,12 @@ void BoostedJetVarProcessor::InitSFJetVars(VariableContainer& vars){
   vars.InitVars( "BoostedJet_Subjet2_PtRatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Subjet2_ERatio",-9,"N_BoostedJets" );
 
+  vars.InitVars( "BoostedJet_Subjet12_E",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet12_Pt",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet12_M",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet12_Eta",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Subjet12_Phi",-9,"N_BoostedJets" );
+
   vars.InitVars( "N_BoostedJet_Filterjets",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_Filterjet1_Pt",-9,"N_BoostedJets" );
@@ -840,6 +846,15 @@ void BoostedJetVarProcessor::FillSFJetVars(const InputCollections& input,Variabl
       vars.FillVars( "BoostedJet_"+subjetName+"_Charge",i,itSub->jetCharge() );
       vars.FillVars( "BoostedJet_"+subjetName+"_PtRatio",i,itSub->pt()/input.selectedBoostedJets[i].fatjet.pt() );
       vars.FillVars( "BoostedJet_"+subjetName+"_ERatio",i,itSub->energy()/input.selectedBoostedJets[i].fatjet.energy() );
+    }
+    
+    if(input.selectedBoostedJets[i].subjets.size()>1){
+      math::XYZTLorentzVector subjet12 = input.selectedBoostedJets[i].subjets[0].p4()+input.selectedBoostedJets[i].subjets[1].p4();
+      vars.FillVars( "BoostedJet_Subjet12_E",i,subjet12.E() );
+      vars.FillVars( "BoostedJet_Subjet12_Pt",i,subjet12.Pt() );
+      vars.FillVars( "BoostedJet_Subjet12_M",i,subjet12.M() );
+      vars.FillVars( "BoostedJet_Subjet12_Eta",i,subjet12.Eta() );
+      vars.FillVars( "BoostedJet_Subjet12_Phi",i,subjet12.Phi() );
     }
 
     vars.FillVars( "N_BoostedJet_Filterjets",i,input.selectedBoostedJets[i].filterjets.size() );
