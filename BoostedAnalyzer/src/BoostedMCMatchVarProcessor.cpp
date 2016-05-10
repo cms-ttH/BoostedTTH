@@ -230,15 +230,14 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         if (j>2) break;
 	      if (input.selectedBoostedJets[i].subjets[j].pt() == 0.) continue;
         
-        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b1.p4())<minDrB1_sub){
-          minDrB1_sub = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b1.p4());
+        if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].subjets[j].p4(),b1.p4())<minDrB1_sub){
+          minDrB1_sub = BoostedUtils::DeltaR(input.selectedBoostedJets[i].subjets[j].p4(),b1.p4());
         }
         if(b2.pt()>0.){
-          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4())<minDrB2_sub){
-            minDrB2_sub = BoostedUtils::DeltaR(input.selectedBoostedJets[i].filterjets[j].p4(),b2.p4());
+          if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].subjets[j].p4(),b2.p4())<minDrB2_sub){
+            minDrB2_sub = BoostedUtils::DeltaR(input.selectedBoostedJets[i].subjets[j].p4(),b2.p4());
           }
         }
-
         vars.FillVars("BoostedJet_Dr_Subjet"+to_string(j+1)+"_GenB1",i,BoostedUtils::DeltaR(input.selectedBoostedJets[i].subjets[j].p4(),b1.p4()));
         vars.FillVars("BoostedJet_Dr_Subjet"+to_string(j+1)+"_GenB2",i,BoostedUtils::DeltaR(input.selectedBoostedJets[i].subjets[j].p4(),b2.p4()));
       }
