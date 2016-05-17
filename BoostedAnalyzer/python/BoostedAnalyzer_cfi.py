@@ -22,7 +22,9 @@ BoostedAnalyzer = cms.EDAnalyzer(
     nominalPUWeight = cms.PSet(NominalPUWeight),
     additionalPUWeights = cms.VPSet(AdditionalPUWeights),
 
-    jetSystematics = cms.vstring("nominal"),
+    #jetSystematics = cms.vstring("nominal"),
+    systematics = cms.vstring(""),
+    
     generatorName = cms.string("notSpecified"),
 
     useFatJets = cms.bool(True),

@@ -12,7 +12,7 @@ SelectedJetProducer = cms.EDProducer(
     etaMaxs  = cms.vdouble(2.4,2.4),
     leptonJetDr = cms.double(0.4),
     collectionNames  = cms.vstring("selectedJets","selectedJetsLoose"),
-    systematics = cms.vstring("nominal"),
+    systematics = cms.vstring(""),
     
 
     )

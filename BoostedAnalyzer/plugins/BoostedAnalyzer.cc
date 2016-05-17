@@ -81,7 +81,9 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/MEMProcessor.hpp"
+//DANGERZONE
+// #include "BoostedTTH/BoostedAnalyzer/interface/MEMProcessor.hpp"
+//DANGERZONE
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
@@ -389,9 +391,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
 	}
-	if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new MEMProcessor(iConfig),"MEMProcessor");
-	}
+//DANGERZONE
+// 	if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
+// 	    treewriter->AddTreeProcessor(new MEMProcessor(iConfig),"MEMProcessor");
+// 	}
+//DANGERZONE
 	if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
 	}
@@ -544,6 +548,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	}
     }
     if( vtxs.size()>0 ) helper.SetVertex( vtxs[0] );
+
     // set rho in MiniAODhelper
     // TODO: setup MiniAODhelper more transparently
     helper.SetRho(*h_rho);  
@@ -837,7 +842,7 @@ void BoostedAnalyzer::endJob()
 
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
-    
+
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

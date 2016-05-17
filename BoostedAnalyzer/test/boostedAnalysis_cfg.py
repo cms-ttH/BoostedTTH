@@ -71,10 +71,9 @@ process.source = cms.Source(  "PoolSource",
                               skipEvents=cms.untracked.uint32(int(options.skipEvents)),
 )
 
-
-## Set up JetCorrections chain to be used in MiniAODHelper
-## Note: name is hard-coded to ak4PFchsL1L2L3 and does not
-## necessarily reflect actual corrections level
+# Set up JetCorrections chain to be used in MiniAODHelper
+# Note: name is hard-coded to ak4PFchsL1L2L3 and does not
+# necessarily reflect actual corrections level
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
 from JetMETCorrections.Configuration.JetCorrectionCondDB_cff import *
 process.ak4PFCHSL1Fastjet = cms.ESProducer(
@@ -113,11 +112,10 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
-
 #=================================== JEC from DB file for data ===============
 if options.isData:
-    process.load("CondCore.DBCommon.CondDBCommon_cfi")
-    from CondCore.DBCommon.CondDBSetup_cfi import *
+    process.load("CondCore.CondDB.CondDB_cfi")
+    from CondCore.CondDB.CondDB_cfi import *
     process.jec = cms.ESSource("PoolDBESSource",
                                DBParameters = cms.PSet(
             messageLevel = cms.untracked.int32(0)
@@ -199,11 +197,11 @@ else:
 process.BoostedAnalyzer.outfileName=options.outName
 if not options.isData:
     process.BoostedAnalyzer.eventWeight = options.weight
+
 process.BoostedAnalyzer.systematics=process.SelectedJetProducer.systematics
 process.BoostedAnalyzer.generatorName=options.generatorName
 
-
-   
+  
 if options.isData and options.useJson:
     print 'use JSON is no longer supported'
 ### electron MVA ####
@@ -218,21 +216,32 @@ process.BoostedAnalyzer.minTags = [2]
 process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
-process.BoostedAnalyzer.doJERsystematic = False
-
+#process.BoostedAnalyzer.doJERsystematic = False
 
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
 # process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BoostedJetVarProcessor"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor"]
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
-process.p = cms.Path(process.electronMVAValueMapProducer 
+if options.isData or options.isBoostedMiniAOD:
+  process.p = cms.Path(process.electronMVAValueMapProducer 
                      *process.SelectedElectronProducer
                      *process.SelectedMuonProducer
  #                    *process.content
                      *process.SelectedJetProducer
                      *process.CorrectedMETproducer
+                     #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+                     *process.BoostedAnalyzer
+                     )
+else:
+  process.p = cms.Path(process.electronMVAValueMapProducer 
+                     *process.SelectedElectronProducer
+                     *process.SelectedMuonProducer
+ #                    *process.content
+                     *process.SelectedJetProducer
+                     *process.CorrectedMETproducer
+                     *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
                      *process.BoostedAnalyzer
                      )
