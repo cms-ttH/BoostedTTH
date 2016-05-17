@@ -6,20 +6,20 @@ CMSSW tools for analyzing TTH events with boosted objects
 ## Installation
 Follow These Steps:
 
-    export SCRAM_ARCH=slc6_amd64_gcc493
-    scram project CMSSW_7_6_3
-    cd CMSSW_7_6_3/src
+    export SCRAM_ARCH=slc6_amd64_gcc530
+    scram project CMSSW_8_0_8
+    cd CMSSW_8_0_8/src
     cmsenv   
     git cms-merge-topic gkasieczka:htt-v2-76X
-    git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_7_6_3
-    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_7_6_3
+    git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_8
+    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_8
     mkdir Other
     cd Other
     git clone https://github.com/kit-cn-cms/bjetness-code.git .
     cd -
     mkdir TTH
     cd TTH
-    git clone https://github.com/cms-ttH/CommonClassifier.git -b subjet-restricted-perms-kit
+    git clone https://github.com/cms-ttH/CommonClassifier.git -b subjet-restricted-perms-kit-80X
     source CommonClassifier/setup/install_mem.sh
     cd $CMSSW_BASE/src
     scram b -j 10
