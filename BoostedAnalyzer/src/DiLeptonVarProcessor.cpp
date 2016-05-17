@@ -1,5 +1,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
 
+
 using namespace std;
 
 DiLeptonVarProcessor::DiLeptonVarProcessor(){}
@@ -29,6 +30,10 @@ void DiLeptonVarProcessor::Init(const InputCollections& input,VariableContainer&
   vars.InitVar( "ElMu_Phi");
   vars.InitVar( "ElMu_SS");
 
+  
+  //vars.InitVar( "LeptonLepton_Opening_Angle" );
+  
+  
   initialized=true;
 
 }
@@ -37,41 +42,66 @@ void DiLeptonVarProcessor::Init(const InputCollections& input,VariableContainer&
 void DiLeptonVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
-  if(input.selectedMuonsDL.size()>=2){
+  if(input.selectedMuonsLoose.size()>=2){
     
-    math::XYZTLorentzVector DiMuonVec=input.selectedMuonsDL[0].p4()+input.selectedMuonsDL[1].p4();
-
+    math::XYZTLorentzVector DiMuonVec=input.selectedMuonsLoose[0].p4()+input.selectedMuonsLoose[1].p4();
+    
+    //TLorentzVector v1(input.selectedMuonsLoose[0].p4().Px(),input.selectedMuonsLoose[0].p4().Py(),input.selectedMuonsLoose[0].p4().Pz(),input.selectedMuonsLoose[0].p4().E());
+    //TLorentzVector v2(input.selectedMuonsLoose[1].p4().Px(),input.selectedMuonsLoose[1].p4().Py(),input.selectedMuonsLoose[1].p4().Pz(),input.selectedMuonsLoose[1].p4().E());
+    //TVector3 p1 = v1.Vect();
+    //TVector3 p2 = v2.Vect();
+    //Double_t di_op_ang = 360./(2*TMath::Pi())*p1.Angle(p2);
+    //if(di_op_ang<0){di_op_ang=360./(2*TMath::Pi())*p2.Angle(p1);}
+    //vars.FillVar( "LeptonLepton_Opening_Angle",di_op_ang );
+    
     vars.FillVar( "DiMuon_E",DiMuonVec.E() );
     vars.FillVar( "DiMuon_M",DiMuonVec.M() );
     vars.FillVar( "DiMuon_Pt",DiMuonVec.Pt() );
     vars.FillVar( "DiMuon_Eta",DiMuonVec.Eta() );
     vars.FillVar( "DiMuon_Phi",DiMuonVec.Phi() );
-    vars.FillVar( "DiMuon_SS",input.selectedMuonsDL[0].charge()*input.selectedMuonsDL[1].charge()>0 );
+    vars.FillVar( "DiMuon_SS",input.selectedMuonsLoose[0].charge()*input.selectedMuonsLoose[1].charge()>0 );
+    
   }
 
-  if(input.selectedElectronsDL.size()>=2){
+  if(input.selectedElectronsLoose.size()>=2){
 
-    math::XYZTLorentzVector DiElectronVec=input.selectedElectronsDL[0].p4()+input.selectedElectronsDL[1].p4();
-
+    math::XYZTLorentzVector DiElectronVec=input.selectedElectronsLoose[0].p4()+input.selectedElectronsLoose[1].p4();
+    
+    /*TLorentzVector v1(input.selectedElectronsLoose[0].p4().Px(),input.selectedElectronsLoose[0].p4().Py(),input.selectedElectronsLoose[0].p4().Pz(),input.selectedElectronsLoose[0].p4().E());
+    TLorentzVector v2(input.selectedElectronsLoose[1].p4().Px(),input.selectedElectronsLoose[1].p4().Py(),input.selectedElectronsLoose[1].p4().Pz(),input.selectedElectronsLoose[1].p4().E());
+    TVector3 p1 = v1.Vect();
+    TVector3 p2 = v2.Vect();
+    Double_t di_op_ang = 360./(2*TMath::Pi())*p1.Angle(p2);
+    if(di_op_ang<0){di_op_ang=360./(2*TMath::Pi())*p2.Angle(p1);}
+    vars.FillVar( "LeptonLepton_Opening_Angle",di_op_ang );*/
+    
     vars.FillVar( "DiElectron_E",DiElectronVec.E() );
     vars.FillVar( "DiElectron_M",DiElectronVec.M() );
     vars.FillVar( "DiElectron_Pt",DiElectronVec.Pt() );
     vars.FillVar( "DiElectron_Eta",DiElectronVec.Eta() );
     vars.FillVar( "DiElectron_Phi",DiElectronVec.Phi() );
 
-    vars.FillVar( "DiElectron_SS",input.selectedElectronsDL[0].charge()*input.selectedElectronsDL[1].charge()>0 );
+    vars.FillVar( "DiElectron_SS",input.selectedElectronsLoose[0].charge()*input.selectedElectronsLoose[1].charge()>0 );
   }
 
-  if(input.selectedElectronsDL.size()>=1&&input.selectedMuonsDL.size()>=1){
+  if(input.selectedElectronsLoose.size()>=1&&input.selectedMuonsLoose.size()>=1){
     
-    math::XYZTLorentzVector ElMuVec=input.selectedElectronsDL[0].p4()+input.selectedMuonsDL[0].p4();
+    math::XYZTLorentzVector ElMuVec=input.selectedElectronsLoose[0].p4()+input.selectedMuonsLoose[0].p4();
+    
+    /*TLorentzVector v1(input.selectedElectronsLoose[0].p4().Px(),input.selectedElectronsLoose[0].p4().Py(),input.selectedElectronsLoose[0].p4().Pz(),input.selectedElectronsLoose[0].p4().E());
+    TLorentzVector v2(input.selectedMuonsLoose[0].p4().Px(),input.selectedMuonsLoose[0].p4().Py(),input.selectedMuonsLoose[0].p4().Pz(),input.selectedMuonsLoose[0].p4().E());
+    TVector3 p1 = v1.Vect();
+    TVector3 p2 = v2.Vect();
+    Double_t di_op_ang = 360./(2*TMath::Pi())*p1.Angle(p2);
+    if(di_op_ang<0){di_op_ang=360./(2*TMath::Pi())*p2.Angle(p1);}
+    vars.FillVar( "LeptonLepton_Opening_Angle",di_op_ang );*/
 
     vars.FillVar( "ElMu_E",ElMuVec.E() );
     vars.FillVar( "ElMu_M",ElMuVec.M() );
     vars.FillVar( "ElMu_Pt",ElMuVec.Pt() );
     vars.FillVar( "ElMu_Eta",ElMuVec.Eta() );
     vars.FillVar( "ElMu_Phi",ElMuVec.Phi() );
-    vars.FillVar( "ElMu_SS",input.selectedElectronsDL[0].charge()*input.selectedMuonsDL[1].charge()>0 );
+    vars.FillVar( "ElMu_SS",input.selectedElectronsLoose[0].charge()*input.selectedMuonsLoose[1].charge()>0 );
   }
 
 

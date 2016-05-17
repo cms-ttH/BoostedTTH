@@ -1,43 +1,47 @@
 import FWCore.ParameterSet.Config as cms
 from BoostedTTH.BoostedAnalyzer.Selection_cff import *
+from BoostedTTH.BoostedAnalyzer.Weights_cff import *
 
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
     LeptonSelectionMC, # defined in Selection_cff
     DiLeptonSelectionMC, # defined in Selection_cff
     JetTagSelection, # defined in Selection_cff
-    DiLeptonMETSelection, # defined in Selection_cff
+    METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
 
     era = cms.string("2015_74x"), # has little effect so far, might become important for MiniAODhelper
-    analysisType = cms.string("DL"), # has little effect so far, might become important for MiniAODhelper
+    analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
     sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
+
     eventWeight = cms.double(1.),
-    generatorName = cms.string("notSpecified"),
-    
-    minJetsForMEM = cms.int32(4),
-    minTagsForMEM = cms.int32(3),
-    
-    luminosity = cms.double(10000),
-    xs = cms.double(831.76),
-    nMCEvents = cms.int32(25446993), 
-    recorrectMET = cms.bool(True),
-    
     isData = cms.bool(False),
+    
+    recorrectMET = cms.bool(True),
+
+    # PU weights, defined in Weights_cff
+    #nominalPUWeight = cms.PSet(NominalPUWeight),
+    #additionalPUWeights = cms.VPSet(AdditionalPUWeights),
 
     makeSystematicsTrees = cms.bool(False),
     doJERsystematic = cms.bool(False),
-    doBoostedMEM = cms.bool(False),
-    
-    useFatJets = cms.bool(False),
+    generatorName = cms.string("notSpecified"),
+
+    useFatJets = cms.bool(True),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),
 
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
 
-    selectionNames = cms.vstring("VertexSelection"),#"DiLeptonSelection"),#,"MinDiLeptonMassSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","DiLeptonVarProcessor","TriggerVarProcessor","AdditionalJetProcessor"),
+    doBoostedMEM = cms.bool(False),
+
+    minJetsForMEM = cms.int32(4),
+    minTagsForMEM = cms.int32(3),
+
+    selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","TriggerVarProcessor","TTbarReconstructionVarProcessor","AdditionalJetProcessor"),
+    #,"DiJetVarProcessor"), -- conflict
 
     outfileName = cms.string("BoostedTTH"),
 )

@@ -129,16 +129,19 @@ void TTbarReconstructionVarProcessor::Process(const InputCollections& input,Vari
 	vars.FillVar("TTbarReco_TopLep_M",best_int_lr->TopLep().M());
 	vars.FillVar("TTbarReco_TopLep_Pt",best_int_lr->TopLep().Pt());
 	vars.FillVar("TTbarReco_TopLep_Eta",best_int_lr->TopLep().Eta());
+	vars.FillVar("TTbarReco_TopLep_Phi",best_int_lr->TopLep().Phi());
 	vars.FillVar("TTbarReco_TopLep_DrGen",mcmatcher.DrTopLep(*best_int_lr));
 	
 	vars.FillVar("TTbarReco_WHad_M",best_int_lr->WHad().M());
 	vars.FillVar("TTbarReco_WHad_Pt",best_int_lr->WHad().Pt());
 	vars.FillVar("TTbarReco_WHad_Eta",best_int_lr->WHad().Eta());
+	vars.FillVar("TTbarReco_WHad_Phi",best_int_lr->WHad().Phi());	
 	vars.FillVar("TTbarReco_WHad_DrGen",mcmatcher.DrWHad(*best_int_lr));
 	
 	vars.FillVar("TTbarReco_WLep_M",best_int_lr->WLep().M());
 	vars.FillVar("TTbarReco_WLep_Pt",best_int_lr->WLep().Pt());
 	vars.FillVar("TTbarReco_WLep_Eta",best_int_lr->WLep().Eta());
+	vars.FillVar("TTbarReco_WLep_Phi",best_int_lr->WLep().Phi());
 	vars.FillVar("TTbarReco_WLep_DrGen",mcmatcher.DrWLep(*best_int_lr));
 	
 	vars.FillVar("TTbarReco_BLep_M",best_int_lr->BLep().M());

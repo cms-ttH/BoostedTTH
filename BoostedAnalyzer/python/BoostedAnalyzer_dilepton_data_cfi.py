@@ -12,6 +12,13 @@ BoostedAnalyzer = cms.EDAnalyzer(
     era = cms.string("2015_74x"), # has little effect so far, might become important for MiniAODhelper
     analysisType = cms.string("DL"), # has little effect so far, might become important for MiniAODhelper
     sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
+    generatorName = cms.string("notSpecified"),
+    minJetsForMEM = cms.int32(4),
+    minTagsForMEM = cms.int32(3),
+
+    eventWeight = cms.double(1.),
+    recorrectMET = cms.bool(False),
+
 
     luminosity = cms.double(1),
     xs = cms.double(1),
@@ -20,6 +27,9 @@ BoostedAnalyzer = cms.EDAnalyzer(
     isData = cms.bool(True),
 
     makeSystematicsTrees = cms.bool(False),
+    doJERsystematic = cms.bool(False),
+    doBoostedMEM = cms.bool(False),
+
 
     useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
@@ -28,7 +38,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
 
-    selectionNames = cms.vstring("VertexSelection","DiLeptonSelection","MinDiLeptonMassSelection"),
+    selectionNames = cms.vstring("VertexSelection"),#,"DiLeptonSelection","MinDiLeptonMassSelection"),
     processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","DiLeptonVarProcessor","TriggerVarProcessor"),
 
     outfileName = cms.string("BoostedTTH"),

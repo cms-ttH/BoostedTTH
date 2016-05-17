@@ -211,8 +211,11 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "LooseLepton_Pt",iLep,itLep->Pt() );
     vars.FillVars( "LooseLepton_Eta",iLep,itLep->Eta());
     vars.FillVars( "LooseLepton_Phi",iLep,itLep->Phi() );
+
   }
-   
+  
+
+ 
   for(std::vector<pat::Electron>::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle){
     int iEle = itEle - input.selectedElectronsLoose.begin();
     vars.FillVars( "Electron_E",iEle,itEle->energy() );
