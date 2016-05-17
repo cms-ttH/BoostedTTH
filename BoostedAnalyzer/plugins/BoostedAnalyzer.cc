@@ -97,7 +97,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionMEvarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
 //
 // class declaration
 //
@@ -528,6 +528,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"SpinCorrelationProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
   }
 
 
