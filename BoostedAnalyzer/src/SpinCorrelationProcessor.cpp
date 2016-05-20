@@ -329,8 +329,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       variables["cos_theta_ll"]=3;
       variables["Delta_Phi_ll"]=4;
       variables["Delta_Eta_ll"]=5;
-      variables["cos_theta_l*"]=6;
-      variables["cos_theta_lbar*"]=7;
+      variables["cos_theta_l"]=6;
+      variables["cos_theta_lbar"]=7;
       variables["cos_theta_lb"]=8;
       variables["cos_theta_lbarbbar"]=9;
       variables["Delta_Phi_lb"]=10;
