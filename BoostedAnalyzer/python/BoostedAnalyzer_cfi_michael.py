@@ -40,7 +40,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     minTagsForMEM = cms.int32(3),
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","TriggerVarProcessor","TTbarReconstructionVarProcessor","AdditionalJetProcessor"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","TriggerVarProcessor","TTbarReconstructionVarProcessor","AdditionalJetProcessor","SpinCorrelationProcessor"),
     #,"DiJetVarProcessor"), -- conflict
 
     outfileName = cms.string("BoostedTTH"),
