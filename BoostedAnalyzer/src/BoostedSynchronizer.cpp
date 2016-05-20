@@ -53,6 +53,8 @@ void BoostedSynchronizer::DumpSyncExeHeader(std::ostream &out){
   <<"csv_nonW_1,csv_nonW_2,"
   <<"csv_W1_1,csv_W1_2,"
   <<"csv_W2_1,csv_W2_2,"
+  <<"pt_top_1,pt_top_2,"
+  <<"eta_top_1,eta_top_2,"
   <<"m_top_1,m_top_2,"
   <<"pt_sf_filterjet1_1,pt_sf_filterjet1_2,"
   <<"pt_sf_filterjet2_1,pt_sf_filterjet2_2,"
@@ -147,6 +149,10 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
   float csv_W2_1=0;
   float csv_W2_2=0;
   
+  float pt_top_1=0;
+  float pt_top_2=0;
+  float eta_top_1=0;
+  float eta_top_2=0;
   float m_top_1=0;
   float m_top_2=0;
   
@@ -214,7 +220,9 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
 	    break;
     }
   }
-    
+   
+  //if(!is_SL) return;
+  
   if(compare) std::cout << "is_SL: " << is_SL << std::endl;
   
   // leptons
@@ -276,6 +284,8 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
       csv_W1_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).W1);
       csv_W2_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).W2);
 
+      pt_top_1=input.selectedBoostedJets.at(0).topjet.pt();
+      eta_top_1=input.selectedBoostedJets.at(0).topjet.eta();
       m_top_1=input.selectedBoostedJets.at(0).topjet.mass();
     }
     
@@ -288,8 +298,8 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
       csv_sf_filterjet2_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).filterjets.at(1));
     }
     if(input.selectedBoostedJets.at(0).filterjets.size()>2){
-      pt_sf_filterjet2_1=input.selectedBoostedJets.at(0).filterjets.at(2).pt();
-      csv_sf_filterjet2_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).filterjets.at(2));
+      pt_sf_filterjet3_1=input.selectedBoostedJets.at(0).filterjets.at(2).pt();
+      csv_sf_filterjet3_1=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(0).filterjets.at(2));
     }
     
     if(input.selectedBoostedJets.at(0).prunedsubjets.size()>0){
@@ -332,6 +342,8 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
       csv_W1_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).W1);
       csv_W2_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).W2);
 
+      pt_top_2=input.selectedBoostedJets.at(1).topjet.pt();
+      eta_top_2=input.selectedBoostedJets.at(1).topjet.eta();
       m_top_2=input.selectedBoostedJets.at(1).topjet.mass();
     }
     
@@ -344,8 +356,8 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
       csv_sf_filterjet2_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).filterjets.at(1));
     }
     if(input.selectedBoostedJets.at(1).filterjets.size()>2){
-      pt_sf_filterjet2_2=input.selectedBoostedJets.at(1).filterjets.at(2).pt();
-      csv_sf_filterjet2_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).filterjets.at(2));
+      pt_sf_filterjet3_2=input.selectedBoostedJets.at(1).filterjets.at(2).pt();
+      csv_sf_filterjet3_2=MiniAODHelper::GetJetCSV(input.selectedBoostedJets.at(1).filterjets.at(2));
     }
     
     if(input.selectedBoostedJets.at(1).prunedsubjets.size()>0){
@@ -391,6 +403,8 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
 	  <<boost::format("%.4f") % csv_nonW_1<<","<<boost::format("%.4f") % csv_nonW_2<<","
 	  <<boost::format("%.4f") % csv_W1_1<<","<<boost::format("%.4f") % csv_W1_2<<","
 	  <<boost::format("%.4f") % csv_W2_1<<","<<boost::format("%.4f") % csv_W2_2<<","
+	  <<boost::format("%.4f") % pt_top_1<<","<<boost::format("%.4f") % pt_top_2<<","
+	  <<boost::format("%.4f") % eta_top_1<<","<<boost::format("%.4f") % eta_top_2<<","
 	  <<boost::format("%.4f") % m_top_1<<","<<boost::format("%.4f") % m_top_2<<","
 	  <<boost::format("%.4f") % pt_sf_filterjet1_1<<","<<boost::format("%.4f") % pt_sf_filterjet1_2<<","
 	  <<boost::format("%.4f") % pt_sf_filterjet2_1<<","<<boost::format("%.4f") % pt_sf_filterjet2_2<<","
@@ -426,6 +440,8 @@ void BoostedSynchronizer::DumpSyncExe(const InputCollections& input, MiniAODHelp
 	<<boost::format("%.4f") % csv_nonW_1<<","<<boost::format("%.4f") % csv_nonW_2<<","
 	<<boost::format("%.4f") % csv_W1_1<<","<<boost::format("%.4f") % csv_W1_2<<","
 	<<boost::format("%.4f") % csv_W2_1<<","<<boost::format("%.4f") % csv_W2_2<<","
+  <<boost::format("%.4f") % pt_top_1<<","<<boost::format("%.4f") % pt_top_2<<","
+	<<boost::format("%.4f") % eta_top_1<<","<<boost::format("%.4f") % eta_top_2<<","
 	<<boost::format("%.4f") % m_top_1<<","<<boost::format("%.4f") % m_top_2<<","
 	<<boost::format("%.4f") % pt_sf_filterjet1_1<<","<<boost::format("%.4f") % pt_sf_filterjet1_2<<","
 	<<boost::format("%.4f") % pt_sf_filterjet2_1<<","<<boost::format("%.4f") % pt_sf_filterjet2_2<<","

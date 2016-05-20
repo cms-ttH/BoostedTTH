@@ -850,9 +850,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999., jetID::jetLoose);
     boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::NA, true, true);
     selectedBoostedJets = helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
-    //selectedBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
     selectedBoostedJets_uncorrected = helper.GetSelectedBoostedJets(idBoostedJets, 200., 2.0, 20., 2.4, jetID::none);
-    selectedBoostedJets_sync = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::none);
+    selectedBoostedJets_sync = helper.GetSelectedBoostedJets(boostedjets, 200., 2.0, 20., 2.4, jetID::jetLoose);
     
     if(makeSystematicsTrees){
       boosted::BoostedJetCollection correctedBoostedJets_jesup = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, sysType::JESup, true, true);

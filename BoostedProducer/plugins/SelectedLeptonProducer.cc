@@ -205,6 +205,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	    
       // select electron collection
       std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(electronsWithMVAid,ptMin_,electronID_,etaMax_)) );
+      
       iEvent.put(selectedLeptons);
     }
     else if( leptonType_ == Muon ) {
@@ -215,6 +216,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
       
       // select muon collection
       std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(*hMuons,ptMin_,muonID_,isoConeSize_,isoCorrType_,etaMax_)) );
+            
       iEvent.put(selectedLeptons);
     }
   }

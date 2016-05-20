@@ -22,7 +22,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 
 if not options.inputFiles:
 #    options.inputFiles=['file:/nfs/dust/cms/user/shwillia/CMSSW_7_6_3/src/BoostedTTH_sync_boosted_tth_76X_MiniAOD.root']
-    options.inputFiles=['file:/nfs/dust/cms/user/riese/CMSSW_7_6_3/src/BoostedTTH_MiniAOD_20160509.root']
+    options.inputFiles=['file:/nfs/dust/cms/user/shwillia/CMSSW_7_6_3/src/BoostedTTH_sync_boosted_tth_76X_1kEvents_MiniAOD.root']
     
 # print settings
 print "\n\n***** JOB SETUP *************************"
@@ -36,7 +36,7 @@ process = cms.Process("analysis")
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
