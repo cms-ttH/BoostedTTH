@@ -154,8 +154,8 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   
   variables.push_back("cos_theta_ll");
   variables.push_back("cos_theta_bb");
-  variables.push_back("cos_theta_l*");
-  variables.push_back("cos_theta_lbar*");
+  variables.push_back("cos_theta_l");
+  variables.push_back("cos_theta_lbar");
   variables.push_back("cos_theta_lb");
   variables.push_back("cos_theta_lbarbbar");
   variables.push_back("Delta_Phi_lb");
@@ -164,7 +164,7 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   variables.push_back("Delta_Phi_bb");
   variables.push_back("Delta_Eta_ll");
   variables.push_back("Delta_Eta_bb");
-  variables.push_back("cos_theta_l**cos_theta_lbar*");
+  variables.push_back("cos_theta_l_x_cos_theta_lbar");
   
   for(auto it_frames=frames.begin();it_frames!=frames.end();++it_frames) {
     for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
@@ -315,12 +315,12 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
     
     if(isSL) {
       if(leptonflag==1) {
-	variables["cos_theta_l*"]=6;
+	variables["cos_theta_l"]=6;
 	variables["cos_theta_lb"]=8;
 	variables["Delta_Phi_lb"]=10;
       }
       if(leptonflag==-1) {
-	variables["cos_theta_lbar*"]=7;
+	variables["cos_theta_lbar"]=7;
 	variables["cos_theta_lbarbbar"]=9;
 	variables["Delta_Phi_lbarbbar"]=11;
       }
@@ -335,7 +335,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       variables["cos_theta_lbarbbar"]=9;
       variables["Delta_Phi_lb"]=10;
       variables["Delta_Phi_lbarbbar"]=11; 
-      variables["cos_theta_l**cos_theta_lbar*"]=12;
+      variables["cos_theta_l_x_cos_theta_lbar"]=12;
     }
 
     for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
