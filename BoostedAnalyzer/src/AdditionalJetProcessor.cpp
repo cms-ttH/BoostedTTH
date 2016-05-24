@@ -76,6 +76,9 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVar( "AdditionalCHadrons_GenJet_M",-9);
   vars.InitVar( "AdditionalCHadrons_Dr",-9);
   vars.InitVar( "AdditionalCHadrons_GenJet_Dr",-9);
+  
+  vars.InitVar( "N_BGenJets",-1,"I");
+  vars.InitVar( "AdditionalBHadrons_InEvent",-1,"I" );
 
   initialized = true;
 }
@@ -98,6 +101,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
   const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
 
   if(input.genTopEvt.TTxIsFilled()){
+    int Is_ttbb_Event = input.genTopEvt.HasAdditionalBQuark();
     std::vector<reco::GenJet> additional_b_genjets = input.genTopEvt.GetAdditionalBGenJets();
     std::vector<reco::GenJet> additional_c_genjets = input.genTopEvt.GetAdditionalCGenJets();
     std::vector<reco::GenJet> additional_light_genjets = input.genTopEvt.GetAdditionalLightGenJets();
@@ -129,6 +133,10 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
     std::vector<reco::GenParticle> q2;
     std::vector<reco::GenParticle> btth;
     std::vector<reco::GenParticle> qtth;
+    
+    //bool AdditionalBQuark_InTTEvent=false; 
+    
+    
     if(input.genTopEvt.IsFilled()){
       q1=input.genTopEvt.GetAllWQuarks();
       q2=input.genTopEvt.GetAllWAntiQuarks();
@@ -179,9 +187,16 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 
       vars.FillVars( "AdditionalGenBJet_Dr_BfromTTH", i, drB);
       vars.FillVars( "AdditionalGenBJet_Dr_QfromTTH", i, drQ);
+      
+
 
     }
+    std::vector<reco::GenJet> bhad_genjet=input.genTopEvt.GetAllTopHadBGenJets();
+    std::vector<reco::GenJet> blep_genjet=input.genTopEvt.GetAllTopLepBGenJets();
+    std::vector<reco::GenJet> bhiggs_genjet=input.genTopEvt.GetAllHiggsBGenJets();
     
+    vars.FillVar( "N_BGenJets", additional_b_genjets.size()+bhad_genjet.size()+blep_genjet.size()+bhiggs_genjet.size());
+    vars.FillVar( "AdditionalBHadrons_InEvent", Is_ttbb_Event );
     
     vars.FillVar( "N_AdditionalGenCJets",additional_c_genjets.size());
     for(uint i=0; i<additional_c_genjets.size(); i++){

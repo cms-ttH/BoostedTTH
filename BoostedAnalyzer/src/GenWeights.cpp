@@ -47,7 +47,7 @@ bool GenWeights::SetGenerator(const Generator::Generator usedGenerator){
 
 map<int, string> GenWeights::GetWeightNames(const Generator::Generator usedGenerator) const{
   map<int, string> names;
-  names[0] = "Weight_muRnmuFun";
+  names[0] = "Weight_muRnmuFn";
   names[1] = "Weight_muRnmuFup";
   names[2] = "Weight_muRnmuFdown";
   names[3] = "Weight_muRupmuFn";
@@ -90,5 +90,41 @@ map<int, string> GenWeights::GetWeightNames(const Generator::Generator usedGener
       names[9+i] = "Weight_NNPDFnf5"+std::to_string(set+i);
     }
   }
+  else if (usedGenerator == Generator::MadGraph) {
+    int set = 263000;
+    for(int i=0; i<= 100; i++){
+      names[9+i] = "Weight_NNPDF30Lo"+std::to_string(set+i);
+    }
+    set = 263400;
+    for(int i=0; i<=100; i++){
+      names[110+i] = "Weight_NNPDF30Lonf4"+std::to_string(set+i);
+    }
+    names[211] = "Weight_NNPDF30Lo262000";
+    set = 247000;
+    for(int i=0; i<=100; i++) {
+      names[212+i] = "Weight_NNPDF23Loqed"+std::to_string(set+i);
+    }
+    names[313] = "Weight_NNPDF23Loqed246800";
+    names[314] = "Weight_CTEQ6l110042";
+    set = 25000;
+    for(int i=0;i<=50;i++) {
+      names[315+i] = "Weight_MMHT2014Lo"+std::to_string(set+i);
+    }
+    names[366] = "Weight_MMHT2014Lo25060";
+    names[367] = "Weight_MMHT2014Lo25061";
+    names[368] = "Weight_MMHT2014Lo25062";
+    set = 60800;
+    for(int i=0;i<=20;i++){
+      names[369+i] = "Weight_HERPDF15Lo"+std::to_string(set+i);
+    }
+    names[390] = "Weight_NNPDF30NLO260000";
+    names[391] = "Weight_NNPDF30NLO230000";
+    set = 11000;
+    for(int i=0;i<=52;i++){
+      names[392+i] = "Weight_CT10"+std::to_string(set+i);
+    }
+    names[445] = "Weight_MMHT2015nlo25100";
+  }
+  
   return names;
 }

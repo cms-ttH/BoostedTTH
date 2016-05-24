@@ -84,10 +84,12 @@ public:
 
   std::vector<reco::GenJet> GetAllTopHadBGenJets() const;
   std::vector<reco::GenJet> GetAllTopLepBGenJets() const;
+  std::vector<reco::GenJet> GetAllHiggsBGenJets() const;
   reco::GenJet GetTopBarBBarGenJet() const;
   reco::GenJet GetTopBGenJet() const;
   reco::GenJet GetHiggsBGenJet() const;
   reco::GenJet GetHiggsBBarGenJet() const;
+  
 
   std::vector<reco::GenJet> GetAdditionalBGenJets() const;
   std::vector<reco::GenJet> GetAdditionalCGenJets() const;
@@ -121,6 +123,7 @@ public:
 
   int GetTTxId(bool countAdditionalAfterTop=true) const;
   int GetTTxIdFromProducer() const;
+  int HasAdditionalBQuark() const;
 
   bool IsTTbar() const;
   bool IsTTH() const;
@@ -131,7 +134,7 @@ public:
   void Print() const;
   void PrintTTX() const;
 
-
+  std::vector<int> mother_of_b_genjets;
   void FillTTxDetails(const std::vector<reco::GenJet>& customGenJets, 
 		      const std::vector<int>& genBHadIndex, const std::vector<int>& genBHadJetIndex, 
 		      const std::vector<int>& genBHadFlavour, const std::vector<int>& genBHadFromTopWeakDecay, 
@@ -171,6 +174,7 @@ private:
   std::vector<reco::GenParticle> additional_b_genjet_hadron;
   std::vector<reco::GenParticle> additional_b_genjet_hadron2;
 
+
   reco::GenParticle higgs_b_hadron;
   reco::GenParticle higgs_bbar_hadron;
   reco::GenParticle top_b_hadron;
@@ -204,6 +208,7 @@ private:
   bool topbarIsHadronic;
   bool isFilled;
   bool ttxIsFilled;
+  int hasAdditionalBQuark; 
   int ttXid;
 
 

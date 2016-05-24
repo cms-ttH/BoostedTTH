@@ -176,6 +176,8 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     }
 
   };
+    hasAdditionalBQuark=int(std::find(genBHadFromTopWeakDecay.begin(), genBHadFromTopWeakDecay.end(), 0) != genBHadFromTopWeakDecay.end());
+    //test comment for git
 
   // loop over all chadrons
   for(uint i=0; i<genCHadIndex.size();i++){    
@@ -220,13 +222,15 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     if(customGenJets[i].pt()<ttxptcut || fabs(customGenJets[i].eta())>ttxetacut){
       continue;
     }
+    mother_of_b_genjets=mother_of_genjet_b;
     // skip light jets
     if(nb_per_genjet[i]>0){ 
       // associate genjet with tth decay products
+      
       if(mother_of_genjet_b[i]==25){
 	higgs_b_genjet=customGenJets[i];
       }
-      else if(mother_of_genjet_b[i]==-25){
+      else if(mother_of_genjet_b[i]==-25){ //bullshit
 	higgs_bbar_genjet=customGenJets[i];
       }
       else if(mother_of_genjet_b[i]==-6){
@@ -310,6 +314,15 @@ reco::GenJet GenTopEvent::GetHiggsBGenJet() const{
 reco::GenJet GenTopEvent::GetHiggsBBarGenJet() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
   return higgs_bbar_genjet;
+}
+std::vector<reco::GenJet> GenTopEvent::GetAllHiggsBGenJets() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  std::vector<reco::GenJet> HiggsBs;
+  for(uint i=0;i<mother_of_b_genjets.size();i++){
+    if(ttxIsFilled&&mother_of_b_genjets[i]==25) HiggsBs.push_back(higgs_b_genjet);
+    if(ttxIsFilled&&mother_of_b_genjets[i]==-25) HiggsBs.push_back(higgs_bbar_genjet);
+  }
+  return HiggsBs;
 }
 std::vector<reco::GenJet> GenTopEvent::GetAdditionalBGenJets() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
@@ -413,6 +426,10 @@ std::vector<int> GenTopEvent::GetAdditionalCHadronMothers() const{
 }
 std::vector<int> GenTopEvent::GetAdditionalCHadronAfterTopType() const{
   return additional_c_hadron_aftertop;
+}
+
+int GenTopEvent::HasAdditionalBQuark() const {
+  return hasAdditionalBQuark;
 }
 
 void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenParticles, int ttXid_){
