@@ -2,7 +2,7 @@
 
 TLorentzVector Boost(TLorentzVector in_vec, Int_t frame_number, TLorentzVector vec_top_, TLorentzVector vec_antitop_){
   TLorentzVector out_vec=in_vec;
-  //cout << "out_vec pt: " << out_vec.Pt() << endl;
+  //cout << "out_vec pt before boost: " << out_vec.Pt() << endl;
   //cout << "boost frame_number: " << frame_number << endl;
   switch(frame_number){
     case 0:
@@ -17,7 +17,7 @@ TLorentzVector Boost(TLorentzVector in_vec, Int_t frame_number, TLorentzVector v
       out_vec.Boost(- vec_antitop_.BoostVector() );
       break;
   }
-  //cout << "out_vec pt: " << out_vec.Pt() << endl;
+  //cout << "out_vec pt after boost: " << out_vec.Pt() << endl;
   return out_vec;
 }
 
@@ -32,12 +32,12 @@ void SetAllVectors(TLorentzVector& vec_top_, TLorentzVector& vec_antitop_, TLore
   TLorentzVector vec_top_tmp=vec_top_;
   TLorentzVector vec_antitop_tmp=vec_antitop_;
   
-    /*cout << "top pt: " << vec_top_.Pt() << endl;
-    cout << "antitop pt: " << vec_antitop_.Pt() << endl;
-    cout << "b pt: " << vec_b_.Pt() << endl;
-    cout << "antib pt: " << vec_antib_.Pt() << endl;
-    cout << "lepton pt: " << vec_lepton_.Pt() << endl;
-    cout << "antilepton pt: " << vec_antilepton_.Pt() << endl;*/
+    /*cout << "top pt before: " << vec_top_.Pt() << endl;
+    cout << "antitop pt before: " << vec_antitop_.Pt() << endl;
+    cout << "b pt before: " << vec_b_.Pt() << endl;
+    cout << "antib pt before: " << vec_antib_.Pt() << endl;
+    cout << "lepton pt before: " << vec_lepton_.Pt() << endl;
+    cout << "antilepton pt before: " << vec_antilepton_.Pt() << endl;*/
   
   switch(identifier) {
     case 4:
@@ -64,12 +64,12 @@ void SetAllVectors(TLorentzVector& vec_top_, TLorentzVector& vec_antitop_, TLore
       break;
   }
   
-    /*cout << "top pt: " << vec_top_.Pt() << endl;
-    cout << "antitop pt: " << vec_antitop_.Pt() << endl;
-    cout << "b pt: " << vec_b_.Pt() << endl;
-    cout << "antib pt: " << vec_antib_.Pt() << endl;
-    cout << "lepton pt: " << vec_lepton_.Pt() << endl;
-    cout << "antilepton pt: " << vec_antilepton_.Pt() << endl;*/
+    /*cout << "top pt after: " << vec_top_.Pt() << endl;
+    cout << "antitop pt after: " << vec_antitop_.Pt() << endl;
+    cout << "b pt after: " << vec_b_.Pt() << endl;
+    cout << "antib pt after: " << vec_antib_.Pt() << endl;
+    cout << "lepton pt after: " << vec_lepton_.Pt() << endl;
+    cout << "antilepton pt after: " << vec_antilepton_.Pt() << endl;*/
 }
 
 Double_t GetVars(TLorentzVector vec_top_, TLorentzVector vec_antitop_, TLorentzVector vec_b_,TLorentzVector vec_antib_, TLorentzVector vec_lepton_,TLorentzVector vec_antilepton_, Int_t var_number) {
@@ -194,6 +194,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   variables["Delta_Eta_bb"]=1;
   variables["Delta_Phi_bb"]=2;
   
+  
+  
   if(!(input.genTopEvt.IsFilled())) {
     cerr << "Top Event isnt filled! " << endl;
     return;
@@ -294,14 +296,14 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
     }
   }
   
-  TLorentzVector vec_lepton_=BoostedUtils::GetTLorentzVector(vec_lepton);
-  TLorentzVector vec_antilepton_=BoostedUtils::GetTLorentzVector(vec_antilepton);
-  TLorentzVector vec_top_=BoostedUtils::GetTLorentzVector(vec_top);
-  TLorentzVector vec_antitop_=BoostedUtils::GetTLorentzVector(vec_antitop);
-  TLorentzVector vec_b_=BoostedUtils::GetTLorentzVector(vec_b);
-  TLorentzVector vec_antib_=BoostedUtils::GetTLorentzVector(vec_antib);
   
   for(auto it_frames=frames.begin();it_frames!=frames.end();++it_frames) {
+    TLorentzVector vec_lepton_=BoostedUtils::GetTLorentzVector(vec_lepton);
+    TLorentzVector vec_antilepton_=BoostedUtils::GetTLorentzVector(vec_antilepton);
+    TLorentzVector vec_top_=BoostedUtils::GetTLorentzVector(vec_top);
+    TLorentzVector vec_antitop_=BoostedUtils::GetTLorentzVector(vec_antitop);
+    TLorentzVector vec_b_=BoostedUtils::GetTLorentzVector(vec_b);
+    TLorentzVector vec_antib_=BoostedUtils::GetTLorentzVector(vec_antib);
     //cout << "frame: " << it_frames->first << " " << it_frames->second << endl;
     SetAllVectors(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_frames->second);
     /*cout << "top m: " << vec_top_.M() << endl;
