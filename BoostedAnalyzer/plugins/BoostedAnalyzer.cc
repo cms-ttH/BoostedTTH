@@ -46,6 +46,7 @@
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
+#include "MiniAOD/MiniAODHelper/interface/LeptonSFHelper.h"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
@@ -99,6 +100,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/ReconstructionMEvarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/QuarkMatchingVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/RegressionVarProcessor.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 
@@ -128,6 +130,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       MiniAODHelper helper;
 
       CSVHelper csvReweighter;
+      LeptonSFHelper leptonSFhelper;
       HistoReweighter pvWeight;
       PUWeights puWeights_;
       HistoReweighter njetWeight;
@@ -536,6 +539,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   if(std::find(processorNames.begin(),processorNames.end(),"QuarkMatchingVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new QuarkMatchingVarProcessor(),"QuarkMatchingVarProcessor");
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"RegressionVarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new RegressionVarProcessor(),"RegressionVarProcessor");
+  }
   if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
   }
@@ -563,12 +569,32 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   else if (usedGenerator == "pythia8"){ generatorflag = genweights.SetGenerator(Generator::pythia8);}
   else{ generatorflag = false; }
   
-  if (generatorflag) { std::cout << usedGenerator << " was set as Generator" << endl; }
-  else { std::cout << "No Generator was set for Genweight -> no GenWeights are written in tree" << endl; }
+  if (generatorflag) { std::cout << usedGenerator << " set as Generator" << endl; }
+  else { std::cout << "No Generator set -> no GenWeights are written in tree" << endl; }
 
-  //b-Jet Regression
-  //bjetRegression = JetRegression bjetRegression();
+  //b-Jet Regression 
 
+  //bjetRegression.activateDebugMode();
+
+
+  std::vector< std::string> WeightFiles = {"weights_breg_nospec.xml","weights_0502_wPU.xml" ,"weights_0502_wPU_nocorr.xml","weights_0502_wPU_nocorrandfrac.xml","weights_0509_wPu_noelfrac.xml","weights_0509_wPU_nohadfrac.xml","weights_0509_heppysettings.xml","weights_0509_changedsettings.xml","weights_0511_heppysettings600.xml","weights_0511_heppysettings1200.xml" };
+  std::vector< std::vector < bool > > WeightInputs = { {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+						       {true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+						       {true,false,true,true,true,true,true,true,true,false,false,true,true,true,true,true},
+						       {true,true,true,true,true,true,true,true,true,true,false,true,true,true,true,true} ,
+						       {true,true,true,true,true,true,true,true,true,false,true,true,true,true,true,true},
+						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true}};
+
+						       
+  std::vector < std::string > names = { "std" , "wPU", "nocorr", "nocorrandfrac","noelfrac","nohadfrac","heppy","changedsettings","heppy600","heppy1200" };
+
+  bjetRegression.init(WeightFiles, WeightInputs, names);
+  //bjetRegression.init("weights_breg_nospec.xml");
+  
 }
 
 
@@ -651,7 +677,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Muon> selectedMuons = helper.GetSelectedMuons( rawMuons, 25., muonID::muonTight, coneSize::R04, corrType::deltaBeta, 2.1);
   std::vector<pat::Muon> selectedMuonsDL = helper.GetSelectedMuons( rawMuons, 20., muonID::muonTightDL, coneSize::R04, corrType::deltaBeta, 2.4 );
   std::vector<pat::Muon> selectedMuonsLoose = helper.GetSelectedMuons( rawMuons, 15., muonID::muonTightDL, coneSize::R04, corrType::deltaBeta, 2.4);
-
+  std::vector<pat::Muon> softMuons;
   // ELECTRONS
   edm::Handle< edm::View<pat::Electron> > h_electrons;
   iEvent.getByToken( EDMElectronsToken,h_electrons );
@@ -666,6 +692,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::Electron> selectedElectrons = helper.GetSelectedElectrons( electrons, 30., electronID::electronEndOf15MVA80iso0p15, 2.1 );
   std::vector<pat::Electron> selectedElectronsDL = helper.GetSelectedElectrons( electrons, 20., electronID::electronEndOf15MVA80iso0p15, 2.4 );
   std::vector<pat::Electron> selectedElectronsLoose = helper.GetSelectedElectrons( electrons, 15., electronID::electronEndOf15MVA80iso0p15, 2.4 );
+  std::vector<pat::Electron> softElectrons;
   /**** GET MET ****/
   edm::Handle< std::vector<pat::MET> > h_pfmet;
   iEvent.getByToken( EDMMETsToken,h_pfmet );
@@ -970,7 +997,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
 
 
+
+  bjetRegression.setTightLeptons(selectedMuons,selectedElectrons);
+
   bjetRegression.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal);
+  bjetRegression.getSoftLeptons(softMuons, softElectrons); 
+  
   /*
   std::vector<pat::Jet> selectedregressedJets_nominal;
   if(bjetRegression.IsRegressionDone()){
@@ -1017,7 +1049,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  selectedBoostedJets,
 				  genTopEvt,
 				  selectedGenJets,
-				  //				  selectedJets_bReg_nominal,
 				  sampleType,
 				  higgsdecay,
 				  weights,
@@ -1221,6 +1252,14 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
     }
     //Add Genweights to the weight map
     genweights.GetGenWeights(weights, LHEEvent, dogenweights);
+
+    //Add Lepton Scalefactors to weight map
+    std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
+    
+    for(  auto sfit = selectedScaleFactors.begin() ; sfit != selectedScaleFactors.end() ; sfit++  ){
+      weights["Weight_"+sfit->first] = sfit->second;
+    }
+    
   }
   
   

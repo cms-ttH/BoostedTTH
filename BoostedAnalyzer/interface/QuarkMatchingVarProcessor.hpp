@@ -25,15 +25,24 @@ private:
 		     const pat::Jet& secondjet, 
 		     const bool docorrection);
 
+  float GetDijetMass(const pat::Jet& firstjet, 
+		     const pat::Jet& secondjet, 
+		     std::string regextention);
+
   float GetTopHadMass(const pat::Jet& topJet,
 		      const vector<pat::Jet>& WJets, 
 		      const bool docorrection );
-  
+
+  float GetTopHadMass(const pat::Jet& topJet,
+		      const vector<pat::Jet>& WJets, 
+		      std::string regextention);
+
   std::vector<reco::GenParticle> GetQuarksfromTopDecay(const InputCollections& input);
   std::vector<reco::GenParticle> GetQuarksfromHiggsDecay(const InputCollections& input);
   float DeltaRCut; 
   void PrintTLorentz(TLorentzVector& vec); 
-  
+
+  std::vector< std::string > extentions;
 
 };
 

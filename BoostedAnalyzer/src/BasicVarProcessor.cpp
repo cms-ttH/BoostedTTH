@@ -38,26 +38,6 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
   vars.InitVars( "Jet_PileUpID","N_Jets" );
-  vars.InitVars( "Jet_vtxMass","N_Jets" );
-  vars.InitVars( "Jet_vtx3DVal","N_Jets" );
-  vars.InitVars( "Jet_vtxNtracks","N_Jets" );
-  vars.InitVars( "Jet_vtx3DSig","N_Jets" );
-  vars.InitVars( "Jet_vtxPt","N_Jets" );
-  vars.InitVars( "Jet_nHEFrac","N_Jets" );
-  vars.InitVars( "Jet_cHEFrac","N_Jets" );
-  vars.InitVars( "Jet_totHEFrac","N_Jets" );
-  vars.InitVars( "Jet_nEmEFrac","N_Jets" );
-  vars.InitVars( "Jet_chargedMult","N_Jets" );
-  vars.InitVars( "Jet_leadTrackPt","N_Jets" );
-  vars.InitVars( "Jet_leptonPtRel","N_Jets" );
-  vars.InitVars( "Jet_leptonPt","N_Jets" );
-  vars.InitVars( "Jet_leptonEta","N_Jets" );
-  vars.InitVars( "Jet_leptonDeltaR","N_Jets" );
-  vars.InitVars( "Jet_corr","N_Jets" );
-  vars.InitVars( "Jet_rawPt","N_Jets" );
-  vars.InitVars( "Jet_corr_rawJet","N_Jets" );
-  vars.InitVars( "Jet_regPt","N_Jets" );
-  vars.InitVars( "Jet_regcorr","N_Jets" );
 
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
@@ -183,39 +163,6 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant") );
-    vars.FillVars( "Jet_vtxPt",iJet,sqrt( itJet->userFloat("vtxPx")*itJet->userFloat("vtxPx") + itJet->userFloat("vtxPy")*itJet->userFloat("vtxPy") ) );
-    vars.FillVars( "Jet_nHEFrac",iJet, itJet->neutralHadronEnergyFraction() );
-    vars.FillVars( "Jet_nEmEFrac",iJet, itJet->neutralEmEnergyFraction() );
-    if (  ( itJet->neutralHadronEnergyFraction() + itJet->neutralEmEnergyFraction() ) >= 1  ){
-      vars.FillVars( "Jet_totHEFrac",iJet, 1);
-    }
-    else {
-      vars.FillVars( "Jet_totHEFrac",iJet, itJet->neutralHadronEnergyFraction() + itJet->neutralEmEnergyFraction() );
-    }
-    vars.FillVars( "Jet_cHEFrac",iJet, itJet->chargedHadronEnergyFraction() );
-    vars.FillVars( "Jet_chargedMult",iJet, itJet->chargedMultiplicity() );
-    if ( itJet->hasUserFloat("Jet_leadTrackPt") ) {  //if one of these userfloats is missing, all are missing
-      vars.FillVars( "Jet_vtxMass",iJet,itJet->userFloat("vtxMass") );
-      vars.FillVars( "Jet_vtx3DVal",iJet,itJet->userFloat("vtx3DVal") );
-      vars.FillVars( "Jet_vtxNtracks",iJet,itJet->userFloat("vtxNtracks") );
-      vars.FillVars( "Jet_vtx3DSig",iJet,itJet->userFloat("vtx3DSig") );
-      vars.FillVars( "Jet_leadTrackPt",iJet,itJet->userFloat("Jet_leadTrackPt") );
-      vars.FillVars( "Jet_leptonPtRel",iJet,itJet->userFloat("Jet_leptonPtRel") );
-      vars.FillVars( "Jet_leptonPt",iJet,itJet->userFloat("Jet_leptonPt") );
-      vars.FillVars( "Jet_leptonEta",iJet,itJet->userFloat("Jet_leptonEta") );
-      vars.FillVars( "Jet_leptonDeltaR",iJet,itJet->userFloat("Jet_leptonDeltaR") );
-    }
-    vars.FillVars( "Jet_corr",iJet,1/itJet->jecFactor("Uncorrected") );
-    vars.FillVars( "Jet_rawPt",iJet,itJet->userFloat("Jet_rawPt") );
-    vars.FillVars( "Jet_corr_rawJet",iJet,itJet->pt()/itJet->userFloat("Jet_rawPt") );
-    if (itJet->hasUserFloat("bregCorrection")) {
-      vars.FillVars( "Jet_regPt",iJet,itJet->userFloat("bregCorrection")*itJet->pt() );
-      vars.FillVars( "Jet_regcorr",iJet,itJet->userFloat("bregCorrection") );
-    }
-    else {
-      vars.FillVars( "Jet_regPt",iJet,-99);
-      vars.FillVars( "Jet_regcorr",iJet,-99 );
-    }
     if(itJet->genJet()!=NULL){
       vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
       vars.FillVars( "Jet_GenJet_Eta",iJet,itJet->genJet()->eta());
