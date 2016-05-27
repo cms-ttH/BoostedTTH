@@ -146,6 +146,8 @@ if options.isData:
 
 #===============================================================
 #
+
+
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,20.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
@@ -218,7 +220,7 @@ process.BoostedAnalyzer.minTags = [2]
 process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
-process.BoostedAnalyzer.doJERsystematic = False
+#process.BoostedAnalyzer.doJERsystematic = False
 
 
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
@@ -228,11 +230,21 @@ if options.additionalSelection!="NONE":
 # process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BoostedJetVarProcessor"]
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
-process.p = cms.Path(process.electronMVAValueMapProducer 
-                     *process.SelectedElectronProducer
-                     *process.SelectedMuonProducer
- #                    *process.content
-                     *process.SelectedJetProducer
-                     *process.CorrectedMETproducer
-                     *process.BoostedAnalyzer
+if options.isData or options.isBoostedMiniAOD:
+    process.p = cms.Path(process.electronMVAValueMapProducer 
+                         *process.SelectedElectronProducer
+                         *process.SelectedMuonProducer
+    #                    *process.content
+                         *process.SelectedJetProducer
+                        *process.CorrectedMETproducer
+                         *process.BoostedAnalyzer
+                     )
+else:
+    process.p = cms.Path(process.electronMVAValueMapProducer 
+                         *process.SelectedElectronProducer
+                         *process.SelectedMuonProducer
+                         *process.SelectedJetProducer
+                         *process.CorrectedMETproducer
+                         *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtba                      
+                         *process.BoostedAnalyzer
                      )
