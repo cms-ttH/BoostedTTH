@@ -79,10 +79,13 @@ void BoostedMCMatchVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "BoostedJet_Dr_PrunedSubjet2_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet1_GenB1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet2_GenB1",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet3_GenB1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet1_GenB2",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet2_GenB2",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet3_GenB2",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet1_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet2_Q",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SoftdropSubjet3_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet1_GenB1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet2_GenB1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet1_GenB2",-9.,"N_BoostedJets" );
@@ -297,9 +300,9 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
       // Soft drop jets
       double minDrB1_Softdrop = 999;
       double minDrB2_Softdrop = 999;
-      
+
       for(size_t j=0;j<input.selectedBoostedJets[i].sdsubjets.size();j++){
-        if (j>2) break;
+        if (j>3) break;
         if (input.selectedBoostedJets[i].sdsubjets[j].pt() == 0.) continue;
         
         if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdsubjets[j].p4(),b1.p4())<minDrB1_Softdrop){
@@ -367,7 +370,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         
         // Filterjets
         float minDr_Filterjet_Q[input.selectedBoostedJets[i].filterjets.size()];
-        for(size_t j=0;j<input.selectedBoostedJets[i].filterjets.size();j++) minDr_Filterjet_Q[j] = 999;
+        for(size_t k=0;k<input.selectedBoostedJets[i].filterjets.size();k++) minDr_Filterjet_Q[k] = 999.;
         
         for(size_t k=0;k<input.selectedBoostedJets[i].filterjets.size();k++){
           if (input.selectedBoostedJets[i].filterjets[k].pt() == 0.) continue;
@@ -413,7 +416,9 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         }
         
         // Soft drop subjets
-        float minDr_SoftdropSubjet_Q[2] = {999.,999.};
+        float minDr_SoftdropSubjet_Q[input.selectedBoostedJets[i].sdsubjets.size()];
+        for(size_t j=0;j<input.selectedBoostedJets[i].sdsubjets.size();j++) minDr_SoftdropSubjet_Q[j] = 999.;
+        
         for(size_t k=0;k<input.selectedBoostedJets[i].sdsubjets.size();k++){
           if (input.selectedBoostedJets[i].sdsubjets[k].pt() == 0) continue;
 	      

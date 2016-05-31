@@ -34,8 +34,9 @@ if not options.inputFiles:
 #    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/SingleMuon/Boostedv5MiniAODsilverJson/160217_171824/0000/BoostedTTH_MiniAOD_1.root']
 #    options.inputFiles=['file:/nfs/dust/cms/user/shwillia/CMSSW_7_6_3/src/BoostedTTH_MiniAOD.root']
 #    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv6MiniAOD/160418_144630/0000/BoostedTTH_MiniAOD_1.root']
-     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/friese/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAODv3/160427_094858/0000/BoostedTTH_MiniAOD_1.root']
-
+#    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/friese/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAODv3/160427_094858/0000/BoostedTTH_MiniAOD_1.root']
+#    options.inputFiles=['file:/nfs/dust/cms/user/riese/SoftdropFiltering/CMSSW_7_6_3/src/BoostedTTH_MiniAOD.root']
+     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/friese/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAOD-sdfilt/160524_095446/0000/BoostedTTH_MiniAOD_69.root']
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
     print "\n\nConfig ERROR: unknown analysisType '"+options.analysisType+"'"

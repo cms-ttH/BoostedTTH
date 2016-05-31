@@ -85,7 +85,10 @@ ca15PFSoftdropJetsCHS = ca15PFJetsCHS.clone(
     R0 = cms.double(1.5),
     useExplicitGhosts = cms.bool(True),
     writeCompound = cms.bool(True),
-    jetCollInstanceName=cms.string("subjets")
+    jetCollInstanceName=cms.string("subjets"),
+    useFiltering = cms.bool(True),
+    nFilt = cms.int32(3),
+    rFilt = cms.double(0.3)
 )
 
 ca15PFSoftdropZ2B1JetsCHS = ca15PFJetsCHS.clone(
