@@ -145,6 +145,7 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   
   std::vector<TString> frames;
   std::vector<TString> variables;
+  std::vector<TString> decay_type;
   
   frames.push_back("lab");
   frames.push_back("ttbar_cm");
@@ -166,9 +167,14 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   variables.push_back("Delta_Eta_bb");
   variables.push_back("cos_theta_l_x_cos_theta_lbar");
   
+  decay_type.push_back("GEN");
+  decay_type.push_back("RECO");
+  
   for(auto it_frames=frames.begin();it_frames!=frames.end();++it_frames) {
     for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
-      vars.InitVar((*it_frames)+"__"+(*it_variables),-9.,"F");
+      for(auto it_type=decay_type.begin();it_type!=decay_type.end();++it_type) {
+	vars.InitVar((*it_type)+"__"+(*it_frames)+"__"+(*it_variables),-9.,"F");
+      }
       //cout << (*it_frames)+"|"+(*it_variables) << " initialized " << endl;
     }
   }
@@ -182,12 +188,17 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   if(!initialized) cerr << "tree processor not initialized" << endl;
  
   std::map<TString,int> frames;
-  std::map<TString,int> variables;//TODO
+  std::map<TString,int> variables;
+  std::vector<TString> decay_type;
+  
   frames["lab"]=0;
   frames["ttbar_cm"]=1;
   //frames["top_rest"]=2;
   //frames["antitop_rest"]=3;
   frames["special"]=4;
+  
+  decay_type.push_back("GEN");
+  decay_type.push_back("RECO");
   
   
   variables["cos_theta_bb"]=0;
@@ -196,45 +207,11 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   
   
   
-  if(!(input.genTopEvt.IsFilled())) {
-    cerr << "Top Event isnt filled! " << endl;
+  if(!(input.genTopEvt.IsFilled()) && !(input.selectedJets.size()>=4)) {
+    cerr << "Top Event isnt filled and reconstruction not possible! " << endl;
     return;
   }
   
-  std::vector<reco::GenParticle> tophad;
-  std::vector<reco::GenParticle> bhad;
-  std::vector<reco::GenParticle> toplep;
-  std::vector<reco::GenParticle> blep;
-  std::vector<reco::GenParticle> lep;
-  
-  if(input.genTopEvt.IsFilled()){
-    tophad=input.genTopEvt.GetAllTopHads();
-    bhad=input.genTopEvt.GetAllTopHadDecayQuarks();
-    toplep=input.genTopEvt.GetAllTopLeps();
-    blep=input.genTopEvt.GetAllTopLepDecayQuarks();
-    lep=input.genTopEvt.GetAllLeptons();
-    //additional_bs=input.genTopEvt.GetAdditionalBGenJets();
-  }
-
-  bool isDL;
-  bool isSL;
-  
-  if(tophad.size()==0 and toplep.size()==2) {
-    isDL=true;
-    isSL=false;
-    //cout << "Dilepton Event! " << endl;
-  }
-  if(tophad.size()==1 and toplep.size()==1) {
-    isSL=true;
-    isDL=false;
-    //cout << "Single Lepton Event! " << endl;
-  }
-  if(tophad.size()==2 and toplep.size()==0) {
-    isSL=false;
-    isDL=false;
-    //cout << "Fully hadronic Event! " << endl;
-    return;
-  }
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   // Set Vectors, which are present in every ttbar event
@@ -242,109 +219,268 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   math::XYZTLorentzVector vec_antitop;
   math::XYZTLorentzVector vec_b;
   math::XYZTLorentzVector vec_antib;
-  
-  for(auto it=tophad.begin();it!=tophad.end();++it) {
-    if(it->pdgId()>0) { vec_top=it->p4(); }
-    else if(it->pdgId()<0) { vec_antitop=it->p4(); }
-  }
-  for(auto it=toplep.begin();it!=toplep.end();++it) {
-    if(it->pdgId()>0) { vec_top=it->p4(); }
-    else if(it->pdgId()<0) { vec_antitop=it->p4(); }
-  }
-  for(auto it=bhad.begin();it!=bhad.end();++it) {
-    if(it->pdgId()>0) { vec_b=it->p4(); }
-    else if(it->pdgId()<0) { vec_antib=it->p4(); }
-  }
-  for(auto it=blep.begin();it!=blep.end();++it) {
-    if(it->pdgId()>0) { vec_b=it->p4(); }
-    else if(it->pdgId()<0) { vec_antib=it->p4(); }
-  }
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  
   math::XYZTLorentzVector vec_lepton;
   math::XYZTLorentzVector vec_antilepton;
   math::XYZTLorentzVector vec_zero(0.,0.,0.,0.);
+  math::XYZTLorentzVector vec_top_tmp;
+  math::XYZTLorentzVector vec_antitop_tmp;
+  math::XYZTLorentzVector vec_b_tmp;
+  math::XYZTLorentzVector vec_antib_tmp;
   
+  bool isDL=false;
+  bool isSL=false;
   int leptonflag=0;
-  if(isSL) {
-    if(lep[0].pdgId()>0) {
-      vec_lepton=lep[0].p4();
-      vec_antilepton=vec_zero;
-      leptonflag=1;
-      //cout << "Lepton! " << endl;
-    }
-    else if(lep[0].pdgId()<0) {
-      vec_antilepton=lep[0].p4();
-      vec_lepton=vec_zero;
-      leptonflag=-1;
-      //cout << "Antilepton! " << endl;
-    }   
-  }
   
-  if(isDL) {
-    if(lep[0].pdgId()>0) {
-      vec_lepton=lep[0].p4();
-    }
-    else if(lep[0].pdgId()<0) {
-      vec_antilepton=lep[0].p4();
-    }
-    if(lep[1].pdgId()>0) {
-      vec_lepton=lep[1].p4();
-    }
-    else if(lep[1].pdgId()<0) {
-      vec_antilepton=lep[1].p4();
-    }
-  }
-  
-  
-  for(auto it_frames=frames.begin();it_frames!=frames.end();++it_frames) {
-    TLorentzVector vec_lepton_=BoostedUtils::GetTLorentzVector(vec_lepton);
-    TLorentzVector vec_antilepton_=BoostedUtils::GetTLorentzVector(vec_antilepton);
-    TLorentzVector vec_top_=BoostedUtils::GetTLorentzVector(vec_top);
-    TLorentzVector vec_antitop_=BoostedUtils::GetTLorentzVector(vec_antitop);
-    TLorentzVector vec_b_=BoostedUtils::GetTLorentzVector(vec_b);
-    TLorentzVector vec_antib_=BoostedUtils::GetTLorentzVector(vec_antib);
-    //cout << "frame: " << it_frames->first << " " << it_frames->second << endl;
-    SetAllVectors(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_frames->second);
-    /*cout << "top m: " << vec_top_.M() << endl;
-    cout << "antitop m: " << vec_antitop_.M() << endl;
-    cout << "b m: " << vec_b_.M() << endl;
-    cout << "antib m: " << vec_antib_.M() << endl;
-    cout << "lepton m: " << vec_lepton_.M() << endl;
-    cout << "antilepton m: " << vec_antilepton_.M() << endl;*/
-
+  for(auto it_type=decay_type.begin();it_type!=decay_type.end();++it_type) {
+    //cout << "GEN or RECO? " << *it_type << endl;
+    TString dec_type=*it_type;
+    //////////////////////////////////////////////////////////////////////////////////////////
+    if(input.genTopEvt.IsFilled() && dec_type.EqualTo("GEN")){
+      //cout << "GenTopEvt is filled and decay type GEN " << endl;
+      std::vector<reco::GenParticle> tophad;
+      std::vector<reco::GenParticle> bhad;
+      std::vector<reco::GenParticle> toplep;
+      std::vector<reco::GenParticle> blep;
+      std::vector<reco::GenParticle> lep;
+      tophad=input.genTopEvt.GetAllTopHads();
+      bhad=input.genTopEvt.GetAllTopHadDecayQuarks();
+      toplep=input.genTopEvt.GetAllTopLeps();
+      blep=input.genTopEvt.GetAllTopLepDecayQuarks();
+      lep=input.genTopEvt.GetAllLeptons();
+      //additional_bs=input.genTopEvt.GetAdditionalBGenJets();
     
-    
-    if(isSL) {
-      if(leptonflag==1) {
-	variables["cos_theta_l"]=6;
-	variables["cos_theta_lb"]=8;
-	variables["Delta_Phi_lb"]=10;
+      if(tophad.size()==0 and toplep.size()==2) {
+	isDL=true;
+	isSL=false;
+	//cout << "Dilepton Event! " << endl;
       }
-      if(leptonflag==-1) {
-	variables["cos_theta_lbar"]=7;
-	variables["cos_theta_lbarbbar"]=9;
-	variables["Delta_Phi_lbarbbar"]=11;
+      if(tophad.size()==1 and toplep.size()==1) {
+	isSL=true;
+	isDL=false;
+	//cout << "Single Lepton Event! " << endl;
       }
-    }
-    if(isDL) {
-      variables["cos_theta_ll"]=3;
-      variables["Delta_Phi_ll"]=4;
-      variables["Delta_Eta_ll"]=5;
-      variables["cos_theta_l"]=6;
-      variables["cos_theta_lbar"]=7;
-      variables["cos_theta_lb"]=8;
-      variables["cos_theta_lbarbbar"]=9;
-      variables["Delta_Phi_lb"]=10;
-      variables["Delta_Phi_lbarbbar"]=11; 
-      variables["cos_theta_l_x_cos_theta_lbar"]=12;
-    }
+      if(tophad.size()==2 and toplep.size()==0) {
+	isSL=false;
+	isDL=false;
+	//cout << "Fully hadronic Event! " << endl;
+	return;
+      }
+       
+      for(auto it=tophad.begin();it!=tophad.end();++it) {
+	if(it->pdgId()>0) { vec_top=it->p4(); }
+	else if(it->pdgId()<0) { vec_antitop=it->p4(); }
+      }
+      for(auto it=toplep.begin();it!=toplep.end();++it) {
+	if(it->pdgId()>0) { vec_top=it->p4(); }
+	else if(it->pdgId()<0) { vec_antitop=it->p4(); }
+      }
+      for(auto it=bhad.begin();it!=bhad.end();++it) {
+	if(it->pdgId()>0) { vec_b=it->p4(); }
+	else if(it->pdgId()<0) { vec_antib=it->p4(); }
+      }
+      for(auto it=blep.begin();it!=blep.end();++it) {
+	if(it->pdgId()>0) { vec_b=it->p4(); }
+	else if(it->pdgId()<0) { vec_antib=it->p4(); }
+      }
+      ///////////////////////////////////////////////////////////////////////////////////////////
 
-    for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
-        vars.FillVar(it_frames->first+"__"+it_variables->first,GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_variables->second));
-	//cout << it_frames->first+"__"+it_variables->first << " filled with " << GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_variables->second) << endl;
       
+      if(isSL) {
+	if(lep[0].pdgId()>0) {
+	  vec_lepton=lep[0].p4();
+	  vec_antilepton=vec_zero;
+	  leptonflag=1;
+	  //cout << "Lepton! " << endl;
+	}
+	else if(lep[0].pdgId()<0) {
+	  vec_antilepton=lep[0].p4();
+	  vec_lepton=vec_zero;
+	  leptonflag=-1;
+	  //cout << "Antilepton! " << endl;
+	}   
+      }
+      
+      if(isDL) {
+	if(lep[0].pdgId()>0) {
+	  vec_lepton=lep[0].p4();
+	}
+	else if(lep[0].pdgId()<0) {
+	  vec_antilepton=lep[0].p4();
+	}
+	if(lep[1].pdgId()>0) {
+	  vec_lepton=lep[1].p4();
+	}
+	else if(lep[1].pdgId()<0) {
+	  vec_antilepton=lep[1].p4();
+	}
+      }
+      vec_top_tmp=vec_top;
+      vec_antitop_tmp=vec_antitop;
+      vec_b_tmp=vec_b;
+      vec_antib_tmp=vec_antib;
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    else if(input.selectedJets.size()>=4 && dec_type.EqualTo("RECO") && ((input.selectedElectrons.size()+input.selectedMuons.size())==1)){
+      //cout << "N_jets>=4 and decay type RECO and Electrons+Muons==1" << endl;
+      isSL=true;
+      isDL=false;
+      std::vector<TLorentzVector> jetvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
+      std::vector<float> jetcsvs;
+      int ntags=0;
+      for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
+	jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+	if(BoostedUtils::PassesCSV(*j)) ntags++;
+      }
+      TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
+      TVector2 metvec(input.pfMET.px(),input.pfMET.py());
+      if(input.genTopEvt.IsFilled()&&input.genTopEvt.IsSemiLepton()){
+	vector<TLorentzVector> bs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetHiggsDecayProductVecs());
+	vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());
+	if(bs_true.size()==2){
+	  TLorentzVector bhad_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopHadDecayQuarkVec());
+	  TLorentzVector blep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopLepDecayQuarkVec());
+	  TLorentzVector lep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetLeptonVec());
+	  TLorentzVector nu_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetNeutrinoVec());
+	  mcmatcher.Setup(bhad_true,qs_true[0],qs_true[1],blep_true,lep_true,nu_true,bs_true[0],bs_true[1]);
+	}
+      }
+      Interpretation** ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);
+      uint nints = generator.GetNints();
+      Interpretation* best_int_lr=0;
+      float best_lr=-99999;
+      //    float best_chi2=-99999;
+      for(uint i=0; i<nints; i++){
+	  // likelihood ratio good ttbar reco / combinatorial background
+	  float lr=quality.TTLikelihood_comb(*(ints[i]));
+	  // simple chi2 reconstruction using hadronic W and both to masses
+	  /*	float chi2=quality.TTChi2(*(ints[i]));
+	  if(chi2>best_chi2){
+	      best_chi2=chi2;
+	      best_int_chi2=ints[i];
+	      }*/
+	  if(lr>best_lr){
+	      best_lr=lr;
+	      best_int_lr=ints[i];
+	  }
+      }
+      if(best_int_lr!=0) {
+	if(input.selectedElectrons.size()==1){
+	  leptonflag=-input.selectedElectrons[0].charge();
+	  if(leptonflag>0) {
+	    //cout << "Electron! " << endl;
+	    vec_lepton.SetPxPyPzE(input.selectedElectrons[0].px(),input.selectedElectrons[0].py(),input.selectedElectrons[0].pz(),input.selectedElectrons[0].energy());
+	    vec_antilepton=vec_zero;
+	  }
+	  else if(leptonflag<0) {
+	    //cout << "Positron! " << endl;
+	    vec_antilepton.SetPxPyPzE(input.selectedElectrons[0].px(),input.selectedElectrons[0].py(),input.selectedElectrons[0].pz(),input.selectedElectrons[0].energy());
+	    vec_lepton=vec_zero;
+	  }
+	}
+	if(input.selectedMuons.size()==1) {
+	  leptonflag=-input.selectedMuons[0].charge();
+	  if(leptonflag>0) {
+	    //cout << "Muon! " << endl;
+	    vec_lepton.SetPxPyPzE(input.selectedMuons[0].px(),input.selectedMuons[0].py(),input.selectedMuons[0].pz(),input.selectedMuons[0].energy());
+	    vec_antilepton=vec_zero;
+	  }
+	  else if(leptonflag<0) {
+	    //cout << "AntiMuon! " << endl;
+	    vec_antilepton.SetPxPyPzE(input.selectedMuons[0].px(),input.selectedMuons[0].py(),input.selectedMuons[0].pz(),input.selectedMuons[0].energy());
+	    vec_lepton=vec_zero;
+	  }
+	}
+	if(leptonflag>0) {
+	  vec_antitop.SetPxPyPzE(best_int_lr->TopLep().Px(),best_int_lr->TopLep().Py(),best_int_lr->TopLep().Pz(),best_int_lr->TopLep().E());
+	  vec_top.SetPxPyPzE(best_int_lr->TopHad().Px(),best_int_lr->TopHad().Py(),best_int_lr->TopHad().Pz(),best_int_lr->TopHad().E());
+	  vec_antib.SetPxPyPzE(best_int_lr->BLep().Px(),best_int_lr->BLep().Py(),best_int_lr->BLep().Pz(),best_int_lr->BLep().E());
+	  vec_b.SetPxPyPzE(best_int_lr->BHad().Px(),best_int_lr->BHad().Py(),best_int_lr->BHad().Pz(),best_int_lr->BHad().E()); 
+	}
+	else if(leptonflag<0) {
+	  vec_antitop.SetPxPyPzE(best_int_lr->TopHad().Px(),best_int_lr->TopHad().Py(),best_int_lr->TopHad().Pz(),best_int_lr->TopHad().E());
+	  vec_top.SetPxPyPzE(best_int_lr->TopLep().Px(),best_int_lr->TopLep().Py(),best_int_lr->TopLep().Pz(),best_int_lr->TopLep().E());
+	  vec_antib.SetPxPyPzE(best_int_lr->BHad().Px(),best_int_lr->BHad().Py(),best_int_lr->BHad().Pz(),best_int_lr->BHad().E());
+	  vec_b.SetPxPyPzE(best_int_lr->BLep().Px(),best_int_lr->BLep().Py(),best_int_lr->BLep().Pz(),best_int_lr->BLep().E()); 
+	}
+	float dR_max=0.4;
+	//cout << "vor dR" << endl;
+	float dR_top=BoostedUtils::DeltaR(vec_top,vec_top_tmp);
+	float dR_antitop=BoostedUtils::DeltaR(vec_antitop,vec_antitop_tmp);
+	float dR_b=BoostedUtils::DeltaR(vec_b,vec_b_tmp);
+	float dR_antib=BoostedUtils::DeltaR(vec_antib,vec_antib_tmp);
+	//cout << "nach dR" << endl;
+	if(dR_top>dR_max || dR_antitop>dR_max || dR_b>dR_max || dR_antib>dR_max) {
+	  //cout << endl;
+	  //cout << "reconstruction not correct, abort!! " << endl;
+	  //cout << endl;
+	  continue;
+	}
+	//cout << endl;
+	//cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!reconstruction succesfull!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+	//cout << endl;
+      }
+      else {
+	//cout << "Interpretation = 0, abort!! " << endl;
+	continue;
+      }
+    }
+    
+    else {
+      //cout << "Neither Gen nor RECO reconstruction possible, abort!! " << endl;
+      continue;
+    }
+    
+    
+    for(auto it_frames=frames.begin();it_frames!=frames.end();++it_frames) {
+      TLorentzVector vec_lepton_=BoostedUtils::GetTLorentzVector(vec_lepton);
+      TLorentzVector vec_antilepton_=BoostedUtils::GetTLorentzVector(vec_antilepton);
+      TLorentzVector vec_top_=BoostedUtils::GetTLorentzVector(vec_top);
+      TLorentzVector vec_antitop_=BoostedUtils::GetTLorentzVector(vec_antitop);
+      TLorentzVector vec_b_=BoostedUtils::GetTLorentzVector(vec_b);
+      TLorentzVector vec_antib_=BoostedUtils::GetTLorentzVector(vec_antib);
+      //cout << "frame: " << it_frames->first << " " << it_frames->second << endl;
+      SetAllVectors(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_frames->second);
+      /*cout << "top m: " << vec_top_.M() << endl;
+      cout << "antitop m: " << vec_antitop_.M() << endl;
+      cout << "b m: " << vec_b_.M() << endl;
+      cout << "antib m: " << vec_antib_.M() << endl;
+      cout << "lepton m: " << vec_lepton_.M() << endl;
+      cout << "antilepton m: " << vec_antilepton_.M() << endl;*/
+
+      
+      
+      if(isSL) {
+	if(leptonflag==1) {
+	  variables["cos_theta_l"]=6;
+	  variables["cos_theta_lb"]=8;
+	  variables["Delta_Phi_lb"]=10;
+	}
+	if(leptonflag==-1) {
+	  variables["cos_theta_lbar"]=7;
+	  variables["cos_theta_lbarbbar"]=9;
+	  variables["Delta_Phi_lbarbbar"]=11;
+	}
+      }
+      if(isDL) {
+	variables["cos_theta_ll"]=3;
+	variables["Delta_Phi_ll"]=4;
+	variables["Delta_Eta_ll"]=5;
+	variables["cos_theta_l"]=6;
+	variables["cos_theta_lbar"]=7;
+	variables["cos_theta_lb"]=8;
+	variables["cos_theta_lbarbbar"]=9;
+	variables["Delta_Phi_lb"]=10;
+	variables["Delta_Phi_lbarbbar"]=11; 
+	variables["cos_theta_l_x_cos_theta_lbar"]=12;
+      }
+
+      for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
+	  vars.FillVar(*it_type+"__"+it_frames->first+"__"+it_variables->first,GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_variables->second));
+	  //cout << *it_type+"__"+it_frames->first+"__"+it_variables->first << " filled with " << GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_variables->second) << endl;
+	
+      }
     }
   }
+  
   
 }
