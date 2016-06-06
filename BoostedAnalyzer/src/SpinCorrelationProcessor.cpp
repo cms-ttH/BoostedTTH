@@ -158,7 +158,7 @@ double GetVars(TLorentzVector vec_top_, TLorentzVector vec_antitop_, TLorentzVec
 
 using namespace std;
 
-SpinCorrelationProcessor::SpinCorrelationProcessor (){}
+SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,7,-99999,99999,0.8)){}
 SpinCorrelationProcessor::~SpinCorrelationProcessor (){}
 
 void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContainer& vars){
@@ -375,7 +375,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  TLorentzVector blep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopLepDecayQuarkVec());
 	  TLorentzVector lep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetLeptonVec());
 	  TLorentzVector nu_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetNeutrinoVec());
-	  mcmatcher.Setup(bhad_true,qs_true[0],qs_true[1],blep_true,lep_true,nu_true,bs_true[0],bs_true[1]);
+	  //mcmatcher.Setup(bhad_true,qs_true[0],qs_true[1],blep_true,lep_true,nu_true,bs_true[0],bs_true[1]);
 	}
       }
       Interpretation** ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);

@@ -25,7 +25,7 @@ public:
 private:
   ReconstructionQuality quality;
   InterpretationGenerator generator;
-  ReconstructionMCMatching mcmatcher;
+  //ReconstructionMCMatching mcmatcher;
 };
   
 #endif
