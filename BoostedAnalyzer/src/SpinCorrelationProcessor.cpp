@@ -1,19 +1,24 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
 
+// function to do some basic boosts on a TLorentzVectors using the number of the corresponding frame and the top/antitop 4-vectors
 TLorentzVector Boost(TLorentzVector in_vec, Int_t frame_number, TLorentzVector vec_top_, TLorentzVector vec_antitop_){
   TLorentzVector out_vec=in_vec;
   //cout << "out_vec pt before boost: " << out_vec.Pt() << endl;
   //cout << "boost frame_number: " << frame_number << endl;
   switch(frame_number){
     case 0:
+      // no boost, so stay in lab frame
       break;
     case 1:
+      // boost in ttbar cm frame
       out_vec.Boost(- (vec_top_+vec_antitop_).BoostVector() );
       break;
     case 2:
+      // boost in top rest frame
       out_vec.Boost(- vec_top_.BoostVector() );
       break;
     case 3:
+      // boost in antitop rest frame
       out_vec.Boost(- vec_antitop_.BoostVector() );
       break;
   }
@@ -21,6 +26,7 @@ TLorentzVector Boost(TLorentzVector in_vec, Int_t frame_number, TLorentzVector v
   return out_vec;
 }
 
+// function which sets all the 4-vectors of the event according to the desired frame
 void SetAllVectors(TLorentzVector& vec_top_, TLorentzVector& vec_antitop_, TLorentzVector& vec_b_, TLorentzVector& vec_antib_, TLorentzVector& vec_lepton_, TLorentzVector& vec_antilepton_, int identifier){
   
   //cout << "frame identifier: " << identifier << endl;
@@ -72,60 +78,74 @@ void SetAllVectors(TLorentzVector& vec_top_, TLorentzVector& vec_antitop_, TLore
     cout << "antilepton pt after: " << vec_antilepton_.Pt() << endl;*/
 }
 
-Double_t GetVars(TLorentzVector vec_top_, TLorentzVector vec_antitop_, TLorentzVector vec_b_,TLorentzVector vec_antib_, TLorentzVector vec_lepton_,TLorentzVector vec_antilepton_, Int_t var_number) {
+// this function calculates all desired variables using their identification number
+double GetVars(TLorentzVector vec_top_, TLorentzVector vec_antitop_, TLorentzVector vec_b_,TLorentzVector vec_antib_, TLorentzVector vec_lepton_,TLorentzVector vec_antilepton_, Int_t var_number) {
   double out=-1;
   //cout << "var number 2: " << var_number << endl;
   switch(var_number) {
   
     case 0:
+      // cos(b bbar)
       out=TMath::Cos((vec_b_.Vect()).Angle(vec_antib_.Vect()));
       break;
     case 1:
+      // eta(b bbar)
       out=TMath::Abs(vec_b_.Eta()-vec_antib_.Eta());
       break;
     case 2:
+      // phi(b bbar)
       out=TMath::Abs(vec_b_.Phi()-vec_antib_.Phi());
       if(out>TMath::Pi()){
  	out=2*TMath::Pi()-out;
       }
       break;
     case 3:
+      // cos(l lbar)
       out=TMath::Cos((vec_lepton_.Vect()).Angle(vec_antilepton_.Vect()));
       break;
     case 4:
+      // phi(l lbar)
       out=TMath::Abs(vec_lepton_.Phi()-vec_antilepton_.Phi());
       if(out>TMath::Pi()){
  	out=2*TMath::Pi()-out;
       }
       break;
     case 5:
+      // eta(l lbar)
       out=TMath::Abs(vec_lepton_.Eta()-vec_antilepton_.Eta());
       break;
     case 6:
+      // cos(l tbar)
       out=TMath::Cos((vec_lepton_.Vect()).Angle(vec_antitop_.Vect()));
       break;
     case 7:
+      // cos(lbar t)
       out=TMath::Cos((vec_antilepton_.Vect()).Angle(vec_top_.Vect()));
       break;
     case 8:
+      // cos(l b)
       out=TMath::Cos((vec_lepton_.Vect()).Angle(vec_b_.Vect()));
       break;
     case 9:
+      // cos(lbar bbar)
       out=TMath::Cos((vec_antilepton_.Vect()).Angle(vec_antib_.Vect()));
       break;
     case 10:
+      // phi(l b)
       out=TMath::Abs(vec_lepton_.Phi()-vec_b_.Phi());
       if(out>TMath::Pi()){
  	out=2*TMath::Pi()-out;
       }
       break;
     case 11:
+      // phi(lbar bbar)
       out=TMath::Abs(vec_antilepton_.Phi()-vec_antib_.Phi());
       if(out>TMath::Pi()){
  	out=2*TMath::Pi()-out;
       }
       break; 
     case 12:
+      // cos(l tbar)*cos(lbar t)
       out=TMath::Cos((vec_lepton_.Vect()).Angle(vec_antitop_.Vect()))*TMath::Cos((vec_antilepton_.Vect()).Angle(vec_top_.Vect()));
       break;
     default:
@@ -145,7 +165,7 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   
   std::vector<TString> frames;
   std::vector<TString> variables;
-  std::vector<TString> decay_type;
+  std::vector<TString> var_type;
   
   frames.push_back("lab");
   frames.push_back("ttbar_cm");
@@ -167,12 +187,12 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   variables.push_back("Delta_Eta_bb");
   variables.push_back("cos_theta_l_x_cos_theta_lbar");
   
-  decay_type.push_back("GEN");
-  decay_type.push_back("RECO");
+  var_type.push_back("GEN");
+  var_type.push_back("RECO");
   
   for(auto it_frames=frames.begin();it_frames!=frames.end();++it_frames) {
     for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
-      for(auto it_type=decay_type.begin();it_type!=decay_type.end();++it_type) {
+      for(auto it_type=var_type.begin();it_type!=var_type.end();++it_type) {
 	vars.InitVar((*it_type)+"__"+(*it_frames)+"__"+(*it_variables),-9.,"F");
       }
       //cout << (*it_frames)+"|"+(*it_variables) << " initialized " << endl;
@@ -187,26 +207,28 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
 void SpinCorrelationProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
  
-  std::map<TString,int> frames;
-  std::map<TString,int> variables;
-  std::vector<TString> decay_type;
+  std::map<TString,int> frames;// map which contains the frames which are used and some number for later identification
+  std::map<TString,int> variables;// map which contains the variables which are used and some number for later nidentification
+  std::vector<TString> var_type;// just string vector which contains GEN and RECO to use it in loop 
   
+  // frames which are used
   frames["lab"]=0;
   frames["ttbar_cm"]=1;
   //frames["top_rest"]=2;
   //frames["antitop_rest"]=3;
   frames["special"]=4;
   
-  decay_type.push_back("GEN");
-  decay_type.push_back("RECO");
+  // variable type GEN or RECO
+  var_type.push_back("GEN");
+  var_type.push_back("RECO");
   
-  
+  // first few variables which are present in SL and DL channel
   variables["cos_theta_bb"]=0;
   variables["Delta_Eta_bb"]=1;
   variables["Delta_Phi_bb"]=2;
   
   
-  
+  // if top event isnt filled or n_jets<4 then there is nothing to do ...
   if(!(input.genTopEvt.IsFilled()) && !(input.selectedJets.size()>=4)) {
     cerr << "Top Event isnt filled and reconstruction not possible! " << endl;
     return;
@@ -214,7 +236,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   
   
   ///////////////////////////////////////////////////////////////////////////////////////////
-  // Set Vectors, which are present in every ttbar event
+  // decalre Vectors, which are present in every ttbar event
   math::XYZTLorentzVector vec_top;
   math::XYZTLorentzVector vec_antitop;
   math::XYZTLorentzVector vec_b;
@@ -222,19 +244,24 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   math::XYZTLorentzVector vec_lepton;
   math::XYZTLorentzVector vec_antilepton;
   math::XYZTLorentzVector vec_zero(0.,0.,0.,0.);
+  // and some temp vectors for later
   math::XYZTLorentzVector vec_top_tmp;
   math::XYZTLorentzVector vec_antitop_tmp;
   math::XYZTLorentzVector vec_b_tmp;
   math::XYZTLorentzVector vec_antib_tmp;
   
+  // some flags which help later
   bool isDL=false;
   bool isSL=false;
+  bool gen_evt_filled=false;
   int leptonflag=0;
   
-  for(auto it_type=decay_type.begin();it_type!=decay_type.end();++it_type) {
+  // loop begins over var_type
+  for(auto it_type=var_type.begin();it_type!=var_type.end();++it_type) {
     //cout << "GEN or RECO? " << *it_type << endl;
     TString dec_type=*it_type;
-    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // if top evt is filled and the loop is at var_type GEN, then the reconstruction for GEN variables can begin
     if(input.genTopEvt.IsFilled() && dec_type.EqualTo("GEN")){
       //cout << "GenTopEvt is filled and decay type GEN " << endl;
       std::vector<reco::GenParticle> tophad;
@@ -249,6 +276,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       lep=input.genTopEvt.GetAllLeptons();
       //additional_bs=input.genTopEvt.GetAdditionalBGenJets();
     
+      // identify the kind of decay
       if(tophad.size()==0 and toplep.size()==2) {
 	isDL=true;
 	isSL=false;
@@ -265,7 +293,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	//cout << "Fully hadronic Event! " << endl;
 	return;
       }
-       
+      
+      // make the correct assignment of the top/antitop b/antib 4-vectors
       for(auto it=tophad.begin();it!=tophad.end();++it) {
 	if(it->pdgId()>0) { vec_top=it->p4(); }
 	else if(it->pdgId()<0) { vec_antitop=it->p4(); }
@@ -282,9 +311,10 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	if(it->pdgId()>0) { vec_b=it->p4(); }
 	else if(it->pdgId()<0) { vec_antib=it->p4(); }
       }
-      ///////////////////////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      
+      // now identify the correct lepton/antilepton 4 vectors
+      // in SL case, the lepton/antilepton which is not present will be assigned with a (0,0,0,0) 4-vector
       if(isSL) {
 	if(lep[0].pdgId()>0) {
 	  vec_lepton=lep[0].p4();
@@ -299,7 +329,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  //cout << "Antilepton! " << endl;
 	}   
       }
-      
+      // in DL case, the assignment is straight forward. pdgid>0 are leptons, pdgid<0 are antileptons
       if(isDL) {
 	if(lep[0].pdgId()>0) {
 	  vec_lepton=lep[0].p4();
@@ -314,16 +344,20 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  vec_antilepton=lep[1].p4();
 	}
       }
+      // now save the top/antitop, b/antib vectors for later comparison with the RECO vectors
       vec_top_tmp=vec_top;
       vec_antitop_tmp=vec_antitop;
       vec_b_tmp=vec_b;
       vec_antib_tmp=vec_antib;
+      gen_evt_filled=true;
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // if the loop is in var_type RECO and the events satisfies the requirements, the recontruction of the RECO variables can begin
     else if(input.selectedJets.size()>=4 && dec_type.EqualTo("RECO") && ((input.selectedElectrons.size()+input.selectedMuons.size())==1)){
       //cout << "N_jets>=4 and decay type RECO and Electrons+Muons==1" << endl;
       isSL=true;
       isDL=false;
+      // this is the code of Hannes ttbar reconstruction processor to create some likelihood interpretations of the event
       std::vector<TLorentzVector> jetvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
       std::vector<float> jetcsvs;
       int ntags=0;
@@ -364,6 +398,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  }
       }
       if(best_int_lr!=0) {
+	// the likelihood ratio of the interpretation isnt allowed to be 0
+	// now check if the SL event has an electron- or muon-lepton and whether it is a lepton or antilepton
 	if(input.selectedElectrons.size()==1){
 	  leptonflag=-input.selectedElectrons[0].charge();
 	  if(leptonflag>0) {
@@ -390,6 +426,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	    vec_lepton=vec_zero;
 	  }
 	}
+	// depending on the outcome of the SL event classification, the corresponding 4-vectors are set
 	if(leptonflag>0) {
 	  vec_antitop.SetPxPyPzE(best_int_lr->TopLep().Px(),best_int_lr->TopLep().Py(),best_int_lr->TopLep().Pz(),best_int_lr->TopLep().E());
 	  vec_top.SetPxPyPzE(best_int_lr->TopHad().Px(),best_int_lr->TopHad().Py(),best_int_lr->TopHad().Pz(),best_int_lr->TopHad().E());
@@ -402,13 +439,19 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  vec_antib.SetPxPyPzE(best_int_lr->BHad().Px(),best_int_lr->BHad().Py(),best_int_lr->BHad().Pz(),best_int_lr->BHad().E());
 	  vec_b.SetPxPyPzE(best_int_lr->BLep().Px(),best_int_lr->BLep().Py(),best_int_lr->BLep().Pz(),best_int_lr->BLep().E()); 
 	}
+	// now do a Delta R Matching of the reconstructed 4-vectors with the saved GEN vectors
 	float dR_max=0.4;
-	//cout << "vor dR" << endl;
-	float dR_top=BoostedUtils::DeltaR(vec_top,vec_top_tmp);
-	float dR_antitop=BoostedUtils::DeltaR(vec_antitop,vec_antitop_tmp);
-	float dR_b=BoostedUtils::DeltaR(vec_b,vec_b_tmp);
-	float dR_antib=BoostedUtils::DeltaR(vec_antib,vec_antib_tmp);
-	//cout << "nach dR" << endl;
+	float dR_top=dR_max+1;
+	float dR_antitop=dR_max+1;
+	float dR_b=dR_max+1;
+	float dR_antib=dR_max+1;
+	if(gen_evt_filled){
+	  dR_top=BoostedUtils::DeltaR(vec_top,vec_top_tmp);
+	  dR_antitop=BoostedUtils::DeltaR(vec_antitop,vec_antitop_tmp);
+	  dR_b=BoostedUtils::DeltaR(vec_b,vec_b_tmp);
+	  dR_antib=BoostedUtils::DeltaR(vec_antib,vec_antib_tmp);
+	}
+	// if the dR Matching is succesfull the processor proceeds otherwise the loop for reco ends here
 	if(dR_top>dR_max || dR_antitop>dR_max || dR_b>dR_max || dR_antib>dR_max) {
 	  //cout << endl;
 	  //cout << "reconstruction not correct, abort!! " << endl;
@@ -419,18 +462,19 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	//cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!reconstruction succesfull!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 	//cout << endl;
       }
+      // if the interpretation is 0 the loop for reco ends here
       else {
 	//cout << "Interpretation = 0, abort!! " << endl;
 	continue;
       }
     }
-    
+    // if neither GEN nor RECO part worked the loop ends here
     else {
       //cout << "Neither Gen nor RECO reconstruction possible, abort!! " << endl;
       continue;
     }
     
-    
+    // now with the reconstructed 4-vectors the calculation of the variables starts
     for(auto it_frames=frames.begin();it_frames!=frames.end();++it_frames) {
       TLorentzVector vec_lepton_=BoostedUtils::GetTLorentzVector(vec_lepton);
       TLorentzVector vec_antilepton_=BoostedUtils::GetTLorentzVector(vec_antilepton);
@@ -439,6 +483,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       TLorentzVector vec_b_=BoostedUtils::GetTLorentzVector(vec_b);
       TLorentzVector vec_antib_=BoostedUtils::GetTLorentzVector(vec_antib);
       //cout << "frame: " << it_frames->first << " " << it_frames->second << endl;
+      
+      // the SetAllVectors function uses the reconstructed 4-vectors and changes them according to the desired frame/boost using the number of the frame
       SetAllVectors(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_frames->second);
       /*cout << "top m: " << vec_top_.M() << endl;
       cout << "antitop m: " << vec_antitop_.M() << endl;
@@ -448,7 +494,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       cout << "antilepton m: " << vec_antilepton_.M() << endl;*/
 
       
-      
+      // if SL event: depending on lepton or antilepton, the variables which make sense are defined for the event
       if(isSL) {
 	if(leptonflag==1) {
 	  variables["cos_theta_l"]=6;
@@ -461,6 +507,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  variables["Delta_Phi_lbarbbar"]=11;
 	}
       }
+      // same for DL events
       if(isDL) {
 	variables["cos_theta_ll"]=3;
 	variables["Delta_Phi_ll"]=4;
@@ -473,7 +520,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	variables["Delta_Phi_lbarbbar"]=11; 
 	variables["cos_theta_l_x_cos_theta_lbar"]=12;
       }
-
+      // now the GetVars function calculates the desired variable depending on the number of the variable using the 4-vectors of the event
       for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
 	  vars.FillVar(*it_type+"__"+it_frames->first+"__"+it_variables->first,GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_variables->second));
 	  //cout << *it_type+"__"+it_frames->first+"__"+it_variables->first << " filled with " << GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_variables->second) << endl;
