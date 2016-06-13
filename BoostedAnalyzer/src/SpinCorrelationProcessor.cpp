@@ -194,7 +194,7 @@ double GetVars(TLorentzVector vec_top_, TLorentzVector vec_antitop_, TLorentzVec
 
 using namespace std;
 
-SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,7,-99999,99999,0.8)){}
+SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,8,-99999,99999,0.8)){}
 SpinCorrelationProcessor::~SpinCorrelationProcessor (){}
 
 void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContainer& vars){
