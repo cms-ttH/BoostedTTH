@@ -311,6 +311,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   bool isSL=false;
   bool gen_evt_filled=false;
   int leptonflag=0;
+  bool no_tau_selection=1;
   
   // loop begins over var_type
   for(auto it_type=var_type.begin();it_type!=var_type.end();++it_type) {
@@ -377,7 +378,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       // in SL case, the lepton/antilepton which is not present will be assigned with a (0,0,0,0) 4-vector
       if(isSL) {
 	if(lep[0].pdgId()>0) {
-	  if(lep[0].pdgId()==15) {return;}
+	  if(lep[0].pdgId()==15 && no_tau_selection) {return;}
 	  vec_lepton=lep[0].p4();
 	  vec_antilepton=vec_zero;
 	  vec_antid=q2[0].p4();
@@ -386,7 +387,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  //cout << "Lepton! " << endl;
 	}
 	else if(lep[0].pdgId()<0) {
-	  if(lep[0].pdgId()==-15) {return;}
+	  if(lep[0].pdgId()==-15 && no_tau_selection) {return;}
 	  vec_antilepton=lep[0].p4();
 	  vec_lepton=vec_zero;
 	  vec_d=q1[0].p4();
@@ -398,19 +399,19 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       // in DL case, the assignment is straight forward. pdgid>0 are leptons, pdgid<0 are antileptons
       if(isDL) {
 	if(lep[0].pdgId()>0) {
-	  if(lep[0].pdgId()==15) {return;}
+	  if(lep[0].pdgId()==15 && no_tau_selection) {return;}
 	  vec_lepton=lep[0].p4();
 	}
 	else if(lep[0].pdgId()<0) {
-  	  if(lep[0].pdgId()==-15) {return;}
+  	  if(lep[0].pdgId()==-15 && no_tau_selection) {return;}
 	  vec_antilepton=lep[0].p4();
 	}
 	if(lep[1].pdgId()>0) {
- 	  if(lep[1].pdgId()==15) {return;}
+ 	  if(lep[1].pdgId()==15 && no_tau_selection) {return;}
 	  vec_lepton=lep[1].p4();
 	}
 	else if(lep[1].pdgId()<0) {
-	  if(lep[1].pdgId()==-15) {return;}
+	  if(lep[1].pdgId()==-15 && no_tau_selection) {return;}
 	  vec_antilepton=lep[1].p4();
 	}
       }
@@ -523,13 +524,13 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  dR_antib=BoostedUtils::DeltaR(vec_antib,vec_antib_tmp);
 	}
 	// if the dR Matching is succesfull the processor proceeds otherwise the loop for reco ends here
-	if(dR_top>dR_max || dR_antitop>dR_max || dR_b>dR_max || dR_antib>dR_max) {
+	if(dR_top<=dR_max && dR_antitop<=dR_max && dR_b<=dR_max && dR_antib<=dR_max) {
 	  //cout << endl;
 	  //cout << "reconstruction not correct, abort!! " << endl;
 	  //cout << endl;
-	  continue;
+	  vars.FillVar("RECO_flag_after_match",1);
 	}
-	vars.FillVar("RECO_flag_after_match",1);
+	
 	//cout << endl;
 	//cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!reconstruction succesfull!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 	//cout << endl;
