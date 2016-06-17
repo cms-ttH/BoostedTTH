@@ -124,21 +124,48 @@ if options.isData:
                                toGet = cms.VPSet(
             cms.PSet(
                 record = cms.string('JetCorrectionsRecord'),
-                tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PFchs'),
+                tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
                 label  = cms.untracked.string('AK4PFchs')
                 ),
             cms.PSet(
                 record = cms.string('JetCorrectionsRecord'),
-                tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK8PFchs'),
+                tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK8PFchs'),
                 label  = cms.untracked.string('AK8PFchs')
                 ),
 #        ..................................................
             ## here you add as many jet types as you need
-            ## note that the tag name is specific for the particular sqlite file
-            ),
-                               connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Fall15_25nsV2_DATA.db')
+            ## note that the tag name is specific for the particular sqlite file 
+            ), 
+                               connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_DATA.db')
 #                               connect = cms.string('sqlite:../data/jecs/Fall15_25nsV2_DATA.db')
                                )
+else:
+    process.load("CondCore.CondDB.CondDB_cfi")
+    from CondCore.CondDB.CondDB_cfi import *
+    process.jec = cms.ESSource("PoolDBESSource",
+                               DBParameters = cms.PSet(
+            messageLevel = cms.untracked.int32(0)
+            ),
+                               timetype = cms.string('runnumber'), # what does this do?
+                               toGet = cms.VPSet(
+            cms.PSet(
+                record = cms.string('JetCorrectionsRecord'),
+                tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
+                label  = cms.untracked.string('AK4PFchs')
+                ),
+            cms.PSet(
+                record = cms.string('JetCorrectionsRecord'),
+                tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK8PFchs'),
+                label  = cms.untracked.string('AK8PFchs')
+                ),
+#        ..................................................
+            ## here you add as many jet types as you need
+            ## note that the tag name is specific for the particular sqlite file 
+            ), 
+                               connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_MC.db')
+#                               connect = cms.string('sqlite:../data/jecs/Fall15_25nsV2_DATA.db')
+                               )
+	    
 ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
     process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
@@ -227,6 +254,9 @@ if options.additionalSelection!="NONE":
 process.BoostedAnalyzer.dumpSyncExe2=True
 # process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 #process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor"]
+
+process.BoostedAnalyzer.dumpSyncExe2=True
+
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:
   process.p = cms.Path(process.electronMVAValueMapProducer
