@@ -6,7 +6,7 @@ process = cms.Process("analysis")
 
 # set input, output, maxevents
 filenames=['/store/user/shwillia/Spring15_HbbSync/ttbar_Spring15_HbbSync.root']
-outfilename='sync_ttbar_spring15Hbb'
+outfilename='sync_ttbar_spring16Hbb'
 maxevents=10000000
 
 # initialize MessageLogger and output report
@@ -15,7 +15,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 5000
 
 # set global tag
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-process.GlobalTag.globaltag = 'MCRUN2_74_V9'
+process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_RealisticBS_25ns_13TeV2016_v1_mc'
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(maxevents))
 
