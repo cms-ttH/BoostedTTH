@@ -170,7 +170,7 @@ void Synchronizer::DumpSyncExe2Header(std::ostream &out){
 
 void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, const int number){
 
-bool runOverData = true;
+bool runOverData = false;
 
   // Setup Selections
   // Single Lepton Selection
@@ -582,7 +582,7 @@ bool runOverData = true;
 	  <<m_top_1<<","<< m_top_2<<","
     <<higgstag_fatjet_1<<","<< higgstag_fatjet_2 <<","
 	  <<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";
-
+/* Pre 2016 spring sync output 
   out <<run<<", "<<lumi<<","<<event<<","<<is_SL<<","<<is_DL<<","
 	<<lep1_pt<<","<<lep1_eta<<","<<lep1_phi<<","<<lep1_iso<<","<<lep1_pdgId<<","<<lep2_pt<<","<<lep2_eta<<","<<lep2_phi<<","<<lep2_iso<<","<<lep2_pdgId<<","<<mll<<","<<mll_passed<<","
 	<<jet1_pt<<","<<jet2_pt<<","<<jet3_pt<<","<<jet4_pt<<","
@@ -597,7 +597,26 @@ bool runOverData = true;
   <<pt_top_1<<","<< pt_top_2<<","
 	<<m_top_1<<","<< m_top_2<<","
   <<higgstag_fatjet_1<<","<< higgstag_fatjet_2 <<","
-	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";
+	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
+//Sync spring 2016 output
+  out <<run<<", "<<lumi<<","<<event<<","
+	<< "is_e" << "," << "is_mu" << "," << "is_ee" << "," << "is_emu" << "," << "is_mumu" <<","//lepton classification here: ee, emu, mumu 
+	<<n_jets<<","<<n_btags<<","
+	<<lep1_pt<<","<<lep1_iso<<","<<lep1_pdgId<<","
+	<<lep2_pt<<","<<lep2_iso<<","<<lep2_pdgId<< ","//<<mll<<","<<mll_passed<<","
+	<<jet1_pt<<","<<jet2_pt<<","
+	<<jet1_CSVv2<<","<<jet2_CSVv2<<","
+	<<"jet1_JecSF" << "," << "jet1_JecSF_up"<< "," <<"jet1_JecSF_down"<<","
+	<< ttHFCategory <<","
+	<< "MCWeight" << ","
+	<< "PUWeight" << ","
+	<< bWeight <<","
+	<< "topWeight" << ","
+	<< "triggerSF" << ","
+	<< "lepSF" << ","
+	<< "Q2_upup" << "," << "Q2_downdown" <<","
+	<< "pdf_up" << "," << "pdf_down" << "\n";
+
 }
 
 
