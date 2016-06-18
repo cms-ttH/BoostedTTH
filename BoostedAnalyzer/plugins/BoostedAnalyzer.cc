@@ -651,8 +651,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	
     }
     //todo: adapt to new synch exe
-    //	    synchronizer.DumpSyncExe2(0,input_nominal,input_jesup,input_jesdown,input_uncorrjets,input_DL_nominal,input_DL_jesup,input_DL_jesdown,input_DL_uncorrjets,helper);
-
+    	    synchronizer.DumpSyncExe2(0,inputs[0], inputs[1], inputs[2], inputs[0],inputs[0], inputs[1], inputs[2], inputs[0], helper);
+//void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, const int number){
     // DO SELECTION
     // loop over jet systematics
     assert(inputs.size()==cutflows.size());
