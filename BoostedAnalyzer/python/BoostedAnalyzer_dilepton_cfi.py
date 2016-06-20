@@ -15,11 +15,11 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     luminosity = cms.double(10000),
     xs = cms.double(831.76),
-    nMCEvents = cms.int32(25446993), 
+    nMCEvents = cms.int32(25446993),
 
     isData = cms.bool(False),
 
-    makeSystematicsTrees = cms.bool(False),
+    makeSystematicsTrees = cms.bool(True),
 
     useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
