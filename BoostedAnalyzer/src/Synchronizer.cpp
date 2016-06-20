@@ -329,7 +329,7 @@ bool runOverData = false;
 
   float mll=0;
 
-  bool compare = false;
+  bool compare = true;
 
   /*
   const int nEntries = 6;
