@@ -174,12 +174,16 @@ bool runOverData = false;
 
   // Setup Selections
   // Single Lepton Selection
+  vector<string> el_triggers_MC;;
+  vector<string> mu_triggers_MC;
+  el_triggers_MC.push_back("HLT_Ele27_WP85_Gsf_v*");
+  el_triggers_MC.push_back("HLT_IsoMu17_eta2p1_v*");
   if(leptonSelections.size()==0){
     leptonSelections.push_back(new VertexSelection());
     if(runOverData) {
 	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*","HLT_IsoMu18_v*"));
     } else {
-	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_WP85_Gsf_v*","HLT_IsoMu17_eta2p1_v*"));
+	    leptonSelections.push_back(new LeptonSelection(el_triggers_MC,mu_triggers_MC));
     }
     leptonSelections.push_back(new JetTagSelection(4,2));
 
@@ -328,6 +332,12 @@ bool runOverData = false;
   bool met_passed=false;
 
   float mll=0;
+
+  int is_e=input.triggerInfo.IsAnyTriggered(el_triggers_MC);
+  int is_mu=input.triggerInfo.IsAnyTriggered(mu_triggers_MC);
+  int is_ee=input_DL.triggerInfo.IsAnyTriggered(elel_triggers);
+  int is_emu=input_DL.triggerInfo.IsAnyTriggered(elmu_triggers);
+  int is_mumu=input_DL.triggerInfo.IsAnyTriggered(mumu_triggers);
 
   bool compare = false;
 
@@ -600,7 +610,7 @@ bool runOverData = false;
 	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
 //Sync spring 2016 output
   out <<run<<", "<<lumi<<","<<event<<","
-	<< "is_e" << "," << "is_mu" << "," << "is_ee" << ","<< "is_emu" << "," << "is_mumu" <<","//lepton classification here: ee, emu, mumu
+	<< is_e << "," << is_mu << "," << is_ee << ","<< is_emu << "," << is_mumu <<","//lepton classification here: ee, emu, mumu
 	<<n_jets<<","<<n_btags<<","
 	<<lep1_pt<<","<<lep1_iso<<","<<lep1_pdgId<<","
 	<<lep2_pt<<","<<lep2_iso<<","<<lep2_pdgId<< ","//<<mll<<","<<mll_passed<<","
