@@ -27,7 +27,7 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = -1 # reset for testing
+    options.maxEvents = 100 # reset for testing
 
 if not options.inputFiles:
     options.inputFiles=['root://cmsxrootd.fnal.gov///store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/00000/000B9244-4B27-E611-91D2-7845C4FC3C6B.root']
@@ -186,10 +186,12 @@ process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuon
 
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 process.SelectedJetProducer.jets='slimmedJets'
-process.SelectedJetProducer.ptMins=[20,30]
-process.SelectedJetProducer.etaMaxs=[2.4,2.4]
-process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
+process.SelectedJetProducer.ptMins=[20,30,20,30]
+process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
+process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
+
+
 
 # load and run the boosted analyzer
 if options.isData:
@@ -214,6 +216,8 @@ if options.makeSystematicsTrees:
     process.SelectedJetProducer.systematics=systs
     process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
     process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
+    process.BoostedAnalyzer.selectedJetsDL=[cms.InputTag("SelectedJetProducer:selectedJetsDL"+s) for s in systs]
+    process.BoostedAnalyzer.selectedJetsLooseDL=[cms.InputTag("SelectedJetProducer:selectedJetsLooseDL"+s) for s in systs]   
     process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*len(systs)
 
 if options.isBoostedMiniAOD:
