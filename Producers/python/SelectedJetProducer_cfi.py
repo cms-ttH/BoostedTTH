@@ -8,11 +8,10 @@ SelectedJetProducer = cms.EDProducer(
     electrons = cms.InputTag("SelectedElectronProducer:selectedElectronsLoose"),
     muons = cms.InputTag("SelectedMuonProducer:selectedMuonsLoose"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
-    ptMins   = cms.vdouble(30,20),
-    etaMaxs  = cms.vdouble(2.4,2.4),
+    ptMins   = cms.vdouble(30,20,30,20),
+    etaMaxs  = cms.vdouble(2.4,2.4,2.4,2.4),
     leptonJetDr = cms.double(0.4),
-    collectionNames  = cms.vstring("selectedJets","selectedJetsLoose"),
+    collectionNames  = cms.vstring("selectedJets","selectedJetsLoose","selectedJetsDL","selectedJetsLooseDL"),
     systematics = cms.vstring(""),
-    
-
     )
+

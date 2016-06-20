@@ -186,10 +186,12 @@ process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuon
 
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 process.SelectedJetProducer.jets='slimmedJets'
-process.SelectedJetProducer.ptMins=[20,30]
-process.SelectedJetProducer.etaMaxs=[2.4,2.4]
-process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
+process.SelectedJetProducer.ptMins=[20,30,20,30]
+process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
+process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
+
+
 
 # load and run the boosted analyzer
 if options.isData:
@@ -214,6 +216,8 @@ if options.makeSystematicsTrees:
     process.SelectedJetProducer.systematics=systs
     process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
     process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
+    process.BoostedAnalyzer.selectedJetsDL=[cms.InputTag("SelectedJetProducer:selectedJetsDL"+s) for s in systs]
+    process.BoostedAnalyzer.selectedJetsLooseDL=[cms.InputTag("SelectedJetProducer:selectedJetsLooseDL"+s) for s in systs]   
     process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*len(systs)
 
 if options.isBoostedMiniAOD:

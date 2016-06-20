@@ -201,7 +201,13 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], jetID::none, '-' );
 	   // Get jet Collection which pass loose selection
 	   std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
-	   iEvent.put(selectedJets,systName(collectionNames[i],systematics[j]));
+	   //if(collectionNames[i].find("DL")==std::string::npos) {
+	      iEvent.put(selectedJets,systName(collectionNames[i],systematics[j]));
+	   //}
+	   //else {
+	     // 2 leading jets pt>30 in objetc selection -->strange
+	     
+	   //}
        }
    }
    
