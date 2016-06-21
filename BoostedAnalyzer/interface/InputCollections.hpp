@@ -49,6 +49,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const SampleType                              sampleType_,
 		    const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
+		    const std::map<std::string,float>&		  weightsDL_,
 		    const edm::Event& iEvent_,
 		    const edm::EventSetup& iSetup_
 		      /**** bjetness code ****/
@@ -74,6 +75,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
                     weights(weights_),
+                    weightsDL(weightsDL_),
 		    iEvent(iEvent_),
 		    iSetup(iSetup_)
                     {}
@@ -88,7 +90,8 @@ InputCollections(   const InputCollections&                       input,
 		    const std::vector<pat::Jet>&                  selectedJetsLooseDL_,
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
-                    const std::map<std::string,float>&            weights_
+                    const std::map<std::string,float>&            weights_,
+		    const std::map<std::string,float>& 		  weightsDL_
         		    ): 
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
@@ -110,6 +113,7 @@ InputCollections(   const InputCollections&                       input,
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
                     weights(weights_),
+                    weightsDL(weightsDL_),
 		    iEvent(input.iEvent),
 		    iSetup(input.iSetup)
 
@@ -135,6 +139,7 @@ InputCollections(   const InputCollections&                       input,
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>             weights;
+  const std::map<std::string,float>		weightsDL;
   const edm::Event & iEvent;
   const edm::EventSetup & iSetup;
 

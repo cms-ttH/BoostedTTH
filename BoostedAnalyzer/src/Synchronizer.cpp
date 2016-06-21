@@ -273,6 +273,8 @@ bool runOverData = true;
   }
 
   // Declare Variables
+  float xs_ttbar= 831.76 ;// in pb
+  float Ngen=46400;
   int run=input.eventInfo.run;
   int lumi=input.eventInfo.lumiBlock;
   int event=input.eventInfo.evt;
@@ -311,7 +313,9 @@ bool runOverData = true;
   int n_btags=0;
 
   float bWeight=0;
-
+  float mcweight=xs_ttbar*1000*2.7/Ngen;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
+  float topweight=0;
+  
   int ttHFCategory=0;
 
   float final_discriminant1=0;
@@ -610,11 +614,13 @@ bool runOverData = true;
   }
 
   if(is_DL){
-    bWeight=input_DL.weights.at("Weight_CSV");
+    bWeight=input_DL.weightsDL.at("Weight_CSV");
+    topweight=input_DL.weightsDL.at("Weight_TopPt");
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
   else{
     bWeight=input.weights.at("Weight_CSV");
+    topweight=input.weights.at("Weight_TopPt");
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }
 
@@ -660,10 +666,10 @@ bool runOverData = true;
 	<<"jet1_JecSF" << "," << "jet1_JecSF_up"<< "," << "jet1_JecSF_down" <<","
   << MET_pt << "," << MET_phi << "," << mll << ","
 	<< ttHFCategory <<","
-	<< "MCWeight" << ","
+	<< mcweight << ","
 	<< "PUWeight" << ","
 	<< bWeight <<","
-	<< "topWeight" << ","
+	<< topweight << ","
 	<< "triggerSF" << ","
 	<< "lepSF" << ","
 	<< "Q2_upup" << "," << "Q2_downdown" <<","
