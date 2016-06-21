@@ -334,11 +334,11 @@ bool runOverData = false;
   float mll=0;
 
 
-  int is_e=input.triggerInfo.IsAnyTriggered(el_triggers_MC);
-  int is_mu=input.triggerInfo.IsAnyTriggered(mu_triggers_MC);
-  int is_ee=input_DL.triggerInfo.IsAnyTriggered(elel_triggers);
-  int is_emu=input_DL.triggerInfo.IsAnyTriggered(elmu_triggers);
-  int is_mumu=input_DL.triggerInfo.IsAnyTriggered(mumu_triggers);
+  int is_e=0;
+  int is_mu=0;
+  int is_ee=0;
+  int is_emu=0;
+  int is_mumu=0;
 
   bool compare = false;
 
@@ -432,27 +432,27 @@ bool runOverData = false;
 
 
   if(is_DL){
-    if(input_DL.selectedJets.size()>0){
-      jet1_pt=input_DL.selectedJets.at(0).pt();
-      jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(0));
+    if(input_DL.selectedJetsLooseDL.size()>0){
+      jet1_pt=input_DL.selectedJetsLooseDL.at(0).pt();
+      jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(0));
     }
 
-    if(input_DL.selectedJets.size()>1){
-      jet2_pt=input_DL.selectedJets.at(1).pt();
-      jet2_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(1));
+    if(input_DL.selectedJetsLooseDL.size()>1){
+      jet2_pt=input_DL.selectedJetsLooseDL.at(1).pt();
+      jet2_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(1));
     }
 
-    if(input_DL.selectedJets.size()>2){
-      jet3_pt=input_DL.selectedJets.at(2).pt();
-      jet3_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(2));
+    if(input_DL.selectedJetsLooseDL.size()>2){
+      jet3_pt=input_DL.selectedJetsLooseDL.at(2).pt();
+      jet3_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(2));
     }
 
-    if(input_DL.selectedJets.size()>3){
-      jet4_pt=input_DL.selectedJets.at(3).pt();
-      jet4_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(3));
+    if(input_DL.selectedJetsLooseDL.size()>3){
+      jet4_pt=input_DL.selectedJetsLooseDL.at(3).pt();
+      jet4_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(3));
     }
-    n_jets=int(input_DL.selectedJets.size());
-    for(auto jet=input_DL.selectedJets.begin();jet!=input_DL.selectedJets.end(); jet++){
+    n_jets=int(input_DL.selectedJetsLooseDL.size());
+    for(auto jet=input_DL.selectedJetsLooseDL.begin();jet!=input_DL.selectedJetsLooseDL.end(); jet++){
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
