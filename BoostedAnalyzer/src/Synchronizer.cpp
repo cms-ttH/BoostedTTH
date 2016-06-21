@@ -263,6 +263,8 @@ bool runOverData = false;
   }
 
   // Declare Variables
+  float xs_ttbar= 831.76 ;// in pb
+  float Ngen=46400;
   int run=input.eventInfo.run;
   int lumi=input.eventInfo.lumiBlock;
   int event=input.eventInfo.evt;
@@ -301,7 +303,8 @@ bool runOverData = false;
   int n_btags=0;
 
   float bWeight=0;
-
+  float mcweight=xs_ttbar*1000*2.7/Ngen;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
+  
   int ttHFCategory=0;
 
   float final_discriminant1=0;
@@ -621,7 +624,7 @@ bool runOverData = false;
 	<<"jet1_JecSF" << "," << "jet1_JecSF_up"<< "," << "jet1_JecSF_down" <<","
   << MET_pt << "," << MET_phi << "," << mll << ","
 	<< ttHFCategory <<","
-	<< "MCWeight" << ","
+	<< mcweight << ","
 	<< "PUWeight" << ","
 	<< bWeight <<","
 	<< "topWeight" << ","
