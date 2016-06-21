@@ -701,7 +701,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	}
 	if(selected) treewriters[i_sys]->Process(inputs[i_sys]);
     }
-
+   
 }
 
 float BoostedAnalyzer::GetTopPtWeight(float toppt1,float toppt2){

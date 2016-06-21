@@ -170,19 +170,14 @@ void Synchronizer::DumpSyncExe2Header(std::ostream &out){
 
 void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, const int number){
 
-bool runOverData = true;
+bool runOverData = false;
 
   // Setup Selections
   // Single Lepton Selection
   vector<string> el_triggers_MC;;
   vector<string> mu_triggers_MC;
-  el_triggers_MC.push_back("none");
-  mu_triggers_MC.push_back("none");
-/* Triggers not yet working in CMSSW 8010, so they are set to none -> returning true
-  el_triggers_MC.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v*");
-  mu_triggers_MC.push_back("HLT_IsoMu17_eta2p1_v*");
-  mu_triggers_MC.push_back("HLT_IsoTkMu20_v*");
-*/
+  el_triggers_MC.push_back("HLT_Ele27_WP85_Gsf_v*");
+  el_triggers_MC.push_back("HLT_IsoMu17_eta2p1_v*");
   if(leptonSelections.size()==0){
     leptonSelections.push_back(new VertexSelection());
     if(runOverData) {
@@ -206,17 +201,12 @@ bool runOverData = true;
   vector<string> elel_triggers;
   vector<string> mumu_triggers;
   vector<string> elmu_triggers;
-  elel_triggers.push_back("none");
-  mumu_triggers.push_back("none");
-  elmu_triggers.push_back("none");
-/* Triggers not yet working in CMSSW 8010, so they are set to none -> returning true
-
   elel_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
   mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
   mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
   elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
   elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*");
-*/
+
   if(dileptonSelections.size()==0){
     dileptonSelections.push_back(new VertexSelection());
     dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers));
@@ -316,6 +306,13 @@ bool runOverData = true;
   float mcweight=xs_ttbar*1000*2.7/Ngen;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
   float topweight=0;
   float lepSF=-99;
+
+  float puweight=0;
+  float q2upup=0;
+  float q2downdown=0;
+  float pdfup=0;
+  float pdfdown=0;
+
 
   int ttHFCategory=0;
 
@@ -437,35 +434,6 @@ bool runOverData = true;
       lep2_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
       lep2_pdgId=iEle->pdgId();
       lep2_MVAID=iEle->userFloat("mvaValue");
-    }
-  }
-  // check in which category the event is filled: is_e, is_mu...
-  std::cout << "SL: " << is_SL << " DL: " << is_DL << std::endl;
-  std::cout << "PDGID 1: " << lep1_pdgId << " PDGID 2: " << lep2_pdgId << std::endl;
-  if(is_SL){
-      if(abs(lep1_pdgId)==11){
-        is_e=1;
-      }
-      if(abs(lep1_pdgId)==13){
-        is_mu=1;
-      }
-  }
-  if(is_DL){
-    if(abs(lep1_pdgId)==11){
-      if(abs(lep2_pdgId)==13){
-        is_emu=1;
-      }
-      if(abs(lep2_pdgId)==11){
-        is_ee=1;
-      }
-    }
-    if(abs(lep1_pdgId)==13){
-      if(abs(lep2_pdgId)==11){
-        is_emu=1;
-      }
-      if(abs(lep2_pdgId)==13){
-        is_mumu=1;
-      }
     }
   }
 
@@ -617,13 +585,31 @@ bool runOverData = true;
   if(is_DL){
     bWeight=input_DL.weightsDL.at("Weight_CSV");
     topweight=input_DL.weightsDL.at("Weight_TopPt");
-    //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+
+    puweight=input_DL.weightsDL.at("Weight_PU");
+    if(number!=1 && number!=2) {
+      q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
+      q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
+      pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
+      pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
+      lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+    }
+
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
   else{
     bWeight=input.weights.at("Weight_CSV");
     topweight=input.weights.at("Weight_TopPt");
-    lepSF=input.weights.at("Weight_LeptonSF");
+
+    puweight=input.weights.at("Weight_PU");
+    if(number!=1 && number!=2) {
+      q2upup=input.weights.at("Weight_muRupmuFup");
+      q2downdown=input.weights.at("Weight_muRdownmuFdown");
+      pdfup=input.weights.at("Weight_NNPDFid260067");
+      pdfdown=input.weights.at("Weight_NNPDFid260005");
+      lepSF=input.weights.at("Weight_LeptonSF");
+    }
+
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }
 
@@ -670,13 +656,15 @@ bool runOverData = true;
   << MET_pt << "," << MET_phi << "," << mll << ","
 	<< ttHFCategory <<","
 	<< mcweight << ","
-	<< "PUWeight" << ","
+	<< puweight << ","
 	<< bWeight <<","
 	<< topweight << ","
 	<< "triggerSF" << ","
+
 	<< lepSF << ","
-	<< "Q2_upup" << "," << "Q2_downdown" <<","
-	<< "pdf_up" << "," << "pdf_down" << "\n";
+	<< q2upup << "," << q2downdown <<","
+	<< pdfup << "," << pdfdown << "\n";
+
 
 }
 

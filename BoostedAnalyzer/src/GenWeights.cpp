@@ -20,6 +20,7 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
       else {
 	for (int i = 0; (i < weightnumber && i < GeneratorWeights ); i++) {
 	  weights[weightnames.at(i)] = LHEEvent.weights()[i].wgt;
+	  //cout << "added generator weight " << weightnames.at(i) << endl;
 	}
       }
     }
