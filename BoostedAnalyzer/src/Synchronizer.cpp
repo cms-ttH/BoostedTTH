@@ -574,7 +574,7 @@ bool runOverData = false;
   }
 
   if(is_DL){
-    bWeight=input_DL.weights.at("Weight_CSV");
+    bWeight=input_DL.weightsDL.at("Weight_CSV");
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
   else{
