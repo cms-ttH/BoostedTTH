@@ -315,7 +315,8 @@ bool runOverData = true;
   float bWeight=0;
   float mcweight=xs_ttbar*1000*2.7/Ngen;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
   float topweight=0;
-  
+  float lepSF=-99;
+
   int ttHFCategory=0;
 
   float final_discriminant1=0;
@@ -616,11 +617,13 @@ bool runOverData = true;
   if(is_DL){
     bWeight=input_DL.weightsDL.at("Weight_CSV");
     topweight=input_DL.weightsDL.at("Weight_TopPt");
+    //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
   else{
     bWeight=input.weights.at("Weight_CSV");
     topweight=input.weights.at("Weight_TopPt");
+    lepSF=input.weights.at("Weight_LeptonSF");
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }
 
@@ -671,7 +674,7 @@ bool runOverData = true;
 	<< bWeight <<","
 	<< topweight << ","
 	<< "triggerSF" << ","
-	<< "lepSF" << ","
+	<< lepSF << ","
 	<< "Q2_upup" << "," << "Q2_downdown" <<","
 	<< "pdf_up" << "," << "pdf_down" << "\n";
 
