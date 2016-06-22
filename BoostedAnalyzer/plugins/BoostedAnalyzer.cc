@@ -46,6 +46,7 @@
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
+#include "MiniAOD/MiniAODHelper/interface/LeptonSFHelper.h"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
@@ -126,6 +127,8 @@ private:
     MiniAODHelper helper;
     /** the csv reweighter calculates the event weight from b-tag reweightung */
     CSVHelper csvReweighter;
+    //calculate the scalefactor for leptons
+     LeptonSFHelper leptonSFhelper;
     // reweight the number of primary vertices distribution
     PUWeights puWeights;
     /** writes flat trees  */
@@ -657,6 +660,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     vector<InputCollections> inputs;
     for(uint isys=0; isys<jetSystematics.size(); isys++){
 	auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
+	auto weightsDL = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJetsLooseDL[isys]),*h_selectedElectronsDL,*h_selectedMuonsDL,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
 					  selectedPVs,
@@ -678,6 +682,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  sampleType,
 					  higgsdecay,
 					  weights,
+					  weightsDL,
 					  iEvent,
 					  iSetup
 					  ));
@@ -707,7 +712,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	}
 	if(selected) treewriters[i_sys]->Process(inputs[i_sys]);
     }
-
+   
 }
 
 float BoostedAnalyzer::GetTopPtWeight(float toppt1,float toppt2){
@@ -800,8 +805,16 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	    weights[it->name()] = it->value();
 	}
 	//Add Genweights to the weight map
-	genweights.GetGenWeights(weights, lheInfo, dogenweights);
+	  genweights.GetGenWeights(weights, lheInfo, dogenweights);
+
+    //Add Lepton Scalefactors to weight map
+    std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
+
+    for(  auto sfit = selectedScaleFactors.begin() ; sfit != selectedScaleFactors.end() ; sfit++  ){
+      weights["Weight_"+sfit->first] = sfit->second;
     }
+  }
+
 
 
     return weights;

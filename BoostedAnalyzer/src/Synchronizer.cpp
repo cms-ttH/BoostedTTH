@@ -272,6 +272,8 @@ bool runOverData = false;
   }
 
   // Declare Variables
+  float xs_ttbar= 831.76 ;// in pb
+  float Ngen=46400;
   int run=input.eventInfo.run;
   int lumi=input.eventInfo.lumiBlock;
   int event=input.eventInfo.evt;
@@ -310,6 +312,16 @@ bool runOverData = false;
   int n_btags=0;
 
   float bWeight=0;
+  float mcweight=xs_ttbar*1000*2.7/Ngen;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
+  float topweight=0;
+  float lepSF=-99;
+
+  float puweight=0;
+  float q2upup=0;
+  float q2downdown=0;
+  float pdfup=0;
+  float pdfdown=0;
+
 
   int ttHFCategory=0;
 
@@ -345,11 +357,11 @@ bool runOverData = false;
   float mll=0;
 
 
-  int is_e=input.triggerInfo.IsAnyTriggered(el_triggers_MC);
-  int is_mu=input.triggerInfo.IsAnyTriggered(mu_triggers_MC);
-  int is_ee=input_DL.triggerInfo.IsAnyTriggered(elel_triggers);
-  int is_emu=input_DL.triggerInfo.IsAnyTriggered(elmu_triggers);
-  int is_mumu=input_DL.triggerInfo.IsAnyTriggered(mumu_triggers);
+  int is_e=0;
+  int is_mu=0;
+  int is_ee=0;
+  int is_emu=0;
+  int is_mumu=0;
 
 
   float jet1_JecSF = 0;
@@ -450,12 +462,12 @@ bool runOverData = false;
 
 
   if(is_DL){
-    if(input_DL.selectedJets.size()>0){
-      jet1_pt=input_DL.selectedJets.at(0).pt();
-      jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(0));
+    if(input_DL.selectedJetsLooseDL.size()>0){
+      jet1_pt=input_DL.selectedJetsLooseDL.at(0).pt();
+      jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(0));
       bool jetmatched = false;
       for( auto rawJet: input.rawJets){
-	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJets.at(0).p4()) < 0.01 ){
+	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJetsLooseDL.at(0).p4()) < 0.01 ){
 	  jet1_JecSF = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA) ;
 	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup) / jet1_JecSF;
 	  float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup) / jet1_JecSF;
@@ -477,22 +489,22 @@ bool runOverData = false;
       }
     }
 
-    if(input_DL.selectedJets.size()>1){
-      jet2_pt=input_DL.selectedJets.at(1).pt();
-      jet2_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(1));
+    if(input_DL.selectedJetsLooseDL.size()>1){
+      jet2_pt=input_DL.selectedJetsLooseDL.at(1).pt();
+      jet2_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(1));
     }
 
-    if(input_DL.selectedJets.size()>2){
-      jet3_pt=input_DL.selectedJets.at(2).pt();
-      jet3_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(2));
+    if(input_DL.selectedJetsLooseDL.size()>2){
+      jet3_pt=input_DL.selectedJetsLooseDL.at(2).pt();
+      jet3_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(2));
     }
 
-    if(input_DL.selectedJets.size()>3){
-      jet4_pt=input_DL.selectedJets.at(3).pt();
-      jet4_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(3));
+    if(input_DL.selectedJetsLooseDL.size()>3){
+      jet4_pt=input_DL.selectedJetsLooseDL.at(3).pt();
+      jet4_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(3));
     }
-    n_jets=int(input_DL.selectedJets.size());
-    for(auto jet=input_DL.selectedJets.begin();jet!=input_DL.selectedJets.end(); jet++){
+    n_jets=int(input_DL.selectedJetsLooseDL.size());
+    for(auto jet=input_DL.selectedJetsLooseDL.begin();jet!=input_DL.selectedJetsLooseDL.end(); jet++){
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
@@ -633,11 +645,33 @@ bool runOverData = false;
   }
 
   if(is_DL){
-    bWeight=input_DL.weights.at("Weight_CSV");
+    bWeight=input_DL.weightsDL.at("Weight_CSV");
+    topweight=input_DL.weightsDL.at("Weight_TopPt");
+
+    puweight=input_DL.weightsDL.at("Weight_PU");
+    if(number!=1 && number!=2) {
+      q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
+      q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
+      pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
+      pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
+      lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+    }
+
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
   else{
     bWeight=input.weights.at("Weight_CSV");
+    topweight=input.weights.at("Weight_TopPt");
+
+    puweight=input.weights.at("Weight_PU");
+    if(number!=1 && number!=2) {
+      q2upup=input.weights.at("Weight_muRupmuFup");
+      q2downdown=input.weights.at("Weight_muRdownmuFdown");
+      pdfup=input.weights.at("Weight_NNPDFid260067");
+      pdfdown=input.weights.at("Weight_NNPDFid260005");
+      lepSF=input.weights.at("Weight_LeptonSF");
+    }
+
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }
 
@@ -683,14 +717,16 @@ bool runOverData = false;
 	<<jet1_JecSF << "," << jet1_JecSF_up<< "," << jet1_JecSF_down <<","
   << MET_pt << "," << MET_phi << "," << mll << ","
 	<< ttHFCategory <<","
-	<< "MCWeight" << ","
-	<< "PUWeight" << ","
+	<< mcweight << ","
+	<< puweight << ","
 	<< bWeight <<","
-	<< "topWeight" << ","
+	<< topweight << ","
 	<< "triggerSF" << ","
-	<< "lepSF" << ","
-	<< "Q2_upup" << "," << "Q2_downdown" <<","
-	<< "pdf_up" << "," << "pdf_down" << "\n";
+
+	<< lepSF << ","
+	<< q2upup << "," << q2downdown <<","
+	<< pdfup << "," << pdfdown << "\n";
+
 
 }
 
