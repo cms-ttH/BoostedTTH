@@ -186,11 +186,11 @@ bool runOverData = false;
   vector<string> el_triggers_MC;;
   vector<string> mu_triggers_MC;
 
-  el_triggers_MC.push_back("none");
-  mu_triggers_MC.push_back("none");
+  el_triggers_MC.push_back("any");
+  mu_triggers_MC.push_back("any");
 /*
   el_triggers_MC.push_back("HLT_Ele27_WP85_Gsf_v*");
-  el_triggers_MC.push_back("HLT_IsoMu17_eta2p1_v*");
+  mu_triggers_MC.push_back("HLT_IsoMu17_eta2p1_v*");
 
   */
   if(leptonSelections.size()==0){
@@ -217,9 +217,9 @@ bool runOverData = false;
   vector<string> mumu_triggers;
   vector<string> elmu_triggers;
 
-  elel_triggers.push_back("none");
-  mumu_triggers.push_back("none");
-  elmu_triggers.push_back("none");
+  elel_triggers.push_back("any");
+  mumu_triggers.push_back("any");
+  elmu_triggers.push_back("any");
 
 
 /*
@@ -422,6 +422,7 @@ bool runOverData = false;
 
   if(compare) std::cout << "is_SL: " << is_SL  << "   is_DL: " << is_DL<< std::endl;
 
+
   for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
     if(iMuon->pt()>lep1_pt){
       lep2_pt=lep1_pt;
@@ -467,6 +468,32 @@ bool runOverData = false;
       lep2_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
       lep2_pdgId=iEle->pdgId();
       lep2_MVAID=iEle->userFloat("mvaValue");
+    }
+  }
+    if(is_SL){
+      if(abs(lep1_pdgId)==11){
+        is_e=1;
+      }
+      if(abs(lep1_pdgId)==13){
+        is_mu=1;
+      }
+  }
+  if(is_DL){
+    if(abs(lep1_pdgId)==11){
+      if(abs(lep2_pdgId)==13){
+        is_emu=1;
+      }
+      if(abs(lep2_pdgId)==11){
+        is_ee=1;
+      }
+    }
+    if(abs(lep1_pdgId)==13){
+      if(abs(lep2_pdgId)==11){
+        is_emu=1;
+      }
+      if(abs(lep2_pdgId)==13){
+        is_mumu=1;
+      }
     }
   }
 

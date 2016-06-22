@@ -40,6 +40,9 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
   // what needs to be fixed here exactly?
   bool muonTriggered = input.triggerInfo.IsAnyTriggered(muonTriggers);
   bool electronTriggered = input.triggerInfo.IsAnyTriggered(electronTriggers);
+  
+  //std::cout << "muonTriggered " << muonTriggered << " electronTriggered " << electronTriggered << std::endl;
+  //std::cout << channel << std::endl;
   if(channel=="both"){
     if(step<0||step==1){
       if(!muonTriggered && !electronTriggered) return false;
@@ -98,5 +101,6 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
     std::cerr << "channel of lepton selection does not exist! " << std::endl;
     return false;
   }
+  std::cout << "IsSelected=true" << std::endl;
   return true;
 }
