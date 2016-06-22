@@ -132,6 +132,8 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     helper.SetJetCorrectorUncertainty();
     helper.SetBoostedJetCorrectorUncertainty();
 
+    produces<pat::JetCollection>("rawJets");
+
     for(uint i=0; i<collectionNames.size();i++){
 	for(uint j=0; j<systematics.size();j++){
 	    produces<pat::JetCollection>(systName(collectionNames[i],systematics[j]));
@@ -182,6 +184,8 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    if(applyCorrection){
        // Get raw jets
        std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
+       std::auto_ptr<pat::JetCollection>rawJets_(new pat::JetCollection(rawJets));
+       iEvent.put(rawJets_, "rawJets");
        // Clean muons and electrons from jets
        std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);
    // Apply jet corrections
@@ -190,6 +194,8 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
        }
 
    }
+
+
    else{
        for(uint i=0; i<systematics.size(); i++){
 	   unsortedJets.push_back(helper.GetDeltaRCleanedJets(idJets,*h_inputMuons,*h_inputElectrons,leptonJetDr));

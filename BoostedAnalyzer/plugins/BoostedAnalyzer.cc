@@ -207,6 +207,8 @@ private:
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsDLToken;
     /** loose electrons data access token **/
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsLooseToken;
+    /** raw jets data access token **/
+    edm::EDGetTokenT< std::vector<pat::Jet> >  rawJetsToken;
     /** loose jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsTokens;
     /** tight jets data access token **/
@@ -276,6 +278,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     selectedElectronsToken       = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons"));
     selectedElectronsDLToken     = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL"));
     selectedElectronsLooseToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose"));
+
+    rawJetsToken = consumes< std::vector <pat::Jet > >(iConfig.getParameter<edm::InputTag>("rawJets"));
+
+
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJets")){
 	selectedJetsTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
@@ -498,6 +504,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( selectedElectronsDLToken,h_selectedElectronsDL );
     iEvent.getByToken( selectedElectronsLooseToken,h_selectedElectronsLoose );
     // JETs
+
+    
+    edm::Handle< pat::JetCollection > h_rawJets;
+    iEvent.getByToken( rawJetsToken, h_rawJets );
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJets;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsLoose;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsDL;
@@ -656,6 +666,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectrons,
 					  *h_selectedElectronsDL,
 					  *h_selectedElectronsLoose,
+					  *h_rawJets,
 					  *(hs_selectedJets[isys]),
 					  *(hs_selectedJetsLoose[isys]),
 					  *(hs_selectedJetsDL[isys]),

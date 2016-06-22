@@ -168,7 +168,16 @@ void Synchronizer::DumpSyncExe2Header(std::ostream &out){
 }
 
 
-void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, const int number){
+void Synchronizer::DumpSyncExe2(const InputCollections& input,
+				const InputCollections& input_DL,
+				/*const InputCollections& input_JESUP,
+				const InputCollections& input_DL_JESUP,
+				const InputCollections& input_JESDOWN,
+				const InputCollections& input_DL_JESDOWN,*/
+				MiniAODHelper& helper,
+				std::ostream &out,Cutflow& cutflowSL,
+				Cutflow& cutflowDL, 
+				const int number){
 
 bool runOverData = false;
 
@@ -331,6 +340,8 @@ bool runOverData = false;
   bool mll_passed=false;
   bool met_passed=false;
 
+  bool useJERsystematics = true;
+
   float mll=0;
 
 
@@ -339,6 +350,13 @@ bool runOverData = false;
   int is_ee=input_DL.triggerInfo.IsAnyTriggered(elel_triggers);
   int is_emu=input_DL.triggerInfo.IsAnyTriggered(elmu_triggers);
   int is_mumu=input_DL.triggerInfo.IsAnyTriggered(mumu_triggers);
+
+
+  float jet1_JecSF = 0;
+  float jet1_JecSF_up = 0;
+  float jet1_JecSF_down = 0;
+
+
 
   bool compare = false;
 
@@ -435,6 +453,28 @@ bool runOverData = false;
     if(input_DL.selectedJets.size()>0){
       jet1_pt=input_DL.selectedJets.at(0).pt();
       jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJets.at(0));
+      bool jetmatched = false;
+      for( auto rawJet: input.rawJets){
+	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJets.at(0).p4()) < 0.01 ){
+	  jet1_JecSF = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA) ;
+	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup) / jet1_JecSF;
+	  float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup) / jet1_JecSF;
+	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown) / jet1_JecSF;
+	  float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown) / jet1_JecSF;	  
+	  jet1_JecSF_up = jet1_JecSF * JESup;
+	  jet1_JecSF_down = jet1_JecSF * JESdown;
+	  if( useJERsystematics ){
+	    jet1_JecSF_up = jet1_JecSF_up * JERup;
+	    jet1_JecSF_down = jet1_JecSF_down * JERdown;
+	  }
+	  jetmatched = true;
+	}
+      }
+      if ( !jetmatched ){
+	jet1_JecSF = -1;
+	jet1_JecSF_up = -1;
+	jet1_JecSF_down = -1;
+      }
     }
 
     if(input_DL.selectedJets.size()>1){
@@ -460,6 +500,28 @@ bool runOverData = false;
     if(input.selectedJets.size()>0){
       jet1_pt=input.selectedJets.at(0).pt();
       jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
+      bool jetmatched = false;
+      for( auto rawJet: input.rawJets){
+	if( BoostedUtils::DeltaR(rawJet.p4(),input.selectedJets.at(0).p4()) < 0.01 ){
+	  jet1_JecSF = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA) ;
+	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup) / jet1_JecSF;
+	  float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup) / jet1_JecSF;
+	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown) / jet1_JecSF;
+	  float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown) / jet1_JecSF;	  
+	  jet1_JecSF_up = jet1_JecSF * JESup;
+	  jet1_JecSF_down = jet1_JecSF * JESdown;
+	  if( useJERsystematics ){
+	    jet1_JecSF_up = jet1_JecSF_up * JERup;
+	    jet1_JecSF_down = jet1_JecSF_down * JERdown;
+	  }
+	  jetmatched = true;
+	}
+      }
+      if ( !jetmatched ){
+	jet1_JecSF = -1;
+	jet1_JecSF_up = -1;
+	jet1_JecSF_down = -1;
+      }
     }
 
     if(input.selectedJets.size()>1){
@@ -618,7 +680,7 @@ bool runOverData = false;
 	<<lep2_pt<<","<<lep2_iso<<","<<lep2_pdgId<< ","//<<mll<<","<<mll_passed<<","
 	<<jet1_pt<<","<<jet2_pt<<","
 	<<jet1_CSVv2<<","<<jet2_CSVv2<<","
-	<<"jet1_JecSF" << "," << "jet1_JecSF_up"<< "," << "jet1_JecSF_down" <<","
+	<<jet1_JecSF << "," << jet1_JecSF_up<< "," << jet1_JecSF_down <<","
   << MET_pt << "," << MET_phi << "," << mll << ","
 	<< ttHFCategory <<","
 	<< "MCWeight" << ","
@@ -635,9 +697,9 @@ bool runOverData = false;
 
 void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper){
   DumpSyncExe2(input,input_DL,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal,0);
-  DumpSyncExe2(input_jesup,input_DL_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup,1);
-  DumpSyncExe2(input_jesdown,input_DL_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown,2);
-  DumpSyncExe2(input_raw,input_DL_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw,3);
+  //DumpSyncExe2(input_jesup,input_DL_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup,1);
+  //DumpSyncExe2(input_jesdown,input_DL_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown,2);
+  //DumpSyncExe2(input_raw,input_DL_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw,3);
   initializedCutflowsWithSelections=true;
 }
 
@@ -649,11 +711,11 @@ void Synchronizer::InitDumpSyncFile1(std::string filename){
 void Synchronizer::InitDumpSyncFile2(std::string filename){
     cutflowFile = new ofstream((filename+"-cutflow.log").c_str());
     dumpFiles2.push_back(new ofstream((filename+".csv").c_str()));
-    dumpFiles2_jesup.push_back(new ofstream((filename+"_JESup.csv").c_str()));
-    dumpFiles2_jesdown.push_back(new ofstream((filename+"_JESdown.csv").c_str()));
-    dumpFiles2_raw.push_back(new ofstream((filename+"_raw.csv").c_str()));
+    //dumpFiles2_jesup.push_back(new ofstream((filename+"_JESup.csv").c_str()));
+    //dumpFiles2_jesdown.push_back(new ofstream((filename+"_JESdown.csv").c_str()));
+    //dumpFiles2_raw.push_back(new ofstream((filename+"_raw.csv").c_str()));
     DumpSyncExe2Header(*(dumpFiles2.back()));
-    DumpSyncExe2Header(*(dumpFiles2_jesup.back()));
-    DumpSyncExe2Header(*(dumpFiles2_jesdown.back()));
-    DumpSyncExe2Header(*(dumpFiles2_raw.back()));
+    //DumpSyncExe2Header(*(dumpFiles2_jesup.back()));
+    //DumpSyncExe2Header(*(dumpFiles2_jesdown.back()));
+    //DumpSyncExe2Header(*(dumpFiles2_raw.back()));
 }
