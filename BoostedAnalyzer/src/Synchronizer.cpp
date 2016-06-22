@@ -176,7 +176,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 				const InputCollections& input_DL_JESDOWN,*/
 				MiniAODHelper& helper,
 				std::ostream &out,Cutflow& cutflowSL,
-				Cutflow& cutflowDL, 
+				Cutflow& cutflowDL,
 				const int number){
 
 bool runOverData = false;
@@ -185,8 +185,14 @@ bool runOverData = false;
   // Single Lepton Selection
   vector<string> el_triggers_MC;;
   vector<string> mu_triggers_MC;
+
+  el_triggers_MC.push_back("none");
+  mu_triggers_MC.push_back("none");
+/*
   el_triggers_MC.push_back("HLT_Ele27_WP85_Gsf_v*");
   el_triggers_MC.push_back("HLT_IsoMu17_eta2p1_v*");
+
+  */
   if(leptonSelections.size()==0){
     leptonSelections.push_back(new VertexSelection());
     if(runOverData) {
@@ -210,11 +216,20 @@ bool runOverData = false;
   vector<string> elel_triggers;
   vector<string> mumu_triggers;
   vector<string> elmu_triggers;
+
+  elel_triggers.push_back("none");
+  mumu_triggers.push_back("none");
+  elmu_triggers.push_back("none");
+
+
+/*
   elel_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
   mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
   mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
   elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
   elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*");
+
+  */
 
   if(dileptonSelections.size()==0){
     dileptonSelections.push_back(new VertexSelection());
@@ -472,7 +487,7 @@ bool runOverData = false;
 	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup) / jet1_JecSF;
 	  float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup) / jet1_JecSF;
 	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown) / jet1_JecSF;
-	  float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown) / jet1_JecSF;	  
+	  float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown) / jet1_JecSF;
 	  jet1_JecSF_up = jet1_JecSF * JESup;
 	  jet1_JecSF_down = jet1_JecSF * JESdown;
 	  if( useJERsystematics ){
@@ -519,7 +534,7 @@ bool runOverData = false;
 	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup) / jet1_JecSF;
 	  float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup) / jet1_JecSF;
 	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown) / jet1_JecSF;
-	  float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown) / jet1_JecSF;	  
+	  float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown) / jet1_JecSF;
 	  jet1_JecSF_up = jet1_JecSF * JESup;
 	  jet1_JecSF_down = jet1_JecSF * JESdown;
 	  if( useJERsystematics ){
