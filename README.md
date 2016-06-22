@@ -7,8 +7,8 @@ CMSSW tools for analyzing TTH events with boosted objects
 Follow These Steps:
 
     export SCRAM_ARCH=slc6_amd64_gcc530
-    scram project CMSSW_8_0_8
-    cd CMSSW_8_0_8/src
+    scram project CMSSW_8_0_10
+    cd CMSSW_8_0_10/src
     cmsenv   
     git cms-merge-topic gkasieczka:htt-v2-76X
     git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_8
