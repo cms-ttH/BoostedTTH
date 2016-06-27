@@ -47,7 +47,8 @@ void Synchronizer::DumpSyncExe1(int nfile,const InputCollections& input){
 void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out){
   int run=input.eventInfo.run;
   int lumi=input.eventInfo.lumiBlock;
-  int event=input.eventInfo.evt;
+  long event=input.eventInfo.evt;
+  
   float lep1_pt=-99;
   float lep1_eta=-99;
   float lep1_phi=-99;
@@ -291,7 +292,7 @@ bool runOverData = false;
   float Ngen=46400;
   int run=input.eventInfo.run;
   int lumi=input.eventInfo.lumiBlock;
-  int event=input.eventInfo.evt;
+  long event=input.eventInfo.evt;
 
   bool is_SL=true;
   bool is_DL=true;
@@ -750,24 +751,23 @@ bool runOverData = false;
 	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
 //Sync spring 2016 output
   out <<run<<", "<<lumi<<","<<event<<","
-	<< is_e << "," << is_mu << "," << is_ee << ","<< is_emu << "," << is_mumu <<","//lepton classification here: ee, emu, mumu
+	<<is_e<< "," <<is_mu<<","<<is_ee<<","<<is_emu<<","<<is_mumu<<","//lepton classification here: ee, emu, mumu
 	<<n_jets<<","<<n_btags<<","
 	<<lep1_pt<<","<<lep1_iso<<","<<lep1_pdgId<<","
 	<<lep2_pt<<","<<lep2_iso<<","<<lep2_pdgId<< ","//<<mll<<","<<mll_passed<<","
 	<<jet1_pt<<","<<jet2_pt<<","
 	<<jet1_CSVv2<<","<<jet2_CSVv2<<","
-	<<jet1_JecSF << "," << jet1_JecSF_up<< "," << jet1_JecSF_down <<","
-  << MET_pt << "," << MET_phi << "," << mll << ","
-	<< ttHFCategory <<","
-	<< mcweight << ","
-	<< puweight << ","
-	<< bWeight <<","
-	<< topweight << ","
-	<< "triggerSF" << ","
-
-	<< lepSF << ","
-	<< q2upup << "," << q2downdown <<","
-	<< pdfup << "," << pdfdown << "\n";
+	<<jet1_JecSF<<","<<jet1_JecSF_up<<","<<jet1_JecSF_down<<","
+	<<MET_pt<<","<<MET_phi<<","<<mll<<","
+	<<ttHFCategory<<","
+	<<mcweight<<","
+	<<puweight<< ","
+	<<bWeight<<","
+	<<topweight<<","
+	<<"triggerSF"<<","
+	<<lepSF<<","
+	<<q2upup<< ","<<q2downdown <<","
+	<<pdfup<<","<<pdfdown<<"\n";
 
 
 }

@@ -101,6 +101,6 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
     std::cerr << "channel of lepton selection does not exist! " << std::endl;
     return false;
   }
-  std::cout << "IsSelected=true" << std::endl;
+  //std::cout << "IsSelected=true" << std::endl;
   return true;
 }
