@@ -299,37 +299,37 @@ bool runOverData = false;
   bool is_SL=true;
   bool is_DL=true;
 
-  float lep1_pt=0;
-  float lep1_eta=0;
-  float lep1_phi=0;
-  float lep1_iso=0;
+  float lep1_pt=-1;
+  float lep1_eta=-1;
+  float lep1_phi=-1;
+  float lep1_iso=-1;
   float lep1_pdgId=0;
-  float lep1_MVAID=0;
+  float lep1_MVAID=-1;
 
-  float lep2_pt=0;
-  float lep2_eta=0;
-  float lep2_phi=0;
-  float lep2_iso=0;
+  float lep2_pt=-1;
+  float lep2_eta=-1;
+  float lep2_phi=-1;
+  float lep2_iso=-1;
   float lep2_pdgId=0;
-  float lep2_MVAID=0;
+  float lep2_MVAID=-1;
 
-  float jet1_pt=0;
-  float jet2_pt=0;
-  float jet3_pt=0;
-  float jet4_pt=0;
+  float jet1_pt=-1;
+  float jet2_pt=-1;
+  float jet3_pt=-1;
+  float jet4_pt=-1;
 
-  float jet1_CSVv2=0;
-  float jet2_CSVv2=0;
-  float jet3_CSVv2=0;
-  float jet4_CSVv2=0;
+  float jet1_CSVv2=-1;
+  float jet2_CSVv2=-1;
+  float jet3_CSVv2=-1;
+  float jet4_CSVv2=-1;
 
-  float MET_pt=0;
-  float MET_phi=0;
+  float MET_pt=-1;
+  float MET_phi=-1;
 
   int n_jets=0;
   int n_btags=0;
-  float mcweight=0;
-  float bWeight=0;
+  float mcweight=-1;
+  float bWeight=-1;
   float triggerSF=0;
   if(is_ttjets) {
     mcweight=xs_ttbar*1000*2.7/Ngen_ttjets;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
@@ -337,24 +337,24 @@ bool runOverData = false;
   else {
     mcweight=xs_ttH*1000*2.7/Ngen_ttH;
   }
-  float topweight=0;
+  float topweight=-1;
   float lepSF=-99;
 
-  float puweight=0;
-  float q2upup=0;
-  float q2downdown=0;
-  float pdfup=0;
-  float pdfdown=0;
+  float puweight=-1;
+  float q2upup=-1;
+  float q2downdown=-1;
+  float pdfup=-1;
+  float pdfdown=-1;
   
 
-  int ttHFCategory=0;
+  int ttHFCategory=-1;
 
   float final_discriminant1=0;
   float final_discriminant2=0;
 
   int n_fatjets=0;
-  float pt_fatjet_1=0;
-  float pt_fatjet_2=0;
+  float pt_fatjet_1=-1;
+  float pt_fatjet_2=-1;
 
   float pt_nonW_1=0;
   float pt_nonW_2=0;
@@ -378,7 +378,7 @@ bool runOverData = false;
 
   bool useJERsystematics = true;
 
-  float mll=0;
+  float mll=-1;
 
 
   int is_e=0;
@@ -834,7 +834,7 @@ bool runOverData = false;
 	<< pdfup << "," << pdfdown << "\n";
   }*/
   if(is_DL||is_SL) {
-    out << boost::format("%d,%d,%d,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
 	  run% lumi% event%
 	  is_e% is_mu% is_ee% is_emu% is_mumu%
 	  n_jets% n_btags%
