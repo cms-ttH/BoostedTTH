@@ -165,7 +165,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
 }
 void Synchronizer::DumpSyncExe2Header(std::ostream &out){
-  out <<"run, lumi, event,is_e, is_mu, is_ee, is_emu, is_mumu,n_jets, n_btags,lep1_pt, lep1_iso, lep1_pdgId, lep2_pt, lep2_iso, lep2_pdgId, jet1_pt, jet2_pt, jet1_CSVv2, jet2_CSVv2, jet1_JecSF, jet1_JecSF_up, jet1_JecSF_down, MET_pt, MET_phi,mll, ttHFCategory, MCWeight, PUWeight, bWeight, topWeight, triggerSF, lepSF, Q2_upup, Q2_downdown, pdf_up, pdf_down\n";
+  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepSF,Q2_upup,Q2_downdown,pdf_up,pdf_down\n";
 }
 
 
@@ -235,16 +235,16 @@ bool runOverData = false;
   if(dileptonSelections.size()==0){
     dileptonSelections.push_back(new VertexSelection());
     dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers));
-   // dileptonSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
-   // dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true,false));
-   // dileptonSelections.push_back(new DiLeptonMETSelection(40,99999));
+    dileptonSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
+    dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true,false));
+    dileptonSelections.push_back(new DiLeptonMETSelection(40,99999));
     dileptonSelections.push_back(new DiLeptonJetTagSelection(2,1));
 
     cout << "DL Selection Step 0: VertexSelection" << endl;
     cout << "DL Selection Step 1: DiLeptonSelection" << endl;
-   // cout << "DL Selection Step 2: DiLeptonMassSelection 20 GeV cut" << endl;
-   // cout << "DL Selection Step 3: DiLeptonMassSelection Z Veto" << endl;
-   // cout << "DL Selection Step 4: DiLeptonMETSelection" << endl;
+    cout << "DL Selection Step 2: DiLeptonMassSelection 20 GeV cut" << endl;
+    cout << "DL Selection Step 3: DiLeptonMassSelection Z Veto" << endl;
+    cout << "DL Selection Step 4: DiLeptonMETSelection" << endl;
     cout << "DL Selection Step 2: DiLeptonJetTagSelection" << endl;
   }
 
@@ -288,8 +288,11 @@ bool runOverData = false;
   }
 
   // Declare Variables
+  bool is_ttjets=1;
   float xs_ttbar= 831.76 ;// in pb
-  float Ngen=46400;
+  float xs_ttH=0.2918;
+  float Ngen_ttjets=46400;
+  float Ngen_ttH=49894;
   int run=input.eventInfo.run;
   int lumi=input.eventInfo.lumiBlock;
   long event=input.eventInfo.evt;
@@ -326,9 +329,15 @@ bool runOverData = false;
 
   int n_jets=0;
   int n_btags=0;
-
+  float mcweight=0;
   float bWeight=0;
-  float mcweight=xs_ttbar*1000*2.7/Ngen;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
+  float triggerSF=0;
+  if(is_ttjets) {
+    mcweight=xs_ttbar*1000*2.7/Ngen_ttjets;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
+  }
+  else {
+    mcweight=xs_ttH*1000*2.7/Ngen_ttH;
+  }
   float topweight=0;
   float lepSF=-99;
 
@@ -337,7 +346,7 @@ bool runOverData = false;
   float q2downdown=0;
   float pdfup=0;
   float pdfdown=0;
-
+  
 
   int ttHFCategory=0;
 
@@ -423,61 +432,112 @@ bool runOverData = false;
 
   if(compare) std::cout << "is_SL: " << is_SL  << "   is_DL: " << is_DL<< std::endl;
 
+  if(is_SL) {
+    for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuons.begin(); iMuon != input.selectedMuons.end(); ++iMuon ){
+      if(iMuon->pt()>lep1_pt){
+	lep2_pt=lep1_pt;
+	lep2_eta=lep1_eta;
+	lep2_phi=lep1_phi;
+	lep2_iso=lep1_iso;
+	lep2_pdgId=lep1_pdgId;
 
-  for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
-    if(iMuon->pt()>lep1_pt){
-      lep2_pt=lep1_pt;
-      lep2_eta=lep1_eta;
-      lep2_phi=lep1_phi;
-      lep2_iso=lep1_iso;
-      lep2_pdgId=lep1_pdgId;
-
-      lep1_pt=iMuon->pt();
-      lep1_eta=iMuon->eta();
-      lep1_phi=iMuon->phi();
-      lep1_iso=helper.GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
-      lep1_pdgId=iMuon->pdgId();
+	lep1_pt=iMuon->pt();
+	lep1_eta=iMuon->eta();
+	lep1_phi=iMuon->phi();
+	lep1_iso=helper.GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
+	lep1_pdgId=iMuon->pdgId();
+      }
+      else if(iMuon->pt()>lep2_pt){
+	lep2_pt=iMuon->pt();
+	lep2_eta=iMuon->eta();
+	lep2_phi=iMuon->phi();
+	lep2_iso=helper.GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
+	lep2_pdgId=iMuon->pdgId();
+      }
     }
-    else if(iMuon->pt()>lep2_pt){
-      lep2_pt=iMuon->pt();
-      lep2_eta=iMuon->eta();
-      lep2_phi=iMuon->phi();
-      lep2_iso=helper.GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
-      lep2_pdgId=iMuon->pdgId();
+    for(std::vector<pat::Electron>::const_iterator iEle = input.selectedElectrons.begin(); iEle != input.selectedElectrons.end(); ++iEle ){
+      if(iEle->pt()>lep1_pt){
+	lep2_pt=lep1_pt;
+	lep2_eta=lep1_eta;
+	lep2_phi=lep1_phi;
+	lep2_iso=lep1_iso;
+	lep2_pdgId=lep1_pdgId;
+	lep2_MVAID=lep1_MVAID;
+
+	lep1_pt=iEle->pt();
+	lep1_eta=iEle->eta();
+	lep1_phi=iEle->phi();
+	lep1_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
+	lep1_pdgId=iEle->pdgId();
+	lep1_MVAID=iEle->userFloat("mvaValue");
+      }
+      else if(iEle->pt()>lep2_pt){
+	lep2_pt=iEle->pt();
+	lep2_eta=iEle->eta();
+	lep2_phi=iEle->phi();
+	lep2_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
+	lep2_pdgId=iEle->pdgId();
+	lep2_MVAID=iEle->userFloat("mvaValue");
+      }
     }
   }
-  for(std::vector<pat::Electron>::const_iterator iEle = input.selectedElectronsLoose.begin(); iEle != input.selectedElectronsLoose.end(); ++iEle ){
-    if(iEle->pt()>lep1_pt){
-      lep2_pt=lep1_pt;
-      lep2_eta=lep1_eta;
-      lep2_phi=lep1_phi;
-      lep2_iso=lep1_iso;
-      lep2_pdgId=lep1_pdgId;
-      lep2_MVAID=lep1_MVAID;
+  if(is_DL) {
+    for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsDL.begin(); iMuon != input.selectedMuonsDL.end(); ++iMuon ){
+      if(iMuon->pt()>lep1_pt){
+	lep2_pt=lep1_pt;
+	lep2_eta=lep1_eta;
+	lep2_phi=lep1_phi;
+	lep2_iso=lep1_iso;
+	lep2_pdgId=lep1_pdgId;
 
-      lep1_pt=iEle->pt();
-      lep1_eta=iEle->eta();
-      lep1_phi=iEle->phi();
-      lep1_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
-      lep1_pdgId=iEle->pdgId();
-      lep1_MVAID=iEle->userFloat("mvaValue");
+	lep1_pt=iMuon->pt();
+	lep1_eta=iMuon->eta();
+	lep1_phi=iMuon->phi();
+	lep1_iso=helper.GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
+	lep1_pdgId=iMuon->pdgId();
+      }
+      else if(iMuon->pt()>lep2_pt){
+	lep2_pt=iMuon->pt();
+	lep2_eta=iMuon->eta();
+	lep2_phi=iMuon->phi();
+	lep2_iso=helper.GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
+	lep2_pdgId=iMuon->pdgId();
+      }
     }
-    else if(iEle->pt()>lep2_pt){
-      lep2_pt=iEle->pt();
-      lep2_eta=iEle->eta();
-      lep2_phi=iEle->phi();
-      lep2_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
-      lep2_pdgId=iEle->pdgId();
-      lep2_MVAID=iEle->userFloat("mvaValue");
+    for(std::vector<pat::Electron>::const_iterator iEle = input.selectedElectronsDL.begin(); iEle != input.selectedElectronsDL.end(); ++iEle ){
+      if(iEle->pt()>lep1_pt){
+	lep2_pt=lep1_pt;
+	lep2_eta=lep1_eta;
+	lep2_phi=lep1_phi;
+	lep2_iso=lep1_iso;
+	lep2_pdgId=lep1_pdgId;
+	lep2_MVAID=lep1_MVAID;
+
+	lep1_pt=iEle->pt();
+	lep1_eta=iEle->eta();
+	lep1_phi=iEle->phi();
+	lep1_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
+	lep1_pdgId=iEle->pdgId();
+	lep1_MVAID=iEle->userFloat("mvaValue");
+      }
+      else if(iEle->pt()>lep2_pt){
+	lep2_pt=iEle->pt();
+	lep2_eta=iEle->eta();
+	lep2_phi=iEle->phi();
+	lep2_iso=helper.GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
+	lep2_pdgId=iEle->pdgId();
+	lep2_MVAID=iEle->userFloat("mvaValue");
+      }
     }
   }
-    if(is_SL){
-      if(abs(lep1_pdgId)==11){
-        is_e=1;
-      }
-      if(abs(lep1_pdgId)==13){
-        is_mu=1;
-      }
+    
+  if(is_SL){
+    if(abs(lep1_pdgId)==11){
+      is_e=1;
+    }
+    if(abs(lep1_pdgId)==13){
+      is_mu=1;
+    }
   }
   if(is_DL){
     if(abs(lep1_pdgId)==11){
@@ -689,8 +749,9 @@ bool runOverData = false;
 
   if(is_DL){
     bWeight=input_DL.weightsDL.at("Weight_CSV");
-    topweight=input_DL.weightsDL.at("Weight_TopPt");
-
+    if(is_ttjets) {
+      topweight=input_DL.weightsDL.at("Weight_TopPt");
+    }
     puweight=input_DL.weightsDL.at("Weight_PU");
     if(number!=1 && number!=2) {
       q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
@@ -704,8 +765,9 @@ bool runOverData = false;
   }
   else{
     bWeight=input.weights.at("Weight_CSV");
-    topweight=input.weights.at("Weight_TopPt");
-
+    if(is_ttjets) {
+      topweight=input.weights.at("Weight_TopPt");
+    }
     puweight=input.weights.at("Weight_PU");
     if(number!=1 && number!=2) {
       q2upup=input.weights.at("Weight_muRupmuFup");
@@ -750,24 +812,28 @@ bool runOverData = false;
   <<higgstag_fatjet_1<<","<< higgstag_fatjet_2 <<","
 	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
 //Sync spring 2016 output
-  out <<run<<", "<<lumi<<","<<event<<","
-	<<is_e<< "," <<is_mu<<","<<is_ee<<","<<is_emu<<","<<is_mumu<<","//lepton classification here: ee, emu, mumu
-	<<n_jets<<","<<n_btags<<","
-	<<lep1_pt<<","<<lep1_iso<<","<<lep1_pdgId<<","
-	<<lep2_pt<<","<<lep2_iso<<","<<lep2_pdgId<< ","//<<mll<<","<<mll_passed<<","
-	<<jet1_pt<<","<<jet2_pt<<","
-	<<jet1_CSVv2<<","<<jet2_CSVv2<<","
-	<<jet1_JecSF<<","<<jet1_JecSF_up<<","<<jet1_JecSF_down<<","
-	<<MET_pt<<","<<MET_phi<<","<<mll<<","
-	<<ttHFCategory<<","
-	<<mcweight<<","
-	<<puweight<< ","
-	<<bWeight<<","
-	<<topweight<<","
-	<<"triggerSF"<<","
-	<<lepSF<<","
-	<<q2upup<< ","<<q2downdown <<","
-	<<pdfup<<","<<pdfdown<<"\n";
+  if(is_DL||is_SL) {
+    out << boost::format("%d,%d,%d,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+	  run% lumi% event%
+	  is_e% is_mu% is_ee% is_emu% is_mumu%
+	  n_jets% n_btags%
+	  lep1_pt% lep1_iso% lep1_pdgId%
+	  lep2_pt% lep2_iso% lep2_pdgId%
+	  jet1_pt% jet2_pt% 
+	  jet1_CSVv2% jet2_CSVv2%
+	  jet1_JecSF% jet1_JecSF_up% jet1_JecSF_down%
+	  MET_pt% MET_phi% mll%
+	  ttHFCategory% 
+	  mcweight%
+	  puweight%
+	  bWeight%
+	  topweight%
+	  triggerSF%
+	  lepSF%
+	  q2upup% q2downdown%
+	  pdfup% pdfdown;
+  }
+
 
 
 }
