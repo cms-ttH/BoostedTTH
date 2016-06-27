@@ -20,7 +20,7 @@ options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, 
 options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
-options.register( "globalTag", "80X_mcRun2_asymptotic_RealisticBS_25ns_13TeV2016_v1_mc", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.parseArguments()
@@ -31,6 +31,9 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 
 if not options.inputFiles:
     options.inputFiles=['root://cmsxrootd.fnal.gov///store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/00000/000B9244-4B27-E611-91D2-7845C4FC3C6B.root']
+
+if options.isData:
+  options.globalTag="80X_dataRun2_Prompt_v8"
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
