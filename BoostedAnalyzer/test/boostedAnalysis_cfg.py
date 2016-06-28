@@ -170,7 +170,7 @@ else:
                                )
 
 ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-    process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 #===============================================================
 #
@@ -261,7 +261,7 @@ if options.additionalSelection!="NONE":
 
 # process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 #process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor"]
-
+process.BoostedAnalyzer.processorNames = []
 process.BoostedAnalyzer.dumpSyncExe2=True
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
