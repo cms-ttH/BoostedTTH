@@ -827,7 +827,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   <<higgstag_fatjet_1<<","<< higgstag_fatjet_2 <<","
 	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
 //Sync spring 2016 output
-  if((is_DL && n_jets>2 && n_btags>1)||(is_SL && n_jets>3 && n_btags>2)||(is_SL && n_jets>5 && n_btags>1)) {
+  if(is_DL||is_SL) {
     out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
 	  run% lumi% event%
 	  is_e% is_mu% is_ee% is_emu% is_mumu%
