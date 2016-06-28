@@ -44,11 +44,11 @@ GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHad
     edm::Handle<std::vector<reco::GenParticle> > prunedGenParticles;
     iEvent.getByToken(genCHadBHadronIdToken, genCHadBHadronId);
     iEvent.getByToken(genBHadFlavourToken, genBHadFlavour);
-    iEvent.getByToken(genBHadJetIndexToken, genBHadJetIndex);  
-    iEvent.getByToken(genBHadFromTopWeakDecayToken, genBHadFromTopWeakDecay);  
-    iEvent.getByToken(genBHadPlusMothersToken, genBHadPlusMothers);    
+    iEvent.getByToken(genBHadJetIndexToken, genBHadJetIndex);
+    iEvent.getByToken(genBHadFromTopWeakDecayToken, genBHadFromTopWeakDecay);
+    iEvent.getByToken(genBHadPlusMothersToken, genBHadPlusMothers);
     iEvent.getByToken(genBHadPlusMothersIndicesToken, genBHadPlusMothersIndices);
-    iEvent.getByToken(genCHadPlusMothersToken, genCHadPlusMothers);    
+    iEvent.getByToken(genCHadPlusMothersToken, genCHadPlusMothers);
     iEvent.getByToken(genBHadIndexToken, genBHadIndex);
     iEvent.getByToken(genBHadLeptonHadronIndexToken, genBHadLeptonHadronIndex);
     iEvent.getByToken(genBHadLeptonViaTauToken, genBHadLeptonViaTau);
@@ -62,14 +62,14 @@ GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHad
     int ttid = ttid_full%100;
     genTopEvt.FillTTdecay(*prunedGenParticles,ttid);
     if(doGenHadronMatch){
-	genTopEvt.FillTTxDetails(*h_customgenjets, 
-				 *genBHadIndex, *genBHadJetIndex, 
-				 *genBHadFlavour, *genBHadFromTopWeakDecay, 
-				 *genBHadPlusMothers, 
-				 *genCHadIndex, *genCHadJetIndex, 
-				 *genCHadFlavour, *genCHadFromTopWeakDecay, 
+	genTopEvt.FillTTxDetails(*h_customgenjets,
+				 *genBHadIndex, *genBHadJetIndex,
+				 *genBHadFlavour, *genBHadFromTopWeakDecay,
+				 *genBHadPlusMothers,
+				 *genCHadIndex, *genCHadJetIndex,
+				 *genCHadFlavour, *genCHadFromTopWeakDecay,
 				 *genCHadPlusMothers,
-				 *genCHadBHadronId); 
+				 *genCHadBHadronId);
     }
     return genTopEvt;
 }
@@ -91,15 +91,15 @@ bool GenTopEvent::TTxIsFilled() const{
   return ttxIsFilled;
 }
 
-void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets, 
-				 const std::vector<int>& genBHadIndex, const std::vector<int>& genBHadJetIndex, 
-				 const std::vector<int>& genBHadFlavour, const std::vector<int>& genBHadFromTopWeakDecay, 
-				 const std::vector<reco::GenParticle>& genBHadPlusMothers, 
-				 const std::vector<int>& genCHadIndex, const std::vector<int>& genCHadJetIndex, 
-				 const std::vector<int>& genCHadFlavour, const std::vector<int>& genCHadFromTopWeakDecay, 
+void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
+				 const std::vector<int>& genBHadIndex, const std::vector<int>& genBHadJetIndex,
+				 const std::vector<int>& genBHadFlavour, const std::vector<int>& genBHadFromTopWeakDecay,
+				 const std::vector<reco::GenParticle>& genBHadPlusMothers,
+				 const std::vector<int>& genCHadIndex, const std::vector<int>& genCHadJetIndex,
+				 const std::vector<int>& genCHadFlavour, const std::vector<int>& genCHadFromTopWeakDecay,
 				 const std::vector<reco::GenParticle>& genCHadPlusMothers,
 				 const std::vector<int>& genCHadBHadronId){
-  
+
   std::vector<int> nb_per_genjet(customGenJets.size(),0);
   std::vector<int> mother_of_genjet_b(customGenJets.size(),0);
   std::vector<int> nb_aftertop_per_genjet(customGenJets.size(),0);
@@ -120,15 +120,66 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
   }
   auto tt_decay_leptons=GetAllLeptonVecs();
   auto tt_decay_quarks=GetAllWQuarkVecs();
+// check whether event has at least one b-hadron that is not coming from top decay
+  hasAdditionalBQuark=0;
+  number_of_additional_b_hadrons=0;
+  number_add_b_hadrons_from_hard_process=0;
+  int hard_process=0;
+  int bhadronSum=0;
+  //Count the number of b-hadrons in an event that are not coming from top decay
+  for(uint i=0; i<genBHadFromTopWeakDecay.size(); i++){
+    if(genBHadFromTopWeakDecay[i]==0){
+      number_of_additional_b_hadrons +=1;
+     }
 
+  }
+  if(number_of_additional_b_hadrons>0){
+    hasAdditionalBQuark=1;
+  }
   // loop over all bhadrons
   for(uint i=0; i<genBHadIndex.size();i++){
     const reco::GenParticle* bhadron = genBHadIndex[i]>=0&&genBHadIndex[i]<int(genBHadPlusMothers.size()) ? &(genBHadPlusMothers[genBHadIndex[i]]) : 0;
+    const reco::Candidate* myhadron = genBHadIndex[i]>=0&&genBHadIndex[i]<int(genBHadPlusMothers.size()) ? &(genBHadPlusMothers[genBHadIndex[i]]) : 0;
     int genjetidx=genBHadJetIndex[i];
     int motherflav = genBHadFlavour[i];
     bool from_tth=(abs(motherflav)==6||abs(motherflav)==25);
-    int aftertop = genBHadFromTopWeakDecay[i];    
+    int aftertop = genBHadFromTopWeakDecay[i];
+    //check whether the b hadron comes from the hard interaction. WORKS ONLY FOR PYTHIA8
+    if(bhadron!=0&&!from_tth){
+      bhadronSum++;
+      bool IsFromHardProcess=false;
+      IsFromHardProcess=analyzeMothersRecursive(myhadron);
+      if(IsFromHardProcess){
+        hard_process++;
+      }
+      std::cout << "Is from hard process " << IsFromHardProcess << std::endl;
+    /*  for(uint j=0; j< bhadron->numberOfMothers();j++){
+          bool IsFromHardProcess=false;
+          std::cout << "PDGId of mother: " << bhadron->mother(j)->pdgId() << endl;
+          const reco::Candidate* mother_b_had = bhadron->mother(j);
+	  //uint k=0;
+          while(mother_b_had->pdgId()!=2212){
+            //cout << "status of (grand)mother: " << mother_b_had->status()<< endl;
+            //cout << "grandmother: " << mother_b_had->pdgId() << endl;
+            std::cout << "PDGID " << mother_b_had->pdgId() << ", Number of Mothers " << mother_b_had->numberOfMothers() << std::endl;
+            if(mother_b_had->status()>20&&mother_b_had->status()<30){
+              IsFromHardProcess=true;
 
+            }
+
+            mother_b_had = mother_b_had->mother(0);
+
+          }
+          //std::cout << "PDGId of mother of mother: " << bhadron->mother(j)->mother(0)->pdgId() << endl;
+          //std::cout << "Mother: " << bhadron->mother(j)->status() << endl;
+          //std::cout << "next mother particle" << endl;
+          std::cout << "last mother of bhadron : " << mother_b_had->pdgId() << " " << mother_b_had->status() << std::endl;
+          if(IsFromHardProcess){
+            hard_process++;
+            break;
+          }
+      }*/
+    }
     // associate bhadrons with ttH decay products
     if(bhadron!=0&&motherflav==25){
       higgs_b_hadron=*bhadron;
@@ -143,11 +194,11 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
       topbar_bbar_hadron=*bhadron;
     }
     else if(bhadron!=0&&abs(motherflav)!=24){
-      additional_b_hadrons.push_back(*bhadron);      
+      additional_b_hadrons.push_back(*bhadron);
       additional_b_hadron_aftertop.push_back(aftertop);
       additional_b_hadron_mother.push_back(motherflav);
     }
-    
+
     // count hadrons in genjets
     if(genjetidx>=0 && genjetidx<int(customGenJets.size())){
       nb_per_genjet[genjetidx]++;
@@ -176,21 +227,20 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     }
 
   };
-    hasAdditionalBQuark=int(std::find(genBHadFromTopWeakDecay.begin(), genBHadFromTopWeakDecay.end(), 0) != genBHadFromTopWeakDecay.end());
-    //test comment for git
-
+  cout << "additional bhadsum: " << bhadronSum <<  " from hard process: " << hard_process << endl;
+  cout << "_________________________________________________________________________________________________" << endl;
   // loop over all chadrons
-  for(uint i=0; i<genCHadIndex.size();i++){    
+  for(uint i=0; i<genCHadIndex.size();i++){
     const reco::GenParticle* chadron = genCHadIndex[i]>=0 && genCHadIndex[i]<int(genCHadPlusMothers.size()) ? &(genCHadPlusMothers[genCHadIndex[i]]) : 0;
     int genjetidx=genCHadJetIndex[i];
-    int aftertop = genCHadFromTopWeakDecay[i];    
+    int aftertop = genCHadFromTopWeakDecay[i];
     int motherflav = genCHadFlavour[i];
     if(abs(motherflav)==24){
       w_c_hadron=*chadron;
     }
-    // consider only hadrons not from B decays 
+    // consider only hadrons not from B decays
     else if(genCHadBHadronId[i] < 0 ){
-      additional_c_hadrons.push_back(chadron!=0?*chadron:reco::GenParticle());      
+      additional_c_hadrons.push_back(chadron!=0?*chadron:reco::GenParticle());
       additional_c_hadron_aftertop.push_back(aftertop);
       additional_c_hadron_mother.push_back(motherflav);
       // count hadrons in genjets
@@ -224,9 +274,9 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     }
     mother_of_b_genjets=mother_of_genjet_b;
     // skip light jets
-    if(nb_per_genjet[i]>0){ 
+    if(nb_per_genjet[i]>0){
       // associate genjet with tth decay products
-      
+
       if(mother_of_genjet_b[i]==25){
 	higgs_b_genjet=customGenJets[i];
       }
@@ -272,7 +322,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
 		    match=true;
 		    break;
 		}
-		
+
 	    }
 	}
 	if(match){
@@ -389,7 +439,7 @@ reco::GenParticle GenTopEvent::GetHiggsBBarHadron() const{
 reco::GenParticle GenTopEvent::GetWCHadron() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
   return w_c_hadron;
-  
+
 }
 
 std::vector<reco::GenParticle> GenTopEvent::GetAdditionalBGenJetsHadron() const{
@@ -432,6 +482,15 @@ int GenTopEvent::HasAdditionalBQuark() const {
   return hasAdditionalBQuark;
 }
 
+int GenTopEvent::GetNumberOfAdditionalBHadrons() const{
+  //gives back the number of b-hadrons, that are not coming from top decay. this definition of additional b-hadrons loops over quarks in gen particle selection
+  // also includes b-hadrons not clustered into jets
+  return number_of_additional_b_hadrons;
+}
+int GenTopEvent::GetNOfAdditionalBHadronsFromHardProcess() const{
+  return number_add_b_hadrons_from_hard_process;
+}
+
 void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenParticles, int ttXid_){
   bool foundT=false;
   bool foundTbar=false;
@@ -465,7 +524,7 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
 	}
       }
     }
-  
+
     if (abs(p->pdgId())==24){
       bool lastW=true;
       for(uint i=0;i<p->numberOfDaughters();i++){
@@ -480,7 +539,7 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
 	  break;
 	}
 	else mother=mother->mother();
-	
+
       }
       if(lastW&&fromT){
 	if(p->pdgId()==24) wplus=*p;
@@ -648,7 +707,7 @@ reco::GenParticle GenTopEvent::GetTopHad() const{
   else if(!topIsHadronic&&topbarIsHadronic) return topbar;
   else{
     std::cerr <<"hadronic/leptonic function called in GenTopEvent, but not a semileptonic event" << std::endl;
-    return reco::GenParticle();      
+    return reco::GenParticle();
   }
 }
 reco::GenParticle GenTopEvent::GetTopLep() const{
@@ -658,7 +717,7 @@ reco::GenParticle GenTopEvent::GetTopLep() const{
   else if(!topIsHadronic&&topbarIsHadronic) return top;
   else{
     std::cerr <<"hadronic/leptonic function called in GenTopEvent, but not a semileptonic event" << std::endl;
-    return reco::GenParticle();      
+    return reco::GenParticle();
   }
 }
 reco::GenParticle GenTopEvent::GetWplus() const{
@@ -678,7 +737,7 @@ reco::GenParticle GenTopEvent::GetWhad() const{
   else if(!topIsHadronic&&topbarIsHadronic) return wminus;
   else{
     std::cerr <<"hadronic/leptonic function called in GenTopEvent, but not a semileptonic event" << std::endl;
-    return reco::GenParticle();      
+    return reco::GenParticle();
   }
 }
 reco::GenParticle GenTopEvent::GetWlep() const{
@@ -688,7 +747,7 @@ reco::GenParticle GenTopEvent::GetWlep() const{
   else if(!topIsHadronic&&topbarIsHadronic) return wplus;
   else{
     std::cerr <<"hadronic/leptonic function called in GenTopEvent, but not a semileptonic event" << std::endl;
-    return reco::GenParticle();      
+    return reco::GenParticle();
   }
 }
 std::vector<reco::GenParticle> GenTopEvent::GetWLeptons() const{
@@ -722,7 +781,7 @@ reco::GenParticle GenTopEvent::GetLepton() const{
   }
   std::cerr <<"hadronic/leptonic function called in GenTopEvent, but not a semileptonic event" << std::endl;
   return reco::GenParticle();
-  
+
 }
 
 reco::GenParticle GenTopEvent::GetNeutrino() const{
@@ -745,7 +804,7 @@ reco::GenParticle GenTopEvent::GetNeutrino() const{
     return reco::GenParticle();
   }
   std::cerr <<"hadronic/leptonic function called in GenTopEvent, but not a semileptonic event" << std::endl;
-  return reco::GenParticle();  
+  return reco::GenParticle();
 }
 
 std::vector<reco::GenParticle>  GenTopEvent::GetWQuarks() const{
@@ -780,7 +839,7 @@ reco::GenParticle GenTopEvent::GetTopHadDecayQuark() const{
   else if(!topIsHadronic&&topbarIsHadronic) return topbar_decay_quark;
   else{
     std::cerr <<"hadronic/leptonic function called in GenTopEvent, but not a semileptonic event" << std::endl;
-    return reco::GenParticle();      
+    return reco::GenParticle();
   }
 }
 reco::GenParticle GenTopEvent::GetTopLepDecayQuark() const{
@@ -790,7 +849,7 @@ reco::GenParticle GenTopEvent::GetTopLepDecayQuark() const{
   else if(!topIsHadronic&&topbarIsHadronic) return top_decay_quark;
   else{
     std::cerr <<"hadronic/leptonic function called in GenTopEvent, but not a semileptonic event" << std::endl;
-    return reco::GenParticle();      
+    return reco::GenParticle();
   }
 }
 std::vector<reco::GenParticle> GenTopEvent::GetQuarks() const{
@@ -1072,6 +1131,26 @@ std::vector<math::XYZTLorentzVector> GenTopEvent::GetLVs(const std::vector<reco:
     vecs.push_back(GetLV(*p));
   }
   return vecs;
+}
+bool GenTopEvent::analyzeMothersRecursive(const reco::Candidate* particle) const{
+  std::cout << "Particle: " << particle << " , Status: " << particle->status() << " , numberOfMothers: " << particle->numberOfMothers() << std::endl;
+  if(particle->status()>20&&particle->status()<30){
+    return true;
+  }
+  bool IsFromHardProcess=false;
+  /*if(analyzeMothersRecursive(particle)){
+    return true;
+  }*/
+  if(particle->pdgId()!=2212){
+    for(uint i=0;i<particle->numberOfMothers();i++){
+      const reco::Candidate* mother = particle->mother(i);
+      IsFromHardProcess=analyzeMothersRecursive(mother);
+      if(IsFromHardProcess){
+        return true;
+      }
+    }
+  }
+  return IsFromHardProcess;
 }
 
 int GenTopEvent::GetTTxIdFromProducer() const{

@@ -15,23 +15,23 @@ options = VarParsing ('analysis')
 options.register( "outName", "testrun", VarParsing.multiplicity.singleton, VarParsing.varType.string, "name and path of the output files (without extension)" )
 options.register( "weight", 0.01, VarParsing.multiplicity.singleton, VarParsing.varType.float, "xs*lumi/(nPosEvents-nNegEvents)" )
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
-options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
-options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
-options.register( "makeSystematicsTrees", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
-options.register( "generatorName", "aMC", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
+options.register( "isData", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
+options.register( "isBoostedMiniAOD", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
+options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
+options.register( "generatorName", "notSpecified", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
-options.register( "globalTag", "76X_mcRun2_asymptotic_RunIIFall15DR76_v0", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "76X_dataRun2_v15", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 10000 # reset for testing
+    options.maxEvents = 10 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['/store/mc/RunIIFall15MiniAODv2/ttbb_4FS_ckm_amcatnlo_madspin_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v2/20000/02863DEF-E7C1-E511-9B96-842B2B182385.root']
-   # options.inputFiles=['store/user/asaibel/ttbb_4FS_ckm_amcatnlo_madspin_pythia8/ttbb_studies_withSelections_ttbb_ext1/160524_211845/0000/ttbb_ext1_nominal_Tree_1.root']
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/SingleMuon/Boostedv5MiniAODsilverJson/160217_171824/0000/BoostedTTH_MiniAOD_1.root']
+
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
     print "\n\nConfig ERROR: unknown analysisType '"+options.analysisType+"'"
@@ -46,7 +46,7 @@ if "mc" in options.globalTag.lower() and options.isData:
 if not options.inputFiles:
     print "\n\nConfig ERROR: no inputFiles specified\n\n"
     sys.exit()
-
+    
 # print settings
 print "\n\n***** JOB SETUP *************************"
 for key in options._register:
@@ -136,8 +136,8 @@ if options.isData:
                 ),
 #        ..................................................
             ## here you add as many jet types as you need
-            ## note that the tag name is specific for the particular sqlite file
-            ),
+            ## note that the tag name is specific for the particular sqlite file 
+            ), 
                                connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Fall15_25nsV2_DATA.db')
 #                               connect = cms.string('sqlite:../data/jecs/Fall15_25nsV2_DATA.db')
                                )
@@ -150,9 +150,9 @@ if options.isData:
 # load and run the boosted analyzer
 if options.isData:
     if options.analysisType=='SL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")        
     if options.analysisType=='DL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")        
 else:
     if options.analysisType=='SL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
@@ -162,7 +162,7 @@ else:
     if not options.isBoostedMiniAOD:
         # Supplies PDG ID to real name resolution of MC particles
         process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-        # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD
+        # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD 
         process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
 if options.isBoostedMiniAOD:
@@ -177,7 +177,7 @@ process.BoostedAnalyzer.makeSystematicsTrees=options.makeSystematicsTrees
 process.BoostedAnalyzer.generatorName=options.generatorName
 
 
-
+   
 if options.isData and options.useJson:
     print 'use JSON is no longer supported'
 ### electron MVA ####
@@ -192,14 +192,13 @@ process.BoostedAnalyzer.minTags = [2]
 process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
-process.BoostedAnalyzer.doJERsystematic = True
+process.BoostedAnalyzer.doJERsystematic = False
 
 
-#process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
-process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor", "AdditionalJetProcessor","MCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 
 process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)

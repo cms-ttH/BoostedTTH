@@ -76,9 +76,11 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVar( "AdditionalCHadrons_GenJet_M",-9);
   vars.InitVar( "AdditionalCHadrons_Dr",-9);
   vars.InitVar( "AdditionalCHadrons_GenJet_Dr",-9);
-  
+
   vars.InitVar( "N_BGenJets",-1,"I");
   vars.InitVar( "AdditionalBHadrons_InEvent",-1,"I" );
+  vars.InitVar( "N_BHad_Additional",-1,"I");
+  vars.InitVar("N_BHad_HardProc",-1,"I");
 
   initialized = true;
 }
@@ -95,11 +97,12 @@ const pat::Jet* AdditionalJetProcessor::GetPatJet(const reco::GenJet& genjet,con
 
 
 void AdditionalJetProcessor::Process(const InputCollections& input,VariableContainer& vars){
-  
+
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
   const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
-
+  int number_of_additional_b_hadrons = input.genTopEvt.GetNumberOfAdditionalBHadrons();
+  int number_add_b_hadrons_from_hard_process = input.genTopEvt.GetNOfAdditionalBHadronsFromHardProcess();
   if(input.genTopEvt.TTxIsFilled()){
     int Is_ttbb_Event = input.genTopEvt.HasAdditionalBQuark();
     std::vector<reco::GenJet> additional_b_genjets = input.genTopEvt.GetAdditionalBGenJets();
@@ -133,10 +136,12 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
     std::vector<reco::GenParticle> q2;
     std::vector<reco::GenParticle> btth;
     std::vector<reco::GenParticle> qtth;
-    
-    //bool AdditionalBQuark_InTTEvent=false; 
-    
-    
+
+    //bool AdditionalBQuark_InTTEvent=false;
+
+    vars.FillVar( "AdditionalBHadrons_InEvent", Is_ttbb_Event );
+    vars.FillVar( "N_BHad_Additional", number_of_additional_b_hadrons);
+    vars.FillVar( "N_BHad_HardProc", number_add_b_hadrons_from_hard_process);
     if(input.genTopEvt.IsFilled()){
       q1=input.genTopEvt.GetAllWQuarks();
       q2=input.genTopEvt.GetAllWAntiQuarks();
@@ -151,9 +156,9 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       qtth.insert(qtth.end(),btth.begin(),btth.end());
       qtth.insert(qtth.end(),q1.begin(),q1.end());
       qtth.insert(qtth.end(),q2.begin(),q2.end());
-    
+
     }
-    
+
     vars.FillVar( "N_AdditionalGenBJets", additional_b_genjets.size());
     for(uint i=0; i<additional_b_genjets.size(); i++){
       vars.FillVars( "AdditionalGenBJet_Pt", i, additional_b_genjets[i].pt());
@@ -187,17 +192,17 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 
       vars.FillVars( "AdditionalGenBJet_Dr_BfromTTH", i, drB);
       vars.FillVars( "AdditionalGenBJet_Dr_QfromTTH", i, drQ);
-      
+
 
 
     }
     std::vector<reco::GenJet> bhad_genjet=input.genTopEvt.GetAllTopHadBGenJets();
     std::vector<reco::GenJet> blep_genjet=input.genTopEvt.GetAllTopLepBGenJets();
     std::vector<reco::GenJet> bhiggs_genjet=input.genTopEvt.GetAllHiggsBGenJets();
-    
+
     vars.FillVar( "N_BGenJets", additional_b_genjets.size()+bhad_genjet.size()+blep_genjet.size()+bhiggs_genjet.size());
-    vars.FillVar( "AdditionalBHadrons_InEvent", Is_ttbb_Event );
-    
+
+
     vars.FillVar( "N_AdditionalGenCJets",additional_c_genjets.size());
     for(uint i=0; i<additional_c_genjets.size(); i++){
       vars.FillVars( "AdditionalGenCJet_Pt", i, additional_c_genjets[i].pt());
@@ -227,7 +232,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 	    drQ=dr;
 	  }
 	}
-      }    
+      }
       vars.FillVars( "AdditionalGenCJet_Dr_CfromW", i, drQ);
     }
     vars.FillVar( "N_AdditionalLightGenJets",additional_light_genjets.size());
@@ -239,11 +244,11 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalLightGenJet_RecoJetPt", i, additional_light_genjets_recojets[i]!=0 ? additional_light_genjets_recojets[i]->pt() : -1);
       vars.FillVars( "AdditionalLightGenJet_RecoJetCSV", i, additional_light_genjets_recojets[i]!=0 ? MiniAODHelper::GetJetCSV(*additional_light_genjets_recojets[i],btagger) : -2);
     }
-    
+
     vars.FillVar( "GenEvt_TTxId_FromGenTopEvt",input.genTopEvt.GetTTxId());
     vars.FillVar( "GenEvt_TTxId_w_PseudoAdditional",input.genTopEvt.GetTTxId(true));
     vars.FillVar( "GenEvt_TTxId_wo_PseudoAdditional",input.genTopEvt.GetTTxId(false));
-  
+
 
     std::vector<reco::GenParticle>bhadrons=input.genTopEvt.GetAdditionalBHadrons();
     std::vector<int> bmothers=input.genTopEvt.GetAdditionalBHadronMothers();
@@ -302,8 +307,8 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 	    drQ=dr;
 	  }
 	}
-      }    
-      vars.FillVars( "AdditionalCHadron_Dr_CfromW", i, drQ);     
+      }
+      vars.FillVars( "AdditionalCHadron_Dr_CfromW", i, drQ);
     }
     float drQ=5;
     reco::GenParticle wchadron=input.genTopEvt.GetWCHadron();
@@ -329,7 +334,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
     float mbhadjets=-1;
     float drbhad=-1;
     float drbhadjets=-1;
-    
+
     float mchad=-1;
     float mchadjets=-1;
     float drchad=-1;
@@ -367,7 +372,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
 	mchadjets=(additional_c_genjets[0].p4()+additional_c_genjets[1].p4()).M();
 	drchadjets=BoostedUtils::DeltaR(additional_c_genjets[0].p4(),additional_c_genjets[1].p4());
     }
-    
+
 
 
   vars.FillVar( "AdditionalBHadrons_M",mbhad);

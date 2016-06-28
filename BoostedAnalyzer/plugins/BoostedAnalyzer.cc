@@ -666,7 +666,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
   helper.SetJetCorrector(corrector);
 
-  const double jetptcut=30.0; 
+  const double jetptcut=30.0;
   const double jetetacut=2.4;
   const double jetptcut_loose=20.0;
   const double jetetacut_loose=2.4;
