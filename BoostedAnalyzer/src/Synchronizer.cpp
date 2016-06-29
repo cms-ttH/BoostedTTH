@@ -381,7 +381,6 @@ bool runOverData = false;
 
   float mll=-1;
 
-
   int is_e=0;
   int is_mu=0;
   int is_ee=0;
@@ -753,11 +752,14 @@ bool runOverData = false;
       topweight=input_DL.weightsDL.at("Weight_TopPt");
     }
     puweight=input_DL.weightsDL.at("Weight_PU");
+    mcweight = mcweight * input_DL.weightsDL.at("Weight_CT14nlo13100_nominal");
     if(number!=1 && number!=2) {
       q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
       q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
-      pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
-      pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
+      //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
+      pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
+      //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
+      pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
       lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
     }
 
@@ -769,11 +771,15 @@ bool runOverData = false;
       topweight=input.weights.at("Weight_TopPt");
     }
     puweight=input.weights.at("Weight_PU");
+    mcweight = mcweight * input.weights.at("Weight_CT14nlo13100_nominal");
     if(number!=1 && number!=2) {
       q2upup=input.weights.at("Weight_muRupmuFup");
       q2downdown=input.weights.at("Weight_muRdownmuFdown");
-      pdfup=input.weights.at("Weight_NNPDFid260067");
-      pdfdown=input.weights.at("Weight_NNPDFid260005");
+      //pdfup=input.weightsDL.at("Weight_NNPDFid260067");
+      pdfup=input.weights.at("Weight_CT14nlo13100_up");
+      //pdfdown=input.weightsDL.at("Weight_NNPDFid260005");
+      pdfdown=input.weights.at("Weight_CT14nlo13100_down");
+
       lepSF=input.weights.at("Weight_LeptonSF");
     }
 
