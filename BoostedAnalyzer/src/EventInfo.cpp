@@ -4,6 +4,7 @@ EventInfo::EventInfo(const edm::Event& iEvent, const edm::Handle<reco::BeamSpot>
 {
   
   evt         = iEvent.id().event();
+ 
   run         = iEvent.id().run();
   lumiBlock   = iEvent.luminosityBlock();
   
