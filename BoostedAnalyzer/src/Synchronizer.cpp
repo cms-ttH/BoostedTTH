@@ -180,8 +180,14 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 				Cutflow& cutflowDL,
 				const int number){
 
-bool runOverData = false;
-
+  bool runOverData=false;  
+  
+  if(input.sampleType == SampleType::data) {
+    runOverData=true;
+  }
+  //if(runOverData) {cout << "data" << endl;}
+  //else if (!runOverData) {cout << "mc" << endl;}
+  
   // Setup Selections
   // Single Lepton Selection
   vector<string> el_triggers_MC;;
@@ -197,8 +203,9 @@ bool runOverData = false;
   if(leptonSelections.size()==0){
     leptonSelections.push_back(new VertexSelection());
     if(runOverData) {
-	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*","HLT_IsoMu18_v*"));
-    } else {
+	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*","HLT_IsoMu20_v*"));
+    } 
+    else {
 	    leptonSelections.push_back(new LeptonSelection(el_triggers_MC,mu_triggers_MC));
     }
     leptonSelections.push_back(new JetTagSelection(4,2));
@@ -218,19 +225,21 @@ bool runOverData = false;
   vector<string> mumu_triggers;
   vector<string> elmu_triggers;
 
-  elel_triggers.push_back("any");
-  mumu_triggers.push_back("any");
-  elmu_triggers.push_back("any");
-
-
-/*
-  elel_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
-  mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
-  mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
-  elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
-  elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*");
-
-  */
+  // MC triggers ->do not work yet
+  if(!runOverData) {
+    elel_triggers.push_back("any");
+    mumu_triggers.push_back("any");
+    elmu_triggers.push_back("any");
+  }
+  // data triggers 
+  else {
+    elel_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
+    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
+    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
+    elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
+    elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*");
+  }
+  
 
   if(dileptonSelections.size()==0){
     dileptonSelections.push_back(new VertexSelection());
@@ -245,7 +254,7 @@ bool runOverData = false;
     cout << "DL Selection Step 2: DiLeptonMassSelection 20 GeV cut" << endl;
     cout << "DL Selection Step 3: DiLeptonMassSelection Z Veto" << endl;
     cout << "DL Selection Step 4: DiLeptonMETSelection" << endl;
-    cout << "DL Selection Step 2: DiLeptonJetTagSelection" << endl;
+    cout << "DL Selection Step 5: DiLeptonJetTagSelection" << endl;
   }
 
   if(!initializedCutflowsWithSelections){
@@ -286,9 +295,10 @@ bool runOverData = false;
     dummycutflow_MET.back().Init();
     dileptonMETSelection.back()->InitCutflow(dummycutflow_MET.back());
   }
+////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// Declare Variables //////////////////////////////////////
 
-  // Declare Variables
-  bool is_ttjets=1;
+  bool is_ttjets=0;
   float xs_ttbar= 831.76 ;// in pb
   float xs_ttH=0.2918;
   float Ngen_ttjets=46400;
@@ -301,62 +311,62 @@ bool runOverData = false;
   bool is_SL=true;
   bool is_DL=true;
 
-  float lep1_pt=0;
-  float lep1_eta=0;
-  float lep1_phi=0;
-  float lep1_iso=0;
+  float lep1_pt=-1;
+  float lep1_eta=-1;
+  float lep1_phi=-1;
+  float lep1_iso=-1;
   float lep1_pdgId=0;
-  float lep1_MVAID=0;
+  float lep1_MVAID=-1;
 
-  float lep2_pt=0;
-  float lep2_eta=0;
-  float lep2_phi=0;
-  float lep2_iso=0;
+  float lep2_pt=-1;
+  float lep2_eta=-1;
+  float lep2_phi=-1;
+  float lep2_iso=-1;
   float lep2_pdgId=0;
-  float lep2_MVAID=0;
+  float lep2_MVAID=-1;
 
-  float jet1_pt=0;
-  float jet2_pt=0;
-  float jet3_pt=0;
-  float jet4_pt=0;
+  float jet1_pt=-1;
+  float jet2_pt=-1;
+  float jet3_pt=-1;
+  float jet4_pt=-1;
 
-  float jet1_CSVv2=0;
-  float jet2_CSVv2=0;
-  float jet3_CSVv2=0;
-  float jet4_CSVv2=0;
+  float jet1_CSVv2=-1;
+  float jet2_CSVv2=-1;
+  float jet3_CSVv2=-1;
+  float jet4_CSVv2=-1;
 
-  float MET_pt=0;
-  float MET_phi=0;
+  float MET_pt=-1;
+  float MET_phi=-1;
 
   int n_jets=0;
   int n_btags=0;
-  float mcweight=0;
-  float bWeight=0;
-  float triggerSF=0;
-  if(is_ttjets) {
+  float mcweight=-1;
+  float bWeight=-1;
+  float triggerSF=-1;
+  if(is_ttjets && !runOverData) {
     mcweight=xs_ttbar*1000*2.7/Ngen_ttjets;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
   }
-  else {
+  else if(!is_ttjets && !runOverData) {
     mcweight=xs_ttH*1000*2.7/Ngen_ttH;
   }
-  float topweight=0;
-  float lepSF=-99;
+  float topweight=-1;
+  float lepSF=-1;
 
-  float puweight=0;
-  float q2upup=0;
-  float q2downdown=0;
-  float pdfup=0;
-  float pdfdown=0;
+  float puweight=-1;
+  float q2upup=-1;
+  float q2downdown=-1;
+  float pdfup=-1;
+  float pdfdown=-1;
   
 
-  int ttHFCategory=0;
+  int ttHFCategory=-1;
 
   float final_discriminant1=0;
   float final_discriminant2=0;
 
   int n_fatjets=0;
-  float pt_fatjet_1=0;
-  float pt_fatjet_2=0;
+  float pt_fatjet_1=-1;
+  float pt_fatjet_2=-1;
 
   float pt_nonW_1=0;
   float pt_nonW_2=0;
@@ -380,8 +390,7 @@ bool runOverData = false;
 
   bool useJERsystematics = true;
 
-  float mll=0;
-
+  float mll=-1;
 
   int is_e=0;
   int is_mu=0;
@@ -433,6 +442,9 @@ bool runOverData = false;
 
   if(compare) std::cout << "is_SL: " << is_SL  << "   is_DL: " << is_DL<< std::endl;
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////// calculate particle quantities /////////////////////////////////////////////  
+  
   if(is_SL) {
     for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuons.begin(); iMuon != input.selectedMuons.end(); ++iMuon ){
       if(iMuon->pt()>lep1_pt){
@@ -709,6 +721,8 @@ bool runOverData = false;
     final_discriminant1=bdt3.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.correctedMET);
   }
 
+  /////////////////////////////////////////////////////////////////////////// BOOSTED STUFF /////////////////////////////////////////////////////////////////////////////////////////////
+  
   n_fatjets = int(input.selectedBoostedJets.size());
   if(input.selectedBoostedJets.size()>0){
     pt_fatjet_1=input.selectedBoostedJets.at(0).fatjet.pt();
@@ -748,34 +762,43 @@ bool runOverData = false;
     }
   }
 
-  if(is_DL){
+  if(is_DL && !runOverData){
     bWeight=input_DL.weightsDL.at("Weight_CSV");
     if(is_ttjets) {
       topweight=input_DL.weightsDL.at("Weight_TopPt");
     }
     puweight=input_DL.weightsDL.at("Weight_PU");
+    mcweight = mcweight * input_DL.weightsDL.at("Weight_CT14nlo13100_nominal");
     if(number!=1 && number!=2) {
       q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
       q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
-      pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
-      pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
-      lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+      //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
+      pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
+      //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
+      pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
+      //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
     }
 
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
-  else{
+  else if(is_SL && !runOverData){
     bWeight=input.weights.at("Weight_CSV");
     if(is_ttjets) {
       topweight=input.weights.at("Weight_TopPt");
     }
     puweight=input.weights.at("Weight_PU");
+    mcweight = mcweight * input.weights.at("Weight_CT14nlo13100_nominal");
     if(number!=1 && number!=2) {
       q2upup=input.weights.at("Weight_muRupmuFup");
       q2downdown=input.weights.at("Weight_muRdownmuFdown");
-      pdfup=input.weights.at("Weight_NNPDFid260067");
-      pdfdown=input.weights.at("Weight_NNPDFid260005");
-      lepSF=input.weights.at("Weight_LeptonSF");
+
+      //pdfup=input.weightsDL.at("Weight_NNPDFid260067");
+      pdfup=input.weights.at("Weight_CT14nlo13100_up");
+      //pdfdown=input.weightsDL.at("Weight_NNPDFid260005");
+      pdfdown=input.weights.at("Weight_CT14nlo13100_down");
+
+      //lepSF=input.weights.at("Weight_LeptonSF");
+
     }
 
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
@@ -814,7 +837,7 @@ bool runOverData = false;
 	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
 //Sync spring 2016 output
   if(is_DL||is_SL) {
-    out << boost::format("%d,%d,%d,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
 	  run% lumi% event%
 	  is_e% is_mu% is_ee% is_emu% is_mumu%
 	  n_jets% n_btags%

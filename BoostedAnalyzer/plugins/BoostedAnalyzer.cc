@@ -450,6 +450,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     if (generatorflag) { std::cout << usedGenerator << " was set as Generator" << endl; }
     else { std::cout << "No Generator was set for Genweight -> no GenWeights are written in tree" << endl; }
 
+    genweights.initLHAPDF("CT14nlo");
+
     assert(selectedJetsTokens.size()==selectedJetsLooseTokens.size());
     assert(selectedJetsTokens.size()==jetSystematics.size());
     assert(selectedJetsTokens.size()==cutflows.size());
@@ -659,7 +661,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // inputs
     vector<InputCollections> inputs;
     for(uint isys=0; isys<jetSystematics.size(); isys++){
-	auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
+        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
 	auto weightsDL = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJetsLooseDL[isys]),*h_selectedElectronsDL,*h_selectedMuonsDL,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
@@ -805,8 +807,8 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	    weights[it->name()] = it->value();
 	}
 	//Add Genweights to the weight map
-	  genweights.GetGenWeights(weights, lheInfo, dogenweights);
-
+	genweights.GetGenWeights(weights, lheInfo, dogenweights);
+	genweights.GetLHAPDFWeight(weights, genInfo, "CT14nlo");
     //Add Lepton Scalefactors to weight map
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
 
