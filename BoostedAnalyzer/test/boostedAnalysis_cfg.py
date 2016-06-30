@@ -64,8 +64,9 @@ process = cms.Process("wtf")
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = options.globalTag
+process.load("CondCore.CondDB.CondDB_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(False)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
@@ -78,7 +79,6 @@ process.source = cms.Source(  "PoolSource",
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
 # necessarily reflect actual corrections level
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
-from JetMETCorrections.Configuration.JetCorrectionCondDB_cff import *
 process.ak4PFCHSL1Fastjet = cms.ESProducer(
   'L1FastjetCorrectionESProducer',
   level = cms.string('L1FastJet'),
@@ -117,60 +117,39 @@ if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
 #=================================== JEC from DB file for data ===============
 if options.isData:
-    process.load("CondCore.CondDB.CondDB_cfi")
-    from CondCore.CondDB.CondDB_cfi import *
-    process.jec = cms.ESSource("PoolDBESSource",
-                               DBParameters = cms.PSet(
-            messageLevel = cms.untracked.int32(0)
-            ),
-                               timetype = cms.string('runnumber'), # what does this do?
-                               toGet = cms.VPSet(
-            cms.PSet(
-                record = cms.string('JetCorrectionsRecord'),
-                tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
-                label  = cms.untracked.string('AK4PFchs')
-                ),
-            cms.PSet(
-                record = cms.string('JetCorrectionsRecord'),
-                tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK8PFchs'),
-                label  = cms.untracked.string('AK8PFchs')
-                ),
-#        ..................................................
-            ## here you add as many jet types as you need
-            ## note that the tag name is specific for the particular sqlite file
-            ),
-                               connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_DATA.db')
-#                               connect = cms.string('sqlite:../data/jecs/Fall15_25nsV2_DATA.db')
-                               )
+    process.GlobalTag.toGet.append(
+        cms.PSet(
+            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_DATA.db'),
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
+            label  = cms.untracked.string('AK4PFchs')
+        )
+    )
+    process.GlobalTag.toGet.append(
+        cms.PSet(
+            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_DATA.db'),
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK8PFchs'),
+            label  = cms.untracked.string('AK8PFchs')
+        )
+    )
 else:
-    process.load("CondCore.CondDB.CondDB_cfi")
-    from CondCore.CondDB.CondDB_cfi import *
-    process.jec = cms.ESSource("PoolDBESSource",
-                               DBParameters = cms.PSet(
-            messageLevel = cms.untracked.int32(0)
-            ),
-                               timetype = cms.string('runnumber'), # what does this do?
-                               toGet = cms.VPSet(
-            cms.PSet(
-                record = cms.string('JetCorrectionsRecord'),
-                tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
-                label  = cms.untracked.string('AK4PFchs')
-                ),
-            cms.PSet(
-                record = cms.string('JetCorrectionsRecord'),
-                tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK8PFchs'),
-                label  = cms.untracked.string('AK8PFchs')
-                ),
-#        ..................................................
-            ## here you add as many jet types as you need
-            ## note that the tag name is specific for the particular sqlite file
-            ),
-                               connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_MC.db')
-#                               connect = cms.string('sqlite:../data/jecs/Fall15_25nsV2_DATA.db')
-                               )
-
-## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+    process.GlobalTag.toGet.append(
+        cms.PSet(
+            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_MC.db'),
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
+            label  = cms.untracked.string('AK4PFchs')
+        )
+    )
+    process.GlobalTag.toGet.append(
+        cms.PSet(
+            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_MC.db'),
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK8PFchs'),
+            label  = cms.untracked.string('AK8PFchs')
+        )
+    )
 
 #===============================================================
 #
