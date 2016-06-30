@@ -11,7 +11,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     METSelection, # defined in Selection_cff
     checkBasicDataTriggers, # defined in Selection_cff
 
-    era = cms.string("2015_74x"), # has little effect so far, might become important for MiniAODhelper
+    era = cms.string("2016_80X"), # has little effect so far, might become important for MiniAODhelper
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
     sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
 
