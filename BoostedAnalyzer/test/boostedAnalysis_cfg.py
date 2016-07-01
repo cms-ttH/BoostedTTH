@@ -30,7 +30,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 100 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['root://cmsxrootd.fnal.gov///store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/00000/000B9244-4B27-E611-91D2-7845C4FC3C6B.root']
+    options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/00000/000B9244-4B27-E611-91D2-7845C4FC3C6B.root']
 
 if options.isData:
   options.globalTag="80X_dataRun2_Prompt_v8"

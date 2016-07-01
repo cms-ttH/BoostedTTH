@@ -190,24 +190,23 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   
   // Setup Selections
   // Single Lepton Selection
-  vector<string> el_triggers_MC;;
-  vector<string> mu_triggers_MC;
+  vector<string> el_triggers;
+  vector<string> mu_triggers;
 
-  el_triggers_MC.push_back("any");
-  mu_triggers_MC.push_back("any");
-/*
-  el_triggers_MC.push_back("HLT_Ele27_WP85_Gsf_v*");
-  mu_triggers_MC.push_back("HLT_IsoMu17_eta2p1_v*");
+  if(!runOverData) {  
+    el_triggers.push_back("any");
+    mu_triggers.push_back("any");
+  }
+  else if(runOverData) {
+    el_triggers.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v*");
+    mu_triggers.push_back("HLT_IsoMu20_v*");
+    mu_triggers.push_back("HLT_IsoTkMu20_v*");
+  }
 
-  */
+  
   if(leptonSelections.size()==0){
     leptonSelections.push_back(new VertexSelection());
-    if(runOverData) {
-	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*","HLT_IsoMu20_v*"));
-    } 
-    else {
-	    leptonSelections.push_back(new LeptonSelection(el_triggers_MC,mu_triggers_MC));
-    }
+    leptonSelections.push_back(new LeptonSelection(el_triggers,mu_triggers));
     leptonSelections.push_back(new JetTagSelection(4,2));
 
     cout << "SL Selection Step 0: VertexSelection" << endl;
@@ -298,7 +297,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////// Declare Variables //////////////////////////////////////
 
-  bool is_ttjets=0;
+  bool is_ttjets=1;
   float xs_ttbar= 831.76 ;// in pb
   float xs_ttH=0.2918;
   float Ngen_ttjets=46400;
@@ -792,9 +791,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       q2upup=input.weights.at("Weight_muRupmuFup");
       q2downdown=input.weights.at("Weight_muRdownmuFdown");
 
-      //pdfup=input.weightsDL.at("Weight_NNPDFid260067");
+      //pdfup=input.weights.at("Weight_NNPDFid260067");
       pdfup=input.weights.at("Weight_CT14nlo13100_up");
-      //pdfdown=input.weightsDL.at("Weight_NNPDFid260005");
+      //pdfdown=input.weights.at("Weight_NNPDFid260005");
       pdfdown=input.weights.at("Weight_CT14nlo13100_down");
 
       //lepSF=input.weights.at("Weight_LeptonSF");
