@@ -165,7 +165,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
 }
 void Synchronizer::DumpSyncExe2Header(std::ostream &out){
-  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepSF,Q2_upup,Q2_downdown,pdf_up,pdf_down\n";
+  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepIDSF,lepISOSF,Q2_upup,Q2_downdown,pdf_up,pdf_down\n";
 }
 
 
@@ -297,7 +297,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////// Declare Variables //////////////////////////////////////
 
-  bool is_ttjets=1;
+  bool is_ttjets=0;
   float xs_ttbar= 831.76 ;// in pb
   float xs_ttH=0.2918;
   float Ngen_ttjets=46400;
@@ -349,7 +349,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     mcweight=xs_ttH*1000*2.7/Ngen_ttH;
   }
   float topweight=-1;
-  float lepSF=-1;
+  //float lepSF=-1;
+  float lepSFid=-1;
+  float lepSFiso=-1;
 
   float puweight=-1;
   float q2upup=-1;
@@ -776,6 +778,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
       pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
       //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+      //lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
+      //lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
     }
 
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
@@ -797,6 +801,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       pdfdown=input.weights.at("Weight_CT14nlo13100_down");
 
       //lepSF=input.weights.at("Weight_LeptonSF");
+      lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
+      lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
 
     }
 
@@ -836,7 +842,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
 //Sync spring 2016 output
   if(is_DL||is_SL) {
-    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
 	  run% lumi% event%
 	  is_e% is_mu% is_ee% is_emu% is_mumu%
 	  n_jets% n_btags%
@@ -852,7 +858,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	  bWeight%
 	  topweight%
 	  triggerSF%
-	  lepSF%
+	  lepSFid%
+	  lepSFiso%
 	  q2upup% q2downdown%
 	  pdfup% pdfdown;
   }
