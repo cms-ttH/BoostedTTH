@@ -3,7 +3,7 @@ import sys
 import os
 
 # To execute test, run
-#  cmsRun boostedAnalysis_cfg.py isData=False outName=testrun maxEvents=100 inputFiles=file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_1.root,file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_2.root
+#  cmsRun mktrees_2016_cfg.py isData=False outName=testrun maxEvents=100 inputFiles=/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/06277EC1-181A-E611-870F-02163E0145E5.root
 
 # parse command-line arguments
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideCommandLineParsing
@@ -20,8 +20,8 @@ options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, 
 options.register( "makeSystematicsTrees", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
+options.register( "channel", None, VarParsing.multiplicity.singleton, VarParsing.varType.string, "'el' or 'mu'" )
 options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
-options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.parseArguments()
 
@@ -30,7 +30,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 100 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['root://cmsxrootd.fnal.gov///store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/00000/000B9244-4B27-E611-91D2-7845C4FC3C6B.root']
+    options.inputFiles=['/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/06277EC1-181A-E611-870F-02163E0145E5.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
@@ -45,6 +45,9 @@ if "mc" in options.globalTag.lower() and options.isData:
     sys.exit()
 if not options.inputFiles:
     print "\n\nConfig ERROR: no inputFiles specified\n\n"
+    sys.exit()
+if not options.channel:
+    print "\n\nConfig ERROR: no channel ('el' or 'mu') specified\n\n"
     sys.exit()
 
 # print settings
@@ -184,11 +187,15 @@ process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 if options.isData:
     if options.analysisType=='SL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
+        process.BoostedAnalyzer.channel = options.channel
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
 else:
     if options.analysisType=='SL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+        process.BoostedAnalyzer.channel = options.channel
+        process.BoostedAnalyzer.muonTriggers = ["None"]
+        process.BoostedAnalyzer.electronTriggers = ["None"]
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
 
@@ -218,8 +225,6 @@ process.BoostedAnalyzer.systematics=process.SelectedJetProducer.systematics
 process.BoostedAnalyzer.generatorName=options.generatorName
 
 
-if options.isData and options.useJson:
-    print 'use JSON is no longer supported'
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
