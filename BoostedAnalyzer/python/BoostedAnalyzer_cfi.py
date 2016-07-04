@@ -17,6 +17,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     # so that the sum of weights corresponds to the number of events for the given lumi
     eventWeight = cms.double(1.),
     isData = cms.bool(False),
+    datasetFlag=cms.int32(0),
 
     # PU weights, defined in Weights_cff
     nominalPUWeight = cms.PSet(NominalPUWeight),

@@ -23,7 +23,9 @@ options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarPa
 options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
+options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "int flag to identify which dataset is used")#(0,1,2,3,4,5)->(MC,single ele, single mu,ele ele,ele mu,mu mu)
 options.parseArguments()
+
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
@@ -231,6 +233,8 @@ process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
 #process.BoostedAnalyzer.doJERsystematic = False
 
+if options.isData:
+  process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
 
 process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
 #process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]

@@ -27,8 +27,8 @@ public:
     ~Synchronizer ();
     void DumpSyncExe1(int nfile,const InputCollections& input);
     void DumpSyncExe1(const InputCollections& input, std::ostream &out);
-    void DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper);
-    void DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out, Cutflow& cutflowSL,Cutflow& cutflowDL,const int number = 0);
+    void DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper, int dataset_flag);
+    void DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out, Cutflow& cutflowSL,Cutflow& cutflowDL,int dataset_flag);
     void InitDumpSyncFile1(std::string filename);
     void InitDumpSyncFile2(std::string filename);
     void DumpSyncExe2Header(std::ostream &out);

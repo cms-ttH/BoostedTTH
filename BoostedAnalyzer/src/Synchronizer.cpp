@@ -178,12 +178,31 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 				MiniAODHelper& helper,
 				std::ostream &out,Cutflow& cutflowSL,
 				Cutflow& cutflowDL,
-				const int number){
+				int dataset_flag){
 
   bool runOverData=false;  
-  
+  std::string channel="both";
+  std::string channel_DL="all";
+  cout << "dataset_flag " << dataset_flag << endl;
   if(input.sampleType == SampleType::data) {
     runOverData=true;
+    switch(dataset_flag) {
+      case 1:
+	channel="el";
+	break;
+      case 2:
+	channel="mu";
+	break;
+      case 3:
+	channel_DL="elel";
+	break;
+      case 4:
+	channel_DL="elmu";
+	break;
+      case 5:
+	channel_DL="mumu";
+	break;
+    }
   }
   //if(runOverData) {cout << "data" << endl;}
   //else if (!runOverData) {cout << "mc" << endl;}
@@ -204,9 +223,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   }
 
   
-  if(leptonSelections.size()==0){
+  if(leptonSelections.size()==0 && ((!runOverData)||dataset_flag<3)){
     leptonSelections.push_back(new VertexSelection());
-    leptonSelections.push_back(new LeptonSelection(el_triggers,mu_triggers));
+    leptonSelections.push_back(new LeptonSelection(el_triggers,mu_triggers,channel));
     leptonSelections.push_back(new JetTagSelection(4,2));
 
     cout << "SL Selection Step 0: VertexSelection" << endl;
@@ -240,9 +259,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   }
   
 
-  if(dileptonSelections.size()==0){
+  if(dileptonSelections.size()==0 && ((!runOverData)||dataset_flag>2)){
     dileptonSelections.push_back(new VertexSelection());
-    dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers));
+    dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers,channel_DL));
     dileptonSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
     dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true,false));
     dileptonSelections.push_back(new DiLeptonMETSelection(40,99999));
@@ -255,7 +274,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     cout << "DL Selection Step 4: DiLeptonMETSelection" << endl;
     cout << "DL Selection Step 5: DiLeptonJetTagSelection" << endl;
   }
-
+  
+  //std::cout << "channel: " << channel << " channel_DL: " << channel_DL << endl;
+  
   if(!initializedCutflowsWithSelections){
     for(uint i=0; i<dileptonSelections.size(); i++){
       dileptonSelections[i]->InitCutflow(cutflowDL);
@@ -297,7 +318,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////// Declare Variables //////////////////////////////////////
 
-  bool is_ttjets=0;
+  bool is_ttjets=1;
   float xs_ttbar= 831.76 ;// in pb
   float xs_ttH=0.2918;
   float Ngen_ttjets=46400;
@@ -675,13 +696,13 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
   // get selection flags
   // dilepton
-  dl_passed=dileptonSelection[0]->IsSelected(input_DL,dummycutflow_DL[number]);
+  dl_passed=dileptonSelection[0]->IsSelected(input_DL,dummycutflow_DL[0]);
 
   // dilepton mass
-  mll_passed=dileptonMllSelections[0]->IsSelected(input_DL,dummycutflow_Mll[number]) && dileptonMllSelections[1]->IsSelected(input_DL,dummycutflow_Mll[number]);
+  mll_passed=dileptonMllSelections[0]->IsSelected(input_DL,dummycutflow_Mll[0]) && dileptonMllSelections[1]->IsSelected(input_DL,dummycutflow_Mll[0]);
 
   // MET
-  met_passed=dileptonMETSelection[0]->IsSelected(input_DL,dummycutflow_MET[number]);
+  met_passed=dileptonMETSelection[0]->IsSelected(input_DL,dummycutflow_MET[0]);
 
   if(compare) std::cout << "dl_passed: " << dl_passed << "   mll_passed: " << mll_passed << "   met_passed: " << met_passed << std::endl;
 
@@ -770,17 +791,16 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     }
     puweight=input_DL.weightsDL.at("Weight_PU");
     mcweight = mcweight * input_DL.weightsDL.at("Weight_CT14nlo13100_nominal");
-    if(number!=1 && number!=2) {
-      q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
-      q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
-      //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
-      pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
-      //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
-      pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
-      //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
-      //lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
-      //lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
-    }
+    q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
+    q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
+    //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
+    pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
+    //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
+    pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
+    //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+    //lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
+    //lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
+    
 
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
@@ -791,20 +811,20 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     }
     puweight=input.weights.at("Weight_PU");
     mcweight = mcweight * input.weights.at("Weight_CT14nlo13100_nominal");
-    if(number!=1 && number!=2) {
-      q2upup=input.weights.at("Weight_muRupmuFup");
-      q2downdown=input.weights.at("Weight_muRdownmuFdown");
+    
+    q2upup=input.weights.at("Weight_muRupmuFup");
+    q2downdown=input.weights.at("Weight_muRdownmuFdown");
 
-      //pdfup=input.weights.at("Weight_NNPDFid260067");
-      pdfup=input.weights.at("Weight_CT14nlo13100_up");
-      //pdfdown=input.weights.at("Weight_NNPDFid260005");
-      pdfdown=input.weights.at("Weight_CT14nlo13100_down");
+    //pdfup=input.weights.at("Weight_NNPDFid260067");
+    pdfup=input.weights.at("Weight_CT14nlo13100_up");
+    //pdfdown=input.weights.at("Weight_NNPDFid260005");
+    pdfdown=input.weights.at("Weight_CT14nlo13100_down");
 
-      //lepSF=input.weights.at("Weight_LeptonSF");
-      lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
-      lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
+    //lepSF=input.weights.at("Weight_LeptonSF");
+    lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
+    lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
 
-    }
+    
 
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }
@@ -869,8 +889,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 }
 
 
-void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper){
-  DumpSyncExe2(input,input_DL,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal,0);
+void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper,int dataset_flag){
+  DumpSyncExe2(input,input_DL,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal,dataset_flag);
   //DumpSyncExe2(input_jesup,input_DL_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup,1);
   //DumpSyncExe2(input_jesdown,input_DL_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown,2);
   //DumpSyncExe2(input_raw,input_DL_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw,3);

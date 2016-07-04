@@ -154,6 +154,8 @@ private:
     int eventcount;
     /** is analyzed sample data? */
     bool isData;
+    /** flag to recognize if electron dataset, muon dataset ... is analyzed*/
+    int dataset_flag;
     /** use fat jets? this is only possible if the miniAOD contains them */
     bool useFatJets;
     /** use GenBmatching info? this is only possible if the miniAOD contains them */
@@ -253,6 +255,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     usedGenerator = iConfig.getParameter<std::string>("generatorName");
     doBoostedMEM = iConfig.getParameter<bool>("doBoostedMEM");
     outfileNameBase = iConfig.getParameter<std::string>("outfileName");
+    dataset_flag = iConfig.getParameter<int>("datasetFlag");
     relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
     processorNames= iConfig.getParameter< std::vector<std::string> >("processorNames");
     selectionNames= iConfig.getParameter< std::vector<std::string> >("selectionNames");
@@ -264,7 +267,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     for (auto const &s : jetSystematics){
 	outfileNames.push_back(outfileName(outfileNameBase,s));
     }
-
     // REGISTER DATA ACCESS
     // This needs to be done in the constructor of this class or via the consumes collector in the constructor of helper classes
     puInfoToken             = consumes< std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("puInfo") );
@@ -693,7 +695,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     //todo: adapt to new synch exe
 
     if(dumpSyncExe2){
-    	    synchronizer.DumpSyncExe2(0,inputs[0], inputs[1], inputs[2], inputs[0],inputs[0], inputs[1], inputs[2], inputs[0], helper);
+    	    synchronizer.DumpSyncExe2(0,inputs[0], inputs[1], inputs[2], inputs[0],inputs[0], inputs[1], inputs[2], inputs[0], helper,dataset_flag);
         }
 
 //void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, const int number){

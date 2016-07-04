@@ -17,6 +17,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     eventWeight = cms.double(1.),
     isData = cms.bool(True),
+    datasetFlag=cms.int32(0),
 
     recorrectMET = cms.bool(True),
 
