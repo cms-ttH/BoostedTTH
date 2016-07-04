@@ -165,7 +165,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
 }
 void Synchronizer::DumpSyncExe2Header(std::ostream &out){
-  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepSF,Q2_upup,Q2_downdown,pdf_up,pdf_down,Weight_CSVLFup,Weight_CSVLFdown,Weight_CSVHFup,Weight_CSVHFdown,Weight_CSVHFStats1up,Weight_CSVHFStats1down,Weight_CSVLFStats1up,Weight_CSVLFStats1down,Weight_CSVHFStats2up,Weight_CSVHFStats2down,Weight_CSVLFStats2up,Weight_CSVLFStats2down,Weight_CSVCErr1up,Weight_CSVCErr1down,Weight_CSVCErr2up,Weight_CSVCErr2down\n";
+  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepIDSF,lepISOSF,Q2_upup,Q2_downdown,pdf_up,pdf_down,Weight_CSVLFup,Weight_CSVLFdown,Weight_CSVHFup,Weight_CSVHFdown,Weight_CSVHFStats1up,Weight_CSVHFStats1down,Weight_CSVLFStats1up,Weight_CSVLFStats1down,Weight_CSVHFStats2up,Weight_CSVHFStats2down,Weight_CSVLFStats2up,Weight_CSVLFStats2down,Weight_CSVCErr1up,Weight_CSVCErr1down,Weight_CSVCErr2up,Weight_CSVCErr2down\n";
 }
 
 
@@ -908,7 +908,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 //Sync spring 2016 output
   if(is_DL||is_SL) {
 
-    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
 
 	  run% lumi% event%
 	  is_e% is_mu% is_ee% is_emu% is_mumu%
