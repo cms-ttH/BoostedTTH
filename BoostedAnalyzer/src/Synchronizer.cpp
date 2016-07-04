@@ -48,7 +48,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
   int run=input.eventInfo.run;
   int lumi=input.eventInfo.lumiBlock;
   long event=input.eventInfo.evt;
-  
+
   float lep1_pt=-99;
   float lep1_eta=-99;
   float lep1_phi=-99;
@@ -165,7 +165,7 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
 }
 void Synchronizer::DumpSyncExe2Header(std::ostream &out){
-  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepSF,Q2_upup,Q2_downdown,pdf_up,pdf_down\n";
+  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepSF,Q2_upup,Q2_downdown,pdf_up,pdf_down,Weight_CSVLFup,Weight_CSVLFdown,Weight_CSVHFup,Weight_CSVHFdown,Weight_CSVHFStats1up,Weight_CSVHFStats1down,Weight_CSVLFStats1up,Weight_CSVLFStats1down,Weight_CSVHFStats2up,Weight_CSVHFStats2down,Weight_CSVLFStats2up,Weight_CSVLFStats2down,Weight_CSVCErr1up,Weight_CSVCErr1down,Weight_CSVCErr2up,Weight_CSVCErr2down\n";
 }
 
 
@@ -180,14 +180,14 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 				Cutflow& cutflowDL,
 				const int number){
 
-  bool runOverData=false;  
-  
+  bool runOverData=false;
+
   if(input.sampleType == SampleType::data) {
     runOverData=true;
   }
   //if(runOverData) {cout << "data" << endl;}
   //else if (!runOverData) {cout << "mc" << endl;}
-  
+
   // Setup Selections
   // Single Lepton Selection
   vector<string> el_triggers_MC;;
@@ -204,7 +204,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     leptonSelections.push_back(new VertexSelection());
     if(runOverData) {
 	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*","HLT_IsoMu20_v*"));
-    } 
+    }
     else {
 	    leptonSelections.push_back(new LeptonSelection(el_triggers_MC,mu_triggers_MC));
     }
@@ -231,7 +231,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     mumu_triggers.push_back("any");
     elmu_triggers.push_back("any");
   }
-  // data triggers 
+  // data triggers
   else {
     elel_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
     mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
@@ -239,7 +239,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
     elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*");
   }
-  
+
 
   if(dileptonSelections.size()==0){
     dileptonSelections.push_back(new VertexSelection());
@@ -306,7 +306,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   int run=input.eventInfo.run;
   int lumi=input.eventInfo.lumiBlock;
   long event=input.eventInfo.evt;
-  
+
 
   bool is_SL=true;
   bool is_DL=true;
@@ -357,7 +357,25 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   float q2downdown=-1;
   float pdfup=-1;
   float pdfdown=-1;
-  
+
+  //CSV systematics
+  float Weight_CSVLFup = -99.;
+  float Weight_CSVLFdown = -99.;
+  float Weight_CSVHFup = -99.;
+  float Weight_CSVHFdown = -99.;
+  float Weight_CSVHFStats1up = -99.;
+  float Weight_CSVHFStats1down = -99.;
+  float Weight_CSVLFStats1up = -99.;
+  float Weight_CSVLFStats1down = -99.;
+  float Weight_CSVHFStats2up = -99.;
+  float Weight_CSVHFStats2down = -99.;
+  float Weight_CSVLFStats2up = -99.;
+  float Weight_CSVLFStats2down = -99.;
+  float Weight_CSVCErr1up = -99.;
+  float Weight_CSVCErr1down = -99.;
+  float Weight_CSVCErr2up = -99.;
+  float Weight_CSVCErr2down = -99.;
+
 
   int ttHFCategory=-1;
 
@@ -443,8 +461,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   if(compare) std::cout << "is_SL: " << is_SL  << "   is_DL: " << is_DL<< std::endl;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////// calculate particle quantities /////////////////////////////////////////////  
-  
+////////////////////////////////////////// calculate particle quantities /////////////////////////////////////////////
+
   if(is_SL) {
     for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuons.begin(); iMuon != input.selectedMuons.end(); ++iMuon ){
       if(iMuon->pt()>lep1_pt){
@@ -543,7 +561,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       }
     }
   }
-    
+
   if(is_SL){
     if(abs(lep1_pdgId)==11){
       is_e=1;
@@ -722,7 +740,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   }
 
   /////////////////////////////////////////////////////////////////////////// BOOSTED STUFF /////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   n_fatjets = int(input.selectedBoostedJets.size());
   if(input.selectedBoostedJets.size()>0){
     pt_fatjet_1=input.selectedBoostedJets.at(0).fatjet.pt();
@@ -769,6 +787,23 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     }
     puweight=input_DL.weightsDL.at("Weight_PU");
     mcweight = mcweight * input_DL.weightsDL.at("Weight_CT14nlo13100_nominal");
+    Weight_CSVLFup = input_DL.weightsDL.at("Weight_CSVLFup");
+    Weight_CSVLFdown = input_DL.weightsDL.at("Weight_CSVLFdown");
+    Weight_CSVHFup = input_DL.weightsDL.at("Weight_CSVHFup");
+    Weight_CSVHFdown = input_DL.weightsDL.at("Weight_CSVHFdown");
+    Weight_CSVHFStats1up  = input_DL.weightsDL.at("Weight_CSVHFStats1up");
+    Weight_CSVHFStats1down = input_DL.weightsDL.at("Weight_CSVHFStats1down");
+    Weight_CSVLFStats1up = input_DL.weightsDL.at("Weight_CSVLFStats1up");
+    Weight_CSVLFStats1down = input_DL.weightsDL.at("Weight_CSVLFStats1down");
+    Weight_CSVHFStats2up = input_DL.weightsDL.at("Weight_CSVHFStats2up");
+    Weight_CSVHFStats2down = input_DL.weightsDL.at("Weight_CSVHFStats2down");
+    Weight_CSVLFStats2up = input_DL.weightsDL.at("Weight_CSVLFStats2up");
+    Weight_CSVLFStats2down = input_DL.weightsDL.at("Weight_CSVLFStats2down");
+    Weight_CSVCErr1up = input_DL.weightsDL.at("Weight_CSVCErr1up");
+    Weight_CSVCErr1down = input_DL.weightsDL.at("Weight_CSVCErr1down");
+    Weight_CSVCErr2up = input_DL.weightsDL.at("Weight_CSVCErr2up");
+    Weight_CSVCErr2down = input_DL.weightsDL.at("Weight_CSVCErr2down");
+
     if(number!=1 && number!=2) {
       q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
       q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
@@ -788,6 +823,23 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     }
     puweight=input.weights.at("Weight_PU");
     mcweight = mcweight * input.weights.at("Weight_CT14nlo13100_nominal");
+    Weight_CSVLFup = input.weights.at("Weight_CSVLFup");
+    Weight_CSVLFdown = input.weights.at("Weight_CSVLFdown");
+    Weight_CSVHFup = input.weights.at("Weight_CSVHFup");
+    Weight_CSVHFdown = input.weights.at("Weight_CSVHFdown");
+    Weight_CSVHFStats1up  = input.weights.at("Weight_CSVHFStats1up");
+    Weight_CSVHFStats1down = input.weights.at("Weight_CSVHFStats1down");
+    Weight_CSVLFStats1up = input.weights.at("Weight_CSVLFStats1up");
+    Weight_CSVLFStats1down = input.weights.at("Weight_CSVLFStats1down");
+    Weight_CSVHFStats2up = input.weights.at("Weight_CSVHFStats2up");
+    Weight_CSVHFStats2down = input.weights.at("Weight_CSVHFStats2down");
+    Weight_CSVLFStats2up = input.weights.at("Weight_CSVLFStats2up");
+    Weight_CSVLFStats2down = input.weights.at("Weight_CSVLFStats2down");
+    Weight_CSVCErr1up = input.weights.at("Weight_CSVCErr1up");
+    Weight_CSVCErr1down = input.weights.at("Weight_CSVCErr1down");
+    Weight_CSVCErr2up = input.weights.at("Weight_CSVCErr2up");
+    Weight_CSVCErr2down = input.weights.at("Weight_CSVCErr2down");
+
     if(number!=1 && number!=2) {
       q2upup=input.weights.at("Weight_muRupmuFup");
       q2downdown=input.weights.at("Weight_muRdownmuFdown");
@@ -837,17 +889,17 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
 //Sync spring 2016 output
   if(is_DL||is_SL) {
-    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
 	  run% lumi% event%
 	  is_e% is_mu% is_ee% is_emu% is_mumu%
 	  n_jets% n_btags%
 	  lep1_pt% lep1_iso% lep1_pdgId%
 	  lep2_pt% lep2_iso% lep2_pdgId%
-	  jet1_pt% jet2_pt% 
+	  jet1_pt% jet2_pt%
 	  jet1_CSVv2% jet2_CSVv2%
 	  jet1_JecSF% jet1_JecSF_up% jet1_JecSF_down%
 	  MET_pt% MET_phi% mll%
-	  ttHFCategory% 
+	  ttHFCategory%
 	  mcweight%
 	  puweight%
 	  bWeight%
@@ -855,10 +907,16 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	  triggerSF%
 	  lepSF%
 	  q2upup% q2downdown%
-	  pdfup% pdfdown;
+	  pdfup% pdfdown%
+    Weight_CSVLFup% Weight_CSVLFdown%
+    Weight_CSVHFup% Weight_CSVHFdown%
+    Weight_CSVHFStats1up% Weight_CSVHFStats1down%
+    Weight_CSVLFStats1up% Weight_CSVLFStats1down%
+    Weight_CSVHFStats2up% Weight_CSVHFStats2down%
+    Weight_CSVLFStats2up% Weight_CSVLFStats2down%
+    Weight_CSVCErr1up% Weight_CSVCErr1down%
+    Weight_CSVCErr2up% Weight_CSVCErr2down;
   }
-
-
 
 }
 
