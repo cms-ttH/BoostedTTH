@@ -243,6 +243,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // initialize gen top event with consumes collector (allows to access data from file within this class)
     genTopEvtProd(GenTopEventProducer(consumesCollector()))
 {
+   bool BTagSystematics = false;
     //
     // get all configurations from the python config
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
@@ -326,7 +327,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // initialize synchronizer
     if(dumpSyncExe2){
-	synchronizer.InitDumpSyncFile2(outfileNameBase);
+	synchronizer.InitDumpSyncFile2(outfileNameBase,BTagSystematics);
     }
 
     // initialize selections
@@ -512,7 +513,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( selectedElectronsLooseToken,h_selectedElectronsLoose );
     // JETs
 
-    
+
     edm::Handle< pat::JetCollection > h_rawJets;
     iEvent.getByToken( rawJetsToken, h_rawJets );
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJets;
@@ -716,7 +717,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	}
 	if(selected) treewriters[i_sys]->Process(inputs[i_sys]);
     }
-   
+
 }
 
 float BoostedAnalyzer::GetTopPtWeight(float toppt1,float toppt2){

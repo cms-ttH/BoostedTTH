@@ -164,10 +164,12 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 	 n_toptags% n_higgstags;
 
 }
-void Synchronizer::DumpSyncExe2Header(std::ostream &out){
+void Synchronizer::DumpSyncExe2HeaderBTagSys(std::ostream &out){
   out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepIDSF,lepISOSF,Q2_upup,Q2_downdown,pdf_up,pdf_down,Weight_CSVLFup,Weight_CSVLFdown,Weight_CSVHFup,Weight_CSVHFdown,Weight_CSVHFStats1up,Weight_CSVHFStats1down,Weight_CSVLFStats1up,Weight_CSVLFStats1down,Weight_CSVHFStats2up,Weight_CSVHFStats2down,Weight_CSVLFStats2up,Weight_CSVLFStats2down,Weight_CSVCErr1up,Weight_CSVCErr1down,Weight_CSVCErr2up,Weight_CSVCErr2down\n";
 }
-
+void Synchronizer::DumpSyncExe2Header(std::ostream &out){
+  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepIDSF,lepISOSF,Q2_upup,Q2_downdown,pdf_up,pdf_down\n";
+}
 
 void Synchronizer::DumpSyncExe2(const InputCollections& input,
 				const InputCollections& input_DL,
@@ -178,33 +180,12 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 				MiniAODHelper& helper,
 				std::ostream &out,Cutflow& cutflowSL,
 				Cutflow& cutflowDL,
-				int dataset_flag){
+				const int number){
 
-
-  bool runOverData=false;  
-  std::string channel="both";
-  std::string channel_DL="all";
-  //cout << "dataset_flag " << dataset_flag << endl;
+  bool runOverData=false;
 
   if(input.sampleType == SampleType::data) {
     runOverData=true;
-    switch(dataset_flag) {
-      case 1:
-	channel="el";
-	break;
-      case 2:
-	channel="mu";
-	break;
-      case 3:
-	channel_DL="elel";
-	break;
-      case 4:
-	channel_DL="elmu";
-	break;
-      case 5:
-	channel_DL="mumu";
-	break;
-    }
   }
   //if(runOverData) {cout << "data" << endl;}
   //else if (!runOverData) {cout << "mc" << endl;}
@@ -225,10 +206,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   }
 
 
-  
-  if(leptonSelections.size()==0 && ((!runOverData)||dataset_flag<3)){
+  if(leptonSelections.size()==0){
     leptonSelections.push_back(new VertexSelection());
-    leptonSelections.push_back(new LeptonSelection(el_triggers,mu_triggers,channel));
+    leptonSelections.push_back(new LeptonSelection(el_triggers,mu_triggers));
+
     leptonSelections.push_back(new JetTagSelection(4,2));
 
     cout << "SL Selection Step 0: VertexSelection" << endl;
@@ -262,9 +243,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   }
 
 
-  if(dileptonSelections.size()==0 && ((!runOverData)||dataset_flag>2)){
+  if(dileptonSelections.size()==0){
     dileptonSelections.push_back(new VertexSelection());
-    dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers,channel_DL));
+    dileptonSelections.push_back(new DiLeptonSelection(elel_triggers,mumu_triggers,elmu_triggers));
     dileptonSelections.push_back(new DiLeptonMassSelection(20,99999,false,true));
     dileptonSelections.push_back(new DiLeptonMassSelection(76,106,true,false));
     dileptonSelections.push_back(new DiLeptonMETSelection(40,99999));
@@ -277,9 +258,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     cout << "DL Selection Step 4: DiLeptonMETSelection" << endl;
     cout << "DL Selection Step 5: DiLeptonJetTagSelection" << endl;
   }
-  
-  //std::cout << "channel: " << channel << " channel_DL: " << channel_DL << endl;
-  
+
   if(!initializedCutflowsWithSelections){
     for(uint i=0; i<dileptonSelections.size(); i++){
       dileptonSelections[i]->InitCutflow(cutflowDL);
@@ -321,7 +300,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////// Declare Variables //////////////////////////////////////
 
-  bool is_ttjets=1;
+  bool BTagSystematics = false;
+
+  bool is_ttjets=0;
   float xs_ttbar= 831.76 ;// in pb
   float xs_ttH=0.2918;
   float Ngen_ttjets=46400;
@@ -717,13 +698,13 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
   // get selection flags
   // dilepton
-  dl_passed=dileptonSelection[0]->IsSelected(input_DL,dummycutflow_DL[0]);
+  dl_passed=dileptonSelection[0]->IsSelected(input_DL,dummycutflow_DL[number]);
 
   // dilepton mass
-  mll_passed=dileptonMllSelections[0]->IsSelected(input_DL,dummycutflow_Mll[0]) && dileptonMllSelections[1]->IsSelected(input_DL,dummycutflow_Mll[0]);
+  mll_passed=dileptonMllSelections[0]->IsSelected(input_DL,dummycutflow_Mll[number]) && dileptonMllSelections[1]->IsSelected(input_DL,dummycutflow_Mll[number]);
 
   // MET
-  met_passed=dileptonMETSelection[0]->IsSelected(input_DL,dummycutflow_MET[0]);
+  met_passed=dileptonMETSelection[0]->IsSelected(input_DL,dummycutflow_MET[number]);
 
   if(compare) std::cout << "dl_passed: " << dl_passed << "   mll_passed: " << mll_passed << "   met_passed: " << met_passed << std::endl;
 
@@ -812,15 +793,6 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     }
     puweight=input_DL.weightsDL.at("Weight_PU");
     mcweight = mcweight * input_DL.weightsDL.at("Weight_CT14nlo13100_nominal");
-    q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
-    q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
-    //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
-    pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
-    //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
-    pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
-    //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
-    //lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
-    //lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
     Weight_CSVLFup = input_DL.weightsDL.at("Weight_CSVLFup");
     Weight_CSVLFdown = input_DL.weightsDL.at("Weight_CSVLFdown");
     Weight_CSVHFup = input_DL.weightsDL.at("Weight_CSVHFup");
@@ -837,6 +809,19 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     Weight_CSVCErr1down = input_DL.weightsDL.at("Weight_CSVCErr1down");
     Weight_CSVCErr2up = input_DL.weightsDL.at("Weight_CSVCErr2up");
     Weight_CSVCErr2down = input_DL.weightsDL.at("Weight_CSVCErr2down");
+
+    if(number!=1 && number!=2) {
+      q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
+      q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
+      //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
+      pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
+      //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
+      pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
+      //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+      //lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
+      //lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
+    }
+
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
   else if(is_SL && !runOverData){
@@ -846,8 +831,6 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     }
     puweight=input.weights.at("Weight_PU");
     mcweight = mcweight * input.weights.at("Weight_CT14nlo13100_nominal");
-    q2upup=input.weights.at("Weight_muRupmuFup");
-    q2downdown=input.weights.at("Weight_muRdownmuFdown");
     Weight_CSVLFup = input.weights.at("Weight_CSVLFup");
     Weight_CSVLFdown = input.weights.at("Weight_CSVLFdown");
     Weight_CSVHFup = input.weights.at("Weight_CSVHFup");
@@ -864,13 +847,22 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     Weight_CSVCErr1down = input.weights.at("Weight_CSVCErr1down");
     Weight_CSVCErr2up = input.weights.at("Weight_CSVCErr2up");
     Weight_CSVCErr2down = input.weights.at("Weight_CSVCErr2down");
-    //pdfup=input.weights.at("Weight_NNPDFid260067");
-    pdfup=input.weights.at("Weight_CT14nlo13100_up");
-    //pdfdown=input.weights.at("Weight_NNPDFid260005");
-    pdfdown=input.weights.at("Weight_CT14nlo13100_down");
-    //lepSF=input.weights.at("Weight_LeptonSF");
-    lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
-    lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
+
+    if(number!=1 && number!=2) {
+      q2upup=input.weights.at("Weight_muRupmuFup");
+      q2downdown=input.weights.at("Weight_muRdownmuFdown");
+
+      //pdfup=input.weights.at("Weight_NNPDFid260067");
+      pdfup=input.weights.at("Weight_CT14nlo13100_up");
+      //pdfdown=input.weights.at("Weight_NNPDFid260005");
+      pdfdown=input.weights.at("Weight_CT14nlo13100_down");
+
+      //lepSF=input.weights.at("Weight_LeptonSF");
+      lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
+      lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
+
+    }
+
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }
 
@@ -907,43 +899,68 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
 //Sync spring 2016 output
   if(is_DL||is_SL) {
+    if(BTagSystematics){
 
-    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+      out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
 
-	  run% lumi% event%
-	  is_e% is_mu% is_ee% is_emu% is_mumu%
-	  n_jets% n_btags%
-	  lep1_pt% lep1_iso% lep1_pdgId%
-	  lep2_pt% lep2_iso% lep2_pdgId%
-	  jet1_pt% jet2_pt%
-	  jet1_CSVv2% jet2_CSVv2%
-	  jet1_JecSF% jet1_JecSF_up% jet1_JecSF_down%
-	  MET_pt% MET_phi% mll%
-	  ttHFCategory%
-	  mcweight%
-	  puweight%
-	  bWeight%
-	  topweight%
-	  triggerSF%
-	  lepSFid%
-	  lepSFiso%
-	  q2upup% q2downdown%
-	  pdfup% pdfdown%
-    Weight_CSVLFup% Weight_CSVLFdown%
-    Weight_CSVHFup% Weight_CSVHFdown%
-    Weight_CSVHFStats1up% Weight_CSVHFStats1down%
-    Weight_CSVLFStats1up% Weight_CSVLFStats1down%
-    Weight_CSVHFStats2up% Weight_CSVHFStats2down%
-    Weight_CSVLFStats2up% Weight_CSVLFStats2down%
-    Weight_CSVCErr1up% Weight_CSVCErr1down%
-    Weight_CSVCErr2up% Weight_CSVCErr2down;
+	    run% lumi% event%
+	    is_e% is_mu% is_ee% is_emu% is_mumu%
+	    n_jets% n_btags%
+	    lep1_pt% lep1_iso% lep1_pdgId%
+	    lep2_pt% lep2_iso% lep2_pdgId%
+	    jet1_pt% jet2_pt%
+	    jet1_CSVv2% jet2_CSVv2%
+	    jet1_JecSF% jet1_JecSF_up% jet1_JecSF_down%
+	    MET_pt% MET_phi% mll%
+	    ttHFCategory%
+	    mcweight%
+	    puweight%
+	    bWeight%
+	    topweight%
+	    triggerSF%
+	    lepSFid%
+	    lepSFiso%
+	    q2upup% q2downdown%
+	    pdfup% pdfdown%
+      Weight_CSVLFup% Weight_CSVLFdown%
+      Weight_CSVHFup% Weight_CSVHFdown%
+      Weight_CSVHFStats1up% Weight_CSVHFStats1down%
+      Weight_CSVLFStats1up% Weight_CSVLFStats1down%
+      Weight_CSVHFStats2up% Weight_CSVHFStats2down%
+      Weight_CSVLFStats2up% Weight_CSVLFStats2down%
+      Weight_CSVCErr1up% Weight_CSVCErr1down%
+      Weight_CSVCErr2up% Weight_CSVCErr2down;
+    }
+    if(!BTagSystematics){
+
+    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+
+	   run% lumi% event%
+	   is_e% is_mu% is_ee% is_emu% is_mumu%
+	   n_jets% n_btags%
+	   lep1_pt% lep1_iso% lep1_pdgId%
+	   lep2_pt% lep2_iso% lep2_pdgId%
+	   jet1_pt% jet2_pt%
+	   jet1_CSVv2% jet2_CSVv2%
+	   jet1_JecSF% jet1_JecSF_up% jet1_JecSF_down%
+	   MET_pt% MET_phi% mll%
+	   ttHFCategory%
+	   mcweight%
+	   puweight%
+	   bWeight%
+	   topweight%
+	   triggerSF%
+	    lepSFid%
+	    lepSFiso%
+	    q2upup% q2downdown%
+	    pdfup% pdfdown;
+    }
   }
-
 }
 
 
-void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper,int dataset_flag){
-  DumpSyncExe2(input,input_DL,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal,dataset_flag);
+void Synchronizer::DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper, int dataset_flag){
+  DumpSyncExe2(input,input_DL,helper,*(dumpFiles2[nfile]),cutflowSL_nominal,cutflowDL_nominal,0);
   //DumpSyncExe2(input_jesup,input_DL_jesup,helper,*(dumpFiles2_jesup[nfile]),cutflowSL_jesup,cutflowDL_jesup,1);
   //DumpSyncExe2(input_jesdown,input_DL_jesdown,helper,*(dumpFiles2_jesdown[nfile]),cutflowSL_jesdown,cutflowDL_jesdown,2);
   //DumpSyncExe2(input_raw,input_DL_raw,helper,*(dumpFiles2_raw[nfile]),cutflowSL_raw,cutflowDL_raw,3);
@@ -955,13 +972,18 @@ void Synchronizer::InitDumpSyncFile1(std::string filename){
     dumpFiles1.push_back(new ofstream((filename+".txt").c_str()));
 }
 
-void Synchronizer::InitDumpSyncFile2(std::string filename){
+void Synchronizer::InitDumpSyncFile2(std::string filename, bool BTagSystematics){
     cutflowFile = new ofstream((filename+"-cutflow.log").c_str());
     dumpFiles2.push_back(new ofstream((filename+".csv").c_str()));
     //dumpFiles2_jesup.push_back(new ofstream((filename+"_JESup.csv").c_str()));
     //dumpFiles2_jesdown.push_back(new ofstream((filename+"_JESdown.csv").c_str()));
     //dumpFiles2_raw.push_back(new ofstream((filename+"_raw.csv").c_str()));
-    DumpSyncExe2Header(*(dumpFiles2.back()));
+    if(BTagSystematics){
+      DumpSyncExe2HeaderBTagSys(*(dumpFiles2.back()));
+    }
+    else{
+      DumpSyncExe2Header(*(dumpFiles2.back()));
+    }
     //DumpSyncExe2Header(*(dumpFiles2_jesup.back()));
     //DumpSyncExe2Header(*(dumpFiles2_jesdown.back()));
     //DumpSyncExe2Header(*(dumpFiles2_raw.back()));
