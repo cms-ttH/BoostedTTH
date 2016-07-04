@@ -22,8 +22,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     nominalPUWeight = cms.PSet(NominalPUWeight),
     additionalPUWeights = cms.VPSet(AdditionalPUWeights),
 
-    #jetSystematics = cms.vstring("nominal"),
     systematics = cms.vstring(""),
+    doJERsystematic = cms.bool(False),
     
     generatorName = cms.string("notSpecified"),
 
@@ -41,7 +41,6 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
     processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor"),
-    #,"DiJetVarProcessor"), -- conflict
 
     outfileName = cms.string("BoostedTTH"),
 )

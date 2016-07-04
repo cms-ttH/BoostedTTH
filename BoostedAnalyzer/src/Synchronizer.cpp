@@ -190,24 +190,24 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
   // Setup Selections
   // Single Lepton Selection
-  vector<string> el_triggers_MC;;
-  vector<string> mu_triggers_MC;
+  vector<string> el_triggers;
+  vector<string> mu_triggers;
 
-  el_triggers_MC.push_back("any");
-  mu_triggers_MC.push_back("any");
-/*
-  el_triggers_MC.push_back("HLT_Ele27_WP85_Gsf_v*");
-  mu_triggers_MC.push_back("HLT_IsoMu17_eta2p1_v*");
+  if(!runOverData) {
+    el_triggers.push_back("any");
+    mu_triggers.push_back("any");
+  }
+  else if(runOverData) {
+    el_triggers.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v*");
+    mu_triggers.push_back("HLT_IsoMu20_v*");
+    mu_triggers.push_back("HLT_IsoTkMu20_v*");
+  }
 
-  */
+
   if(leptonSelections.size()==0){
     leptonSelections.push_back(new VertexSelection());
-    if(runOverData) {
-	    leptonSelections.push_back(new LeptonSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*","HLT_IsoMu20_v*"));
-    }
-    else {
-	    leptonSelections.push_back(new LeptonSelection(el_triggers_MC,mu_triggers_MC));
-    }
+    leptonSelections.push_back(new LeptonSelection(el_triggers,mu_triggers));
+
     leptonSelections.push_back(new JetTagSelection(4,2));
 
     cout << "SL Selection Step 0: VertexSelection" << endl;
@@ -350,7 +350,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     mcweight=xs_ttH*1000*2.7/Ngen_ttH;
   }
   float topweight=-1;
-  float lepSF=-1;
+  //float lepSF=-1;
+  float lepSFid=-1;
+  float lepSFiso=-1;
 
   float puweight=-1;
   float q2upup=-1;
@@ -812,6 +814,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
       pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
       //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+      //lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
+      //lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
     }
 
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
@@ -844,12 +848,14 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       q2upup=input.weights.at("Weight_muRupmuFup");
       q2downdown=input.weights.at("Weight_muRdownmuFdown");
 
-      //pdfup=input.weightsDL.at("Weight_NNPDFid260067");
+      //pdfup=input.weights.at("Weight_NNPDFid260067");
       pdfup=input.weights.at("Weight_CT14nlo13100_up");
-      //pdfdown=input.weightsDL.at("Weight_NNPDFid260005");
+      //pdfdown=input.weights.at("Weight_NNPDFid260005");
       pdfdown=input.weights.at("Weight_CT14nlo13100_down");
 
       //lepSF=input.weights.at("Weight_LeptonSF");
+      lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
+      lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
 
     }
 
@@ -889,7 +895,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	<<csv2_fatjet_1<<","<< csv2_fatjet_2 << "\n";*/
 //Sync spring 2016 output
   if(is_DL||is_SL) {
+
     out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+
 	  run% lumi% event%
 	  is_e% is_mu% is_ee% is_emu% is_mumu%
 	  n_jets% n_btags%
@@ -905,7 +913,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	  bWeight%
 	  topweight%
 	  triggerSF%
-	  lepSF%
+	  lepSFid%
+	  lepSFiso%
 	  q2upup% q2downdown%
 	  pdfup% pdfdown%
     Weight_CSVLFup% Weight_CSVLFdown%
