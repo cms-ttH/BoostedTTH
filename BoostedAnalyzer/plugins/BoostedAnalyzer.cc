@@ -243,7 +243,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // initialize gen top event with consumes collector (allows to access data from file within this class)
     genTopEvtProd(GenTopEventProducer(consumesCollector()))
 {
-   bool BTagSystematics = false;
+   bool BTagSystematics = true;
     //
     // get all configurations from the python config
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
