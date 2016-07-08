@@ -81,6 +81,7 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVar( "AdditionalBHadrons_InEvent",-1,"I" );
   vars.InitVar( "N_BHad_Additional",-1,"I");
   vars.InitVar("N_BHad_HardProc",-1,"I");
+  vars.InitVar("BHadFromHardProcess",-1,"I");
 
   initialized = true;
 }
@@ -103,6 +104,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
   const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
   int number_of_additional_b_hadrons = input.genTopEvt.GetNumberOfAdditionalBHadrons();
   int number_add_b_hadrons_from_hard_process = input.genTopEvt.GetNOfAdditionalBHadronsFromHardProcess();
+  int BHadFromHardProcess = input.genTopEvt.GetBHadFromHardProcess();
   if(input.genTopEvt.TTxIsFilled()){
     int Is_ttbb_Event = input.genTopEvt.HasAdditionalBQuark();
     std::vector<reco::GenJet> additional_b_genjets = input.genTopEvt.GetAdditionalBGenJets();
@@ -142,6 +144,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
     vars.FillVar( "AdditionalBHadrons_InEvent", Is_ttbb_Event );
     vars.FillVar( "N_BHad_Additional", number_of_additional_b_hadrons);
     vars.FillVar( "N_BHad_HardProc", number_add_b_hadrons_from_hard_process);
+    vars.FillVar("BHadFromHardProcess",BHadFromHardProcess);
     if(input.genTopEvt.IsFilled()){
       q1=input.genTopEvt.GetAllWQuarks();
       q2=input.genTopEvt.GetAllWAntiQuarks();

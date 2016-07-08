@@ -127,6 +127,7 @@ public:
   int HasAdditionalBQuark() const;
   int GetNumberOfAdditionalBHadrons() const;
   int GetNOfAdditionalBHadronsFromHardProcess() const;
+  int GetBHadFromHardProcess() const;
 
   bool IsTTbar() const;
   bool IsTTH() const;
@@ -212,6 +213,7 @@ private:
   bool isFilled;
   bool ttxIsFilled;
   int hasAdditionalBQuark;
+  int BHadFromHardProcess;
   int number_of_additional_b_hadrons;
   int number_add_b_hadrons_from_hard_process;
   int ttXid;

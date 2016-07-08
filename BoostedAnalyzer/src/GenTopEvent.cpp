@@ -133,6 +133,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
      }
 
   }
+  std::cout << "number_of_additional_b_hadrons " << number_of_additional_b_hadrons << std::endl;
   if(number_of_additional_b_hadrons>0){
     hasAdditionalBQuark=1;
   }
@@ -152,7 +153,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
       if(IsFromHardProcess){
         hard_process++;
       }
-      std::cout << "Is from hard process " << IsFromHardProcess << std::endl;
+      //std::cout << "Is from hard process " << IsFromHardProcess << std::endl;
     /*  for(uint j=0; j< bhadron->numberOfMothers();j++){
           bool IsFromHardProcess=false;
           std::cout << "PDGId of mother: " << bhadron->mother(j)->pdgId() << endl;
@@ -227,6 +228,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     }
 
   };
+  BHadFromHardProcess=hard_process;
   cout << "additional bhadsum: " << bhadronSum <<  " from hard process: " << hard_process << endl;
   cout << "_________________________________________________________________________________________________" << endl;
   // loop over all chadrons
@@ -1133,7 +1135,7 @@ std::vector<math::XYZTLorentzVector> GenTopEvent::GetLVs(const std::vector<reco:
   return vecs;
 }
 bool GenTopEvent::analyzeMothersRecursive(const reco::Candidate* particle) const{
-  std::cout << "Particle: " << particle << " , Status: " << particle->status() << " , numberOfMothers: " << particle->numberOfMothers() << std::endl;
+  std::cout << "Particle: " << particle->pdgId() << " , Status: " << particle->status() << " , numberOfMothers: " << particle->numberOfMothers() << std::endl;
   if(particle->status()>20&&particle->status()<30){
     return true;
   }
@@ -1141,16 +1143,20 @@ bool GenTopEvent::analyzeMothersRecursive(const reco::Candidate* particle) const
   /*if(analyzeMothersRecursive(particle)){
     return true;
   }*/
-  if(particle->pdgId()!=2212){
     for(uint i=0;i<particle->numberOfMothers();i++){
+      std::cout << "i " <<  i << std::endl;
       const reco::Candidate* mother = particle->mother(i);
       IsFromHardProcess=analyzeMothersRecursive(mother);
       if(IsFromHardProcess){
         return true;
       }
+
     }
-  }
+
   return IsFromHardProcess;
+}
+int GenTopEvent::GetBHadFromHardProcess() const{
+  return BHadFromHardProcess;
 }
 
 int GenTopEvent::GetTTxIdFromProducer() const{
