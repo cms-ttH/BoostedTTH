@@ -433,7 +433,6 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   bool mll_passed=false;
   bool met_passed=false;
 
-  bool useJERsystematics = true;
 
   float mll=-1;
 
@@ -629,17 +628,21 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       bool jetmatched = false;
       for( auto rawJet: input.rawJets){
 	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJetsLooseDL.at(0).p4()) < 0.01 ){
-	  jet1_JecSF = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA) ;
-	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup) / jet1_JecSF;
-	  float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup) / jet1_JecSF;
-	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown) / jet1_JecSF;
-	  float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown) / jet1_JecSF;
-	  jet1_JecSF_up = jet1_JecSF * JESup;
-	  jet1_JecSF_down = jet1_JecSF * JESdown;
-	  if( useJERsystematics ){
-	    jet1_JecSF_up = jet1_JecSF_up * JERup;
-	    jet1_JecSF_down = jet1_JecSF_down * JERdown;
-	  }
+	  float jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
+	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
+	  
+
+
+	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false) / jet1_JES ;
+	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
+	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false) / jet1_JES;
+	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
+
+	  jet1_JecSF = jet1_JES;
+	  jet1_JecSF_up = JESup;
+	  jet1_JecSF_down = JESdown;
+
+
 	  jetmatched = true;
 	}
       }
@@ -676,17 +679,20 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       bool jetmatched = false;
       for( auto rawJet: input.rawJets){
 	if( BoostedUtils::DeltaR(rawJet.p4(),input.selectedJets.at(0).p4()) < 0.01 ){
-	  jet1_JecSF = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA) ;
-	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup) / jet1_JecSF;
-	  float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup) / jet1_JecSF;
-	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown) / jet1_JecSF;
-	  float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown) / jet1_JecSF;
-	  jet1_JecSF_up = jet1_JecSF * JESup;
-	  jet1_JecSF_down = jet1_JecSF * JESdown;
-	  if( useJERsystematics ){
-	    jet1_JecSF_up = jet1_JecSF_up * JERup;
-	    jet1_JecSF_down = jet1_JecSF_down * JERdown;
-	  }
+	  float jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
+	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
+	  
+
+
+	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false) / jet1_JES ;
+	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
+	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false) / jet1_JES;
+	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
+
+	  jet1_JecSF = jet1_JES;
+	  jet1_JecSF_up = JESup;
+	  jet1_JecSF_down = JESdown;
+
 	  jetmatched = true;
 	}
       }
