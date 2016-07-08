@@ -183,6 +183,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 				int dataset_flag){
 
   bool runOverData=false;
+  bool is_SL=true;
+  bool is_DL=true;
   std::string channel="both";
   std::string channel_DL="all";
 
@@ -190,20 +192,20 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     runOverData=true;
     switch(dataset_flag) {
       case 1:
-	channel="el";
-	break;
+	      channel="el";
+	      break;
       case 2:
-	channel="mu";
-	break;
+	      channel="mu";
+	      break;
       case 3:
-	channel_DL="elel";
-	break;
+	      channel_DL="elel";
+	      break;
       case 4:
-	channel_DL="elmu";
-	break;
+	      channel_DL="elmu";
+	      break;
       case 5:
-	channel_DL="mumu";
-	break;
+	      channel_DL="mumu";
+	      break;
     }
   }
   //if(runOverData) {cout << "data" << endl;}
@@ -222,13 +224,21 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     el_triggers.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v*");
     mu_triggers.push_back("HLT_IsoMu20_v*");
     mu_triggers.push_back("HLT_IsoTkMu20_v*");
+    if(dataset_flag<3) {
+      //cout << "is_DL set false" << endl;
+      is_DL=false;
+    }
+    else if(dataset_flag>2) {
+      //cout << "is_SL set false" << endl;
+      is_SL=false;
+    }
   }
+
 
 
   if(leptonSelections.size()==0 && ((!runOverData)||dataset_flag<3)){
     leptonSelections.push_back(new VertexSelection());
     leptonSelections.push_back(new LeptonSelection(el_triggers,mu_triggers,channel));
-
     leptonSelections.push_back(new JetTagSelection(4,2));
 
     cout << "SL Selection Step 0: VertexSelection" << endl;
@@ -321,7 +331,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////// Declare Variables //////////////////////////////////////
 
-  bool BTagSystematics = true;
+  bool BTagSystematics = false;
 
   bool is_ttjets=1;
   float xs_ttbar= 831.76 ;// in pb
@@ -333,8 +343,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   long event=input.eventInfo.evt;
 
 
-  bool is_SL=true;
-  bool is_DL=true;
+
 
   float lep1_pt=-1;
   float lep1_eta=-1;
@@ -468,6 +477,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
   cutflowSL.EventSurvivedStep("all",input.weights.at("Weight"));
   for(uint i=0; i<leptonSelections.size(); i++){
+    //cout << "check SL selection " << i << endl;
     if(!leptonSelections[i]->IsSelected(input,cutflowSL)){
       if(compare) cout << "Event failed SL Selection at step " << i << endl;
 	    is_SL=false;
@@ -477,6 +487,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
   cutflowDL.EventSurvivedStep("all",input_DL.weights.at("Weight"));
   for(uint i=0; i<dileptonSelections.size(); i++){
+    //cout << "check DL selections " << i << endl;
     if(!dileptonSelections[i]->IsSelected(input_DL,cutflowDL)){
       if(compare) cout << "Event failed DL Selection at step " << i << endl;
 	    is_DL=false;
