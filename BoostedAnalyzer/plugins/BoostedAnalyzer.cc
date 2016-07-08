@@ -208,7 +208,16 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 
 
       JetRegression bjetRegression;
+      JetRegression additionalbjetRegression_id;
+  /*
+      JetRegression additionalbjetRegression_JES;
+      JetRegression additionalbjetRegression_JESwLSF;
+      JetRegression additionalbjetRegression_JESandR;
+      JetRegression additionalbjetRegression_rawE;
 
+      JetRegression additionalbjetRegression_id_0612;
+      JetRegression additionalbjetRegression_idwLSF;
+  */
       GenTopEventProducer genTopEvtProd;
 
       bool doBoostedMEM;
@@ -263,6 +272,9 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** gen jets data access token **/
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
+  
+      /** gen jets with Nu (reclustered) data access token **/
+      edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetswNuToken;
 
     /** electron MVA id tokens (implementation B) **/
     // TODO: the bools can only accessed with 
@@ -357,6 +369,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   EDMLHEToken             = consumes< LHEEventProduct >(edm::InputTag("externalLHEProducer","",""));
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
+  EDMGenJetswNuToken      = consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustomwNu","",""));
   EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
   // electron MVA info
   // TODO: these (and many of the names above) shouldn't be hard coded but set in python cfg
@@ -576,23 +589,98 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
 
   //bjetRegression.activateDebugMode();
 
-
-  std::vector< std::string> WeightFiles = {"weights_breg_nospec.xml","weights_0502_wPU.xml" ,"weights_0502_wPU_nocorr.xml","weights_0502_wPU_nocorrandfrac.xml","weights_0509_wPu_noelfrac.xml","weights_0509_wPU_nohadfrac.xml","weights_0509_heppysettings.xml","weights_0509_changedsettings.xml","weights_0511_heppysettings600.xml","weights_0511_heppysettings1200.xml" };
+  /*
+  std::vector< std::string> WeightFiles = {"weights_breg_nospec.xml","weights_0509_wPU_nohadfrac.xml","weights_0509_heppysettings.xml","weight_0601_wPU.xml","weight_0606_stdwPuWLSF.xml" };
   std::vector< std::vector < bool > > WeightInputs = { {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
-						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
-						       {true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
-						       {true,false,true,true,true,true,true,true,true,false,false,true,true,true,true,true},
-						       {true,true,true,true,true,true,true,true,true,true,false,true,true,true,true,true} ,
 						       {true,true,true,true,true,true,true,true,true,false,true,true,true,true,true,true},
-						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
 						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
 						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
 						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true}};
 
 						       
-  std::vector < std::string > names = { "std" , "wPU", "nocorr", "nocorrandfrac","noelfrac","nohadfrac","heppy","changedsettings","heppy600","heppy1200" };
+  std::vector < std::string > names = { "std" ,"nohadfrac","heppy","wPU","wPUwLSF" };
+  bjetRegression.init(WeightFiles, WeightInputs, names);  
+  */
 
-  bjetRegression.init(WeightFiles, WeightInputs, names);
+  bjetRegression.init("weights_breg_nospec.xml");
+  
+  std::vector< std::string> WeightFiles = {"TMVARegression_0612_newVarTest_minNS06_BDTG.weights.xml","TMVARegression_0619_GenJet_1200_BSF05minNS06Shr075_patronFlav_BDTG.weights.xml","TMVARegression_0619_GenJet_1200_BSF05minNS06Shr075_BDTG.weights.xml" };
+  std::vector< std::vector < bool > > WeightInputs = { {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+						       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true} };
+
+						       
+  std::vector < std::string > names = { "new" ,"genJet_pF","genJet" };
+  additionalbjetRegression_id.init(WeightFiles, WeightInputs, names);  
+
+
+  
+  //bjetRegression.init("TMVARegression_0612_newVarTest_minNS06_BDTG.weights.xml");
+
+  
+  /*
+  additionalbjetRegression_JES.init("weights_breg_0606_hscaleJES.xml","JES");
+  additionalbjetRegression_JESwLSF.init("weights_breg_0606_hscaleJESwLSF.xml","JESwLSF");
+
+  std::vector< std::string> WeightFiles_JESandR = {"weights_breg_0609_hJESandRscaleJESandRwLSF.xml",
+						   "weights_breg_0609_nohJESandRscaleJESandRwLSF.xml",
+						   "weights_breg_0609_hJESandRscaleJESandRBSF04.xml",
+						   "weights_breg_0609_hJESandRscaleJESandRBSF06.xml" };
+
+  std::vector< std::vector < bool > > WeightInputs_JESandR = { {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							       {true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							       {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true}};
+
+						       
+  std::vector < std::string > names_JESandR = { "JESandR" ,"JESandRnocorr","JESandRnocorrwLSF","JESandRBSF04","JESandRBSF06" };
+
+
+  additionalbjetRegression_JESandR.init(WeightFiles_JESandR, WeightInputs_JESandR, names_JESandR);
+
+  additionalbjetRegression_rawE.init("weights_breg_0606_hscalerawE.xml","rawE");
+  additionalbjetRegression_id.init("weights_breg_0606_hscaleid.xml","id");
+
+  std::vector< std::string> WeightFiles_0612 = { "TMVARegression_0612_newVarTest_1200Trees300k_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_1200Trees300kminNS06BSF05MD5_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_1200Trees_minNS1BSF05MD3_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_1200TreesstdwPU_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_800Trees300k_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_heppy300k_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_heppy_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_minNS06_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_minNS06_big_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_minNS1_minNS06_big_BDTG.weights.xml",
+						 "TMVARegression_0612_newVarTest_minNS2_minNS06_big_BDTG.weights.xml"};
+
+
+  std::vector< std::vector < bool > > WeightInputs_0612 = { {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true},
+							    {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true}};
+
+						       
+  std::vector < std::string > names_0612 = { "0612_0" ,"0612_1" ,"0612_2" ,"0612_3" ,"0612_4" ,"0612_5" ,"0612_6" ,"0612_7" ,"0612_8" ,"0612_9" ,"0612_10" ,"0612_11" };
+  
+  additionalbjetRegression_id_0612.init(WeightFiles_0612, WeightInputs_0612, names_0612);
+
+
+
+
+
+  additionalbjetRegression_idwLSF.init("weights_breg_0606_hscaleidwLSF.xml","idwLSF");
+
+  */
+  
   //bjetRegression.init("weights_breg_nospec.xml");
   
 }
@@ -707,6 +795,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
   helper.SetJetCorrector(corrector);
 
+  const JetCorrector* L3corrector = JetCorrector::getJetCorrector("ak4PFchsL3", iSetup);
+
+
   const double jetptcut=30.0; 
   const double jetetacut=2.4; 
   const double jetptcut_loose=20.0; 
@@ -716,6 +807,16 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   // selected jets with jet ID cuts
   std::vector<pat::Jet> idJets = helper.GetSelectedJets(pfjets, 0., 9999., jetID::jetLoose, '-' );
+  
+
+for (size_t i = 0; i < idJets.size(); i++)  {
+    idJets.at(i).addUserFloat("idJetnhadEfrac", idJets.at(i).neutralHadronEnergyFraction());
+    idJets.at(i).addUserFloat("idJetchhadEfrac",idJets.at(i).chargedHadronEnergyFraction());
+    idJets.at(i).addUserFloat("idJetnemEfrac",idJets.at(i).neutralEmEnergyFraction());
+    idJets.at(i).addUserFloat("idJetchemEfrac",idJets.at(i).chargedEmEnergyFraction());
+
+  }  
+
   // Get the jets for MET correction
   std::vector<pat::Jet> idJetsForMET = helper.GetSelectedJets(pfjets, 0., 5.4, jetID::jetMETcorrection, '-' );
   std::vector<pat::Jet> rawJetsForMET = helper.GetUncorrectedJets(idJetsForMET);
@@ -730,6 +831,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   for(size_t i = 0; i < rawJets.size(); i++){
     rawJets.at(i).addUserFloat("Jet_rawPt",rawJets.at(i).pt());
+    rawJets.at(i).addUserFloat("rawE",rawJets.at(i).energy());
+    rawJets.at(i).addUserFloat("L3Correction",L3corrector->correction(rawJets.at(i), iEvent, iSetup));
+
   }
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -752,6 +856,14 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       std::vector<pat::Jet> selectedJetsSingleTop_unsorted_nominal = BoostedUtils::GetSingleTopJets(selectedJetsLoose_nominal,selectedJetsForward_unsorted_nominal,jetetacut_loose);
       selectedJetsSingleTop_nominal= helper.GetSortedByPt(selectedJetsSingleTop_unsorted_nominal);
   }
+
+  /*
+  for (size_t i = 0; i< selectedJets_nominal.size(); i++) {
+
+    cout << selectedJets_nominal.at(i).pt() << "|" << selectedJets_nominal.at(i).partonFlavour() << "|" << BoostedUtils::PassesCSV(selectedJets_nominal.at(i), 'M') << "|" << selectedJets_nominal.at(i).userFloat("vtx3DVal") << "|" << selectedJets_nominal.at(i).userFloat("vtxPosX")<< "|"  << selectedJets_nominal.at(i).userFloat("vtxPosY") << endl;
+    
+    }*/
+
   
   // Apply systematically shifted jet corrections -- these vector stay empty if you dont use makeSystematicsTrees
   std::vector<pat::Jet> correctedJets_unsorted_jesup;
@@ -946,12 +1058,23 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( EDMGenJetsToken,h_genjets );
     std::vector<reco::GenJet> const &genjets = *h_genjets;
     for(size_t i=0; i<genjets.size();i++){
-      if(genjets[i].pt()>jetptcut&&fabs(genjets[i].eta())<jetetacut)
+      if(genjets[i].pt()> 20 &&fabs(genjets[i].eta())<jetetacut)
 	selectedGenJets.push_back(genjets[i]);
     }
   }
   
-  
+  edm::Handle< std::vector<reco::GenJet> > h_genjetswNu;
+  std::vector< reco::GenJet > genJetswNu;
+  if(!isData) {
+    iEvent.getByToken( EDMGenJetswNuToken, h_genjetswNu );
+    std::vector< reco::GenJet > const &genjetswNu = *h_genjetswNu;
+    for( size_t i = 0 ; i < genjetswNu.size() ; i++ ){
+      if( genjetswNu[i].pt() > jetptcut && fabs( genjetswNu[i].eta()) < jetetacut ){
+	genJetswNu.push_back(genjetswNu[i]);
+      }
+    }
+  }
+
  
   // Fill Event Info Object
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
@@ -998,11 +1121,36 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
 
 
-  bjetRegression.setTightLeptons(selectedMuons,selectedElectrons);
+  //bjetRegression.setTightLeptons(selectedMuons,selectedElectrons);
 
   bjetRegression.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal);
-  bjetRegression.getSoftLeptons(softMuons, softElectrons); 
+  additionalbjetRegression_id.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal,"id");
+  bjetRegression.getSoftLeptons(softMuons, softElectrons);
+  /*
+  cout << "selected Jet: " << endl;
+  for (auto Jet: selectedJets_nominal){
+    cout << Jet.pt() << endl;
+  }
+  cout << "GenJets" << endl;
+  //for (auto Jet: selectedGenJets){
+  for (auto Jet: genJetswNu){
+    cout << Jet.pt() << endl;
+  }
+  */
   
+  //bjetRegression.matchGenJetstoJets(selectedJets_nominal,selectedGenJets);
+  bjetRegression.matchGenJetstoJets(selectedJets_nominal,genJetswNu); 
+  /*
+  additionalbjetRegression_JES.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal, "JES");
+  additionalbjetRegression_JESwLSF.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal, "JES");
+  additionalbjetRegression_JESandR.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal, "JESandR");
+  additionalbjetRegression_rawE.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal,"rawE");
+  additionalbjetRegression_id.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal,"id");
+  additionalbjetRegression_id_0612.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal,"id");
+  additionalbjetRegression_idwLSF.evaluateRegression(iEvent, EDMElectronsToken, EDMMuonsToken, EDMVertexToken,  EDMJetsToken, selectedJets_nominal,"id");
+  */
+  
+
   /*
   std::vector<pat::Jet> selectedregressedJets_nominal;
   if(bjetRegression.IsRegressionDone()){

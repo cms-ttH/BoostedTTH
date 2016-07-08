@@ -32,7 +32,7 @@ JetRegression::JetRegression(  ){
   excludetightLeptons = false; //Switch: Should the tight electron or muon be excluded from inclusive Leptons for b-Jet Regression
   debugmode = false;
 
-  for (int i = 0; i < 17; i++){treevars.push_back(0);}
+  for (int i = 0; i < 16; i++){treevars.push_back(0);}
 
 }
 
@@ -60,10 +60,11 @@ bool JetRegression::init(  std::string weightname  ){
   readermap[name]->AddVariable("Jet_leptonDeltaR",&treevars[8]);
   readermap[name]->AddVariable("Jet_totHEFrac",&treevars[9]); 
   readermap[name]->AddVariable("Jet_nEmEFrac",&treevars[10]);
-  readermap[name]->AddVariable("Jet_vtxPt",&treevars[12]);
-  readermap[name]->AddVariable("Jet_vtxMass",&treevars[13]);
-  readermap[name]->AddVariable("Jet_vtx3DVal",&treevars[14]);  readermap[name]->AddVariable("Jet_vtxNtracks",&treevars[15]);
-  readermap[name]->AddVariable("Jet_vtx3DSig",&treevars[16]);
+  readermap[name]->AddVariable("Jet_vtxPt",&treevars[11]);
+  readermap[name]->AddVariable("Jet_vtxMass",&treevars[12]);
+  readermap[name]->AddVariable("Jet_vtx3DVal",&treevars[13]); 
+  readermap[name]->AddVariable("Jet_vtxNtracks",&treevars[14]);
+  readermap[name]->AddVariable("Jet_vtx3DSig",&treevars[15]);
   
   readermap[name]->BookMVA("BDTG",weightfile);
   
@@ -79,7 +80,7 @@ bool JetRegression::init(  std::string weightname  ){
 //TODO: Add flag, that extention will be used in in evaluation.
 bool JetRegression::init(  std::string weightname, std::string extention ){
   if (  isRegressionInitialized()  ) { return false; }
-  
+    
   string name  = extention; 
   
   //TMVA Stuff
@@ -100,11 +101,11 @@ bool JetRegression::init(  std::string weightname, std::string extention ){
   readermap[name]->AddVariable("Jet_leptonDeltaR",&treevars[8]);
   readermap[name]->AddVariable("Jet_totHEFrac",&treevars[9]); 
   readermap[name]->AddVariable("Jet_nEmEFrac",&treevars[10]);
-  readermap[name]->AddVariable("Jet_vtxPt",&treevars[12]);
-  readermap[name]->AddVariable("Jet_vtxMass",&treevars[13]);
-  readermap[name]->AddVariable("Jet_vtx3DVal",&treevars[14]);
-  readermap[name]->AddVariable("Jet_vtxNtracks",&treevars[15]);
-  readermap[name]->AddVariable("Jet_vtx3DSig",&treevars[16]);
+  readermap[name]->AddVariable("Jet_vtxPt",&treevars[11]);
+  readermap[name]->AddVariable("Jet_vtxMass",&treevars[12]);
+  readermap[name]->AddVariable("Jet_vtx3DVal",&treevars[13]);
+  readermap[name]->AddVariable("Jet_vtxNtracks",&treevars[14]);
+  readermap[name]->AddVariable("Jet_vtx3DSig",&treevars[15]);
   
   readermap[name]->BookMVA("BDTG",weightfile);
   
@@ -143,11 +144,11 @@ bool JetRegression::init(  std::vector< std::string > WeightFiles, std::vector<s
     if( usevars[8]  ) {   readermap[name]->AddVariable("Jet_leptonDeltaR",&treevars[8]);  }
     if( usevars[9]  ) {   readermap[name]->AddVariable("Jet_totHEFrac",&treevars[9]);  } 
     if( usevars[10] ) {   readermap[name]->AddVariable("Jet_nEmEFrac",&treevars[10]);  }
-    if( usevars[11] ) {   readermap[name]->AddVariable("Jet_vtxPt",&treevars[12]);  }
-    if( usevars[12] ) {   readermap[name]->AddVariable("Jet_vtxMass",&treevars[13]);  }
-    if( usevars[13] ) {   readermap[name]->AddVariable("Jet_vtx3DVal",&treevars[14]);  }
-    if( usevars[14] ) {   readermap[name]->AddVariable("Jet_vtxNtracks",&treevars[15]);  }
-    if( usevars[15] ) {   readermap[name]->AddVariable("Jet_vtx3DSig",&treevars[16]);  }
+    if( usevars[11] ) {   readermap[name]->AddVariable("Jet_vtxPt",&treevars[11]);  }
+    if( usevars[12] ) {   readermap[name]->AddVariable("Jet_vtxMass",&treevars[12]);  }
+    if( usevars[13] ) {   readermap[name]->AddVariable("Jet_vtx3DVal",&treevars[13]);  }
+    if( usevars[14] ) {   readermap[name]->AddVariable("Jet_vtxNtracks",&treevars[14]);  }
+    if( usevars[15] ) {   readermap[name]->AddVariable("Jet_vtx3DSig",&treevars[15]);  }
     
     readermap[name]->BookMVA("BDTG",weightfile);
      
@@ -171,6 +172,7 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
 					const edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
 					std::vector<pat::Jet>& Jets){
   
+
   bool doevaluation = true;
   if ( !isRegressionInitialized() ) {
     cout << "Regression was not initialized. Only ínputvariables will be set" << endl;
@@ -178,8 +180,7 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
   }
   
   bool domatchingwithselectedJets = true; //Switch: Which jets should be used for lepton/jet matching  
-  bool usejecfactor = true; //Switch: Use jec Factor stored in selected Jets, or caluculate ist from Jet_Pt/Jet_rawPt
-  
+  bool usejecfactorfromHelper = true; 
 
   edm::Handle< edm::View<pat::Electron> > h_electrons;
   edm::Handle< vector<pat::Muon> > h_muons;
@@ -227,11 +228,13 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
   for (size_t i = 0; i<Jets.size(); i++) {
     float jetleptoneta = 0;
     treevars[0] = Jets.at(i).pt();
-    if(usejecfactor) { 
-      //Divide by L3Absolute, because Data has additional residual correction. For MC L3Absolute is 1.0, so no changes there  
-      treevars[1] = 1.0/( Jets.at(i).jecFactor("Uncorrected") / Jets.at(i).jecFactor("L3Absolute") ); 
+    if(usejecfactorfromHelper) { 
+      treevars[1] = ( Jets.at(i).userFloat("L3Correction") );
     }
-    else { treevars[1] = Jets.at(i).pt()/Jets.at(i).userFloat("Jet_rawPt"); }
+    else {
+      //Divide by L3Absolute, because Data has additional residual correction. For MC L3Absolute is 1.0, so no changes there  
+      treevars[1] = 1.0/( Jets.at(i).jecFactor("Uncorrected") / Jets.at(i).jecFactor("L3Absolute") );
+    }
     treevars[3] = Jets.at(i).eta();
     treevars[4] = Jets.at(i).mt();
     treevars[5] = leadingTrackpT(Jets.at(i));
@@ -240,51 +243,73 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
     int nmatchedelectrons = 0;
     int nmatchedmuons = 0;
     //Matched Lepton variables
+    //cout << ElectronJetPairs.empty() << " " << MuonJetPairs.empty() << endl;
     if (!(ElectronJetPairs.empty()) || !(MuonJetPairs.empty())) {	
-      vector<pat::Electron*> JetElectrons; 
-      vector<pat::Muon*> JetMuons;
-      float jeta = Jets.at(i).eta();
-      float jphi = Jets.at(i).phi();
-      float jcharge = Jets.at(i).charge();
-      float jflav = Jets.at(i).hadronFlavour();
-      for(map<pat::Electron*, const pat::Jet*>::iterator eit= ElectronJetPairs.begin(); eit != ElectronJetPairs.end(); eit++) {
-	float eeta = eit->second->eta();
-	float ephi = eit->second->phi();
-	float echarge = eit->second->charge();
-	float eflav = eit->second->hadronFlavour();
-	if( eeta == jeta  && ephi == jphi && 
-	    echarge == jcharge && eflav == jflav ){
-	  JetElectrons.push_back(eit->first);
-	}
-      }
-      for(map<pat::Muon*, const pat::Jet*>::iterator mit= MuonJetPairs.begin(); mit != MuonJetPairs.end(); mit++) {
-	float meta = mit->second->eta();
-	float mphi = mit->second->phi();
-	float mcharge = mit->second->charge();
-	float mflav = mit->second->hadronFlavour();
-	if( meta == jeta  && mphi == jphi && 
-	    mcharge == jcharge && mflav == jflav ){
-	  JetMuons.push_back(mit->first);
-	}
-      }
-      if(JetElectrons.size() > 0 || JetMuons.size() > 0){
-	nmatchedleptons = JetElectrons.size() + JetMuons.size();
-	nmatchedmuons = JetMuons.size();
-	nmatchedelectrons = JetElectrons.size();
-	if(JetMuons.size() > 0){
-	  treevars[6] = BoostedUtils::GetTLorentzVector(JetMuons.at(0)->p4()).Perp(TVector3(Jets.at(i).p4().x(),Jets.at(i).p4().y(),Jets.at(i).p4().z()));
-	  treevars[7] = JetMuons.at(0)->pt();
-	  treevars[8] = BoostedUtils::DeltaR(JetMuons.at(0)->p4(), Jets.at(i).p4());
-	  jetleptoneta = JetMuons.at(0)->eta();
-	}
-	else{
-	  treevars[6] = BoostedUtils::GetTLorentzVector(JetElectrons.at(0)->p4()).Perp(TVector3(Jets.at(i).p4().x(),Jets.at(i).p4().y(),Jets.at(i).p4().z()));
-	  treevars[7] = JetElectrons.at(0)->pt();
-	  treevars[8] = BoostedUtils::DeltaR(JetElectrons.at(0)->p4(), Jets.at(i).p4());    
-	  jetleptoneta = JetElectrons.at(0)->eta(); 
-	}
 
-      }
+     if( debugmode ) {
+       cout << endl << "#############################################################" << endl;
+       for(auto t : ElectronJetPairs) {
+	 std::cout << t.first << " " << t.second << "\n";
+	 std::cout << t.first->pt()  << " " << t.second->pt() << "\n";
+       }
+       cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+       for(auto t : MuonJetPairs) {
+	 std::cout << t.first << " " << t.second << "\n";
+	 std::cout << t.first->pt() << " " << t.second->pt() << "\n";
+       }
+       cout << "#############################################################" << endl<< endl;
+     }
+      
+     vector<pat::Electron*> JetElectrons; 
+     vector<pat::Muon*> JetMuons;
+     float jeta = Jets.at(i).eta();
+     float jphi = Jets.at(i).phi();
+     float jcharge = Jets.at(i).charge();
+     float jflav = Jets.at(i).hadronFlavour();
+     for(map<pat::Electron*, const pat::Jet*>::iterator eit= ElectronJetPairs.begin(); eit != ElectronJetPairs.end(); eit++) {
+       float eeta = eit->second->eta();
+       float ephi = eit->second->phi();
+       float echarge = eit->second->charge();
+       float eflav = eit->second->hadronFlavour();
+       if( eeta == jeta  && ephi == jphi && 
+	   echarge == jcharge && eflav == jflav ){
+	 JetElectrons.push_back(eit->first);
+       }
+     }
+     for(map<pat::Muon*, const pat::Jet*>::iterator mit= MuonJetPairs.begin(); mit != MuonJetPairs.end(); mit++) {
+       float meta = mit->second->eta();
+       float mphi = mit->second->phi();
+       float mcharge = mit->second->charge();
+       float mflav = mit->second->hadronFlavour();
+       if( meta == jeta  && mphi == jphi && 
+	   mcharge == jcharge && mflav == jflav ){
+	 JetMuons.push_back(mit->first);
+       }
+     }
+     if(JetElectrons.size() > 0 || JetMuons.size() > 0){
+       nmatchedleptons = JetElectrons.size() + JetMuons.size();
+       nmatchedmuons = JetMuons.size();
+       nmatchedelectrons = JetElectrons.size();
+       if(JetMuons.size() > 0){
+	 treevars[6] = BoostedUtils::GetTLorentzVector(JetMuons.at(0)->p4()).Perp(TVector3(Jets.at(i).p4().x(),Jets.at(i).p4().y(),Jets.at(i).p4().z()));
+	 treevars[7] = JetMuons.at(0)->pt();
+	 treevars[8] = BoostedUtils::DeltaR(JetMuons.at(0)->p4(), Jets.at(i).p4());
+	 jetleptoneta = JetMuons.at(0)->eta();
+       }
+       else{
+	 treevars[6] = BoostedUtils::GetTLorentzVector(JetElectrons.at(0)->p4()).Perp(TVector3(Jets.at(i).p4().x(),Jets.at(i).p4().y(),Jets.at(i).p4().z()));
+	 treevars[7] = JetElectrons.at(0)->pt();
+	 treevars[8] = BoostedUtils::DeltaR(JetElectrons.at(0)->p4(), Jets.at(i).p4());    
+	 jetleptoneta = JetElectrons.at(0)->eta(); 
+       }
+       
+     }
+     else {
+       treevars[6] = -1;
+       treevars[7] = -1;
+       treevars[8] = -1;
+       jetleptoneta = -99;
+     }
     }
     else {
       treevars[6] = -1;
@@ -293,7 +318,7 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
       jetleptoneta = -99;
     }
     //Calorimeter variables
-    float totHadrFrac = Jets.at(i).neutralHadronEnergyFraction() + Jets.at(i).chargedHadronEnergyFraction();
+    float totHadrFrac = (Jets.at(i).neutralHadronEnergyFraction() + Jets.at(i).chargedHadronEnergyFraction());
     if (totHadrFrac > 1) { treevars[9] = 1; }
     else                 { treevars[9] = totHadrFrac; }
     float nEmEFrac = Jets.at(i).neutralEmEnergyFraction();
@@ -348,6 +373,239 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
     Jets.at(i).addUserFloat("Jet_NmatchsoftLeptons",nmatchedleptons);
     Jets.at(i).addUserFloat("Jet_NmatchsoftElectrons",nmatchedelectrons);
     Jets.at(i).addUserFloat("Jet_NmatchsoftMuons",nmatchedmuons);
+  }
+  
+  isDone = true;
+
+
+  //Clear Members
+  inclusiveElectrons.clear();
+  inclusiveMuons.clear();
+  ElectronJetPairs.clear();
+  MuonJetPairs.clear();
+
+}
+
+
+
+void JetRegression::evaluateRegression (const edm::Event& iEvent,
+					const edm::EDGetTokenT< edm::View<pat::Electron> >& electronToken,
+					const edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
+					const edm::EDGetTokenT< reco::VertexCollection>& vertexToken,
+					const edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
+					std::vector<pat::Jet>& Jets,
+					const std::string prefix,
+					const bool isadditionaltraining){
+  
+
+  bool doevaluation = true;
+  if ( !isRegressionInitialized() ) {
+    cout << "Regression was not initialized. Only ínputvariables will be set" << endl;
+    doevaluation = false;
+  }
+  
+  bool domatchingwithselectedJets = true; //Switch: Which jets should be used for lepton/jet matching  
+  bool usejecfactorfromHelper = true;
+
+  edm::Handle< edm::View<pat::Electron> > h_electrons;
+  edm::Handle< vector<pat::Muon> > h_muons;
+  edm::Handle< vector<pat::Jet> > h_pfjets;
+  edm::Handle<reco::VertexCollection> h_vtxs;
+  
+  iEvent.getByToken(electronToken, h_electrons);
+  iEvent.getByToken(muonToken, h_muons);
+  iEvent.getByToken(jetToken,h_pfjets);
+  iEvent.getByToken(vertexToken, h_vtxs);
+  
+  //Select Vertices
+  reco::VertexCollection const &vtxs = *h_vtxs;
+  reco::VertexCollection Vertices;
+  if( h_vtxs.isValid() ){
+    for( reco::VertexCollection::const_iterator itvtx = vtxs.begin(); itvtx!=vtxs.end(); ++itvtx ){
+      bool isGood = ( !(itvtx->isFake()) &&
+		      (itvtx->ndof() >= 4.0) &&
+		      (abs(itvtx->z()) <= 24.0) &&
+		      (abs(itvtx->position().Rho()) <= 2.0) 
+		      );
+      if( isGood ) Vertices.push_back(*itvtx);
+    }
+  }
+
+  vector<pat::Electron> electrons;
+  for (size_t i = 0; i < h_electrons->size(); ++i){
+    electrons.push_back(h_electrons->at(i));
+  }
+
+  vector<pat::Muon> const &muons = *h_muons;
+  vector<pat::Jet> const &pfjets = *h_pfjets;
+  
+
+  
+  if(domatchingwithselectedJets){
+    matchLeptonswithJets(electrons, muons, Jets, Vertices);
+  }
+  else {
+    matchLeptonswithJets(electrons, muons, pfjets, Vertices);
+  }
+
+  //Set variables for regression evaluation
+  treevars[2] = Vertices.size();
+  for (size_t i = 0; i<Jets.size(); i++) {
+    float jetleptoneta = 0;
+    treevars[0] = Jets.at(i).pt();
+    if (usejecfactorfromHelper){
+      treevars[1] = ( Jets.at(i).userFloat("L3Correction") );
+    }
+    else {
+      //Divide by L3Absolute, because Data has additional residual correction. For MC L3Absolute is 1.0, so no changes there  
+      treevars[1] = 1.0/( Jets.at(i).jecFactor("Uncorrected") / Jets.at(i).jecFactor("L3Absolute") ); 
+    }
+    treevars[3] = Jets.at(i).eta();
+    treevars[4] = Jets.at(i).mt();
+    treevars[5] = leadingTrackpT(Jets.at(i));
+    
+    int nmatchedleptons = 0;
+    int nmatchedelectrons = 0;
+    int nmatchedmuons = 0;
+    //Matched Lepton variables
+    //cout << ElectronJetPairs.empty() << " " << MuonJetPairs.empty() << endl;
+    if (!(ElectronJetPairs.empty()) || !(MuonJetPairs.empty())) {	
+
+     if( debugmode ) {
+       cout << endl << "#############################################################" << endl;
+       for(auto t : ElectronJetPairs) {
+	 std::cout << t.first << " " << t.second << "\n";
+	 std::cout << t.first->pt()  << " " << t.second->pt() << "\n";
+       }
+       cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+       for(auto t : MuonJetPairs) {
+	 std::cout << t.first << " " << t.second << "\n";
+	 std::cout << t.first->pt() << " " << t.second->pt() << "\n";
+       }
+       cout << "#############################################################" << endl<< endl;
+     }
+      
+     vector<pat::Electron*> JetElectrons; 
+     vector<pat::Muon*> JetMuons;
+     float jeta = Jets.at(i).eta();
+     float jphi = Jets.at(i).phi();
+     float jcharge = Jets.at(i).charge();
+     float jflav = Jets.at(i).hadronFlavour();
+     for(map<pat::Electron*, const pat::Jet*>::iterator eit= ElectronJetPairs.begin(); eit != ElectronJetPairs.end(); eit++) {
+       float eeta = eit->second->eta();
+       float ephi = eit->second->phi();
+       float echarge = eit->second->charge();
+       float eflav = eit->second->hadronFlavour();
+       if( eeta == jeta  && ephi == jphi && 
+	   echarge == jcharge && eflav == jflav ){
+	 JetElectrons.push_back(eit->first);
+       }
+     }
+     for(map<pat::Muon*, const pat::Jet*>::iterator mit= MuonJetPairs.begin(); mit != MuonJetPairs.end(); mit++) {
+       float meta = mit->second->eta();
+       float mphi = mit->second->phi();
+       float mcharge = mit->second->charge();
+       float mflav = mit->second->hadronFlavour();
+       if( meta == jeta  && mphi == jphi && 
+	   mcharge == jcharge && mflav == jflav ){
+	 JetMuons.push_back(mit->first);
+       }
+     }
+     if(JetElectrons.size() > 0 || JetMuons.size() > 0){
+       nmatchedleptons = JetElectrons.size() + JetMuons.size();
+       nmatchedmuons = JetMuons.size();
+       nmatchedelectrons = JetElectrons.size();
+       if(JetMuons.size() > 0){
+	 treevars[6] = BoostedUtils::GetTLorentzVector(JetMuons.at(0)->p4()).Perp(TVector3(Jets.at(i).p4().x(),Jets.at(i).p4().y(),Jets.at(i).p4().z()));
+	 treevars[7] = JetMuons.at(0)->pt();
+	 treevars[8] = BoostedUtils::DeltaR(JetMuons.at(0)->p4(), Jets.at(i).p4());
+	 jetleptoneta = JetMuons.at(0)->eta();
+       }
+       else{
+	 treevars[6] = BoostedUtils::GetTLorentzVector(JetElectrons.at(0)->p4()).Perp(TVector3(Jets.at(i).p4().x(),Jets.at(i).p4().y(),Jets.at(i).p4().z()));
+	 treevars[7] = JetElectrons.at(0)->pt();
+	 treevars[8] = BoostedUtils::DeltaR(JetElectrons.at(0)->p4(), Jets.at(i).p4());    
+	 jetleptoneta = JetElectrons.at(0)->eta(); 
+       }
+       
+     }
+     else {
+       treevars[6] = -1;
+       treevars[7] = -1;
+       treevars[8] = -1;
+       jetleptoneta = -4;
+     }
+    }
+    else {
+      treevars[6] = -1;
+      treevars[7] = -1;
+      treevars[8] = -1;
+      jetleptoneta = -4;
+    }
+    //Calorimeter variables
+    float totHadrFrac = 0;
+    float nEmEFrac = 0;
+    
+    if (prefix == ""){
+      totHadrFrac = (Jets.at(i).neutralHadronEnergyFraction() + Jets.at(i).chargedHadronEnergyFraction());
+      nEmEFrac = Jets.at(i).neutralEmEnergyFraction();
+    }
+    else if (prefix == "id"){
+      totHadrFrac = ( Jets.at(i).userFloat("idJetnhadEfrac") + Jets.at(i).userFloat("idJetchhadEfrac") );
+      nEmEFrac = Jets.at(i).userFloat("idJetnemEfrac") ;
+    }
+    treevars[9] = totHadrFrac;
+    treevars[10] = nEmEFrac;
+    if ( totHadrFrac > 1 ) { treevars[9] = 1; }
+    if (    nEmEFrac > 1 ) { treevars[10] = 1; }
+
+    //Vertex variables
+    treevars[11] = sqrt(Jets.at(i).userFloat("vtxPx")*Jets.at(i).userFloat("vtxPx") + Jets.at(i).userFloat("vtxPy")*Jets.at(i).userFloat("vtxPy"));
+    treevars[12] = Jets.at(i).userFloat("vtxMass");
+    treevars[13] = Jets.at(i).userFloat("vtx3DVal");
+    treevars[14] = Jets.at(i).userFloat("vtxNtracks");
+    treevars[15] = Jets.at(i).userFloat("vtx3DSig");
+
+    if( debugmode ) { 
+      cout << "Regression input variables" << endl;
+      for (size_t v = 0 ; v < treevars.size() ; v++) { cout << " | " << treevars[v]; }
+      cout << endl;
+    }
+    
+    //Only do regression for jets, that pass medium CSV workingpoint
+    if(  doevaluation  ) {
+      if (BoostedUtils::PassesCSV(Jets.at(i), 'M')){
+	for ( size_t nt = 0; nt < regressionnames.size(); nt++  ) {
+	  // First regression in list, always gets unserfloat without extention
+	  float_t result = 0;
+	  if ( nt == 0 && !isadditionaltraining) { 
+	    result = readermap[regressionnames[nt]]->EvaluateRegression(0,"BDTG");
+	    if( debugmode ) { cout << "Regression " << nt << ": pt: " << treevars[0] << " regcorr: " << result  << endl; }
+	    Jets.at(i).addUserFloat("bregCorrection", result);
+	  }
+	  else {
+	    result = (readermap[regressionnames[nt]]->EvaluateRegression(0,"BDTG"));
+	    if( debugmode ) { cout << "Regression " << nt << "( " << regressionnames[nt] << " )"  << ": pt: " << treevars[0]<< " regcorr: " << result << endl; }
+	    Jets.at(i).addUserFloat("bregCorrection_"+regressionnames[nt], result); //append name of regression to userfloat
+	  }
+	}
+      }
+      isEvaluated = true;
+    }
+    else {
+      isEvaluated = false;
+    }
+   
+    if (!isadditionaltraining){
+      Jets.at(i).addUserFloat("Jet_leadTrackPt",treevars[5]);
+      Jets.at(i).addUserFloat("Jet_leptonPtRel",treevars[6]);
+      Jets.at(i).addUserFloat("Jet_leptonPt",treevars[7]);
+      Jets.at(i).addUserFloat("Jet_leptonDeltaR",treevars[8]);
+      Jets.at(i).addUserFloat("Jet_leptonEta",jetleptoneta);
+      Jets.at(i).addUserFloat("Jet_NmatchsoftLeptons",nmatchedleptons);
+      Jets.at(i).addUserFloat("Jet_NmatchsoftElectrons",nmatchedelectrons);
+      Jets.at(i).addUserFloat("Jet_NmatchsoftMuons",nmatchedmuons);
+    }
   }
   
   isDone = true;
@@ -429,6 +687,23 @@ void JetRegression::activateDebugMode() {
 
 }
 
+void JetRegression::matchGenJetstoJets( vector< pat::Jet >& Jets,
+					vector< reco::GenJet >& GenJets ){
+
+  GenJetMatcher matcher;
+  matcher.init( 0.4 );
+
+  map< pat::Jet* , reco::GenJet* > matches = matcher.match( Jets, GenJets );
+
+  for( auto& Jet: Jets) {
+    if ( matches.find(&Jet) != matches.end() ){
+      Jet.addUserFloat("matchedGenJetwNuPt", matches[&Jet]->pt() );
+      //cout << "matching " <<Jet.pt() << " to"<<  endl;
+      //cout << matches[&Jet]->pt() <<  " with DR of " << BoostedUtils::DeltaR(Jet.p4(), matches[&Jet]->p4()) << endl;
+    }
+  }
+}
+
 //PRIVATE
 
 bool JetRegression::setInclusiveLeptons(  const vector<pat::Electron>& electrons, 
@@ -470,7 +745,7 @@ bool JetRegression::setInclusiveLeptons(  const vector<pat::Electron>& electrons
       PassesTrack = PassesVertex && expectedMissingInnerHits <= elostHits;						     
     }
     PassesCuts = electrons[i].pt() > epTCut && abs(electrons[i].eta()) < eetaCut;
-
+    
     if(PassesTrack && PassesCuts && PassesBaseline){  
       inclusiveElectrons.push_back(electrons[i]);  
     }
@@ -496,7 +771,7 @@ bool JetRegression::setInclusiveLeptons(  const vector<pat::Electron>& electrons
     }
     
     PassesCuts = muons[i].pt() > mupTCut && abs(muons[i].eta()) < muetaCut;
-    
+
     //cout << "Muon " << i << " " << PassesTrack << " " << PassesCuts << " " <<  PassesBaseline << endl;
  
     if( PassesTrack && PassesCuts && PassesBaseline ){  
@@ -515,6 +790,8 @@ bool JetRegression::matchLeptonswithJets(const vector<pat::Electron>& raw_electr
   vector< pat::Electron > electrons;
   vector< pat::Muon > muons;
 
+
+  //cout << raw_electrons.size() << " | " << raw_muons.size() << " | " << jets.size() << endl;
 
   //Exclude tight leptons form inclusive Leptons:
   if( tightLeptonssSet ){
@@ -553,20 +830,19 @@ bool JetRegression::matchLeptonswithJets(const vector<pat::Electron>& raw_electr
     }
     //Save soft Leptons for extraction in Analyzer
     if (returnsoftLeptons){
-
       returnElectrons = electrons_;
       returnMuons = muons_;
     
     }   
     //if tght leptons should be excluded from leptons for matching save only soft leptons as leptons
     if( excludetightLeptons ){
-
-    muons = muons_;
-    electrons = electrons_;
+      
+      muons = muons_;
+      electrons = electrons_;
 
     }
   }
-  else {
+  if(!excludetightLeptons || !tightLeptonssSet ) {
 
     muons = raw_muons;
     electrons = raw_electrons;
@@ -623,4 +899,6 @@ float JetRegression::leadingTrackpT(const pat::Jet& jet) {
   }
   return maxpt;
 }
+
+
 

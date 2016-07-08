@@ -92,6 +92,14 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
     'ak4PFchsL2Relative',
     'ak4PFchsL3Absolute')
 )
+
+process.ak4PFchsL3 = cms.ESProducer("JetCorrectionESChain",
+  correctors = cms.vstring(
+    'ak4PFCHSL1Fastjet',
+    'ak4PFchsL2Relative',
+    'ak4PFchsL3Absolute')
+)
+
 if options.isData:
   process.ak4PFchsL1L2L3.correctors.append('ak4PFchsResidual') # add residual JEC for data
 
@@ -158,12 +166,16 @@ else:
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
+    process.load("BoostedTTH.BoostedProducer.GenJetswNuProducer_cfi")
+
 
     if not options.isBoostedMiniAOD:
         # Supplies PDG ID to real name resolution of MC particles
         process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD 
         process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+
+
 
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True

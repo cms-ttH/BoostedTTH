@@ -17,7 +17,7 @@ public:
 private:
   
   std::vector< std::string > extentions;
-  
+  std::vector< std::string > jecLevels;
 };
 
 #endif

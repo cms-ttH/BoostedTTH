@@ -236,6 +236,7 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
     for(  auto itextentions = extentions.begin() ; itextentions != extentions.end(); itextentions++  ) {
       vars.FillVar("Evt_MCreghadtopMass"+(*itextentions),GetTopHadMass(hadtopjet,hadWjets,(*itextentions)));
     }
+   
   }
   else {
     vars.FillVar("Evt_MChadtopMass",-99);
@@ -247,6 +248,7 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
 
   
   //Save if Jet was used for MC Higgs Mass 
+  int nh = 0;
   for (std::vector<pat::Jet>::const_iterator it = input.selectedJets.begin(), ed = input.selectedJets.end(); it != ed; ++it ) {
     int iJet = it - input.selectedJets.begin();
     bool jetset = false;
@@ -255,14 +257,15 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
 	if (iHiggsJet.at(ih) == iJet) {
 	  vars.FillVars("Jet_isHiggsJet",iJet,1);
 	  jetset = true;
+	  nh += 1;
 	}
       }
     }
     if (jetset == false) {
       vars.FillVars("Jet_isHiggsJet",iJet,0);
     }
-  }
 
+  }
   //GenParticle Code:
   for(vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); itJet++){
     int iJet = itJet - input.selectedJets.begin();
@@ -339,12 +342,16 @@ float QuarkMatchingVarProcessor::GetTopHadMass(const pat::Jet& topJet, const vec
   TLorentzVector jet2vec;
   TLorentzVector jet3vec;
 
-  if(jet1.hasUserFloat("bregCorrection")){
+  if(jet1.hasUserFloat("bregCorrection"+regextention)){
     float correction = 1;
-    correction = jet1.userFloat("bregCorrection");
+    correction = jet1.userFloat("bregCorrection"+regextention);
     jet1.scaleEnergy( correction );
     jet1vec.SetPtEtaPhiM(  jet1.pt() , jet1.eta() , jet1.phi() , jet1.mass()  );
 
+    jet2vec.SetPtEtaPhiM(  jet2.pt() , jet2.eta() , jet2.phi() , jet2.mass()  );
+    jet3vec.SetPtEtaPhiM(  jet3.pt() , jet3.eta() , jet3.phi() , jet3.mass()  );
+ 
+    
     mass = (jet1vec+jet2vec+jet3vec).M();
 
     return mass;

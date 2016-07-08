@@ -18,7 +18,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/GenJetMatcher.hpp"
 
 class JetRegression {
 
@@ -39,6 +39,17 @@ public:
 			  const  edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
 			  std::vector<pat::Jet>& Jets);   //evaluate regression
 
+  void evaluateRegression(const  edm::Event& iEvent,
+			  const  edm::EDGetTokenT< edm::View<pat::Electron> >& electronToken,
+			  const  edm::EDGetTokenT< std::vector<pat::Muon> >& muonToken,
+			  const  edm::EDGetTokenT< reco::VertexCollection>& vertexToken,
+			  const  edm::EDGetTokenT< std::vector<pat::Jet> >& jetToken,
+			  std::vector<pat::Jet>& Jets,
+			  const std::string prefix,
+			  const bool isadditionaltraining = true);   //evaluate regression
+
+
+
   std::vector<pat::Jet> GetRegressedJets(const vector<pat::Jet>& Jets);
   
   void setTightLeptons(const std::vector< pat::Muon >& muons,
@@ -54,6 +65,9 @@ public:
   bool isRegressionEvaluated();
 
   void activateDebugMode();
+
+  void matchGenJetstoJets( std::vector< pat::Jet >& Jets,
+			   std::vector< reco::GenJet >& GenJets);
 
 private:
   bool setInclusiveLeptons(const std::vector<pat::Electron>& electrons, 
