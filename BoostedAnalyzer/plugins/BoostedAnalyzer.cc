@@ -238,12 +238,10 @@ private:
 // constructors and destructor
 //
 BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
-    // initialize CSV reweighter with 76X weights (require only 5 HF pt-bins)
-    csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_76x_2016_02_08.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_76x_2016_02_08.root",5)), \
     // initialize gen top event with consumes collector (allows to access data from file within this class)
     genTopEvtProd(GenTopEventProducer(consumesCollector()))
 {
-   bool BTagSystematics = false;
+  const bool BTagSystematics = false;
     //
     // get all configurations from the python config
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
@@ -315,6 +313,14 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     helper.SetUp("2015_74x", isData ? -1 : 1, analysisType::LJ, isData);
     helper.SetJetCorrectorUncertainty();
     helper.SetBoostedJetCorrectorUncertainty();
+
+    // initialize CSV reweighter
+    if( iConfig.existsAs<edm::ParameterSet>("bTagSFs",true) ) {
+      const edm::ParameterSet bTagSFsPS = iConfig.getParameter<edm::ParameterSet>("bTagSFs");
+      csvReweighter.init( bTagSFsPS.getParameter<std::string>("fileNameHF"),
+			  bTagSFsPS.getParameter<std::string>("fileNameLF"),
+			  bTagSFsPS.getParameter<int>("nHFPtBins") );
+    }
 
     // INITIALIZE PU WEIGHTS
     puWeights.init(iConfig);
