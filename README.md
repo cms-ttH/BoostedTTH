@@ -1,4 +1,4 @@
-BoostedTTH
+BoostedTTH - Regression for CMSSW 80X
 =======
 
 CMSSW tools for analyzing TTH events with boosted objects
