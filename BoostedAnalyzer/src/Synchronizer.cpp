@@ -860,16 +860,20 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     //Weight_CSVCErr2up = input_DL.weightsDL.at("Weight_CSVCErr2up");
   //  Weight_CSVCErr2down = input_DL.weightsDL.at("Weight_CSVCErr2down");
 
-      q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
-      q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
-      //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
-      pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
-      //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
-      pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
-      //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
-      //lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
-      //lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
-
+    q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
+    q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
+    //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
+    pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
+    //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
+    pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
+    //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+    lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
+    lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
+    if(is_ee) {triggerSF=input_DL.weightsDL.at("Weight_ElectronElectronTriggerSF");}
+    if(is_emu) {triggerSF=input_DL.weightsDL.at("Weight_ElectronMuonTriggerSF");}
+    if(is_mumu) {triggerSF=input_DL.weightsDL.at("Weight_MuonMuonTriggerSF");}
+    
+    
 
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
@@ -911,7 +915,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
     triggerSF=input.weights.at("Weight_MuonSFTrigger")*input.weights.at("Weight_ElectronSFTrigger");
     
-
+    
 
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }
