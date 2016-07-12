@@ -111,7 +111,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
       virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;    
-  map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles, sysType::sysType systype=sysType::NA);
+    float GetTopPtWeight(float toppt1, float toppt2);
+  map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype=sysType::NA);
 
       // ----------member data ---------------------------
       
@@ -194,6 +195,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       GenWeights genweights;
       std::string usedGenerator;
 
+      GenTopEventProducer genTopEvtProd;
+
   // TOKENS =========================
       /** pu summary data access token **/
       edm::EDGetTokenT< std::vector<PileupSummaryInfo> > EDMPUInfoToken;
@@ -244,25 +247,6 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
       
       /** gen jets data access token **/
       edm::EDGetTokenT< std::vector<reco::GenJet> > EDMGenJetsToken;
-     // custom genjets for tt+X categorization
-      edm::EDGetTokenT< std::vector<reco::GenJet> > EDMCustomGenJetsToken;
-    
-     /** tt+X categorization tokens **/
-      edm::EDGetTokenT<std::vector<int> > genBHadJetIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadFlavourToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadFromTopWeakDecayToken;
-      edm::EDGetTokenT<std::vector<reco::GenParticle> > genBHadPlusMothersToken;
-      edm::EDGetTokenT<std::vector<std::vector< int > > > genBHadPlusMothersIndicesToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadLeptonHadronIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genBHadLeptonViaTauToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadJetIndexToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadFlavourToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadFromTopWeakDecayToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadBHadronIdToken;
-      edm::EDGetTokenT<std::vector<int> > genCHadIndexToken;
-      edm::EDGetTokenT<std::vector<reco::GenParticle> > genCHadPlusMothersToken;
-      edm::EDGetTokenT<int> genTtbarIdToken;
 
     /** electron MVA id tokens (implementation B) **/
     // TODO: the bools can only accessed with 
@@ -285,7 +269,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_2015_11_20.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_2015_11_20.root",5)),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc"),njetWeight((BoostedUtils::GetAnalyzerPath()+"/data/njetweights/NJEThistos.root").c_str(),"data","mc")
+BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter(CSVHelper("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_2015_11_20.root","MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_2015_11_20.root",5)),pvWeight((BoostedUtils::GetAnalyzerPath()+"/data/pvweights/PUhistos.root").c_str(),"data","mc"),njetWeight((BoostedUtils::GetAnalyzerPath()+"/data/njetweights/NJEThistos.root").c_str(),"data","mc"),genTopEvtProd(GenTopEventProducer(consumesCollector()))
 {
   // get all configurations from the python config
   std::string era = iConfig.getParameter<std::string>("era");
@@ -355,26 +339,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
   EDMLHEToken             = consumes< LHEEventProduct >(edm::InputTag("externalLHEProducer","",""));
   EDMGenParticlesToken    = consumes< std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles","",""));
   EDMGenJetsToken         = consumes< std::vector<reco::GenJet> >(edm::InputTag("slimmedGenJets","",""));
-  EDMCustomGenJetsToken   = consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
   EDMConversionCollectionToken        = consumes< reco::ConversionCollection > (edm::InputTag("reducedEgamma","reducedConversions",""));
-
-  // tt+X CATEGORIZATION data
-  genBHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadJetIndex",""));
-  genBHadFlavourToken            = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFlavour",""));
-  genBHadFromTopWeakDecayToken   = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFromTopWeakDecay",""));
-  genBHadPlusMothersToken        = consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenBHadron","genBHadPlusMothers",""));
-  genBHadPlusMothersIndicesToken = consumes<std::vector<std::vector<int> > >(edm::InputTag("matchGenBHadron","genBHadPlusMothersIndices",""));
-  genBHadIndexToken              = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadIndex"));
-  genBHadLeptonHadronIndexToken  = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonHadronIndex",""));
-  genBHadLeptonViaTauToken       = consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadLeptonViaTau",""));
-  genCHadJetIndexToken           = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadJetIndex",""));
-  genCHadFlavourToken            = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFlavour",""));
-  genCHadFromTopWeakDecayToken   = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadFromTopWeakDecay",""));
-  genCHadBHadronIdToken          = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadBHadronId",""));
-  genCHadIndexToken              = consumes<std::vector<int> >(edm::InputTag("matchGenCHadron","genCHadIndex"));
-  genCHadPlusMothersToken        = consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenCHadron","genCHadPlusMothers",""));
-  genTtbarIdToken                = consumes<int>              (edm::InputTag("categorizeGenTtbar","genTtbarId",""));
-
   // electron MVA info
   // TODO: these (and many of the names above) shouldn't be hard coded but set in python cfg
   EDMeleMVAvaluesToken           = consumes<edm::ValueMap<float> >(edm::InputTag("electronMVAValueMapProducer","ElectronMVAEstimatorRun2Spring15Trig25nsV1Values",""));
@@ -520,7 +485,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     treewriter_nominal.AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new MEMProcessor(),"MEMProcessor");
+    treewriter_nominal.AddTreeProcessor(new MEMProcessor(iConfig),"MEMProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
@@ -892,12 +857,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
   
   
-  // custom genjets for tt+X categorization
-  edm::Handle< std::vector<reco::GenJet> > h_customgenjets;
-  if(!isData){
-    iEvent.getByToken( EDMCustomGenJetsToken,h_customgenjets );
-  }
-  
+ 
   // Fill Event Info Object
   EventInfo eventInfo(iEvent,h_beamspot,h_hcalnoisesummary,h_puinfosummary,firstVertexIsGood,*h_rho);
   TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
@@ -924,53 +884,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       }
     }
   }
-  GenTopEvent genTopEvt;
-  int ttid=-1;
-  int ttid_full=-1;
-  if(!isData&&useGenHadronMatch&&foundT&&foundTbar){
-    /**** tt+X categorization ****/
-    // Reading gen jets from the event
-    // Reading B hadrons related information
-    edm::Handle<std::vector<int> > genBHadFlavour;
-    edm::Handle<std::vector<int> > genBHadJetIndex;
-    edm::Handle<std::vector<int> > genBHadFromTopWeakDecay;
-    edm::Handle<std::vector<reco::GenParticle> > genBHadPlusMothers;
-    edm::Handle<std::vector<std::vector<int> > > genBHadPlusMothersIndices;
-    edm::Handle<std::vector<reco::GenParticle> > genCHadPlusMothers;
-    edm::Handle<std::vector<int> > genBHadIndex;
-    edm::Handle<std::vector<int> > genBHadLeptonHadronIndex;
-    edm::Handle<std::vector<int> > genBHadLeptonViaTau;
-    // Reading C hadrons related information
-    edm::Handle<std::vector<int> > genCHadIndex;
-    edm::Handle<std::vector<int> > genCHadFlavour;
-    edm::Handle<std::vector<int> > genCHadJetIndex;
-    edm::Handle<std::vector<int> > genCHadFromTopWeakDecay;
-    edm::Handle<std::vector<int> > genCHadBHadronId;
-    edm::Handle<int> genTtbarId;
-    iEvent.getByToken(genCHadBHadronIdToken, genCHadBHadronId);
-    iEvent.getByToken(genBHadFlavourToken, genBHadFlavour);
-    iEvent.getByToken(genBHadJetIndexToken, genBHadJetIndex);  
-    iEvent.getByToken(genBHadFromTopWeakDecayToken, genBHadFromTopWeakDecay);  
-    iEvent.getByToken(genBHadPlusMothersToken, genBHadPlusMothers);    
-    iEvent.getByToken(genBHadPlusMothersIndicesToken, genBHadPlusMothersIndices);
-    iEvent.getByToken(genCHadPlusMothersToken, genCHadPlusMothers);    
-    iEvent.getByToken(genBHadIndexToken, genBHadIndex);
-    iEvent.getByToken(genBHadLeptonHadronIndexToken, genBHadLeptonHadronIndex);
-    iEvent.getByToken(genBHadLeptonViaTauToken, genBHadLeptonViaTau);
-    iEvent.getByToken(genCHadFlavourToken, genCHadFlavour);
-    iEvent.getByToken(genCHadJetIndexToken, genCHadJetIndex);
-    iEvent.getByToken(genCHadFromTopWeakDecayToken, genCHadFromTopWeakDecay);
-    iEvent.getByToken(genCHadIndexToken, genCHadIndex);
-    iEvent.getByToken(genTtbarIdToken, genTtbarId);
-    ttid_full = *genTtbarId;
-    ttid = ttid_full%100;
-    // fill additional jet info in genTopEvt
-    genTopEvt.FillTTxDetails(*h_customgenjets, 
-			     *genBHadIndex, *genBHadJetIndex, *genBHadFlavour, *genBHadFromTopWeakDecay, *genBHadPlusMothers, 
-			     *genCHadIndex, *genCHadJetIndex, *genCHadFlavour, *genCHadFromTopWeakDecay, *genCHadPlusMothers,
-			     *genCHadBHadronId,
-			     20,2.4); 
-  }
+  GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!(!isData&&foundT&&foundTbar));
+  int ttid = genTopEvt.IsFilled()? genTopEvt.GetTTxIdFromProducer() : -1;
+      
   SampleType sampleType= SampleType::nonttbkg;
   if(isData) sampleType = SampleType::data;
   else if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
@@ -984,25 +900,21 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     else if(ttid==43||ttid==44||ttid==45) sampleType = SampleType::ttcc;    
   }
   else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
-  if(!isData&&foundT&&foundTbar) {
-    // fill genTopEvt with tt(H) information
-    genTopEvt.Fill(*h_genParticles,ttid_full);
-  }
 
   // DO REWEIGHTING
-  map<string,float> weights = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
-  map<string,float> weights_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESup);
-  map<string,float> weights_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESdown);
-  map<string,float> weights_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
-  map<string,float> weights_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
-  map<string,float> weights_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+  map<string,float> weights = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_nominal,selectedElectrons,selectedMuons,genTopEvt,sysType::NA);
+  map<string,float> weights_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesup,selectedElectrons,selectedMuons,genTopEvt,sysType::JESup);
+  map<string,float> weights_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jesdown,selectedElectrons,selectedMuons,genTopEvt,sysType::JESdown);
+  map<string,float> weights_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerup,selectedElectrons,selectedMuons,genTopEvt,sysType::JERup);
+  map<string,float> weights_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_jerdown,selectedElectrons,selectedMuons,genTopEvt,sysType::JERdown);
+  map<string,float> weights_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJets_uncorrected,selectedElectrons,selectedMuons,genTopEvt,sysType::NA);
      //Only needed for Hbb synch exercise: dilepton uses loose jet selection -> different csv weights
-  map<string,float> weights_DL_nominal = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_nominal,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
-  map<string,float> weights_DL_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESup);
-  map<string,float> weights_DL_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JESdown);
-  map<string,float> weights_DL_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerup,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERup);
-  map<string,float> weights_DL_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerdown,selectedElectrons,selectedMuons,*h_genParticles,sysType::JERdown);
-  map<string,float> weights_DL_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_uncorrected,selectedElectrons,selectedMuons,*h_genParticles,sysType::NA);
+  map<string,float> weights_DL_nominal = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_nominal,selectedElectrons,selectedMuons,genTopEvt,sysType::NA);
+  map<string,float> weights_DL_jesup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesup,selectedElectrons,selectedMuons,genTopEvt,sysType::JESup);
+  map<string,float> weights_DL_jesdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jesdown,selectedElectrons,selectedMuons,genTopEvt,sysType::JESdown);
+  map<string,float> weights_DL_jerup = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerup,selectedElectrons,selectedMuons,genTopEvt,sysType::JERup);
+  map<string,float> weights_DL_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerdown,selectedElectrons,selectedMuons,genTopEvt,sysType::JERdown);
+  map<string,float> weights_DL_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_uncorrected,selectedElectrons,selectedMuons,genTopEvt,sysType::NA);
   // DEFINE INPUT
   InputCollections input_nominal( eventInfo,
 				  triggerInfo,
@@ -1129,8 +1041,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
 }
 
+float BoostedAnalyzer::GetTopPtWeight(float toppt1,float toppt2){
+    float sf1=exp(0.156-0.00137*toppt1);
+    float sf2=exp(0.156-0.00137*toppt2);
+    return sqrt(sf1*sf2);
+}
 
-map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const std::vector<reco::GenParticle>& genParticles, sysType::sysType systype){
+map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEventInfo, const LHEEventProduct&  LHEEvent, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype){
   map<string,float> weights;
   
   if(isData){
@@ -1155,18 +1072,17 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   float xsweight = eventWeight;
   float csvweight = 1.;
   float puweight = 1.;
-  //  float topptweight = 1.;
-
+  float topptweight = genTopEvt.IsTTbar()? GetTopPtWeight(genTopEvt.GetTop().pt(),genTopEvt.GetTopBar().pt()) : 1.;
   //get vectors of jet properties
   std::vector<double> jetPts;
   std::vector<double> jetEtas;
   std::vector<double> jetCSVs;
   std::vector<int> jetFlavors;
   for(std::vector<pat::Jet>::const_iterator itJet = selectedJets.begin(); itJet != selectedJets.end(); ++itJet){
-  jetPts.push_back(itJet->pt());
-  jetEtas.push_back(itJet->eta());
-  jetCSVs.push_back(helper.GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-  jetFlavors.push_back(itJet->hadronFlavour());
+      jetPts.push_back(itJet->pt());
+      jetEtas.push_back(itJet->eta());
+      jetCSVs.push_back(helper.GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+      jetFlavors.push_back(itJet->hadronFlavour());
   }
 
   if(systype==sysType::JESup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,7, csvWgtHF, csvWgtLF, csvWgtCF);
@@ -1184,7 +1100,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genEve
   weights["Weight_XS"] = xsweight;
   weights["Weight_CSV"] = csvweight;
   weights["Weight_PU"] = puweight;
-  //  weights["Weight_TopPt"] = topptweight;
+  weights["Weight_TopPt"] = topptweight;
   weights["Weight_PV"] = pvWeight.GetWeight(selectedPVs.size());
   weights["Weight_NJets"] = njetWeight.GetWeight(selectedJets.size());
   

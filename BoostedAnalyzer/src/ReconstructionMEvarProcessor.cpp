@@ -114,7 +114,7 @@ void ReconstructionMEvarProcessor::Process(const InputCollections& input,Variabl
     TVector2 metvec(input.pfMET.px(),input.pfMET.py());
 
     // setup mc matching
-    if(input.genTopEvt.IsSemiLepton()&&(input.higgsDecay==HiggsDecay::bb)){
+    if(input.genTopEvt.IsFilled()&&input.genTopEvt.IsSemiLepton()&&(input.higgsDecay==HiggsDecay::bb)){
       vector<TLorentzVector> bs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetHiggsDecayProductVecs());
       vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());
       if(qs_true.size()==2&&bs_true.size()==2){
@@ -125,7 +125,7 @@ void ReconstructionMEvarProcessor::Process(const InputCollections& input,Variabl
 	mcmatcher.Setup(bhad_true,qs_true[0],qs_true[1],blep_true,lep_true,nu_true,bs_true[0],bs_true[1]);
       }
     }
-    if(input.genTopEvt.IsSemiLepton()&&input.sampleType==ttbb){
+    if(input.genTopEvt.IsFilled()&&input.genTopEvt.IsSemiLepton()&&input.sampleType==ttbb){
       std::vector<reco::GenJet> additional_b_genjets = input.genTopEvt.GetAdditionalBGenJets();
       vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());
       if(qs_true.size()==2&&additional_b_genjets.size()>=2){

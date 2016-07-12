@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedttHEvent.hpp"
 
 
-BoostedttHEvent::BoostedttHEvent(const InputCollections& input_):input(input_),verbose(false),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
+BoostedttHEvent::BoostedttHEvent():input(0),verbose(false),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
   ResetEvent();
 }
 
@@ -10,6 +10,9 @@ BoostedttHEvent::~BoostedttHEvent(){
 
 }
 
+void BoostedttHEvent::SetInput(const InputCollections* input_){
+    input = input_;
+}
 
 void BoostedttHEvent::ResetEvent(){
 
@@ -80,12 +83,12 @@ void BoostedttHEvent::ResetEvent(){
 
 
 void BoostedttHEvent::LeptonRec(){
-  lepVecCand = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
+  lepVecCand = BoostedUtils::GetPrimLepVec(input->selectedElectronsLoose,input->selectedMuonsLoose);
 }
 
 
 void BoostedttHEvent::NeutrinoRec(){
-  TVector2 metvec(input.pfMET.px(),input.pfMET.py());
+  TVector2 metvec(input->pfMET.px(),input->pfMET.py());
   
   if(lepVecCand.Pt()<=0.001) return;
   
@@ -112,13 +115,10 @@ void BoostedttHEvent::ak5JetsRec(){
   nCleanedBTagM = 0;
   nCleanedBTagT = 0;
   
-  for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJets.begin();itJet!=input.selectedJets.end();++itJet){
-    if(lepVecCand.Pt()>0.001 && BoostedUtils::DeltaR(lepVecCand,itJet->p4())<.5) continue;
+  selectedJets = input->selectedJets;
+  cleanedak5Jets = input->selectedJets;
+  nJets = selectedJets.size();
     
-    nJets++;
-    selectedJets.push_back(*itJet);
-    cleanedak5Jets.push_back(*itJet);
-  }
   for(std::vector<pat::Jet>::const_iterator itJet=selectedJets.begin();itJet!=selectedJets.end();++itJet){
     if(BoostedUtils::PassesCSV(*itJet,'L')) nBTagL++;
     BTagL.push_back(BoostedUtils::PassesCSV(*itJet,'L'));
@@ -149,13 +149,15 @@ void BoostedttHEvent::ak5JetsIdentifyHiggsCand(const float jetMatchingThreshold)
       
       HiggsCandak5Jet.push_back(true);
       nHiggsak5Jets++;
+      
       int iJet = itJet-selectedJets.begin();
       if(BTagL[iJet]) nHiggsCandBTagL++;
       if(BTagM[iJet]) nHiggsCandBTagM++;
       if(BTagT[iJet]) nHiggsCandBTagT++;
     }
-    else
+    else{
       HiggsCandak5Jet.push_back(false);
+    }
   }
 }
 
@@ -172,15 +174,19 @@ void BoostedttHEvent::ak5JetsIdentifyTopHadCand(const float jetMatchingThreshold
     if((topHadBCand.pt()>.001 && BoostedUtils::DeltaR(topHadBCand,*itJet) < jetMatchingThreshold)
     || (topHadW1Cand.pt()>.001 && BoostedUtils::DeltaR(topHadW1Cand,*itJet) < jetMatchingThreshold)
     || (topHadW2Cand.pt()>.001 && BoostedUtils::DeltaR(topHadW2Cand,*itJet) < jetMatchingThreshold)){
+      
       TopHadCandak5Jet.push_back(true);
       nTopHadak5Jets++;
+      
       int iJet = itJet-selectedJets.begin();
+      
       if(BTagL[iJet]) nTopHadCandBTagL++;
       if(BTagM[iJet]) nTopHadCandBTagM++;
       if(BTagT[iJet]) nTopHadCandBTagT++;
     }
-    else
+    else{
       TopHadCandak5Jet.push_back(false);
+    }
   }
 }
 
@@ -195,15 +201,18 @@ void BoostedttHEvent::ak5JetsIdentifyTopLepCand(const float jetMatchingThreshold
   
   for(std::vector<pat::Jet>::const_iterator itJet=selectedJets.begin();itJet!=selectedJets.end();++itJet){
     if(topLepBCand.pt()>0.001 && BoostedUtils::DeltaR(topLepBCand,*itJet) < jetMatchingThreshold){
+      
       TopLepCandak5Jet.push_back(true);
       nTopLepak5Jets++;
+      
       int iJet = itJet-selectedJets.begin();
       if(BTagL[iJet]) nTopLepCandBTagL++;
       if(BTagM[iJet]) nTopLepCandBTagM++;
       if(BTagT[iJet]) nTopLepCandBTagT++;
     }
-    else
+    else{
       TopLepCandak5Jet.push_back(false);
+    }
   }
 }
 
@@ -218,6 +227,7 @@ void BoostedttHEvent::ak5JetsClean(bool cleanHiggsCand, bool cleanTopHadCand, bo
 
   for(std::vector<pat::Jet>::const_iterator itJet=selectedJets.begin();itJet!=selectedJets.end();++itJet){
     int iJet = itJet-selectedJets.begin();
+    
     if(cleanHiggsCand && HiggsCandak5Jet[iJet]) continue;
     if(cleanTopHadCand && TopHadCandak5Jet[iJet]) continue;
     if(cleanTopLepCand && TopLepCandak5Jet[iJet]) continue;
@@ -239,10 +249,10 @@ void BoostedttHEvent::HiggsCandBoostedRec(HiggsTagger higgstagger, const bool cl
   higgsB2Cand = pat::Jet();
   higgsGCand = pat::Jet();
   
-  if(verbose) std::cout << input.selectedBoostedJets.size() << " CA 1.2 jets"  << std::endl;
-  for(std::vector<boosted::BoostedJet>::const_iterator itJet=input.selectedBoostedJets.begin();itJet!=input.selectedBoostedJets.end();++itJet){
+  if(verbose) std::cout << input->selectedBoostedJets.size() << " CA 1.2 jets"  << std::endl;
+  for(std::vector<boosted::BoostedJet>::const_iterator itJet=input->selectedBoostedJets.begin();itJet!=input->selectedBoostedJets.end();++itJet){
     
-    int iJet = itJet-input.selectedBoostedJets.begin();
+    int iJet = itJet-input->selectedBoostedJets.begin();
     
     boosted::JetType jetType = BoostedUtils::GetBoostedJetType(*itJet,BoostedJetDisc::None);
     if(jetType != boosted::Higgs && jetType != boosted::NA) continue;
@@ -309,9 +319,9 @@ void BoostedttHEvent::TopHadCandBoostedRec(TopTagger toptagger, const bool clean
   topHadW1Cand = pat::Jet();
   topHadW2Cand = pat::Jet();
   
-  for(std::vector<boosted::BoostedJet>::const_iterator itJet=input.selectedBoostedJets.begin();itJet!=input.selectedBoostedJets.end();++itJet){
+  for(std::vector<boosted::BoostedJet>::const_iterator itJet=input->selectedBoostedJets.begin();itJet!=input->selectedBoostedJets.end();++itJet){
     
-    int iJet = itJet-input.selectedBoostedJets.begin();
+    int iJet = itJet-input->selectedBoostedJets.begin();
     
     boosted::JetType jetType = BoostedUtils::GetBoostedJetType(*itJet,BoostedJetDisc::None);
     if(jetType != boosted::Top && jetType != boosted::NA) continue;
@@ -593,7 +603,7 @@ void BoostedttHEvent::BoostedTopEventRec(TopTagger toptagger){
 
 
 const InputCollections& BoostedttHEvent::GetInput(){
-  return input;
+  return *input;
 } 
 
 
@@ -935,4 +945,37 @@ math::XYZTLorentzVector BoostedttHEvent::GetWLepCandVec(){
   math::XYZTLorentzVector WLepCandVec = lepVecCand+nuVecCand;
 
   return WLepCandVec;
+}
+
+
+float BoostedttHEvent::GetTTHBB_ME(){
+    if(!(foundHiggsCand&&foundTopLepCand&&foundTopHadCand)) return -1;
+    TLorentzVector top=BoostedUtils::GetTLorentzVector(topHadBCand.p4()+topHadW1Cand.p4()+topHadW2Cand.p4());
+    TLorentzVector topbar=BoostedUtils::GetTLorentzVector(lepVecCand+nuVecCand+topLepBCand.p4());
+    TLorentzVector b=BoostedUtils::GetTLorentzVector(higgsB1Cand.p4());
+    TLorentzVector bbar=BoostedUtils::GetTLorentzVector(higgsB2Cand.p4());
+    return  recoME.GetTTHBBMEsq(top,topbar,b,bbar);
+
+}
+float BoostedttHEvent::GetTTBB_ME(){
+    if(!(foundHiggsCand&&foundTopLepCand&&foundTopHadCand)) return -1;
+    TLorentzVector top=BoostedUtils::GetTLorentzVector(topHadBCand.p4()+topHadW1Cand.p4()+topHadW2Cand.p4());
+    TLorentzVector topbar=BoostedUtils::GetTLorentzVector(lepVecCand+nuVecCand+topLepBCand.p4());
+    TLorentzVector b=BoostedUtils::GetTLorentzVector(higgsB1Cand.p4());
+    TLorentzVector bbar=BoostedUtils::GetTLorentzVector(higgsB2Cand.p4());
+    return  recoME.GetTTBBMEsq_onshell(top,topbar,b,bbar);
+
+    
+}
+float BoostedttHEvent::Get_MEratio(){
+    if(!(foundHiggsCand&&foundTopLepCand&&foundTopHadCand)) return -1;
+    TLorentzVector top=BoostedUtils::GetTLorentzVector(topHadBCand.p4()+topHadW1Cand.p4()+topHadW2Cand.p4());
+    TLorentzVector topbar=BoostedUtils::GetTLorentzVector(lepVecCand+nuVecCand+topLepBCand.p4());
+    TLorentzVector b=BoostedUtils::GetTLorentzVector(higgsB1Cand.p4());
+    TLorentzVector bbar=BoostedUtils::GetTLorentzVector(higgsB2Cand.p4());
+    float tth_me = recoME.GetTTHBBMEsq(top,topbar,b,bbar);
+    float ttbb_me = recoME.GetTTBBMEsq_onshell(top,topbar,b,bbar);
+    ttbb_me*=3e3; // make both mes same order
+    return  tth_me/(tth_me+ttbb_me);
+    
 }

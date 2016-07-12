@@ -26,14 +26,10 @@ Follow These Steps:
     git fetch --tags btv-cmssw
     git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV2-WithWeightFiles-v1_from-CMSSW_7_4_15
     git clone https://github.com/cms-ttH/MiniAOD.git
-    cd MiniAOD
-    cd -
-    git clone https://github.com/cms-ttH/BoostedTTH.git
-    cd BoostedTTH
-    cd -
+    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_7_4_15
     mkdir TTH
     cd TTH
-    git clone https://github.com/cms-ttH/CommonClassifier.git
+    git clone https://github.com/cms-ttH/CommonClassifier.git -b kit
     source CommonClassifier/setup/install_mem.sh
     cd $CMSSW_BASE/src
     scram b -j10 

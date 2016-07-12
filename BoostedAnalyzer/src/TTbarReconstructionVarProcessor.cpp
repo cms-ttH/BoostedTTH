@@ -85,7 +85,7 @@ void TTbarReconstructionVarProcessor::Process(const InputCollections& input,Vari
     TVector2 metvec(input.pfMET.px(),input.pfMET.py());
 
     // setup mc matching
-    if(input.genTopEvt.IsSemiLepton()){
+    if(input.genTopEvt.IsFilled()&&input.genTopEvt.IsSemiLepton()){
       vector<TLorentzVector> bs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetHiggsDecayProductVecs());
       vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());
       if(bs_true.size()==2){

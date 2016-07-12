@@ -34,6 +34,10 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
 
+    minJetsForMEM = cms.int32(4),
+    maxJetsForMEM = cms.int32(8),
+    minTagsForMEM = cms.int32(3),
+
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
     processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor"),
     #,"DiJetVarProcessor"), -- conflict

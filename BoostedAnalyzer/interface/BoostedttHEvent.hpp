@@ -8,7 +8,7 @@
 #include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
-
+#include "BoostedTTH/TTHReconstruction/interface/MECalculator.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
@@ -19,8 +19,10 @@ class BoostedttHEvent{
   public:
     
     // Constructor & Destructor
-    BoostedttHEvent(const InputCollections& input);
+    BoostedttHEvent();
     ~BoostedttHEvent();
+
+    void SetInput(const InputCollections* input);
     
     // Manage Event
     void ResetEvent();
@@ -131,11 +133,16 @@ class BoostedttHEvent{
     pat::Jet                GetTopLepBCand();
     math::XYZTLorentzVector GetTopLepCandVec();
     math::XYZTLorentzVector GetWLepCandVec();
+
+    // Matrix Element
+    float                   GetTTHBB_ME();
+    float                   GetTTBB_ME();
+    float                   Get_MEratio();
     
   private:
     
     // Inhput Collection
-    const InputCollections& input;
+    const InputCollections* input;
     
     // Analysis Settings
     
@@ -205,6 +212,8 @@ class BoostedttHEvent{
 
     bool verbose;
     const char* btagger;
+    MECalculator recoME;
+                   
 };
 
 #endif
