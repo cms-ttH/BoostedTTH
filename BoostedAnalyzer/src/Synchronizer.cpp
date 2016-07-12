@@ -459,7 +459,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
 
   bool compare = false;
-
+  /*if(event==510981 || int(event)==510981 || event==499906 || int(event)==499906) {
+    cout << "####################################################### event " << event << " #############################" << endl;
+    compare=true;
+  }*/
 
   /*
   const int nEntries = 6;
@@ -683,7 +686,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
-  else{
+  else if(is_SL) {
     if(input.selectedJets.size()>0){
       jet1_pt=input.selectedJets.at(0).pt();
       jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
@@ -733,14 +736,15 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
-  
-  /*if(event==3352981 || int(event)==3352981) {
-    for(size_t i=0;i<input.selectedJetsLoose.size();i++){
+  /*
+  if(event==510981 || int(event)==510981 || event==499906 || int(event)==499906) {
+    for(size_t i=0;i<input.selectedJetsLooseDL.size();i++){
       cout << "############# Jet " << i << " ##############" << endl;
-      cout << "Pt: " << input.selectedJetsLoose.at(i).pt() << endl;
-      cout << "Eta: " << input.selectedJetsLoose.at(i).eta() << endl;
+      cout << "Pt: " << input.selectedJetsLooseDL.at(i).pt() << endl;
+      cout << "Eta: " << input.selectedJetsLooseDL.at(i).eta() << endl;
+      //cout << "Jet CSV: " << MiniAODHelper::GetJetCSV(input.selectedJetsLooseDL.at(i)) << endl;
     }
-  }*/ 
+  } */
 
   // get selection flags
   // dilepton
@@ -894,18 +898,19 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     //Weight_CSVCErr2down = input.weights.at("Weight_CSVCErr2down");
 
 
-      q2upup=input.weights.at("Weight_muRupmuFup");
-      q2downdown=input.weights.at("Weight_muRdownmuFdown");
+    q2upup=input.weights.at("Weight_muRupmuFup");
+    q2downdown=input.weights.at("Weight_muRdownmuFdown");
 
-      //pdfup=input.weights.at("Weight_NNPDFid260067");
-      pdfup=input.weights.at("Weight_CT14nlo13100_up");
-      //pdfdown=input.weights.at("Weight_NNPDFid260005");
-      pdfdown=input.weights.at("Weight_CT14nlo13100_down");
+    //pdfup=input.weights.at("Weight_NNPDFid260067");
+    pdfup=input.weights.at("Weight_CT14nlo13100_up");
+    //pdfdown=input.weights.at("Weight_NNPDFid260005");
+    pdfdown=input.weights.at("Weight_CT14nlo13100_down");
 
-      //lepSF=input.weights.at("Weight_LeptonSF");
-      lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
-      lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
-
+    //lepSF=input.weights.at("Weight_LeptonSF");
+    lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
+    lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
+    triggerSF=input.weights.at("Weight_MuonSFTrigger")*input.weights.at("Weight_ElectronSFTrigger");
+    
 
 
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
@@ -994,6 +999,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	    q2upup% q2downdown%
 	    pdfup% pdfdown;
     }
+    //cout << "event " << event << " written in csv" << endl;
   }
 }
 
