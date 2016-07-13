@@ -5,8 +5,8 @@ using namespace std;
 BDTVarProcessor::BDTVarProcessor():
     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
-    commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_v5/")),
-    commonBDT5_reg(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtregweights/"))
+    commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/BoostedAnalyzer/data/bdtweights/noreg_v5/")),
+    commonBDT5_reg(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/BoostedAnalyzer/data/bdtweights/reg_v5/"))
 {}
 BDTVarProcessor::~BDTVarProcessor(){}
 
