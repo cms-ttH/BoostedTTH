@@ -1,18 +1,29 @@
+
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 using namespace std;
 
 BDTVarProcessor::BDTVarProcessor():
     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
-    commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_v5/"))
+    commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_v5/")),
+    commonBDT5_reg(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtregweights/"))
 {}
 BDTVarProcessor::~BDTVarProcessor(){}
 
 
 void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
+
+  std::vector < std::string > regnames = { "" , "_new" ,"_genJet_pF","_genJet" };
+
   vars.InitVar("BDTOhio_v2_output");
   vars.InitVar("BDT_v3_output");
   vars.InitVar("BDT_common5_output");
+  for(auto name: regnames ){
+    vars.InitVar("BDT_reg"+name+"_common5_output");
+    }
+
+
+  //vars.InitVar("BDT_reg_common5_output");
 
   map<string,float> bdtinputs2=bdtohio2.GetVariablesOfLastEvaluation();
   for(auto it=bdtinputs2.begin(); it!=bdtinputs2.end(); it++){
@@ -29,6 +40,20 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
     vars.InitVar("BDT_common5_input_"+it->first);
   }
 
+
+  
+  map<string,float> bdtinputs_reg_common5=commonBDT5_reg.GetVariablesOfLastEvaluation();
+  for( auto name: regnames ){
+    for(auto it=bdtinputs_reg_common5.begin(); it!=bdtinputs_reg_common5.end(); it++){
+      vars.InitVar("BDT_reg"+name+"_common5_input_"+it->first);
+    }
+    }
+  /*
+  map<string,float> bdtinputs_reg_common5_=commonBDT5_reg.GetVariablesOfLastEvaluation();
+  for(auto it=bdtinputs_common5.begin(); it!=bdtinputs_common5.end(); it++){
+    vars.InitVar("BDT_reg_common5_input_"+it->first);
+  }
+  */
   initialized=true;
 }
 
@@ -55,6 +80,13 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
  
   vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
   vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
+  vector< vector<TLorentzVector> > vecjetregvecs;
+  std::vector < std::string > regnames =  { "" , "_new" ,"_genJet_pF","_genJet" };  
+  for (auto name: regnames){
+    vecjetregvecs.push_back(BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets, "bregCorrection"+name)));
+    }
+  //vector<TLorentzVector> jetregvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets, "bregCorrection"));
+
   vector<TLorentzVector> loose_jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
   TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.p4());
   vector<double> jetcsvs;
@@ -74,4 +106,26 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
 	  vars.FillVar("BDT_common5_input_"+it->first,it->second);
       }
   }
+  
+  for (size_t iv = 0 ; iv < vecjetregvecs.size() ; iv++){
+    float bdtoutput_reg_common5=commonBDT5_reg.GetBDTOutput(lepvecs, vecjetregvecs[iv], jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
+    vars.FillVar("BDT_reg"+regnames[iv]+"_common5_output",bdtoutput_reg_common5);
+    if(commonBDT5_reg.GetCategoryOfLastEvaluation()!="none"){
+      map<string,float> bdtinputs_reg_common5=commonBDT5_reg.GetVariablesOfLastEvaluation();
+      for(auto it=bdtinputs_reg_common5.begin(); it!=bdtinputs_reg_common5.end(); it++){
+	vars.FillVar("BDT_reg"+regnames[iv]+"_common5_input_"+it->first,it->second);
+      }
+    }
+    }
+  /*
+  float bdtoutput_reg_common5=commonBDT5_reg.GetBDTOutput(lepvecs, jetregvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
+  vars.FillVar("BDT_reg_common5_output",bdtoutput_reg_common5);
+  if(commonBDT5_reg.GetCategoryOfLastEvaluation()!="none"){
+    map<string,float> bdtinputs_reg_common5=commonBDT5_reg.GetVariablesOfLastEvaluation();
+    for(auto it=bdtinputs_reg_common5.begin(); it!=bdtinputs_reg_common5.end(); it++){
+      vars.FillVar("BDT_reg_common5_input_"+it->first,it->second);
+    }
+    }*/
+
+
 }

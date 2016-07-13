@@ -240,6 +240,20 @@ vector<math::XYZTLorentzVector> BoostedUtils::GetJetVecs(const std::vector<pat::
   return jetVecs;
 }
 
+vector<math::XYZTLorentzVector> BoostedUtils::GetJetVecs(const std::vector<pat::Jet>& jets, string UserFloatName){
+  std::vector<math::XYZTLorentzVector> jetVecs;
+  std::vector<pat::Jet> _jets = jets;
+
+  for(std::vector<pat::Jet>::iterator itJet=_jets.begin();itJet!=_jets.end();++itJet){
+    if (itJet->hasUserFloat(UserFloatName)) {
+      itJet->scaleEnergy(itJet->userFloat(UserFloatName));
+    }
+    jetVecs.push_back(itJet->p4());
+  }
+  
+  return jetVecs;
+}
+
 
 boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCollection const &boostedJets){
   boosted::BoostedJetCollection result = boostedJets;

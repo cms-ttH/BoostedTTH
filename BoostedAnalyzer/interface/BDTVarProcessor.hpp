@@ -20,6 +20,7 @@ private:
   BDTOhio_v2 bdtohio2;
   BDT_v3 bdt3;
   BDTClassifier commonBDT5;
+  BDTClassifier commonBDT5_reg;
   
   
 };

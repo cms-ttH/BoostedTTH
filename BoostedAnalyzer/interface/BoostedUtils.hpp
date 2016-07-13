@@ -58,6 +58,7 @@ class BoostedUtils{
     static void GetNuVecs(const math::XYZTLorentzVector& lepvec, const TVector2& metvec, math::XYZTLorentzVector& nu1, math::XYZTLorentzVector& nu2);
     
     static std::vector<math::XYZTLorentzVector> GetJetVecs(const std::vector<pat::Jet>& jets);
+    static std::vector<math::XYZTLorentzVector> GetJetVecs(const std::vector<pat::Jet>& jets, std::string UserFloatName);
     
     static boosted::BoostedJetCollection GetSortedByPt(boosted::BoostedJetCollection const &boostedjets);
     

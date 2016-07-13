@@ -12,7 +12,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
 
-    # weight of one event: calculated as 
+    # weight of one event: calculated as
     # cross section * lumi / (number of generated events with positive weight  -  number of generated events with negative weight )
     # so that the sum of weights corresponds to the number of events for the given lumi
     eventWeight = cms.double(1.),
@@ -28,7 +28,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     systematics = cms.vstring(""),
     doJERsystematic = cms.bool(False),
-    
+
     generatorName = cms.string("notSpecified"),
 
     useFatJets = cms.bool(True),
@@ -44,7 +44,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     minTagsForMEM = cms.int32(3),
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","RegressionVarProcessor"),
 
     outfileName = cms.string("BoostedTTH"),
 )

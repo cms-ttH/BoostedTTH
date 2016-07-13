@@ -10,6 +10,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
  
   vars.InitVar("Evt_ID","I");
   vars.InitVar("Evt_Odd","I");
+  vars.InitVar("Evt_Rho","F");
   vars.InitVar("Evt_Run","I");
   vars.InitVar("Evt_Lumi","I");
 
@@ -25,9 +26,10 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVar( "N_BTagsT","I" );
   vars.InitVar( "N_BTagsL" ,"I");
   vars.InitVar( "N_PrimaryVertices","I" );
-  
+
   vars.InitVars( "Jet_E","N_Jets" );
   vars.InitVars( "Jet_M","N_Jets" );
+  vars.InitVars( "Jet_Mt","N_Jets" );
   vars.InitVars( "Jet_Pt","N_Jets" );
   vars.InitVars( "Jet_Phi","N_Jets" );
   vars.InitVars( "Jet_Eta","N_Jets" );
@@ -36,6 +38,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
   vars.InitVars( "Jet_PileUpID","N_Jets" );
+
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
 
@@ -109,6 +112,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
 
   vars.FillIntVar("Evt_ID",evt_id);
   vars.FillIntVar("Evt_Odd",evt_id%2);
+  vars.FillFloatVar("Evt_Rho",input.eventInfo.rho);
   vars.FillIntVar("Evt_Run",run_id);
   vars.FillIntVar("Evt_Lumi",lumi_section);
 
@@ -150,6 +154,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     int iJet = itJet - input.selectedJets.begin();
     vars.FillVars( "Jet_E",iJet,itJet->energy() );
     vars.FillVars( "Jet_M",iJet,itJet->mass() );
+    vars.FillVars( "Jet_Mt",iJet,itJet->mt() );
     vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
@@ -157,7 +162,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
-    vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
+    vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant") );
     if(itJet->genJet()!=NULL){
       vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
       vars.FillVars( "Jet_GenJet_Eta",iJet,itJet->genJet()->eta());
