@@ -490,29 +490,41 @@ void BoostedJetVarProcessor::InitSDZ2B1JetVars(VariableContainer& vars){
   
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_Pt",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_Pt",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_Pt",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_E",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_E",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_E",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_M",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_M",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_M",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_Eta",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_Eta",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_Eta",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_Phi",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_Phi",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_Phi",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_CSV",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_CSV",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_CSV",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_Dr",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_Dr",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_Dr",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_Flav",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_Flav",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_Flav",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_Charge",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_Charge",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_Charge",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_PtRatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_PtRatio",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_PtRatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet1_ERatio",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Subjet2_ERatio",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_Subjet3_ERatio",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_SDZ2B1_CSV1",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_CSV2",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SDZ2B1_CSV3",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_SDZ2B1_Pt",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_E",-9,"N_BoostedJets" );
@@ -521,6 +533,8 @@ void BoostedJetVarProcessor::InitSDZ2B1JetVars(VariableContainer& vars){
   vars.InitVars( "BoostedJet_SDZ2B1_Phi",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_Dr_SDZ2B1_Subjet12",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SDZ2B1_Subjet13",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_SDZ2B1_Subjet23",-9,"N_BoostedJets" );
   
   vars.InitVars( "BoostedJet_SDZ2B1_Tau1",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SDZ2B1_Tau2",-9,"N_BoostedJets" );
@@ -1139,12 +1153,17 @@ void BoostedJetVarProcessor::FillSDZ2B1JetVars(const InputCollections& input,Var
       vars.FillVars( "BoostedJet_SDZ2B1_Phi",i,compVec.Phi() );
       
       vars.FillVars( "BoostedJet_Dr_SDZ2B1_Subjet12",i,BoostedUtils::DeltaR(subjets[0],subjets[1]) );
+      if(subjets.size() > 2) {
+        vars.FillVars( "BoostedJet_Dr_SDZ2B1_Subjet13",i,BoostedUtils::DeltaR(subjets[0],subjets[2]) );
+        vars.FillVars( "BoostedJet_Dr_SDZ2B1_Subjet23",i,BoostedUtils::DeltaR(subjets[1],subjets[2]) );
+      }
     }
     
     std::sort(subjets.begin(), subjets.end(),BoostedUtils::FirstHasHigherCSV);
     
     if(subjets.size()>0) vars.FillVars( "BoostedJet_SDZ2B1_CSV1",i,MiniAODHelper::GetJetCSV(subjets.at(0),btagger) );
     if(subjets.size()>1) vars.FillVars( "BoostedJet_SDZ2B1_CSV2",i,MiniAODHelper::GetJetCSV(subjets.at(1),btagger) );
+    if(subjets.size()>2) vars.FillVars( "BoostedJet_SDZ2B1_CSV3",i,MiniAODHelper::GetJetCSV(subjets.at(2),btagger) );
     
     vars.FillVars( "BoostedJet_SDZ2B1_Tau1",i,input.selectedBoostedJets.at(i).tau1Softdrop );
     vars.FillVars( "BoostedJet_SDZ2B1_Tau2",i,input.selectedBoostedJets.at(i).tau2Softdrop );

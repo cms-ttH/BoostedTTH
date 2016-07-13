@@ -88,10 +88,13 @@ void BoostedMCMatchVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet3_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet1_GenB1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet2_GenB1",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet3_GenB1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet1_GenB2",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet2_GenB2",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet3_GenB2",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet1_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet2_Q",-9.,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_Dr_Softdropz2b1Subjet3_Q",-9.,"N_BoostedJets" );
 
   initialized = true;
 }
@@ -327,7 +330,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
       double minDrB2_Softdropz2b1 = 999;
       
       for(size_t j=0;j<input.selectedBoostedJets[i].sdz2b1subjets.size();j++){
-        if (j>2) break;
+        if (j>3) break;
         if (input.selectedBoostedJets[i].sdz2b1subjets[j].pt() == 0.) continue;
         
         if(BoostedUtils::DeltaR(input.selectedBoostedJets[i].sdz2b1subjets[j].p4(),b1.p4())<minDrB1_Softdropz2b1){
@@ -440,8 +443,10 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         }
         
         // Soft drop z2 b1 subjets
-        float minDr_Softdropz2b1Subjet_Q[2] = {999.,999.};
-        for(size_t k=0;k<input.selectedBoostedJets[i].sdz2b1subjets.size();k++){
+        float minDr_Softdropz2b1Subjet_Q[input.selectedBoostedJets[i].sdz2b1subjets.size()];
+        for(size_t j=0;j<input.selectedBoostedJets[i].sdz2b1subjets.size();j++) minDr_Softdropz2b1Subjet_Q[j] = 999.;
+        
+				for(size_t k=0;k<input.selectedBoostedJets[i].sdz2b1subjets.size();k++){
           if (input.selectedBoostedJets[i].sdz2b1subjets[k].pt() == 0) continue;
 	      
           if(q1[j].pt() > 0.){

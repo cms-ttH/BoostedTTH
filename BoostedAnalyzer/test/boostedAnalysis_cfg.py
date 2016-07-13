@@ -36,7 +36,9 @@ if not options.inputFiles:
 #    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv6MiniAOD/160418_144630/0000/BoostedTTH_MiniAOD_1.root']
 #    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/friese/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAODv3/160427_094858/0000/BoostedTTH_MiniAOD_1.root']
 #    options.inputFiles=['file:/nfs/dust/cms/user/riese/SoftdropFiltering/CMSSW_7_6_3/src/BoostedTTH_MiniAOD.root']
-     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/friese/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAOD-sdfilt/160524_095446/0000/BoostedTTH_MiniAOD_69.root']
+#     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/friese/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAOD-sdfilt3/160630_080520/0000/BoostedTTH_MiniAOD_69.root']
+     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/friese/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedMiniAOD-sdfilt3/160630_080603/0000/BoostedTTH_MiniAOD_69.root']
+
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
     print "\n\nConfig ERROR: unknown analysisType '"+options.analysisType+"'"
@@ -51,7 +53,7 @@ if "mc" in options.globalTag.lower() and options.isData:
 if not options.inputFiles:
     print "\n\nConfig ERROR: no inputFiles specified\n\n"
     sys.exit()
-    
+
 # print settings
 print "\n\n***** JOB SETUP *************************"
 for key in options._register:
@@ -141,8 +143,8 @@ if options.isData:
                 ),
 #        ..................................................
             ## here you add as many jet types as you need
-            ## note that the tag name is specific for the particular sqlite file 
-            ), 
+            ## note that the tag name is specific for the particular sqlite file
+            ),
                                connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Fall15_25nsV2_DATA.db')
 #                               connect = cms.string('sqlite:../data/jecs/Fall15_25nsV2_DATA.db')
                                )
@@ -155,9 +157,9 @@ if options.isData:
 # load and run the boosted analyzer
 if options.isData:
     if options.analysisType=='SL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")        
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
     if options.analysisType=='DL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")        
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
 else:
     if options.analysisType=='SL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
@@ -167,7 +169,7 @@ else:
     if not options.isBoostedMiniAOD:
         # Supplies PDG ID to real name resolution of MC particles
         process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-        # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD 
+        # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD
         process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
 if options.isBoostedMiniAOD:
@@ -182,7 +184,7 @@ process.BoostedAnalyzer.makeSystematicsTrees=options.makeSystematicsTrees
 process.BoostedAnalyzer.generatorName=options.generatorName
 
 
-   
+
 if options.isData and options.useJson:
     print 'use JSON is no longer supported'
 ### electron MVA ####
