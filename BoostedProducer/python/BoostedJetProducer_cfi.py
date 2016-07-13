@@ -14,7 +14,7 @@ ca15PFJetsCHS = cms.EDProducer(
     jetAlgorithm = cms.string("CambridgeAachen"),
     rParam       = cms.double(1.5)
 )
-    
+
 HTTTopJetProducer = cms.EDProducer(
     "HTTTopJetProducer",
     PFJetParameters.clone(
@@ -80,8 +80,8 @@ ca15PFPrunedJetsCHS = ca15PFJetsCHS.clone(
 
 ca15PFSoftdropJetsCHS = ca15PFJetsCHS.clone(
     useSoftDrop = cms.bool(True),
-    zcut = cms.double(0.1),
-    beta = cms.double(0.0),
+    zcut = cms.double(0.3),
+    beta = cms.double(1.0),
     R0 = cms.double(1.5),
     useExplicitGhosts = cms.bool(True),
     writeCompound = cms.bool(True),
@@ -93,12 +93,15 @@ ca15PFSoftdropJetsCHS = ca15PFJetsCHS.clone(
 
 ca15PFSoftdropZ2B1JetsCHS = ca15PFJetsCHS.clone(
     useSoftDrop = cms.bool(True),
-    zcut = cms.double(0.2),
+    zcut = cms.double(0.25),
     beta = cms.double(1.),
     R0 = cms.double(1.5),
     useExplicitGhosts = cms.bool(True),
     writeCompound = cms.bool(True),
-    jetCollInstanceName=cms.string("subjets")
+    jetCollInstanceName=cms.string("subjets"),
+		useFiltering = cms.bool(True),
+		nFilt = cms.int32(3),
+		rFilt = cms.double(0.3)
 )
 
 ca15PFSoftdropZ2B1JetsCHSforSubjettiness = ca15PFJetsCHS.clone(
@@ -113,7 +116,7 @@ ca15SoftdropSubjettiness = cms.EDProducer(
     "NjettinessAdder",
     src = cms.InputTag("ca15PFSoftdropZ2B1JetsCHSforSubjettiness"),
     Njets = cms.vuint32(1,2,3),          # compute 1-, 2-, 3- subjettiness
-    # variables for measure definition : 
+    # variables for measure definition :
     measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
     beta = cms.double(1.0),              # CMS default is 1
     R0 = cms.double(1.5),                  # CMS default is jet cone size
