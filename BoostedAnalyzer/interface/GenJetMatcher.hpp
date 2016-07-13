@@ -15,26 +15,27 @@ class GenJetMatcher {
 
 public:
   GenJetMatcher();
-  
+
   void init( double DeltaRMatch );
-  
+
   std::map< pat::Jet* , reco::GenJet* > match( std::vector< pat::Jet >& Jets,
 					       std::vector< reco::GenJet > & GenJets);
 
+  void resetMaps( );
 
 private:
 
   //Member Functions
-  std::map< pat::Jet* , std::vector<reco::GenJet* > > matchGenJetstoJet( std::vector<  pat::Jet >& Jets,
-									 std::vector< reco::GenJet >& GenJets);
-  
-  std::map< reco::GenJet* , std::vector< pat::Jet* > > matchJetstoGenJet ( std::vector<  pat::Jet >& Jets,
+  std::map<  pat::Jet* , std::vector<reco::GenJet* > > matchGenJetstoJet( std::vector<  pat::Jet >& Jets,
+									  std::vector< reco::GenJet >& GenJets);
+
+  std::map< reco::GenJet* ,  std::vector< pat::Jet* > > matchJetstoGenJet ( std::vector<  pat::Jet >& Jets,
 									   std::vector< reco::GenJet >& GenJets);
 
   std::vector< reco::GenJet* > getAllGenJetsforJet( pat::Jet& Jet );
   std::vector< pat::Jet* > getAllJetsforGenJet( reco::GenJet& GenJet );
 
-  void cleanMaps(  pat::Jet& Jet, reco::GenJet& GenJet );
+  void cleanMaps( pat::Jet& Jet, reco::GenJet& GenJet );
 
   //Member variables
   double maxDeltaRforMatch;

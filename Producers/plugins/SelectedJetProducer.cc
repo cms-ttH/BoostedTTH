@@ -2,7 +2,7 @@
 //
 // Package:    BoostedTTH/SelectedJetProducer
 // Class:      SelectedJetProducer
-// 
+//
 /**\class SelectedJetProducer SelectedJetProducer.cc BoostedTTH/SelectedJetProducer/plugins/SelectedJetProducer.cc
 
  Description: [one line class summary]
@@ -42,30 +42,29 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
 public:
     explicit SelectedJetProducer(const edm::ParameterSet&);
     ~SelectedJetProducer();
-    
+
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-    
+
 private:
     virtual void beginStream(edm::StreamID) override;
     virtual void produce(edm::Event&, const edm::EventSetup&) override;
     virtual void endStream() override;
     std::string systName(std::string name, sysType::sysType);
-    
+
     //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
     //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
     //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
     //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-    
+
     // ----------member data ---------------------------
     /** input jets data access token **/
     edm::EDGetTokenT< pat::JetCollection > jetsToken;
     /** muons data access token (for jet cleaning)**/
-    edm::EDGetTokenT< pat::MuonCollection >     muonsToken;  
+    edm::EDGetTokenT< pat::MuonCollection >     muonsToken;
     /** electrons data access token (for jet cleaning)**/
     edm::EDGetTokenT< pat::ElectronCollection >electronsToken;
     /** rho data access token (for jet cleaning)**/
     edm::EDGetTokenT< double >rhoToken;
-    
     /** MiniAODHelper, used for jet correction and selection **/
     MiniAODHelper helper;
     /** min pt of jet collections **/
@@ -80,7 +79,7 @@ private:
     std::vector<sysType::sysType> systematics;
     /** apply jet energy correciton? **/
     bool applyCorrection;
-    
+
 };
 
 //
@@ -102,7 +101,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     muonsToken  = consumes< pat::MuonCollection >(iConfig.getParameter<edm::InputTag>("muons"));
     rhoToken  = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
     ptMins = iConfig.getParameter< std::vector<double> >("ptMins");
-    etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");    
+    etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");
     leptonJetDr = iConfig.getParameter< double >("leptonJetDr");
     applyCorrection = iConfig.getParameter<bool>("applyCorrection");
     collectionNames = iConfig.getParameter< std::vector<std::string> >("collectionNames");
@@ -126,7 +125,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
 	    throw std::exception();
 
 	}
- 
+
     }
     helper.SetUp(era, sampleID, iAnalysisType, isData);
     helper.SetJetCorrectorUncertainty();
@@ -138,13 +137,13 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
 	for(uint j=0; j<systematics.size();j++){
 	    produces<pat::JetCollection>(systName(collectionNames[i],systematics[j]));
 	}
-    }  
+    }
 }
 
 
 SelectedJetProducer::~SelectedJetProducer()
 {
- 
+
    // do anything here that needs to be done at destruction time
    // (e.g. close files, deallocate resources etc.)
 
@@ -167,7 +166,7 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    edm::Handle< pat::JetCollection > h_inputJets;
    iEvent.getByToken( jetsToken,h_inputJets );
-  
+
    edm::Handle< pat::ElectronCollection > h_inputElectrons;
    iEvent.getByToken( electronsToken,h_inputElectrons );
 
@@ -177,13 +176,43 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    // initialize jetcorrector
    const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
    helper.SetJetCorrector(corrector);
-   
+   /***********************************************************/
+   /**          Used for regression input variables          **/
+   /** needed as long as correction are applied "on the fly" **/
+   const JetCorrector* L3corrector = JetCorrector::getJetCorrector("ak4PFchsL3", iSetup);
+   /***********************************************************/
+   /***********************************************************/
+
+
    // selected jets with jet ID cuts
-   const std::vector<pat::Jet> idJets = helper.GetSelectedJets(*h_inputJets, 0., 9999., jetID::jetLoose, '-' );
+   std::vector<pat::Jet> idJets = helper.GetSelectedJets(*h_inputJets, 0., 9999., jetID::jetLoose, '-' );
+
+   /***********************************************************/
+   /**          Used for regression input variables          **/
+   /** needed as long as correction are applied "on the fly" **/
+   for (size_t i = 0; i < idJets.size(); i++)  {
+    idJets.at(i).addUserFloat("idJetnhadEfrac", idJets.at(i).neutralHadronEnergyFraction());
+    idJets.at(i).addUserFloat("idJetchhadEfrac",idJets.at(i).chargedHadronEnergyFraction());
+    idJets.at(i).addUserFloat("idJetnemEfrac",idJets.at(i).neutralEmEnergyFraction());
+    idJets.at(i).addUserFloat("idJetchemEfrac",idJets.at(i).chargedEmEnergyFraction());
+   }
+   /***********************************************************/
+   /***********************************************************/
+
    std::vector<std::vector<pat::Jet> > unsortedJets;
    if(applyCorrection){
        // Get raw jets
        std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
+
+       /***********************************************************/
+       /**          Used for regression input variables          **/
+       /** needed as long as correction are applied "on the fly" **/
+       for (size_t i = 0; i < rawJets.size(); i++)  {
+        rawJets.at(i).addUserFloat("L3Correction",L3corrector->correction(rawJets.at(i), iEvent, iSetup));
+       }
+       /***********************************************************/
+       /***********************************************************/
+
        std::auto_ptr<pat::JetCollection>rawJets_(new pat::JetCollection(rawJets));
        iEvent.put(rawJets_, "rawJets");
        // Clean muons and electrons from jets
@@ -210,7 +239,7 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   iEvent.put(selectedJets,systName(collectionNames[i],systematics[j]));
        }
    }
-   
+
 }
 
 std::string SelectedJetProducer::systName(std::string name,sysType::sysType sysType){
@@ -223,7 +252,7 @@ std::string SelectedJetProducer::systName(std::string name,sysType::sysType sysT
     throw std::exception();
     return name;
 
-    
+
 }
 
 // ------------ method called once each stream before processing any runs, lumis or events  ------------
@@ -244,7 +273,7 @@ SelectedJetProducer::beginRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 */
- 
+
 // ------------ method called when ending the processing of a run  ------------
 /*
 void
@@ -252,7 +281,7 @@ SelectedJetProducer::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 */
- 
+
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
 void
@@ -260,7 +289,7 @@ SelectedJetProducer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::Even
 {
 }
 */
- 
+
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
 void
@@ -268,7 +297,7 @@ SelectedJetProducer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventS
 {
 }
 */
- 
+
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
 SelectedJetProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {

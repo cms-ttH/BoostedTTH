@@ -23,7 +23,7 @@ namespace HiggsDecay{enum HiggsDecay{NA,bb,nonbb};};
 
 
 /*
-  References to the selected physics objects as well as some general event information, some generator information, and event weights (nominal and for systematics) are stored in InputCollections. Only from these inputs the variables in the trees are calculated. There are multiple InputCollections for different systematics (e.g. in one the default jets are exchanged with JES shifted jets). 
+  References to the selected physics objects as well as some general event information, some generator information, and event weights (nominal and for systematics) are stored in InputCollections. Only from these inputs the variables in the trees are calculated. There are multiple InputCollections for different systematics (e.g. in one the default jets are exchanged with JES shifted jets).
  */
 struct InputCollections{
 /**
@@ -52,10 +52,11 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::map<std::string,float>&            weights_,
 		    const std::map<std::string,float>&		  weightsDL_,
 		    const edm::Event& iEvent_,
-		    const edm::EventSetup& iSetup_
+		    const edm::EventSetup& iSetup_,
+			const int isys_
 		      /**** bjetness code ****/
 
-		            ): 
+		            ):
                     eventInfo(eventInfo_),
                     triggerInfo(triggerInfo_),
                     selectedPVs(selectedPVs_),
@@ -79,7 +80,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     weights(weights_),
                     weightsDL(weightsDL_),
 		    iEvent(iEvent_),
-		    iSetup(iSetup_)
+		    iSetup(iSetup_),
+			isys(isys_)
                     {}
 
 /**
@@ -95,7 +97,7 @@ InputCollections(   const InputCollections&                       input,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const std::map<std::string,float>&            weights_,
 		    const std::map<std::string,float>& 		  weightsDL_
-        		    ): 
+        		    ):
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
                     selectedPVs(input.selectedPVs),
@@ -119,7 +121,8 @@ InputCollections(   const InputCollections&                       input,
                     weights(weights_),
                     weightsDL(weightsDL_),
 		    iEvent(input.iEvent),
-		    iSetup(input.iSetup)
+		    iSetup(input.iSetup),
+			isys(input.isys)
 
                     {}
 
@@ -147,6 +150,7 @@ InputCollections(   const InputCollections&                       input,
   const std::map<std::string,float>		weightsDL;
   const edm::Event & iEvent;
   const edm::EventSetup & iSetup;
+  const int isys;
 
 };
 

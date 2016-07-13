@@ -19,8 +19,8 @@ void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableCont
 
   vars.InitVars("Jet_GenParticleFlav","N_Jets");
   vars.InitVars("Jet_GenParticleMotherId", "N_Jets");
-  vars.InitVars("Jet_GenParticlePt","N_Jets");  
-  vars.InitVars("Jet_GenParticleEta","N_Jets");  
+  vars.InitVars("Jet_GenParticlePt","N_Jets");
+  vars.InitVars("Jet_GenParticleEta","N_Jets");
 
   vars.InitVars("Jet_isHiggsJet","N_Jets");
 
@@ -32,7 +32,7 @@ void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableCont
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
     //int iJet = itJet - input.selectedJets.begin();
     //cout << "cout: " << itJet->userFloatNames() << endl;
-    
+
     for (  auto ituserfloat = (itJet->userFloatNames()).begin() ; ituserfloat != (itJet->userFloatNames()).end() ; ituserfloat++  ) {
       if (  (*ituserfloat).find("bregCorrection") != std::string::npos  ) {
 	if(  (*ituserfloat) == "bregCorrection"  ) {
@@ -45,12 +45,12 @@ void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableCont
 	  vars.InitVar("Evt_MCregbbMass1Lep","F");
 	  vars.InitVar("Evt_MCbbMass0Lep","F");
 	  vars.InitVar("Evt_MCregbbMass0Lep","F");
-	  
+
 	  vars.InitVar("Evt_MChadtopMass","F");
 	  vars.InitVar("Evt_MCreghadtopMass","F");
-	  
+
 	  stdreginit = true;
-	  
+
 	}
 	else {
 	  size_t found = (*ituserfloat).find("_");
@@ -60,32 +60,32 @@ void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableCont
 	  vars.InitVar("Evt_MCregbbMass2Lep"+extention,"F");
 	  vars.InitVar("Evt_MCregbbMass1Lep"+extention,"F");
 	  vars.InitVar("Evt_MCregbbMass0Lep"+extention,"F");
-	  
+
 	  vars.InitVar("Evt_MCreghadtopMass"+extention,"F");
-	  
+
 	  extentions.push_back(extention);
-	  
+
 	  addreginit = true;
 	}
-      }//end: bregCorrectio* ? 
+      }//end: bregCorrectio* ?
     }//end: userfloat loop
     if (  stdreginit || addreginit  ) {  //only loop as long the first regressed jet is found
-      break; 
+      break;
     }
   }//end: loop over jets
 
-  
 
-  
+
+
 
   initialized = true;
 }
 
 void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableContainer& vars){
-  
+
   if(!initialized) cerr << "tree processor not initialized" << endl;
   if(!input.genTopEvt.IsFilled()) { return; } //Only continue, if genTopEvt is filled
-  
+
 
   //Get Quarks form W+/- and Top Decays
   vector<reco::GenParticle> quarks;
@@ -96,14 +96,14 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
   }
   //Loop over all Jet
   float DeltaRtmp;
-  
-  vector<pat::Jet> higgsjets; 
+
+  vector<pat::Jet> higgsjets;
   pat::Jet hadtopjet;
   bool topjetfound = false;
   vector<pat::Jet> hadWjets;
   vector<int> iHiggsJet;
 
-  
+
   for(vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); itJet++){
     reco::GenParticle MatchedParton;
     int iJet = itJet - input.selectedJets.begin();
@@ -172,7 +172,7 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
       vars.FillVar("Evt_MCregbbMass2Lep",-99);
       vars.FillVar("Evt_MCbbMass0Lep",-99);
       vars.FillVar("Evt_MCregbbMass0Lep",-99);
-      for(  auto itextentions = extentions.begin() ; itextentions != extentions.end(); itextentions++  ) {    
+      for(  auto itextentions = extentions.begin() ; itextentions != extentions.end(); itextentions++  ) {
 	vars.FillVar("Evt_MCregbbMass1Lep"+(*itextentions),GetDijetMass(higgsjets.at(0),higgsjets.at(1),(*itextentions)));
 	vars.FillVar("Evt_MCregbbMass2Lep"+(*itextentions),-99);
 	vars.FillVar("Evt_MCregbbMass0Lep"+(*itextentions),-99);
@@ -209,8 +209,8 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
     vars.FillVar("Evt_MCbbMass",GetDijetMass(higgsjets.at(0),higgsjets.at(1),false));
     vars.FillVar("Evt_MCregbbMass",GetDijetMass(higgsjets.at(0),higgsjets.at(1),true));
     for(  auto itextentions = extentions.begin() ; itextentions != extentions.end(); itextentions++  ) {
-      vars.FillVar("Evt_MCregbbMass"+(*itextentions),GetDijetMass(higgsjets.at(0),higgsjets.at(1),(*itextentions)));   
-    } 
+      vars.FillVar("Evt_MCregbbMass"+(*itextentions),GetDijetMass(higgsjets.at(0),higgsjets.at(1),(*itextentions)));
+    }
   }
   else {
     vars.FillVar("Evt_MCbbMass",-99);
@@ -236,7 +236,7 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
     for(  auto itextentions = extentions.begin() ; itextentions != extentions.end(); itextentions++  ) {
       vars.FillVar("Evt_MCreghadtopMass"+(*itextentions),GetTopHadMass(hadtopjet,hadWjets,(*itextentions)));
     }
-   
+
   }
   else {
     vars.FillVar("Evt_MChadtopMass",-99);
@@ -246,8 +246,8 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
     }
   }
 
-  
-  //Save if Jet was used for MC Higgs Mass 
+
+  //Save if Jet was used for MC Higgs Mass
   int nh = 0;
   for (std::vector<pat::Jet>::const_iterator it = input.selectedJets.begin(), ed = input.selectedJets.end(); it != ed; ++it ) {
     int iJet = it - input.selectedJets.begin();
@@ -271,27 +271,27 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
     int iJet = itJet - input.selectedJets.begin();
 
     const reco::GenParticle *genparticle = itJet->genParticle();
-    
+
     if ( genparticle ) {
-      
+
 
       const reco::Candidate *mother  = genparticle->mother();
-      
+
       vars.FillVars(  "Jet_GenParticleFlav" , iJet, genparticle->pdgId()  );
       vars.FillVars(  "Jet_GenParticleMotherId" , iJet , mother->pdgId()   );
-      vars.FillVars(  "Jet_GenParticlePt" , iJet , genparticle->pt()  );  
-      vars.FillVars(  "Jet_GenParticleEta" , iJet , genparticle->eta()  );  
+      vars.FillVars(  "Jet_GenParticlePt" , iJet , genparticle->pt()  );
+      vars.FillVars(  "Jet_GenParticleEta" , iJet , genparticle->eta()  );
     }
-    
+
     else {
-      
+
       vars.FillVars(  "Jet_GenParticleFlav" , iJet, -99  );
       vars.FillVars(  "Jet_GenParticleMotherId" , iJet , -99 );
-      vars.FillVars(  "Jet_GenParticlePt" , iJet , -1  );  
-      vars.FillVars(  "Jet_GenParticleEta" , iJet , -11  );  
+      vars.FillVars(  "Jet_GenParticlePt" , iJet , -1  );
+      vars.FillVars(  "Jet_GenParticleEta" , iJet , -11  );
     }
-    
-    
+
+
 
   }
 
@@ -300,7 +300,7 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
 
 
 float QuarkMatchingVarProcessor::GetTopHadMass(const pat::Jet& topJet, const vector<pat::Jet>& WJets, const bool docorrection ) {
-  
+
   float mass = 0;
 
   pat::Jet jet1 = topJet;
@@ -322,16 +322,16 @@ float QuarkMatchingVarProcessor::GetTopHadMass(const pat::Jet& topJet, const vec
   }
   jet2vec.SetPtEtaPhiM(  jet2.pt() , jet2.eta() , jet2.phi() , jet2.mass()  );
   jet3vec.SetPtEtaPhiM(  jet3.pt() , jet3.eta() , jet3.phi() , jet3.mass()  );
-  
+
   mass = (jet1vec+jet2vec+jet3vec).M();
 
   return mass;
-  
-} 
 
- 
+}
+
+
 float QuarkMatchingVarProcessor::GetTopHadMass(const pat::Jet& topJet, const vector<pat::Jet>& WJets, std::string regextention) {
-  
+
   float mass = 0;
 
   pat::Jet jet1 = topJet;
@@ -350,8 +350,8 @@ float QuarkMatchingVarProcessor::GetTopHadMass(const pat::Jet& topJet, const vec
 
     jet2vec.SetPtEtaPhiM(  jet2.pt() , jet2.eta() , jet2.phi() , jet2.mass()  );
     jet3vec.SetPtEtaPhiM(  jet3.pt() , jet3.eta() , jet3.phi() , jet3.mass()  );
- 
-    
+
+
     mass = (jet1vec+jet2vec+jet3vec).M();
 
     return mass;
@@ -361,18 +361,18 @@ float QuarkMatchingVarProcessor::GetTopHadMass(const pat::Jet& topJet, const vec
   else {
     return -10;
   }
-  
-} 
+
+}
 
 float QuarkMatchingVarProcessor::GetDijetMass(const pat::Jet& firstjet, const pat::Jet& secondjet, const bool docorrection) {
-  
+
   float dijetmass = 0;
 
   TLorentzVector jet1vec;
   TLorentzVector jet2vec;
 
   pat::Jet jet1 = firstjet;
-  pat::Jet jet2 = secondjet;  
+  pat::Jet jet2 = secondjet;
 
 
   if(docorrection){
@@ -380,8 +380,8 @@ float QuarkMatchingVarProcessor::GetDijetMass(const pat::Jet& firstjet, const pa
     float correction2 = 1;
     if (jet1.hasUserFloat("bregCorrection")) {  correction1 = jet1.userFloat("bregCorrection");  }
     if (jet2.hasUserFloat("bregCorrection")) {  correction2 = jet2.userFloat("bregCorrection");  }
-    
-    
+
+
     jet1.scaleEnergy(correction1);
     jet2.scaleEnergy(correction2);
 
@@ -392,24 +392,24 @@ float QuarkMatchingVarProcessor::GetDijetMass(const pat::Jet& firstjet, const pa
     jet1vec.SetPtEtaPhiM(  jet1.pt() , jet1.eta() , jet1.phi() , jet1.mass()  );
     jet2vec.SetPtEtaPhiM(  jet2.pt() , jet2.eta() , jet2.phi() , jet2.mass()  );
   }
-    
+
   dijetmass = (jet1vec+jet2vec).M();
 
   return dijetmass;
-  
+
 }
 
 
 
 float QuarkMatchingVarProcessor::GetDijetMass(const pat::Jet& firstjet, const pat::Jet& secondjet, std::string regextention) {
-  
+
   float dijetmass = 0;
 
   TLorentzVector jet1vec;
   TLorentzVector jet2vec;
 
   pat::Jet jet1 = firstjet;
-  pat::Jet jet2 = secondjet;  
+  pat::Jet jet2 = secondjet;
 
 
   if(jet1.hasUserFloat("bregCorrection"+regextention) && jet2.hasUserFloat("bregCorrection"+regextention)){
@@ -417,7 +417,7 @@ float QuarkMatchingVarProcessor::GetDijetMass(const pat::Jet& firstjet, const pa
     float correction2 = 1;
     correction1 = jet1.userFloat("bregCorrection"+regextention);
     correction2 = jet2.userFloat("bregCorrection"+regextention);
-    
+
     jet1.scaleEnergy(correction1);
     jet2.scaleEnergy(correction2);
 
@@ -431,7 +431,7 @@ float QuarkMatchingVarProcessor::GetDijetMass(const pat::Jet& firstjet, const pa
   else {
     return -10;
   }
-    
+
 }
 
 
@@ -453,7 +453,7 @@ vector<reco::GenParticle> QuarkMatchingVarProcessor::GetQuarksfromTopDecay(const
       quarks.push_back(*p);
     }
   }
-  
+
   return quarks;
 
 }
@@ -469,7 +469,7 @@ vector<reco::GenParticle> QuarkMatchingVarProcessor::GetQuarksfromHiggsDecay(con
 
 // For debugging purposes
 void QuarkMatchingVarProcessor::PrintTLorentz(TLorentzVector& vec) {
-  
+
   cout << "pT : " << vec.Pt() << " ";
   cout << "eta: " << vec.Eta() << " ";
   cout << "phi: " << vec.Phi() << " ";

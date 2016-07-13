@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 SelectedJetProducer = cms.EDProducer(
     "SelectedJetProducer",
-    isData       = cms.bool(False),
+    isData = cms.bool(False),
     applyCorrection = cms.bool(True),
     jets = cms.InputTag("slimmedJets"),
     electrons = cms.InputTag("SelectedElectronProducer:selectedElectronsLoose"),
@@ -14,4 +14,3 @@ SelectedJetProducer = cms.EDProducer(
     collectionNames  = cms.vstring("rawJets","selectedJets","selectedJetsLoose","selectedJetsDL","selectedJetsLooseDL"),
     systematics = cms.vstring(""),
     )
-

@@ -4,6 +4,7 @@
 <use name="FWCore/ParameterSet"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="MiniAOD/MiniAODHelper"/>
-<use   name="DataFormats/PatCandidates"/>
-<use   name="JetMETCorrections/Objects"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="JetMETCorrections/Objects"/>
+<use name="BoostedTTH/BoostedAnalyzer"/>
 </library>
