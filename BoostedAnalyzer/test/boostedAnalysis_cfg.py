@@ -190,6 +190,7 @@ process.RegressedJetProducer.outputprefix="regressedJets"
 process.RegressedJetProducer.doGenJetMatchingforRegression=True
 process.RegressedJetProducer.isData=options.isData
 
+
 # load and run the boosted analyzer
 if options.isData:
     if options.analysisType=='SL':
@@ -217,6 +218,10 @@ if options.makeSystematicsTrees:
     process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*len(systs)
     process.RegressedJetProducer.collectionpostfix=systs
     process.RegressedJetProducer.inputjets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
+    process.BoostedAnalyzer.regressedJets=[cms.InputTag("RegressedJetProducer:regressedJets"+s) for s in systs]
+    process.BoostedAnalyzer.useregressedJets=True
+
+
 
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
@@ -250,22 +255,19 @@ process.BoostedAnalyzer.minTagsForMEM = 3
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
 
-process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
-#process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+#process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-# process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-# process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor"]
-# process.BoostedAnalyzer.processorNames = []
-# process.BoostedAnalyzer.dumpSyncExe2=True
+process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","RegressionVarProcessor","QuarkMatchingVarProcessor")
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer
                      *process.SelectedMuonProducer
- #                    *process.content
+                     #*process.content
                      *process.SelectedJetProducer
                      *process.CorrectedMETproducer
                      *process.genParticlesForJetswNu*process.ak4GenJetsCustomwNu

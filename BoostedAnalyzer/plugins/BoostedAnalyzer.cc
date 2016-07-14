@@ -454,12 +454,19 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
 	}
+    if(std::find(processorNames.begin(),processorNames.end(),"RegressionVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new RegressionVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"RegressionVarProcessor");
+    }
   if(std::find(processorNames.begin(),processorNames.end(),"QuarkMatchingVarProcessor")!=processorNames.end()) {
-      treewriter->AddTreeProcessor(new QuarkMatchingVarProcessor(),"QuarkMatchingVarProcessor");
+      cout << "flag" << iConfig.getParameter<bool>("useregressedJets") << endl;
+    if(!iConfig.getParameter<bool>("useregressedJets")){
+        treewriter->AddTreeProcessor(new QuarkMatchingVarProcessor(),"QuarkMatchingVarProcessor");
+    }
+    else{
+        treewriter->AddTreeProcessor(new QuarkMatchingVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"QuarkMatchingVarProcessor");
+    }
   }
-  if(std::find(processorNames.begin(),processorNames.end(),"RegressionVarProcessor")!=processorNames.end()) {
-      treewriter->AddTreeProcessor(new RegressionVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"RegressionVarProcessor");
-  }
+
     }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample

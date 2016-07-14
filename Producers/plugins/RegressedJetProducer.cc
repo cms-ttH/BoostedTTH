@@ -63,6 +63,7 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenJet> > genJetswNuToken;
     std::vector < double > electronCuts;
     std::vector < double > muonCuts;
+    std::vector < double > genjetCuts;
     double ljDr;
 
     std::string outputprefix;
@@ -104,6 +105,7 @@ RegressedJetProducer::RegressedJetProducer(const edm::ParameterSet& iConfig) {
 
     electronCuts          = iConfig.getParameter< std::vector<double> >("electroncuts");
     muonCuts              = iConfig.getParameter< std::vector<double> >("muoncuts");
+    genjetCuts            = iConfig.getParameter< std::vector<double> >("genjetcuts");
     ljDr                  = iConfig.getParameter< double >("softleptonJetDr");
 
     outputprefix          = iConfig.getParameter< std::string >("outputprefix");
@@ -156,7 +158,7 @@ RegressedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
           iEvent.getByToken( genJetswNuToken, h_genjetswNu );
           std::vector< reco::GenJet > const &genjetswNu = *h_genjetswNu;
           for( size_t i = 0 ; i < genjetswNu.size() ; i++ ){
-            if( genjetswNu[i].pt() > 15 && fabs( genjetswNu[i].eta()) < 2.4 ){
+            if( genjetswNu[i].pt() > genjetCuts[0] && fabs( genjetswNu[i].eta()) < genjetCuts[1] ){
       	        genJetswNu.push_back(genjetswNu[i]);
             }
           }

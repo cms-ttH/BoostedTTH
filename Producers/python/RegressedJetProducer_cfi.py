@@ -13,6 +13,8 @@ RegressedJetProducer = cms.EDProducer(
     electroncuts   = cms.vdouble(5.0,2.5,0.5,1.0,1.0),
     #Soft muon cuts: pT, eta, dxy, dz
     muoncuts  = cms.vdouble(3.0,2.4,0.5,1.0),
+    #GenJet cuts
+    genjetcuts = cms.vdouble(25,2.4),
     softleptonJetDr = cms.double(0.4),
     weightfile = cms.string("TMVARegression_0619_GenJet_1200_BSF05minNS06Shr075_patronFlav_BDTG.weights.xml"),
     doGenJetMatchingforRegression = cms.bool(False),

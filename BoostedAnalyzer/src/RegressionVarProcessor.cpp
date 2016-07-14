@@ -4,6 +4,7 @@ using namespace std;
 
 RegressionVarProcessor::RegressionVarProcessor(edm::ConsumesCollector && iC, std::vector<edm::InputTag> regJetCollections){
 
+
     for(auto &tag : regJetCollections){
         regressedJetsTokens.push_back(iC.consumes< std::vector<pat::Jet> >(tag));
     }
@@ -89,12 +90,10 @@ void RegressionVarProcessor::Init(const InputCollections& input,VariableContaine
 
 void RegressionVarProcessor::Process(const InputCollections& input, VariableContainer& vars) {
 
-
     //Get Regressed Jets for current systematics
     edm::Handle < std::vector< pat::Jet > > h_regressedJets;
     input.iEvent.getByToken( regressedJetsTokens[input.isys], h_regressedJets );
     std::vector<pat::Jet> const &regressedJets = *h_regressedJets;
-
     /*
     edm::Handle< std::vector< reco::GenJet > > h_genjetswNu;
     std::vector< reco::GenJet > genJetswNu;
@@ -183,6 +182,7 @@ void RegressionVarProcessor::Process(const InputCollections& input, VariableCont
     /*
     matcher.resetMaps();
     matches = matcher.match( regressedJets, genJetswNu );*/
+    vars.FillVar( "N_RegJets", regressedJets.size() );
     size_t iregjet = 0;
     for (auto& Jet: regressedJets ){
         int iJet = iregjet;
