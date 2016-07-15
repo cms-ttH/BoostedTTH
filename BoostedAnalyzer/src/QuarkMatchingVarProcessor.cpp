@@ -69,7 +69,7 @@ void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableCont
 void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableContainer& vars){
 
   if(!initialized) cerr << "tree processor not initialized" << endl;
-  if(!input.genTopEvt.IsFilled()) { return; } //Only continue, if genTopEvt is filled
+  if(!input.genTopEvt.IsFilled() || !input.genTopEvt.IsSemiLepton() ) { return; } //Only continue, if genTopEvt is filled
   std::vector<pat::Jet> regressedJets;
   if (useregressedJets){
       edm::Handle < std::vector< pat::Jet > > h_regressedJets;
@@ -142,7 +142,6 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
         for( auto& Quark: MatchingQuarks ){
 
             if (Quark.pdgId() != 0){
-                cout << "ding" << endl;
                 if ( BoostedUtils::DeltaR( Jet.p4() , Quark.p4() ) < DeltaRtmp ){
                     DeltaRtmp = BoostedUtils::DeltaR( Jet.p4() , Quark.p4() );
                     MatchedParton = Quark;
@@ -227,8 +226,7 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
       /**************************************************************/
       /*            Compute the MC Had Top mass variables           */
       /**************************************************************/
-      if(hadWjets.size() == 2 && topjetfound) {
-        cout << "Writing hadtopmass" << endl;
+      if( hadWjets.size() == 2 && topjetfound ) {
         vars.FillVar("Evt_MC"+prefix+"hadtopMass",GetTopHadMass(hadtopjet,hadWjets));
 
       }

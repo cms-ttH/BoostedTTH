@@ -423,7 +423,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	    treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
+        if(!iConfig.getParameter<bool>("useregressedJets")){
+	           treewriter->AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
+        }
+        else{
+	           treewriter->AddTreeProcessor(new BDTVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"BDTVarProcessor");
+        }
 	}
 //DANGERZONE
 // 	if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
@@ -458,7 +463,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
         treewriter->AddTreeProcessor(new RegressionVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"RegressionVarProcessor");
     }
   if(std::find(processorNames.begin(),processorNames.end(),"QuarkMatchingVarProcessor")!=processorNames.end()) {
-      cout << "flag" << iConfig.getParameter<bool>("useregressedJets") << endl;
     if(!iConfig.getParameter<bool>("useregressedJets")){
         treewriter->AddTreeProcessor(new QuarkMatchingVarProcessor(),"QuarkMatchingVarProcessor");
     }

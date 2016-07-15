@@ -260,7 +260,7 @@ process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","RegressionVarProcessor","QuarkMatchingVarProcessor")
+process.BoostedAnalyzer.processorNames = cms.vstring("BDTVarProcessor","WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","RegressionVarProcessor","QuarkMatchingVarProcessor")
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:

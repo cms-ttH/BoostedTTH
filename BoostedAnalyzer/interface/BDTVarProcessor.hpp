@@ -12,6 +12,7 @@
 class BDTVarProcessor: public TreeProcessor{
 public:
   BDTVarProcessor();
+  BDTVarProcessor(edm::ConsumesCollector && iC, std::vector<edm::InputTag> regJetCollections );
   ~BDTVarProcessor();
   void Init(const InputCollections& input, VariableContainer& var);
   void Process(const InputCollections& input,VariableContainer& var);
@@ -21,8 +22,10 @@ private:
   BDT_v3 bdt3;
   BDTClassifier commonBDT5;
   BDTClassifier commonBDT5_reg;
-  
-  
+
+  bool useregressedJets;
+  std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > regressedJetsTokens;
+
 };
 
 #endif

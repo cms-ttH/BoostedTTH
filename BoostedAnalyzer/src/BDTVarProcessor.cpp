@@ -7,7 +7,21 @@ BDTVarProcessor::BDTVarProcessor():
     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
     commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/BoostedAnalyzer/data/bdtweights/noreg_v5/")),
     commonBDT5_reg(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/BoostedAnalyzer/data/bdtweights/reg_v5/"))
-{}
+{
+    useregressedJets = false;
+}
+
+BDTVarProcessor::BDTVarProcessor( edm::ConsumesCollector && iC, std::vector<edm::InputTag> regJetCollections ):
+    bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
+    bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
+    commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/BoostedAnalyzer/data/bdtweights/noreg_v5/")),
+    commonBDT5_reg(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/BoostedAnalyzer/data/bdtweights/reg_v5/"))
+{
+    for(auto &tag : regJetCollections){
+        regressedJetsTokens.push_back(iC.consumes< std::vector<pat::Jet> >(tag));
+    }
+    useregressedJets = true;
+}
 BDTVarProcessor::~BDTVarProcessor(){}
 
 
@@ -18,9 +32,9 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVar("BDTOhio_v2_output");
   vars.InitVar("BDT_v3_output");
   vars.InitVar("BDT_common5_output");
-  for(auto name: regnames ){
-    vars.InitVar("BDT_reg"+name+"_common5_output");
-    }
+  if (useregressedJets){
+    vars.InitVar("BDT_Reg_common5_output");
+  }
 
 
   //vars.InitVar("BDT_reg_common5_output");
@@ -41,13 +55,12 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   }
 
 
-  
-  map<string,float> bdtinputs_reg_common5=commonBDT5_reg.GetVariablesOfLastEvaluation();
-  for( auto name: regnames ){
-    for(auto it=bdtinputs_reg_common5.begin(); it!=bdtinputs_reg_common5.end(); it++){
-      vars.InitVar("BDT_reg"+name+"_common5_input_"+it->first);
-    }
-    }
+  if(useregressedJets){
+      map<string,float> bdtinputs_reg_common5=commonBDT5_reg.GetVariablesOfLastEvaluation();
+      for(auto it=bdtinputs_reg_common5.begin(); it!=bdtinputs_reg_common5.end(); it++){
+          vars.InitVar("BDT_Reg_common5_input_"+it->first);
+      }
+  }
   /*
   map<string,float> bdtinputs_reg_common5_=commonBDT5_reg.GetVariablesOfLastEvaluation();
   for(auto it=bdtinputs_common5.begin(); it!=bdtinputs_common5.end(); it++){
@@ -59,6 +72,14 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 
 void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
+
+  std::vector<pat::Jet> regressedJets;
+  if (useregressedJets){
+      edm::Handle < std::vector< pat::Jet > > h_regressedJets;
+      input.iEvent.getByToken( regressedJetsTokens[input.isys], h_regressedJets );
+      regressedJets = *h_regressedJets;
+  }
+
   if(input.selectedMuons.size()+input.selectedElectrons.size()!=1) return;
   float bdtoutput2=bdtohio2.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.correctedMET);
   vars.FillVar("BDTOhio_v2_output",bdtoutput2);
@@ -77,15 +98,9 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
       vars.FillVar("BDT_v3_input_"+it->first,it->second);
     }
   }
- 
+
   vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
   vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
-  vector< vector<TLorentzVector> > vecjetregvecs;
-  std::vector < std::string > regnames =  { "" , "_new" ,"_genJet_pF","_genJet" };  
-  for (auto name: regnames){
-    vecjetregvecs.push_back(BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets, "bregCorrection"+name)));
-    }
-  //vector<TLorentzVector> jetregvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets, "bregCorrection"));
 
   vector<TLorentzVector> loose_jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
   TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.p4());
@@ -106,26 +121,24 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
 	  vars.FillVar("BDT_common5_input_"+it->first,it->second);
       }
   }
-  
-  for (size_t iv = 0 ; iv < vecjetregvecs.size() ; iv++){
-    float bdtoutput_reg_common5=commonBDT5_reg.GetBDTOutput(lepvecs, vecjetregvecs[iv], jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
-    vars.FillVar("BDT_reg"+regnames[iv]+"_common5_output",bdtoutput_reg_common5);
-    if(commonBDT5_reg.GetCategoryOfLastEvaluation()!="none"){
-      map<string,float> bdtinputs_reg_common5=commonBDT5_reg.GetVariablesOfLastEvaluation();
-      for(auto it=bdtinputs_reg_common5.begin(); it!=bdtinputs_reg_common5.end(); it++){
-	vars.FillVar("BDT_reg"+regnames[iv]+"_common5_input_"+it->first,it->second);
-      }
-    }
-    }
-  /*
-  float bdtoutput_reg_common5=commonBDT5_reg.GetBDTOutput(lepvecs, jetregvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
-  vars.FillVar("BDT_reg_common5_output",bdtoutput_reg_common5);
-  if(commonBDT5_reg.GetCategoryOfLastEvaluation()!="none"){
-    map<string,float> bdtinputs_reg_common5=commonBDT5_reg.GetVariablesOfLastEvaluation();
-    for(auto it=bdtinputs_reg_common5.begin(); it!=bdtinputs_reg_common5.end(); it++){
-      vars.FillVar("BDT_reg_common5_input_"+it->first,it->second);
-    }
-    }*/
 
+    if(useregressedJets){
+
+        vector<TLorentzVector> jetregvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(regressedJets));
+
+        float bdtoutput_reg_common5=commonBDT5_reg.GetBDTOutput(lepvecs, jetregvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
+        vars.FillVar("BDT_Reg_common5_output",bdtoutput_reg_common5);
+        if(commonBDT5_reg.GetCategoryOfLastEvaluation()!="none"){
+
+            map<string,float> bdtinputs_reg_common5=commonBDT5_reg.GetVariablesOfLastEvaluation();
+            for(auto it=bdtinputs_reg_common5.begin(); it!=bdtinputs_reg_common5.end(); it++){
+
+                vars.FillVar("BDT_Reg_common5_input_"+it->first,it->second);
+
+            }
+
+        }
+
+    }
 
 }
