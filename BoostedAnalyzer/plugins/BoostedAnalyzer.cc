@@ -505,6 +505,15 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedHiggs_"));
     //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_PSO.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedHiggs_"));
   }
+  if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsAk4VarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggsAk4,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SDZ2B1,HiggsTag::SecondCSV,"","BoostedTopHiggsAk4_",doBoostedMEM),"BoostedTopHiggsAk4VarProcessor");
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4VarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SDZ2B1,HiggsTag::SecondCSV,"","BoostedTopAk4_",doBoostedMEM),"BoostedTopAk4VarProcessor");
+  }
+  if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsAk4VarProcessor")!=processorNames.end()) {
+    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggsAk4,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SDZ2B1,HiggsTag::SecondCSV,"","BoostedHiggsAk4_",doBoostedMEM),"BoostedHiggsAk4VarProcessor");
+  }
   if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
   }
