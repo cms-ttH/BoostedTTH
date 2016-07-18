@@ -12,7 +12,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
 
-    # weight of one event: calculated as 
+    # weight of one event: calculated as
     # cross section * lumi / (number of generated events with positive weight  -  number of generated events with negative weight )
     # so that the sum of weights corresponds to the number of events for the given lumi
     eventWeight = cms.double(1.),
@@ -28,8 +28,10 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     systematics = cms.vstring(""),
     doJERsystematic = cms.bool(False),
-    
+
     generatorName = cms.string("notSpecified"),
+
+    isreHLT = cms.bool(False),
 
     useFatJets = cms.bool(True),
     useForwardJets = cms.bool(False),
