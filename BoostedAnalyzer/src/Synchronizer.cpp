@@ -165,10 +165,10 @@ void Synchronizer::DumpSyncExe1(const InputCollections& input, std::ostream &out
 
 }
 void Synchronizer::DumpSyncExe2HeaderBTagSys(std::ostream &out){
-  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepIDSF,lepISOSF,Q2_upup,Q2_downdown,pdf_up,pdf_down,CSVLFup,CSVHFdown,CSVCErr1down\n";
+  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,PUWeight,bWeight,triggerSF,lepIDSF,lepISOSF,Q2_upup,Q2_downdown,pdf_up,pdf_down,CSVLFup,CSVHFdown,CSVCErr1down\n";
 }
 void Synchronizer::DumpSyncExe2Header(std::ostream &out){
-  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,MCWeight,PUWeight,bWeight,topWeight,triggerSF,lepIDSF,lepISOSF,Q2_upup,Q2_downdown,pdf_up,pdf_down\n";
+  out <<"run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet2_pt,jet1_CSVv2,jet2_CSVv2,jet1_JecSF,jet1_JecSF_up,jet1_JecSF_down,MET_pt,MET_phi,mll,ttHFCategory,PUWeight,bWeight,triggerSF,lepIDSF,lepISOSF,Q2_upup,Q2_downdown,pdf_up,pdf_down\n";
 }
 
 void Synchronizer::DumpSyncExe2(const InputCollections& input,
@@ -333,11 +333,11 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
   bool BTagSystematics = false;
 
-  bool is_ttjets=1;
+  /*bool is_ttjets=1;
   float xs_ttbar= 831.76 ;// in pb
   float xs_ttH=0.2918;
-  float Ngen_ttjets=46400;
-  float Ngen_ttH=49894;
+  float Ngen_ttjets=46400.;
+  float Ngen_ttH=49894.;*/
   int run=input.eventInfo.run;
   int lumi=input.eventInfo.lumiBlock;
   long event=input.eventInfo.evt;
@@ -374,16 +374,16 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
   int n_jets=0;
   int n_btags=0;
-  float mcweight=-1;
+  //float mcweight=-1;
   float bWeight=-1;
   float triggerSF=-1;
-  if(is_ttjets && !runOverData) {
+  /*if(is_ttjets && !runOverData) {
     mcweight=xs_ttbar*1000*2.7/Ngen_ttjets;//because powheg pythia file->no negative event weights. Normalized to luminosity of 2.7 fb-1
   }
   else if(!is_ttjets && !runOverData) {
     mcweight=xs_ttH*1000*2.7/Ngen_ttH;
-  }
-  float topweight=-1;
+  }*/
+  //float topweight=-1;
   //float lepSF=-1;
   float lepSFid=-1;
   float lepSFiso=-1;
@@ -459,7 +459,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
 
   bool compare = false;
-
+  /*if(event==510981 || int(event)==510981 || event==499906 || int(event)==499906) {
+    cout << "####################################################### event " << event << " #############################" << endl;
+    compare=true;
+  }*/
 
   /*
   const int nEntries = 6;
@@ -501,7 +504,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 ////////////////////////////////////////// calculate particle quantities /////////////////////////////////////////////
 
   if(is_SL) {
-    for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuons.begin(); iMuon != input.selectedMuons.end(); ++iMuon ){
+    for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
       if(iMuon->pt()>lep1_pt){
 	lep2_pt=lep1_pt;
 	lep2_eta=lep1_eta;
@@ -523,7 +526,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	lep2_pdgId=iMuon->pdgId();
       }
     }
-    for(std::vector<pat::Electron>::const_iterator iEle = input.selectedElectrons.begin(); iEle != input.selectedElectrons.end(); ++iEle ){
+    for(std::vector<pat::Electron>::const_iterator iEle = input.selectedElectronsLoose.begin(); iEle != input.selectedElectronsLoose.end(); ++iEle ){
       if(iEle->pt()>lep1_pt){
 	lep2_pt=lep1_pt;
 	lep2_eta=lep1_eta;
@@ -550,7 +553,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     }
   }
   if(is_DL) {
-    for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsDL.begin(); iMuon != input.selectedMuonsDL.end(); ++iMuon ){
+    for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
       if(iMuon->pt()>lep1_pt){
 	lep2_pt=lep1_pt;
 	lep2_eta=lep1_eta;
@@ -572,7 +575,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	lep2_pdgId=iMuon->pdgId();
       }
     }
-    for(std::vector<pat::Electron>::const_iterator iEle = input.selectedElectronsDL.begin(); iEle != input.selectedElectronsDL.end(); ++iEle ){
+    for(std::vector<pat::Electron>::const_iterator iEle = input.selectedElectronsLoose.begin(); iEle != input.selectedElectronsLoose.end(); ++iEle ){
       if(iEle->pt()>lep1_pt){
 	lep2_pt=lep1_pt;
 	lep2_eta=lep1_eta;
@@ -683,7 +686,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
-  else{
+  else if(is_SL) {
     if(input.selectedJets.size()>0){
       jet1_pt=input.selectedJets.at(0).pt();
       jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
@@ -733,6 +736,15 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
+  /*
+  if(event==510981 || int(event)==510981 || event==499906 || int(event)==499906) {
+    for(size_t i=0;i<input.selectedJetsLooseDL.size();i++){
+      cout << "############# Jet " << i << " ##############" << endl;
+      cout << "Pt: " << input.selectedJetsLooseDL.at(i).pt() << endl;
+      cout << "Eta: " << input.selectedJetsLooseDL.at(i).eta() << endl;
+      //cout << "Jet CSV: " << MiniAODHelper::GetJetCSV(input.selectedJetsLooseDL.at(i)) << endl;
+    }
+  } */
 
   // get selection flags
   // dilepton
@@ -826,11 +838,11 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
   if(is_DL && !runOverData){
     bWeight=input_DL.weightsDL.at("Weight_CSV");
-    if(is_ttjets) {
-      topweight=input_DL.weightsDL.at("Weight_TopPt");
-    }
+    //if(is_ttjets) {
+      //topweight=input_DL.weightsDL.at("Weight_TopPt");
+    //}
     puweight=input_DL.weightsDL.at("Weight_PU");
-    mcweight = mcweight * input_DL.weightsDL.at("Weight_CT14nlo13100_nominal");
+    //mcweight = mcweight * input_DL.weightsDL.at("Weight_CT14nlo13100_nominal");
     Weight_CSVLFup = input_DL.weightsDL.at("Weight_CSVLFup");
     //Weight_CSVLFdown = input_DL.weightsDL.at("Weight_CSVLFdown");
     //Weight_CSVHFup = input_DL.weightsDL.at("Weight_CSVHFup");
@@ -848,26 +860,30 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     //Weight_CSVCErr2up = input_DL.weightsDL.at("Weight_CSVCErr2up");
   //  Weight_CSVCErr2down = input_DL.weightsDL.at("Weight_CSVCErr2down");
 
-      q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
-      q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
-      //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
-      pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
-      //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
-      pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
-      //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
-      //lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
-      //lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
-
+    q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
+    q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
+    //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
+    pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
+    //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
+    pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
+    //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
+    lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
+    lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
+    if(is_ee) {triggerSF=input_DL.weightsDL.at("Weight_ElectronElectronTriggerSF");}
+    if(is_emu) {triggerSF=input_DL.weightsDL.at("Weight_ElectronMuonTriggerSF");}
+    if(is_mumu) {triggerSF=input_DL.weightsDL.at("Weight_MuonMuonTriggerSF");}
+    
+    
 
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
   else if(is_SL && !runOverData){
     bWeight=input.weights.at("Weight_CSV");
-    if(is_ttjets) {
-      topweight=input.weights.at("Weight_TopPt");
-    }
+    //if(is_ttjets) {
+    //  topweight=input.weights.at("Weight_TopPt");
+    //}
     puweight=input.weights.at("Weight_PU");
-    mcweight = mcweight * input.weights.at("Weight_CT14nlo13100_nominal");
+    //mcweight = mcweight * input.weights.at("Weight_CT14nlo13100_nominal");
     Weight_CSVLFup = input.weights.at("Weight_CSVLFup");
   //  Weight_CSVLFdown = input.weights.at("Weight_CSVLFdown");
   //  Weight_CSVHFup = input.weights.at("Weight_CSVHFup");
@@ -886,19 +902,20 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     //Weight_CSVCErr2down = input.weights.at("Weight_CSVCErr2down");
 
 
-      q2upup=input.weights.at("Weight_muRupmuFup");
-      q2downdown=input.weights.at("Weight_muRdownmuFdown");
+    q2upup=input.weights.at("Weight_muRupmuFup");
+    q2downdown=input.weights.at("Weight_muRdownmuFdown");
 
-      //pdfup=input.weights.at("Weight_NNPDFid260067");
-      pdfup=input.weights.at("Weight_CT14nlo13100_up");
-      //pdfdown=input.weights.at("Weight_NNPDFid260005");
-      pdfdown=input.weights.at("Weight_CT14nlo13100_down");
+    //pdfup=input.weights.at("Weight_NNPDFid260067");
+    pdfup=input.weights.at("Weight_CT14nlo13100_up");
+    //pdfdown=input.weights.at("Weight_NNPDFid260005");
+    pdfdown=input.weights.at("Weight_CT14nlo13100_down");
 
-      //lepSF=input.weights.at("Weight_LeptonSF");
-      lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
-      lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
-
-
+    //lepSF=input.weights.at("Weight_LeptonSF");
+    lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
+    lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
+    triggerSF=input.weights.at("Weight_MuonSFTrigger")*input.weights.at("Weight_ElectronSFTrigger");
+    
+    
 
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }
@@ -938,7 +955,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   if(is_DL||is_SL) {
     if(BTagSystematics){
 
-      out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+      out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
 
 	    run% lumi% event%
 	    is_e% is_mu% is_ee% is_emu% is_mumu%
@@ -950,10 +967,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	    jet1_JecSF% jet1_JecSF_up% jet1_JecSF_down%
 	    MET_pt% MET_phi% mll%
 	    ttHFCategory%
-	    mcweight%
+	    //mcweight%
 	    puweight%
 	    bWeight%
-	    topweight%
+	    //topweight%
 	    triggerSF%
 	    lepSFid%
 	    lepSFiso%
@@ -964,7 +981,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     }
     if(!BTagSystematics){
 
-    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
+    out << boost::format("%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%.4f,%.4f,%i,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n")%
 
 	   run% lumi% event%
 	   is_e% is_mu% is_ee% is_emu% is_mumu%
@@ -976,16 +993,17 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 	   jet1_JecSF% jet1_JecSF_up% jet1_JecSF_down%
 	   MET_pt% MET_phi% mll%
 	   ttHFCategory%
-	   mcweight%
+	   //mcweight%
 	   puweight%
 	   bWeight%
-	   topweight%
+	   //topweight%
 	   triggerSF%
 	    lepSFid%
 	    lepSFiso%
 	    q2upup% q2downdown%
 	    pdfup% pdfdown;
     }
+    //cout << "event " << event << " written in csv" << endl;
   }
 }
 

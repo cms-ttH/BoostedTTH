@@ -24,6 +24,7 @@ options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2", VarParsin
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "int flag to identify which dataset is used")#(0,1,2,3,4,5)->(MC,single ele, single mu,ele ele,ele mu,mu mu)
+options.register( "isreHLT",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
 options.parseArguments()
 
 
@@ -59,7 +60,6 @@ for key in options._register:
     if key not in ["secondaryInputFiles","section","tag","totalSections","outputFile","secondaryOutputFile","filePrepend"]:
         print str(key)+" : "+str( options.__getattr__(key) )
 print "*****************************************\n\n"
-
 
 process = cms.Process("wtf")
 
@@ -207,6 +207,9 @@ else:
         process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD
         process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+
+if options.isreHLT:
+    process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
 
 if options.makeSystematicsTrees:
     systs=["","jesup","jesdown"]#,"jerup","jerdown"]

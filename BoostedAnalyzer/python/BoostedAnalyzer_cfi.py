@@ -31,6 +31,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     generatorName = cms.string("notSpecified"),
 
+    isreHLT = cms.bool(False),
+
     useFatJets = cms.bool(True),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),
