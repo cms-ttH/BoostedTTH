@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedttHEvent.hpp"
 
 
-BoostedttHEvent::BoostedttHEvent():input(0),verbose(true),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
+BoostedttHEvent::BoostedttHEvent():input(0),verbose(false),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
   ResetEvent();
 }
 
@@ -322,8 +322,7 @@ void BoostedttHEvent::ak4JetsTopHadCandBoostedRec(const bool cleanTopLepCand, co
       }
     }
 
-    if(cleanedAk4jets.size()<3) continue;
-
+    if(cleanedAk4jets.size()<2) continue; // if size == 2: see below
 
     // START - Top tagger:  HEP
     TopTag::SubjetAssign subjetAssign = TopTag::CSV; // TopTag::Pt or TopTag::CSV
@@ -333,23 +332,27 @@ void BoostedttHEvent::ak4JetsTopHadCandBoostedRec(const bool cleanTopLepCand, co
     if(subjetAssign == TopTag::Pt){
       std::sort(sortedAk4jets.begin(), sortedAk4jets.end(),BoostedUtils::FirstJetIsHarder);
     }
-    else if(subjetAssign == TopTag::CSV){
+    else if(subjetAssign == TopTag::CSV && cleanedAk4jets.size()>2){
       BoostedUtils::TopSubjetCSVDef(sortedAk4jets);
+    }
+    else if(subjetAssign == TopTag::CSV && cleanedAk4jets.size()==2){
+      std::sort(sortedAk4jets.begin(), sortedAk4jets.end(),BoostedUtils::FirstHasHigherCSV);
     }
     float m12 = -999;
     float m23 = -999;
     float m13 = -999;
     float m123 = -999;
 
-    m12 = (sortedAk4jets[0].p4()+sortedAk4jets[1].p4()).M();
-    m13 = (sortedAk4jets[0].p4()+sortedAk4jets[2].p4()).M();
-    m23 = (sortedAk4jets[1].p4()+sortedAk4jets[2].p4()).M();
-    m123 = (sortedAk4jets[0].p4()+sortedAk4jets[1].p4()+sortedAk4jets[2].p4()).M();
-
+    if(cleanedAk4jets.size()>2){
+      m12 = (sortedAk4jets[0].p4()+sortedAk4jets[1].p4()).M();
+      m13 = (sortedAk4jets[0].p4()+sortedAk4jets[2].p4()).M();
+      m23 = (sortedAk4jets[1].p4()+sortedAk4jets[2].p4()).M();
+      m123 = (sortedAk4jets[0].p4()+sortedAk4jets[1].p4()+sortedAk4jets[2].p4()).M();
+    }
     float mT = 172.3;
     float mW = 80.4;
 
-    if(subjetAssign == TopTag::Pt){
+    if(subjetAssign == TopTag::Pt && cleanedAk4jets.size()>2){
       float y1 = 1+pow(m13/m12,2);
       float y2 = 1+pow(m12/m13,2);
       float x = 1-pow(m23/m123,2);
@@ -369,10 +372,14 @@ void BoostedttHEvent::ak4JetsTopHadCandBoostedRec(const bool cleanTopLepCand, co
       if(fw<999) tag = 1-fw;
 
     }
-    else if(subjetAssign == TopTag::CSV){
+    else if(subjetAssign == TopTag::CSV && cleanedAk4jets.size()>2){
       float fw = fabs((m23/m123*mT/mW)-1);
 
       if(0.2<m12/m13 && 0.2<m13/m12) tag = 1-fw;
+    }
+    else if(cleanedAk4jets.size()==2)
+    {
+      tag = -1.0;  // not a real tag, but bigger than default -1.1
     }
     // END - Top tagger
 
@@ -380,19 +387,25 @@ void BoostedttHEvent::ak4JetsTopHadCandBoostedRec(const bool cleanTopLepCand, co
       topHadCandTag = tag;
       foundTopHadCand = true;
       topHadCandIndex = iBooJet;
-
       topHadCand = *itBooJet;
 
-      std::vector<pat::Jet> subjets;
-      subjets.push_back(sortedAk4jets.at(0));
-      subjets.push_back(sortedAk4jets.at(1));
-      subjets.push_back(sortedAk4jets.at(2));
+      if(sortedAk4jets.size()==2)
+      {
+        topHadBCand = sortedAk4jets.at(0);
+        topHadW1Cand = sortedAk4jets.at(1);
+      }
+      else {
+        std::vector<pat::Jet> subjets;
+        subjets.push_back(sortedAk4jets.at(0));
+        subjets.push_back(sortedAk4jets.at(1));
+        subjets.push_back(sortedAk4jets.at(2));
+        BoostedUtils::TopSubjetCSVDef(subjets);
 
-      BoostedUtils::TopSubjetCSVDef(subjets);
+        topHadBCand = subjets.at(0);
+        topHadW1Cand = subjets.at(1);
+        if(subjets.size()>2) topHadW2Cand = subjets.at(2);
+      }
 
-      topHadBCand = subjets.at(0);
-      topHadW1Cand = subjets.at(1);
-      topHadW2Cand = subjets.at(2);
     }
   }
 
