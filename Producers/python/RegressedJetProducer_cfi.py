@@ -16,7 +16,7 @@ RegressedJetProducer = cms.EDProducer(
     #GenJet cuts
     genjetcuts = cms.vdouble(25,2.4),
     softleptonJetDr = cms.double(0.4),
-    weightfile = cms.string("TMVARegression_0619_GenJet_1200_BSF05minNS06Shr075_patronFlav_BDTG.weights.xml"),
+    weightfile = cms.string("BReg_0719_80XReg_BDTG.weights.xml"),
     doGenJetMatchingforRegression = cms.bool(False),
     outputprefix = cms.string("regressedJets"),
     collectionpostfix = cms.vstring("")

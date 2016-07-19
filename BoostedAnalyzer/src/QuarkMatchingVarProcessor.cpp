@@ -12,7 +12,6 @@ QuarkMatchingVarProcessor::QuarkMatchingVarProcessor(){
 
 QuarkMatchingVarProcessor::QuarkMatchingVarProcessor( edm::ConsumesCollector && iC, std::vector<edm::InputTag> regJetCollections){
 
-    cout << "Reg konstruktor" << endl;
   DeltaRCut = 0.3;
   useregressedJets = true;
 
@@ -42,8 +41,10 @@ void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableCont
   vars.InitVars("Jet_GenParticleEta","N_Jets");
 
   vars.InitVars("Jet_isHiggsJet","N_Jets");
-
+  vars.InitVars("Jet_ishadTopJet","N_Jets");
+  vars.InitVars("Jet_isWJet","N_Jets");
   if(useregressedJets){
+
 
       vars.InitVars("RegJet_MatchedPartonPt","N_RegJets");
       vars.InitVars("RegJet_MatchedPartonDeltaR","N_RegJets");
@@ -60,6 +61,9 @@ void QuarkMatchingVarProcessor::Init(const InputCollections& input, VariableCont
       vars.InitVars("RegJet_GenParticleEta","N_RegJets");
 
       vars.InitVars("RegJet_isHiggsJet","N_RegJets");
+      vars.InitVars("RegJet_ishadTopJet","N_RegJets");
+      vars.InitVars("RegJet_isWJet","N_RegJets");
+
 
   }
 
@@ -120,8 +124,6 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
 
 
 
-
-
       int iJet = 0;
       for( auto& Jet: Jets ){
         reco::GenParticle MatchedParton;
@@ -156,18 +158,25 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
             //cout << Jet << endl << "is WJet" << endl;
             hadWjets.push_back(Jet);
             vars.FillVars(prefix+"Jet_isHiggsJet",iJet,0);
+            vars.FillVars(prefix+"Jet_isWJet",iJet,1);
+            vars.FillVars(prefix+"Jet_ishadTopJet",iJet,0);
+
         }
         //Fill Jet from leptonic Top-Decay vector
         else if (decayfrom == 1){
             //cout << Jet << endl << "is lepTJet" << endl;
             vars.FillVars(prefix+"Jet_isHiggsJet",iJet,0);
+            vars.FillVars(prefix+"Jet_isWJet",iJet,0);
+            vars.FillVars(prefix+"Jet_ishadTopJet",iJet,0);
             topjetfound = false;
         }
-        //Fill Jet from leptonic Top-Decay vector
+        //Fill Jet from hadronic Top-Decay vector
         else if (decayfrom == 2){
             //cout << Jet << endl << "is hadTJet" << endl;
             hadtopjet = Jet;
             vars.FillVars(prefix+"Jet_isHiggsJet",iJet,0);
+            vars.FillVars(prefix+"Jet_isWJet",iJet,0);
+            vars.FillVars(prefix+"Jet_ishadTopJet",iJet,1);
             topjetfound = true;
         }
         //Fill Jets from H-Decay vector
@@ -175,6 +184,8 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
             //cout << Jet << endl << "is HJet" << endl;
             higgsjets.push_back(Jet);
             vars.FillVars(prefix+"Jet_isHiggsJet",iJet,1);
+            vars.FillVars(prefix+"Jet_isWJet",iJet,0);
+            vars.FillVars(prefix+"Jet_ishadTopJet",iJet,0);
         }
 
         if(foundquark){
@@ -223,12 +234,13 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
       /**************************************************************/
 
 
+
+
       /**************************************************************/
       /*            Compute the MC Had Top mass variables           */
       /**************************************************************/
       if( hadWjets.size() == 2 && topjetfound ) {
         vars.FillVar("Evt_MC"+prefix+"hadtopMass",GetTopHadMass(hadtopjet,hadWjets));
-
       }
       else {
         vars.FillVar("Evt_MC"+prefix+"hadtopMass",-99);
@@ -236,6 +248,9 @@ void QuarkMatchingVarProcessor::Process(const InputCollections& input, VariableC
       /**************************************************************/
       /**************************************************************/
       /**************************************************************/
+
+
+
 
       /**************************************************************/
       /*                         GenParticle                        */

@@ -229,9 +229,11 @@ else:
     process.BoostedAnalyzer.selectedJetsDL=[cms.InputTag("SelectedJetProducer:selectedJetsDL")]
     process.BoostedAnalyzer.selectedJetsLooseDL=[cms.InputTag("SelectedJetProducer:selectedJetsLooseDL")]
     process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]
-    process.RegressedJetProducer.inputjets=[cms.InputTag("SelectedJetProducer:selectedJets")]
+    process.RegressedJetProducer.inputjets=[cms.InputTag("SelectedJetProducer:selectedJetsLoose")]
     process.BoostedAnalyzer.regressedJets=[cms.InputTag("RegressedJetProducer:regressedJets")]
     process.BoostedAnalyzer.useregressedJets=True
+
+
 
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
@@ -266,7 +268,7 @@ if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
 
 #process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 

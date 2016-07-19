@@ -41,7 +41,7 @@ JetRegression::~JetRegression(  ){}
 bool JetRegression::SetLeptonCuts(  vector< double > electronCuts,
                                     vector< double > muonCuts,
                                     double ljDr){
-    cout << "Setting new lepton Jet cuts" << endl;
+
     epTCut = electronCuts[0];
     eetaCut = electronCuts[1];
     edxyCut = electronCuts[2];
