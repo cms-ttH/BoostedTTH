@@ -217,13 +217,16 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   vector<string> mu_triggers;
 
   if(!runOverData) {
-    el_triggers.push_back("any");
-    mu_triggers.push_back("any");
+    //el_triggers.push_back("any");
+    //mu_triggers.push_back("any");
+    el_triggers.push_back("HLT_Ele27_eta2p1_WPTight_Gsf_v*");
+    mu_triggers.push_back("HLT_IsoMu22_v*");
+    mu_triggers.push_back("HLT_IsoTkMu22_v*");
   }
   else if(runOverData) {
-    el_triggers.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v*");
-    mu_triggers.push_back("HLT_IsoMu20_v*");
-    mu_triggers.push_back("HLT_IsoTkMu20_v*");
+    el_triggers.push_back("HLT_Ele27_eta2p1_WPTight_Gsf_v*");
+    mu_triggers.push_back("HLT_IsoMu22_v*");
+    mu_triggers.push_back("HLT_IsoTkMu22_v*");
     if(dataset_flag<3) {
       //cout << "is_DL set false" << endl;
       is_DL=false;
@@ -233,8 +236,6 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       is_SL=false;
     }
   }
-
-
 
   if(leptonSelections.size()==0 && ((!runOverData)||dataset_flag<3)){
     leptonSelections.push_back(new VertexSelection());
@@ -257,20 +258,26 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   vector<string> elmu_triggers;
 
   // MC triggers ->do not work yet
+
   if(!runOverData) {
-    elel_triggers.push_back("any");
-    mumu_triggers.push_back("any");
-    elmu_triggers.push_back("any");
+    //elel_triggers.push_back("any");
+    //mumu_triggers.push_back("any");
+    //elmu_triggers.push_back("any");
+    elel_triggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
+    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
+    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
+    elmu_triggers.push_back("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
+    elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*");
   }
   // data triggers
   else {
-    elel_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
+    elel_triggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
     mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
     mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
-    elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
-    elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*");
+    elmu_triggers.push_back("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
+    elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*");
   }
-
+  
 
   if(dileptonSelections.size()==0 && ((!runOverData)||dataset_flag>2)){
     dileptonSelections.push_back(new VertexSelection());
@@ -459,10 +466,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
 
   bool compare = false;
-  /*if(event==510981 || int(event)==510981 || event==499906 || int(event)==499906) {
+  if(event==3875954 || int(event)==3875954 || event==3897814 || int(event)==3897814) {
     cout << "####################################################### event " << event << " #############################" << endl;
     compare=true;
-  }*/
+  }
 
   /*
   const int nEntries = 6;
@@ -736,15 +743,16 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
-  /*
-  if(event==510981 || int(event)==510981 || event==499906 || int(event)==499906) {
+  
+  if(event==3875954 || int(event)==3875954 || event==3897814 || int(event)==3897814) {
     for(size_t i=0;i<input.selectedJetsLooseDL.size();i++){
       cout << "############# Jet " << i << " ##############" << endl;
-      cout << "Pt: " << input.selectedJetsLooseDL.at(i).pt() << endl;
-      cout << "Eta: " << input.selectedJetsLooseDL.at(i).eta() << endl;
+      cout << "Pt: " << input.selectedJetsLoose.at(i).pt() << endl;
+      cout << "Eta: " << input.selectedJetsLoose.at(i).eta() << endl;
+      cout << "JER? " << helper.jetdPtMatched(input.selectedJetsLoose.at(i)) << endl;
       //cout << "Jet CSV: " << MiniAODHelper::GetJetCSV(input.selectedJetsLooseDL.at(i)) << endl;
     }
-  } */
+  } 
 
   // get selection flags
   // dilepton
