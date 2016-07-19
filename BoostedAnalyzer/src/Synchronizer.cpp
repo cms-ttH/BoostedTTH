@@ -871,9 +871,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
     q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
     //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
-    pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
+    pdfup=input_DL.weightsDL.at("Weight_NNPDF30_nlo_as_0118260000_up");
     //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
-    pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
+    pdfdown=input_DL.weightsDL.at("Weight_NNPDF30_nlo_as_0118260000_down");
     //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
     lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
     lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
@@ -914,9 +914,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     q2downdown=input.weights.at("Weight_muRdownmuFdown");
 
     //pdfup=input.weights.at("Weight_NNPDFid260067");
-    pdfup=input.weights.at("Weight_CT14nlo13100_up");
+    pdfup=input.weights.at("Weight_NNPDF30_nlo_as_0118260000_up");
     //pdfdown=input.weights.at("Weight_NNPDFid260005");
-    pdfdown=input.weights.at("Weight_CT14nlo13100_down");
+    pdfdown=input.weights.at("Weight_NNPDF30_nlo_as_0118260000_down");
 
     //lepSF=input.weights.at("Weight_LeptonSF");
     lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");

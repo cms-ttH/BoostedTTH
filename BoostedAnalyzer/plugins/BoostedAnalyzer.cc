@@ -459,7 +459,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     if (generatorflag) { std::cout << usedGenerator << " was set as Generator" << endl; }
     else { std::cout << "No Generator was set for Genweight -> no GenWeights are written in tree" << endl; }
 
-    genweights.initLHAPDF("CT14nlo");
+    genweights.initLHAPDF("NNPDF30_nlo_as_0118");
 
     assert(selectedJetsTokens.size()==selectedJetsLooseTokens.size());
     assert(selectedJetsTokens.size()==jetSystematics.size());
@@ -817,7 +817,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	}
 	//Add Genweights to the weight map
 	genweights.GetGenWeights(weights, lheInfo, dogenweights);
-	genweights.GetLHAPDFWeight(weights, genInfo, "CT14nlo");
+	genweights.GetLHAPDFWeight(weights, genInfo, "NNPDF30_nlo_as_0118");
     //Add Lepton Scalefactors to weight map
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
 

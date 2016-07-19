@@ -156,12 +156,12 @@ else:
 #===============================================================
 #
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
-process.SelectedElectronProducer.ptMins=[15.,20.,30.]
+process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
 process.SelectedElectronProducer.leptonIDs=["EndOf15MVA80iso0p15"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
-process.SelectedMuonProducer.ptMins=[15.,20.,25.]
+process.SelectedMuonProducer.ptMins=[15.,25.,25.]
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
 process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
