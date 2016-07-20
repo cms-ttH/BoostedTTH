@@ -154,7 +154,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
         hard_process++;
       }
       //std::cout << "Is from hard process " << IsFromHardProcess << std::endl;
-    /*  for(uint j=0; j< bhadron->numberOfMothers();j++){
+    /*for(uint j=0; j< bhadron->numberOfMothers();j++){
           bool IsFromHardProcess=false;
           std::cout << "PDGId of mother: " << bhadron->mother(j)->pdgId() << endl;
           const reco::Candidate* mother_b_had = bhadron->mother(j);
@@ -1136,9 +1136,10 @@ std::vector<math::XYZTLorentzVector> GenTopEvent::GetLVs(const std::vector<reco:
 }
 bool GenTopEvent::analyzeMothersRecursive(const reco::Candidate* particle) const{
   std::cout << "Particle: " << particle->pdgId() << " , Status: " << particle->status() << " , numberOfMothers: " << particle->numberOfMothers() << std::endl;
-  if(particle->status()>20&&particle->status()<30){
-    return true;
-  }
+  //if(particle->status()>20&&particle->status()<30){
+  //if(particle->pdgId()==2212){
+    //return true;
+  //}
   bool IsFromHardProcess=false;
   /*if(analyzeMothersRecursive(particle)){
     return true;

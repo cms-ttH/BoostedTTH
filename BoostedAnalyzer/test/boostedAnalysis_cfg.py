@@ -30,8 +30,8 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:
-    #options.inputFiles=['/store/mc/RunIIFall15MiniAODv2/TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/04D51FB4-B2B8-E511-A399-047D7B881D6A.root']
-    options.inputFiles=['/store/mc/RunIIFall15MiniAODv2/ttbb_4FS_ckm_amcatnlo_madspin_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v2/20000/02863DEF-E7C1-E511-9B96-842B2B182385.root']
+    options.inputFiles=['/store/mc/RunIIFall15MiniAODv2/TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/04D51FB4-B2B8-E511-A399-047D7B881D6A.root']
+    #options.inputFiles=['/store/mc/RunIIFall15MiniAODv2/ttbb_4FS_ckm_amcatnlo_madspin_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v2/20000/02863DEF-E7C1-E511-9B96-842B2B182385.root']
    # options.inputFiles=['store/user/asaibel/ttbb_4FS_ckm_amcatnlo_madspin_pythia8/ttbb_studies_withSelections_ttbb_ext1/160524_211845/0000/ttbb_ext1_nominal_Tree_1.root']
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
@@ -177,6 +177,7 @@ if not options.isData:
 process.BoostedAnalyzer.makeSystematicsTrees=options.makeSystematicsTrees
 process.BoostedAnalyzer.generatorName=options.generatorName
 
+process.load("PhysicsTools.JetMCAlgos.ttHFGenFilter_cfi")
 
 
 if options.isData and options.useJson:
@@ -203,4 +204,15 @@ if options.additionalSelection!="NONE":
 
 process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor", "AdditionalJetProcessor","MCMatchVarProcessor"]
 
-process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
+process.p = cms.Path(process.electronMVAValueMapProducer
+                     *process.ttHFGenFilter
+                     *process.BoostedAnalyzer)
+
+process.OUT = cms.OutputModule(
+    "PoolOutputModule",
+    fileName = cms.untracked.string('Filtered_ttbb.root'),
+    SelectEvents = cms.untracked.PSet(
+        SelectEvents = cms.vstring("p")
+    )
+)
+process.endpath = cms.EndPath(process.OUT)
