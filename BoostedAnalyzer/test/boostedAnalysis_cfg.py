@@ -221,7 +221,10 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 
 
 if options.isData and options.useJson:
-    print 'use JSON is no longer supported'
+    #print 'use JSON is no longer supported'
+    import FWCore.PythonUtilities.LumiList as LumiList
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/mwassmer/sync_ex/JSONS/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
+### electron MVA ####
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")

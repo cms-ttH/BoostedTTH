@@ -466,10 +466,10 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
 
   bool compare = false;
-  if(event==3875954 || int(event)==3875954 || event==3897814 || int(event)==3897814) {
+  /*if(event==3875954 || int(event)==3875954 || event==3897814 || int(event)==3897814) {
     cout << "####################################################### event " << event << " #############################" << endl;
     compare=true;
-  }
+  }*/
 
   /*
   const int nEntries = 6;
@@ -647,16 +647,16 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       jet1_pt=input_DL.selectedJetsLooseDL.at(0).pt();
       jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(0));
       bool jetmatched = false;
-      for( auto rawJet: input.rawJets){
+      for( auto rawJet: input_DL.rawJets){
 	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJetsLooseDL.at(0).p4()) < 0.01 ){
-	  float jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
+	  double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
 	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
 	  
 
 
-	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false) / jet1_JES ;
+	  double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false)/jet1_JES ;
 	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
-	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false) / jet1_JES;
+	  double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false)/jet1_JES;
 	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
 
 	  jet1_JecSF = jet1_JES;
@@ -700,14 +700,14 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       bool jetmatched = false;
       for( auto rawJet: input.rawJets){
 	if( BoostedUtils::DeltaR(rawJet.p4(),input.selectedJets.at(0).p4()) < 0.01 ){
-	  float jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
+	  double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
 	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
 	  
 
 
-	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false) / jet1_JES ;
+	  double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false)/jet1_JES ;
 	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
-	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false) / jet1_JES;
+	  double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false)/jet1_JES;
 	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
 
 	  jet1_JecSF = jet1_JES;
@@ -744,7 +744,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     }
   }
   
-  if(event==3875954 || int(event)==3875954 || event==3897814 || int(event)==3897814) {
+  /*if(event==3875954 || int(event)==3875954 || event==3897814 || int(event)==3897814) {
     for(size_t i=0;i<input.selectedJetsLooseDL.size();i++){
       cout << "############# Jet " << i << " ##############" << endl;
       cout << "Pt: " << input.selectedJetsLoose.at(i).pt() << endl;
@@ -752,7 +752,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       cout << "JER? " << helper.jetdPtMatched(input.selectedJetsLoose.at(i)) << endl;
       //cout << "Jet CSV: " << MiniAODHelper::GetJetCSV(input.selectedJetsLooseDL.at(i)) << endl;
     }
-  } 
+  } */
 
   // get selection flags
   // dilepton
