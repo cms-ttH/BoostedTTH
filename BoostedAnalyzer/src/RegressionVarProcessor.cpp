@@ -84,7 +84,7 @@ void RegressionVarProcessor::Init(const InputCollections& input,VariableContaine
     //Regression Results
     vars.InitVars( "RegJet_regcorr", "N_RegJets");
     vars.InitVars( "RegJet_preregPt", "N_RegJets");
-
+    vars.InitVars( "RegJet_preregMt", "N_RegJets");
 }
 
 
@@ -284,10 +284,12 @@ void RegressionVarProcessor::Process(const InputCollections& input, VariableCont
         if(Jet.hasUserFloat("bregCorrection")){
             vars.FillVars( "RegJet_regcorr", iJet, Jet.userFloat("bregCorrection") );
             vars.FillVars( "RegJet_preregPt", iJet, Jet.pt() / Jet.userFloat("bregCorrection") );
+            vars.FillVars( "RegJet_preregMt", iJet, Jet.mt() / Jet.userFloat("bregCorrection") );
         }
         else {
             vars.FillVars( "RegJet_regcorr", iJet, -1.0 );
             vars.FillVars( "RegJet_preregPt", iJet, Jet.pt() );
+            vars.FillVars( "RegJet_preregPt", iJet, Jet.mt() );
         }
         iregjet++;
     }
