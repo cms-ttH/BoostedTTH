@@ -20,9 +20,10 @@ BTagSFs76X = cms.PSet(
     nHFPtBins = cms.int32(5),
     fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_76x_2016_02_08.root")
 )
+
 # The 80X SF
-#BTagSFs80X = cms.PSet(
-#    fileNameHF = cms.string("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_v2_final_2016_06_30test.root"),
-#    nHFPtBins = cms.int32(5),
-#    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_v2_final_2016_06_30test.root")
-#)
+BTagSFs80X = cms.PSet(
+    fileNameHF = cms.string("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_v2_final_2016_06_30test.root"),
+    nHFPtBins = cms.int32(5),
+    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_v2_final_2016_06_30test.root")
+)
