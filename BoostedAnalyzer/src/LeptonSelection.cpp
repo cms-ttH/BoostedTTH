@@ -99,8 +99,19 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
       else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input.weights.at("Weight"));
     }
   }
+  else if(channel=="VETO"){
+      if(step<0||step==1){
+      if(muonTriggered || electronTriggered) return false;
+      else cutflow.EventSurvivedStep("NO-lepton trigger",input.weights.at("Weight"));
+    }
+    if(step<0||step==2){
+      if( nmuonsloose=0 && nelectronsloose=0) cutflow.EventSurvivedStep("NO loose leptons",input.weights.at("Weight"));
+      else return false;
+    }
+  }
+      
   else {
-    throw cms::Exception("BadSelection")
+    thorw cms::Exception("BadSelection")
       << "channel '" << channel << "' of lepton selection does not exist!\n"
       << "Please fix BoostedAnalyzer.channel parameter\n"
       << "Values are 'el', 'mu', or 'both'";      

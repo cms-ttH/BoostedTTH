@@ -123,42 +123,7 @@ if options.isData:
     process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
 
 
-#=================================== JEC from DB file ===============
-if options.isData:
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
-        )
-    )
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK8PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
-        )
-    )
 
-else:
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
-        )
-    )
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK8PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
-        )
-    )
 #===============================================================
 
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')

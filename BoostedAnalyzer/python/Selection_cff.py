@@ -17,6 +17,12 @@ LeptonSelectionMC = cms.PSet(
     channel = cms.string("both")
 )
 
+LeptonSelectionVETO = cms.PSet(
+    muonTriggers = cms.vstring("HLT_IsoMu20_v*"),
+    electronTriggers = cms.vstring("HLT_Ele27_eta2p1_WPLoose_Gsf_v*"),
+    channel = cms.string("VETO")
+)
+
 DiLeptonSelectionNoTrigger  = cms.PSet(
     mumuTriggers = cms.vstring("None"),
     elelTriggers = cms.vstring("None"),
@@ -48,10 +54,10 @@ DiLeptonMETSelection = cms.PSet(
 )
 
 JetTagSelection = cms.PSet(
-    minJets = cms.vint32(4,6),
-    maxJets = cms.vint32(-1,-1),
-    minTags = cms.vint32(3,2),
-    maxTags = cms.vint32(-1,-1)
+    minJets = cms.vint32(3),
+    maxJets = cms.vint32(-1),
+    minTags = cms.vint32(2),
+    maxTags = cms.vint32(-1)
 )
 
 checkBasicDataTriggers= cms.PSet(
