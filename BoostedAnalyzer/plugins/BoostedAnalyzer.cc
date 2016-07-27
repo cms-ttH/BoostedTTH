@@ -65,6 +65,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonMassSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonJetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EvenOddSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
@@ -98,6 +99,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/QuarkMatchingVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/RegressionVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/RegressionValidationVarProcessor.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 
@@ -357,7 +359,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     	else if(*itSel == "GenTopDLSelection") selections.push_back(new GenTopDLSelection());
     	else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
     	else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
-    	else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
+        else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
+        else if(*itSel == "DiLeptonJetTagSelection") selections.push_back(new DiLeptonJetTagSelection(iConfig));
     	else if(*itSel == "LeptonSelection1") selections.push_back(new LeptonSelection(iConfig,1));
     	else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
     	else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
@@ -462,14 +465,17 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     if(std::find(processorNames.begin(),processorNames.end(),"RegressionVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new RegressionVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"RegressionVarProcessor");
     }
-  if(std::find(processorNames.begin(),processorNames.end(),"QuarkMatchingVarProcessor")!=processorNames.end()) {
-    if(!iConfig.getParameter<bool>("useregressedJets")){
-        treewriter->AddTreeProcessor(new QuarkMatchingVarProcessor(),"QuarkMatchingVarProcessor");
+    if(std::find(processorNames.begin(),processorNames.end(),"QuarkMatchingVarProcessor")!=processorNames.end()) {
+        if(!iConfig.getParameter<bool>("useregressedJets")){
+            treewriter->AddTreeProcessor(new QuarkMatchingVarProcessor(),"QuarkMatchingVarProcessor");
+        }
+        else{
+            treewriter->AddTreeProcessor(new QuarkMatchingVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"QuarkMatchingVarProcessor");
+        }
     }
-    else{
-        treewriter->AddTreeProcessor(new QuarkMatchingVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"QuarkMatchingVarProcessor");
+    if(std::find(processorNames.begin(),processorNames.end(),"RegressionValidationVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new RegressionValidationVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"RegressionValidationVarProcessor");
     }
-  }
 
     }
 

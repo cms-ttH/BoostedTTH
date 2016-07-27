@@ -65,6 +65,7 @@ private:
     std::vector < double > muonCuts;
     std::vector < double > genjetCuts;
     double ljDr;
+    double minpT;
 
     std::string outputprefix;
     std::vector< std::string > collectionpostfix;
@@ -107,6 +108,7 @@ RegressedJetProducer::RegressedJetProducer(const edm::ParameterSet& iConfig) {
     muonCuts              = iConfig.getParameter< std::vector<double> >("muoncuts");
     genjetCuts            = iConfig.getParameter< std::vector<double> >("genjetcuts");
     ljDr                  = iConfig.getParameter< double >("softleptonJetDr");
+    minpT                 = iConfig.getParameter< double >("minpT");
 
     outputprefix          = iConfig.getParameter< std::string >("outputprefix");
     collectionpostfix     = iConfig.getParameter< std::vector < std::string > >("collectionpostfix");
@@ -123,7 +125,7 @@ RegressedJetProducer::RegressedJetProducer(const edm::ParameterSet& iConfig) {
     }
 
     // Initialize b-Jet Regression
-    bjetRegression.init(iConfig.getParameter< std::string >("weightfile"));
+    bjetRegression.init(iConfig.getParameter< std::string >("weightfile"), minpT);
     bjetRegression.SetLeptonCuts(electronCuts, muonCuts, ljDr);
 
 }

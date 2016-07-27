@@ -4,7 +4,8 @@ using namespace std;
 
 RegressionVarProcessor::RegressionVarProcessor(edm::ConsumesCollector && iC, std::vector<edm::InputTag> regJetCollections){
 
-
+    //TODO: This only works if the collections are the systematic shifted Collections --> Think about something
+    //when using multiple collections
     for(auto &tag : regJetCollections){
         regressedJetsTokens.push_back(iC.consumes< std::vector<pat::Jet> >(tag));
     }

@@ -22,95 +22,95 @@ void DiLeptonSelection::InitCutflow(Cutflow& cutflow){
     cutflow.AddStep("Dilepton trigger");
   if(step<0||step==2)
     cutflow.AddStep("== 2 opposite sign leptons");
-    
+
   initialized=true;
 }
 
 bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "DiLeptonSelection not initialized" << endl;
-  
+
   int nleadelectrons_p = 0;
   int nleadelectrons_n = 0;
-  
+
   for(auto e=input.selectedElectronsDL.begin();e!=input.selectedElectronsDL.end();e++){
     if(e->charge()>0) {
-    	nleadelectrons_p++;      
+    	nleadelectrons_p++;
     }
-    else{ 
+    else{
     	nleadelectrons_n++;
     }
   }
-  
+
   int nleadelectrons = nleadelectrons_p+nleadelectrons_n;
-  
+
   int nsubleadelectrons_p = 0;
   int nsubleadelectrons_n = 0;
-  
+
   for(auto e=input.selectedElectronsLoose.begin();e!=input.selectedElectronsLoose.end();e++){
-  
+
     bool leadID = false;
-    
+
     for(auto le=input.selectedElectronsDL.begin();le!=input.selectedElectronsDL.end();le++){
       if(BoostedUtils::DeltaR(le->p4(),e->p4())<0.001){
         leadID = true;
         break;
       }
     }
-    
+
     if(leadID) continue;
-    
-    if(e->charge()>0) { 
-    	nsubleadelectrons_p++;      
+
+    if(e->charge()>0) {
+    	nsubleadelectrons_p++;
     }
     else {
     	nsubleadelectrons_n++;
     }
   }
-  
+
   int nelectrons_p = nleadelectrons_p + nsubleadelectrons_p;
   int nelectrons_n = nleadelectrons_n + nsubleadelectrons_n;
-  
+
   int nleadmuons_p = 0;
   int nleadmuons_n = 0;
-  
+
   for(auto e=input.selectedMuonsDL.begin();e!=input.selectedMuonsDL.end();e++){
     if(e->charge()>0) {
-    	nleadmuons_p++;      
+    	nleadmuons_p++;
     }
-    else { 
+    else {
     	nleadmuons_n++;
     }
   }
-  
+
   int nleadmuons = nleadmuons_p+nleadmuons_n;
-  
+
   int nsubleadmuons_p = 0;
   int nsubleadmuons_n = 0;
-  
+
   for(auto mu=input.selectedMuonsLoose.begin();mu!=input.selectedMuonsLoose.end();mu++){
-  
+
     bool leadID = false;
-    
+
     for(auto lmu=input.selectedMuonsDL.begin();lmu!=input.selectedMuonsDL.end();lmu++){
       if(BoostedUtils::DeltaR(lmu->p4(),mu->p4())<0.001){
         leadID = true;
         break;
       }
     }
-    
+
     if(leadID) continue;
-    
+
     if(mu->charge()>0) {
-    	nsubleadmuons_p++;      
+    	nsubleadmuons_p++;
     }
     else {
     	nsubleadmuons_n++;
     }
   }
-  
+
   int nmuons_p = nleadmuons_p + nsubleadmuons_p;
   int nmuons_n = nleadmuons_n + nsubleadmuons_n;
-  
+
   int nleadleptons = nleadelectrons+nleadmuons;
 
   bool elelTriggered = input.triggerInfo.IsAnyTriggered(elelTriggers);
@@ -126,7 +126,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   std::cout << "nleadelectrons: " << nleadelectrons << "   nelectrons_p: " << nelectrons_p << "   nelectrons_n: " << nelectrons_n << std::endl;
   std::cout << "nleadmuons: " << nleadmuons << "   nmuons_p: " << nmuons_p << "   nmuons_n: " << nmuons_n << std::endl;
   */
-  
+
   if(channel=="elel"){
     if(step<0||step==1){
       if(!elelTriggered) {

@@ -25,16 +25,16 @@ class JetRegression {
 public:
   JetRegression( );
   ~JetRegression( );
-  
+
   bool SetLeptonCuts(std::vector< double > electronCuts,
                      std::vector< double > muonCuts,
                      double ljDr);
   //JetRegression( std::map < std::string, std::vector < bool >  > WeightsandInputs, std::vector < std::string > names);
-  bool init(  std::string weightname  );
+  bool init(  std::string weightname , double minpT );
 
-  bool init(  std::string weightname, std::string extention  );
+  bool init(  std::string weightname, std::string extention, double minpT  );
 
-  bool init(  std::vector< std::string > WeightFiles, std::vector<std::vector < bool > >  WeightInputs, std::vector < std::string > names  );
+  bool init(  std::vector< std::string > WeightFiles, std::vector<std::vector < bool > >  WeightInputs, std::vector < std::string > names , std::vector< double > minpTs );
 
   void evaluateRegression(const  edm::Event& iEvent,
 			  const  edm::EDGetTokenT< edm::View<pat::Electron> >& electronToken,
@@ -118,7 +118,7 @@ private:
 
   //Other Cuts
   float deltaR2Max;
-
+  std::vector< double > minpTs;
   //State variables
   bool isDone;
   bool isInitialized;

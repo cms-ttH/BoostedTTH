@@ -1,9 +1,9 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonJetTagSelection.hpp"
 using namespace std;
 
-DiLeptonJetTagSelection::DiLeptonJetTagSelection(std::vector<int> minjets_,std::vector<int> mintags_):DiLeptonJetTagSelection(minjets_,std::vector<int>(),mintags_,std::vector<int>()) {  
+DiLeptonJetTagSelection::DiLeptonJetTagSelection(std::vector<int> minjets_,std::vector<int> mintags_):DiLeptonJetTagSelection(minjets_,std::vector<int>(),mintags_,std::vector<int>()) {
 }
-DiLeptonJetTagSelection::DiLeptonJetTagSelection(int minjets_,int mintags_):DiLeptonJetTagSelection(std::vector<int>(1,minjets_),std::vector<int>(1,mintags_)) {  
+DiLeptonJetTagSelection::DiLeptonJetTagSelection(int minjets_,int mintags_):DiLeptonJetTagSelection(std::vector<int>(1,minjets_),std::vector<int>(1,mintags_)) {
 }
 
 
@@ -15,12 +15,12 @@ DiLeptonJetTagSelection::DiLeptonJetTagSelection(std::vector<int> minjets_,std::
     if(iSel<minJets.size() && minJets[iSel] >= 0){
       selName += ">=";
       selName += std::to_string(minJets[iSel]);
-      selName += " jets with at least pT > 30 ";
+      selName += " jets";
     }
     if(iSel<maxJets.size() && maxJets[iSel] >= 0){
       selName += "<=";
       selName += std::to_string(maxJets[iSel]);
-      selName += " jets with at least pT > 30 ";
+      selName += " jets";
     }
     if(iSel<minTags.size() && minTags[iSel] >= 0){
       selName += ">=";
@@ -55,34 +55,28 @@ void DiLeptonJetTagSelection::InitCutflow(Cutflow& cutflow){
 bool DiLeptonJetTagSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "DiLeptonJetTagSelection not initialized" << endl;
 
-  double ptCut=30.0;
   int njets = 0;
   int ntags = 0;
-  for(size_t i=0; i<input.selectedJetsLooseDL.size();i++){
-    if(BoostedUtils::PassesCSV(input.selectedJetsLooseDL.at(i), 'M')){
+  for(size_t i=0; i<input.selectedJetsLoose.size();i++){
+    if(BoostedUtils::PassesCSV(input.selectedJetsLoose.at(i), 'M')){
       ntags++;
     }
-    //count jets with pT > 30 
-    if(input.selectedJetsLooseDL.at(i).pt()>=ptCut){
-      njets++;
-    }
+    njets++;
   }
 
   for(size_t iSel=0;iSel<selSize;++iSel){
     bool selected = true;
-    
+
     if(iSel < minJets.size() && minJets[iSel] >= 0  && njets < minJets[iSel]) selected = false;
     if(iSel < maxJets.size() && maxJets[iSel] >= 0  && njets > maxJets[iSel]) selected = false;
     if(iSel < minTags.size() && minTags[iSel] >= 0  && ntags < minTags[iSel]) selected = false;
     if(iSel < maxTags.size() && maxTags[iSel] >= 0  && ntags > maxTags[iSel]) selected = false;
-    
+
     if(selected) break;
-    
+
     if(iSel == selSize-1) return false;
-  } 
+  }
   cutflow.EventSurvivedStep(selName.c_str(),input.weights.at("Weight"));
 
   return true;
 }
-
-

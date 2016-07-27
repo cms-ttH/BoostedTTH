@@ -58,8 +58,10 @@ bool JetRegression::SetLeptonCuts(  vector< double > electronCuts,
     return true;
 }
 
-bool JetRegression::init(  std::string weightname  ){
+bool JetRegression::init(  std::string weightname , double minpT ){
   if (  isRegressionInitialized()  ) { return false; }
+
+  minpTs.push_back(minpT) ;
 
   string name  = "BDTG";
 
@@ -99,8 +101,10 @@ bool JetRegression::init(  std::string weightname  ){
 
 
 //TODO: Add flag, that extention will be used in in evaluation.
-bool JetRegression::init(  std::string weightname, std::string extention ){
+bool JetRegression::init(  std::string weightname, std::string extention, double minpT ){
   if (  isRegressionInitialized()  ) { return false; }
+
+  minpTs.push_back(minpT) ;
 
   string name  = extention;
 
@@ -138,10 +142,12 @@ bool JetRegression::init(  std::string weightname, std::string extention ){
 }
 
 
-bool JetRegression::init(  std::vector< std::string > WeightFiles, std::vector<std::vector < bool > >  WeightInputs, std::vector < std::string > names  ){
+bool JetRegression::init(  std::vector< std::string > WeightFiles, std::vector<std::vector < bool > >  WeightInputs, std::vector < std::string > names , std::vector< double >  minpT){
   if (  isRegressionInitialized()  ) { return false; }
 
   for( size_t iw = 0 ; iw < WeightFiles.size() ; iw++ ) {
+    minpTs.push_back(minpT[iw]) ;
+
     string name = names.at(iw);
 
     vector< bool > usevars = WeightInputs.at(iw);
@@ -358,14 +364,18 @@ void JetRegression::evaluateRegression (const edm::Event& iEvent,
 	  // First regression in list, always gets unserfloat without extention
 	  float_t result = 0;
 	  if ( nt == 0 ) {
-	    result = readermap[regressionnames[nt]]->EvaluateRegression(0,"BDTG");
-	    if( debugmode ) { cout << "Regression " << nt << ": pt: " << treevars[0] << " regcorr: " << result  << endl; }
-	    Jets.at(i).addUserFloat("bregCorrection", result);
+        if(Jets.at(i).pt() >= minpTs[nt]){
+    	    result = readermap[regressionnames[nt]]->EvaluateRegression(0,"BDTG");
+    	    if( debugmode ) { cout << "Regression " << nt << ": pt: " << treevars[0] << " regcorr: " << result  << endl; }
+    	    Jets.at(i).addUserFloat("bregCorrection", result);
+        }
 	  }
 	  else {
-	    result = (readermap[regressionnames[nt]]->EvaluateRegression(0,"BDTG"));
-	    if( debugmode ) { cout << "Regression " << nt << "( " << regressionnames[nt] << " )"  << ": pt: " << treevars[0]<< " regcorr: " << result << endl; }
-	    Jets.at(i).addUserFloat("bregCorrection_"+regressionnames[nt], result); //append name of regression to userfloat
+        if(Jets.at(i).pt() >= minpTs[nt]) {
+    	    result = (readermap[regressionnames[nt]]->EvaluateRegression(0,"BDTG"));
+    	    if( debugmode ) { cout << "Regression " << nt << "( " << regressionnames[nt] << " )"  << ": pt: " << treevars[0]<< " regcorr: " << result << endl; }
+    	    Jets.at(i).addUserFloat("bregCorrection_"+regressionnames[nt], result); //append name of regression to userfloat
+        }
 	  }
 	}
       }
