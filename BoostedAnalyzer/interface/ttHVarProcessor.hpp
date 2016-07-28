@@ -19,7 +19,7 @@ class ttHVarProcessor: public TreeProcessor{
   
   public:
   
-    ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix="",bool doMEM=true);
+    ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, const boosted::SubjetType subjettype_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix="",bool doMEM=true);
     ~ttHVarProcessor();
     
     void Init(const InputCollections& input,VariableContainer& var);
@@ -43,17 +43,18 @@ class ttHVarProcessor: public TreeProcessor{
     
   private:
   
-    BoostedRecoType recotype;
-    std::string   prefix;
-    const char* btagger;
+    BoostedRecoType     recotype;
+    std::string         prefix;
+    const char*         btagger;
       
-    TopTagger     toptagger;
-    HiggsTagger   higgstagger;
+    TopTagger           toptagger;
+    boosted::SubjetType subjettype;
+    HiggsTagger         higgstagger;
 
-    BoostedttHEvent ttHEvent;
+    BoostedttHEvent     ttHEvent;
     
-    MEMClassifier mem;  
-    bool doMEM;
+    MEMClassifier       mem;  
+    bool                doMEM;
 };
 
 #endif

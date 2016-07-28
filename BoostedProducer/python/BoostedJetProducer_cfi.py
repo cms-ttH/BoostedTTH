@@ -2,6 +2,18 @@ import FWCore.ParameterSet.Config as cms
 
 from RecoJets.JetProducers.PFJetParameters_cfi import *
 from RecoJets.JetProducers.AnomalousCellParameters_cfi import *
+from RecoJets.JetProducers.CATopJetParameters_cfi import *
+
+ca15PFJetsCHS = cms.EDProducer(
+    "FastjetJetProducer",
+    PFJetParameters.clone(
+      src               = cms.InputTag("pfNoElectronsCHS"),
+      jetPtMin          = cms.double(180.0)
+    ),
+    AnomalousCellParameters,
+    jetAlgorithm = cms.string("CambridgeAachen"),
+    rParam       = cms.double(1.5)
+)
     
 HTTTopJetProducer = cms.EDProducer(
     "HTTTopJetProducer",
@@ -45,13 +57,66 @@ SFJetProducer = cms.EDProducer(
       jetPtMin      = cms.double(180.0)
     ),
     AnomalousCellParameters,
-    jetAlgorithm 	  = cms.string("CambridgeAachen"),
-    nFatMax      	  = cms.uint32(0),
-    rParam       	  = cms.double(1.5),
-    rFilt        	  = cms.double(0.3),
-    massDropCut  	  = cms.double(0.67),
-    asymmCut     	  = cms.double(0.3),
-    asymmCutLater	  = cms.bool(True)	
+    jetAlgorithm 	      = cms.string("CambridgeAachen"),
+    nFatMax      	      = cms.uint32(0),
+    rParam       	      = cms.double(1.5),
+    rFilt        	      = cms.double(0.3),
+    massDropCut  	      = cms.double(0.67),
+    asymmCut     	      = cms.double(0.3),
+    asymmCutLater	      = cms.bool(True),
+#    writeCompound       = cms.bool(True),
+#    jetCollInstanceName = cms.string("compjets")
 )
 
-#BoostedProducerPath = cms.Path(HTTTopJetProducer*SFJetProducer)
+ca15PFPrunedJetsCHS = ca15PFJetsCHS.clone(
+    usePruning = cms.bool(True),
+    nFilt = cms.int32(2),
+    zcut = cms.double(0.1),
+    rcut_factor = cms.double(0.5),
+    useExplicitGhosts = cms.bool(True),
+    writeCompound = cms.bool(True), # Also write subjets for pruned fj
+    jetCollInstanceName=cms.string("subjets")
+)
+
+ca15PFSoftdropJetsCHS = ca15PFJetsCHS.clone(
+    useSoftDrop = cms.bool(True),
+    zcut = cms.double(0.1),
+    beta = cms.double(0.0),
+    R0 = cms.double(1.5),
+    useExplicitGhosts = cms.bool(True),
+    writeCompound = cms.bool(True),
+    jetCollInstanceName=cms.string("subjets")
+)
+
+ca15PFSoftdropZ2B1JetsCHS = ca15PFJetsCHS.clone(
+    useSoftDrop = cms.bool(True),
+    zcut = cms.double(0.2),
+    beta = cms.double(1.),
+    R0 = cms.double(1.5),
+    useExplicitGhosts = cms.bool(True),
+    writeCompound = cms.bool(True),
+    jetCollInstanceName=cms.string("subjets")
+)
+
+ca15PFSoftdropZ2B1JetsCHSforSubjettiness = ca15PFJetsCHS.clone(
+    useSoftDrop = cms.bool(True),
+    zcut = cms.double(0.2),
+    beta = cms.double(1.),
+    R0 = cms.double(1.5),
+    useExplicitGhosts = cms.bool(True)
+)
+
+ca15SoftdropSubjettiness = cms.EDProducer(
+    "NjettinessAdder",
+    src = cms.InputTag("ca15PFSoftdropZ2B1JetsCHSforSubjettiness"),
+    Njets = cms.vuint32(1,2,3),          # compute 1-, 2-, 3- subjettiness
+    # variables for measure definition : 
+    measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
+    beta = cms.double(1.0),              # CMS default is 1
+    R0 = cms.double(1.5),                  # CMS default is jet cone size
+    Rcutoff = cms.double( 999.0),       # not used by default
+    # variables for axes definition :
+    axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
+    nPass = cms.int32(999),             # not used by default
+    akAxesR0 = cms.double(999.0)        # not used by default
+)

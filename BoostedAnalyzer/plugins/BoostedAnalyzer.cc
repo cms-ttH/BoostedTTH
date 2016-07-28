@@ -472,28 +472,37 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):csvReweighter
     treewriter_nominal.AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
-      treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::Pt,"",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::CSV,"",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_PSO.weights.xml",HiggsTag::DoubleCSV,"","BoostedTopHiggs_"));
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::Pt,"",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::HEP,TopTag::CSV,"",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+    
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Sub,HiggsTag::DoubleCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::Pruned,HiggsTag::DoubleCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SD,HiggsTag::DoubleCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SDZ2B1,HiggsTag::DoubleCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::SecondCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::HEP,TopTag::Pt,"",HiggsTag::DoubleCSV,"","BoostedTop_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::HEP,TopTag::CSV,"",HiggsTag::DoubleCSV,"","BoostedTop_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root",HiggsTag::DoubleCSV,"","BoostedTop_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::DoubleCSV,"","BoostedTop_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_PSO.weights.xml",HiggsTag::DoubleCSV,"","BoostedTop_"));
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::HEP,TopTag::Pt,"",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::HEP,TopTag::CSV,"",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Sub,HiggsTag::DoubleCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::Pruned,HiggsTag::DoubleCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SD,HiggsTag::DoubleCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SDZ2B1,HiggsTag::DoubleCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) {
-    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::HEP,TopTag::Pt,"",HiggsTag::DoubleCSV,"","BoostedHiggs_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::HEP,TopTag::CSV,"",HiggsTag::DoubleCSV,"","BoostedHiggs_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root",HiggsTag::DoubleCSV,"","BoostedHiggs_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",HiggsTag::DoubleCSV,"","BoostedHiggs_"));
-    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_PSO.weights.xml",HiggsTag::DoubleCSV,"","BoostedHiggs_"));
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::HEP,TopTag::Pt,"",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::HEP,TopTag::CSV,"",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+    treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::DoubleCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Sub,HiggsTag::DoubleCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::Pruned,HiggsTag::DoubleCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SD,HiggsTag::DoubleCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+    //treewriter_nominal.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SDZ2B1,HiggsTag::DoubleCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
   }
   if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
     treewriter_nominal.AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
@@ -961,6 +970,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   map<string,float> weights_DL_jerdown = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_jerdown,selectedElectrons,selectedMuons,genTopEvt,sysType::JERdown);
   map<string,float> weights_DL_uncorrjets = GetWeights(*h_geneventinfo,*h_lheevent,eventInfo,selectedPVs,selectedJetsLoose_uncorrected,selectedElectrons,selectedMuons,genTopEvt,sysType::NA);
   // DEFINE INPUT
+  
   InputCollections input_nominal( eventInfo,
 				  triggerInfo,
 				  selectedPVs,
@@ -987,12 +997,48 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 				  iEvent,
 				  iSetup
 				  );
-
+  
+  /*
+  InputCollections input_nominal( eventInfo,
+				  triggerInfo,
+				  selectedPVs,
+				  rawMuons,
+				  selectedMuons,
+				  selectedMuonsDL,
+				  selectedMuonsLoose,
+				  rawElectrons,
+				  selectedElectrons,
+				  selectedElectronsDL,
+				  selectedElectronsLoose,
+				  idJets,
+				  rawJets,
+				  selectedJets_nominal,
+				  selectedJetsLoose_nominal,
+				  selectedJetsSingleTop_nominal,
+				  correctedMETs_nominal[0],
+				  selectedBoostedJets_uncorrected,
+				  genTopEvt,
+				  selectedGenJets,
+				  sampleType,
+				  higgsdecay,
+				  weights,
+				  iEvent,
+				  iSetup
+				  );
+  */
   // define systematically shifted input (replace quantaties affected by jets)
+  
   InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],selectedBoostedJets_jesup,weights_jesup);
   InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],selectedBoostedJets_jesdown,weights_jesdown);
   InputCollections input_jerup( input_nominal,selectedJets_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],selectedBoostedJets_jerup,weights_jerup);
   InputCollections input_jerdown( input_nominal,selectedJets_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],selectedBoostedJets_jerdown,weights_jerdown);
+  
+  /*
+  InputCollections input_jesup( input_nominal,selectedJets_jesup,selectedJetsLoose_jesup,selectedJetsSingleTop_jesup,correctedMETs_jesup[0],selectedBoostedJets_uncorrected,weights_jesup);
+  InputCollections input_jesdown( input_nominal,selectedJets_jesdown,selectedJetsLoose_jesdown,selectedJetsSingleTop_jesdown,correctedMETs_jesdown[0],selectedBoostedJets_uncorrected,weights_jesdown);
+  InputCollections input_jerup( input_nominal,selectedJets_jerup,selectedJetsLoose_jerup,selectedJetsSingleTop_jerup,correctedMETs_jerup[0],selectedBoostedJets_uncorrected,weights_jerup);
+  InputCollections input_jerdown( input_nominal,selectedJets_jerdown,selectedJetsLoose_jerdown,selectedJetsSingleTop_jerdown,correctedMETs_jerdown[0],selectedBoostedJets_uncorrected,weights_jerdown);
+  */
   InputCollections input_uncorrjets( input_nominal,selectedJets_uncorrected,selectedJetsLoose_uncorrected,selectedJetsSingleTop_uncorrected,pfMETs[0],selectedBoostedJets_uncorrected,weights_uncorrjets);
      //Only needed for Hbb synch exercise: dilepton uses loose jet selection -> different csv weights and input collection
   InputCollections input_DL_nominal( input_nominal,selectedJetsLoose_nominal,selectedJetsLoose_nominal,selectedJetsSingleTop_nominal,correctedMETs_nominal[0],selectedBoostedJets,weights_DL_nominal);

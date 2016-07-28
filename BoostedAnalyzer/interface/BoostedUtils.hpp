@@ -75,9 +75,9 @@ class BoostedUtils{
     
     static void TopSubjetCSVDef(std::vector<pat::Jet> &subjets);
     
-    static std::vector<pat::Jet> GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets = 2);
-    static std::vector<pat::Jet> GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets = 2);
-    static float GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets = 2, const int& nCSVJets = 2);
+    static std::vector<pat::Jet> GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets = 2, const int& nPtJets = 3);
+    static std::vector<pat::Jet> GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets = 2, const int& nPtJets = 3);
+    static float GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets = 2, const int& nCSVJets = 2, const int& nPtJets = 3);
     
     static std::vector<pat::Jet> GetSingleTopJets(const std::vector<pat::Jet>& centralJets, const std::vector<pat::Jet>& forwardJets, float etacut=2.4);
 

@@ -15,24 +15,27 @@ options = VarParsing ('analysis')
 options.register( "outName", "testrun", VarParsing.multiplicity.singleton, VarParsing.varType.string, "name and path of the output files (without extension)" )
 options.register( "weight", 0.01, VarParsing.multiplicity.singleton, VarParsing.varType.float, "xs*lumi/(nPosEvents-nNegEvents)" )
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
-options.register( "isData", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
+options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "isBoostedMiniAOD", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
-options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
+options.register( "makeSystematicsTrees", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "generatorName", "notSpecified", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
-options.register( "globalTag", "76X_dataRun2_v15", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+#options.register( "globalTag", "76X_dataRun2_v15", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "76X_mcRun2_asymptotic_RunIIFall15DR76_v0", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 10 # reset for testing
+    options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/SingleMuon/Boostedv5MiniAODsilverJson/160217_171824/0000/BoostedTTH_MiniAOD_1.root']
+    #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/SingleMuon/Boostedv5MiniAODsilverJson/160217_171824/0000/BoostedTTH_MiniAOD_1.root']
+    #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv5MiniAOD/160217_174112/0000/BoostedTTH_MiniAOD_1.root']
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAOD_NewSubjetAlgs/160723_145910/0000/BoostedTTH_MiniAOD_1.root']
 
-# checks for correct values and consistency
+## checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
     print "\n\nConfig ERROR: unknown analysisType '"+options.analysisType+"'"
     print "Options are 'SL' or 'DL'\n\n"
@@ -60,7 +63,7 @@ process = cms.Process("analysis")
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
@@ -193,7 +196,7 @@ process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
 process.BoostedAnalyzer.doJERsystematic = False
-
+process.BoostedAnalyzer.doBoostedMEM = False
 
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":

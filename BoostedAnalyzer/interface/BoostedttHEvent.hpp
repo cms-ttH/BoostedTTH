@@ -43,7 +43,7 @@ class BoostedttHEvent{
     void ak5JetsClean(bool cleanHiggsCand = false, bool cleanTopHadCand = false, bool cleanTopLepCand = false);    
     
     // Higgs Candidate Reconstruction
-    void HiggsCandBoostedRec(HiggsTagger higgstagger, bool cleanTopHadCand = false, bool cleanTopLepCand = false, const float subjetCleaningThreshold = .4);
+    void HiggsCandBoostedRec(const boosted::SubjetType subjettype, HiggsTagger higgstagger, bool cleanTopHadCand = false, bool cleanTopLepCand = false, const float subjetCleaningThreshold = .4);
     void HiggsCandRec();
     
     // Hadronic Top Candidate Reconstruction
@@ -57,8 +57,8 @@ class BoostedttHEvent{
     void TopPairCandRec();
     
     // Event Reconstruction
-    void BoostedTopHiggsEventRec(TopTagger toptagger, HiggsTagger higgstagger);
-    void BoostedHiggsEventRec(HiggsTagger higgstagger);
+    void BoostedTopHiggsEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger);
+    void BoostedHiggsEventRec(const boosted::SubjetType subjettype, HiggsTagger higgstagger);
     void BoostedTopEventRec(TopTagger toptagger);
     
     // Get Functions
