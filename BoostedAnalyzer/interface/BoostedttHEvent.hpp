@@ -67,6 +67,8 @@ class BoostedttHEvent{
     void BoostedTopHiggsAk4EventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger);
     void BoostedHiggsAk4EventRec(const boosted::SubjetType subjettype, HiggsTagger higgstagger);
     void BoostedTopAk4EventRec(TopTagger toptagger);
+    void BoostedAk4TopHiggsEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger);
+    void BoostedTopAk4HiggsEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger);
 
     // Get Functions
     // Input Collection

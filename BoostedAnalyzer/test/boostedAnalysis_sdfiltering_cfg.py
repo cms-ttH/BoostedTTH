@@ -207,6 +207,6 @@ process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","J
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopHiggsAk4VarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopHiggsAk4VarProcessor","BoostedAk4TopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 
 process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)

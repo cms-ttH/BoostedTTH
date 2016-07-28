@@ -326,7 +326,7 @@ void BoostedttHEvent::ak4JetsTopHadCandBoostedRec(const bool cleanTopLepCand, co
 
     // START - Top tagger:  HEP
     TopTag::SubjetAssign subjetAssign = TopTag::CSV; // TopTag::Pt or TopTag::CSV
-    float tag = -1.1;
+    float tag = -0.1;
 
     std::vector<pat::Jet> sortedAk4jets = cleanedAk4jets;
     if(subjetAssign == TopTag::Pt){
@@ -379,7 +379,7 @@ void BoostedttHEvent::ak4JetsTopHadCandBoostedRec(const bool cleanTopLepCand, co
     }
     else if(cleanedAk4jets.size()==2)
     {
-      tag = -1.0;  // not a real tag, but bigger than default -1.1
+      tag = 0.0;  // not a real tag, but bigger than default -0.1
     }
     // END - Top tagger
 
@@ -867,6 +867,46 @@ void BoostedttHEvent::BoostedTopAk4EventRec(TopTagger toptagger){
 
   HiggsCandRec();
   ak5JetsIdentifyHiggsCand(.3);
+}
+
+void BoostedttHEvent::BoostedAk4TopHiggsEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger){
+
+  ResetEvent();
+
+  LeptonRec();
+  NeutrinoRec();
+  ak5JetsRec();
+
+  ak4JetsTopHadCandBoostedRec(false,false,.2);
+  ak5JetsIdentifyTopHadCand(.3);
+
+  HiggsCandBoostedRec(subjettype,higgstagger,true,false,.2);
+  ak5JetsIdentifyHiggsCand(.3);
+
+  ak5JetsClean(true,true,false);
+
+  TopLepCandRec();
+  ak5JetsIdentifyTopLepCand(.3);
+}
+
+void BoostedttHEvent::BoostedTopAk4HiggsEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger){
+
+  ResetEvent();
+
+  LeptonRec();
+  NeutrinoRec();
+  ak5JetsRec();
+
+  TopHadCandBoostedRec(toptagger,false,false,.2);
+  ak5JetsIdentifyTopHadCand(.3);
+
+  ak4JetsHiggsCandBoostedRec(true,false,.2);
+  ak5JetsIdentifyHiggsCand(.3);
+
+  ak5JetsClean(true,true,false);
+
+  TopLepCandRec();
+  ak5JetsIdentifyTopLepCand(.3);
 }
 
 const InputCollections& BoostedttHEvent::GetInput(){

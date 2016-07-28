@@ -61,6 +61,16 @@ void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& v
       ttHEvent.BoostedTopAk4EventRec(toptagger);
       break;
     }
+    case BoostedRecoType::BoostedAk4TopHiggs:
+    {
+      ttHEvent.BoostedAk4TopHiggsEventRec(toptagger, subjettype, higgstagger);
+      break;
+    }
+    case BoostedRecoType::BoostedTopAk4Higgs:
+    {
+      ttHEvent.BoostedTopAk4HiggsEventRec(toptagger, subjettype, higgstagger);
+      break;
+    }
     default:
     {
       cerr << "ttH reconstruction: no event reconstruction found" << endl;
