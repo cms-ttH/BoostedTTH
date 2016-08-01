@@ -343,15 +343,18 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	isSL=false;
 	//cout << "Dilepton Event! " << endl;
       }
-      if(tophad.size()==1 and toplep.size()==1) {
+      else if(tophad.size()==1 and toplep.size()==1) {
 	isSL=true;
 	isDL=false;
 	//cout << "Single Lepton Event! " << endl;
       }
-      if(tophad.size()==2 and toplep.size()==0) {
+      else if(tophad.size()==2 and toplep.size()==0) {
 	isSL=false;
 	isDL=false;
 	//cout << "Fully hadronic Event! " << endl;
+	return;
+      }
+      else {
 	return;
       }
       
@@ -468,7 +471,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	      best_int_lr=ints[i];
 	  }
       }
-      if(best_int_lr!=0) {
+      if(best_lr>0.) {
 	// the likelihood ratio of the interpretation isnt allowed to be 0
 	// now check if the SL event has an electron- or muon-lepton and whether it is a lepton or antilepton
 	if(input.selectedElectrons.size()==1){
@@ -526,14 +529,17 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	// if the dR Matching is succesfull the processor proceeds otherwise the loop for reco ends here
 	if(dR_top<=dR_max && dR_antitop<=dR_max && dR_b<=dR_max && dR_antib<=dR_max) {
 	  //cout << endl;
-	  //cout << "reconstruction not correct, abort!! " << endl;
+	  //cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!reconstruction succesfull!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 	  //cout << endl;
 	  vars.FillVar("RECO_flag_after_match",1);
 	}
+	else {
+	  //cout << endl;
+	  //cout << "reconstruction not correct, abort!! " << endl;
+	  //cout << endl;
+	}
 	
-	//cout << endl;
-	//cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!reconstruction succesfull!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-	//cout << endl;
+	
       }
       // if the interpretation is 0 the loop for reco ends here
       else {
@@ -545,7 +551,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
     // if neither GEN nor RECO part worked the loop ends here
     else {
       //cout << "Neither Gen nor RECO reconstruction possible, abort!! " << endl;
-      continue;
+      return;
     }
     
     // now with the reconstructed 4-vectors the calculation of the variables starts
