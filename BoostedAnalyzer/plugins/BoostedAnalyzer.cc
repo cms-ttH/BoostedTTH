@@ -311,8 +311,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // initialize helper classes
     helper.SetUp("2015_74x", isData ? -1 : 1, analysisType::LJ, isData);
-    helper.SetJetCorrectorUncertainty();
-    helper.SetBoostedJetCorrectorUncertainty();
 
     // initialize CSV reweighter
     if( iConfig.existsAs<edm::ParameterSet>("bTagSFs",true) ) {
@@ -490,6 +488,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     eventcount++;
 
+    // initialize JEC 
+    helper.SetJetCorrectorUncertainty(iSetup);
+    helper.SetBoostedJetCorrectorUncertainty(iSetup);
 
     edm::Handle< std::vector<PileupSummaryInfo> >  h_puInfo;
     iEvent.getByToken( puInfoToken, h_puInfo);
@@ -836,7 +837,7 @@ std::string BoostedAnalyzer::systName(const sysType::sysType& sysType){
     if(sysType==sysType::JESdown) return "jesdown";
     if(sysType==sysType::JERup) return "jerup";
     if(sysType==sysType::JERdown) return "jerdown";
-    std::cerr << "BoostedAnalyzer: systematic not implemented" << std::endl;
+    std::cerr << "BoostedAnalyzer::systName systematic not implemented" << sysType << std::endl;
     throw std::exception();
     return "";
 }
@@ -850,7 +851,7 @@ std::string BoostedAnalyzer::outfileName(const std::string& basename, const sysT
 	else if(sysType==sysType::JERup) outfileName.replace(stringIndex,7,"JERUP");
 	else if(sysType==sysType::JERdown) outfileName.replace(stringIndex,7,"JERDOWN");
 	else {
-	    std::cerr << "BoostedAnalyzer: systematic not implemented" << std::endl;
+	    std::cerr << "BoostedAnalyzer::outfileName systematic not implemented" << sysType << std::endl;
 	    throw std::exception();
 	}
 	return outfileName;

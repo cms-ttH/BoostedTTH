@@ -129,8 +129,6 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
  
     }
     helper.SetUp(era, sampleID, iAnalysisType, isData);
-    helper.SetJetCorrectorUncertainty();
-    helper.SetBoostedJetCorrectorUncertainty();
 
     produces<pat::JetCollection>("rawJets");
 
@@ -160,6 +158,9 @@ void
 SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
+
+   helper.SetJetCorrectorUncertainty(iSetup);
+   helper.SetBoostedJetCorrectorUncertainty(iSetup);
 
    edm::Handle<double> h_rho;
    iEvent.getByToken(rhoToken,h_rho);
