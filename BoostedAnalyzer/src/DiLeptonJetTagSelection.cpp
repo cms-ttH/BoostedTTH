@@ -58,12 +58,12 @@ bool DiLeptonJetTagSelection::IsSelected(const InputCollections& input,Cutflow& 
   double ptCut=30.0;
   int njets = 0;
   int ntags = 0;
-  for(size_t i=0; i<input.selectedJets.size();i++){
-    if(BoostedUtils::PassesCSV(input.selectedJets.at(i), 'M')){
+  for(size_t i=0; i<input.selectedJetsLooseDL.size();i++){
+    if(BoostedUtils::PassesCSV(input.selectedJetsLooseDL.at(i), 'M')){
       ntags++;
     }
     //count jets with pT > 30 
-    if(input.selectedJets.at(i).pt()>=ptCut){
+    if(input.selectedJetsLooseDL.at(i).pt()>=ptCut){
       njets++;
     }
   }

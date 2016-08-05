@@ -155,3 +155,4 @@ process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi"
 ## check the event content 
 process.content = cms.EDAnalyzer("EventContentAnalyzer")
 process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
+

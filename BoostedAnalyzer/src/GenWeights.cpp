@@ -5,6 +5,8 @@ using namespace std;
 GenWeights::GenWeights(){ 
     GeneratorSet = false;
     errweightvalue = -1000;
+
+    LHAPDFinitialized = false;
 }
 
 
@@ -20,6 +22,7 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
       else {
 	for (int i = 0; (i < weightnumber && i < GeneratorWeights ); i++) {
 	  weights[weightnames.at(i)] = LHEEvent.weights()[i].wgt;
+	  //cout << "added generator weight " << weightnames.at(i) << endl;
 	}
       }
     }
@@ -42,6 +45,98 @@ bool GenWeights::SetGenerator(const Generator::Generator usedGenerator){
   else {
     return false;
   }
+}
+
+bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
+				  const GenEventInfoProduct& genInfos,
+				  string PDFSetName ) {
+
+  
+  if(!LHAPDFinitialized){
+    return false;
+  }
+  
+  auto pdfInfos = genInfos.pdf();
+  double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
+
+  //Loop over all initialized PDFSets
+  for( size_t p = 0; p < initializedPDFSets.size(); p++ ) {
+
+    LHAPDF::PDFSet PDFSet = initializedPDFSets[p];
+    std::vector<LHAPDF::PDF*> PDFs = initializedPDFs[p];
+
+    std::vector<double> pdfs;
+    for (size_t j = 0; j < PDFs.size(); ++j) {
+      double xpdf1 = PDFs[j]->xfxQ(pdfInfos->id.first, pdfInfos->x.first, pdfInfos->scalePDF);
+      double xpdf2 = PDFs[j]->xfxQ(pdfInfos->id.second, pdfInfos->x.second, pdfInfos->scalePDF);
+      pdfs.push_back(xpdf1 * xpdf2);
+    }
+
+  
+
+    const LHAPDF::PDFUncertainty pdfUnc = PDFSet.uncertainty(pdfs, 68.);
+    
+    double weight_up = 1.0;
+    double weight_down = 1.0;
+    if (std::isfinite(1./pdfNominal)) {
+      weight_up = (pdfUnc.central + pdfUnc.errplus) / pdfNominal;
+      weight_down = (pdfUnc.central - pdfUnc.errminus) / pdfNominal;
+    }
+    
+
+    weights["Weight_"+initializedPDFNames[p]+std::to_string(PDFs[0]->lhapdfID())+"_nominal"] =  pdfs[0] / pdfNominal;
+    weights["Weight_"+initializedPDFNames[p]+std::to_string(PDFs[0]->lhapdfID())+"_up"] =(  pdfs[0] * weight_up )/ pdfNominal;
+    weights["Weight_"+initializedPDFNames[p]+std::to_string(PDFs[0]->lhapdfID())+"_down"] =(  pdfs[0] * weight_down )/ pdfNominal;
+  
+  }
+
+
+  
+
+  return true;
+
+}
+
+bool GenWeights::initLHAPDF(string name){
+
+  cout << "Initializing additional PDFs for reweighting:" << endl;
+  LHAPDF::PDFSet PDFSet(name);
+  std::vector<LHAPDF::PDF*> PDFs = PDFSet.mkPDFs();
+  
+  initializedPDFSets.push_back(PDFSet);
+  initializedPDFs.push_back(PDFs);
+  initializedPDFNames.push_back(name);
+
+  LHAPDFinitialized = true;
+
+  return true;
+
+
+}
+
+
+bool GenWeights::initLHAPDF(vector<string> names){
+
+
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // NOT YET TESTED 
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+  cout << "Initializing additional PDFs for reweighting:" << endl;
+  for( auto name: names ){
+
+    LHAPDF::PDFSet PDFSet(name);
+    std::vector<LHAPDF::PDF*> PDFs = PDFSet.mkPDFs();
+    
+    initializedPDFSets.push_back(PDFSet);
+    initializedPDFs.push_back(PDFs);
+    initializedPDFNames.push_back(name);
+
+  }
+
+  LHAPDFinitialized = true;
+  return true;
+
 }
 
 
@@ -92,3 +187,5 @@ map<int, string> GenWeights::GetWeightNames(const Generator::Generator usedGener
   }
   return names;
 }
+
+

@@ -35,7 +35,7 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
   if(input.selectedMuons.size()+input.selectedElectrons.size()!=1) return;
-  float bdtoutput2=bdtohio2.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
+  float bdtoutput2=bdtohio2.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.correctedMET);
   vars.FillVar("BDTOhio_v2_output",bdtoutput2);
   if(bdtohio2.GetCategory(input.selectedJets)!="none"){
     map<string,float> bdtinputs2=bdtohio2.GetVariablesOfLastEvaluation();
@@ -44,7 +44,7 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
     }
   }
 
-  float bdtoutput3=bdt3.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.pfMET);
+  float bdtoutput3=bdt3.Evaluate(input.selectedMuons,input.selectedElectrons, input.selectedJets, input.selectedJetsLoose, input.correctedMET);
   vars.FillVar("BDT_v3_output",bdtoutput3);
   if(bdt3.GetCategory(input.selectedJets)!="none"){
     map<string,float> bdtinputs3=bdt3.GetVariablesOfLastEvaluation();
@@ -56,7 +56,7 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
   vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
   vector<TLorentzVector> loose_jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
-  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.pfMET.p4());
+  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.p4());
   vector<double> jetcsvs;
   vector<double> loose_jetcsvs;
   for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){

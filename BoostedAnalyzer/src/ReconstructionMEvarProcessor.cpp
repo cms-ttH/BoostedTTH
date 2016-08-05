@@ -111,7 +111,7 @@ void ReconstructionMEvarProcessor::Process(const InputCollections& input,Variabl
     if(ntags<4) return;
     if(input.selectedElectrons.size()+input.selectedMuons.size()<1) return;
     TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
-    TVector2 metvec(input.pfMET.px(),input.pfMET.py());
+    TVector2 metvec(input.correctedMET.px(),input.correctedMET.py());
 
     // setup mc matching
     if(input.genTopEvt.IsFilled()&&input.genTopEvt.IsSemiLepton()&&(input.higgsDecay==HiggsDecay::bb)){

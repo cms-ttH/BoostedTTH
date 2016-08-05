@@ -43,7 +43,7 @@ void MEMProcessor::Process(const InputCollections& input,VariableContainer& vars
   if(lepvecs.size()!=1) return;
   
   // MET
-  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.pfMET.p4());
+  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.p4());
   
   // jets
   vector<TLorentzVector> jetvecs;

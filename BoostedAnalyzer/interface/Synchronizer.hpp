@@ -27,11 +27,12 @@ public:
     ~Synchronizer ();
     void DumpSyncExe1(int nfile,const InputCollections& input);
     void DumpSyncExe1(const InputCollections& input, std::ostream &out);
-    void DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper);
-    void DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out, Cutflow& cutflowSL,Cutflow& cutflowDL,const int number = 0);
+    void DumpSyncExe2(int nfile,const InputCollections& input, const InputCollections& input_jesup, const InputCollections& input_jesdown, const InputCollections& input_raw,const InputCollections& input_DL, const InputCollections& input_DL_jesup, const InputCollections& input_DL_jesdown, const InputCollections& input_DL_raw, MiniAODHelper& helper, int dataset_flag);
+    void DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out, Cutflow& cutflowSL,Cutflow& cutflowDL,int dataset_flag);
     void InitDumpSyncFile1(std::string filename);
-    void InitDumpSyncFile2(std::string filename);
+    void InitDumpSyncFile2(std::string filename, bool BTagSystematics);
     void DumpSyncExe2Header(std::ostream &out);
+    void DumpSyncExe2HeaderBTagSys(std::ostream &out);
 
 private:
     ofstream* cutflowFile=0;
@@ -42,11 +43,11 @@ private:
     vector<ofstream*> dumpFiles2_raw;
     vector<Selection*> leptonSelections;
     vector<Selection*> dileptonSelections;
-    
+
     vector<Selection*> dileptonSelection;
     vector<Selection*> dileptonMllSelections;
     vector<Selection*> dileptonMETSelection;
-    
+
     Cutflow cutflowSL_jesup;
     Cutflow cutflowSL_jesdown;
     Cutflow cutflowSL_raw;
@@ -56,10 +57,10 @@ private:
     Cutflow cutflowDL_raw;
     Cutflow cutflowDL_nominal;
 
-    std::vector<Cutflow> dummycutflow_DL;    
-    std::vector<Cutflow> dummycutflow_Mll;    
+    std::vector<Cutflow> dummycutflow_DL;
+    std::vector<Cutflow> dummycutflow_Mll;
     std::vector<Cutflow> dummycutflow_MET;
-    
+
     TopTagger toptagger;
     BDT_v3 bdt3;
     bool initializedCutflowsWithSelections;

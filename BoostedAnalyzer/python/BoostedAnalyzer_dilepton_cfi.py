@@ -20,15 +20,13 @@ BoostedAnalyzer = cms.EDAnalyzer(
     
     luminosity = cms.double(10000),
     xs = cms.double(831.76),
-    nMCEvents = cms.int32(25446993), 
-    recorrectMET = cms.bool(True),
-    
+
+    nMCEvents = cms.int32(25446993),
+
     isData = cms.bool(False),
 
-    makeSystematicsTrees = cms.bool(False),
-    doJERsystematic = cms.bool(False),
-    doBoostedMEM = cms.bool(False),
-    
+    makeSystematicsTrees = cms.bool(True),
+
     useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),

@@ -32,26 +32,25 @@ struct InputCollections{
 InputCollections(   const EventInfo&                              eventInfo_,
 		    const TriggerInfo&                            triggerInfo_,
 		    const std::vector<reco::Vertex>&              selectedPVs_,
-                    const std::vector<pat::Muon>&                 rawMuons_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsDL_,
                     const std::vector<pat::Muon>&                 selectedMuonsLoose_,
-                    const std::vector<pat::Electron>&             rawElectrons_,
                     const std::vector<pat::Electron>&             selectedElectrons_,
                     const std::vector<pat::Electron>&             selectedElectronsDL_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
-                    const std::vector<pat::Jet>&                  idJets_,
-                    const std::vector<pat::Jet>&                  rawJets_,
+		    const std::vector<pat::Jet>&                  rawJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
-                    const std::vector<pat::Jet>&                  selectedJetsSingleTop_,
-                    const pat::MET&                               pfMET_,
+		    const std::vector<pat::Jet>&                  selectedJetsDL_,
+                    const std::vector<pat::Jet>&                  selectedJetsLooseDL_,
+                    const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const GenTopEvent&                            genTopEvt_,
-                    const std::vector<reco::GenJet>&              selectedGenJets_,
+                    const std::vector<reco::GenJet>&              genJets_,
                     const SampleType                              sampleType_,
 		    const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
+		    const std::map<std::string,float>&		  weightsDL_,
 		    const edm::Event& iEvent_,
 		    const edm::EventSetup& iSetup_
 		      /**** bjetness code ****/
@@ -60,26 +59,25 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     eventInfo(eventInfo_),
                     triggerInfo(triggerInfo_),
                     selectedPVs(selectedPVs_),
-                    rawMuons(rawMuons_),
                     selectedMuons(selectedMuons_),
                     selectedMuonsDL(selectedMuonsDL_),
                     selectedMuonsLoose(selectedMuonsLoose_),
-                    rawElectrons(rawElectrons_),
                     selectedElectrons(selectedElectrons_),
                     selectedElectronsDL(selectedElectronsDL_),
                     selectedElectronsLoose(selectedElectronsLoose_),
-		    idJets(idJets_),
                     rawJets(rawJets_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
-                    selectedJetsSingleTop(selectedJetsSingleTop_),
-                    pfMET(pfMET_),
+                    selectedJetsDL(selectedJetsDL_),
+                    selectedJetsLooseDL(selectedJetsLooseDL_),
+                    correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
                     genTopEvt(genTopEvt_),
-                    selectedGenJets(selectedGenJets_),
+                    genJets(genJets_),
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
                     weights(weights_),
+                    weightsDL(weightsDL_),
 		    iEvent(iEvent_),
 		    iSetup(iSetup_)
                     {}
@@ -88,36 +86,38 @@ InputCollections(   const EventInfo&                              eventInfo_,
    Constructor that replaces all variables related to jets and copies the remaining ones from a different input colection
  */
 InputCollections(   const InputCollections&                       input,
+		    const std::vector<pat::Jet>&                  rawJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
-                    const std::vector<pat::Jet>&                  selectedJetsSingleTop_,
-                    const pat::MET&                               pfMET_,
+		    const std::vector<pat::Jet>&                  selectedJetsDL_,
+		    const std::vector<pat::Jet>&                  selectedJetsLooseDL_,
+                    const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
-                    const std::map<std::string,float>&            weights_
+                    const std::map<std::string,float>&            weights_,
+		    const std::map<std::string,float>& 		  weightsDL_
         		    ): 
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
                     selectedPVs(input.selectedPVs),
-                    rawMuons(input.rawMuons),
                     selectedMuons(input.selectedMuons),
                     selectedMuonsDL(input.selectedMuonsDL),
                     selectedMuonsLoose(input.selectedMuonsLoose),
-                    rawElectrons(input.rawElectrons),
                     selectedElectrons(input.selectedElectrons),
                     selectedElectronsDL(input.selectedElectronsDL),
                     selectedElectronsLoose(input.selectedElectronsLoose),
-                    idJets(input.idJets),
-                    rawJets(input.rawJets),
+                    rawJets(rawJets_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
-                    selectedJetsSingleTop(selectedJetsSingleTop_),
-                    pfMET(pfMET_),
+                    selectedJetsDL(selectedJetsDL_),
+                    selectedJetsLooseDL(selectedJetsLooseDL_),
+                    correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
                     genTopEvt(input.genTopEvt),
-                    selectedGenJets(input.selectedGenJets),
+                    genJets(input.genJets),
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
                     weights(weights_),
+                    weightsDL(weightsDL_),
 		    iEvent(input.iEvent),
 		    iSetup(input.iSetup)
 
@@ -126,26 +126,25 @@ InputCollections(   const InputCollections&                       input,
   const EventInfo&                              eventInfo;
   const TriggerInfo&                            triggerInfo;
   const std::vector<reco::Vertex>&              selectedPVs;
-  const std::vector<pat::Muon>&                 rawMuons;
   const std::vector<pat::Muon>&                 selectedMuons;
   const std::vector<pat::Muon>&                 selectedMuonsDL;
   const std::vector<pat::Muon>&                 selectedMuonsLoose;
-  const std::vector<pat::Electron>&             rawElectrons;
   const std::vector<pat::Electron>&             selectedElectrons;
   const std::vector<pat::Electron>&             selectedElectronsDL;
   const std::vector<pat::Electron>&             selectedElectronsLoose;
-  const std::vector<pat::Jet>&                  idJets; // all input jets that pass the jet-ID cuts
   const std::vector<pat::Jet>&                  rawJets;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
-  const std::vector<pat::Jet>&                  selectedJetsSingleTop;
-  const pat::MET&                               pfMET;
+  const std::vector<pat::Jet>&                  selectedJetsDL;
+  const std::vector<pat::Jet>&                  selectedJetsLooseDL;
+  const pat::MET&                               correctedMET;
   const boosted::BoostedJetCollection&          selectedBoostedJets;
   const GenTopEvent&                            genTopEvt;
-  const std::vector<reco::GenJet>&              selectedGenJets;
+  const std::vector<reco::GenJet>&              genJets;
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
-  const std::map<std::string,float>&            weights;
+  const std::map<std::string,float>             weights;
+  const std::map<std::string,float>		weightsDL;
   const edm::Event & iEvent;
   const edm::EventSetup & iSetup;
 

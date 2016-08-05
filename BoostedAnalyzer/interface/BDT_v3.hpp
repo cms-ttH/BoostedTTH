@@ -15,7 +15,7 @@ public:
   ~BDT_v3();
 
   // Evaluate function takes all selected objects as input, figures out category and returns bdt output
-  float Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET);
+  float Evaluate(const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& correctedMET);
   // returns map with all input variable names and values (e.g. for control plots)
   std::map<std::string,float> GetVariablesOfLastEvaluation() const;
   // return all BDT outputs, need to call evaluate first
@@ -27,7 +27,7 @@ public:
 
 
 private:  
-  float Evaluate(std::string categoryLabel,const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& pfMET);
+  float Evaluate(std::string categoryLabel,const std::vector<pat::Muon>& selectedMuons, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const pat::MET& correctedMET);
   std::map<std::string,TMVA::Reader*> readerMap;
   std::map<std::string,float> variableMap;
   BDTvars bdtvar;

@@ -56,7 +56,7 @@ void DiJetVarProcessor::Process(const InputCollections& input, VariableContainer
 
   // jet variables
   // use "selectedJetsLoose" --> pt>20 GeV  
-  const std::vector<pat::Jet>& jets = input.idJets;
+  const std::vector<pat::Jet>& jets = input.selectedJets;
   vars.FillVar( "N_Jets", jets.size());
   for( std::vector<pat::Jet>::const_iterator itJet = jets.begin(); itJet != jets.end(); ++itJet) {
     const size_t iJet = itJet - jets.begin();

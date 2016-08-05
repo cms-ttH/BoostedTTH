@@ -30,7 +30,7 @@ TreeWriter::~TreeWriter(){
 }
 
 void TreeWriter::Init( std::string fileName){
-  
+    cout << "initializing tree writer with" << fileName <<endl;
   outFile = new TFile( (fileName+"_Tree.root").c_str(), "RECREATE" );
   outFile->cd();
 
