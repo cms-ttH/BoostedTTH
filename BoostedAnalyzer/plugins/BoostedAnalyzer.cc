@@ -114,6 +114,7 @@ private:
     virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
     virtual void endJob() override;
     virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
+    virtual void beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup) override;
     float GetTopPtWeight(float toppt1, float toppt2);
     map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype=sysType::NA);
     std::string outfileName(const std::string& basename,const sysType::sysType& sysType);
@@ -311,8 +312,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // initialize helper classes
     helper.SetUp("2015_74x", isData ? -1 : 1, analysisType::LJ, isData);
-    helper.SetJetCorrectorUncertainty();
-    helper.SetBoostedJetCorrectorUncertainty();
 
     // initialize CSV reweighter
     if( iConfig.existsAs<edm::ParameterSet>("bTagSFs",true) ) {
@@ -489,7 +488,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
 
     eventcount++;
-
 
     edm::Handle< std::vector<PileupSummaryInfo> >  h_puInfo;
     iEvent.getByToken( puInfoToken, h_puInfo);
@@ -836,7 +834,7 @@ std::string BoostedAnalyzer::systName(const sysType::sysType& sysType){
     if(sysType==sysType::JESdown) return "jesdown";
     if(sysType==sysType::JERup) return "jerup";
     if(sysType==sysType::JERdown) return "jerdown";
-    std::cerr << "BoostedAnalyzer: systematic not implemented" << std::endl;
+    std::cerr << "BoostedAnalyzer::systName systematic not implemented" << sysType << std::endl;
     throw std::exception();
     return "";
 }
@@ -850,7 +848,7 @@ std::string BoostedAnalyzer::outfileName(const std::string& basename, const sysT
 	else if(sysType==sysType::JERup) outfileName.replace(stringIndex,7,"JERUP");
 	else if(sysType==sysType::JERdown) outfileName.replace(stringIndex,7,"JERDOWN");
 	else {
-	    std::cerr << "BoostedAnalyzer: systematic not implemented" << std::endl;
+	    std::cerr << "BoostedAnalyzer::outfileName systematic not implemented" << sysType << std::endl;
 	    throw std::exception();
 	}
 	return outfileName;
@@ -898,11 +896,24 @@ void BoostedAnalyzer::endJob()
 	delete treewriters[i];
     }
 }
+
 // ------------ method called when starting to processes a run ------------
-
-
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
+
+  // initialize JEC
+  helper.SetJetCorrectorUncertainty(iSetup);
+  helper.SetBoostedJetCorrectorUncertainty(iSetup);
+
+}
+
+// ------------ method called when starting a luminosity block ------------
+void BoostedAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup)
+{
+
+  // initialize JEC
+  helper.SetJetCorrectorUncertainty(iSetup);
+  helper.SetBoostedJetCorrectorUncertainty(iSetup);
 
 }
 
