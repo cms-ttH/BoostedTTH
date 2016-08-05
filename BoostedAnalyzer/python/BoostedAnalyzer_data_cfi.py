@@ -25,7 +25,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     doJERsystematic = cms.bool(False),
     generatorName = cms.string("notSpecified"),
 
-    useFatJets = cms.bool(True),
+    useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(False),
 

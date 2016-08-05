@@ -199,6 +199,7 @@ SpinCorrelationProcessor::~SpinCorrelationProcessor (){}
 
 void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContainer& vars){
   
+  //cout << "Spin Correlaton Processor initialized" << endl;
   std::vector<TString> frames;
   std::vector<TString> variables;
   std::vector<TString> var_type;
@@ -254,7 +255,7 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
 
 void SpinCorrelationProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
- 
+  //cout << "Spin Correlation Processor process started " << endl;
   std::map<TString,int> frames;// map which contains the frames which are used and some number for later identification
   std::map<TString,int> variables;// map which contains the variables which are used and some number for later nidentification
   std::vector<TString> var_type;// just string vector which contains GEN and RECO to use it in loop 
@@ -440,7 +441,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	if(BoostedUtils::PassesCSV(*j)) ntags++;
       }
       TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
-      TVector2 metvec(input.pfMET.px(),input.pfMET.py());
+      TVector2 metvec(input.correctedMET.px(),input.correctedMET.py());
       if(input.genTopEvt.IsFilled()&&input.genTopEvt.IsSemiLepton()){
 	vector<TLorentzVector> bs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetHiggsDecayProductVecs());
 	vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());

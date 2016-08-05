@@ -35,20 +35,20 @@ BoostedAnalyzer = cms.EDAnalyzer( # BoostedAnalyzer is of type EDAnalyzer ( ther
 
     isreHLT = cms.bool(False),
 
-    useFatJets = cms.bool(True),
+    useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),
 
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
 
-    doBoostedMEM = cms.bool(True),
+    doBoostedMEM = cms.bool(False),
 
     minJetsForMEM = cms.int32(4),
     minTagsForMEM = cms.int32(3),
 
-    selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor"),
+    selectionNames = cms.vstring("VertexSelection","LeptonSelection","JetTagSelection"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","TriggerVarProcessor","SpinCorrelationProcessor","AdditionalJetProcessor"),
 
     outfileName = cms.string("BoostedTTH"),
 )
