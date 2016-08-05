@@ -550,8 +550,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
     }
     // if neither GEN nor RECO part worked the loop ends here
     else {
-      //cout << "Neither Gen nor RECO reconstruction possible, abort!! " << endl;
-      return;
+      //cout << *it_type << " reconstruction not possible, abort!! " << endl;
+      continue;
     }
     
     // now with the reconstructed 4-vectors the calculation of the variables starts
@@ -614,7 +614,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       // now the GetVars function calculates the desired variable depending on the number of the variable using the 4-vectors of the event
       for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
 	  vars.FillVar(*it_type+"__"+it_frames->first+"__"+it_variables->first,GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,vec_d_,vec_antid_,it_variables->second));
-	  //cout << *it_type+"__"+it_frames->first+"__"+it_variables->first << " filled with " << GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,it_variables->second) << endl;
+	  //cout << *it_type+"__"+it_frames->first+"__"+it_variables->first << " filled with " << GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,vec_d_,vec_antid_,it_variables->second) << endl;
 	
       }
     }
