@@ -7,13 +7,13 @@ LeptonSelectionNoTrigger = cms.PSet(
 )
 
 LeptonSelectionData = cms.PSet(
-    muonTriggers = cms.vstring("HLT_IsoMu20_v*"),
-    electronTriggers = cms.vstring("HLT_Ele27_eta2p1_WPLoose_Gsf_v*"),
+    muonTriggers = cms.vstring("HLT_IsoMu22_v*","HLT_IsoTkMu22_v*"),
+    electronTriggers = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*"),
     channel = cms.string("both")
 )
 LeptonSelectionMC = cms.PSet(
-    muonTriggers = cms.vstring("HLT_IsoMu20_v*"),
-    electronTriggers = cms.vstring("HLT_Ele27_eta2p1_WPLoose_Gsf_v*"),
+    muonTriggers = cms.vstring("HLT_IsoMu22_v*","HLT_IsoTkMu22_v*"),
+    electronTriggers = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*"),
     channel = cms.string("both")
 )
 
@@ -26,14 +26,14 @@ DiLeptonSelectionNoTrigger  = cms.PSet(
 
 DiLeptonSelectionMC = cms.PSet(
     mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*"),
-    elelTriggers = cms.vstring("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
-    elmuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*"),
+    elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+    elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*"),
     dlchannel = cms.string("all"),
 )
 DiLeptonSelectionData = cms.PSet(
     mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*"),
-    elelTriggers = cms.vstring("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
-    elmuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*"),
+    elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+    elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*"),
     dlchannel = cms.string("all"),
 )
 
