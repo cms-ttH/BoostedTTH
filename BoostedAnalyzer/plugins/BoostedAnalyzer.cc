@@ -114,6 +114,7 @@ private:
     virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
     virtual void endJob() override;
     virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
+    virtual void beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup) override;
     float GetTopPtWeight(float toppt1, float toppt2);
     map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype=sysType::NA);
     std::string outfileName(const std::string& basename,const sysType::sysType& sysType);
@@ -487,10 +488,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
 
     eventcount++;
-
-    // initialize JEC 
-    helper.SetJetCorrectorUncertainty(iSetup);
-    helper.SetBoostedJetCorrectorUncertainty(iSetup);
 
     edm::Handle< std::vector<PileupSummaryInfo> >  h_puInfo;
     iEvent.getByToken( puInfoToken, h_puInfo);
@@ -899,11 +896,24 @@ void BoostedAnalyzer::endJob()
 	delete treewriters[i];
     }
 }
+
 // ------------ method called when starting to processes a run ------------
-
-
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
+
+  // initialize JEC
+  helper.SetJetCorrectorUncertainty(iSetup);
+  helper.SetBoostedJetCorrectorUncertainty(iSetup);
+
+}
+
+// ------------ method called when starting a luminosity block ------------
+void BoostedAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup)
+{
+
+  // initialize JEC
+  helper.SetJetCorrectorUncertainty(iSetup);
+  helper.SetBoostedJetCorrectorUncertainty(iSetup);
 
 }
 
