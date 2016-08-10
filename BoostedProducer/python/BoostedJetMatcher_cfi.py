@@ -3,15 +3,18 @@ import FWCore.ParameterSet.Config as cms
 BoostedJetMatcher = cms.EDProducer(
     "BoostedJetMatcher",
     verbose                           = cms.bool(False),
-    recoFatJetsTag                    = cms.InputTag('ca15PFJetsCHS'),
-    recoHTTJetsTag                    = cms.InputTag('HTTTopJetProducer'),
+    recoFatJetsTag                    = cms.InputTag('ca15PFJetsCHS'),#
+    #recoHTTJetsTag                    = cms.InputTag('HTTTopJetProducer'),
+    recoTopJetsTag                    = cms.InputTag('HTTTopJetProducer'),#
     recoSFJetsTag                     = cms.InputTag('SFJetProducer','fat'),
     recoPrunedJetsTag                 = cms.InputTag('ca15PFPrunedJetsCHS'),
     recoSDJetsTag                     = cms.InputTag('ca15PFSoftdropJetsCHS'),
-    recoSDZ2B1JetsForSubjettinessTag  = cms.InputTag('ca15PFSoftdropJetsCHSforSubjettiness'),
-    patFatJetsTag                     = cms.InputTag('selectedPatJetsFatJetsPF'),
-    patHTTTopJetsTag                  = cms.InputTag('selectedPatJetsHTTTopJetsPF'),
-    patHTTSubjetsTag                  = cms.InputTag('selectedPatJetsHTTSubjetsPF'),
+    recoSDJetsForSubjettinessTag      = cms.InputTag('ca15PFSoftdropJetsCHSforSubjettiness'),
+    patFatJetsTag                     = cms.InputTag('selectedPatJetsFatJetsPF'),##
+    #patHTTTopJetsTag                  = cms.InputTag('selectedPatJetsHTTTopJetsPF'),
+    patTopJetsTag                     = cms.InputTag('selectedPatJetsHTTTopJetsPF'),
+    #patHTTSubjetsTag                  = cms.InputTag('selectedPatJetsHTTSubjetsPF'),
+    patTopSubjetsTag                  = cms.InputTag('selectedPatJetsHTTSubjetsPF'),
     httInfosTag                       = cms.InputTag('HTTTopJetProducer',''),
     patSFSubjetsTag                   = cms.InputTag('selectedPatJetsSFSubjetsPF'),
     patSFFilterjetsTag                = cms.InputTag('selectedPatJetsSFFilterjetsPF'),

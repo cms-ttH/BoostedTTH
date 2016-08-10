@@ -63,7 +63,7 @@ SFJetProducer = cms.EDProducer(
     rFilt        	      = cms.double(0.3),
     massDropCut  	      = cms.double(0.67),
     asymmCut     	      = cms.double(0.3),
-    asymmCutLater	      = cms.bool(True),
+    asymmCutLater	      = cms.bool(True)#,
 #    writeCompound       = cms.bool(True),
 #    jetCollInstanceName = cms.string("compjets")
 )

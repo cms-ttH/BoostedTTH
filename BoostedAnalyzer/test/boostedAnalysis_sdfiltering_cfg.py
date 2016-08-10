@@ -24,17 +24,18 @@ options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2_v1", VarPar
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "int flag to identify which dataset is used")#(0,1,2,3,4,5)->(MC,single ele, single mu,ele ele,ele mu,mu mu)
-options.register( "isreHLT",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
+options.register( "isreHLT",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
 options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 1000 # reset for testing
+    options.maxEvents = 10000 # reset for testing
 
 if not options.inputFiles:
     #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/friese/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedMiniAOD-sdfilt3/160630_080603/0000/BoostedTTH_MiniAOD_69.root']
     #options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/00000/0064B539-803A-E611-BDEA-002590D0B060.root']
-    options.inputFiles=['root://xrootd-cms.infn.it//store/user/koschwei/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAODICHEPv1/160729_220552/0000/BoostedTTH_MiniAOD_12.root']
+    #options.inputFiles=['root://xrootd-cms.infn.it//store/user/koschwei/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAODICHEPv1/160729_220552/0000/BoostedTTH_MiniAOD_12.root']
+    options.inputFiles=['file:/nfs/dust/cms/user/riese/CMSSW_8_0_12/src/BoostedTTH_MiniAOD.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
