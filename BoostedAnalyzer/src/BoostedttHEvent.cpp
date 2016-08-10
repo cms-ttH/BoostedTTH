@@ -332,11 +332,6 @@ void BoostedttHEvent::HiggsCandBoostedRec(const boosted::SubjetType subjettype, 
         cleanedSubjets = itJet->sdsubjets;
         break;
       }
-      case boosted::SubjetType::SDZ2B1:
-      {
-        cleanedSubjets = itJet->sdz2b1subjets;
-        break;
-      }
       default:
         cleanedSubjets = itJet->filterjets;
     }

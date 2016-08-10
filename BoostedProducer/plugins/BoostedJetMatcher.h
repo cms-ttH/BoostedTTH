@@ -5,7 +5,7 @@
 //
 // Package:    BoostedTTH/BoostedProducer/BoostedJetMatcher
 // Class:      BoostedJetMatcher
-// 
+//
 /**\class BoostedJetMatcher BoostedJetMatcher.cc BoostedTTH/BoostedProducer/plugins/BoostedJetMatcher.cc
 
  Description: [one line class summary]
@@ -44,7 +44,7 @@
 //
 
 class BoostedJetMatcher : public edm::EDProducer {
-   
+
   public:
 
     explicit BoostedJetMatcher(const edm::ParameterSet&);
@@ -65,15 +65,14 @@ class BoostedJetMatcher : public edm::EDProducer {
     const int recorecoJetMatching(const recojettype1 & recojet, const std::vector<recojettype2> & recojets, const float & matchingdistance);
 
     // ---------- member data ---------------------------
-    
+
     /** Jet Collection Access Tokens **/
-    edm::EDGetTokenT< std::vector<reco::PFJet> >              recoFatJetsToken;
+    edm::EDGetTokenT< std::vector<reco::PFJet> >            recoFatJetsToken;
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoHTTJetsToken;
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSFJetsToken;
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoPrunedJetsToken;
     edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSDJetsToken;
-    edm::EDGetTokenT< std::vector<reco::BasicJet> >         recoSDZ2B1JetsToken;
-    edm::EDGetTokenT< std::vector<reco::PFJet> >            recoSDZ2B1JetsforSToken;
+    edm::EDGetTokenT< std::vector<reco::PFJet> >            recoSDJetsforSToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patFatJetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patHTTTopJetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patHTTSubjetsToken;
@@ -82,7 +81,6 @@ class BoostedJetMatcher : public edm::EDProducer {
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patSFFilterjetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patPrunedSubjetsToken;
     edm::EDGetTokenT< edm::View<pat::Jet> >                 patSDSubjetsToken;
-    edm::EDGetTokenT< edm::View<pat::Jet> >                 patSDZ2B1SubjetsToken;
     edm::EDGetTokenT< edm::ValueMap<float> >                softdropSubjettiness1Token;
     edm::EDGetTokenT< edm::ValueMap<float> >                softdropSubjettiness2Token;
     edm::EDGetTokenT< edm::ValueMap<float> >                softdropSubjettiness3Token;
