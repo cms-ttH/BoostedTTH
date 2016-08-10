@@ -32,15 +32,27 @@
 //
 BoostedJetMatcher::BoostedJetMatcher(const edm::ParameterSet& iConfig)
 {
-  recoFatJetsToken      = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoFatJetsTag"));
-  recoTopJetsToken      = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoTopJetsTag"));
-  patFatJetsToken       = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patFatJetsTag"));
-  patTopJetsToken       = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patTopJetsTag"));
-  patTopSubjetsToken    = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patTopSubjetsTag"));
-  httInfosToken         = consumes< std::vector<reco::HTTTopJetTagInfo> > (iConfig.getParameter<edm::InputTag>("httInfosTag"));
-  patSFSubJetsToken     = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSFSubJetsTag"));
-  patSFFilterJetsToken  = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSFFilterJetsTag"));
-
+  recoFatJetsToken            = consumes< std::vector<reco::PFJet> >            (iConfig.getParameter<edm::InputTag>("recoFatJetsTag"));
+  recoHTTJetsToken            = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoHTTJetsTag"));
+  recoSFJetsToken             = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoSFJetsTag"));
+  recoPrunedJetsToken         = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoPrunedJetsTag"));
+  recoSDJetsToken             = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoSDJetsTag"));
+  recoSDZ2B1JetsToken         = consumes< std::vector<reco::BasicJet> >         (iConfig.getParameter<edm::InputTag>("recoSDZ2B1JetsTag"));
+  recoSDZ2B1JetsforSToken     = consumes< std::vector<reco::PFJet> >            (iConfig.getParameter<edm::InputTag>("recoSDZ2B1JetsForSubjettinessTag"));
+  patFatJetsToken             = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patFatJetsTag"));
+  patHTTTopJetsToken          = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patHTTTopJetsTag"));
+  patHTTSubjetsToken          = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patHTTSubjetsTag"));
+  httInfosToken               = consumes< std::vector<reco::HTTTopJetTagInfo> > (iConfig.getParameter<edm::InputTag>("httInfosTag"));
+  patSFSubjetsToken           = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSFSubjetsTag"));
+  patSFFilterjetsToken        = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSFFilterjetsTag"));
+  patPrunedSubjetsToken       = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patPrunedSubjetsTag"));
+  patSDSubjetsToken           = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSDSubjetsTag"));
+  patSDZ2B1SubjetsToken       = consumes< edm::View<pat::Jet> >                 (iConfig.getParameter<edm::InputTag>("patSDZ2B1SubjetsTag"));
+  softdropSubjettiness1Token  = consumes< edm::ValueMap<float> >                (iConfig.getParameter<edm::InputTag>("softdropSubjettiness1Tag"));
+  softdropSubjettiness2Token  = consumes< edm::ValueMap<float> >                (iConfig.getParameter<edm::InputTag>("softdropSubjettiness2Tag"));
+  softdropSubjettiness3Token  = consumes< edm::ValueMap<float> >                (iConfig.getParameter<edm::InputTag>("softdropSubjettiness3Tag"));
+  
+  
   produces<boosted::BoostedJetCollection>("boostedjets");
 }
 
@@ -62,158 +74,248 @@ BoostedJetMatcher::~BoostedJetMatcher()
 void
 BoostedJetMatcher::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  
-  edm::Handle< std::vector<reco::BasicJet> > recoFatJetsHandle;
+  edm::Handle< std::vector<reco::PFJet> > recoFatJetsHandle;
   iEvent.getByToken(recoFatJetsToken, recoFatJetsHandle);
-  std::vector<reco::BasicJet> recofatjets = *recoFatJetsHandle;
+  std::vector<reco::PFJet> recofatjets = *recoFatJetsHandle;
   
-  edm::Handle< std::vector<reco::BasicJet> > recoTopJetsHandle;
-  iEvent.getByToken(recoTopJetsToken, recoTopJetsHandle);
-  std::vector<reco::BasicJet> recotopjets = *recoTopJetsHandle;
+  edm::Handle< std::vector<reco::BasicJet> > recoHTTJetsHandle;
+  iEvent.getByToken(recoHTTJetsToken, recoHTTJetsHandle);
+  std::vector<reco::BasicJet> recohttjets = *recoHTTJetsHandle;
+  
+  edm::Handle< std::vector<reco::BasicJet> > recoSFJetsHandle;
+  iEvent.getByToken(recoSFJetsToken, recoSFJetsHandle);
+  std::vector<reco::BasicJet> recosfjets = *recoSFJetsHandle;
+  
+  edm::Handle< std::vector<reco::BasicJet> > recoPrunedJetsHandle;
+  iEvent.getByToken(recoPrunedJetsToken, recoPrunedJetsHandle);
+  std::vector<reco::BasicJet> recoprunedjets = *recoPrunedJetsHandle;
+  
+  edm::Handle< std::vector<reco::BasicJet> > recoSDJetsHandle;
+  iEvent.getByToken(recoSDJetsToken, recoSDJetsHandle);
+  std::vector<reco::BasicJet> recosdjets = *recoSDJetsHandle;
+  
+  edm::Handle< std::vector<reco::BasicJet> > recoSDZ2B1JetsHandle;
+  iEvent.getByToken(recoSDZ2B1JetsToken, recoSDZ2B1JetsHandle);
+  std::vector<reco::BasicJet> recosdz2b1jets = *recoSDZ2B1JetsHandle;
+  
+  edm::Handle< std::vector<reco::PFJet> > recoSDZ2B1JetsforSHandle;
+  iEvent.getByToken(recoSDZ2B1JetsforSToken, recoSDZ2B1JetsforSHandle);
+  std::vector<reco::PFJet> recosdz2b1jetsfors = *recoSDZ2B1JetsforSHandle;
   
   edm::Handle<edm::View<pat::Jet> > patFatJetsHandle;
   iEvent.getByToken(patFatJetsToken, patFatJetsHandle);
   edm::View<pat::Jet> patfatjets = *patFatJetsHandle;
   
-  edm::Handle<edm::View<pat::Jet> > patTopJetsHandle;
-  iEvent.getByToken(patTopJetsToken, patTopJetsHandle);
-  edm::View<pat::Jet> pattopjets = *patTopJetsHandle;
+  edm::Handle<edm::View<pat::Jet> > patHTTTopJetsHandle;
+  iEvent.getByToken(patHTTTopJetsToken, patHTTTopJetsHandle);
+  edm::View<pat::Jet> pathtttopjets = *patHTTTopJetsHandle;
   
-  edm::Handle<edm::View<pat::Jet> > patTopSubjetsHandle;
-  iEvent.getByToken(patTopSubjetsToken, patTopSubjetsHandle);
-  edm::View<pat::Jet> pattopsubjets = *patTopSubjetsHandle;
+  edm::Handle<edm::View<pat::Jet> > patHTTSubjetsHandle;
+  iEvent.getByToken(patHTTSubjetsToken, patHTTSubjetsHandle);
+  edm::View<pat::Jet> pathttsubjets = *patHTTSubjetsHandle;
   
   edm::Handle<std::vector<reco::HTTTopJetTagInfo> > httInfosHandle;
   iEvent.getByToken(httInfosToken, httInfosHandle);
   std::vector<reco::HTTTopJetTagInfo> httinfos = *httInfosHandle;
   
-  edm::Handle<edm::View<pat::Jet> > patSFSubJetsHandle;
-  iEvent.getByToken(patSFSubJetsToken, patSFSubJetsHandle);
-  edm::View<pat::Jet> patsfsubjets = *patSFSubJetsHandle;
+  edm::Handle<edm::View<pat::Jet> > patSFSubjetsHandle;
+  iEvent.getByToken(patSFSubjetsToken, patSFSubjetsHandle);
+  edm::View<pat::Jet> patsfsubjets = *patSFSubjetsHandle;
 	
-  edm::Handle<edm::View<pat::Jet> > patSFFilterJetsHandle;
-  iEvent.getByToken(patSFFilterJetsToken, patSFFilterJetsHandle);
-  edm::View<pat::Jet> patsffilterjets = *patSFFilterJetsHandle;
+  edm::Handle<edm::View<pat::Jet> > patSFFilterjetsHandle;
+  iEvent.getByToken(patSFFilterjetsToken, patSFFilterjetsHandle);
+  edm::View<pat::Jet> patsffilterjets = *patSFFilterjetsHandle;
   
+  edm::Handle<edm::View<pat::Jet> > patPrunedSubjetsHandle;
+  iEvent.getByToken(patPrunedSubjetsToken, patPrunedSubjetsHandle);
+  edm::View<pat::Jet> patprunedsubjets = *patPrunedSubjetsHandle;
+  
+  edm::Handle<edm::View<pat::Jet> > patSDSubjetsHandle;
+  iEvent.getByToken(patSDSubjetsToken, patSDSubjetsHandle);
+  edm::View<pat::Jet> patsdsubjets = *patSDSubjetsHandle;
+  
+  edm::Handle<edm::View<pat::Jet> > patSDZ2B1SubjetsHandle;
+  iEvent.getByToken(patSDZ2B1SubjetsToken, patSDZ2B1SubjetsHandle);
+  edm::View<pat::Jet> patsdz2b1subjets = *patSDZ2B1SubjetsHandle;
+  
+  edm::Handle<edm::ValueMap<float> > softdropSubjettiness1Handle;
+  iEvent.getByToken(softdropSubjettiness1Token, softdropSubjettiness1Handle);
+  edm::ValueMap<float> softdropSubjettiness1 = *softdropSubjettiness1Handle;
+  
+  edm::Handle<edm::ValueMap<float> > softdropSubjettiness2Handle;
+  iEvent.getByToken(softdropSubjettiness2Token, softdropSubjettiness2Handle);
+  edm::ValueMap<float> softdropSubjettiness2 = *softdropSubjettiness2Handle;
+  
+  edm::Handle<edm::ValueMap<float> > softdropSubjettiness3Handle;
+  iEvent.getByToken(softdropSubjettiness3Token, softdropSubjettiness3Handle);
+  edm::ValueMap<float> softdropSubjettiness3 = *softdropSubjettiness3Handle;
+    
   std::multimap<double, int> patfatjetindex_by_eta;
-  std::multimap<double, int> pattopjetindex_by_eta;
-  std::multimap<double, int> pattopsubjetindex_by_eta;
+  std::multimap<double, int> pathtttopjetindex_by_eta;
+  std::multimap<double, int> pathttsubjetindex_by_eta;
   std::multimap<double, int> patsfsubjetindex_by_eta;
   std::multimap<double, int> patsffilterjetindex_by_eta;
+  std::multimap<double, int> patprunedsubjetindex_by_eta;
+  std::multimap<double, int> patsdsubjetindex_by_eta;
+  std::multimap<double, int> patsdz2b1subjetindex_by_eta;
   
   for(size_t i=0; i<patfatjets.size(); ++i) patfatjetindex_by_eta.insert(std::pair<double,int>(patfatjets[i].eta(), i));
-  for(size_t i=0; i<pattopjets.size(); ++i) pattopjetindex_by_eta.insert(std::pair<double,int>(pattopjets[i].eta(), i));
-  for(size_t i=0; i<pattopsubjets.size(); ++i) pattopsubjetindex_by_eta.insert(std::pair<double,int>(pattopsubjets[i].eta(), i));
+  for(size_t i=0; i<pathtttopjets.size(); ++i) pathtttopjetindex_by_eta.insert(std::pair<double,int>(pathtttopjets[i].eta(), i));
+  for(size_t i=0; i<pathttsubjets.size(); ++i) pathttsubjetindex_by_eta.insert(std::pair<double,int>(pathttsubjets[i].eta(), i));
   for(size_t i=0; i<patsfsubjets.size(); ++i) patsfsubjetindex_by_eta.insert(std::pair<double,int>(patsfsubjets[i].eta(), i));
   for(size_t i=0; i<patsffilterjets.size(); ++i) patsffilterjetindex_by_eta.insert(std::pair<double,int>(patsffilterjets[i].eta(), i));
+  for(size_t i=0; i<patprunedsubjets.size(); ++i) patprunedsubjetindex_by_eta.insert(std::pair<double,int>(patprunedsubjets[i].eta(), i));
+  for(size_t i=0; i<patsdsubjets.size(); ++i) patsdsubjetindex_by_eta.insert(std::pair<double,int>(patsdsubjets[i].eta(), i));
+  for(size_t i=0; i<patsdz2b1subjets.size(); ++i) patsdz2b1subjetindex_by_eta.insert(std::pair<double,int>(patsdz2b1subjets[i].eta(), i));
   
   std::auto_ptr<boosted::BoostedJetCollection> BoostedJets(new boosted::BoostedJetCollection());
   
-  for(typename std::vector<reco::BasicJet>::const_iterator it=recofatjets.begin();it!=recofatjets.end();++it){
+  for(typename std::vector<reco::PFJet>::const_iterator it=recofatjets.begin();it!=recofatjets.end();++it){
     
     BoostedJets->push_back(boosted::BoostedJet());
     
-    BoostedJets->back().fatjet 		          = deltarJetMatching(patfatjets, patfatjetindex_by_eta, *it);
+    BoostedJets->back().fatjet = patrecoJetMatching(patfatjets,patfatjetindex_by_eta,*it);
     
-    std::vector<const reco::Candidate*> recosfsubjets = it->getJetConstituentsQuick();
-    for(std::vector<const reco::Candidate*>::const_iterator itSub=recosfsubjets.begin();itSub!=recosfsubjets.end();++itSub){
-      int iSub = itSub-recosfsubjets.begin();
+    // get HTT V2 information
+    int httrecojetid = recorecoJetMatching(*it,recohttjets,1.0);
+    
+    if(httrecojetid>=0){
+      BoostedJets->back().topjet = patrecoJetMatching(pathtttopjets, pathtttopjetindex_by_eta, recohttjets[httrecojetid]);
       
-      if(iSub<2) BoostedJets->back().subjets.push_back(deltarJetMatching(patsfsubjets, patsfsubjetindex_by_eta, **itSub));
-      else BoostedJets->back().filterjets.push_back(deltarJetMatching(patsffilterjets, patsffilterjetindex_by_eta, **itSub));
+      std::vector<const reco::Candidate*> recohttsubjets = recohttjets[httrecojetid].getJetConstituentsQuick();
+      for(std::vector<const reco::Candidate*>::const_iterator itSub=recohttsubjets.begin();itSub!=recohttsubjets.end();++itSub){
+        int iSub = itSub-recohttsubjets.begin();
+        const pat::Jet & patsubjet = patrecoJetMatching(pathttsubjets, pathttsubjetindex_by_eta, **itSub);
+
+        if(iSub==0) BoostedJets->back().W1    = patsubjet;
+        if(iSub==1) BoostedJets->back().W2    = patsubjet;
+        if(iSub==2) BoostedJets->back().nonW  = patsubjet;
+
+        if(iSub>2) std::cout << "Error! More than 3 Subjets in reco::BasicJet" << std::endl;
+      }
+    
+      reco::HTTTopJetProperties httproperties = httinfos[httrecojetid].properties();
+      BoostedJets->back().fatjetMass 		      = httproperties.fjMass;
+      BoostedJets->back().fatjetPt 		        = httproperties.fjPt;
+      BoostedJets->back().fatjetEta 		      = httproperties.fjEta;
+      BoostedJets->back().fatjetPhi 		      = httproperties.fjPhi;
+      BoostedJets->back().topMass 		        = httproperties.topMass;
+      BoostedJets->back().unfilteredMass	    = httproperties.unfilteredMass;
+      BoostedJets->back().prunedMass 		      = httproperties.prunedMass;
+      BoostedJets->back().fRec 		            = httproperties.fRec;
+      BoostedJets->back().massRatioPassed     = httproperties.massRatioPassed;
+      BoostedJets->back().Ropt 		            = httproperties.Ropt;
+      BoostedJets->back().RoptCalc 		        = httproperties.RoptCalc;
+      BoostedJets->back().ptForRoptCalc	      = httproperties.ptForRoptCalc;
+      BoostedJets->back().tau1Unfiltered 	    = httproperties.tau1Unfiltered;
+      BoostedJets->back().tau2Unfiltered 	    = httproperties.tau2Unfiltered;
+      BoostedJets->back().tau3Unfiltered 	    = httproperties.tau3Unfiltered;
+      BoostedJets->back().tau1Filtered 		    = httproperties.tau1Filtered;
+      BoostedJets->back().tau2Filtered 		    = httproperties.tau2Filtered;
+      BoostedJets->back().tau3Filtered 		    = httproperties.tau3Filtered;
+      BoostedJets->back().qWeight 		        = httproperties.QWeight;
+      BoostedJets->back().qEpsilon 		        = httproperties.QEpsilon;
+      BoostedJets->back().qSigmaM 		        = httproperties.QSigmaM;
     }
     
-    int topSubstructureID = deltarTopJetMatching<reco::Jet>(*it,recotopjets);
+    // get Subjet Filterjet information
+    int sfrecojetid = recorecoJetMatching(*it,recosfjets,1.0);
     
-    if(topSubstructureID<0) continue;
+    if(sfrecojetid>=0){
+      std::vector<const reco::Candidate*> recosfsubjets = recosfjets[sfrecojetid].getJetConstituentsQuick();
+
+      for(std::vector<const reco::Candidate*>::const_iterator itSub=recosfsubjets.begin();itSub!=recosfsubjets.end();++itSub){
+        int iSub = itSub-recosfsubjets.begin();
+
+        if(iSub<2) BoostedJets->back().subjets.push_back(patrecoJetMatching(patsfsubjets, patsfsubjetindex_by_eta, **itSub));
+        else BoostedJets->back().filterjets.push_back(patrecoJetMatching(patsffilterjets, patsffilterjetindex_by_eta, **itSub));
+      }
+    }
     
-    BoostedJets->back().topjet 		          = deltarJetMatching(pattopjets, pattopjetindex_by_eta, recotopjets[topSubstructureID]);
+    // get pruned jets information
+    int prunedrecojetid = recorecoJetMatching(*it,recoprunedjets,1.0);
     
-    reco::HTTTopJetProperties httproperties = httinfos[topSubstructureID].properties();
-    BoostedJets->back().fatjetMass 		      = httproperties.fjMass;
-    BoostedJets->back().fatjetPt 		        = httproperties.fjPt;
-    BoostedJets->back().fatjetEta 		      = httproperties.fjEta;
-    BoostedJets->back().fatjetPhi 		      = httproperties.fjPhi;
-    BoostedJets->back().topMass 		        = httproperties.topMass;
-    BoostedJets->back().unfilteredMass	    = httproperties.unfilteredMass;
-    BoostedJets->back().prunedMass 		      = httproperties.prunedMass;
-    BoostedJets->back().fRec 		            = httproperties.fRec;
-    BoostedJets->back().massRatioPassed     = httproperties.massRatioPassed;
-    BoostedJets->back().Ropt 		            = httproperties.Ropt;
-    BoostedJets->back().RoptCalc 		        = httproperties.RoptCalc;
-    BoostedJets->back().ptForRoptCalc	      = httproperties.ptForRoptCalc;
-    BoostedJets->back().tau1Unfiltered 	    = httproperties.tau1Unfiltered;
-    BoostedJets->back().tau2Unfiltered 	    = httproperties.tau2Unfiltered;
-    BoostedJets->back().tau3Unfiltered 	    = httproperties.tau3Unfiltered;
-    BoostedJets->back().tau1Filtered 		    = httproperties.tau1Filtered;
-    BoostedJets->back().tau2Filtered 		    = httproperties.tau2Filtered;
-    BoostedJets->back().tau3Filtered 		    = httproperties.tau3Filtered;
-    BoostedJets->back().qWeight 		        = httproperties.QWeight;
-    BoostedJets->back().qEpsilon 		        = httproperties.QEpsilon;
-    BoostedJets->back().qSigmaM 		        = httproperties.QSigmaM;
-    
-    std::vector<const reco::Candidate*> recotopsubjets = recotopjets[topSubstructureID].getJetConstituentsQuick();
-    
-    for(std::vector<const reco::Candidate*>::const_iterator itSub=recotopsubjets.begin();itSub!=recotopsubjets.end();++itSub){
-      int iSub = itSub-recotopsubjets.begin();
+    if(prunedrecojetid>=0){
+      std::vector<const reco::Candidate*> recoprunedsubjets = recoprunedjets[prunedrecojetid].getJetConstituentsQuick();
       
-      const pat::Jet & patsubjet = deltarJetMatching(pattopsubjets, pattopsubjetindex_by_eta, **itSub);
+      for(std::vector<const reco::Candidate*>::const_iterator itSub=recoprunedsubjets.begin();itSub!=recoprunedsubjets.end();++itSub){
+        BoostedJets->back().prunedsubjets.push_back(patrecoJetMatching(patprunedsubjets, patprunedsubjetindex_by_eta, **itSub));
+      }
+    }
+    // get soft drop jets information
+    int sdrecojetid = recorecoJetMatching(*it,recosdjets,1.0);
+    
+    if(sdrecojetid>=0){
+      std::vector<const reco::Candidate*> recosdsubjets = recosdjets[sdrecojetid].getJetConstituentsQuick();
       
-      if(iSub==0) BoostedJets->back().W1    = patsubjet;
-      if(iSub==1) BoostedJets->back().W2    = patsubjet;
-      if(iSub==2) BoostedJets->back().nonW  = patsubjet;
+      for(std::vector<const reco::Candidate*>::const_iterator itSub=recosdsubjets.begin();itSub!=recosdsubjets.end();++itSub){
+        BoostedJets->back().sdsubjets.push_back(patrecoJetMatching(patsdsubjets, patsdsubjetindex_by_eta, **itSub));
+      }
+    }
+    // get soft drop z2 b1 jets information
+    int sdz2b1recojetid = recorecoJetMatching(*it,recosdz2b1jets,1.0);
+    if(sdz2b1recojetid>=0){
+      std::vector<const reco::Candidate*> recofatjetsdz2b1subjets = recosdz2b1jets[sdz2b1recojetid].getJetConstituentsQuick();
+
+      for(std::vector<const reco::Candidate*>::const_iterator itSub=recofatjetsdz2b1subjets.begin();itSub!=recofatjetsdz2b1subjets.end();++itSub){
+        BoostedJets->back().sdz2b1subjets.push_back(patrecoJetMatching(patsdz2b1subjets, patsdz2b1subjetindex_by_eta, **itSub));
+      }
       
-      if(iSub>2) std::cout << "Error! More than 3 Subjets in reco::BasicJet" << std::endl;
+      BoostedJets->back().tau1Softdrop = softdropSubjettiness1.get(recoSDZ2B1JetsforSHandle.id(),sdz2b1recojetid);
+      BoostedJets->back().tau2Softdrop = softdropSubjettiness2.get(recoSDZ2B1JetsforSHandle.id(),sdz2b1recojetid);
+      BoostedJets->back().tau3Softdrop = softdropSubjettiness3.get(recoSDZ2B1JetsforSHandle.id(),sdz2b1recojetid);
     }
   }
-  
+
   iEvent.put(BoostedJets,"boostedjets");
 }
 
 
 template<typename recojettype>
-const pat::Jet & BoostedJetMatcher::deltarJetMatching(const edm::View<pat::Jet> & patjets, const std::multimap<double, int> & patjetindex_by_eta, const recojettype & recojet){
+const pat::Jet & BoostedJetMatcher::patrecoJetMatching(const edm::View<pat::Jet> & patjets, const std::multimap<double, int> & patjetindex_by_eta, const recojettype & recojet){
 	std::multimap<double, int>::const_iterator lower = patjetindex_by_eta.lower_bound(recojet.eta() - 0.01);
 	std::multimap<double, int>::const_iterator upper = patjetindex_by_eta.upper_bound(recojet.eta() + 0.01);
 
 	double delta_r = 9999.0;
 	int best_match = -1;
+  
+  int counter = 0;
 
-	for(std::multimap<double, int>::const_iterator it=lower; it!=upper; ++it){
-		if(best_match == -1 || reco::deltaR(patjets[it->second], recojet) < delta_r){
+	for(std::multimap<double, int>::const_iterator it=lower; it!=upper; ++it,++counter){
+    
+    double delta_r_temp = reco::deltaR(patjets[it->second], recojet);
+    
+    if(best_match == -1 || delta_r_temp < delta_r){
 			best_match = it->second;
-			delta_r = reco::deltaR(patjets[best_match], recojet);
+			delta_r = delta_r_temp;
 		}
 	}
   
 	if(best_match >= 0) return patjets[best_match];
-	throw std::string("deltarJetMatching: could not find matching jet.");
+	throw std::string("patrecoJetMatching: could not find matching jet.");
 }
 
 
-template<typename recojettype>
-const int BoostedJetMatcher::deltarTopJetMatching(const recojettype & recofatjet, const std::vector<reco::BasicJet> & recotopjets){
-	
-  std::vector<reco::BasicJet>::const_iterator lower = recotopjets.begin();
-  std::vector<reco::BasicJet>::const_iterator upper = recotopjets.end();
+template<typename recojettype1, typename recojettype2>
+const int BoostedJetMatcher::recorecoJetMatching(const recojettype1 & recojet, const std::vector<recojettype2> & recojets, const float & matchingdistance){
+	typename std::vector<recojettype2>::const_iterator lower = recojets.begin();
+  typename std::vector<recojettype2>::const_iterator upper = recojets.end();
   
   double delta_r = 9999;
 	int best_match = -1;
 
-  for(std::vector<reco::BasicJet>::const_iterator it=lower; it!=upper; ++it){
-
-	  if(best_match == -1 || reco::deltaR(*it,recofatjet) < delta_r){
+  for(typename std::vector<recojettype2>::const_iterator it=lower; it!=upper; ++it){
+    
+    float delta_r_temp = reco::deltaR(*it,recojet);
+    
+	  if( delta_r_temp < matchingdistance && (best_match == -1 || delta_r_temp < delta_r)){
 			best_match = it-lower;
-			delta_r = reco::deltaR(*it,recofatjet);
+			delta_r = delta_r_temp;
 		}
 	}
   
-  if(delta_r<1.5)
-	  return best_match;
-  else
-    return -1;
+  return best_match;
 }
-
 
 
 // ------------ method called once each job just before starting event loop  ------------
