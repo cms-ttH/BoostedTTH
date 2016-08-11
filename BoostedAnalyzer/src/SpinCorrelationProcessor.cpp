@@ -247,6 +247,12 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   
   vars.InitVar("RECO_flag_before_match",0,"I");
   vars.InitVar("RECO_flag_after_match",0,"I");
+  vars.InitVar("RECO_switch_flag_after_match_1",0,"I");
+  vars.InitVar("RECO_switch_flag_after_match_2",0,"I");
+  vars.InitVar("RECO_bb_flag_after_match",0,"I");
+  vars.InitVar("RECO_tt_flag_after_match",0,"I");
+  vars.InitVar("RECO_bb_switch_flag_after_match",0,"I");
+  vars.InitVar("RECO_tt_switch_flag_after_match",0,"I");
   
   initialized=true;
   
@@ -436,6 +442,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       std::vector<TLorentzVector> jetvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
       std::vector<float> jetcsvs;
       int ntags=0;
+      int njets=input.selectedJets.size();
       for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
 	jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
 	if(BoostedUtils::PassesCSV(*j)) ntags++;
@@ -453,15 +460,54 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  //mcmatcher.Setup(bhad_true,qs_true[0],qs_true[1],blep_true,lep_true,nu_true,bs_true[0],bs_true[1]);
 	}
       }
+      /*
+      if(njets>5 && ntags>2) {
+	generator.SetVars(IntType::tth,10);
+      }
+      else {
+	generator.SetVars(IntType::tt,8);
+      }
+      */
+      if(ntags<4) {
+	if(njets>5) {
+	  generator.SetVars(IntType::tth,10);
+	}
+	else {
+	  generator.SetVars(IntType::tt,8);
+	}
+      }
+      else {
+	  generator.SetVars(IntType::tth,10);
+      }
       Interpretation** ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);
       uint nints = generator.GetNints();
       Interpretation* best_int_lr=0;
-      float best_lr=-99999;
+      float best_lr=-99999.;
       //    float best_chi2=-99999;
       for(uint i=0; i<nints; i++){
 	  // likelihood ratio good ttbar reco / combinatorial background
-	  float lr=quality.TTLikelihood_comb(*(ints[i]));
-	  // simple chi2 reconstruction using hadronic W and both to masses
+	  float lr=0.;
+	  /*
+	  if(njets>5 && ntags>2) {
+	    lr=quality.TTHLikelihood_comb(*(ints[i]));
+	  }
+	  else {
+	    lr=quality.TTLikelihood_comb(*(ints[i]));
+	  }
+	  */
+	  if(ntags<4) {
+	    if(njets>5) {
+	      lr=quality.TTHLikelihood_comb(*(ints[i]));
+	    }
+	    else {
+	      lr=quality.TTLikelihood_comb(*(ints[i]));
+	    }
+	  }
+	  else {
+	    lr=quality.TTHLikelihood_comb(*(ints[i]));
+	  }
+	  
+	  // simple chi2 reconstruction using hadronic W and both top masses
 	  /*	float chi2=quality.TTChi2(*(ints[i]));
 	  if(chi2>best_chi2){
 	      best_chi2=chi2;
@@ -521,26 +567,42 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	float dR_antitop=dR_max+1;
 	float dR_b=dR_max+1;
 	float dR_antib=dR_max+1;
+	float dR_top_switch=dR_max+1;
+	float dR_antitop_switch=dR_max+1;
+	float dR_b_switch=dR_max+1;
+	float dR_antib_switch=dR_max+1;
 	if(gen_evt_filled){
 	  dR_top=BoostedUtils::DeltaR(vec_top,vec_top_tmp);
 	  dR_antitop=BoostedUtils::DeltaR(vec_antitop,vec_antitop_tmp);
 	  dR_b=BoostedUtils::DeltaR(vec_b,vec_b_tmp);
 	  dR_antib=BoostedUtils::DeltaR(vec_antib,vec_antib_tmp);
+	  dR_top_switch=BoostedUtils::DeltaR(vec_top,vec_antitop_tmp);
+	  dR_antitop_switch=BoostedUtils::DeltaR(vec_antitop,vec_top_tmp);
+	  dR_b_switch=BoostedUtils::DeltaR(vec_b,vec_antib_tmp);
+	  dR_antib_switch=BoostedUtils::DeltaR(vec_antib,vec_b_tmp);
 	}
 	// if the dR Matching is succesfull the processor proceeds otherwise the loop for reco ends here
-	if(dR_top<=dR_max && dR_antitop<=dR_max && dR_b<=dR_max && dR_antib<=dR_max) {
-	  //cout << endl;
-	  //cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!reconstruction succesfull!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-	  //cout << endl;
+	if(dR_top<dR_max && dR_antitop<dR_max) {
+	  vars.FillVar("RECO_tt_flag_after_match",1);
+	}
+	else if(dR_top_switch<dR_max && dR_antitop_switch<dR_max) {
+	  vars.FillVar("RECO_tt_switch_flag_after_match",1);
+	}
+	if(dR_b<dR_max && dR_antib<dR_max) {
+	  vars.FillVar("RECO_bb_flag_after_match",1);
+	}
+	else if(dR_b_switch<dR_max && dR_antib_switch<dR_max) {
+	  vars.FillVar("RECO_bb_switch_flag_after_match",1);
+	}
+	if(dR_top<dR_max && dR_antitop<dR_max && dR_b<dR_max && dR_antib<dR_max) {
 	  vars.FillVar("RECO_flag_after_match",1);
 	}
-	else {
-	  //cout << endl;
-	  //cout << "reconstruction not correct, abort!! " << endl;
-	  //cout << endl;
+	else if(dR_top<dR_max && dR_antitop<dR_max && dR_b_switch<dR_max && dR_antib_switch<dR_max) {
+	  vars.FillVar("RECO_switch_flag_after_match_1",1);
 	}
-	
-	
+	else if(dR_top_switch<dR_max && dR_antitop_switch<dR_max && dR_b_switch<dR_max && dR_antib_switch<dR_max) {
+	  vars.FillVar("RECO_switch_flag_after_match_2",1);
+	}	
       }
       // if the interpretation is 0 the loop for reco ends here
       else {

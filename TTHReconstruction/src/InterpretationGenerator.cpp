@@ -176,3 +176,8 @@ void InterpretationGenerator::GetNuVecs(const TLorentzVector & lepvec, const TVe
     nu1.SetPxPyPzE(metvec.Px(),metvec.Py(),pz1,sqrt(metvec.Mod2()+pz1*pz1));
     nu2.SetPxPyPzE(metvec.Px(),metvec.Py(),pz2,sqrt(metvec.Mod2()+pz2*pz2));
 }
+
+void InterpretationGenerator::SetVars(IntType::IntType type_, int maxjets_) {
+  type=type_;
+  maxJets=maxjets_;
+}
