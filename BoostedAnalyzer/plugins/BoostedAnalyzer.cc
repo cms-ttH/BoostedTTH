@@ -608,19 +608,19 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle<boosted::BoostedJetCollection> h_boostedjet;
     std::vector<boosted::BoostedJetCollection> selectedBoostedJets;
     if(useFatJets){
-	iEvent.getByToken( boostedJetsToken,h_boostedjet);
-	boosted::BoostedJetCollection const &boostedjets_unsorted = *h_boostedjet;
-	boosted::BoostedJetCollection boostedjets = BoostedUtils::GetSortedByPt(boostedjets_unsorted);
-	boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999., jetID::jetLoose);
-	for(auto syst : jetSystematics){
-	    boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, syst, true, true);
-	    selectedBoostedJets.push_back(helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none));
-	}
+    	iEvent.getByToken( boostedJetsToken,h_boostedjet);
+    	boosted::BoostedJetCollection const &boostedjets_unsorted = *h_boostedjet;
+    	boosted::BoostedJetCollection boostedjets = BoostedUtils::GetSortedByPt(boostedjets_unsorted);
+    	boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999., jetID::jetLoose);
+    	for(auto syst : jetSystematics){
+    	    boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, syst, true, true);
+    	    selectedBoostedJets.push_back(helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none));
+    	}
     }
     else{
-	for(uint i =0; i<jetSystematics.size();i++){
-	    selectedBoostedJets.push_back(boosted::BoostedJetCollection());
-	}
+    	for(uint i =0; i<jetSystematics.size();i++){
+    	    selectedBoostedJets.push_back(boosted::BoostedJetCollection());
+    	}
     }
 
     // Fill Event Info Object
@@ -712,17 +712,17 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     assert(inputs.size()==cutflows.size());
     assert(inputs.size()==jetSystematics.size());
     for(uint i_sys=0; i_sys<jetSystematics.size(); i_sys++){
-	// all events survive step 0
-	cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight"));
-	bool selected=true;
-	// for every systematic: loop over selections
-	for(size_t i_sel=0; i_sel<selections.size() && selected; i_sel++){
-	    // see if event is selected
-	    if(!selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])){
-		selected=false;
-	    }
-	}
-	if(selected) treewriters[i_sys]->Process(inputs[i_sys]);
+    	// all events survive step 0
+    	cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight"));
+    	bool selected=true;
+    	// for every systematic: loop over selections
+    	for(size_t i_sel=0; i_sel<selections.size() && selected; i_sel++){
+    	    // see if event is selected
+    	    if(!selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])){
+    		    selected=false;
+    	    }
+    	}
+    	if(selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
     }
 
 }

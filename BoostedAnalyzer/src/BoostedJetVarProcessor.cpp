@@ -481,7 +481,7 @@ void BoostedJetVarProcessor::InitSDJetVars(VariableContainer& vars){
   vars.InitVars( "BoostedJet_Dr_SD_Subjet13",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SD_Subjet23",-9,"N_BoostedJets" );
 
-  vars.InitVars( "BoostedJet_SD1_Tau1",-9,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_SD_Tau1",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SD_Tau2",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_SD_Tau3",-9,"N_BoostedJets" );
 }

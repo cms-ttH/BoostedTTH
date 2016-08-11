@@ -13,7 +13,7 @@ options = VarParsing ('analysis')
 # maxEvents: singleton, int; default = -1
 # inputFiles: (comma separated, no spaces!) list, string: default empty
 options.register( "outName", "testrun", VarParsing.multiplicity.singleton, VarParsing.varType.string, "name and path of the output files (without extension)" )
-options.register( "weight", 0.00007459, VarParsing.multiplicity.singleton, VarParsing.varType.float, "xs*lumi/(nPosEvents-nNegEvents)" )
+options.register( "weight", 0.01, VarParsing.multiplicity.singleton, VarParsing.varType.float, "xs*lumi/(nPosEvents-nNegEvents)" )
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "isBoostedMiniAOD", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
@@ -24,17 +24,15 @@ options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2_v1", VarPar
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "int flag to identify which dataset is used")#(0,1,2,3,4,5)->(MC,single ele, single mu,ele ele,ele mu,mu mu)
-options.register( "isreHLT",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
+options.register( "isreHLT",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
 options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 10000 # reset for testing
+    options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:
-    #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/friese/TT_TuneCUETP8M1_13TeV-powheg-pythia8/BoostedMiniAOD-sdfilt3/160630_080603/0000/BoostedTTH_MiniAOD_69.root']
-    #options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/00000/0064B539-803A-E611-BDEA-002590D0B060.root']
-    #options.inputFiles=['root://xrootd-cms.infn.it//store/user/koschwei/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAODICHEPv1/160729_220552/0000/BoostedTTH_MiniAOD_12.root']
+    #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/koschwei/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAODICHEPv1/160729_220552/0000/BoostedTTH_MiniAOD_12.root']
     options.inputFiles=['file:/nfs/dust/cms/user/riese/CMSSW_8_0_12/src/BoostedTTH_MiniAOD.root']
 
 # checks for correct values and consistency
@@ -59,7 +57,6 @@ for key in options._register:
     if key not in ["secondaryInputFiles","section","tag","totalSections","outputFile","secondaryOutputFile","filePrepend"]:
         print str(key)+" : "+str( options.__getattr__(key) )
 print "*****************************************\n\n"
-
 
 process = cms.Process("analysis")
 
@@ -119,7 +116,6 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
-
 #=================================== JEC from DB file for data ===============
 if options.isData:
     process.GlobalTag.toGet.append(
@@ -223,7 +219,6 @@ process.BoostedAnalyzer.systematics=process.SelectedJetProducer.systematics
 process.BoostedAnalyzer.generatorName=options.generatorName
 
 
-
 if options.isData and options.useJson:
     print 'use JSON is no longer supported'
     import FWCore.PythonUtilities.LumiList as LumiList
@@ -252,4 +247,13 @@ if options.additionalSelection!="NONE":
 
 process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 
-process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
+#process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
+process.p = cms.Path(process.electronMVAValueMapProducer
+                     *process.SelectedElectronProducer
+                     *process.SelectedMuonProducer
+ #                    *process.content
+                     *process.SelectedJetProducer
+                     *process.CorrectedMETproducer
+                     #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+                     *process.BoostedAnalyzer
+                     )
