@@ -39,6 +39,7 @@ void RegressionVarProcessor::Init(const InputCollections& input,VariableContaine
     vars.InitVars( "RegJet_M", "N_RegJets");
     vars.InitVars( "RegJet_Mt", "N_RegJets");
     vars.InitVars( "RegJet_Pt", "N_RegJets");
+    vars.InitVars( "RegJet_rawPt", "N_RegJets");
     vars.InitVars( "RegJet_Eta", "N_RegJets");
     vars.InitVars( "RegJet_Phi", "N_RegJets");
     vars.InitVars( "RegJet_CSV", "N_RegJets");
@@ -47,7 +48,9 @@ void RegressionVarProcessor::Init(const InputCollections& input,VariableContaine
     vars.InitVars( "RegJet_Charge", "N_RegJets");
     vars.InitVars( "RegJet_PileUpID", "N_RegJets");
 
-
+    vars.InitVars( "RegJet_helperJES", "N_RegJets");
+    vars.InitVars( "RegJet_helperJESUp", "N_RegJets");
+    vars.InitVars( "RegJet_helperJESDown", "N_RegJets");
     //Regression specific variables for regressedJets
     //Regression target
     vars.InitVars( "RegJet_MatchedGenJetwNuPt", "N_RegJets");
@@ -183,6 +186,8 @@ void RegressionVarProcessor::Process(const InputCollections& input, VariableCont
     /*
     matcher.resetMaps();
     matches = matcher.match( regressedJets, genJetswNu );*/
+
+
     vars.FillVar( "N_RegJets", regressedJets.size() );
     size_t iregjet = 0;
     for (auto& Jet: regressedJets ){
@@ -194,6 +199,7 @@ void RegressionVarProcessor::Process(const InputCollections& input, VariableCont
         vars.FillVars( "RegJet_M",iJet,Jet.mass() );
         vars.FillVars( "RegJet_Mt",iJet,Jet.mt() );
         vars.FillVars( "RegJet_Pt",iJet,Jet.pt() );
+        vars.FillVars( "RegJet_rawPt",iJet,Jet.userFloat("rawJetPt") );
         vars.FillVars( "RegJet_Eta",iJet,Jet.eta() );
         vars.FillVars( "RegJet_Phi",iJet,Jet.phi() );
         vars.FillVars( "RegJet_CSV",iJet,MiniAODHelper::GetJetCSV(Jet,btagger) );
@@ -201,6 +207,11 @@ void RegressionVarProcessor::Process(const InputCollections& input, VariableCont
         vars.FillVars( "RegJet_PartonFlav",iJet,Jet.partonFlavour() );
         vars.FillVars( "RegJet_Charge",iJet,Jet.jetCharge() );
         vars.FillVars( "RegJet_PileUpID",iJet,Jet.userFloat("pileupJetId:fullDiscriminant") );
+
+        vars.FillVars( "RegJet_helperJES", iJet, Jet.userFloat("HelperJES") );
+        if (Jet.hasUserFloat("HelperJESUp")) { vars.FillVars( "RegJet_helperJESUp", iJet, Jet.userFloat("HelperJESUp") ); }
+        if (Jet.hasUserFloat("HelperJESDown")) { vars.FillVars( "RegJet_helperJESDown", iJet, Jet.userFloat("HelperJESDown") ); }
+
 
         /*
         //Regression specific variables for regressedJets

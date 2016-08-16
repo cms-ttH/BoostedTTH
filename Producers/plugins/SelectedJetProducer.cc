@@ -203,7 +203,9 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    if(applyCorrection){
        // Get raw jets
        std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
-
+       for(auto& rawJet: rawJets){
+           rawJet.addUserFloat( "rawJetPt", rawJet.pt() );
+       }
        /***********************************************************/
        /**          Used for regression input variables          **/
        /** needed as long as correction are applied "on the fly" **/

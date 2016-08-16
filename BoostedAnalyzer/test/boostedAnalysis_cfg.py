@@ -273,19 +273,29 @@ if options.additionalSelection!="NONE":
 process.BoostedAnalyzer.processorNames = cms.vstring("BDTVarProcessor","WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","RegressionVarProcessor","QuarkMatchingVarProcessor")
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
-if options.isData or options.isBoostedMiniAOD:
+if options.isData:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer
                      *process.SelectedMuonProducer
                      #*process.content
                      *process.SelectedJetProducer
                      *process.CorrectedMETproducer
-                     *process.genParticlesForJetswNu*process.ak4GenJetsCustomwNu
                      *process.RegressedJetProducer
                      #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
                      *process.BoostedAnalyzer
                      )
-
+elif  options.isBoostedMiniAOD:
+    process.p = cms.Path(process.electronMVAValueMapProducer
+                       *process.SelectedElectronProducer
+                       *process.SelectedMuonProducer
+                       #*process.content
+                       *process.SelectedJetProducer
+                       *process.CorrectedMETproducer
+                       *process.genParticlesForJetswNu*process.ak4GenJetsCustomwNu
+                       *process.RegressedJetProducer
+                       #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+                       *process.BoostedAnalyzer
+                       )
 else:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer

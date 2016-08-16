@@ -220,7 +220,7 @@ if options.makeSystematicsTrees:
     process.BoostedAnalyzer.selectedJetsLooseDL=[cms.InputTag("SelectedJetProducer:selectedJetsLooseDL"+s) for s in systs]
     process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*len(systs)
     process.RegressedJetProducer.collectionpostfix=systs
-    process.RegressedJetProducer.inputjets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
+    process.RegressedJetProducer.inputjets=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
     process.BoostedAnalyzer.regressedJets=[cms.InputTag("RegressedJetProducer:regressedJets"+s) for s in systs]
     process.BoostedAnalyzer.useregressedJets=True
 else:
@@ -275,19 +275,29 @@ if options.additionalSelection!="NONE":
 process.BoostedAnalyzer.processorNames = cms.vstring("BDTVarProcessor","WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","RegressionVarProcessor","QuarkMatchingVarProcessor")
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
-if options.isData or options.isBoostedMiniAOD:
+if options.isData:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer
                      *process.SelectedMuonProducer
                      #*process.content
                      *process.SelectedJetProducer
                      *process.CorrectedMETproducer
-                     *process.genParticlesForJetswNu*process.ak4GenJetsCustomwNu
                      *process.RegressedJetProducer
                      #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
                      *process.BoostedAnalyzer
                      )
-
+elif  options.isBoostedMiniAOD:
+    process.p = cms.Path(process.electronMVAValueMapProducer
+                       *process.SelectedElectronProducer
+                       *process.SelectedMuonProducer
+                       #*process.content
+                       *process.SelectedJetProducer
+                       *process.CorrectedMETproducer
+                       *process.genParticlesForJetswNu*process.ak4GenJetsCustomwNu
+                       *process.RegressedJetProducer
+                       #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+                       *process.BoostedAnalyzer
+                       )
 else:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer

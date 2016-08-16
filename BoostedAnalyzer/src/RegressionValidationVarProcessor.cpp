@@ -40,24 +40,42 @@ void RegressionValidationVarProcessor::Process(const InputCollections& input, Va
 
 
     //Compute validation variables
-    double unregJetpT= 0;
-    double regJetpT = 0;
-    double genjetpT = 0;
-    double genjetwNupT = 0;
     bool allwgenjet = true;
     bool allwgenjetwNu = true;
+    TLorentzVector vec_noregsum;
+    TLorentzVector vec_regsum;
+    TLorentzVector vec_genjetsum;
+    TLorentzVector vec_genjetwNusum;
+
+
     for( size_t i = 0; i < regressedJets.size(); i++){
 
-        unregJetpT = regJetpT + input.selectedJetsLoose[i].pt();
-        regJetpT = regJetpT + regressedJets[i].pt();
+        TLorentzVector vec_noreg;
+        TLorentzVector vec_reg;
+        TLorentzVector vec_genjet;
+        TLorentzVector vec_genjetwNu;
+
+        vec_noreg.SetPtEtaPhiM( input.selectedJetsLoose[i].pt(),  input.selectedJetsLoose[i].eta(),
+                                input.selectedJetsLoose[i].phi(), input.selectedJetsLoose[i].mass());
+        vec_reg.SetPtEtaPhiM( regressedJets[i].pt(),  regressedJets[i].eta(),
+                              regressedJets[i].phi(), regressedJets[i].mass() ) ;
+
+        vec_noregsum = vec_noregsum + vec_noreg;
+        vec_regsum = vec_regsum + vec_reg;
+
+
         if(regressedJets[i].genJet()!=NULL){
-            genjetpT = genjetpT + regressedJets[i].genJet()->pt();
+            vec_genjet.SetPtEtaPhiM( regressedJets[i].genJet()->pt(),  regressedJets[i].genJet()->eta(),
+                                     regressedJets[i].genJet()->phi(), regressedJets[i].genJet()->mass() );
+            vec_genjetsum = vec_genjetsum + vec_genjet;
         }
         else {
             allwgenjet = false;
         }
         if( regressedJets[i].hasUserFloat("matchedGenJetwNuPt") ){
-            genjetpT = genjetpT + regressedJets[i].userFloat("matchedGenJetwNuPt");
+            vec_genjetwNu.SetPtEtaPhiM( regressedJets[i].userFloat("matchedGenJetwNuPt"),  regressedJets[i].userFloat("matchedGenJetwNuEta"),
+                                        regressedJets[i].userFloat("matchedGenJetwNuPhi"), regressedJets[i].userFloat("matchedGenJetwNuM") );
+            vec_genjetwNusum = vec_genjetwNusum + vec_genjetwNu;
         }
         else {
             allwgenjetwNu = false;
@@ -65,9 +83,8 @@ void RegressionValidationVarProcessor::Process(const InputCollections& input, Va
 
     }
 
-
-    vars.FillVar("Evt_JetpT_noreg",unregJetpT);
-    vars.FillVar("Evt_JetpT_reg",regJetpT);
+    vars.FillVar( "Evt_JetpT_noreg",vec_noregsum.Pt() );
+    vars.FillVar( "Evt_JetpT_reg",vec_regsum.Pt() );
 
     double llmass = 0;
     double llpt = 0;
@@ -76,8 +93,8 @@ void RegressionValidationVarProcessor::Process(const InputCollections& input, Va
 
       math::XYZTLorentzVector DiMuonVec=input.selectedMuonsDL[0].p4()+input.selectedMuonsDL[1].p4();
 
-      vars.FillVar("Evt_llMass",DiMuonVec.M() );
-      vars.FillVar("Evt_llpT",DiMuonVec.Pt() );
+      vars.FillVar( "Evt_llMass",DiMuonVec.M() );
+      vars.FillVar( "Evt_llpT",DiMuonVec.Pt() );
 
       llmass = DiMuonVec.M();
       llpt = DiMuonVec.Pt();
@@ -87,8 +104,8 @@ void RegressionValidationVarProcessor::Process(const InputCollections& input, Va
 
       math::XYZTLorentzVector DiElectronVec=input.selectedElectronsDL[0].p4()+input.selectedElectronsDL[1].p4();
 
-      vars.FillVar("Evt_llMass",DiElectronVec.M() );
-      vars.FillVar("Evt_llpT",DiElectronVec.Pt() );
+      vars.FillVar( "Evt_llMass",DiElectronVec.M() );
+      vars.FillVar( "Evt_llpT",DiElectronVec.Pt() );
 
       llmass = DiElectronVec.M();
       llpt = DiElectronVec.Pt();
@@ -99,34 +116,34 @@ void RegressionValidationVarProcessor::Process(const InputCollections& input, Va
 
       math::XYZTLorentzVector ElMuVec=input.selectedElectronsDL[0].p4()+input.selectedMuonsDL[0].p4();
 
-      vars.FillVar("Evt_llMass",ElMuVec.M() );
-      vars.FillVar("Evt_llpT",ElMuVec.Pt() );
+      vars.FillVar( "Evt_llMass",ElMuVec.M() );
+      vars.FillVar( "Evt_llpT",ElMuVec.Pt() );
       llmass = ElMuVec.M();
       llpt = ElMuVec.Pt();
 
     }
 
     if( llmass != 0 ){
-        vars.FillVar("Evt_PtBal_noreg",unregJetpT / llpt);
-        vars.FillVar("Evt_PtBal_reg",regJetpT / llpt);
-        if (allwgenjet && genjetpT > 0){
-            vars.FillVar("Evt_PtBal_genJet",genjetpT/llpt);
+        vars.FillVar( "Evt_PtBal_noreg", vec_noregsum.Pt() / llpt );
+        vars.FillVar( "Evt_PtBal_reg", vec_regsum.Pt() / llpt );
+        if ( allwgenjet && vec_genjetsum.Pt() > 0 ){
+            vars.FillVar( "Evt_PtBal_genJet",vec_genjetsum.Pt()/llpt );
         }
         else {
-            vars.FillVar("Evt_PtBal_genJet",-0.2);
+            vars.FillVar( "Evt_PtBal_genJet",-0.2 );
         }
-        if (allwgenjetwNu){
-            vars.FillVar("Evt_PtBal_genJetwNu",genjetwNupT/llpt);
+        if ( allwgenjetwNu ){
+            vars.FillVar( "Evt_PtBal_genJetwNu",vec_genjetwNusum.Pt()/llpt );
         }
         else {
-            vars.FillVar("Evt_PtBal_genJetwNu",-0.2);
+            vars.FillVar( "Evt_PtBal_genJetwNu",-0.2 );
         }
     }
     else{
-        vars.FillVar("Evt_PtBal_noreg",-0.2);
-        vars.FillVar("Evt_PtBal_reg",-0.2);
-        vars.FillVar("Evt_PtBal_genJet",-0.2);
-        vars.FillVar("Evt_PtBal_genJetwNu",-0.2);
+        vars.FillVar( "Evt_PtBal_noreg",-0.2 );
+        vars.FillVar( "Evt_PtBal_reg",-0.2 );
+        vars.FillVar( "Evt_PtBal_genJet",-0.2 );
+        vars.FillVar( "Evt_PtBal_genJetwNu",-0.2 );
     }
 
 }

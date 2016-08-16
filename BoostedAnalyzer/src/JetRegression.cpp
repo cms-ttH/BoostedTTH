@@ -716,6 +716,9 @@ void JetRegression::matchGenJetstoJets( vector< pat::Jet >& Jets,
   for( auto& Jet: Jets) {
     if ( matches.find(&Jet) != matches.end() ){
       Jet.addUserFloat("matchedGenJetwNuPt", matches[&Jet]->pt() );
+      Jet.addUserFloat("matchedGenJetwNuEta", matches[&Jet]->eta() );
+      Jet.addUserFloat("matchedGenJetwNuPhi", matches[&Jet]->phi() );
+      Jet.addUserFloat("matchedGenJetwNuM", matches[&Jet]->mass() );
       //cout << "matching " <<Jet.pt() << " to"<<  endl;
       //cout << matches[&Jet]->pt() <<  " with DR of " << BoostedUtils::DeltaR(Jet.p4(), matches[&Jet]->p4()) << endl;
     }

@@ -161,6 +161,7 @@ else:
 
 #===============================================================
 #
+print "Nr. 0"
 
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,20.,30.]
@@ -187,11 +188,12 @@ process.load("BoostedTTH.BoostedProducer.GenJetswNuProducer_cfi")
 process.load("BoostedTTH.Producers.RegressedJetProducer_cfi")
 process.RegressedJetProducer.inputjets=[cms.InputTag("SelectedJetProducer:selectedJetsLoose")]
 process.RegressedJetProducer.outputprefix="regressedJetsLoose"
-process.RegressedJetProducer.doGenJetMatchingforRegression=True
+if not options.isData:
+    process.RegressedJetProducer.doGenJetMatchingforRegression=True
 process.RegressedJetProducer.isData=options.isData
 
 
-
+print "Nr. 1"
 # load and run the boosted analyzer
 if options.isData:
     if options.analysisType=='SL':
@@ -208,6 +210,7 @@ else:
         process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD
         process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+print "Nr. 2"
 
 if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
@@ -260,6 +263,7 @@ process.BoostedAnalyzer.minTags = [1]
 process.BoostedAnalyzer.maxTags = [2]
 
 
+print "Nr. 3"
 
 if options.isData:
     process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
@@ -279,6 +283,7 @@ else:
         process.BoostedAnalyzer.elmuTriggers = cms.vstring("None")
     process.BoostedAnalyzer.dlchannel = cms.string("all")
 
+print "Nr. 4"
 
 #process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","DiLeptonSelection","ZWindowSelection","DiLeptonJetTagSelection"]
@@ -288,19 +293,31 @@ if options.additionalSelection!="NONE":
 process.BoostedAnalyzer.processorNames = cms.vstring("WeightProcessor","BasicVarProcessor","TriggerVarProcessor","RegressionVarProcessor","QuarkMatchingVarProcessor", "DiLeptonVarProcessor", "RegressionValidationVarProcessor")
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
-if options.isData or options.isBoostedMiniAOD:
+print "Nr. 5"
+
+if options.isData:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer
                      *process.SelectedMuonProducer
                      #*process.content
                      *process.SelectedJetProducer
                      *process.CorrectedMETproducer
-                     *process.genParticlesForJetswNu*process.ak4GenJetsCustomwNu
                      *process.RegressedJetProducer
                      #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
                      *process.BoostedAnalyzer
                      )
-
+elif  options.isBoostedMiniAOD:
+    process.p = cms.Path(process.electronMVAValueMapProducer
+                       *process.SelectedElectronProducer
+                       *process.SelectedMuonProducer
+                       #*process.content
+                       *process.SelectedJetProducer
+                       *process.CorrectedMETproducer
+                       *process.genParticlesForJetswNu*process.ak4GenJetsCustomwNu
+                       *process.RegressedJetProducer
+                       #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+                       *process.BoostedAnalyzer
+                       )
 else:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer
