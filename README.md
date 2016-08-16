@@ -19,9 +19,11 @@ Follow These Steps:
     cd -
     mkdir TTH
     cd TTH
-    git clone https://github.com/cms-ttH/CommonClassifier.git -b subjet-restricted-perms-kit
+    git clone https://github.com/cms-ttH/CommonClassifier.git -b subjet-restricted-perms-kit-80X
     source CommonClassifier/setup/install_mem.sh
     cd $CMSSW_BASE/src
+    sed -i 's/int member=0/int member/g' TTH/MEIntegratorStandalone/interface/Integrand.h
+    sed -i 's/cfg.pdfset/cfg.pdfset, 0/g' TTH/MEIntegratorStandalone/src/Integrand.cpp
     scram b -j 10
     
 ## Overview
