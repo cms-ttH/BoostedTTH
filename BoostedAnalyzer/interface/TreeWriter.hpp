@@ -30,7 +30,7 @@ class TreeWriter{
        Analyze a single event
        @param input the event information that is used to calculate the variables
     */
-    bool Process(const InputCollections& input);
+    bool Process(const InputCollections& input, const bool& verbose = false);
 
     /**
        Before the event loop different processors can be added to the TreeWriter. These will write into the trees whenever Process is called

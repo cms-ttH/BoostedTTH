@@ -251,6 +251,7 @@ vector<math::XYZTLorentzVector> BoostedUtils::GetJetVecs(const std::vector<pat::
     jetVecs.push_back(itJet->p4());
   }
 
+
   return jetVecs;
 }
 
@@ -374,17 +375,25 @@ void BoostedUtils::TopSubjetCSVDef(std::vector<pat::Jet> &subjets){
 }
 
 
-std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets){
+std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const boosted::BoostedJet& boostedJet, const int& nCSVJets, const int& nPtJets){
 
   std::vector<pat::Jet> subJets = boostedJet.filterjets;
 
-  return GetHiggsFilterJets(subJets,nCSVJets);
+  return GetHiggsFilterJets(subJets,nCSVJets,nPtJets);
+
 }
 
 
-std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets){
+std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Jet>& higgsDecayJets, const int& nCSVJets, const int& nPtJets){
 
   std::vector<pat::Jet> subJets = higgsDecayJets;
+
+
+  if(nPtJets>0 && nPtJets<int(subJets.size())){
+    std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstJetIsHarder);
+    std::vector<pat::Jet> tempvec(subJets.begin(),subJets.begin()+nPtJets);
+    subJets = tempvec;
+  }
 
   std::sort(subJets.begin(), subJets.end(),BoostedUtils::FirstHasHigherCSV);
 
@@ -396,9 +405,9 @@ std::vector<pat::Jet> BoostedUtils::GetHiggsFilterJets(const std::vector<pat::Je
 }
 
 
-float BoostedUtils::GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets, const int& nCSVJets){
+float BoostedUtils::GetHiggsMass(const boosted::BoostedJet& boostedJet, const int& nJets, const int& nCSVJets, const int& nPtJets){
 
-  std::vector<pat::Jet> filterJets = GetHiggsFilterJets(boostedJet,nCSVJets);
+  std::vector<pat::Jet> filterJets = GetHiggsFilterJets(boostedJet,nCSVJets,nPtJets);
 
   if(filterJets.size()<2 || nCSVJets>nJets) return -1.;
 
