@@ -359,6 +359,9 @@ void BoostedJetVarProcessor::InitSFJetVars(VariableContainer& vars){
   vars.InitVars( "BoostedJet_CosThetaStar_Filterjet13",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_CosThetaStar_Filterjet23",-9,"N_BoostedJets" );
 
+  vars.InitVars( "BoostedJet_IsGoodTopJet",false,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_IsGoodHiggsJet",false,"N_BoostedJets" );
+
   vars.InitVars( "BoostedJet_Filterjet1_IdxAk5",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet2_IdxAk5",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet3_IdxAk5",-9,"N_BoostedJets" );
