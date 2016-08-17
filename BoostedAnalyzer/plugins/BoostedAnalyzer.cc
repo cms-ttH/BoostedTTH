@@ -816,14 +816,14 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	//Add Genweights to the weight map
 	genweights.GetGenWeights(weights, lheInfo, dogenweights);
 	genweights.GetLHAPDFWeight(weights, genInfo, "NNPDF30_nlo_as_0118");
-    //Add Lepton Scalefactors to weight map
+   
+  }
+ //Add Lepton Scalefactors to weight map
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
 
     for(  auto sfit = selectedScaleFactors.begin() ; sfit != selectedScaleFactors.end() ; sfit++  ){
       weights["Weight_"+sfit->first] = sfit->second;
     }
-  }
-
 
 
     return weights;
