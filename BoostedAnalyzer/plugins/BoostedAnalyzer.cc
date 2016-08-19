@@ -97,6 +97,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DeltaREvaluater.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ttbarReconstructor.hpp"
 //
 // class declaration
 //
@@ -350,6 +352,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
 	else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
 	else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
+	else if(*itSel == "DiLeptonJetTagSelection") selections.push_back(new DiLeptonJetTagSelection(iConfig));
 	else if(*itSel == "LeptonSelection1") selections.push_back(new LeptonSelection(iConfig,1));
 	else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
 	else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
@@ -450,6 +453,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"SpinCorrelationProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
+	}
+	if(std::find(processorNames.begin(),processorNames.end(),"DeltaREvaluater")!=processorNames.end()) {
+	    treewriter->AddTreeProcessor(new DeltaREvaluater(),"DeltaREvaluater");
+	}
+	if(std::find(processorNames.begin(),processorNames.end(),"ttbarReconstructor")!=processorNames.end()) {
+	    treewriter->AddTreeProcessor(new ttbarReconstructor(),"ttbarReconstructor");
 	}
     }
 

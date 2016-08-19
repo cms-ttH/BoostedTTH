@@ -43,7 +43,7 @@ METSelection = cms.PSet(
 )
 
 DiLeptonMETSelection = cms.PSet(
-    minMET = cms.double(-1),
+    minMET = cms.double(40),
     maxMET = cms.double(800),
 )
 
@@ -52,6 +52,13 @@ JetTagSelection = cms.PSet(
     maxJets = cms.vint32(-1,-1),
     minTags = cms.vint32(3,2),
     maxTags = cms.vint32(-1,-1)
+)
+
+DiLeptonJetTagSelection = cms.PSet(
+    minJets = cms.vint32(2),
+    maxJets = cms.vint32(-1),
+    minTags = cms.vint32(1),
+    maxTags = cms.vint32(-1)
 )
 
 checkBasicDataTriggers= cms.PSet(

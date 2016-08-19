@@ -253,6 +253,15 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   vars.InitVar("RECO_tt_flag_after_match",0,"I");
   vars.InitVar("RECO_bb_switch_flag_after_match",0,"I");
   vars.InitVar("RECO_tt_switch_flag_after_match",0,"I");
+  vars.InitVar("RECO_t_flag_after_match",0,"I");
+  vars.InitVar("RECO_t_switch_flag_after_match",0,"I");
+  vars.InitVar("RECO_antit_flag_after_match",0,"I");
+  vars.InitVar("RECO_antit_switch_flag_after_match",0,"I");
+  vars.InitVar("RECO_b_flag_after_match",0,"I");
+  vars.InitVar("RECO_b_switch_flag_after_match",0,"I");
+  vars.InitVar("RECO_antib_flag_after_match",0,"I");
+  vars.InitVar("RECO_antib_switch_flag_after_match",0,"I");
+  vars.InitVar("GenTopEvt_filled",0,"I");
   
   initialized=true;
   
@@ -262,8 +271,8 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
 void SpinCorrelationProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
   //cout << "Spin Correlation Processor process started " << endl;
-  std::map<TString,int> frames;// map which contains the frames which are used and some number for later identification
-  std::map<TString,int> variables;// map which contains the variables which are used and some number for later nidentification
+  
+  std::map<TString,int> frames;// map which contains the frames which are used and some number for later identification  
   std::vector<TString> var_type;// just string vector which contains GEN and RECO to use it in loop 
   
   // frames which are used
@@ -277,20 +286,11 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   var_type.push_back("GEN");
   var_type.push_back("RECO");
   
-  // first few variables which are present in SL and DL channel
-  variables["cos_theta_bb"]=0;
-  variables["Delta_Eta_bb"]=1;
-  variables["Delta_Phi_bb"]=2;
-  variables["M_ttbar"]=13;
-  variables["M_t"]=16;
-  variables["M_tbar"]=17;
-  variables["M_b"]=18;
-  variables["M_bbar"]=19;
-  
+
   
 
   // if top event isnt filled or n_jets<4 then there is nothing to do ...
-  if(!(input.genTopEvt.IsFilled()) && !(input.selectedJets.size()>=4)) {
+  if(!(input.genTopEvt.IsFilled()) && !(input.selectedJets.size()>=1)) {
     cerr << "Top Event isnt filled and reconstruction not possible! " << endl;
     return;
   }
@@ -313,20 +313,29 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   math::XYZTLorentzVector vec_b_tmp;
   math::XYZTLorentzVector vec_antib_tmp;
   
-  // some flags which help later
-  bool isDL=false;
-  bool isSL=false;
-  bool gen_evt_filled=false;
-  int leptonflag=0;
-  bool no_tau_selection=1;
+  bool no_tau_selection=true;
+  bool gen_evt_filled=input.genTopEvt.IsFilled();
   
   // loop begins over var_type
   for(auto it_type=var_type.begin();it_type!=var_type.end();++it_type) {
+    
     //cout << "GEN or RECO? " << *it_type << endl;
+    
     TString dec_type=*it_type;
+    
+    std::map<TString,int> variables;// map which later contains the variables which are used in the event and some number for later identification
+    
+    // some flags which help later
+    bool isDL=false;
+    bool isSL=false;
+    
+    int leptonflag=0;// flag for lepton=1, for antilepton=-1
+    bool dilepton_reco_flag=false;// flag to signalize that for this event at least the dilepton variables in the lab frame could be used, which is of course possible even without top-event reconstruction
+    
+    //cout << "Gen Top Event is filled? " << gen_evt_filled << endl;
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // if top evt is filled and the loop is at var_type GEN, then the reconstruction for GEN variables can begin
-    if(input.genTopEvt.IsFilled() && dec_type.EqualTo("GEN")){
+    if(gen_evt_filled && dec_type.EqualTo("GEN")){
       //cout << "GenTopEvt is filled and decay type GEN " << endl;
       std::vector<reco::GenParticle> tophad;
       std::vector<reco::GenParticle> bhad;
@@ -385,7 +394,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       // now identify the correct lepton/antilepton 4 vectors
-      // in SL case, the lepton/antilepton which is not present will be assigned with a (0,0,0,0) 4-vector
+      // in SL case, the lepton/antilepton which is not present will be assigned with a (0,0,0,0) 4-vector, pdgid>0 ->leptons pdgid<0 antileptons
       if(isSL) {
 	if(lep[0].pdgId()>0) {
 	  if(lep[0].pdgId()==15 && no_tau_selection) {return;}
@@ -430,14 +439,11 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       vec_antitop_tmp=vec_antitop;
       vec_b_tmp=vec_b;
       vec_antib_tmp=vec_antib;
-      gen_evt_filled=true;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // if the loop is in var_type RECO and the events satisfies the requirements, the recontruction of the RECO variables can begin
-    else if(input.selectedJets.size()>=4 && dec_type.EqualTo("RECO") && ((input.selectedElectrons.size()+input.selectedMuons.size())==1)){
+    else if(input.selectedJets.size()>=4 && dec_type.EqualTo("RECO") && (input.selectedElectrons.size()+input.selectedMuons.size())==1 && !((input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())==2)){
       //cout << "N_jets>=4 and decay type RECO and Electrons+Muons==1" << endl;
-      isSL=true;
-      isDL=false;
       // this is the code of Hannes ttbar reconstruction processor to create some likelihood interpretations of the event
       std::vector<TLorentzVector> jetvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
       std::vector<float> jetcsvs;
@@ -449,17 +455,6 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       }
       TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
       TVector2 metvec(input.correctedMET.px(),input.correctedMET.py());
-      if(input.genTopEvt.IsFilled()&&input.genTopEvt.IsSemiLepton()){
-	vector<TLorentzVector> bs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetHiggsDecayProductVecs());
-	vector<TLorentzVector> qs_true= BoostedUtils::GetTLorentzVectors(input.genTopEvt.GetWQuarksVecs());
-	if(bs_true.size()==2){
-	  TLorentzVector bhad_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopHadDecayQuarkVec());
-	  TLorentzVector blep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetTopLepDecayQuarkVec());
-	  TLorentzVector lep_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetLeptonVec());
-	  TLorentzVector nu_true = BoostedUtils::GetTLorentzVector(input.genTopEvt.GetNeutrinoVec());
-	  //mcmatcher.Setup(bhad_true,qs_true[0],qs_true[1],blep_true,lep_true,nu_true,bs_true[0],bs_true[1]);
-	}
-      }
       /*
       if(njets>5 && ntags>2) {
 	generator.SetVars(IntType::tth,10);
@@ -519,6 +514,9 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  }
       }
       if(best_lr>0.) {
+	//cout << "Hypothese with LR>0 available" << endl;
+	isSL=true;
+	isDL=false;
 	// the likelihood ratio of the interpretation isnt allowed to be 0
 	// now check if the SL event has an electron- or muon-lepton and whether it is a lepton or antilepton
 	if(input.selectedElectrons.size()==1){
@@ -572,6 +570,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	float dR_b_switch=dR_max+1;
 	float dR_antib_switch=dR_max+1;
 	if(gen_evt_filled){
+	  vars.FillVar("GenTopEvt_filled",1);
+	  //cout << "Gen Top Event is filled " << endl;
 	  dR_top=BoostedUtils::DeltaR(vec_top,vec_top_tmp);
 	  dR_antitop=BoostedUtils::DeltaR(vec_antitop,vec_antitop_tmp);
 	  dR_b=BoostedUtils::DeltaR(vec_b,vec_b_tmp);
@@ -581,7 +581,31 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  dR_b_switch=BoostedUtils::DeltaR(vec_b,vec_antib_tmp);
 	  dR_antib_switch=BoostedUtils::DeltaR(vec_antib,vec_b_tmp);
 	}
-	// if the dR Matching is succesfull the processor proceeds otherwise the loop for reco ends here
+	// set some flags which are of interest for the reconstruction -> maybe some dedicated processor would be better for this
+	if(dR_top<dR_max) {
+	  vars.FillVar("RECO_t_flag_after_match",1);
+	}
+	if(dR_antitop<dR_max) {
+	  vars.FillVar("RECO_antit_flag_after_match",1);
+	}
+	if(dR_b<dR_max) {
+	  vars.FillVar("RECO_b_flag_after_match",1);
+	}
+	if(dR_antib<dR_max) {
+	  vars.FillVar("RECO_antib_flag_after_match",1);
+	}
+	if(dR_top_switch<dR_max) {
+	  vars.FillVar("RECO_t_switch_flag_after_match",1);
+	}
+	if(dR_antitop_switch<dR_max) {
+	  vars.FillVar("RECO_antit_switch_flag_after_match",1);
+	}
+	if(dR_b_switch<dR_max) {
+	  vars.FillVar("RECO_b_switch_flag_after_match",1);
+	}
+	if(dR_antib_switch<dR_max) {
+	  vars.FillVar("RECO_antib_switch_flag_after_match",1);
+	}
 	if(dR_top<dR_max && dR_antitop<dR_max) {
 	  vars.FillVar("RECO_tt_flag_after_match",1);
 	}
@@ -595,6 +619,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  vars.FillVar("RECO_bb_switch_flag_after_match",1);
 	}
 	if(dR_top<dR_max && dR_antitop<dR_max && dR_b<dR_max && dR_antib<dR_max) {
+	  //cout << "every particle is matched correctly" << endl;
 	  vars.FillVar("RECO_flag_after_match",1);
 	}
 	else if(dR_top<dR_max && dR_antitop<dR_max && dR_b_switch<dR_max && dR_antib_switch<dR_max) {
@@ -611,9 +636,60 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       }
       
     }
+    
+    else if(input.selectedJetsDL.size()>=2 && dec_type.EqualTo("RECO") && ((input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())==2) && !((input.selectedElectrons.size()+input.selectedMuons.size())==1)) {
+      isSL=false;
+      isDL=true;
+      cout << "DiLepton Reconstruction ! " << endl;
+      dilepton_reco_flag=true;
+      //now check if there are 2 electrons or 2 muons or one of both and assign the correct 4 vectors
+      if(input.selectedElectronsLoose.size()==2) {
+	if(input.selectedElectronsLoose[0].charge()<0) {
+	  vec_lepton.SetPxPyPzE(input.selectedElectronsLoose[0].px(),input.selectedElectronsLoose[0].py(),input.selectedElectronsLoose[0].pz(),input.selectedElectronsLoose[0].energy());
+	}
+	else if(input.selectedElectronsLoose[0].charge()>0) {
+	  vec_antilepton.SetPxPyPzE(input.selectedElectronsLoose[0].px(),input.selectedElectronsLoose[0].py(),input.selectedElectronsLoose[0].pz(),input.selectedElectronsLoose[0].energy());
+	}
+	if(input.selectedElectronsLoose[1].charge()<0) {
+	  vec_lepton.SetPxPyPzE(input.selectedElectronsLoose[1].px(),input.selectedElectronsLoose[1].py(),input.selectedElectronsLoose[1].pz(),input.selectedElectronsLoose[1].energy());
+	}
+	else if(input.selectedElectronsLoose[1].charge()>0) {
+	  vec_antilepton.SetPxPyPzE(input.selectedElectronsLoose[1].px(),input.selectedElectronsLoose[1].py(),input.selectedElectronsLoose[1].pz(),input.selectedElectronsLoose[1].energy());
+	}
+      }
+      else if(input.selectedMuonsLoose.size()==2) {
+	if(input.selectedMuonsLoose[0].charge()<0) {
+	  vec_lepton.SetPxPyPzE(input.selectedMuonsLoose[0].px(),input.selectedMuonsLoose[0].py(),input.selectedMuonsLoose[0].pz(),input.selectedMuonsLoose[0].energy());
+	}
+	else if(input.selectedMuonsLoose[0].charge()>0) {
+	  vec_antilepton.SetPxPyPzE(input.selectedMuonsLoose[0].px(),input.selectedMuonsLoose[0].py(),input.selectedMuonsLoose[0].pz(),input.selectedMuonsLoose[0].energy());
+	}
+	if(input.selectedMuonsLoose[1].charge()<0) {
+	  vec_lepton.SetPxPyPzE(input.selectedMuonsLoose[1].px(),input.selectedMuonsLoose[1].py(),input.selectedMuonsLoose[1].pz(),input.selectedMuonsLoose[1].energy());
+	}
+	else if(input.selectedMuonsLoose[1].charge()>0) {
+	  vec_antilepton.SetPxPyPzE(input.selectedMuonsLoose[1].px(),input.selectedMuonsLoose[1].py(),input.selectedMuonsLoose[1].pz(),input.selectedMuonsLoose[1].energy());
+	}
+      }
+      else {
+	if(input.selectedElectronsLoose[0].charge()<0) {
+	  vec_lepton.SetPxPyPzE(input.selectedElectronsLoose[0].px(),input.selectedElectronsLoose[0].py(),input.selectedElectronsLoose[0].pz(),input.selectedElectronsLoose[0].energy());
+	}
+	else if(input.selectedElectronsLoose[0].charge()>0) {
+	  vec_antilepton.SetPxPyPzE(input.selectedElectronsLoose[0].px(),input.selectedElectronsLoose[0].py(),input.selectedElectronsLoose[0].pz(),input.selectedElectronsLoose[0].energy());
+	}
+	if(input.selectedMuonsLoose[0].charge()<0) {
+	  vec_lepton.SetPxPyPzE(input.selectedMuonsLoose[0].px(),input.selectedMuonsLoose[0].py(),input.selectedMuonsLoose[0].pz(),input.selectedMuonsLoose[0].energy());
+	}
+	else if(input.selectedMuonsLoose[0].charge()>0) {
+	  vec_antilepton.SetPxPyPzE(input.selectedMuonsLoose[0].px(),input.selectedMuonsLoose[0].py(),input.selectedMuonsLoose[0].pz(),input.selectedMuonsLoose[0].energy());
+	}
+      }
+    }
+    
     // if neither GEN nor RECO part worked the loop ends here
     else {
-      //cout << *it_type << " reconstruction not possible, abort!! " << endl;
+      //cout << *it_type << " nothing could be done in this round of the loop!! " << endl;
       continue;
     }
     
@@ -644,6 +720,16 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       
       // if SL event: depending on lepton or antilepton, the variables which make sense are defined for the event
       if(isSL) {
+	// first few variables which are present in SL channel
+	variables["cos_theta_bb"]=0;
+	variables["Delta_Eta_bb"]=1;
+	variables["Delta_Phi_bb"]=2;
+	variables["M_ttbar"]=13;
+	variables["M_t"]=16;
+	variables["M_tbar"]=17;
+	variables["M_b"]=18;
+	variables["M_bbar"]=19;
+	// depend on lepton or antilepton the variables are filled
 	if(leptonflag==1) {
 	  variables["cos_theta_l"]=6;
 	  variables["cos_theta_lb"]=8;
@@ -661,24 +747,42 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       }
       // same for DL events
       if(isDL) {
+	// if DL flag is set, then these variables can be filled 
 	variables["cos_theta_ll"]=3;
 	variables["Delta_Phi_ll"]=4;
 	variables["Delta_Eta_ll"]=5;
-	variables["cos_theta_l"]=6;
-	variables["cos_theta_lbar"]=7;
-	variables["cos_theta_lb"]=8;
-	variables["cos_theta_lbarbbar"]=9;
-	variables["Delta_Phi_lb"]=10;
-	variables["Delta_Phi_lbarbbar"]=11; 
-	variables["cos_theta_l_x_cos_theta_lbar"]=12;
- 	variables["M_l"]=20;
+	variables["M_l"]=20;
   	variables["M_lbar"]=21;
+	// these variables will only be filled if the dilepton reco flag isnt set, because they can only be filled if the whole event is reconstructed which cannot be done in DL case 
+	if(!dilepton_reco_flag) {
+	  variables["cos_theta_bb"]=0;
+	  variables["Delta_Eta_bb"]=1;
+	  variables["Delta_Phi_bb"]=2;
+	  variables["M_ttbar"]=13;
+	  variables["M_t"]=16;
+	  variables["M_tbar"]=17;
+	  variables["M_b"]=18;
+	  variables["M_bbar"]=19;
+	  variables["cos_theta_l"]=6;
+	  variables["cos_theta_lbar"]=7;
+	  variables["cos_theta_lb"]=8;
+	  variables["cos_theta_lbarbbar"]=9;
+	  variables["Delta_Phi_lb"]=10;
+	  variables["Delta_Phi_lbarbbar"]=11; 
+	  variables["cos_theta_l_x_cos_theta_lbar"]=12;
+	}
       }
       // now the GetVars function calculates the desired variable depending on the number of the variable using the 4-vectors of the event
       for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
-	  vars.FillVar(*it_type+"__"+it_frames->first+"__"+it_variables->first,GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,vec_d_,vec_antid_,it_variables->second));
-	  //cout << *it_type+"__"+it_frames->first+"__"+it_variables->first << " filled with " << GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,vec_d_,vec_antid_,it_variables->second) << endl;
-	
+	  if(dilepton_reco_flag) {
+	    if((it_frames->second)==0) {
+	      vars.FillVar(*it_type+"__"+it_frames->first+"__"+it_variables->first,GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,vec_d_,vec_antid_,it_variables->second));
+	    }
+	  }
+	  else {
+	    vars.FillVar(*it_type+"__"+it_frames->first+"__"+it_variables->first,GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,vec_d_,vec_antid_,it_variables->second));
+	    //cout << *it_type+"__"+it_frames->first+"__"+it_variables->first << " filled with " << GetVars(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,vec_d_,vec_antid_,it_variables->second) << endl;
+	  }
       }
     }
   }

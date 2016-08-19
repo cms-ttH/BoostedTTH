@@ -1,31 +1,37 @@
 import FWCore.ParameterSet.Config as cms
 from BoostedTTH.BoostedAnalyzer.Selection_cff import *
+from BoostedTTH.BoostedAnalyzer.Inputs_cff import *
+from BoostedTTH.BoostedAnalyzer.Weights_cff import *
 
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
+    Inputs_tth_sl, # defined in Inputs_cff
     LeptonSelectionMC, # defined in Selection_cff
     DiLeptonSelectionMC, # defined in Selection_cff
-    JetTagSelection, # defined in Selection_cff
+    DiLeptonJetTagSelection, # defined in Selection_cff
     DiLeptonMETSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
 
-    era = cms.string("2015_74x"), # has little effect so far, might become important for MiniAODhelper
-    analysisType = cms.string("DL"), # has little effect so far, might become important for MiniAODhelper
-    sampleID = cms.int32(9125), # has little effect so far, might become important for MiniAODhelper
+   # weight of one event: calculated as
+    # cross section * lumi / (number of generated events with positive weight  -  number of generated events with negative weight )
+    # so that the sum of weights corresponds to the number of events for the given lumi
     eventWeight = cms.double(1.),
-    generatorName = cms.string("notSpecified"),
-    
-    minJetsForMEM = cms.int32(4),
-    minTagsForMEM = cms.int32(3),
-    
-    luminosity = cms.double(10000),
-    xs = cms.double(831.76),
-
-    nMCEvents = cms.int32(25446993),
-
     isData = cms.bool(False),
+    datasetFlag=cms.int32(0),
 
-    makeSystematicsTrees = cms.bool(True),
+    # b-tag SF, defined in Weights_cff
+    bTagSFs = cms.PSet(BTagSFs80X),
+
+    # PU weights, defined in Weights_cff
+    nominalPUWeight = cms.PSet(NominalPUWeight),
+    additionalPUWeights = cms.VPSet(AdditionalPUWeights),
+
+    systematics = cms.vstring(""),
+    doJERsystematic = cms.bool(False),
+
+    generatorName = cms.string("notSpecified"),
+
+    isreHLT = cms.bool(False),
 
     useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
@@ -34,8 +40,13 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpSyncExe = cms.bool(False),
     dumpSyncExe2 = cms.bool(False),
 
-    selectionNames = cms.vstring("VertexSelection"),#,"MinDiLeptonMassSelection"),
-    processorNames = cms.vstring("WeightProcessor","TriggerVarProcessor","MCMatchVarProcessor","AdditionalJetProcessor","SpinCorrelationProcessor"),
+    doBoostedMEM = cms.bool(False),
+
+    minJetsForMEM = cms.int32(4),
+    minTagsForMEM = cms.int32(3),
+
+    selectionNames = cms.vstring("VertexSelection","DiLeptonSelection","DiLeptonJetTagSelection","MinDiLeptonMassSelection","ZVetoSelection","DiLeptonMETSelection"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","TriggerVarProcessor","SpinCorrelationProcessor","AdditionalJetProcessor"),
 
     outfileName = cms.string("BoostedTTH"),
 )
