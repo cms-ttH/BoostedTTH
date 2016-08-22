@@ -9,6 +9,13 @@ NominalPUWeight = cms.PSet(
     histNameDataNPUEstimated = cms.string("pileup")
 )
 AdditionalPUWeights = cms.VPSet(
+  cms.PSet(
+    namePUWeight = cms.string("Weight_pu69p2"),
+    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/Spring16_25nsV1_NumTruePU.root"),
+    histNameMCNPU = cms.string("hNumTruePUPdf"),
+    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016B-PromptReco_MinBias69200.root"),
+    histNameDataNPUEstimated = cms.string("pileup")
+)
 )
 
 
