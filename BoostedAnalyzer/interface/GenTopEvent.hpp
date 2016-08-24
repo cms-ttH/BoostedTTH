@@ -142,6 +142,8 @@ public:
 		      const std::vector<int>& genCHadBHadronId
 		      );  
   void FillTTdecay(const std::vector<reco::GenParticle>& prunedGenParticles, int ttXid_);
+  
+  
 private:
   math::XYZTLorentzVector GetLV(const reco::GenParticle& p) const;
   std::vector<math::XYZTLorentzVector> GetLVs(const std::vector<reco::GenParticle>& ps) const;

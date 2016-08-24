@@ -18,6 +18,8 @@
 <use name="BoostedTTH/MatrixElements"/>
 <use name="TTH/CommonClassifier"/>
 <use name="Other/BJetness"/>
+<use name="DataFormats/ParticleFlowCandidate">
+<use name="DataFormats/ParticleFlowReco">
 <export>
   <lib   name="1"/>
 </export>

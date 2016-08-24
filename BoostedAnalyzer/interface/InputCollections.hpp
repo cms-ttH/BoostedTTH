@@ -12,6 +12,7 @@
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ZPrimeToTPrimeAllHadProducer.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
@@ -46,6 +47,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const GenTopEvent&                            genTopEvt_,
+                    const ZPrimeToTPrimeAllHad&                   zprimetotprimeallhad_,
                     const std::vector<reco::GenJet>&              genJets_,
                     const SampleType                              sampleType_,
 		    const HiggsDecay::HiggsDecay                  higgsDecay_,
@@ -73,6 +75,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
                     genTopEvt(genTopEvt_),
+                    zprimetotprimeallhad(zprimetotprimeallhad_),
                     genJets(genJets_),
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
@@ -113,6 +116,7 @@ InputCollections(   const InputCollections&                       input,
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
                     genTopEvt(input.genTopEvt),
+                    zprimetotprimeallhad(input.zprimetotprimeallhad),
                     genJets(input.genJets),
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
@@ -140,6 +144,7 @@ InputCollections(   const InputCollections&                       input,
   const pat::MET&                               correctedMET;
   const boosted::BoostedJetCollection&          selectedBoostedJets;
   const GenTopEvent&                            genTopEvt;
+  const ZPrimeToTPrimeAllHad&                   zprimetotprimeallhad;
   const std::vector<reco::GenJet>&              genJets;
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;

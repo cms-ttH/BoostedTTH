@@ -90,6 +90,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ZPrimeToTPrimeAllHadProducer.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ZPrimeToTPrimeAllHadProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
@@ -115,7 +117,7 @@ private:
     virtual void endJob() override;
     virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
     float GetTopPtWeight(float toppt1, float toppt2);
-    map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype=sysType::NA);
+    map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const ZPrimeToTPrimeAllHad& zprimetotprimeallhad, sysType::sysType systype=sysType::NA);
     std::string outfileName(const std::string& basename,const sysType::sysType& sysType);
     std::string systName(const sysType::sysType& sysType);
     sysType::sysType systType(const std::string& name);
@@ -174,6 +176,8 @@ private:
     std::string usedGenerator;
     /** produces MC truth information for ttbar and ttH samples (genTopEvent)*/
     GenTopEventProducer genTopEvtProd;
+    /** produces MC truth information for ZPrime to TPrime samples in all-hadronic channel (zprimetotprimeallhad)*/
+    ZPrimeToTPrimeAllHadProducer zprimetotprimeallhadProd;
     /** Calculated MEM for "boosted" events? Takes several seconds per event */
     bool doBoostedMEM;
     /** processors run */
@@ -239,7 +243,7 @@ private:
 //
 BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // initialize gen top event with consumes collector (allows to access data from file within this class)
-    genTopEvtProd(GenTopEventProducer(consumesCollector()))
+    genTopEvtProd(GenTopEventProducer(consumesCollector())), zprimetotprimeallhadProd(ZPrimeToTPrimeAllHadProducer(consumesCollector()))
 {
   const bool BTagSystematics = false;
     //
@@ -446,6 +450,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
 	}
+	if(std::find(processorNames.begin(),processorNames.end(),"ZPrimeToTPrimeAllHadProcessor")!=processorNames.end()) {
+	    treewriter->AddTreeProcessor(new ZPrimeToTPrimeAllHadProcessor(),"ZPrimeToTPrimeAllHadProcessor");
+	}
     }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
@@ -648,9 +655,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	    }
 	}
     }
-    GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!(!isData&&foundT&&foundTbar));
+    
+    GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!(!isData&&(foundT||foundTbar)));
     int ttid = genTopEvt.IsFilled()? genTopEvt.GetTTxIdFromProducer() : -1;
+    
+    ZPrimeToTPrimeAllHad zprimetotprimeallhad=zprimetotprimeallhadProd.Produce(iEvent,useGenHadronMatch,isData);
 
+    
     SampleType sampleType= SampleType::nonttbkg;
     if(isData) sampleType = SampleType::data;
     else if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
@@ -670,8 +681,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // inputs
     vector<InputCollections> inputs;
     for(uint isys=0; isys<jetSystematics.size(); isys++){
-        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
-	auto weightsDL = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJetsLooseDL[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
+        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,zprimetotprimeallhad,jetSystematics[isys]);
+	auto weightsDL = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJetsLooseDL[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,zprimetotprimeallhad,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
 					  selectedPVs,
@@ -689,6 +700,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  (*(hs_correctedMETs[isys]))[0],
 					  selectedBoostedJets[isys],
 					  genTopEvt,
+                                          zprimetotprimeallhad,
 					  *h_genJets,
 					  sampleType,
 					  higgsdecay,
@@ -732,7 +744,7 @@ float BoostedAnalyzer::GetTopPtWeight(float toppt1,float toppt2){
     return sqrt(sf1*sf2);
 }
 
-map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype){
+map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const ZPrimeToTPrimeAllHad& zprimetotprimeallhad, sysType::sysType systype){
     map<string,float> weights;
 
     if(isData){

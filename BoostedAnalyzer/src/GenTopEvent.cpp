@@ -23,7 +23,7 @@ GenTopEventProducer::~GenTopEventProducer(){}
 
 GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHadronMatch, bool returnDummy){
     GenTopEvent genTopEvt;
-    if(returnDummy) return genTopEvt;
+    if(returnDummy) {return genTopEvt;     cout<<"obbacht, mein Lieber Herr Gesangsverein, returning Dummy"<<endl;};
     edm::Handle< std::vector<reco::GenJet> > h_customgenjets;
     iEvent.getByToken( customGenJetsToken,h_customgenjets );
     edm::Handle<std::vector<int> > genBHadFlavour;
@@ -501,6 +501,9 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
       std::cerr << "GenTopEvent: error 2"<<std::endl;
       while(wminus_decay_products.size()<2){
 	  wminus_decay_products.push_back(reco::GenParticle());
+      }
+      while(wplus_decay_products.size()<2){
+	  wplus_decay_products.push_back(reco::GenParticle());
       }
   }
   if(top.energy()<1||topbar.energy()<1||wplus.energy()<1||wminus.energy()<1||top_decay_quark.energy()<1||topbar_decay_quark.energy()<1) std::cerr << "GenTopEvent: error 4"<<std::endl;
