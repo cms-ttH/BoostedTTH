@@ -614,7 +614,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 0., 9999., jetID::jetLoose);
     	for(auto syst : jetSystematics){
     	    boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, syst, true, true);
-    	    selectedBoostedJets.push_back(helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 20., 2.4, jetID::none));
+    	    selectedBoostedJets.push_back(helper.GetSelectedBoostedJets(correctedBoostedJets, 180., 20., 2.4, jetID::none));
     	}
     }
     else{

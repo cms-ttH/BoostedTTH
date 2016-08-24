@@ -27,10 +27,9 @@ options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsin
 options.register( "isreHLT",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
 options.parseArguments()
 
-
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 1000 # reset for testing
+    options.maxEvents = 5000 # reset for testing
 
 if not options.inputFiles:
     #options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/00000/0064B539-803A-E611-BDEA-002590D0B060.root']
@@ -62,7 +61,7 @@ for key in options._register:
         print str(key)+" : "+str( options.__getattr__(key) )
 print "*****************************************\n\n"
 
-process = cms.Process("wtf")
+process = cms.Process("analysis")
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -238,7 +237,7 @@ process.BoostedAnalyzer.minTags = [2]
 process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
-#process.BoostedAnalyzer.doJERsystematic = False
+process.BoostedAnalyzer.doJERsystematic = False
 process.BoostedAnalyzer.doBoostedMEM = False
 
 if options.isData:
