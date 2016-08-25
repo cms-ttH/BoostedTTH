@@ -101,6 +101,7 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
             if(lastTop){
                 if(p->pdgId()==6) tops.push_back(*p);
                 if(p->pdgId()==-6) topbars.push_back(*p);
+                topsandtopbars.push_back(*p);
                 bool setTDecay=false;
                 bool setTBarDecay=false;
                 for(uint i=0;i<p->numberOfDaughters();i++){
@@ -142,6 +143,7 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
             if(lastTPrime){
                 if(p->pdgId()==8000001) TPrimes.push_back(*p);
                 if(p->pdgId()==-8000001) TPrimebars.push_back(*p);
+                TPrimesandTPrimebars.push_back(*p);
                 bool setTPrimeDecay=false;
                 bool setTPrimeBarDecay=false;
                 for(uint i=0;i<p->numberOfDaughters();i++){
@@ -197,6 +199,7 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
             if(lastW&&fromTop){
                 if(p->pdgId()==24) wplus_fromTops.push_back(*p);
                 if(p->pdgId()==-24) wminus_fromTops.push_back(*p);
+                Wfromtopsandtopbars.push_back(*p);
                 for(uint i=0;i<p->numberOfDaughters();i++){
                     if(p->pdgId()==24 && abs(p->daughter(i)->pdgId())<=16){
                         wplus_fromTop_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
@@ -209,6 +212,7 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
             if(lastW&&fromTPrime){
                 if(p->pdgId()==24) wplus_fromTPrimes.push_back(*p);
                 if(p->pdgId()==-24) wminus_fromTPrimes.push_back(*p);
+                WfromTPrimesandTPrimebars.push_back(*p);
                 for(uint i=0;i<p->numberOfDaughters();i++){
                     if(p->pdgId()==24 && abs(p->daughter(i)->pdgId())<=16){
                         wplus_fromTPrime_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
@@ -256,10 +260,12 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
             if(lastBottom&&fromTop){
                 if(p->pdgId()==5) Bottom_fromTops.push_back(*p);
                 if(p->pdgId()==-5) Bottombar_fromTops.push_back(*p);
+                Bottom_fromTopsandTopbars.push_back(*p);
             }
             if(lastBottom&&fromTPrime){
                 if(p->pdgId()==5) Bottom_fromTPrimes.push_back(*p);
                 if(p->pdgId()==-5) Bottombar_fromTPrimes.push_back(*p);
+                Bottom_fromTPrimesandTPrimebars.push_back(*p);
             }
         }
         
@@ -414,6 +420,11 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopbars() const{
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
   return topbars;
 }
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopsandTopbars() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return topsandtopbars;
+}
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTPrimes() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
@@ -423,6 +434,11 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTPrimebars() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
   return TPrimebars;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTPrimesandTPrimebars() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return TPrimesandTPrimebars;
 }
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetZPrimes() const{
     assert(isFilled);
@@ -441,8 +457,6 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetZs() const{
 }
 
 
-
-
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetWplus_fromTops() const{
     assert(isFilled);
       if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
@@ -453,6 +467,11 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetWminus_fromTops() const{
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
   return wminus_fromTops;
 }
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetW_fromTopsandTopbars() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Wfromtopsandtopbars;
+}
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetWplus_fromTPrimes() const{
     assert(isFilled);
       if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
@@ -462,6 +481,43 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetWminus_fromTPrimes() con
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
   return wminus_fromTPrimes;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetW_fromTPrimesandTPrimebars() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return WfromTPrimesandTPrimebars;
+}
+
+
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottom_fromTops() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Bottom_fromTops;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottom_fromTopbars() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Bottombar_fromTops;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottom_fromTopsandTopbars() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Bottom_fromTopsandTopbars;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottom_fromTPrimes() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Bottom_fromTPrimes;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottom_fromTPrimebars() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Bottombar_fromTPrimes;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottom_fromTPrimesandTPrimebars() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Bottom_fromTPrimesandTPrimebars;
 }
 
 
@@ -495,6 +551,9 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetZDecayProducts() const{
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
   return Z_decay_products;
 }
+
+
+
 
 
 std::vector<reco::GenParticle>  ZPrimeToTPrimeAllHad::GetW_decay_products_fromTop() const{
