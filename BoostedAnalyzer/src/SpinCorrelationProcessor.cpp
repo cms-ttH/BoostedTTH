@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
 
 // function to do some basic boosts on a TLorentzVectors using the number of the corresponding frame and the top/antitop 4-vectors
-TLorentzVector Boost(TLorentzVector in_vec, Int_t frame_number, TLorentzVector vec_top_, TLorentzVector vec_antitop_){
+TLorentzVector SpinCorrelationProcessor::Boost(TLorentzVector in_vec, Int_t frame_number, TLorentzVector vec_top_, TLorentzVector vec_antitop_){
   TLorentzVector out_vec=in_vec;
   //cout << "out_vec pt before boost: " << out_vec.Pt() << endl;
   //cout << "boost frame_number: " << frame_number << endl;
@@ -27,7 +27,7 @@ TLorentzVector Boost(TLorentzVector in_vec, Int_t frame_number, TLorentzVector v
 }
 
 // function which sets all the 4-vectors of the event according to the desired frame
-void SetAllVectors(TLorentzVector& vec_top_, TLorentzVector& vec_antitop_, TLorentzVector& vec_b_, TLorentzVector& vec_antib_, TLorentzVector& vec_lepton_, TLorentzVector& vec_antilepton_,TLorentzVector& vec_d_,TLorentzVector& vec_antid_, int identifier){
+void SpinCorrelationProcessor::SetAllVectors(TLorentzVector& vec_top_, TLorentzVector& vec_antitop_, TLorentzVector& vec_b_, TLorentzVector& vec_antib_, TLorentzVector& vec_lepton_, TLorentzVector& vec_antilepton_,TLorentzVector& vec_d_,TLorentzVector& vec_antid_, int identifier){
   
   //cout << "frame identifier: " << identifier << endl;
   
@@ -69,12 +69,12 @@ void SetAllVectors(TLorentzVector& vec_top_, TLorentzVector& vec_antitop_, TLore
     default:
       vec_lepton_=Boost(vec_lepton_tmp,identifier,vec_top_tmp,vec_antitop_tmp);//boost lepton in corresponding system
       vec_antilepton_=Boost(vec_antilepton_tmp,identifier,vec_top_tmp,vec_antitop_tmp);//boost antilepton in corresponding system
-      vec_top_=Boost(vec_top_tmp,identifier,vec_top_tmp,vec_antitop_tmp);
-      vec_antitop_=Boost(vec_antitop_tmp,identifier,vec_top_tmp,vec_antitop_tmp);
+      vec_top_=Boost(vec_top_tmp,identifier,vec_top_tmp,vec_antitop_tmp);//boost top in corresponding system
+      vec_antitop_=Boost(vec_antitop_tmp,identifier,vec_top_tmp,vec_antitop_tmp);//boost antitop in corresponding system
       vec_b_=Boost(vec_b_tmp,identifier,vec_top_tmp,vec_antitop_tmp);//boost b quark in corresponding system
       vec_antib_=Boost(vec_antib_tmp,identifier,vec_top_tmp,vec_antitop_tmp);//boost anti b quark in corresponding system
-      vec_d_=Boost(vec_d_tmp,identifier,vec_top_tmp,vec_antitop_tmp);
-      vec_antid_=Boost(vec_antid_tmp,identifier,vec_top_tmp,vec_antitop_tmp);
+      vec_d_=Boost(vec_d_tmp,identifier,vec_top_tmp,vec_antitop_tmp);//bost downtype quark in corresponding system
+      vec_antid_=Boost(vec_antid_tmp,identifier,vec_top_tmp,vec_antitop_tmp);//boost downtype antiquark in corresponding system
       break;
   }
   
@@ -87,8 +87,8 @@ void SetAllVectors(TLorentzVector& vec_top_, TLorentzVector& vec_antitop_, TLore
 }
 
 // this function calculates all desired variables using their identification number
-double GetVars(TLorentzVector vec_top_, TLorentzVector vec_antitop_, TLorentzVector vec_b_,TLorentzVector vec_antib_, TLorentzVector vec_lepton_,TLorentzVector vec_antilepton_,TLorentzVector vec_d_,TLorentzVector vec_antid_, Int_t var_number) {
-  double out=-1;
+double SpinCorrelationProcessor::GetVars(TLorentzVector vec_top_, TLorentzVector vec_antitop_, TLorentzVector vec_b_,TLorentzVector vec_antib_, TLorentzVector vec_lepton_,TLorentzVector vec_antilepton_,TLorentzVector vec_d_,TLorentzVector vec_antid_, Int_t var_number) {
+  double out=-1.;
   //cout << "var number 2: " << var_number << endl;
   switch(var_number) {
   
@@ -416,7 +416,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	}   
       }
       // in DL case, the assignment is straight forward. pdgid>0 are leptons, pdgid<0 are antileptons
-      if(isDL) {
+      else if(isDL) {
 	if(lep[0].pdgId()>0) {
 	  if(lep[0].pdgId()==15 && no_tau_selection) {return;}
 	  vec_lepton=lep[0].p4();
@@ -561,14 +561,14 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	vars.FillVar("RECO_flag_before_match",1);
 	// now do a Delta R Matching of the reconstructed 4-vectors with the saved GEN vectors
 	float dR_max=0.4;
-	float dR_top=dR_max+1;
-	float dR_antitop=dR_max+1;
-	float dR_b=dR_max+1;
-	float dR_antib=dR_max+1;
-	float dR_top_switch=dR_max+1;
-	float dR_antitop_switch=dR_max+1;
-	float dR_b_switch=dR_max+1;
-	float dR_antib_switch=dR_max+1;
+	float dR_top=dR_max+1.;
+	float dR_antitop=dR_max+1.;
+	float dR_b=dR_max+1.;
+	float dR_antib=dR_max+1.;
+	float dR_top_switch=dR_max+1.;
+	float dR_antitop_switch=dR_max+1.;
+	float dR_b_switch=dR_max+1.;
+	float dR_antib_switch=dR_max+1.;
 	if(gen_evt_filled){
 	  vars.FillVar("GenTopEvt_filled",1);
 	  //cout << "Gen Top Event is filled " << endl;
@@ -640,7 +640,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
     else if(input.selectedJetsDL.size()>=2 && dec_type.EqualTo("RECO") && ((input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())==2) && !((input.selectedElectrons.size()+input.selectedMuons.size())==1)) {
       isSL=false;
       isDL=true;
-      cout << "DiLepton Reconstruction ! " << endl;
+      //cout << "DiLepton Reconstruction ! " << endl;
       dilepton_reco_flag=true;
       //now check if there are 2 electrons or 2 muons or one of both and assign the correct 4 vectors
       if(input.selectedElectronsLoose.size()==2) {
