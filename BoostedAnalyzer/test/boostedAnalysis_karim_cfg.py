@@ -163,7 +163,7 @@ process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","sele
 
 process.SelectedMuonProducer.ptMins=[15.,25.,25.]
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","muonMediumICHEP"]
+process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
 process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
@@ -174,8 +174,6 @@ process.SelectedJetProducer.ptMins=[20,30,20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
-
-
 
 # load and run the boosted analyzer
 if options.isData:
