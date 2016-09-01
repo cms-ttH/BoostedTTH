@@ -252,7 +252,7 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
       //cout << (*it_frames)+"|"+(*it_variables) << " initialized " << endl;
     }
   }
-  
+  /*
   vars.InitVar("RECO_flag_before_match",0,"I");
   vars.InitVar("RECO_flag_after_match",0,"I");
   vars.InitVar("RECO_switch_flag_after_match_1",0,"I");
@@ -270,7 +270,7 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   vars.InitVar("RECO_antib_flag_after_match",0,"I");
   vars.InitVar("RECO_antib_switch_flag_after_match",0,"I");
   vars.InitVar("GenTopEvt_filled",0,"I");
-  
+  */
   initialized=true;
   
 }
@@ -566,6 +566,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  vec_antib.SetPxPyPzE(best_int_lr->BHad().Px(),best_int_lr->BHad().Py(),best_int_lr->BHad().Pz(),best_int_lr->BHad().E());
 	  vec_b.SetPxPyPzE(best_int_lr->BLep().Px(),best_int_lr->BLep().Py(),best_int_lr->BLep().Pz(),best_int_lr->BLep().E()); 
 	}
+	/*
 	vars.FillVar("RECO_flag_before_match",1);
 	// now do a Delta R Matching of the reconstructed 4-vectors with the saved GEN vectors
 	float dR_max=0.4;
@@ -589,6 +590,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  dR_b_switch=BoostedUtils::DeltaR(vec_b,vec_antib_tmp);
 	  dR_antib_switch=BoostedUtils::DeltaR(vec_antib,vec_b_tmp);
 	}
+	
 	// set some flags which are of interest for the reconstruction -> maybe some dedicated processor would be better for this
 	if(dR_top<dR_max) {
 	  vars.FillVar("RECO_t_flag_after_match",1);
@@ -635,7 +637,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	}
 	else if(dR_top_switch<dR_max && dR_antitop_switch<dR_max && dR_b_switch<dR_max && dR_antib_switch<dR_max) {
 	  vars.FillVar("RECO_switch_flag_after_match_2",1);
-	}	
+	}*/	
       }
       // if the interpretation is 0 the loop for reco ends here
       else {
