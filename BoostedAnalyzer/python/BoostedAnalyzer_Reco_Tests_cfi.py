@@ -48,7 +48,8 @@ BoostedAnalyzer = cms.EDAnalyzer( # BoostedAnalyzer is of type EDAnalyzer ( ther
     minTagsForMEM = cms.int32(3),
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection","JetTagSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","TriggerVarProcessor","SpinCorrelationProcessor","AdditionalJetProcessor","ttbarReconstructor"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BasicVarProcessor","TriggerVarProcessor","AdditionalJetProcessor","DeltaREvaluater"),
 
     outfileName = cms.string("BoostedTTH"),
 )
+
