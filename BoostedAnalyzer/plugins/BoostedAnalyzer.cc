@@ -97,8 +97,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/DeltaREvaluater.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/ttbarReconstructor.hpp"
 //
 // class declaration
 //
@@ -455,12 +453,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"SpinCorrelationProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"DeltaREvaluater")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new DeltaREvaluater(),"DeltaREvaluater");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"ttbarReconstructor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new ttbarReconstructor(),"ttbarReconstructor");
 	}
     }
 
