@@ -184,6 +184,12 @@ double SpinCorrelationProcessor::GetVars(TLorentzVector vec_top_, TLorentzVector
     case 21:
       out=vec_antilepton_.M();
       break;
+    case 22:
+      out=TMath::Abs(vec_lepton_.Eta()-vec_b_.Eta());
+      break;
+    case 23:
+      out=TMath::Abs(vec_antilepton_.Eta()-vec_antib_.Eta());
+      break;  
     default:
       cerr << "no identifier for used variable" << endl;
   }
@@ -222,6 +228,8 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   variables.push_back("Delta_Phi_bb");
   variables.push_back("Delta_Eta_ll");
   variables.push_back("Delta_Eta_bb");
+  variables.push_back("Delta_Eta_lb");
+  variables.push_back("Delta_Eta_lbarbbar");
   variables.push_back("cos_theta_l_x_cos_theta_lbar");
   variables.push_back("M_ttbar");
   variables.push_back("cos_theta_ldbar");
@@ -736,6 +744,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  variables["Delta_Phi_lb"]=10;
 	  variables["cos_theta_ldbar"]=14;
 	  variables["M_l"]=20;
+	  variables["Delta_Eta_lb"]=22;
 	}
 	if(leptonflag==-1) {
 	  variables["cos_theta_lbar"]=7;
@@ -743,6 +752,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  variables["Delta_Phi_lbarbbar"]=11;
 	  variables["cos_theta_lbard"]=15;
 	  variables["M_lbar"]=21;
+	  variables["Delta_Eta_lbarbbar"]=23;
 	}
       }
       // same for DL events
@@ -770,6 +780,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  variables["Delta_Phi_lb"]=10;
 	  variables["Delta_Phi_lbarbbar"]=11; 
 	  variables["cos_theta_l_x_cos_theta_lbar"]=12;
+	  variables["Delta_Eta_lb"]=22;
+	  variables["Delta_Eta_lbarbbar"]=23;
 	}
       }
       // now the GetVars function calculates the desired variable depending on the number of the variable using the 4-vectors of the event
