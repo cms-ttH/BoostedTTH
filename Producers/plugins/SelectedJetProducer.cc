@@ -82,7 +82,7 @@ private:
     std::vector<sysType::sysType> systematics;
     /** apply jet energy correciton? **/
     bool applyCorrection;
-    
+    bool isData;
 };
 
 //
@@ -113,7 +113,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     assert(ptMins.size()==etaMaxs.size());
     assert(ptMins.size()==collectionNames.size());
 
-    const bool isData = iConfig.getParameter<bool>("isData");
+    isData = iConfig.getParameter<bool>("isData");
     analysisType::analysisType iAnalysisType = analysisType::LJ;
     const int sampleID = isData? -1 : 1;
     const std::string era = "2015_74x";
@@ -171,9 +171,8 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    edm::Handle< pat::JetCollection > h_inputJets;
    iEvent.getByToken( jetsToken,h_inputJets );
-  
    edm::Handle< reco::GenJetCollection > h_genJets;
-   iEvent.getByToken( genjetsToken, h_genJets );
+   if (!isData) {iEvent.getByToken( genjetsToken, h_genJets );}
 
    edm::Handle< pat::ElectronCollection > h_inputElectrons;
    iEvent.getByToken( electronsToken,h_inputElectrons );
