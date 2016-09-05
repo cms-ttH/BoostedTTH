@@ -20,7 +20,7 @@ options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, 
 options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
-options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2_v1", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "int flag to identify which dataset is used")#(0,1,2,3,4,5)->(MC,single ele, single mu,ele ele,ele mu,mu mu)
@@ -36,7 +36,7 @@ if not options.inputFiles:
     options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/00000/000B9244-4B27-E611-91D2-7845C4FC3C6B.root']
 
 if options.isData:
-  options.globalTag="80X_dataRun2_Prompt_v8"
+  options.globalTag="80X_dataRun2_Prompt_ICHEP16JEC_v0"
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
@@ -123,44 +123,44 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
-#=================================== JEC from DB file for data ===============
-if options.isData:
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_DATA.db'),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
-        )
-    )
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_DATA.db'),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK8PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
-        )
-    )
-else:
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_MC.db'),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
-        )
-    )
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV3_MC.db'),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK8PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
-        )
-    )
+  #=================================== JEC from DB file for data ===============
+  if options.isData:
+      process.GlobalTag.toGet.append(
+          cms.PSet(
+              connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_DATA.db'),
+              record = cms.string('JetCorrectionsRecord'),
+              tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK4PFchs'),
+              label  = cms.untracked.string('AK4PFchs')
+          )
+      )
+      process.GlobalTag.toGet.append(
+          cms.PSet(
+              connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_DATA.db'),
+              record = cms.string('JetCorrectionsRecord'),
+              tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK8PFchs'),
+              label  = cms.untracked.string('AK8PFchs')
+          )
+      )
+  else:
+      process.GlobalTag.toGet.append(
+          cms.PSet(
+              connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_MC.db'),
+              record = cms.string('JetCorrectionsRecord'),
+              tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK4PFchs'),
+              label  = cms.untracked.string('AK4PFchs')
+          )
+      )
+      process.GlobalTag.toGet.append(
+          cms.PSet(
+              connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_MC.db'),
+              record = cms.string('JetCorrectionsRecord'),
+              tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK8PFchs'),
+              label  = cms.untracked.string('AK8PFchs')
+          )
+      )
 
-#===============================================================
-#
+  #===============================================================
+  #
 
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,20.,30.]
@@ -187,7 +187,8 @@ process.load("BoostedTTH.BoostedProducer.GenJetswNuProducer_cfi")
 process.load("BoostedTTH.Producers.RegressedJetProducer_cfi")
 process.RegressedJetProducer.inputjets=["SelectedJetProducer:selectedJets"]
 process.RegressedJetProducer.outputprefix="regressedJets"
-process.RegressedJetProducer.doGenJetMatchingforRegression=True
+if not options.isData:
+    process.RegressedJetProducer.doGenJetMatchingforRegression=True
 process.RegressedJetProducer.isData=options.isData
 
 
@@ -199,7 +200,10 @@ if options.isData:
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
 else:
     if options.analysisType=='SL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+        if options.isreHLT:
+            process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+        else:
+            process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzerNoTrigger_cfi")
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
     if not options.isBoostedMiniAOD:
@@ -249,7 +253,10 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 
 
 if options.isData and options.useJson:
-    print 'use JSON is no longer supported'
+    #print 'use JSON is no longer supported'
+    import FWCore.PythonUtilities.LumiList as LumiList
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/kelmorab/CMSSW8/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
+
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")

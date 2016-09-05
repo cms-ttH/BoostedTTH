@@ -199,7 +199,10 @@ if options.isData:
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
 else:
     if options.analysisType=='SL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+        if options.isreHLT:
+            process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+        else:
+            process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzerNoTrigger_cfi")
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
     if not options.isBoostedMiniAOD:
@@ -249,7 +252,7 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 if options.isData and options.useJson:
     #print 'use JSON is no longer supported'
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/mwassmer/sync_ex/JSONS/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/kelmorab/CMSSW8/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
 ### electron MVA ####
 ### electron MVA ####
 # Load the producer for MVA IDs
