@@ -158,7 +158,7 @@ else:
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["EndOf15MVA80iso0p15"]*3
+process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
 process.SelectedMuonProducer.ptMins=[15.,25.,25.]
@@ -174,8 +174,6 @@ process.SelectedJetProducer.ptMins=[20,30,20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
-
-
 
 # load and run the boosted analyzer
 if options.isData:

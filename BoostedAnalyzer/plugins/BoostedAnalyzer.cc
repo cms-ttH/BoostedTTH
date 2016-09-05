@@ -102,7 +102,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/RegressionValidationVarProcessor.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
 //
 // class declaration
 //
@@ -349,6 +349,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // initialize selections
     // add requested selections
     for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
+<<<<<<< HEAD
     	cout << "Initializing " << *itSel << endl;
     	if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
     	else if(*itSel == "EvenSelection") selections.push_back(new EvenOddSelection(true));
@@ -383,6 +384,44 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     	// dump some event info after selection step
     }
 
+=======
+	cout << "Initializing " << *itSel << endl;
+	if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
+	else if(*itSel == "EvenSelection") selections.push_back(new EvenOddSelection(true));
+	else if(*itSel == "OddSelection") selections.push_back(new EvenOddSelection(false));
+	else if(*itSel == "GenTopFHSelection") selections.push_back(new GenTopFHSelection());
+	else if(*itSel == "GenTopSLSelection") selections.push_back(new GenTopSLSelection());
+	else if(*itSel == "GenTopDLSelection") selections.push_back(new GenTopDLSelection());
+	else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
+	else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
+	else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
+	else if(*itSel == "DiLeptonJetTagSelection") selections.push_back(new DiLeptonJetTagSelection(iConfig));
+	else if(*itSel == "LeptonSelection1") selections.push_back(new LeptonSelection(iConfig,1));
+	else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
+	else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
+	else if(*itSel == "LeptonSelection4") selections.push_back(new LeptonSelection(iConfig,4));
+	else if(*itSel == "DiLeptonSelection") selections.push_back(new DiLeptonSelection(iConfig));
+	else if(*itSel == "MinDiLeptonMassSelection") selections.push_back(new DiLeptonMassSelection(20.,9999.));
+	else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true,false));
+	else if(*itSel == "ZWindowSelection") selections.push_back(new DiLeptonMassSelection(76.,106,false));
+	else if(*itSel == "METSelection") selections.push_back(new METSelection(iConfig));
+	else if(*itSel == "DiLeptonMETSelection") selections.push_back(new DiLeptonMETSelection(iConfig));
+	else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
+	else if(*itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));
+	else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
+	else if(*itSel == "BoostedTopSelection") selections.push_back(new BoostedSelection(1,0));
+	else if(*itSel == "BoostedSelection") selections.push_back(new BoostedSelection(0,1));
+	else cout << "No matching selection found for: " << *itSel << endl;
+	// connect added selection to cutflow
+	for (auto &c : cutflows){
+	    selections.back()->InitCutflow(c);
+	}
+	// dump some event info after selection step
+    }
+
+
+
+>>>>>>> origin/CMSSW_8_0_8_expICHEPLeptons
     // INITIALIZE TREEWRITERs
     for (uint i=0; i<jetSystematics.size();i++){
     	cout << "creating tree writer " << outfileNames[i] << endl;
@@ -464,6 +503,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
 	}
+<<<<<<< HEAD
     if(std::find(processorNames.begin(),processorNames.end(),"RegressionVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new RegressionVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"RegressionVarProcessor");
     }
@@ -479,6 +519,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
         treewriter->AddTreeProcessor(new RegressionValidationVarProcessor(consumesCollector(),iConfig.getParameter<std::vector<edm::InputTag> >("regressedJets")),"RegressionValidationVarProcessor");
     }
 
+=======
+	if(std::find(processorNames.begin(),processorNames.end(),"SpinCorrelationProcessor")!=processorNames.end()) {
+	    treewriter->AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
+	}
+>>>>>>> origin/CMSSW_8_0_8_expICHEPLeptons
     }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
