@@ -5,6 +5,7 @@ SelectedJetProducer = cms.EDProducer(
     isData       = cms.bool(False),
     applyCorrection = cms.bool(True),
     jets = cms.InputTag("slimmedJets"),
+    miniAODGenJets = cms.InputTag("slimmedGenJets"),
     electrons = cms.InputTag("SelectedElectronProducer:selectedElectronsLoose"),
     muons = cms.InputTag("SelectedMuonProducer:selectedMuonsLoose"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
