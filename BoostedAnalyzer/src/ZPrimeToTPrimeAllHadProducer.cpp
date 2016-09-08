@@ -109,12 +109,17 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                         if(setTDecay) std::cerr << "ZPrimeToTPrimeAllHad: error 1"<<std::endl;
                         top_decay_quarks.push_back(*(reco::GenParticle*)p->daughter(i));
                         setTDecay=true;
+                        if(p->daughter(i)->pdgId()==5) top_decay_bottom.push_back(*(reco::GenParticle*)p->daughter(i));
+
                     }
                     if(p->pdgId()==-6 && abs(p->daughter(i)->pdgId())<6){
                         if(setTBarDecay) std::cerr << "ZPrimeToTPrimeAllHad: error 1"<<std::endl;
                         topbar_decay_quarks.push_back(*(reco::GenParticle*)p->daughter(i));
                         setTBarDecay=true;
+                        if(p->daughter(i)->pdgId()==-5) topbar_decay_bottom.push_back(*(reco::GenParticle*)p->daughter(i));
+
                     }
+                    if(abs(p->daughter(i)->pdgId())==5) topandtopbar_decay_bottoms.push_back(*(reco::GenParticle*)p->daughter(i));
                 }
             }
         }
@@ -150,13 +155,17 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                     if(p->pdgId()==8000001 && abs(p->daughter(i)->pdgId())<7){
                         if(setTPrimeDecay) std::cerr << "GenTPrimeEvent: error 1"<<std::endl;
                         TPrime_decay_quarks.push_back(*(reco::GenParticle*)p->daughter(i));
+                        if (p->daughter(i)->pdgId()==5) TPrime_decay_bottom.push_back(*(reco::GenParticle*)p->daughter(i));
+
                         setTPrimeDecay=true;
                     }
                     if(p->pdgId()==-8000001 && abs(p->daughter(i)->pdgId())<7){
                         if(setTPrimeBarDecay) std::cerr << "GenTPrimeEvent: error -1"<<std::endl;
                         TPrimebar_decay_quarks.push_back(*(reco::GenParticle*)p->daughter(i));
+                        if (p->daughter(i)->pdgId()==-5) TPrimebar_decay_bottom.push_back(*(reco::GenParticle*)p->daughter(i));
                         setTPrimeBarDecay=true;
                     }
+                    if(abs(p->daughter(i)->pdgId())==5) TPrimeandTPrimebar_decay_bottoms.push_back(*(reco::GenParticle*)p->daughter(i));
                 }
             }
 /*            const reco::Candidate* mother=&(*p);
@@ -519,6 +528,39 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottom_fromTPrimesandTPr
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
   return Bottom_fromTPrimesandTPrimebars;
 }
+
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopDecayBottom() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return top_decay_bottom;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopbarDecayBottom() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return topbar_decay_bottom;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopandTopbarDecayBottoms() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return topandtopbar_decay_bottoms;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTPrimeDecayBottom() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return TPrime_decay_bottom;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTPrimebarDecayBottom() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return TPrimebar_decay_bottom;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTPrimeandTPrimebarDecayBottoms() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return TPrimeandTPrimebar_decay_bottoms;
+}
+
+
 
 
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopDecayQuarks() const{

@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 # input
 process = cms.Process("p")
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('/store/mc/RunIISpring16MiniAODv2/QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/00223778-771A-E611-B535-3417EBE5280A.root')
+                            fileNames = cms.untracked.vstring('/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-1500Nar_MTp-700Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/063FD26F-C426-E611-8752-02163E01265C.root')
                             #fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIIFall15MiniAODv2/TT_TuneEE5C_13TeV-amcatnlo-herwigpp/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/00129514-9FB8-E511-9C7A-00266CFFC544.root')
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
@@ -159,7 +159,7 @@ process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
 
 # execute in the right order
 process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
-                                 *process.LeptonJetsSkim
+                                 #*process.LeptonJetsSkim
                                  *process.SelectedElectronProducer
                                  *process.SelectedMuonProducer
                                  *process.HTTTopJetProducer
@@ -173,10 +173,10 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
-    fileName = cms.untracked.string('BoostedMiniAOD_QCD_HT700to1000_MC.root'),
+    fileName = cms.untracked.string('BoostedMiniAOD_ZprimeToTprimeT_TprimeToWB_MZp-1500Nar_MTp-700Nar_LH_MC.root'),
     outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*BoostedJetMatcher*_*_*','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*']),
-    SelectEvents = cms.untracked.PSet(
-        SelectEvents = cms.vstring("boosted_skimmed")
-    )
+    #SelectEvents = cms.untracked.PSet(
+    #    SelectEvents = cms.vstring("boosted_skimmed")
+    #)
 )
 process.endpath = cms.EndPath(process.OUT)

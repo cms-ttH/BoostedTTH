@@ -41,7 +41,8 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     vars.InitVars("Gen_Topbar_Pt","N_Gen_Topbars");
     vars.InitVars("Gen_TopandTopbar_Pt","N_Gen_TopsandTopbars");
 
-    vars.InitVars("Gen_ZPrime_Pt","N_Gen_ZPrimes");    
+    vars.InitVars("Gen_ZPrime_Pt","N_Gen_ZPrimes");   
+
     vars.InitVars("Gen_TPrime_Pt","N_Gen_TPrimes");
     vars.InitVars("Gen_TPrimebar_Pt","N_Gen_TPrimebars");
     vars.InitVars("Gen_TPrimeandTPrimebar_Pt","N_Gen_TPrimesandTPrimebars");
@@ -83,7 +84,7 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     
     vars.InitVars("Gen_BottomfromTop_Eta","N_Gen_BottomfromTops");
     vars.InitVars("Gen_BottombarfromTopbar_Eta","N_Gen_BottombarfromTopbars");
-    vars.InitVars("Gen_BottombarfromTopandTopbar_Eta","N_Gen_BottomfromTopsandTopbars");
+    vars.InitVars("Gen_BottomfromTopandTopbar_Eta","N_Gen_BottomfromTopsandTopbars");
 
     vars.InitVars("Gen_BottomfromTPrime_Eta","N_Gen_BottomfromTPrimes");
     vars.InitVars("Gen_BottombarfromTPrimebar_Eta","N_Gen_BottombarfromTPrimebars");
@@ -95,7 +96,14 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     vars.InitVar("Gen_Top_BottomfromTPrime_DeltaR");//,"input.zprimetotprimeallhad.GetTops().size()*input.zprimetotprimeallhad.GetTPrimeDecayQuarks().size()");
     vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaR");//,"input.zprimetotprimeallhad.GetWplus_fromTPrimes().size()*input.zprimetotprimeallhad.GetTPrimeDecayQuarks().size()");
     vars.InitVar("Gen_WfromTop_BottomfromTop_DeltaR");//,"input.zprimetotprimeallhad.GetWplus_fromTops().size()*input.zprimetotprimeallhad.GetTopDecayQuarks().size()");
-
+    
+    vars.InitVar("Gen_Top_WfromTPrime_DeltaEta");
+    vars.InitVar("Gen_Top_BottomfromTPrime_DeltaEta");
+    vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaEta");
+    
+    vars.InitVar("Gen_Top_WfromTPrime_DeltaPhi");
+    vars.InitVar("Gen_Top_BottomfromTPrime_DeltaPhi");
+    vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaPhi");
 
   initialized=true;
 }
@@ -286,18 +294,46 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         float DeltaR=BoostedUtils::DeltaR(input.zprimetotprimeallhad.GetTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars()[0].p4());
         vars.FillVar( "Gen_Top_WfromTPrime_DeltaR", DeltaR );
     }
-    if((input.zprimetotprimeallhad.GetTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetBottom_fromTPrimesandTPrimebars().size()==1)){
-        float DeltaR=BoostedUtils::DeltaR(input.zprimetotprimeallhad.GetTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetBottom_fromTPrimesandTPrimebars()[0].p4());
+    if((input.zprimetotprimeallhad.GetTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms().size()==1)){
+        float DeltaR=BoostedUtils::DeltaR(input.zprimetotprimeallhad.GetTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms()[0].p4());
         vars.FillVar( "Gen_Top_BottomfromTPrime_DeltaR", DeltaR );
     }
-    if((input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars().size()==1 && input.zprimetotprimeallhad.GetBottom_fromTPrimesandTPrimebars().size()==1)){
-        float DeltaR=BoostedUtils::DeltaR(input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars()[0].p4(),input.zprimetotprimeallhad.GetBottom_fromTPrimesandTPrimebars()[0].p4());
+    if((input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars().size()==1 && input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms().size()==1)){
+        float DeltaR=BoostedUtils::DeltaR(input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars()[0].p4(),input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms()[0].p4());
         vars.FillVar( "Gen_WfromTPrime_BottomfromTPrime_DeltaR", DeltaR );
     }
-    if((input.zprimetotprimeallhad.GetW_fromTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetBottom_fromTopsandTopbars().size()==1)){
-        float DeltaR=BoostedUtils::DeltaR(input.zprimetotprimeallhad.GetW_fromTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetBottom_fromTopsandTopbars()[0].p4());
+    if((input.zprimetotprimeallhad.GetW_fromTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetTopandTopbarDecayBottoms().size()==1)){
+        float DeltaR=BoostedUtils::DeltaR(input.zprimetotprimeallhad.GetW_fromTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetTopandTopbarDecayBottoms()[0].p4());
         vars.FillVar( "Gen_WfromTop_BottomfromTop_DeltaR", DeltaR );
     }
 
+    
+    if((input.zprimetotprimeallhad.GetTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars().size()==1)){
+        float DeltaEta=BoostedUtils::DeltaEta(input.zprimetotprimeallhad.GetTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars()[0].p4());
+        vars.FillVar( "Gen_Top_WfromTPrime_DeltaEta", DeltaEta );
+    }
+    if((input.zprimetotprimeallhad.GetTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms().size()==1)){
+        float DeltaEta=BoostedUtils::DeltaEta(input.zprimetotprimeallhad.GetTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms()[0].p4());
+        vars.FillVar( "Gen_Top_BottomfromTPrime_DeltaEta", DeltaEta );
+    }
+    if((input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars().size()==1 && input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms().size()==1)){
+        float DeltaEta=BoostedUtils::DeltaEta(input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars()[0].p4(),input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms()[0].p4());
+        vars.FillVar( "Gen_WfromTPrime_BottomfromTPrime_DeltaEta", DeltaEta );
+    }
+
+    if((input.zprimetotprimeallhad.GetTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars().size()==1)){
+        float DeltaPhi=BoostedUtils::DeltaPhi(input.zprimetotprimeallhad.GetTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars()[0].p4());
+        vars.FillVar( "Gen_Top_Wfr"omTPrime_DeltaPhi", DeltaPhi );
+    }
+    if((input.zprimetotprimeallhad.GetTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms().size()==1)){
+        float DeltaPhi=BoostedUtils::DeltaPhi(input.zprimetotprimeallhad.GetTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms()[0].p4());
+        vars.FillVar( "Gen_Top_BottomfromTPrime_DeltaPhi", DeltaPhi );
+    }
+    if((input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars().size()==1 && input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms().size()==1)){
+        float DeltaPhi=BoostedUtils::DeltaPhi(input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars()[0].p4(),input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms()[0].p4());
+        vars.FillVar( "Gen_WfromTPrime_BottomfromTPrime_DeltaPhi", DeltaPhi );
+    }
+
+    
 
 }

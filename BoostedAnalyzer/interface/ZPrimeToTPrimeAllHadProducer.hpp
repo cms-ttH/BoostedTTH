@@ -67,8 +67,15 @@ class ZPrimeToTPrimeAllHad{
       
       std::vector<reco::GenParticle> GetTopDecayQuarks() const;
       std::vector<reco::GenParticle> GetTopBarDecayQuarks() const;
+      std::vector<reco::GenParticle> GetTopDecayBottom() const;
+      std::vector<reco::GenParticle> GetTopbarDecayBottom() const;
+      std::vector<reco::GenParticle> GetTopandTopbarDecayBottoms() const;
+
       std::vector<reco::GenParticle> GetTPrimeDecayQuarks() const;
       std::vector<reco::GenParticle> GetTPrimebarDecayQuarks() const;
+      std::vector<reco::GenParticle> GetTPrimeDecayBottom() const;
+      std::vector<reco::GenParticle> GetTPrimebarDecayBottom() const;
+      std::vector<reco::GenParticle> GetTPrimeandTPrimebarDecayBottoms() const;
 
       
       std::vector<reco::GenParticle> GetW_decay_products_fromTop() const;
@@ -120,8 +127,16 @@ class ZPrimeToTPrimeAllHad{
       
       std::vector<reco::GenParticle> top_decay_quarks;
       std::vector<reco::GenParticle> topbar_decay_quarks;
+      std::vector<reco::GenParticle> top_decay_bottom;
+      std::vector<reco::GenParticle> topbar_decay_bottom;
+      std::vector<reco::GenParticle> topandtopbar_decay_bottoms;
+
       std::vector<reco::GenParticle> TPrime_decay_quarks;
       std::vector<reco::GenParticle> TPrimebar_decay_quarks;
+      std::vector<reco::GenParticle> TPrime_decay_bottom;
+      std::vector<reco::GenParticle> TPrimebar_decay_bottom;
+      std::vector<reco::GenParticle> TPrimeandTPrimebar_decay_bottoms;
+
 
 
       std::vector<reco::GenParticle> wplus_fromTop_decay_products;

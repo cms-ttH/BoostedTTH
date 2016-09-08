@@ -46,7 +46,7 @@ if options.globalTag is "NONE":
 		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
 
 if not options.inputFiles:
-    options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2000Nar_MTp-1200Wid_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/60000/1C61138F-D225-E611-8681-141877412793.root']
+    options.inputFiles=['file:/nfs/dust/cms/user/skudella/processed_MC/MC_boosted/BoostedMiniAOD_ZprimeToTprimeT_TprimeToWB_MZp-1500Nar_MTp-1200Nar_LH_MC.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL","VetoL"]:
