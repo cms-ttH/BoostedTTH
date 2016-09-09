@@ -189,11 +189,100 @@ double SpinCorrelationProcessor::GetVars(TLorentzVector vec_top_, TLorentzVector
       break;
     case 23:
       out=TMath::Abs(vec_antilepton_.Eta()-vec_antib_.Eta());
-      break;  
+      break;
+    case 24:
+      out=((vec_b_.Vect()).Cross(vec_antib_.Vect())).Dot(vec_lepton_.Vect())/10000.;
+      break;
+    case 25:
+      out=((vec_b_.Vect()).Cross(vec_antib_.Vect())).Dot(vec_antilepton_.Vect())/10000.;
+      break;
     default:
       cerr << "no identifier for used variable" << endl;
   }
   return out;
+}
+
+Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::vector<TLorentzVector>& jetvecs,std::vector<float>& jetcsvs,TLorentzVector& lepvec,TVector2& metvec, bool& flag,float& best_lr) {
+  if(flag) {
+    if(ntags<4) {
+      if(njets>5) {
+	generator.SetVars(IntType::tth,10);
+      }
+      else {
+	generator.SetVars(IntType::tt,8);
+      }
+    }
+    else {
+	generator.SetVars(IntType::tth,10);
+    }
+  }
+  else {
+    if(ntags<4) {
+      if(njets>5) {
+	generator.SetVars(IntType::tt,8);
+      }
+      else {
+	generator.SetVars(IntType::tth,10);
+      }
+    }
+    else {
+	generator.SetVars(IntType::tt,8);
+    }
+  }
+  Interpretation** ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);
+  uint nints = generator.GetNints();
+  Interpretation* best_int_lr=0;
+  //float best_lr=-99999.;
+  //    float best_chi2=-99999;
+  for(uint i=0; i<nints; i++){
+    // likelihood ratio good ttbar reco / combinatorial background
+    float lr=0.;
+    /*
+    if(njets>5 && ntags>2) {
+      lr=quality.TTHLikelihood_comb(*(ints[i]));
+    }
+    else {
+      lr=quality.TTLikelihood_comb(*(ints[i]));
+    }
+    */
+    if(flag){
+      if(ntags<4) {
+	if(njets>5) {
+	  lr=quality.TTHLikelihood_comb(*(ints[i]));
+	}
+	else {
+	  lr=quality.TTLikelihood_comb(*(ints[i]));
+	}
+      }
+      else {
+	lr=quality.TTHLikelihood_comb(*(ints[i]));
+      }
+    }
+    else {
+      if(ntags<4) {
+	if(njets>5) {
+	  lr=quality.TTLikelihood_comb(*(ints[i]));
+	}
+	else {
+	  lr=quality.TTHLikelihood_comb(*(ints[i]));
+	}
+      }
+      else {
+	lr=quality.TTLikelihood_comb(*(ints[i]));
+      }
+    }
+    // simple chi2 reconstruction using hadronic W and both top masses
+    /*	float chi2=quality.TTChi2(*(ints[i]));
+    if(chi2>best_chi2){
+	best_chi2=chi2;
+	best_int_chi2=ints[i];
+	}*/
+    if(lr>best_lr){
+	best_lr=lr;
+	best_int_lr=ints[i];
+    }
+  }
+  return best_int_lr;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,15 +320,19 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   variables.push_back("Delta_Eta_lb");
   variables.push_back("Delta_Eta_lbarbbar");
   variables.push_back("cos_theta_l_x_cos_theta_lbar");
-  variables.push_back("M_ttbar");
+  //variables.push_back("M_ttbar");
   variables.push_back("cos_theta_ldbar");
   variables.push_back("cos_theta_lbard");
+  /*
   variables.push_back("M_l");
   variables.push_back("M_lbar");
   variables.push_back("M_t");
   variables.push_back("M_tbar");
   variables.push_back("M_b");
   variables.push_back("M_bbar");
+  */
+  variables.push_back("triple_product_l");
+  variables.push_back("triple_product_lbar");
   
   var_type.push_back("GEN");
   var_type.push_back("RECO");
@@ -252,9 +345,10 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
       //cout << (*it_frames)+"|"+(*it_variables) << " initialized " << endl;
     }
   }
-  /*
+  
   vars.InitVar("RECO_flag_before_match",0,"I");
   vars.InitVar("RECO_flag_after_match",0,"I");
+  /*
   vars.InitVar("RECO_switch_flag_after_match_1",0,"I");
   vars.InitVar("RECO_switch_flag_after_match_2",0,"I");
   vars.InitVar("RECO_bb_flag_after_match",0,"I");
@@ -269,8 +363,10 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   vars.InitVar("RECO_b_switch_flag_after_match",0,"I");
   vars.InitVar("RECO_antib_flag_after_match",0,"I");
   vars.InitVar("RECO_antib_switch_flag_after_match",0,"I");
-  vars.InitVar("GenTopEvt_filled",0,"I");
   */
+  vars.InitVar("GenTopEvt_filled",0,"I");
+  vars.InitVar("RECO_likelihood",-9.,"F");
+  
   initialized=true;
   
 }
@@ -296,30 +392,22 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   
 
   
-
-  // if top event isnt filled or n_jets<4 then there is nothing to do ...
-  if(!(input.genTopEvt.IsFilled()) && !(input.selectedJets.size()>=1)) {
-    cerr << "Top Event isnt filled and reconstruction not possible! " << endl;
-    return;
-  }
-  
-  
   ///////////////////////////////////////////////////////////////////////////////////////////
   // decalre Vectors, which are present in every ttbar event
-  math::XYZTLorentzVector vec_top;
-  math::XYZTLorentzVector vec_antitop;
-  math::XYZTLorentzVector vec_b;
-  math::XYZTLorentzVector vec_antib;
-  math::XYZTLorentzVector vec_lepton;
-  math::XYZTLorentzVector vec_antilepton;
-  math::XYZTLorentzVector vec_d;
-  math::XYZTLorentzVector vec_antid;
   math::XYZTLorentzVector vec_zero(0.,0.,0.,0.);
+  math::XYZTLorentzVector vec_top=vec_zero;
+  math::XYZTLorentzVector vec_antitop=vec_zero;
+  math::XYZTLorentzVector vec_b=vec_zero;
+  math::XYZTLorentzVector vec_antib=vec_zero;
+  math::XYZTLorentzVector vec_lepton=vec_zero;
+  math::XYZTLorentzVector vec_antilepton=vec_zero;
+  math::XYZTLorentzVector vec_d=vec_zero;
+  math::XYZTLorentzVector vec_antid=vec_zero;
   // and some temp vectors for later
-  math::XYZTLorentzVector vec_top_tmp;
-  math::XYZTLorentzVector vec_antitop_tmp;
-  math::XYZTLorentzVector vec_b_tmp;
-  math::XYZTLorentzVector vec_antib_tmp;
+  math::XYZTLorentzVector vec_top_tmp=vec_zero;
+  math::XYZTLorentzVector vec_antitop_tmp=vec_zero;
+  math::XYZTLorentzVector vec_b_tmp=vec_zero;
+  math::XYZTLorentzVector vec_antib_tmp=vec_zero;
   
   bool no_tau_selection=true;
   bool gen_evt_filled=input.genTopEvt.IsFilled();
@@ -341,6 +429,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
     bool dilepton_reco_flag=false;// flag to signalize that for this event at least the dilepton variables in the lab frame could be used, which is of course possible even without top-event reconstruction
     
     //cout << "Gen Top Event is filled? " << gen_evt_filled << endl;
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // if top evt is filled and the loop is at var_type GEN, then the reconstruction for GEN variables can begin
     if(gen_evt_filled && dec_type.EqualTo("GEN")){
@@ -376,10 +465,11 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	isSL=false;
 	isDL=false;
 	//cout << "Fully hadronic Event! " << endl;
-	return;
+	continue;
       }
       else {
-	return;
+	//cout << "strange event ... " << endl;
+	continue;
       }
       
       // make the correct assignment of the top/antitop b/antib 4-vectors
@@ -405,7 +495,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       // in SL case, the lepton/antilepton which is not present will be assigned with a (0,0,0,0) 4-vector, pdgid>0 ->leptons pdgid<0 antileptons
       if(isSL) {
 	if(lep[0].pdgId()>0) {
-	  if(lep[0].pdgId()==15 && no_tau_selection) {return;}
+	  if(lep[0].pdgId()==15 && no_tau_selection) {continue;}
 	  vec_lepton=lep[0].p4();
 	  vec_antilepton=vec_zero;
 	  vec_antid=q2[0].p4();
@@ -414,7 +504,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  //cout << "Lepton! " << endl;
 	}
 	else if(lep[0].pdgId()<0) {
-	  if(lep[0].pdgId()==-15 && no_tau_selection) {return;}
+	  if(lep[0].pdgId()==-15 && no_tau_selection) {continue;}
 	  vec_antilepton=lep[0].p4();
 	  vec_lepton=vec_zero;
 	  vec_d=q1[0].p4();
@@ -426,19 +516,19 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       // in DL case, the assignment is straight forward. pdgid>0 are leptons, pdgid<0 are antileptons
       else if(isDL) {
 	if(lep[0].pdgId()>0) {
-	  if(lep[0].pdgId()==15 && no_tau_selection) {return;}
+	  if(lep[0].pdgId()==15 && no_tau_selection) {continue;}
 	  vec_lepton=lep[0].p4();
 	}
 	else if(lep[0].pdgId()<0) {
-  	  if(lep[0].pdgId()==-15 && no_tau_selection) {return;}
+  	  if(lep[0].pdgId()==-15 && no_tau_selection) {continue;}
 	  vec_antilepton=lep[0].p4();
 	}
 	if(lep[1].pdgId()>0) {
- 	  if(lep[1].pdgId()==15 && no_tau_selection) {return;}
+ 	  if(lep[1].pdgId()==15 && no_tau_selection) {continue;}
 	  vec_lepton=lep[1].p4();
 	}
 	else if(lep[1].pdgId()<0) {
-	  if(lep[1].pdgId()==-15 && no_tau_selection) {return;}
+	  if(lep[1].pdgId()==-15 && no_tau_selection) {continue;}
 	  vec_antilepton=lep[1].p4();
 	}
       }
@@ -463,14 +553,15 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       }
       TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
       TVector2 metvec(input.correctedMET.px(),input.correctedMET.py());
+      float best_lr=-9999.;
+      bool flag=true;
+      Interpretation* best_int_lr=GetBestLR(njets,ntags,jetvecs,jetcsvs,lepvec,metvec,flag,best_lr);
+      if(!(best_lr>0.)){
+	best_lr=-9999.;
+	flag=false;
+	best_int_lr=GetBestLR(njets,ntags,jetvecs,jetcsvs,lepvec,metvec,flag,best_lr);
+      }
       /*
-      if(njets>5 && ntags>2) {
-	generator.SetVars(IntType::tth,10);
-      }
-      else {
-	generator.SetVars(IntType::tt,8);
-      }
-      */
       if(ntags<4) {
 	if(njets>5) {
 	  generator.SetVars(IntType::tth,10);
@@ -490,14 +581,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       for(uint i=0; i<nints; i++){
 	  // likelihood ratio good ttbar reco / combinatorial background
 	  float lr=0.;
-	  /*
-	  if(njets>5 && ntags>2) {
-	    lr=quality.TTHLikelihood_comb(*(ints[i]));
-	  }
-	  else {
-	    lr=quality.TTLikelihood_comb(*(ints[i]));
-	  }
-	  */
+	 
 	  if(ntags<4) {
 	    if(njets>5) {
 	      lr=quality.TTHLikelihood_comb(*(ints[i]));
@@ -509,20 +593,15 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  else {
 	    lr=quality.TTHLikelihood_comb(*(ints[i]));
 	  }
-	  
-	  // simple chi2 reconstruction using hadronic W and both top masses
-	  /*	float chi2=quality.TTChi2(*(ints[i]));
-	  if(chi2>best_chi2){
-	      best_chi2=chi2;
-	      best_int_chi2=ints[i];
-	      }*/
 	  if(lr>best_lr){
 	      best_lr=lr;
 	      best_int_lr=ints[i];
 	  }
       }
+      */
       if(best_lr>0.) {
 	//cout << "Hypothese with LR>0 available" << endl;
+	vars.FillVar("RECO_likelihood",best_lr);
 	isSL=true;
 	isDL=false;
 	// the likelihood ratio of the interpretation isnt allowed to be 0
@@ -566,18 +645,19 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  vec_antib.SetPxPyPzE(best_int_lr->BHad().Px(),best_int_lr->BHad().Py(),best_int_lr->BHad().Pz(),best_int_lr->BHad().E());
 	  vec_b.SetPxPyPzE(best_int_lr->BLep().Px(),best_int_lr->BLep().Py(),best_int_lr->BLep().Pz(),best_int_lr->BLep().E()); 
 	}
-	/*
+	
 	vars.FillVar("RECO_flag_before_match",1);
+	
 	// now do a Delta R Matching of the reconstructed 4-vectors with the saved GEN vectors
 	float dR_max=0.4;
 	float dR_top=dR_max+1.;
 	float dR_antitop=dR_max+1.;
 	float dR_b=dR_max+1.;
 	float dR_antib=dR_max+1.;
-	float dR_top_switch=dR_max+1.;
-	float dR_antitop_switch=dR_max+1.;
-	float dR_b_switch=dR_max+1.;
-	float dR_antib_switch=dR_max+1.;
+	//float dR_top_switch=dR_max+1.;
+	//float dR_antitop_switch=dR_max+1.;
+	//float dR_b_switch=dR_max+1.;
+	//float dR_antib_switch=dR_max+1.;
 	if(gen_evt_filled){
 	  vars.FillVar("GenTopEvt_filled",1);
 	  //cout << "Gen Top Event is filled " << endl;
@@ -585,12 +665,12 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  dR_antitop=BoostedUtils::DeltaR(vec_antitop,vec_antitop_tmp);
 	  dR_b=BoostedUtils::DeltaR(vec_b,vec_b_tmp);
 	  dR_antib=BoostedUtils::DeltaR(vec_antib,vec_antib_tmp);
-	  dR_top_switch=BoostedUtils::DeltaR(vec_top,vec_antitop_tmp);
-	  dR_antitop_switch=BoostedUtils::DeltaR(vec_antitop,vec_top_tmp);
-	  dR_b_switch=BoostedUtils::DeltaR(vec_b,vec_antib_tmp);
-	  dR_antib_switch=BoostedUtils::DeltaR(vec_antib,vec_b_tmp);
+	  //dR_top_switch=BoostedUtils::DeltaR(vec_top,vec_antitop_tmp);
+	  //dR_antitop_switch=BoostedUtils::DeltaR(vec_antitop,vec_top_tmp);
+	  //dR_b_switch=BoostedUtils::DeltaR(vec_b,vec_antib_tmp);
+	  //dR_antib_switch=BoostedUtils::DeltaR(vec_antib,vec_b_tmp);
 	}
-	
+	/*
 	// set some flags which are of interest for the reconstruction -> maybe some dedicated processor would be better for this
 	if(dR_top<dR_max) {
 	  vars.FillVar("RECO_t_flag_after_match",1);
@@ -628,10 +708,11 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	else if(dR_b_switch<dR_max && dR_antib_switch<dR_max) {
 	  vars.FillVar("RECO_bb_switch_flag_after_match",1);
 	}
+	*/
 	if(dR_top<dR_max && dR_antitop<dR_max && dR_b<dR_max && dR_antib<dR_max) {
 	  //cout << "every particle is matched correctly" << endl;
 	  vars.FillVar("RECO_flag_after_match",1);
-	}
+	}/*
 	else if(dR_top<dR_max && dR_antitop<dR_max && dR_b_switch<dR_max && dR_antib_switch<dR_max) {
 	  vars.FillVar("RECO_switch_flag_after_match_1",1);
 	}
@@ -713,10 +794,12 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       TLorentzVector vec_antib_=BoostedUtils::GetTLorentzVector(vec_antib);
       TLorentzVector vec_d_=BoostedUtils::GetTLorentzVector(vec_d);
       TLorentzVector vec_antid_=BoostedUtils::GetTLorentzVector(vec_antid);
-      //cout << dec_type << endl;
-      //cout << "Lepton Mass: " << vec_lepton.M() << endl;
-      //cout << "Antilepton Mass: " << vec_antilepton.M() << endl;
-      //cout << "frame: " << it_frames->first << " " << it_frames->second << endl;
+      /*
+      cout << dec_type << endl;
+      cout << "Lepton Mass: " << vec_lepton.M() << endl;
+      cout << "Antilepton Mass: " << vec_antilepton.M() << endl;
+      cout << "frame: " << it_frames->first << " " << it_frames->second << endl;
+      */
       
       // the SetAllVectors function uses the reconstructed 4-vectors and changes them according to the desired frame/boost using the number of the frame
       SetAllVectors(vec_top_,vec_antitop_,vec_b_,vec_antib_,vec_lepton_,vec_antilepton_,vec_d_,vec_antid_,it_frames->second);
@@ -734,27 +817,31 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	variables["cos_theta_bb"]=0;
 	variables["Delta_Eta_bb"]=1;
 	variables["Delta_Phi_bb"]=2;
+	/*
 	variables["M_ttbar"]=13;
 	variables["M_t"]=16;
 	variables["M_tbar"]=17;
 	variables["M_b"]=18;
 	variables["M_bbar"]=19;
+	*/
 	// depend on lepton or antilepton the variables are filled
 	if(leptonflag==1) {
 	  variables["cos_theta_l"]=6;
 	  variables["cos_theta_lb"]=8;
 	  variables["Delta_Phi_lb"]=10;
 	  variables["cos_theta_ldbar"]=14;
-	  variables["M_l"]=20;
+	  //variables["M_l"]=20;
 	  variables["Delta_Eta_lb"]=22;
+	  variables["triple_product_l"]=24;
 	}
 	if(leptonflag==-1) {
 	  variables["cos_theta_lbar"]=7;
 	  variables["cos_theta_lbarbbar"]=9;
 	  variables["Delta_Phi_lbarbbar"]=11;
 	  variables["cos_theta_lbard"]=15;
-	  variables["M_lbar"]=21;
+	  //variables["M_lbar"]=21;
 	  variables["Delta_Eta_lbarbbar"]=23;
+	  variables["triple_product_lbar"]=25;
 	}
       }
       // same for DL events
@@ -763,18 +850,20 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	variables["cos_theta_ll"]=3;
 	variables["Delta_Phi_ll"]=4;
 	variables["Delta_Eta_ll"]=5;
-	variables["M_l"]=20;
-  	variables["M_lbar"]=21;
+	//variables["M_l"]=20;
+  	//variables["M_lbar"]=21;
 	// these variables will only be filled if the dilepton reco flag isnt set, because they can only be filled if the whole event is reconstructed which cannot be done in DL case 
 	if(!dilepton_reco_flag) {
 	  variables["cos_theta_bb"]=0;
 	  variables["Delta_Eta_bb"]=1;
 	  variables["Delta_Phi_bb"]=2;
+	  /*
 	  variables["M_ttbar"]=13;
 	  variables["M_t"]=16;
 	  variables["M_tbar"]=17;
 	  variables["M_b"]=18;
 	  variables["M_bbar"]=19;
+	  */
 	  variables["cos_theta_l"]=6;
 	  variables["cos_theta_lbar"]=7;
 	  variables["cos_theta_lb"]=8;
