@@ -272,11 +272,13 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
       }
     }
     // simple chi2 reconstruction using hadronic W and both top masses
-    /*	float chi2=quality.TTChi2(*(ints[i]));
+    /*	
+    float chi2=quality.TTChi2(*(ints[i]));
     if(chi2>best_chi2){
 	best_chi2=chi2;
 	best_int_chi2=ints[i];
-	}*/
+	}
+    */
     if(lr>best_lr){
 	best_lr=lr;
 	best_int_lr=ints[i];
@@ -285,7 +287,7 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
   return best_int_lr;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using namespace std;
 
@@ -392,7 +394,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   
 
   
-  ///////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // decalre Vectors, which are present in every ttbar event
   math::XYZTLorentzVector vec_zero(0.,0.,0.,0.);
   math::XYZTLorentzVector vec_top=vec_zero;
@@ -451,17 +453,17 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       //additional_bs=input.genTopEvt.GetAdditionalBGenJets();
     
       // identify the kind of decay
-      if(tophad.size()==0 and toplep.size()==2) {
+      if(input.genTopEvt.IsDiLepton()) {
 	isDL=true;
 	isSL=false;
 	//cout << "Dilepton Event! " << endl;
       }
-      else if(tophad.size()==1 and toplep.size()==1) {
+      else if(input.genTopEvt.IsSemiLepton()) {
 	isSL=true;
 	isDL=false;
 	//cout << "Single Lepton Event! " << endl;
       }
-      else if(tophad.size()==2 and toplep.size()==0) {
+      else if(input.genTopEvt.IsAllHadron()) {
 	isSL=false;
 	isDL=false;
 	//cout << "Fully hadronic Event! " << endl;
@@ -834,7 +836,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  variables["Delta_Eta_lb"]=22;
 	  variables["triple_product_l"]=24;
 	}
-	if(leptonflag==-1) {
+	else if(leptonflag==-1) {
 	  variables["cos_theta_lbar"]=7;
 	  variables["cos_theta_lbarbbar"]=9;
 	  variables["Delta_Phi_lbarbbar"]=11;
@@ -889,6 +891,4 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       }
     }
   }
-  
-  
 }
