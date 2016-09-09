@@ -287,6 +287,23 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
   return best_int_lr;
 }
 
+reco::GenParticle SpinCorrelationProcessor::MatchPartontoJet (vector<reco::GenParticle>& Partons,pat::Jet& Jet){
+    float DeltaRtmp;
+    float DeltaRMin = 9999999;
+    float DeltaRCut = 0.3;
+    reco::GenParticle matchedParton;
+
+    for( auto& Parton: Partons ){
+        DeltaRtmp = BoostedUtils::DeltaR(Jet.p4(),Parton.p4());
+        if(DeltaRtmp < DeltaRCut && DeltaRtmp < DeltaRMin){
+            matchedParton = Parton;
+            DeltaRMin = DeltaRtmp;
+        }
+    }
+
+    return matchedParton;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using namespace std;
@@ -338,6 +355,7 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   
   var_type.push_back("GEN");
   var_type.push_back("RECO");
+  var_type.push_back("HALFRECO");
   
   for(auto it_frames=frames.begin();it_frames!=frames.end();++it_frames) {
     for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
@@ -391,6 +409,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   // variable type GEN or RECO
   var_type.push_back("GEN");
   var_type.push_back("RECO");
+  var_type.push_back("HALFRECO");
   
 
   
@@ -778,6 +797,120 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  vec_antilepton.SetPxPyPzE(input.selectedMuonsLoose[0].px(),input.selectedMuonsLoose[0].py(),input.selectedMuonsLoose[0].pz(),input.selectedMuonsLoose[0].energy());
 	}
       }
+    }
+    
+    else if(gen_evt_filled && dec_type.EqualTo("HALFRECO") && (input.selectedElectrons.size()+input.selectedMuons.size())==1 && input.selectedJets.size()>=4 && !((input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())==2)){
+      if(!input.genTopEvt.IsSemiLepton()){
+	//cout << "event is not semileptonic on gen level " << endl;
+	continue;
+      }
+      isSL=true;
+      isDL=false;
+      //cout << "gen event is semileptonic " << endl;
+      std::vector<reco::GenParticle> nu;
+      nu=input.genTopEvt.GetAllNeutrinos();
+      vector< vector< reco::GenParticle > > DecayProducts;
+      
+      DecayProducts.push_back( input.genTopEvt.GetWQuarks() ); 
+      DecayProducts.push_back( { input.genTopEvt.GetTopLepDecayQuark() } );
+      DecayProducts.push_back( { input.genTopEvt.GetTopHadDecayQuark() } );
+      DecayProducts.push_back( input.genTopEvt.GetHiggsDecayProducts() );
+      
+      vector < pat::Jet >  Jets = input.selectedJets;
+     
+      pat::Jet hadtopjet;
+      pat::Jet leptopjet;
+      vector< pat::Jet > hadWjets;
+      
+      bool hadtopjetfound = false;
+      bool leptopjetfound= false;
+      int nwhadjets = 0;
+      //int iJet = 0;
+      //cout << "trying to match the jets to the gen quarks " << endl;
+      for( auto& Jet: Jets ){
+        reco::GenParticle MatchedParton;
+	
+        vector< reco::GenParticle > MatchingQuarks;
+        for(auto& Quarks: DecayProducts){
+
+            MatchingQuarks.push_back( MatchPartontoJet(Quarks,Jet) );
+
+	}
+	size_t iQ = 0;
+        int decayfrom = -1;
+        float DeltaRtmp = 999;
+        for( auto& Quark: MatchingQuarks ){
+
+            if (Quark.pdgId() != 0){
+                if ( BoostedUtils::DeltaR( Jet.p4() , Quark.p4() ) < DeltaRtmp ){
+                    DeltaRtmp = BoostedUtils::DeltaR( Jet.p4() , Quark.p4() );
+                    MatchedParton = Quark;
+                    decayfrom = iQ;
+                }
+            }
+            iQ++;
+	}
+      
+	if( decayfrom == 0){
+	  //cout << "W jet found " << endl;
+	  hadWjets.push_back(Jet);
+	  nwhadjets+=1;
+	}
+	else if (decayfrom == 1){
+	  //cout << "leptonic b jet found " << endl;
+	  leptopjet = Jet;
+	  leptopjetfound=true;
+	}
+	else if (decayfrom == 2){
+	  //cout << "hadtronic b jet found " << endl;
+	  hadtopjet = Jet;
+	  hadtopjetfound =true;
+	}
+      }
+      if(!(leptopjetfound && hadtopjetfound && nwhadjets==2)) {
+	//cout << "jets could not be assigned to quarks" << endl;
+	continue;
+      }
+      if(input.selectedElectrons.size()==1){
+	leptonflag=-input.selectedElectrons[0].charge();
+	if(leptonflag>0) {
+	  //cout << "Electron! " << endl;
+	  vec_lepton.SetPxPyPzE(input.selectedElectrons[0].px(),input.selectedElectrons[0].py(),input.selectedElectrons[0].pz(),input.selectedElectrons[0].energy());
+	  vec_antilepton=vec_zero;
+	}
+	else if(leptonflag<0) {
+	  //cout << "Positron! " << endl;
+	  vec_antilepton.SetPxPyPzE(input.selectedElectrons[0].px(),input.selectedElectrons[0].py(),input.selectedElectrons[0].pz(),input.selectedElectrons[0].energy());
+	  vec_lepton=vec_zero;
+	}
+      }
+      if(input.selectedMuons.size()==1) {
+	leptonflag=-input.selectedMuons[0].charge();
+	if(leptonflag>0) {
+	  //cout << "Muon! " << endl;
+	  vec_lepton.SetPxPyPzE(input.selectedMuons[0].px(),input.selectedMuons[0].py(),input.selectedMuons[0].pz(),input.selectedMuons[0].energy());
+	  vec_antilepton=vec_zero;
+	}
+	else if(leptonflag<0) {
+	  //cout << "AntiMuon! " << endl;
+	  vec_antilepton.SetPxPyPzE(input.selectedMuons[0].px(),input.selectedMuons[0].py(),input.selectedMuons[0].pz(),input.selectedMuons[0].energy());
+	  vec_lepton=vec_zero;
+	}
+      }
+      if(leptonflag==1) {
+	vec_top=hadtopjet.p4()+hadWjets[0].p4()+hadWjets[1].p4();
+	vec_antitop=leptopjet.p4()+vec_lepton+nu[0].p4();
+	vec_b=hadtopjet.p4();
+	vec_antib=leptopjet.p4();
+      }
+      else if(leptonflag==-1) {
+	vec_antitop=hadtopjet.p4()+hadWjets[0].p4()+hadWjets[1].p4();
+	vec_top=leptopjet.p4()+vec_antilepton+nu[0].p4();
+	vec_antib=hadtopjet.p4();
+	vec_b=leptopjet.p4();
+      }
+      
+	
     }
     
     // if neither GEN nor RECO part worked the loop ends here
