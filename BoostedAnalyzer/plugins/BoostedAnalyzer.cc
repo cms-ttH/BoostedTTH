@@ -629,6 +629,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	}
     }
 
+    // Get CA15 Ak4 jet cluster (alternative to CA15 fatjets)
+    pat::JetCollection ak4jets = *(hs_selectedJets[0]);
+    boosted::Ak4ClusterCollection selectedAk4Cluster = Ak4Cluster::GetSelectedAk4Cluster(ak4jets, 200.);
+
+    Ak4Cluster::StudyMatchingAk4ClusterAndFatjets(selectedAk4Cluster, selectedBoostedJets[0]);
+
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);
     TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
@@ -825,7 +831,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	//Add Genweights to the weight map
 	genweights.GetGenWeights(weights, lheInfo, dogenweights);
 	genweights.GetLHAPDFWeight(weights, genInfo, "NNPDF30_nlo_as_0118");
-   
+
   }
  //Add Lepton Scalefactors to weight map
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
