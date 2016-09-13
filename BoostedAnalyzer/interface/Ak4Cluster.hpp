@@ -10,8 +10,6 @@
 #include "MiniAOD/BoostedObjects/interface/Ak4Cluster.h"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
-//#include "DataFormats/Math/interface/LorentzVector.h"
-//#include "Math/GenVector/LorentzVector.h"
 
 class Ak4Cluster{
 
@@ -19,6 +17,7 @@ class Ak4Cluster{
 
     static boosted::Ak4ClusterCollection GetSelectedAk4Cluster(const pat::JetCollection& inputAk4Jets, const double iMinClusterPt);
     static boosted::Ak4ClusterCollection GetSelectedAk4Cluster(const boosted::Ak4ClusterCollection& allAk4Clusters, const double iMinClusterPt);
+    static void StudyMatchingAk4ClusterAndFatjets(const boosted::Ak4ClusterCollection& ak4Clusters, std::vector<boosted::BoostedJet> fatjets);
 
   private:
 

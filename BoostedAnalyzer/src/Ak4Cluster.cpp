@@ -71,3 +71,16 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
   }
   return selectedAk4Clusters;
 }
+
+void Ak4Cluster::StudyMatchingAk4ClusterAndFatjets(const boosted::Ak4ClusterCollection& ak4Clusters, std::vector<boosted::BoostedJet> fatjets){
+  if(ak4Clusters.size() == 0 || fatjets.size() == 0) return;
+
+  cout << " ---- " << endl;
+  for(unsigned iA=0; iA <ak4Clusters.size() ;++iA){
+    for(unsigned iB=0; iB <fatjets.size() ;++iB){
+      cout << BoostedUtils::DeltaR(ak4Clusters[iA].fatjet, fatjets[iB].fatjet.p4()) << endl;
+    }
+  }
+
+  return;
+}
