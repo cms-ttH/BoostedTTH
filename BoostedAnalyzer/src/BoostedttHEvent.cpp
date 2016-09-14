@@ -266,7 +266,6 @@ void BoostedttHEvent::ak4ClusterHiggsCandBoostedRec(const bool cleanTopHadCand, 
     float tag = MiniAODHelper::GetJetCSV(sortedAk4jets[1],"pfCombinedInclusiveSecondaryVertexV2BJetTags");
     if(verbose) std::cout << "Ak4 higgs tag of fat jet is " << tag  << std::endl;
 
-    // TODO Change variables to ak4cluster variables
     if(tag>higgsCandTag){
       higgsCandTag = tag;
       foundHiggsCand = true;
