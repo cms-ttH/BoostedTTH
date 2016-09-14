@@ -627,10 +627,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
 
     // Get CA15 Ak4 jet cluster (alternative to CA15 fatjets)
-    pat::JetCollection ak4jets = *(hs_selectedJets[0]);
-    boosted::Ak4ClusterCollection selectedAk4Cluster = Ak4Cluster::GetSelectedAk4Cluster(ak4jets, 200.);
+    pat::JetCollection ak4Jets = *(hs_selectedJets[0]);
+    boosted::Ak4ClusterCollection ak4Cluster = Ak4Cluster::GetAk4Cluster(ak4Jets, 0);
+    boosted::Ak4ClusterCollection selectedAk4Cluster = Ak4Cluster::GetSelectedAk4Cluster(ak4Cluster, 200.);
 
-    Ak4Cluster::StudyMatchingAk4ClusterAndFatjets(selectedAk4Cluster, selectedBoostedJets[0]);
+    Ak4Cluster::StudyMatchingAk4ClusterAndFatjets(selectedAk4Cluster, selectedBoostedJets[0], 0.75);
 
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);
