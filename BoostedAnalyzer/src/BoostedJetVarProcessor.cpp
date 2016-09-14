@@ -359,6 +359,9 @@ void BoostedJetVarProcessor::InitSFJetVars(VariableContainer& vars){
   vars.InitVars( "BoostedJet_CosThetaStar_Filterjet13",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_CosThetaStar_Filterjet23",-9,"N_BoostedJets" );
 
+  vars.InitVars( "BoostedJet_IsGoodTopJet",false,"N_BoostedJets" );
+  vars.InitVars( "BoostedJet_IsGoodHiggsJet",false,"N_BoostedJets" );
+
   vars.InitVars( "BoostedJet_Filterjet1_IdxAk5",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet2_IdxAk5",-9,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Filterjet3_IdxAk5",-9,"N_BoostedJets" );
@@ -874,6 +877,9 @@ void BoostedJetVarProcessor::FillSFJetVars(const InputCollections& input,Variabl
       vars.FillVars( "BoostedJet_CosThetaStar_Filterjet23",i,BoostedUtils::CosThetaStar(input.selectedBoostedJets[i].filterjets[1].p4(),input.selectedBoostedJets[i].filterjets[2].p4()) );
       vars.FillVars( "BoostedJet_CosThetaStar_Filterjet13",i,BoostedUtils::CosThetaStar(input.selectedBoostedJets[i].filterjets[0].p4(),input.selectedBoostedJets[i].filterjets[2].p4()) );
     }
+
+    vars.FillVars( "BoostedJet_IsGoodTopJet", i, input.selectedBoostedJets[i].isGoodTopJet);
+    vars.FillVars( "BoostedJet_IsGoodHiggsJet", i, input.selectedBoostedJets[i].isGoodHiggsJet);
 
     if(input.selectedBoostedJets[i].filterjets.size()>1){
       vector<pat::Jet> higgsjets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets[i],2,3);
