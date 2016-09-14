@@ -71,7 +71,7 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
     boosted::Ak4Cluster tempCluster = allAk4Clusters[iA];
 
     tempCluster.isGoodHiggsCluster = false;
-    //tempCluster.isGoodTopCluster = false;
+    tempCluster.isGoodTopCluster = false;
 
     if(mode=="C"){
       // mode C: pT cut on cluster pT
@@ -100,7 +100,7 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
         }
         else tempCluster.isGoodTopCluster = false;
       }
-      
+
       if(tempCluster.ak4jets.size()<2){
         tempCluster.isGoodHiggsCluster = false;
       }
