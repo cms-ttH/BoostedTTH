@@ -64,16 +64,60 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
 }
 
 
-boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::Ak4ClusterCollection& allAk4Clusters, const double iMinClusterPt){
+boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::Ak4ClusterCollection& allAk4Clusters, const double iMinClusterPt, const string mode="C"){
   boosted::Ak4ClusterCollection selectedAk4Clusters;
 
   for(unsigned int iA=0; iA<allAk4Clusters.size(); ++iA){
-    if(allAk4Clusters[iA].fatjet.Pt() > iMinClusterPt){
-      selectedAk4Clusters.push_back(allAk4Clusters[iA]);
+    boosted::Ak4Cluster tempCluster = allAk4Clusters[iA];
+
+    tempCluster.isGoodHiggsCluster = false;
+    //tempCluster.isGoodTopCluster = false;
+
+    if(mode=="C"){
+      if(tempCluster.fatjet.Pt() > iMinClusterPt){
+        if(tempCluster.ak4jets.size()<2){
+          tempCluster.isGoodHiggsCluster = false;
+        }
+        else tempCluster.isGoodHiggsCluster = true;
+        //allAk4Clusters[iA].isGoodTopCluster = true;
+        selectedAk4Clusters.push_back(tempCluster);
+      }
     }
+    else if(mode == "A" || mode == "B"){
+      if(tempCluster.ak4jets.size()<2){
+        tempCluster.isGoodHiggsCluster = false;
+      }
+      else {
+        // get three hardest ak4 jets
+        std::vector<pat::Jet> sortedPtAk4Jets = tempCluster.ak4jets;
+        std::sort(sortedPtAk4Jets.begin(), sortedPtAk4Jets.end(),BoostedUtils::FirstJetIsHarder);
+        std::vector<pat::Jet> threeHardestAk4Jets;
+        for ( std::vector<pat::Jet>::const_iterator itFilt2 = sortedPtAk4Jets.begin(), edFilt2 = sortedPtAk4Jets.end(); itFilt2 != edFilt2; ++itFilt2 ){
+          int iFilt2 = itFilt2 - sortedPtAk4Jets.begin();
+          if (iFilt2 > 2) continue;
+          threeHardestAk4Jets.push_back(*itFilt2);
+        }
+
+        // selection
+        if(mode=="A"){
+          std::vector<pat::Jet> sortedAk4Jets = threeHardestAk4Jets;
+          std::sort(sortedAk4Jets.begin(), sortedAk4Jets.end(),BoostedUtils::FirstHasHigherCSV);
+          if ((sortedAk4Jets[0].p4() + sortedAk4Jets[1].p4()).pt() > iMinClusterPt) tempCluster.isGoodHiggsCluster = true;
+          else tempCluster.isGoodHiggsCluster = false;
+        }
+        else if(mode=="B"){
+          if ((threeHardestAk4Jets[0].p4() + threeHardestAk4Jets[1].p4() + threeHardestAk4Jets[2].p4()).pt() > iMinClusterPt) tempCluster.isGoodHiggsCluster = true;
+          else tempCluster.isGoodHiggsCluster = false;
+        }
+      }
+    }
+    else cout << "Error in GetSelectedAk4Cluster: No valid selection mode.";
+
+    if(tempCluster.isGoodHiggsCluster || tempCluster.isGoodTopCluster) selectedAk4Clusters.push_back(tempCluster);
   }
   return selectedAk4Clusters;
 }
+
 
 void Ak4Cluster::StudyMatchingAk4ClusterAndFatjets(const boosted::Ak4ClusterCollection& ak4Clusters, std::vector<boosted::BoostedJet> fatjets, const double iMaxDeltaR = 0.75){
   if(ak4Clusters.size() == 0 || fatjets.size() == 0) return;

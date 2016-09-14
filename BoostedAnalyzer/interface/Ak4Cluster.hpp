@@ -16,7 +16,7 @@ class Ak4Cluster{
   public:
 
     static boosted::Ak4ClusterCollection GetAk4Cluster(const pat::JetCollection& inputAk4Jets, const int algo);
-    static boosted::Ak4ClusterCollection GetSelectedAk4Cluster(const boosted::Ak4ClusterCollection& allAk4Clusters, const double iMinClusterPt);
+    static boosted::Ak4ClusterCollection GetSelectedAk4Cluster(const boosted::Ak4ClusterCollection& allAk4Clusters, const double iMinClusterPt, const string mode);
     static void StudyMatchingAk4ClusterAndFatjets(const boosted::Ak4ClusterCollection& ak4Clusters, std::vector<boosted::BoostedJet> fatjets, const double iMaxDeltaR);
 
   private:
