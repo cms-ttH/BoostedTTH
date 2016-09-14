@@ -6,6 +6,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
+#include "MiniAOD/BoostedObjects/interface/Ak4Cluster.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
 #include "BoostedTTH/TTHReconstruction/interface/MECalculator.hpp"
@@ -44,6 +45,7 @@ class BoostedttHEvent{
 
     // Anti-kt 4 Reconstruction
     void ak4JetsHiggsCandBoostedRec(const bool cleanTopHadCand = false, const bool cleanTopLepCand = false, const float subjetCleaningThreshold = .4);
+    void ak4ClusterHiggsCandBoostedRec(const bool cleanTopHadCand, const bool cleanTopLepCand, const float subjetCleaningThreshold);
 
     // Higgs Candidate Reconstruction
     void HiggsCandBoostedRec(const boosted::SubjetType subjettype, HiggsTagger higgstagger, bool cleanTopHadCand = false, bool cleanTopLepCand = false, const float subjetCleaningThreshold = .4);
@@ -64,6 +66,7 @@ class BoostedttHEvent{
     void BoostedHiggsEventRec(const boosted::SubjetType subjettype, HiggsTagger higgstagger);
     void BoostedTopEventRec(TopTagger toptagger);
     void BoostedTopAk4HiggsEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger);
+    void BoostedTopAk4HiggsFromAk4CEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger);
 
     // Get Functions
     // Input Collection
@@ -115,11 +118,13 @@ class BoostedttHEvent{
     int                     GetHiggsCandIndex();
     float                   GetHiggsCandTag();
     boosted::BoostedJet     GetHiggsCandBoosted();
+    boosted::Ak4Cluster     GetHiggsCandFromAk4C();
     pat::Jet                GetHiggsB1Cand();
     pat::Jet                GetHiggsB2Cand();
     pat::Jet                GetHiggsGCand();
     math::XYZTLorentzVector GetHiggsCandVec3();
     math::XYZTLorentzVector GetHiggsCandVec2();
+    bool                    GetUseAk4Cluster();
 
     // Hadronic Top Candidate
     bool                    GetFoundTopHadCand();
@@ -197,9 +202,11 @@ class BoostedttHEvent{
     int                 higgsCandIndex;
     float               higgsCandTag;
     boosted::BoostedJet higgsCand;
+    boosted::Ak4Cluster higgsCandFromAk4C;
     pat::Jet            higgsB1Cand;
     pat::Jet            higgsB2Cand;
     pat::Jet            higgsGCand;
+    bool                useAk4Cluster;
 
     // Hadronic Top Candidate
     bool                foundTopHadCand;

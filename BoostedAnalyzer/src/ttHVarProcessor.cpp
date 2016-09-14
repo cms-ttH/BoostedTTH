@@ -51,6 +51,11 @@ void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& v
       ttHEvent.BoostedTopAk4HiggsEventRec(toptagger, subjettype, higgstagger);
       break;
     }
+    case BoostedRecoType::BoostedTopAk4HiggsFromAk4C:
+    {
+      ttHEvent.BoostedTopAk4HiggsFromAk4CEventRec(toptagger, subjettype, higgstagger);
+      break;
+    }
     default:
     {
       cerr << "ttH reconstruction: no event reconstruction found" << endl;
@@ -346,6 +351,7 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
 
   // Get Objects
   boosted::BoostedJet higgsCand = ttHEvent.GetHiggsCandBoosted();
+  boosted::Ak4Cluster higgsCandFromAk4C = ttHEvent.GetHiggsCandFromAk4C();
   pat::Jet higgsB1Cand = ttHEvent.GetHiggsB1Cand();
   pat::Jet higgsB2Cand = ttHEvent.GetHiggsB2Cand();
   pat::Jet higgsGCand = ttHEvent.GetHiggsGCand();
@@ -362,16 +368,38 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
   vars.FillVar(prefix+"HiggsCandidate_Index",ttHEvent.GetHiggsCandIndex());
   vars.FillVar(prefix+"HiggsCandidate_HiggsTag",ttHEvent.GetHiggsCandTag());
 
-  if(higgsCand.fatjet.pt()>0){
-    vars.FillVar(prefix+"HiggsCandidate_E",higgsCand.fatjet.energy());
-    vars.FillVar(prefix+"HiggsCandidate_Pt",higgsCand.fatjet.pt());
-    vars.FillVar(prefix+"HiggsCandidate_M",higgsCand.fatjet.mass());
-    vars.FillVar(prefix+"HiggsCandidate_Eta",higgsCand.fatjet.eta());
-    vars.FillVar(prefix+"HiggsCandidate_Phi",higgsCand.fatjet.phi());
-    if(higgsCand.filterjets.size()>0) vars.FillVar(prefix+"HiggsCandidate_Filterjet1_Pt",higgsCand.filterjets[0].pt());
-    if(higgsCand.filterjets.size()>1) vars.FillVar(prefix+"HiggsCandidate_Filterjet2_Pt",higgsCand.filterjets[1].pt());
-  }
+  if(ttHEvent.GetUseAk4Cluster()){
+    if(higgsCandFromAk4C.fatjet.Pt()>0){
+      vars.FillVar(prefix+"HiggsCandidate_E",higgsCandFromAk4C.fatjet.energy());
+      vars.FillVar(prefix+"HiggsCandidate_Pt",higgsCandFromAk4C.fatjet.pt());
+      vars.FillVar(prefix+"HiggsCandidate_M",higgsCandFromAk4C.fatjet.mass());
+      vars.FillVar(prefix+"HiggsCandidate_Eta",higgsCandFromAk4C.fatjet.eta());
+      vars.FillVar(prefix+"HiggsCandidate_Phi",higgsCandFromAk4C.fatjet.phi());
+    }
 
+    if(higgsCandFromAk4C.fatjet.Pt()>0&&lepCandVec.Pt()>0)
+      vars.FillVar(prefix+"HiggsCandidate_Dr_Lepton",BoostedUtils::DeltaR(lepCandVec,higgsCandFromAk4C.fatjet));
+  }
+  else{
+    if(higgsCand.fatjet.pt()>0){
+      vars.FillVar(prefix+"HiggsCandidate_E",higgsCand.fatjet.energy());
+      vars.FillVar(prefix+"HiggsCandidate_Pt",higgsCand.fatjet.pt());
+      vars.FillVar(prefix+"HiggsCandidate_M",higgsCand.fatjet.mass());
+      vars.FillVar(prefix+"HiggsCandidate_Eta",higgsCand.fatjet.eta());
+      vars.FillVar(prefix+"HiggsCandidate_Phi",higgsCand.fatjet.phi());
+      if(higgsCand.filterjets.size()>0) vars.FillVar(prefix+"HiggsCandidate_Filterjet1_Pt",higgsCand.filterjets[0].pt());
+      if(higgsCand.filterjets.size()>1) vars.FillVar(prefix+"HiggsCandidate_Filterjet2_Pt",higgsCand.filterjets[1].pt());
+    }
+
+    if(higgsCand.fatjet.pt()>0){
+      vars.FillVar(prefix+"HiggsCandidate_Subjetiness1",higgsCand.tau1Filtered);
+      vars.FillVar(prefix+"HiggsCandidate_Subjetiness2",higgsCand.tau2Filtered);
+      vars.FillVar(prefix+"HiggsCandidate_Subjetiness3",higgsCand.tau3Filtered);
+    }
+
+    if(higgsCand.fatjet.pt()>0&&lepCandVec.Pt()>0)
+      vars.FillVar(prefix+"HiggsCandidate_Dr_Lepton",BoostedUtils::DeltaR(lepCandVec,higgsCand.fatjet.p4()));
+  }
   if(higgsB1Cand.pt()>0){
     vars.FillVar(prefix+"HiggsCandidate_B1_E",higgsB1Cand.energy());
     vars.FillVar(prefix+"HiggsCandidate_B1_Pt",higgsB1Cand.pt());
@@ -418,15 +446,6 @@ void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttH
   vars.FillVar(prefix+"HiggsCandidate_CosThetaStar_Filterjet12",BoostedUtils::CosThetaStar(higgsB1Cand.p4(),higgsB2Cand.p4()));
   vars.FillVar(prefix+"HiggsCandidate_CosThetaStar_Filterjet13",BoostedUtils::CosThetaStar(higgsB1Cand.p4(),higgsGCand.p4()));
   vars.FillVar(prefix+"HiggsCandidate_CosThetaStar_Filterjet23",BoostedUtils::CosThetaStar(higgsB2Cand.p4(),higgsGCand.p4()));
-
-  if(higgsCand.fatjet.pt()>0){
-    vars.FillVar(prefix+"HiggsCandidate_Subjetiness1",higgsCand.tau1Filtered);
-    vars.FillVar(prefix+"HiggsCandidate_Subjetiness2",higgsCand.tau2Filtered);
-    vars.FillVar(prefix+"HiggsCandidate_Subjetiness3",higgsCand.tau3Filtered);
-  }
-
-  if(higgsCand.fatjet.pt()>0&&lepCandVec.Pt()>0)
-    vars.FillVar(prefix+"HiggsCandidate_Dr_Lepton",BoostedUtils::DeltaR(lepCandVec,higgsCand.fatjet.p4()));
 
   float mblep= -999;
   float mtoplep_higgs1=-999;
