@@ -74,16 +74,33 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
     //tempCluster.isGoodTopCluster = false;
 
     if(mode=="C"){
+      // mode C: pT cut on cluster pT
+
       if(tempCluster.fatjet.Pt() > iMinClusterPt){
         if(tempCluster.ak4jets.size()<2){
           tempCluster.isGoodHiggsCluster = false;
         }
         else tempCluster.isGoodHiggsCluster = true;
-        //allAk4Clusters[iA].isGoodTopCluster = true;
+
+        if(tempCluster.ak4jets.size()<3) tempCluster.isGoodTopCluster = false;
+        else tempCluster.isGoodTopCluster = true;
+
         selectedAk4Clusters.push_back(tempCluster);
       }
     }
     else if(mode == "A" || mode == "B"){
+      // mode A: pT cut on two filterjets with best CSV out of the three hardest subjets
+      // mode B: pT cut on three hardest filterjets
+      if(tempCluster.ak4jets.size()<3) tempCluster.isGoodTopCluster = false;
+      else{
+        std::vector<pat::Jet> sortedAk4TopJets = tempCluster.ak4jets;
+        BoostedUtils::TopSubjetCSVDef(sortedAk4TopJets);
+        if((sortedAk4TopJets[0].p4() + sortedAk4TopJets[1].p4() + sortedAk4TopJets[2].p4()).pt() > iMinClusterPt){
+          tempCluster.isGoodTopCluster = true;
+        }
+        else tempCluster.isGoodTopCluster = false;
+      }
+      
       if(tempCluster.ak4jets.size()<2){
         tempCluster.isGoodHiggsCluster = false;
       }
