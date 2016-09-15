@@ -14,7 +14,7 @@ BJetnessProcessor::~BJetnessProcessor(){}
 void BJetnessProcessor::Init(const InputCollections& input,VariableContainer& vars){
     
     vars.InitVar("BJN_N_Leptons");
-    vars.InitVar("BJN_N_TracksNoPV");
+//     vars.InitVar("BJN_N_TracksNoPV");
     vars.InitVar("BJN_N_PVtrackOvCollTrk");
     vars.InitVar("BJN_N_AvgIp3D");
     vars.InitVar("BJN_N_AvgIp3Dsig");
@@ -34,7 +34,7 @@ void BJetnessProcessor::Process(const InputCollections& input,VariableContainer&
 
 
     double num_loosenoipnoiso_leps=-999;
-    double numjettrksnopv=-999;
+//     double numjettrksnopv=-999;
     double pvTrkOVcollTrk=-999;
     double avip3d_val=-999;
     double avip3d_sig=-999;
@@ -49,12 +49,12 @@ void BJetnessProcessor::Process(const InputCollections& input,VariableContainer&
     }
     
     bjetness.get_bjetness_vars(bjetness_jets,input.selectedPVs[0],*ttrkbuilder,h_electrons,h_muons,
-			       num_loosenoipnoiso_leps, numjettrksnopv, 
+			       num_loosenoipnoiso_leps, 
 			       pvTrkOVcollTrk, avip3d_val, avip3d_sig, 
 			       avsip3d_sig, avip1d_sig);
 
     vars.FillVar("BJN_N_Leptons",num_loosenoipnoiso_leps);
-    vars.FillVar("BJN_N_TracksNoPV",numjettrksnopv);
+//     vars.FillVar("BJN_N_TracksNoPV",numjettrksnopv);
     vars.FillVar("BJN_N_PVtrackOvCollTrk",pvTrkOVcollTrk);
     vars.FillVar("BJN_N_AvgIp3D",avip3d_val);
     vars.FillVar("BJN_N_AvgIp3Dsig",avip3d_sig);
