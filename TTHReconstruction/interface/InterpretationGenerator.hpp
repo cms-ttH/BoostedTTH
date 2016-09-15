@@ -20,6 +20,8 @@ public:
 
   void GetNuVecs(const TLorentzVector & lepvec, const TVector2 & metvec, TLorentzVector & nu1, TLorentzVector & nu2);
 
+  void SetVars(IntType::IntType type_, int maxjets_);
+
 private:
   bool NextSubsetPermutation(std::vector<int>& idxs, int length);
   std::vector<Interpretation*> interpretations;

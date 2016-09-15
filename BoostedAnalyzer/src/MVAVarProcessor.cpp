@@ -259,7 +259,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
     int idClosestJet2 = -1;
     float minDrJets = BoostedUtils::GetClosestJetIDs(idClosestJet1,idClosestJet2,input.selectedJets);
     math::XYZTLorentzVector closestJetVec1 = input.selectedJets[idClosestJet1].p4();
-    math::XYZTLorentzVector closestJetVec2 = input.selectedJets[idClosestJet1].p4();
+    math::XYZTLorentzVector closestJetVec2 = input.selectedJets[idClosestJet2].p4();
     vars.FillVar("Evt_M_MinDeltaRJets",(closestJetVec1+closestJetVec2).M());
     vars.FillVar("Evt_Dr_MinDeltaRJets",minDrJets);
     vars.FillVar("Evt_Pt_MinDeltaRJets",(closestJetVec1+closestJetVec2).Pt());
@@ -299,7 +299,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   if(selectedTaggedJets.size()>1&&(input.selectedElectrons.size()>0||input.selectedMuons.size()>0)){
     int idClosestTaggedJet = -1;
     float minDrLepTaggedJet = BoostedUtils::GetClosestLepJetID(idClosestTaggedJet,primLepVec,selectedTaggedJets);
-    math::XYZTLorentzVector closestTaggedJetVec = input.selectedJets[idClosestTaggedJet].p4();
+    math::XYZTLorentzVector closestTaggedJetVec = selectedTaggedJets[idClosestTaggedJet].p4();
     vars.FillVar("Evt_M_MinDeltaRLeptonTaggedJet",(primLepVec+closestTaggedJetVec).M());
     vars.FillVar("Evt_Dr_MinDeltaRLeptonTaggedJet",minDrLepTaggedJet);
   }
