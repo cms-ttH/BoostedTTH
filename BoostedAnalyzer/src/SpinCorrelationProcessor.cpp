@@ -203,6 +203,7 @@ double SpinCorrelationProcessor::GetVars(TLorentzVector vec_top_, TLorentzVector
 }
 
 Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::vector<TLorentzVector>& jetvecs,std::vector<float>& jetcsvs,TLorentzVector& lepvec,TVector2& metvec, bool& flag,float& best_lr) {
+  bool use_chi2=true;
   if(flag) {
     if(ntags<4) {
       if(njets>5) {
@@ -248,35 +249,67 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
     if(flag){
       if(ntags<4) {
 	if(njets>5) {
-	  lr=quality.TTHLikelihood_comb(*(ints[i]));
+	  if(!use_chi2){
+	    lr=quality.TTHLikelihood_comb(*(ints[i]));
+	  }
+	  else if(use_chi2) {
+	    lr=quality.TTHChi2(*(ints[i]));
+	  }
 	}
 	else {
-	  lr=quality.TTLikelihood_comb(*(ints[i]));
+	  if(!use_chi2){
+	    lr=quality.TTLikelihood_comb(*(ints[i]));
+	  }
+	  else if(use_chi2) {
+	    lr=quality.TTChi2(*(ints[i]));
+	  }
 	}
       }
       else {
-	lr=quality.TTHLikelihood_comb(*(ints[i]));
+	if(!use_chi2){
+	  lr=quality.TTHLikelihood_comb(*(ints[i]));
+	}
+	else if(use_chi2) {
+	  lr=quality.TTHChi2(*(ints[i]));
+	}
       }
     }
     else {
       if(ntags<4) {
 	if(njets>5) {
-	  lr=quality.TTLikelihood_comb(*(ints[i]));
+	  if(!use_chi2){
+	    lr=quality.TTLikelihood_comb(*(ints[i]));
+	  }
+	  else if(use_chi2) {
+	    lr=quality.TTChi2(*(ints[i]));
+	  }
 	}
 	else {
-	  lr=quality.TTHLikelihood_comb(*(ints[i]));
+	  if(!use_chi2){
+	    lr=quality.TTHLikelihood_comb(*(ints[i]));
+	  }
+	  else if(use_chi2) {
+	    lr=quality.TTHChi2(*(ints[i]));
+	  }
 	}
       }
       else {
-	lr=quality.TTLikelihood_comb(*(ints[i]));
+	if(!use_chi2){
+	  lr=quality.TTLikelihood_comb(*(ints[i]));
+	}
+	else if(use_chi2) {
+	  lr=quality.TTChi2(*(ints[i]));
+	}
       }
     }
     // simple chi2 reconstruction using hadronic W and both top masses
-    /*	float chi2=quality.TTChi2(*(ints[i]));
+    /*	
+    float chi2=quality.TTChi2(*(ints[i]));
     if(chi2>best_chi2){
 	best_chi2=chi2;
 	best_int_chi2=ints[i];
-	}*/
+	}
+    */
     if(lr>best_lr){
 	best_lr=lr;
 	best_int_lr=ints[i];
@@ -285,7 +318,24 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
   return best_int_lr;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+reco::GenParticle SpinCorrelationProcessor::MatchPartontoJet (vector<reco::GenParticle>& Partons,pat::Jet& Jet){
+    float DeltaRtmp;
+    float DeltaRMin = 9999999;
+    float DeltaRCut = 0.4;
+    reco::GenParticle matchedParton;
+
+    for( auto& Parton: Partons ){
+        DeltaRtmp = BoostedUtils::DeltaR(Jet.p4(),Parton.p4());
+        if(DeltaRtmp < DeltaRCut && DeltaRtmp < DeltaRMin){
+            matchedParton = Parton;
+            DeltaRMin = DeltaRtmp;
+        }
+    }
+
+    return matchedParton;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using namespace std;
 
@@ -336,6 +386,7 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   
   var_type.push_back("GEN");
   var_type.push_back("RECO");
+  var_type.push_back("HALFRECO");
   
   for(auto it_frames=frames.begin();it_frames!=frames.end();++it_frames) {
     for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
@@ -389,10 +440,11 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   // variable type GEN or RECO
   var_type.push_back("GEN");
   var_type.push_back("RECO");
+  var_type.push_back("HALFRECO");
   
 
   
-  ///////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // decalre Vectors, which are present in every ttbar event
   math::XYZTLorentzVector vec_zero(0.,0.,0.,0.);
   math::XYZTLorentzVector vec_top=vec_zero;
@@ -409,7 +461,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
   math::XYZTLorentzVector vec_b_tmp=vec_zero;
   math::XYZTLorentzVector vec_antib_tmp=vec_zero;
   
-  bool no_tau_selection=true;
+  bool no_tau_selection=false;
   bool gen_evt_filled=input.genTopEvt.IsFilled();
   
   // loop begins over var_type
@@ -451,17 +503,17 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       //additional_bs=input.genTopEvt.GetAdditionalBGenJets();
     
       // identify the kind of decay
-      if(tophad.size()==0 and toplep.size()==2) {
+      if(input.genTopEvt.IsDiLepton()) {
 	isDL=true;
 	isSL=false;
 	//cout << "Dilepton Event! " << endl;
       }
-      else if(tophad.size()==1 and toplep.size()==1) {
+      else if(input.genTopEvt.IsSemiLepton()) {
 	isSL=true;
 	isDL=false;
 	//cout << "Single Lepton Event! " << endl;
       }
-      else if(tophad.size()==2 and toplep.size()==0) {
+      else if(input.genTopEvt.IsAllHadron()) {
 	isSL=false;
 	isDL=false;
 	//cout << "Fully hadronic Event! " << endl;
@@ -542,7 +594,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
     // if the loop is in var_type RECO and the events satisfies the requirements, the recontruction of the RECO variables can begin
     else if(input.selectedJets.size()>=4 && dec_type.EqualTo("RECO") && (input.selectedElectrons.size()+input.selectedMuons.size())==1 && !((input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())==2)){
       //cout << "N_jets>=4 and decay type RECO and Electrons+Muons==1" << endl;
-      // this is the code of Hannes ttbar reconstruction processor to create some likelihood interpretations of the event
+      // this is the code of Hannes ttbar reconstruction processor to create some likelihood/chi2 interpretations of the event
       std::vector<TLorentzVector> jetvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
       std::vector<float> jetcsvs;
       int ntags=0;
@@ -556,11 +608,12 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       float best_lr=-9999.;
       bool flag=true;
       Interpretation* best_int_lr=GetBestLR(njets,ntags,jetvecs,jetcsvs,lepvec,metvec,flag,best_lr);
-      if(!(best_lr>0.)){
+      if(!(best_lr>-9999.)){
 	best_lr=-9999.;
 	flag=false;
 	best_int_lr=GetBestLR(njets,ntags,jetvecs,jetcsvs,lepvec,metvec,flag,best_lr);
       }
+      //cout << " chi 2 " << best_lr << endl;
       /*
       if(ntags<4) {
 	if(njets>5) {
@@ -599,7 +652,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  }
       }
       */
-      if(best_lr>0.) {
+      if(best_lr>-9999.) {
 	//cout << "Hypothese with LR>0 available" << endl;
 	vars.FillVar("RECO_likelihood",best_lr);
 	isSL=true;
@@ -712,7 +765,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	if(dR_top<dR_max && dR_antitop<dR_max && dR_b<dR_max && dR_antib<dR_max) {
 	  //cout << "every particle is matched correctly" << endl;
 	  vars.FillVar("RECO_flag_after_match",1);
-	}/*
+	}
+	/*
 	else if(dR_top<dR_max && dR_antitop<dR_max && dR_b_switch<dR_max && dR_antib_switch<dR_max) {
 	  vars.FillVar("RECO_switch_flag_after_match_1",1);
 	}
@@ -778,6 +832,183 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       }
     }
     
+    else if(gen_evt_filled && dec_type.EqualTo("HALFRECO")){
+      if(input.genTopEvt.IsSemiLepton()){
+	//cout << "event is not semileptonic on gen level " << endl;
+	isSL=true;
+	isDL=false;
+      }
+      else if(input.genTopEvt.IsDiLepton()) {
+	isSL=false;
+	isDL=true;
+      }
+      else {continue;}
+      //cout << "gen event is semileptonic " << endl;
+      
+      // some gen info used, because only the effect of wrong permutations shall be examined
+      std::vector<reco::GenParticle> nu;
+      std::vector<reco::GenParticle> lep;
+      nu=input.genTopEvt.GetAllNeutrinos();
+      lep=input.genTopEvt.GetAllLeptons();
+      math::XYZTLorentzVector vec_nu;
+      math::XYZTLorentzVector vec_antinu;
+      /////////////// Quark Jet Matching ////////////////
+      vector< vector< reco::GenParticle > > DecayProducts;
+      
+      
+      DecayProducts.push_back( input.genTopEvt.GetWQuarks() ); 
+      //cout << "getWquarks vector size = " << DecayProducts[0].size() << endl;
+      DecayProducts.push_back( input.genTopEvt.GetAllTopLepDecayQuarks() );
+      DecayProducts.push_back( input.genTopEvt.GetAllTopHadDecayQuarks() );
+      //cout << "decay products vector size = " << DecayProducts.size() << endl;
+      vector < pat::Jet >  Jets = input.selectedJets;
+     
+      vector< pat::Jet > hadtopjets;
+      vector< pat::Jet > leptopjets;
+      vector< pat::Jet > hadWjets;
+      vector< int > pdgids;
+      int nwhadjets = 0;
+      int nleptopjets =0;
+      int nhadtopjets =0;
+      //int iJet = 0;
+      //cout << "trying to match the jets to the gen quarks " << endl;
+      for( auto& Jet: Jets ){
+        reco::GenParticle MatchedParton;	
+        vector< reco::GenParticle > MatchingQuarks;
+        for(auto& Quarks: DecayProducts){
+
+            MatchingQuarks.push_back( MatchPartontoJet(Quarks,Jet) );
+
+	}
+	size_t iQ = 0;
+        int decayfrom = -1;
+        float DeltaRtmp = 999;
+        for( auto& Quark: MatchingQuarks ){
+
+            if (Quark.pdgId() != 0){
+                if ( BoostedUtils::DeltaR( Jet.p4() , Quark.p4() ) < DeltaRtmp ){
+                    DeltaRtmp = BoostedUtils::DeltaR( Jet.p4() , Quark.p4() );
+                    MatchedParton = Quark;
+                    decayfrom = iQ;
+                }
+            }
+            iQ++;
+	}
+
+	if( decayfrom == 0){
+	  //cout << "W jet found " << endl;
+	  hadWjets.push_back(Jet);
+	  nwhadjets+=1;
+	}
+	else if (decayfrom == 1){
+	  //cout << "leptonic b jet found " << endl;
+	  leptopjets.push_back(Jet);
+	  nleptopjets+=1;
+	  pdgids.push_back(MatchedParton.pdgId());
+	}
+	else if (decayfrom == 2){
+	  //cout << "hadtronic b jet found " << endl;
+	  hadtopjets.push_back(Jet);
+	  nhadtopjets+=1;
+	}
+		    
+      }
+      //////////////////////////////////////////////////////
+      //after gen quark jet matching use the gen info for the rest, leptons and neutrinos
+      if(isSL) {
+	if(!(nleptopjets==1 && nhadtopjets==1 && nwhadjets>=1)) {
+	  //cout << "jets could not be assigned to quarks" << endl;
+	  continue;
+	}
+	//cout << "SL matching was succesfull" << endl;
+	if(lep[0].pdgId()>0) {
+	  if(lep[0].pdgId()==15 && no_tau_selection) {continue;}
+	  vec_lepton=lep[0].p4();
+	  vec_antilepton=vec_zero;
+	  leptonflag=1;
+	}
+	else if(lep[0].pdgId()<0) {
+	  if(lep[0].pdgId()==-15 && no_tau_selection) {continue;}
+	  vec_antilepton=lep[0].p4();
+	  vec_lepton=vec_zero;
+	  leptonflag=-1;
+	  //cout << "Antilepton! " << endl;
+	} 
+	if(leptonflag==1) {
+          if(nwhadjets>1) {  
+            vec_top=hadtopjets[0].p4()+hadWjets[0].p4()+hadWjets[1].p4();
+          }
+          else if(nwhadjets==1) {
+            vec_top=hadtopjets[0].p4()+hadWjets[0].p4();
+          }
+	  vec_antitop=leptopjets[0].p4()+vec_lepton+nu[0].p4();
+	  vec_b=hadtopjets[0].p4();
+	  vec_antib=leptopjets[0].p4();
+	}
+	else if(leptonflag==-1) {
+          if(nwhadjets>1) {  
+            vec_antitop=hadtopjets[0].p4()+hadWjets[0].p4()+hadWjets[1].p4();
+          }
+          else if(nwhadjets==1) {
+            vec_antitop=hadtopjets[0].p4()+hadWjets[0].p4();
+          }
+	  vec_top=leptopjets[0].p4()+vec_antilepton+nu[0].p4();
+	  vec_antib=hadtopjets[0].p4();
+	  vec_b=leptopjets[0].p4();
+	}
+      }
+      else if(isDL) {
+	if(!(nleptopjets==2 && nhadtopjets==0 && nwhadjets==0)) {
+	  continue;
+	}
+	//cout << "DL matching was succesfull" << endl;
+	if(lep[0].pdgId()>0) {
+	  if(lep[0].pdgId()==15 && no_tau_selection) {continue;}
+	  vec_lepton=lep[0].p4();
+	}
+	else if(lep[0].pdgId()<0) {
+  	  if(lep[0].pdgId()==-15 && no_tau_selection) {continue;}
+	  vec_antilepton=lep[0].p4();
+	}
+	if(lep[1].pdgId()>0) {
+ 	  if(lep[1].pdgId()==15 && no_tau_selection) {continue;}
+	  vec_lepton=lep[1].p4();
+	}
+	else if(lep[1].pdgId()<0) {
+	  if(lep[1].pdgId()==-15 && no_tau_selection) {continue;}
+	  vec_antilepton=lep[1].p4();
+	}
+	if(nu[0].pdgId()>0) {
+	  vec_nu=nu[0].p4();
+	}
+	else if(nu[0].pdgId()<0) {
+	  vec_antinu=nu[0].p4();
+	}
+	if(nu[1].pdgId()>0) {
+	  vec_nu=nu[1].p4();
+	}
+	else if(nu[1].pdgId()<0) {
+	  vec_antinu=nu[1].p4();
+	}
+	if(pdgids[0]>0) {
+	  vec_b=leptopjets[0].p4();
+	}
+	else if(pdgids[0]<0) {
+	  vec_antib=leptopjets[0].p4();
+	}
+	if(pdgids[1]>0) {
+	  vec_b=leptopjets[1].p4();
+	}
+	else if(pdgids[1]<0) {
+	  vec_antib=leptopjets[1].p4();
+	}
+	vec_top=vec_b+vec_antilepton+vec_nu;
+	vec_antitop=vec_antib+vec_lepton+vec_antinu;
+      }
+      else {continue;}
+	
+    }
+    
     // if neither GEN nor RECO part worked the loop ends here
     else {
       //cout << *it_type << " nothing could be done in this round of the loop!! " << endl;
@@ -834,7 +1065,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  variables["Delta_Eta_lb"]=22;
 	  variables["triple_product_l"]=24;
 	}
-	if(leptonflag==-1) {
+	else if(leptonflag==-1) {
 	  variables["cos_theta_lbar"]=7;
 	  variables["cos_theta_lbarbbar"]=9;
 	  variables["Delta_Phi_lbarbbar"]=11;
@@ -889,6 +1120,4 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       }
     }
   }
-  
-  
 }
