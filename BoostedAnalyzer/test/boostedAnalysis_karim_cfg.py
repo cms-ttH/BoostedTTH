@@ -77,6 +77,28 @@ process.source = cms.Source(  "PoolSource",
                               skipEvents=cms.untracked.uint32(int(options.skipEvents)),
 )
 
+#update btag
+
+process.load("Configuration.StandardSequences.MagneticField_cff")
+process.load("Configuration.Geometry.GeometryRecoDB_cff")
+
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+jetCorrectionsForBTagging=cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
+if options.isData:
+  jetCorrectionsForBTagging=cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'])
+updateJetCollection(
+  process,
+  labelName = 'updateBtags',
+  postfix='',
+  jetSource = cms.InputTag('slimmedJets'),
+  jetCorrections = ('AK4PFchs', jetCorrectionsForBTagging, 'None'),  
+  btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags'],
+  runIVF=True,
+  btagPrefix = '' # optional, in case interested in accessing both the old and new discriminator values
+)
+
+
+
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
 # necessarily reflect actual corrections level
@@ -169,7 +191,7 @@ process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
 
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
-process.SelectedJetProducer.jets='slimmedJets'
+process.SelectedJetProducer.jets='selectedUpdatedPatJetsUpdateBtags'
 process.SelectedJetProducer.ptMins=[20,30,20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
@@ -229,7 +251,7 @@ if options.isData and options.useJson:
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
-process.load('Configuration.Geometry.GeometryRecoDB_cff')
+#process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.BoostedAnalyzer.minJets = [4]
@@ -253,17 +275,25 @@ if options.additionalSelection!="NONE":
 #process.BoostedAnalyzer.processorNames = []
 process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
 if options.isData:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor")
 else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor")
-process.BoostedAnalyzer.dumpSyncExe2=True
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor")
+process.BoostedAnalyzer.dumpSyncExe2=False
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer
                      *process.SelectedMuonProducer
- #                    *process.content
+                     *process.patJetCorrFactorsUpdateBtags
+                    *process.updatedPatJetsUpdateBtags
+                    *process.patJetCorrFactorsTransientCorrectedUpdateBtags
+                    *process.pfImpactParameterTagInfosUpdateBtags
+                    *process.pfInclusiveSecondaryVertexFinderTagInfosUpdateBtags
+                    *process.pfCombinedInclusiveSecondaryVertexV2BJetTagsUpdateBtags
+                    *process.updatedPatJetsTransientCorrectedUpdateBtags
+                    *process.selectedUpdatedPatJetsUpdateBtags
+                    #*process.content
                      *process.SelectedJetProducer
                      *process.CorrectedMETproducer
                      #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
@@ -273,7 +303,15 @@ else:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer
                      *process.SelectedMuonProducer
- #                    *process.content
+                      *process.patJetCorrFactorsUpdateBtags
+                    *process.updatedPatJetsUpdateBtags
+                    *process.patJetCorrFactorsTransientCorrectedUpdateBtags
+                    *process.pfImpactParameterTagInfosUpdateBtags
+                    *process.pfInclusiveSecondaryVertexFinderTagInfosUpdateBtags
+                    *process.pfCombinedInclusiveSecondaryVertexV2BJetTagsUpdateBtags
+                    *process.updatedPatJetsTransientCorrectedUpdateBtags
+                    *process.selectedUpdatedPatJetsUpdateBtags
+                     #*process.content
                      *process.SelectedJetProducer
                      *process.CorrectedMETproducer
                      *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
