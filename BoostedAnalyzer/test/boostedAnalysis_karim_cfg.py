@@ -185,7 +185,10 @@ if options.isData:
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
 else:
     if options.analysisType=='SL':
+      if options.isreHLT:
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+      else:
+	process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzerNoTrigger_cfi")
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
 
@@ -197,7 +200,7 @@ else:
 
 if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
-
+    
 if options.makeSystematicsTrees:
     systs=["","jesup","jesdown"]#,"jerup","jerdown"]
     process.SelectedJetProducer.systematics=systs
@@ -223,7 +226,7 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 if options.isData and options.useJson:
     #print 'use JSON is no longer supported'
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/mwassmer/sync_ex/JSONS/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/kelmorab/CMSSW8/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
 ### electron MVA ####
 ### electron MVA ####
 # Load the producer for MVA IDs
@@ -242,12 +245,20 @@ process.BoostedAnalyzer.minTagsForMEM = 3
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
 
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = cms.vstring("VertexSelection","LeptonSelection","JetTagSelection")
+#process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-
+# process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
+#process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor"]
+#process.BoostedAnalyzer.processorNames = []
+process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
+if options.isData:
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor")
+else:
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor")
+process.BoostedAnalyzer.dumpSyncExe2=True
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:
