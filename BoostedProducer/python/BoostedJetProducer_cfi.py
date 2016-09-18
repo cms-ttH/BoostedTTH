@@ -8,7 +8,8 @@ ca15PFJetsCHS = cms.EDProducer(
     "FastjetJetProducer",
     PFJetParameters.clone(
       src               = cms.InputTag("pfNoElectronsCHS"),
-      jetPtMin          = cms.double(180.0)
+      #jetPtMin          = cms.double(180.0),
+      jetPtMin          = cms.double(150.0)
     ),
     AnomalousCellParameters,
     jetAlgorithm = cms.string("CambridgeAachen"),
@@ -21,7 +22,8 @@ HTTTopJetProducer = cms.EDProducer(
       src               = cms.InputTag("pfNoElectronsCHS"),
       doAreaFastjet     = cms.bool(True),
       doRhoFastjet      = cms.bool(False),
-      jetPtMin          = cms.double(180.0)
+      #jetPtMin          = cms.double(180.0),
+      jetPtMin          = cms.double(150.0)
     ),
     AnomalousCellParameters,
     algorithm           = cms.int32(1),
@@ -29,7 +31,8 @@ HTTTopJetProducer = cms.EDProducer(
     rParam              = cms.double(1.5),
     optimalR            = cms.bool(True),
     qJets               = cms.bool(False),
-    minFatjetPt         = cms.double(180.),
+    #minFatjetPt         = cms.double(180.),
+    minFatjetPt         = cms.double(150.),
     minSubjetPt         = cms.double(0.),
     minCandPt           = cms.double(0.),
     maxFatjetAbsEta     = cms.double(99.),
@@ -54,7 +57,8 @@ SFJetProducer = cms.EDProducer(
       src           = cms.InputTag("pfNoElectronsCHS"),
       doAreaFastjet = cms.bool(True),
       doRhoFastjet  = cms.bool(False),
-      jetPtMin      = cms.double(180.0)
+      #jetPtMin      = cms.double(180.0),
+      jetPtMin      = cms.double(150.0)
     ),
     AnomalousCellParameters,
     jetAlgorithm 	      = cms.string("CambridgeAachen"),

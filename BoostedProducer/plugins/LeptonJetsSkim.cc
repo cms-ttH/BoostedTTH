@@ -108,8 +108,10 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   muonEtaMax_     = iConfig.getParameter<double>("muonEtaMax");
   electronPtMin_  = iConfig.getParameter<double>("electronPtMin");
   electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
-  electronID_     = electronID::electronEndOf15MVA80;
-  muonID_         = muonID::muonTight;
+  //electronID_     = electronID::electronEndOf15MVA80;
+  electronID_     = electronID::none;
+  //muonID_         = muonID::muonTight;
+  muonID_         = muonID::none;
   
   muonIsoConeSize_ = coneSize::R04;
   muonIsoCorrType_ = corrType::deltaBeta;
@@ -156,7 +158,8 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	
 	edm::Handle<pat::JetCollection> hJets;
 	iEvent.getByToken(EDMJetsToken,hJets);	    
-	pat::JetCollection selectedJets =  helper_.GetSelectedJets(*hJets,jetPtMin_,jetEtaMax_,jetID::jetLoose,'-');
+	//pat::JetCollection selectedJets =  helper_.GetSelectedJets(*hJets,jetPtMin_,jetEtaMax_,jetID::jetLoose,'-');
+	pat::JetCollection selectedJets =  helper_.GetSelectedJets(*hJets,jetPtMin_,jetEtaMax_,jetID::none,'-');
 	// TODO: correct jets (maybe even with JESUP) to make sure the jetcuts are loose enough
 
 	if( (selectedMuons.size()+selectedElectrons.size())>=1 && int(selectedJets.size())>minJets_){
