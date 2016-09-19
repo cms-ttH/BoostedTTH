@@ -10,6 +10,7 @@ Follow These Steps:
     scram project CMSSW_8_0_19
     cd CMSSW_8_0_19/src
     cmsenv   
+    git cms-merge-topic -u cms-btv-pog:bTagHIPMitigation-PR_from-CMSSW_8_0_17    
     git cms-merge-topic gkasieczka:htt-v2-76X
     git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_8_expICHEPLeptons
     git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_8_expICHEPLeptons
