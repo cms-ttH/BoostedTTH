@@ -3,8 +3,6 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("p")
 process.source = cms.Source("PoolSource",
                             #fileNames = cms.untracked.vstring('file:/pnfs/desy.de/cms/tier2/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/00000/D2D9E71A-121B-E611-97D4-0CC47A4C6FDC.root')
-                            #fileNames = cms.untracked.vstring('file:/pnfs/desy.de/cms/tier2/store/mc/RunIIFall15MiniAODv2/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/74B638CC-44B8-E511-8F19-1CC1DE19283E.root')
-                            #fileNames = cms.untracked.vstring('file:/pnfs/desy.de/cms/tier2/store/user/koschwei/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAODICHEPv1/160729_220552/0000/BoostedTTH_MiniAOD_12.root')
                             fileNames = cms.untracked.vstring('file:/pnfs/desy.de/cms/tier2/store/mc/RunIISpring16MiniAODv2/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/40000/0232CD05-9C38-E611-B4BD-02163E014E9C.root')
 )
 
@@ -12,7 +10,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) ) #def
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.MessageLogger.suppressWarning = cms.untracked.vstring('ecalLaserCorrFilter','manystripclus53X','toomanystripclus53X')
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
@@ -21,13 +19,10 @@ process.options.allowUnscheduled = cms.untracked.bool(True)
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
 
 # select loose lepton collections
-#process.load('BoostedTTH.BoostedProducer.SelectedLeptonProducers_cfi')
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 
 #do projections
 process.pfCHS = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("fromPV"))
-#process.pfNoMuonCHS =  cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfCHS"), veto = cms.InputTag("SelectedMuonProducer"))
-#process.pfNoElectronsCHS = cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfNoMuonCHS"), veto =  cms.InputTag("SelectedElectronProducer"))
 process.pfNoMuonCHS =  cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfCHS"), veto = cms.InputTag("SelectedMuonProducer:selectedLeptonsDL"))
 process.pfNoElectronsCHS = cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfNoMuonCHS"), veto =  cms.InputTag("SelectedElectronProducer:selectedLeptonsDL"))
 
@@ -234,9 +229,6 @@ process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
 # skim
 process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
-
-# dump event content
-#process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
 # execute in the right order
 process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
