@@ -97,6 +97,9 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
+
+#include "BoostedTTH/BoostedAnalyzer/interface/Ak4Cluster.hpp"
+
 //
 // class declaration
 //
@@ -706,6 +709,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *(hs_selectedJetsLooseDL[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
 					  selectedBoostedJets[isys],
+            selectedAk4Cluster,
 					  genTopEvt,
 					  *h_genJets,
 					  sampleType,

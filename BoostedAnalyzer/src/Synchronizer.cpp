@@ -277,7 +277,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     elmu_triggers.push_back("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
     elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*");
   }
-  
+
 
   if(dileptonSelections.size()==0 && ((!runOverData)||dataset_flag>2)){
     dileptonSelections.push_back(new VertexSelection());
@@ -648,24 +648,27 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(0));
       bool jetmatched = false;
       for( auto rawJet: input_DL.rawJets){
-	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJetsLooseDL.at(0).p4()) < 0.01 ){
-	  double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
-	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
-	  
+        if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJetsLooseDL.at(0).p4()) < 0.01 ){
+      	    //double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::NA,true,false) ;
+      	    double jet1_JES = 1.0;
+      	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
 
 
-	  double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false)/jet1_JES ;
-	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
-	  double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false)/jet1_JES;
-	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
 
-	  jet1_JecSF = jet1_JES;
-	  jet1_JecSF_up = JESup;
-	  jet1_JecSF_down = JESdown;
+      	    //	  double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESup,true,false)/jet1_JES ;
+      	     double JESup =  1.0 ;
+      	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
+      	    //double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESdown,true,false)/jet1_JES;
+      	     double JESdown =   1.0;
+      	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
+
+      	  jet1_JecSF = jet1_JES;
+      	  jet1_JecSF_up = JESup;
+      	  jet1_JecSF_down = JESdown;
 
 
-	  jetmatched = true;
-	}
+      	  jetmatched = true;
+      }
       }
       if ( !jetmatched ){
 	jet1_JecSF = -1;
@@ -699,23 +702,26 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       jet1_CSVv2=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
       bool jetmatched = false;
       for( auto rawJet: input.rawJets){
-	if( BoostedUtils::DeltaR(rawJet.p4(),input.selectedJets.at(0).p4()) < 0.01 ){
-	  double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
-	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
-	  
+        if( BoostedUtils::DeltaR(rawJet.p4(),input.selectedJets.at(0).p4()) < 0.01 ){
+      	    //double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::NA,true,false) ;
+      	    double jet1_JES = 1.0;
+      	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
 
 
-	  double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false)/jet1_JES ;
-	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
-	  double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false)/jet1_JES;
-	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
 
-	  jet1_JecSF = jet1_JES;
-	  jet1_JecSF_up = JESup;
-	  jet1_JecSF_down = JESdown;
+      	  //double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESup,true,false)/jet1_JES ;
+      	  double JESup =   1.0;
+      	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
+      	  //double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESdown,true,false)/jet1_JES;
+      	  double JESdown =  1.0;
+      	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
 
-	  jetmatched = true;
-	}
+      	  jet1_JecSF = jet1_JES;
+      	  jet1_JecSF_up = JESup;
+      	  jet1_JecSF_down = JESdown;
+
+      	  jetmatched = true;
+      }
       }
       if ( !jetmatched ){
 	jet1_JecSF = -1;
@@ -743,7 +749,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
-  
+
   /*if(event==3875954 || int(event)==3875954 || event==3897814 || int(event)==3897814) {
     for(size_t i=0;i<input.selectedJetsLooseDL.size();i++){
       cout << "############# Jet " << i << " ##############" << endl;
@@ -880,8 +886,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     if(is_ee) {triggerSF=input_DL.weightsDL.at("Weight_ElectronElectronTriggerSF");}
     if(is_emu) {triggerSF=input_DL.weightsDL.at("Weight_ElectronMuonTriggerSF");}
     if(is_mumu) {triggerSF=input_DL.weightsDL.at("Weight_MuonMuonTriggerSF");}
-    
-    
+
+
 
     ttHFCategory=input_DL.genTopEvt.GetTTxIdFromProducer();
   }
@@ -922,8 +928,8 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
     lepSFiso=input.weights.at("Weight_ElectronSFIso")*input.weights.at("Weight_MuonSFIso");
     triggerSF=input.weights.at("Weight_MuonSFTrigger")*input.weights.at("Weight_ElectronSFTrigger");
-    
-    
+
+
 
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
   }

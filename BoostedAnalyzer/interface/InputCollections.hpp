@@ -11,6 +11,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "MiniAOD/BoostedObjects/interface/BoostedJet.h"
+#include "MiniAOD/BoostedObjects/interface/Ak4Cluster.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
@@ -23,7 +24,7 @@ namespace HiggsDecay{enum HiggsDecay{NA,bb,nonbb};};
 
 
 /*
-  References to the selected physics objects as well as some general event information, some generator information, and event weights (nominal and for systematics) are stored in InputCollections. Only from these inputs the variables in the trees are calculated. There are multiple InputCollections for different systematics (e.g. in one the default jets are exchanged with JES shifted jets). 
+  References to the selected physics objects as well as some general event information, some generator information, and event weights (nominal and for systematics) are stored in InputCollections. Only from these inputs the variables in the trees are calculated. There are multiple InputCollections for different systematics (e.g. in one the default jets are exchanged with JES shifted jets).
  */
 struct InputCollections{
 /**
@@ -45,6 +46,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Jet>&                  selectedJetsLooseDL_,
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
+                    const boosted::Ak4ClusterCollection& selectedAk4Cluster_,
                     const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              genJets_,
                     const SampleType                              sampleType_,
@@ -55,7 +57,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		    const edm::EventSetup& iSetup_
 		      /**** bjetness code ****/
 
-		            ): 
+		            ):
                     eventInfo(eventInfo_),
                     triggerInfo(triggerInfo_),
                     selectedPVs(selectedPVs_),
@@ -72,6 +74,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedJetsLooseDL(selectedJetsLooseDL_),
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
+                    selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(genTopEvt_),
                     genJets(genJets_),
                     sampleType(sampleType_),
@@ -93,9 +96,10 @@ InputCollections(   const InputCollections&                       input,
 		    const std::vector<pat::Jet>&                  selectedJetsLooseDL_,
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
+                    const boosted::Ak4ClusterCollection& selectedAk4Cluster_,
                     const std::map<std::string,float>&            weights_,
 		    const std::map<std::string,float>& 		  weightsDL_
-        		    ): 
+        		    ):
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
                     selectedPVs(input.selectedPVs),
@@ -112,6 +116,7 @@ InputCollections(   const InputCollections&                       input,
                     selectedJetsLooseDL(selectedJetsLooseDL_),
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
+                    selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(input.genTopEvt),
                     genJets(input.genJets),
                     sampleType(input.sampleType),
@@ -139,6 +144,7 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Jet>&                  selectedJetsLooseDL;
   const pat::MET&                               correctedMET;
   const boosted::BoostedJetCollection&          selectedBoostedJets;
+  const boosted::Ak4ClusterCollection& selectedAk4Cluster;
   const GenTopEvent&                            genTopEvt;
   const std::vector<reco::GenJet>&              genJets;
   const SampleType                              sampleType;
