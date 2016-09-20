@@ -44,6 +44,12 @@ void BoostedMCMatchVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars("BoostedJet_Dr_GenZTop",-9.,"N_BoostedJets");
   vars.InitVars("BoostedJet_Dr_GenB_ZTop",-9.,"N_BoostedJets");
   vars.InitVars("BoostedJet_Dr_GenW_ZTop",-9.,"N_BoostedJets");
+  vars.InitVars("BoostedJet_Dr_GenbfromTPrime",-9.,"N_BoostedJets");
+  vars.InitVars("BoostedJet_Dr_GenZTop_bfromTPrime",-9.,"N_BoostedJets");
+  vars.InitVars("BoostedJet_Dr_GenWfromTPrime_bfromTPrime",-9.,"N_BoostedJets");
+  vars.InitVars("BoostedJet_Dr_GenWfromTPrime",-9.,"N_BoostedJets");
+  vars.InitVars("BoostedJet_Dr_GenZTop_WfromTPrime",-9.,"N_BoostedJets");
+  vars.InitVars("BoostedJet_Dr_GenbfromTPrime_WfromTPrime",-9.,"N_BoostedJets");  
 
   
   initialized = true;
@@ -167,6 +173,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
 	      }
       }
     }
+    cout<<"ZPrime filled ?:  "<<input.zprimetotprimeallhad.IsFilled()<<endl;
     
     if(input.zprimetotprimeallhad.IsFilled()){
         float minDr_ZTop = 999;
@@ -178,41 +185,49 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
         float minDr_WfromTPrime = 999;
         float minDr_GenZTop_WfromTPrime=999;
         float minDr_GenbfromTPrime_WfromTPrime=999;        
-    
+        
+        cout<<"ZTopsize:  "<<ZTop.size()<<endl;
         for(size_t j=0;j<ZTop.size();j++){
       
       
             float Dr_ZTop_temp = BoostedUtils::DeltaR(ZTop[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
                 if(Dr_ZTop_temp<minDr_ZTop){
                     minDr_ZTop = Dr_ZTop_temp;
-                    minDr_GenB_ZTop = BoostedUtils::DeltaR(bfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
-                    minDr_GenW_ZTop = BoostedUtils::DeltaR(WfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+                    cout<<"minDr_ZTop:  "<<minDr_ZTop<<endl;
+//                    minDr_GenB_ZTop = BoostedUtils::DeltaR(bfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+//                    minDr_GenW_ZTop = BoostedUtils::DeltaR(WfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+//                    cout<<"minDr_GenW_ZTop:  "<<minDr_GenW_ZTop<<endl;
+
                 }
-                
+        }
+        for(size_t j=0;j<bfromTPrime.size();j++){   
             float Dr_B_temp = BoostedUtils::DeltaR(bfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
                 if(Dr_B_temp<minDr_bfromTPrime){
                     minDr_bfromTPrime = Dr_B_temp;
-                    minDr_GenZTop_bfromTPrime = BoostedUtils::DeltaR(ZTop[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
-                    minDr_GenWfromTPrime_bfromTPrime = BoostedUtils::DeltaR(WfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
-                } 
-                
+                    cout<<"minDr_bfromTPrime:  "<<minDr_bfromTPrime<<endl;
+//                    minDr_GenZTop_bfromTPrime = BoostedUtils::DeltaR(ZTop[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+//                    minDr_GenWfromTPrime_bfromTPrime = BoostedUtils::DeltaR(WfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+                }
+        }        
+        for(size_t j=0;j<WfromTPrime.size();j++){
             float Dr_W_temp = BoostedUtils::DeltaR(WfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
-                if(Dr_W_temp<minDr_bfromTPrime){
+                if(Dr_W_temp<minDr_WfromTPrime){
                     minDr_WfromTPrime = Dr_W_temp;
-                    minDr_GenbfromTPrime_WfromTPrime = BoostedUtils::DeltaR(bfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
-                    minDr_GenZTop_WfromTPrime = BoostedUtils::DeltaR(ZTop[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+                    cout<<"minDr_WfromTPrime:  "<<minDr_WfromTPrime<<endl;
+//                    minDr_GenbfromTPrime_WfromTPrime = BoostedUtils::DeltaR(bfromTPrime[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
+//                    minDr_GenZTop_WfromTPrime = BoostedUtils::DeltaR(ZTop[j].p4(),input.selectedBoostedJets[i].fatjet.p4());
                 }            
         
         }
-            
+           
         if(minDr_ZTop<999) vars.FillVars("BoostedJet_Dr_GenZTop",i,minDr_ZTop);
         if(minDr_GenB_ZTop<999) vars.FillVars("BoostedJet_Dr_GenB_ZTop",i,minDr_GenB_ZTop);
         if(minDr_GenW_ZTop<999) vars.FillVars("BoostedJet_Dr_GenW_ZTop",i,minDr_GenW_ZTop);
         if(minDr_bfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenbfromTPrime",i,minDr_bfromTPrime);
-        if(minDr_GenZTop_bfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenZTop_GenbfromTPrime",i,minDr_GenZTop_bfromTPrime);
-        if(minDr_GenWfromTPrime_bfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenZTop_GenbfromTPrime",i,minDr_GenWfromTPrime_bfromTPrime);
-        if(minDr_WfromTPrime<999) vars.FillVars("BoostedJet_Dr_WfromTPrime",i,minDr_WfromTPrime);
-        if(minDr_GenZTop_WfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenWfromTPrime_WfromTPrime",i,minDr_GenZTop_WfromTPrime);
+        if(minDr_GenZTop_bfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenZTop_bfromTPrime",i,minDr_GenZTop_bfromTPrime);
+        if(minDr_GenWfromTPrime_bfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenWfromTPrime_bfromTPrime",i,minDr_GenWfromTPrime_bfromTPrime);
+        if(minDr_WfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenWfromTPrime",i,minDr_WfromTPrime);
+        if(minDr_GenZTop_WfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenZTop_WfromTPrime",i,minDr_GenZTop_WfromTPrime);
         if(minDr_GenbfromTPrime_WfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenbfromTPrime_WfromTPrime",i,minDr_GenbfromTPrime_WfromTPrime);        
 
 
@@ -222,7 +237,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
 
     if(minDr_TopHad<999){
         vars.FillVars("BoostedJet_Dr_GenTopHad",i,minDr_TopHad);
-        cout<<"BoostedJet_Dr_GenTopHad:  "<<minDr_TopHad;
+        //cout<<"BoostedJet_Dr_GenTopHad:  "<<minDr_TopHad;
     }
     if(minDr_TopB<999) vars.FillVars("BoostedJet_Dr_GenB",i,minDr_TopB);
     if(minDr_TopQ1<999) vars.FillVars("BoostedJet_Dr_GenQ1",i,minDr_TopQ1);

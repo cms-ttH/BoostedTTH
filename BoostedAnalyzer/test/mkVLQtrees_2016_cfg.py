@@ -47,17 +47,17 @@ if options.globalTag is "NONE":
 		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
 
 if not options.inputFiles:
-    options.inputFiles=['file:/nfs/dust/cms/user/skudella/processed_MC/MC_boosted/cd BoostedMiniAOD_ZprimeToTprimeT_TprimeToWB_MZp-2000Nar_MTp-1200Nar_LH_MC.root']
+    options.inputFiles=['file:/nfs/dust/cms/user/skudella/processed_MC/MC_boosted/BoostedMiniAOD_ZprimeToTprimeT_TprimeToWB_MZp-2000Nar_MTp-1500Nar_LH_MC.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL","VetoL"]:
     print "\n\nConfig ERROR: unknown analysisType '"+options.analysisType+"'"
     print "Options are 'SL' or 'DL' or 'VetoL'\n\n"
     sys.exit()
-if options.processType not in ["ZPrime","ttH"]:
-    print "\n\nConfig ERROR: unknown processType '"+options.processType+"'"
-    print "Options are 'ZPrime' or 'ttH' or 'VetoL'\n\n"
-    sys.exit()
+#if options.processType not in ["ZPrime","ttH"]:
+#    print "\n\nConfig ERROR: unknown processType '"+options.processType+"'"
+#    print "Options are 'ZPrime' or 'ttH'\n\n"
+#    sys.exit()
 if "data" in options.globalTag.lower() and not options.isData:
     print "\n\nConfig ERROR: GT contains seems to be for data but isData==False\n\n"
     sys.exit()
