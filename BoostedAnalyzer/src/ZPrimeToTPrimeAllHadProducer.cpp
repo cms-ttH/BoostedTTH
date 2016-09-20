@@ -415,7 +415,9 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
     
 }
 
-
+bool ZPrimeToTPrimeAllHad::IsFilled() const{
+  return isFilled;
+}
 
 
 

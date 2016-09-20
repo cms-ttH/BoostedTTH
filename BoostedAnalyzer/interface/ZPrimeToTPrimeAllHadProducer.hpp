@@ -27,6 +27,8 @@ class ZPrimeToTPrimeAllHad{
       ~ZPrimeToTPrimeAllHad();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+      bool IsFilled() const;
+
 
       std::vector<reco::GenParticle> GetTopHad() const;
       std::vector<reco::GenParticle> GetTopbarHad() const;

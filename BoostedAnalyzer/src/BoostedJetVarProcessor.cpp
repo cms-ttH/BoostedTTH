@@ -344,9 +344,10 @@ void BoostedJetVarProcessor::Process(const InputCollections& input,VariableConta
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
   vars.FillVar("N_BoostedJets",input.selectedBoostedJets.size());
-  
+  cout<<"N_BoostedJets  "<<input.selectedBoostedJets.size()<<endl;
+
   for(size_t i=0; i< input.selectedBoostedJets.size(); i++){
-    
+   
     pat::Jet fatjet = input.selectedBoostedJets[i].fatjet;
     pat::Jet nonW = input.selectedBoostedJets[i].nonW;
     pat::Jet W1 = input.selectedBoostedJets[i].W1;

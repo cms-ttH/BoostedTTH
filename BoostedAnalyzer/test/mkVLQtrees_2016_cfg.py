@@ -21,10 +21,11 @@ options.register( "outName", "testrun_simon", VarParsing.multiplicity.singleton,
 options.register( "weight", 1., VarParsing.multiplicity.singleton, VarParsing.varType.float, "xs*lumi/(nPosEvents-nNegEvents)" )
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
-options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
+options.register( "isBoostedMiniAOD", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
 options.register( "makeSystematicsTrees", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "VetoL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL' or 'VetoL'" )
+#options.register( "processType", "ZPrime", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'ZPrime' or 'ttH'" )
 options.register( "channel", "VETO", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'el' or 'mu' or 'both' or 'VETO'" )
 options.register( "globalTag", "NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
@@ -46,12 +47,16 @@ if options.globalTag is "NONE":
 		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
 
 if not options.inputFiles:
-    options.inputFiles=['file:/nfs/dust/cms/user/skudella/processed_MC/MC_boosted/BoostedMiniAOD_ZprimeToTprimeT_TprimeToWB_MZp-1500Nar_MTp-1200Nar_LH_MC.root']
+    options.inputFiles=['file:/nfs/dust/cms/user/skudella/processed_MC/MC_boosted/cd BoostedMiniAOD_ZprimeToTprimeT_TprimeToWB_MZp-2000Nar_MTp-1200Nar_LH_MC.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL","VetoL"]:
     print "\n\nConfig ERROR: unknown analysisType '"+options.analysisType+"'"
     print "Options are 'SL' or 'DL' or 'VetoL'\n\n"
+    sys.exit()
+if options.processType not in ["ZPrime","ttH"]:
+    print "\n\nConfig ERROR: unknown processType '"+options.processType+"'"
+    print "Options are 'ZPrime' or 'ttH' or 'VetoL'\n\n"
     sys.exit()
 if "data" in options.globalTag.lower() and not options.isData:
     print "\n\nConfig ERROR: GT contains seems to be for data but isData==False\n\n"
@@ -235,7 +240,7 @@ process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
 if options.additionalSelection!="NONE":
     process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor","ZPrimeToTPrimeAllHadProcessor"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor","ZPrimeToTPrimeAllHadProcessor","BoostedJetVarProcessor","BoostedMCMatchVarProcessor"]
 process.BoostedAnalyzer.dumpSyncExe2=False
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")

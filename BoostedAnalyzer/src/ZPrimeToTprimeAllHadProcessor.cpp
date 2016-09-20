@@ -323,7 +323,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
     if((input.zprimetotprimeallhad.GetTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars().size()==1)){
         float DeltaPhi=BoostedUtils::DeltaPhi(input.zprimetotprimeallhad.GetTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars()[0].p4());
-        vars.FillVar( "Gen_Top_Wfr"omTPrime_DeltaPhi", DeltaPhi );
+        vars.FillVar( "Gen_Top_WfromTPrime_DeltaPhi", DeltaPhi );
     }
     if((input.zprimetotprimeallhad.GetTopsandTopbars().size()==1 && input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms().size()==1)){
         float DeltaPhi=BoostedUtils::DeltaPhi(input.zprimetotprimeallhad.GetTopsandTopbars()[0].p4(),input.zprimetotprimeallhad.GetTPrimeandTPrimebarDecayBottoms()[0].p4());
