@@ -817,15 +817,6 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	weights["Weight_TopPtup"] = topptweightUp;
 	weights["Weight_TopPtdown"] = topptweightDown;
 
-	// set optional additional PU weights
-	for(std::vector<PUWeights::Weight>::const_iterator it = puWeights.additionalWeightsBegin();
-	    it != puWeights.additionalWeightsEnd(); ++it) {
-	    weights[it->name()] = it->value();
-	}
-	//Add Genweights to the weight map
-	genweights.GetGenWeights(weights, lheInfo, dogenweights);
-	genweights.GetLHAPDFWeight(weights, genInfo, "NNPDF30_nlo_as_0118");
-   
   }
  //Add Lepton Scalefactors to weight map
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
@@ -833,7 +824,14 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     for(  auto sfit = selectedScaleFactors.begin() ; sfit != selectedScaleFactors.end() ; sfit++  ){
       weights["Weight_"+sfit->first] = sfit->second;
     }
-
+    // set optional additional PU weights
+    for(std::vector<PUWeights::Weight>::const_iterator it = puWeights.additionalWeightsBegin();
+        it != puWeights.additionalWeightsEnd(); ++it) {
+	weights[it->name()] = it->value();
+        }
+    //Add Genweights to the weight map
+    genweights.GetGenWeights(weights, lheInfo, dogenweights);
+    genweights.GetLHAPDFWeight(weights, genInfo, "NNPDF30_nlo_as_0118");
 
     return weights;
 }
