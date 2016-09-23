@@ -833,6 +833,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	genweights.GetGenWeights(weights, lheInfo, dogenweights);
 	genweights.GetLHAPDFWeight(weights, genInfo, "NNPDF30_nlo_as_0118");
 	
+
     return weights;
 }
 std::string BoostedAnalyzer::systName(const sysType::sysType& sysType){
