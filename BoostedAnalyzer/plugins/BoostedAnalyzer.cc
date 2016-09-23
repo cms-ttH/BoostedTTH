@@ -816,6 +816,13 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	weights["Weight_CSVCErr2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,24, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_TopPtup"] = topptweightUp;
 	weights["Weight_TopPtdown"] = topptweightDown;
+  }
+ //Add Lepton Scalefactors to weight map
+    std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
+
+    for(  auto sfit = selectedScaleFactors.begin() ; sfit != selectedScaleFactors.end() ; sfit++  ){
+      weights["Weight_"+sfit->first] = sfit->second;
+    }
 
 	// set optional additional PU weights
 	for(std::vector<PUWeights::Weight>::const_iterator it = puWeights.additionalWeightsBegin();
@@ -825,16 +832,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	//Add Genweights to the weight map
 	genweights.GetGenWeights(weights, lheInfo, dogenweights);
 	genweights.GetLHAPDFWeight(weights, genInfo, "NNPDF30_nlo_as_0118");
-   
-  }
- //Add Lepton Scalefactors to weight map
-    std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
-
-    for(  auto sfit = selectedScaleFactors.begin() ; sfit != selectedScaleFactors.end() ; sfit++  ){
-      weights["Weight_"+sfit->first] = sfit->second;
-    }
-
-
+	
     return weights;
 }
 std::string BoostedAnalyzer::systName(const sysType::sysType& sysType){

@@ -7,15 +7,15 @@ TriggerInfo::TriggerInfo(const edm::Event& iEvent,
 
     edm::Handle<edm::TriggerResults> h_triggerBits;
     edm::Handle<pat::PackedTriggerPrescales> h_triggerPrescales;
-    std::cout<<"getbytoke"<<std::endl;
+//     std::cout<<"getbytoke"<<std::endl;
     iEvent.getByToken(triggerBitsToken, h_triggerBits);
     iEvent.getByToken(triggerPrescalesToken, h_triggerPrescales);
-    std::cout<<"getbytoken done"<<std::endl;
+//     std::cout<<"getbytoken done"<<std::endl;
     // todo : use trigger objects
     //    edm::Handle<pat::TriggerObjectStandAloneCollection> h_triggerObjects;
     //    iEvent.getByToken(triggerObjectsToken, h_triggerObjects);
 
-std::cout<<"getting trigger names"<<std::endl;
+// std::cout<<"getting trigger names"<<std::endl;
 if (h_triggerBits.isValid()){ 
    const edm::TriggerNames &names = iEvent.triggerNames(*h_triggerBits);
     for (unsigned int i = 0; i < h_triggerBits->size(); ++i) {   
