@@ -158,7 +158,7 @@ else:
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electronNonTrigMVAid80"]*3
+process.SelectedElectronProducer.leptonIDs=["EndOf15MVA80iso0p15"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
 process.SelectedMuonProducer.ptMins=[15.,25.,25.]
@@ -242,12 +242,15 @@ process.BoostedAnalyzer.minTagsForMEM = 3
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
 
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
+#process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-
+# process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
+#process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames = []
+process.BoostedAnalyzer.dumpSyncExe2=True
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:
