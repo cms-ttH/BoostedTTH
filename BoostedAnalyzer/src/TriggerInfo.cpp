@@ -7,19 +7,26 @@ TriggerInfo::TriggerInfo(const edm::Event& iEvent,
 
     edm::Handle<edm::TriggerResults> h_triggerBits;
     edm::Handle<pat::PackedTriggerPrescales> h_triggerPrescales;
+//     std::cout<<"getbytoke"<<std::endl;
     iEvent.getByToken(triggerBitsToken, h_triggerBits);
     iEvent.getByToken(triggerPrescalesToken, h_triggerPrescales);
+//     std::cout<<"getbytoken done"<<std::endl;
     // todo : use trigger objects
     //    edm::Handle<pat::TriggerObjectStandAloneCollection> h_triggerObjects;
     //    iEvent.getByToken(triggerObjectsToken, h_triggerObjects);
 
-    const edm::TriggerNames &names = iEvent.triggerNames(*h_triggerBits);
-
-    for (unsigned int i = 0; i < h_triggerBits->size(); ++i) {
+// std::cout<<"getting trigger names"<<std::endl;
+if (h_triggerBits.isValid()){ 
+   const edm::TriggerNames &names = iEvent.triggerNames(*h_triggerBits);
+    for (unsigned int i = 0; i < h_triggerBits->size(); ++i) {   
 	string name=names.triggerName(i);
 	triggers[name]=h_triggerBits->accept(i);
 	prescales[name]=h_triggerPrescales->getPrescaleForIndex(i);
     }
+}
+else{
+  std::cout<<"trigger handle is not valid!"<<std::endl;
+}
 }
 bool TriggerInfo::Exists(std::string triggername) const {
     if(triggers.count(triggername)==0){ 

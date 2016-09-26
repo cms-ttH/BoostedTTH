@@ -2,8 +2,9 @@ import FWCore.ParameterSet.Config as cms
 import sys
 import os
 
+##TEST
 # To execute test, run
-#  cmsRun boostedAnalysis_cfg.py isData=False outputFile=testrun maxEvents=100 inputFiles=file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_1.root,file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_2.root
+#  cmsRun TutorialboostedAnalysis_cfg.py isData=False outputFile=testrun maxEvents=100 inputFiles=file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_1.root,file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_2.root
 
 # parse command-line arguments
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideCommandLineParsing
@@ -33,8 +34,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/00000/0064B539-803A-E611-BDEA-002590D0B060.root']
-
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_1.root', 'file:/pnfs/desy.de/cms/tier2/store/user/hmildner/ttHTobb_M125_13TeV_powheg_pythia8/Boostedv2MiniAOD/151017_154254/0000/BoostedTTH_MiniAOD_2.root']
 if options.isData:
   options.globalTag="80X_dataRun2_Prompt_ICHEP16JEC_v0"
 
@@ -61,47 +61,29 @@ for key in options._register:
         print str(key)+" : "+str( options.__getattr__(key) )
 print "*****************************************\n\n"
 
-process = cms.Process("wtf")
+
+#register a new process called analysis
+
+process = cms.Process("analysis")
 
 # cmssw options
-process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = options.globalTag
+process.load("FWCore.MessageLogger.MessageLogger_cfi") # load additional module to log some stuff
+process.MessageLogger.cerr.FwkReport.reportEvery = 100 # cofigure this module
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")  # define database for globaltags
+process.GlobalTag.globaltag = options.globalTag # set global tag, defines JEC and run conditions
 process.load("CondCore.CondDB.CondDB_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.options.allowUnscheduled = cms.untracked.bool(False)
+process.options.allowUnscheduled = cms.untracked.bool(True)  # allow chaining of modules as needed
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
+# set input data
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
                               skipEvents=cms.untracked.uint32(int(options.skipEvents)),
 )
-
-#update btag
-
-process.load("Configuration.StandardSequences.MagneticField_cff")
-process.load("Configuration.Geometry.GeometryRecoDB_cff")
-
-from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-jetCorrectionsForBTagging=cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
-if options.isData:
-  jetCorrectionsForBTagging=cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'])
-updateJetCollection(
-  process,
-  labelName = 'updateBtags',
-  postfix='',
-  jetSource = cms.InputTag('slimmedJets'),
-  jetCorrections = ('AK4PFchs', jetCorrectionsForBTagging, 'None'),  
-  btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags'],
-  runIVF=True,
-  btagPrefix = '' # optional, in case interested in accessing both the old and new discriminator values
-)
-
-
-
-# Set up JetCorrections chain to be used in MiniAODHelper
-# Note: name is hard-coded to ak4PFchsL1L2L3 and does not
-# necessarily reflect actual corrections level
+## Set up JetCorrections chain to be used in MiniAODHelper
+## Note: name is hard-coded to ak4PFchsL1L2L3 and does not
+## necessarily reflect actual corrections level
+## With this you can apply different JEC from those (outdated) in the MiniAOD files
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
 process.ak4PFCHSL1Fastjet = cms.ESProducer(
   'L1FastjetCorrectionESProducer',
@@ -175,12 +157,11 @@ else:
         )
     )
 
-#===============================================================
-#
+#===============================================================// Load Selected Muon/Electron and Jet Producer
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
+process.SelectedElectronProducer.leptonIDs=["EndOf15MVA80iso0p15"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
 process.SelectedMuonProducer.ptMins=[15.,25.,25.]
@@ -191,24 +172,22 @@ process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
 
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
-process.SelectedJetProducer.jets='selectedUpdatedPatJetsUpdateBtags'
+process.SelectedJetProducer.jets='slimmedJets'
 process.SelectedJetProducer.ptMins=[20,30,20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 
+
 # load and run the boosted analyzer
 if options.isData:
     if options.analysisType=='SL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
+        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")   # load actual boostedAnalyzer module
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
 else:
     if options.analysisType=='SL':
-      if options.isreHLT:
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
-      else:
-	process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzerNoTrigger_cfi")
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
 
@@ -218,9 +197,11 @@ else:
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD
         process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 
+
+# overwrite some defaults of the boostedAnalyzer default cfi
 if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
-    
+
 if options.makeSystematicsTrees:
     systs=["","jesup","jesdown"]#,"jerup","jerdown"]
     process.SelectedJetProducer.systematics=systs
@@ -229,6 +210,7 @@ if options.makeSystematicsTrees:
     process.BoostedAnalyzer.selectedJetsDL=[cms.InputTag("SelectedJetProducer:selectedJetsDL"+s) for s in systs]
     process.BoostedAnalyzer.selectedJetsLooseDL=[cms.InputTag("SelectedJetProducer:selectedJetsLooseDL"+s) for s in systs]
     process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*len(systs)
+
 
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
@@ -242,18 +224,18 @@ if not options.isData:
 process.BoostedAnalyzer.systematics=process.SelectedJetProducer.systematics
 process.BoostedAnalyzer.generatorName=options.generatorName
 
-
 if options.isData and options.useJson:
-    #print 'use JSON is no longer supported'
+    print 'use JSON is no longer supported'
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/kelmorab/CMSSW8/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
-### electron MVA ####
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/mwassmer/sync_ex/JSONS/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
-#process.load('Configuration.Geometry.GeometryRecoDB_cff')
+process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
+
+# overwrite some defaults of the boostedAnalyzer default cfi
 process.BoostedAnalyzer.minJets = [4]
 process.BoostedAnalyzer.maxJets = [-1]
 process.BoostedAnalyzer.minTags = [2]
@@ -265,37 +247,25 @@ process.BoostedAnalyzer.minTagsForMEM = 3
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
 
-process.BoostedAnalyzer.selectionNames = cms.vstring("VertexSelection","LeptonSelection","JetTagSelection")
-#process.BoostedAnalyzer.selectionNames = cms.vstring()
+# book predefined selections to be applied on the events
 #process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-# process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-#process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor"]
-#process.BoostedAnalyzer.processorNames = []
-process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
-if options.isData:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor")
-else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor")
-process.BoostedAnalyzer.dumpSyncExe2=False
-#process.BoostedAnalyzer.processorNames=cms.vstring()
+# book Processors that do the calculation of output quantities
+#process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","BasicVarProcessor","MCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames = ["BasicVarProcessor"]
 
-#process.content = cms.EDAnalyzer("EventContentAnalyzer")
+
+process.BoostedAnalyzer.dumpSyncExe2=True #Was macht das?
+# define process chain, first electron MVA ID, then actual BoostedAnalyzer
+
 if options.isData or options.isBoostedMiniAOD:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer
                      *process.SelectedMuonProducer
-                     *process.patJetCorrFactorsUpdateBtags
-                    *process.updatedPatJetsUpdateBtags
-                    *process.patJetCorrFactorsTransientCorrectedUpdateBtags
-                    *process.pfImpactParameterTagInfosUpdateBtags
-                    *process.pfInclusiveSecondaryVertexFinderTagInfosUpdateBtags
-                    *process.pfCombinedInclusiveSecondaryVertexV2BJetTagsUpdateBtags
-                    *process.updatedPatJetsTransientCorrectedUpdateBtags
-                    *process.selectedUpdatedPatJetsUpdateBtags
-                    #*process.content
+ #                    *process.content
                      *process.SelectedJetProducer
                      *process.CorrectedMETproducer
                      #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
@@ -305,15 +275,7 @@ else:
   process.p = cms.Path(process.electronMVAValueMapProducer
                      *process.SelectedElectronProducer
                      *process.SelectedMuonProducer
-                      *process.patJetCorrFactorsUpdateBtags
-                    *process.updatedPatJetsUpdateBtags
-                    *process.patJetCorrFactorsTransientCorrectedUpdateBtags
-                    *process.pfImpactParameterTagInfosUpdateBtags
-                    *process.pfInclusiveSecondaryVertexFinderTagInfosUpdateBtags
-                    *process.pfCombinedInclusiveSecondaryVertexV2BJetTagsUpdateBtags
-                    *process.updatedPatJetsTransientCorrectedUpdateBtags
-                    *process.selectedUpdatedPatJetsUpdateBtags
-                     #*process.content
+ #                    *process.content
                      *process.SelectedJetProducer
                      *process.CorrectedMETproducer
                      *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
