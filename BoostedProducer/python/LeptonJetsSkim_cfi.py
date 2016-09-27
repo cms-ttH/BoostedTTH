@@ -9,15 +9,15 @@ LeptonJetsSkim = cms.EDFilter(
     jets = cms.InputTag("slimmedJets"),
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
-    electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
-    electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
+    electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
+    electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Categories"),
     muonPtMin   = cms.double(20),
     muonEtaMax  = cms.double(2.4),
     electronPtMin   = cms.double(20),
     electronEtaMax  = cms.double(2.4),
     jetPtMin   = cms.double(20),
     jetEtaMax  = cms.double(2.4),
-    minJets  = cms.int32(0),
+    minJets  = cms.int32(2),
     
 
     )

@@ -70,7 +70,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.options.allowUnscheduled = cms.untracked.bool(False)
+process.options.allowUnscheduled = cms.untracked.bool(True)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
@@ -180,7 +180,7 @@ else:
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
+process.SelectedElectronProducer.leptonIDs=["electronNonTrigMVAid80"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
 process.SelectedMuonProducer.ptMins=[15.,25.,25.]
@@ -222,7 +222,7 @@ if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
     
 if options.makeSystematicsTrees:
-    systs=["","jesup","jesdown"]#,"jerup","jerdown"]
+    systs=["","jesup","jesdown","jerup","jerdown"]
     process.SelectedJetProducer.systematics=systs
     process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
     process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
@@ -260,7 +260,7 @@ process.BoostedAnalyzer.minTags = [2]
 process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
-#process.BoostedAnalyzer.doJERsystematic = False
+#process.BoostedAnalyzer.doJERsystematic = cms.bool(True)
 
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
@@ -271,14 +271,11 @@ process.BoostedAnalyzer.selectionNames = cms.vstring("VertexSelection","LeptonSe
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-# process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-#process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor"]
-#process.BoostedAnalyzer.processorNames = []
 process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
 if options.isData:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","SpinCorrelationProcessor")
 else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","SpinCorrelationProcessor")
 process.BoostedAnalyzer.dumpSyncExe2=False
 #process.BoostedAnalyzer.processorNames=cms.vstring()
 

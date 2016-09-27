@@ -108,8 +108,8 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
   muonEtaMax_     = iConfig.getParameter<double>("muonEtaMax");
   electronPtMin_  = iConfig.getParameter<double>("electronPtMin");
   electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
-  electronID_     = electronID::electronEndOf15MVA80;
-  muonID_         = muonID::muonTight;
+  electronID_     = electronID::electronNonTrigMVAid80;
+  muonID_         = muonID::muonMediumICHEP;
   
   muonIsoConeSize_ = coneSize::R04;
   muonIsoCorrType_ = corrType::deltaBeta;

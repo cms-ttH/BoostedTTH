@@ -26,6 +26,6 @@ Inputs_tth_sl= cms.PSet(
     genParticles=cms.InputTag("prunedGenParticles"),
     genJets=cms.InputTag("slimmedGenJets"),
     conversionCollection= cms.InputTag("reducedEgamma:reducedConversions"),
-    electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
-    electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
+    electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
+    electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Categories"),
 )
