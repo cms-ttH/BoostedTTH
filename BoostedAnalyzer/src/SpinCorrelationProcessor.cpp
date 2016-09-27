@@ -196,6 +196,9 @@ double SpinCorrelationProcessor::GetVars(TLorentzVector vec_top_, TLorentzVector
     case 25:
       out=((vec_b_.Vect()).Cross(vec_antib_.Vect())).Dot(vec_antilepton_.Vect())/10000.;
       break;
+    case 26:
+      out=TMath::Cos((vec_d_.Vect()).Angle(vec_antid_.Vect()));
+      break;
     default:
       cerr << "no identifier for used variable" << endl;
   }
@@ -339,7 +342,7 @@ reco::GenParticle SpinCorrelationProcessor::MatchPartontoJet (vector<reco::GenPa
 
 using namespace std;
 
-SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,8,-99999,99999,0.8)){}
+SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,8,-9999,9999,0.8)){}
 SpinCorrelationProcessor::~SpinCorrelationProcessor (){}
 
 void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContainer& vars){
@@ -373,6 +376,7 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   //variables.push_back("M_ttbar");
   variables.push_back("cos_theta_ldbar");
   variables.push_back("cos_theta_lbard");
+  variables.push_back("cos_theta_dd");
   /*
   variables.push_back("M_l");
   variables.push_back("M_lbar");
@@ -476,7 +480,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
     // some flags which help later
     bool isDL=false;
     bool isSL=false;
-    
+    bool isAH=false;
     int leptonflag=0;// flag for lepton=1, for antilepton=-1
     bool dilepton_reco_flag=false;// flag to signalize that for this event at least the dilepton variables in the lab frame could be used, which is of course possible even without top-event reconstruction
     
@@ -506,18 +510,22 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       if(input.genTopEvt.IsDiLepton()) {
 	isDL=true;
 	isSL=false;
+	isAH=false;
 	//cout << "Dilepton Event! " << endl;
       }
       else if(input.genTopEvt.IsSemiLepton()) {
 	isSL=true;
 	isDL=false;
+	isAH=false;
 	//cout << "Single Lepton Event! " << endl;
       }
       else if(input.genTopEvt.IsAllHadron()) {
 	isSL=false;
 	isDL=false;
+	isAH=true;
+	//cout << "------------------------------" << endl;
 	//cout << "Fully hadronic Event! " << endl;
-	continue;
+	//cout << "------------------------------" << endl;
       }
       else {
 	//cout << "strange event ... " << endl;
@@ -584,6 +592,14 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  vec_antilepton=lep[1].p4();
 	}
       }
+      else if(isAH) {
+	for(auto it=q1.begin();it!=q1.end();++it) {
+	  if(abs(it->pdgId())==1 || abs(it->pdgId())==3 || abs(it->pdgId())==5) { vec_d=it->p4(); }
+	}
+	for(auto it=q2.begin();it!=q2.end();++it) {
+	  if(abs(it->pdgId())==1 || abs(it->pdgId())==3 || abs(it->pdgId())==5) { vec_antid=it->p4(); }
+	}
+      }
       // now save the top/antitop, b/antib vectors for later comparison with the RECO vectors
       vec_top_tmp=vec_top;
       vec_antitop_tmp=vec_antitop;
@@ -608,7 +624,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       float best_lr=-9999.;
       bool flag=true;
       Interpretation* best_int_lr=GetBestLR(njets,ntags,jetvecs,jetcsvs,lepvec,metvec,flag,best_lr);
-      if(!(best_lr>-9999.)){
+      if(!(best_lr>-9998.)){
 	best_lr=-9999.;
 	flag=false;
 	best_int_lr=GetBestLR(njets,ntags,jetvecs,jetcsvs,lepvec,metvec,flag,best_lr);
@@ -652,11 +668,12 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  }
       }
       */
-      if(best_lr>-9999.) {
+      if(best_lr>-9998.) {
 	//cout << "Hypothese with LR>0 available" << endl;
 	vars.FillVar("RECO_likelihood",best_lr);
 	isSL=true;
 	isDL=false;
+        isAH=false;
 	// the likelihood ratio of the interpretation isnt allowed to be 0
 	// now check if the SL event has an electron- or muon-lepton and whether it is a lepton or antilepton
 	if(input.selectedElectrons.size()==1){
@@ -672,7 +689,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	    vec_lepton=vec_zero;
 	  }
 	}
-	if(input.selectedMuons.size()==1) {
+	else if(input.selectedMuons.size()==1) {
 	  leptonflag=-input.selectedMuons[0].charge();
 	  if(leptonflag>0) {
 	    //cout << "Muon! " << endl;
@@ -685,6 +702,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	    vec_lepton=vec_zero;
 	  }
 	}
+	else {continue;}
 	// depending on the outcome of the SL event classification, the corresponding 4-vectors are set
 	if(leptonflag>0) {
 	  vec_antitop.SetPxPyPzE(best_int_lr->TopLep().Px(),best_int_lr->TopLep().Py(),best_int_lr->TopLep().Pz(),best_int_lr->TopLep().E());
@@ -698,6 +716,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  vec_antib.SetPxPyPzE(best_int_lr->BHad().Px(),best_int_lr->BHad().Py(),best_int_lr->BHad().Pz(),best_int_lr->BHad().E());
 	  vec_b.SetPxPyPzE(best_int_lr->BLep().Px(),best_int_lr->BLep().Py(),best_int_lr->BLep().Pz(),best_int_lr->BLep().E()); 
 	}
+	else {continue;}
 	
 	vars.FillVar("RECO_flag_before_match",1);
 	
@@ -785,6 +804,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
     else if(input.selectedJetsDL.size()>=2 && dec_type.EqualTo("RECO") && ((input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())==2) && !((input.selectedElectrons.size()+input.selectedMuons.size())==1)) {
       isSL=false;
       isDL=true;
+      isAH=false;
       //cout << "DiLepton Reconstruction ! " << endl;
       dilepton_reco_flag=true;
       //now check if there are 2 electrons or 2 muons or one of both and assign the correct 4 vectors
@@ -837,10 +857,12 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	//cout << "event is not semileptonic on gen level " << endl;
 	isSL=true;
 	isDL=false;
+        isAH=false;
       }
       else if(input.genTopEvt.IsDiLepton()) {
 	isSL=false;
 	isDL=true;
+        isAH=false;
       }
       else {continue;}
       //cout << "gen event is semileptonic " << endl;
@@ -1076,7 +1098,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	}
       }
       // same for DL events
-      if(isDL) {
+      else if(isDL) {
 	// if DL flag is set, then these variables can be filled 
 	variables["cos_theta_ll"]=3;
 	variables["Delta_Phi_ll"]=4;
@@ -1105,6 +1127,13 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  variables["Delta_Eta_lb"]=22;
 	  variables["Delta_Eta_lbarbbar"]=23;
 	}
+      }
+      else if(isAH) {
+	//cout << "all hadronic event recognized" << endl;
+	variables["cos_theta_bb"]=0;
+	variables["Delta_Eta_bb"]=1;
+	variables["Delta_Phi_bb"]=2;
+	variables["cos_theta_dd"]=26;
       }
       // now the GetVars function calculates the desired variable depending on the number of the variable using the 4-vectors of the event
       for(auto it_variables=variables.begin();it_variables!=variables.end();++it_variables) {
