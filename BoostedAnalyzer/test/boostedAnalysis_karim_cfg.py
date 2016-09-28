@@ -16,7 +16,7 @@ options.register( "outName", "testrun", VarParsing.multiplicity.singleton, VarPa
 options.register( "weight", 0.01, VarParsing.multiplicity.singleton, VarParsing.varType.float, "xs*lumi/(nPosEvents-nNegEvents)" )
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
-options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
+options.register( "isBoostedMiniAOD", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
 options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
@@ -24,7 +24,7 @@ options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2_v1", VarPar
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "int flag to identify which dataset is used")#(0,1,2,3,4,5)->(MC,single ele, single mu,ele ele,ele mu,mu mu)
-options.register( "isreHLT",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
+options.register( "isreHLT",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
 options.parseArguments()
 
 
@@ -33,7 +33,8 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/00000/0064B539-803A-E611-BDEA-002590D0B060.root']
+    #options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/00000/0064B539-803A-E611-BDEA-002590D0B060.root']
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/koschwei/ttHTobb_M125_13TeV_powheg_pythia8/BoostedMiniAODICHEPv1/160729_220552/0000/BoostedTTH_MiniAOD_12.root']
 
 if options.isData:
   options.globalTag="80X_dataRun2_Prompt_ICHEP16JEC_v0"
@@ -200,7 +201,7 @@ else:
 
 if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
-    
+
 if options.makeSystematicsTrees:
     systs=["","jesup","jesdown"]#,"jerup","jerdown"]
     process.SelectedJetProducer.systematics=systs
@@ -241,6 +242,7 @@ process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
 #process.BoostedAnalyzer.doJERsystematic = False
+process.BoostedAnalyzer.doBoostedMEM = False
 
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
@@ -257,7 +259,7 @@ process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
 if options.isData:
   process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor")
 else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedAk4VarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor")
 process.BoostedAnalyzer.dumpSyncExe2=True
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")

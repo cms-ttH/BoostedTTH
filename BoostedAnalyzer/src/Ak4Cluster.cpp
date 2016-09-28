@@ -134,31 +134,3 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
   }
   return selectedAk4Clusters;
 }
-
-
-void Ak4Cluster::StudyMatchingAk4ClusterAndFatjets(const boosted::Ak4ClusterCollection& ak4Clusters, std::vector<boosted::BoostedJet> fatjets, const double iMaxDeltaR = 0.75){
-  if(ak4Clusters.size() == 0 || fatjets.size() == 0) return;
-
-  unsigned int alreadyMatchedFatJet[fatjets.size()];
-  for(unsigned int iB=0; iB <fatjets.size() ;++iB){
-    alreadyMatchedFatJet[iB] = 9999;
-  }
-
-  //cout << " ---- " << endl;
-  for(unsigned int iA=0; iA <ak4Clusters.size() ;++iA){
-    for(unsigned int iB=0; iB <fatjets.size() ;++iB){
-      if(alreadyMatchedFatJet[iB] != 9999) continue;
-      else if(BoostedUtils::DeltaR(ak4Clusters[iA].fatjet, fatjets[iB].fatjet.p4()) < 0.75) {
-        alreadyMatchedFatJet[iB] = iA;
-      }
-    }
-  }
-
-  int nMatchedFatjets = 0;
-  for(unsigned int iA=0; iA <fatjets.size() ;++iA){
-    if(alreadyMatchedFatJet[iA] != 9999) nMatchedFatjets++;
-  }
-  //cout << "Matched Fatjets: " << nMatchedFatjets << " of " << fatjets.size() << " with " << ak4Clusters.size() << " ak4 cluster (= " << double(nMatchedFatjets)/double(fatjets.size())*100. << "%)" << endl;
-
-  return;
-}
