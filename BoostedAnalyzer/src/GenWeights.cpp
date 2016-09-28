@@ -48,8 +48,7 @@ bool GenWeights::SetGenerator(const Generator::Generator usedGenerator){
 }
 
 bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
-				  const GenEventInfoProduct& genInfos,
-				  string PDFSetName ) {
+				  const GenEventInfoProduct& genInfos ) {
 
   
   if(!LHAPDFinitialized){
@@ -70,6 +69,9 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
       double xpdf1 = PDFs[j]->xfxQ(pdfInfos->id.first, pdfInfos->x.first, pdfInfos->scalePDF);
       double xpdf2 = PDFs[j]->xfxQ(pdfInfos->id.second, pdfInfos->x.second, pdfInfos->scalePDF);
       pdfs.push_back(xpdf1 * xpdf2);
+
+      weights["Weight_"+initializedPDFNames[p]+std::to_string(PDFs[j]->lhapdfID())] =  pdfs[j] / pdfNominal;
+      
     }
 
   
