@@ -21,11 +21,10 @@ class GenWeights {
 public:
   GenWeights();
   void GetGenWeights(std::map<std::string, float>& weights, 
-		       const LHEEventProduct& LHEEvent,
-		       bool& dogenweights) const;
+		     const LHEEventProduct& LHEEvent,
+		     bool& dogenweights) const;
   bool GetLHAPDFWeight( std::map<std::string, float>& weights, 
-			  const GenEventInfoProduct& genInfos,
-		       std::string PDFSetName);
+			const GenEventInfoProduct& genInfos );
   bool SetGenerator(const Generator::Generator);
   bool initLHAPDF(std::string name);
   bool initLHAPDF(std::vector<std::string> name);
