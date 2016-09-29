@@ -42,6 +42,13 @@ BoostedAnalyzer = cms.EDAnalyzer( # BoostedAnalyzer is of type EDAnalyzer ( ther
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
     processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor"),
     #,"DiJetVarProcessor"), -- conflict
+    
+    chosenbtaggername=cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
+	selectedCSVworkingpoint=cms.double(0.800),
+	selectedCSVLworkingpoint=cms.double(0.460),
+	selectedCSVMworkingpoint=cms.double(0.800),
+	selectedCSVTworkingpoint=cms.double(0.935),
+
 
     outfileName = cms.string("BoostedTTH"),
 )

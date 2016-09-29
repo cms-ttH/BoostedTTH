@@ -8,6 +8,10 @@ BasicVarProcessor::~BasicVarProcessor(){}
 
 void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
  
+  vars.InitVar("TESTY_MCTEST","I");
+  vars.InitVar("TESTY_MCTEST2","I");
+
+
   vars.InitVar("Evt_ID","I");
   vars.InitVar("Evt_Odd","I");
   vars.InitVar("Evt_Run","I");
@@ -113,22 +117,28 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   vars.FillIntVar("Evt_Lumi",lumi_section);
 
 
-  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+  //~ const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+  
+  const std::string chosenbtaggername = input.bTagSettings.GetTaggerName();
+  double CSVMwp = input.bTagSettings.GetCSVMwp();
+  double CSVLwp = input.bTagSettings.GetCSVLwp();
+  double CSVTwp = input.bTagSettings.GetCSVTwp();
+  
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
   std::vector<pat::Jet> selectedUntaggedJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
-    if(BoostedUtils::PassesCSV(*itJet, 'M')){
+    if(BoostedUtils::PassesCSV(*itJet, CSVMwp, chosenbtaggername )){
       selectedTaggedJets.push_back(*itJet);
     }
     else{
       selectedUntaggedJets.push_back(*itJet);
     }
-    if(BoostedUtils::PassesCSV(*itJet, 'L')){
+    if(BoostedUtils::PassesCSV(*itJet, CSVLwp, chosenbtaggername)){
       selectedTaggedJetsL.push_back(*itJet);
     }
-    if(BoostedUtils::PassesCSV(*itJet, 'T')){
+    if(BoostedUtils::PassesCSV(*itJet, CSVTwp, chosenbtaggername)){
       selectedTaggedJetsT.push_back(*itJet);
     }
   }
@@ -143,7 +153,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   vars.FillVar( "N_LooseElectrons",input.selectedElectronsLoose.size());  
   vars.FillVar( "N_TightMuons",input.selectedMuons.size());  
   vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());  
-  
+
   // Fill Jet Variables
   // All Jets
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
@@ -153,7 +163,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
-    vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,chosenbtaggername) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
@@ -175,7 +185,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "LooseJet_Pt",iJet,itJet->pt() );
     vars.FillVars( "LooseJet_Eta",iJet,itJet->eta() );
     vars.FillVars( "LooseJet_Phi",iJet,itJet->phi() );
-    vars.FillVars( "LooseJet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "LooseJet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,chosenbtaggername) );
     vars.FillVars( "LooseJet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "LooseJet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "LooseJet_Charge",iJet,itJet->jetCharge() );
@@ -247,7 +257,8 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
   math::XYZTLorentzVector metvec = input.pfMET.p4();
-  
+	
+
   // Fill M3 Variables
   float m3 = -1.;
   float maxpt=-1;
@@ -333,12 +344,13 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );  
   vars.FillVar( "N_BTagsL",selectedTaggedJetsL.size() );  
   vars.FillVar( "N_BTagsT",selectedTaggedJetsT.size() );
-  
+	
+
   // Fill CSV Variables
   // All Jets
   std::vector<double> csvJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
-    csvJets.push_back(MiniAODHelper::GetJetCSV(*itJet,btagger));
+    csvJets.push_back(MiniAODHelper::GetJetCSV(*itJet,chosenbtaggername));
   }
   std::vector<double> csvJetsSorted=csvJets;
   std::sort(csvJetsSorted.begin(),csvJetsSorted.end(),std::greater<double>());

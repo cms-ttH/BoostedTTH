@@ -248,11 +248,42 @@ boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCol
 }
 
 
-bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
+bool BoostedUtils::PassesCSV(const pat::Jet& jet, char workingPoint){
   
   float CSVLv2wp = 0.460;
   float CSVMv2wp = 0.800;
   float CSVTv2wp = 0.935;
+  std::string chosenbtaggername = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+  double Cut = 0.800;
+
+  
+  switch(workingPoint){
+    case 'L': if(Cut > CSVLv2wp){ return true; } break;
+    case 'M': if(Cut > CSVMv2wp){ return true; } break;
+    case 'T': if(Cut > CSVTv2wp){ return true; } break;
+    case '-': return true; 						 break;
+  }
+  
+  std::string taggername = chosenbtaggername;
+  bool passes = PassesCSV(jet, Cut, taggername);
+  return passes;
+}
+
+bool BoostedUtils::PassesCSV(const pat::Jet& iJet, double Cut, const std::string taggername){
+
+
+  float csvValue = MiniAODHelper::GetJetCSV(iJet,taggername);
+  if (csvValue > Cut){
+	  return true;
+  }
+  return false;
+}
+/*
+bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
+  
+  float CSVLv2wp = 0.605;
+  float CSVMv2wp = 0.89;
+  float CSVTv2wp = 0.97;
   
   float csvValue = MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
   
@@ -264,8 +295,7 @@ bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   }
   
   return false;
-}
-
+}*/
 
 float BoostedUtils::GetClosestJetIDs(int& idJet1, int& idJet2, const std::vector<pat::Jet>& jets){
   

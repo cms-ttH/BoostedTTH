@@ -12,6 +12,7 @@
 class BDTVarProcessor: public TreeProcessor{
 public:
   BDTVarProcessor();
+  BDTVarProcessor(double btagMCut);
   ~BDTVarProcessor();
   void Init(const InputCollections& input, VariableContainer& var);
   void Process(const InputCollections& input,VariableContainer& var);

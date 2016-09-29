@@ -15,7 +15,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/BTagSettings.hpp"
 
 enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg,thq};
 namespace HiggsDecay{enum HiggsDecay{NA,bb,nonbb};};
@@ -52,8 +52,10 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const SampleType                              sampleType_,
 		    const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
+		            const BTagSettings&							  tagger_,
 		    const edm::Event& iEvent_,
 		    const edm::EventSetup& iSetup_
+
 		      /**** bjetness code ****/
 
 		            ): 
@@ -80,8 +82,11 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
                     weights(weights_),
+  					bTagSettings(tagger_),
 		    iEvent(iEvent_),
 		    iSetup(iSetup_)
+
+					//~ bTagSettings(wp_),
                     {}
 
 /**
@@ -93,7 +98,8 @@ InputCollections(   const InputCollections&                       input,
                     const std::vector<pat::Jet>&                  selectedJetsSingleTop_,
                     const pat::MET&                               pfMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
-                    const std::map<std::string,float>&            weights_
+                    const std::map<std::string,float>&            weights_,
+                    const BTagSettings&							  tagger_
         		    ): 
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
@@ -118,9 +124,11 @@ InputCollections(   const InputCollections&                       input,
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
                     weights(weights_),
+                    bTagSettings(bTagSettings),                 
 		    iEvent(input.iEvent),
 		    iSetup(input.iSetup)
 
+                    //~ bTagSettings(input.wp_),
                     {}
 
   const EventInfo&                              eventInfo;
@@ -146,8 +154,10 @@ InputCollections(   const InputCollections&                       input,
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>&            weights;
+  const BTagSettings&							bTagSettings;
   const edm::Event & iEvent;
   const edm::EventSetup & iSetup;
+
 
 };
 

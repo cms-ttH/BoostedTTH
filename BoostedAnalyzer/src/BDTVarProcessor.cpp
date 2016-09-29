@@ -1,10 +1,14 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 using namespace std;
 
-BDTVarProcessor::BDTVarProcessor():
+BDTVarProcessor::BDTVarProcessor():BDTVarProcessor::BDTVarProcessor(0.8){}
+
+
+
+BDTVarProcessor::BDTVarProcessor(double btagMCut):
     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
-    commonBDT5(BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_v5/"))
+    commonBDT5(BDTClassifier(btagMCut, string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_v5/"))
 {}
 BDTVarProcessor::~BDTVarProcessor(){}
 

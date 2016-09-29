@@ -62,6 +62,8 @@ class BoostedUtils{
     static boosted::BoostedJetCollection GetSortedByPt(boosted::BoostedJetCollection const &boostedjets);
     
     static bool PassesCSV(const pat::Jet& jet, const char workingPoint='M');
+    static bool PassesCSV(const pat::Jet& jet, double cut, const std::string taggername);
+   
     
     static float GetClosestJetIDs(int& idJet1, int& idJet2, const std::vector<pat::Jet>& jets);
     static float GetClosestLepJetID(int& idJet, const math::XYZTLorentzVector& lepVec, const std::vector<pat::Jet>& jets);
@@ -84,7 +86,7 @@ class BoostedUtils{
     static float GetMuonRelIso(const pat::Muon& iMuon);
 
     static std::vector<pat::MET> GetCorrectedMET(const std::vector<pat::Jet>& cleanIdJetsForMET, const std::vector<pat::Jet>& correctedJets, const std::vector<pat::MET>& pfMETs);
-
+	
   private:
   
 };

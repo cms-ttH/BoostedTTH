@@ -23,11 +23,11 @@ options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarPa
 options.register( "globalTag", "76X_mcRun2_asymptotic_RunIIFall15DR76_v0", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
-options.register( "chosenbtaggername","pfCombinedInclusiveSecondaryVertexV2BJetTags", VarParsing.multiplicity.singleton, VarParsing.varType.string, " Selected Btagger")
-options.register( "selectedCSVworkingpoint", 0.800, VarParsing.multiplicity.singleton, VarParsing.varType.float,  " Selected working point" )
 options.register( "selectedCSVLworkingpoint", 0.460, VarParsing.multiplicity.singleton, VarParsing.varType.float,  " Selected loose working point" )
 options.register( "selectedCSVMworkingpoint", 0.800, VarParsing.multiplicity.singleton, VarParsing.varType.float,  " Selected medium working point" )
 options.register( "selectedCSVTworkingpoint", 0.935, VarParsing.multiplicity.singleton, VarParsing.varType.float,  " Selected tight working point" )
+options.register( "selectedCSVSworkingpoint", 0.800, VarParsing.multiplicity.singleton, VarParsing.varType.float,  " Selected working point" )
+options.register( "chosenbtaggername","M", VarParsing.multiplicity.singleton, VarParsing.varType.string,  "selected tagger namne ")
 options.parseArguments()
 
 # re-set some defaults
@@ -38,7 +38,30 @@ if not options.inputFiles:
     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/shwillia/SingleMuon/Boostedv5MiniAODsilverJson/160217_171824/0000/BoostedTTH_MiniAOD_1.root']
     
     
+if options.selectedCSVLworkingpoint <= 0 and options.selectedCSVLworkingpoint >= 1:
+	
+	print "invalid working point"
+	print "Expected to be between 0 and 1 "
+	sys.exit()
 
+if options.selectedCSVSworkingpoint <= 0 and options.selectedCSVSworkingpoint >= 1:
+	
+	print "invalid working point"
+	print "Expected to be between 0 and 1 "
+	sys.exit()
+	
+if options.selectedCSVMworkingpoint <= 0 and options.selectedCSVMworkingpoint >= 1:
+	
+	print "invalid working point"
+	print "Expected to be between 0 and 1 "
+	sys.exit()
+
+if options.selectedCSVTworkingpoint <= 0 and options.selectedCSVTworkingpoint >= 1:
+	
+	print "invalid working point"
+	print "Expected to be between 0 and 1 "
+	sys.exit()
+	
 	
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
@@ -210,21 +233,14 @@ process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
 process.BoostedAnalyzer.doJERsystematic = False
-process.BoostedAnalyzer.selectedCSVworkingpoint=cms.double(options.selectedCSVworkingpoint)
-process.BoostedAnalyzer.selectedCSVLworkingpoint=cms.double(options.selectedCSVLworkingpoint)
-process.BoostedAnalyzer.selectedCSVMworkingpoint=cms.double(options.selectedCSVMworkingpoint)
-process.BoostedAnalyzer.selectedCSVTworkingpoint=cms.double(options.selectedCSVTworkingpoint)
-process.BoostedAnalyzer.chosenbtaggername=cms.string(options.chosenbtaggername)
-
-
 
 # book predefined selections to be applied on the events
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
 # book Processors that do the calculation of output quantities
-process.BoostedAnalyzer.processorNames = ["BasicVarProcessor","WeightProcessor","BoostedTopHiggsVarProcessor","BoostedMCMatchVarProcessor","BDTVarProcessor","MCMatchVarProcessor","MVAVarProcessor","BoostedJetVarProcessor"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor"]
 
 # define process chain, first electron MVA ID, then actual BoostedAnalyzer
 process.p = cms.Path(process.electronMVAValueMapProducer * process.BoostedAnalyzer)
