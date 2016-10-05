@@ -288,6 +288,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     rawJetsToken = consumes< std::vector <pat::Jet > >(iConfig.getParameter<edm::InputTag>("rawJets"));
 
 
+
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJets")){
 	     selectedJetsTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
@@ -521,13 +522,25 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( selectedElectronsLooseToken,h_selectedElectronsLoose );
     // JETs
 
+    // edm::Handle< std::vector<boosted::BoostedJetCollection> selectedBoostedJets;
+    edm::Handle< boosted::BoostedJetCollection> selectedBoostedJets;
+    iEvent.getByToken( boostedJetsToken,selectedBoostedJets );
+
 
     edm::Handle< pat::JetCollection > h_rawJets;
     iEvent.getByToken( rawJetsToken, h_rawJets );
+    // std::vector<edm::Handle< pat::JetCollection > >hs_selectedBoostedJets;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJets;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsLoose;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsDL;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsLooseDL;
+
+    // for(auto & selectedBoostedJetsToken : selectedBoostedJetsTokens){
+    	// edm::Handle< pat::JetCollection > h_selectedBoostedJets;
+
+    	// hs_selectedBoostedJets.push_back(h_selectedBoostedJets);
+    // }
+
     for(auto & selectedJetsToken : selectedJetsTokens){
     	edm::Handle< pat::JetCollection > h_selectedJets;
     	iEvent.getByToken( selectedJetsToken,h_selectedJets );
@@ -599,30 +612,30 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // TODO: setup MiniAODhelper more transparently
     helper.SetRho(*h_rho);
 
-    /**** GET BOOSTEDJETS ****/
-    //TODO: also in external producer?
-    const JetCorrector* ak4corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
-    helper.SetJetCorrector(ak4corrector);
-
-    const JetCorrector* ak8corrector = JetCorrector::getJetCorrector( "ak8PFchsL1L2L3", iSetup );
-    helper.SetBoostedJetCorrector(ak8corrector);
-    edm::Handle<boosted::BoostedJetCollection> h_boostedjet;
-    std::vector<boosted::BoostedJetCollection> selectedBoostedJets;
-    if(useFatJets){
-    	iEvent.getByToken( boostedJetsToken,h_boostedjet);
-    	boosted::BoostedJetCollection const &boostedjets_unsorted = *h_boostedjet;
-    	boosted::BoostedJetCollection boostedjets = BoostedUtils::GetSortedByPt(boostedjets_unsorted);
-    	boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999., jetID::jetLoose);
-    	for(auto syst : jetSystematics){
-    	    boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, h_genJets, syst, true, true);
-    	    selectedBoostedJets.push_back(helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none));
-    	}
-    }
-    else{
-    	for(uint i =0; i<jetSystematics.size();i++){
-    	    selectedBoostedJets.push_back(boosted::BoostedJetCollection());
-    	}
-    }
+    // /**** GET BOOSTEDJETS ****/
+    // //TODO: also in external producer?
+    // const JetCorrector* ak4corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+    // helper.SetJetCorrector(ak4corrector);
+    //
+    // const JetCorrector* ak8corrector = JetCorrector::getJetCorrector( "ak8PFchsL1L2L3", iSetup );
+    // helper.SetBoostedJetCorrector(ak8corrector);
+    // edm::Handle<boosted::BoostedJetCollection> h_boostedjet;
+    // std::vector<boosted::BoostedJetCollection> selectedBoostedJets;
+    // if(useFatJets){
+    // 	iEvent.getByToken( boostedJetsToken,h_boostedjet);
+    // 	boosted::BoostedJetCollection const &boostedjets_unsorted = *h_boostedjet;
+    // 	boosted::BoostedJetCollection boostedjets = BoostedUtils::GetSortedByPt(boostedjets_unsorted);
+    // 	boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999., jetID::jetLoose);
+    // 	for(auto syst : jetSystematics){
+    // 	    boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, h_genJets, syst, true, true);
+    // 	    selectedBoostedJets.push_back(helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none));
+    // 	}
+    // }
+    // else{
+    // 	for(uint i =0; i<jetSystematics.size();i++){
+    // 	    selectedBoostedJets.push_back(boosted::BoostedJetCollection());
+    // 	}
+    // }
 
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);
@@ -669,12 +682,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     // nominal weight and weights for reweighting
     std::vector<map<string,float> >weightsVector;
-    // inputs
-    vector<InputCollections> inputs;
-    for(uint isys=0; isys<jetSystematics.size(); isys++){
-        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
-	auto weightsDL = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJetsLooseDL[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
-	inputs.push_back(InputCollections(eventInfo,
+       // inputs
+       vector<InputCollections> inputs;
+       for(uint isys=0; isys<jetSystematics.size(); isys++){
+           auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
+   	auto weightsDL = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJetsLooseDL[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
+    inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
 					  selectedPVs,
 					  *h_selectedMuons,
@@ -689,7 +702,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *(hs_selectedJetsDL[isys]),
 					  *(hs_selectedJetsLooseDL[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
-					  selectedBoostedJets[isys],
+					  *selectedBoostedJets,
 					  genTopEvt,
 					  *h_genJets,
 					  sampleType,
@@ -698,9 +711,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  weightsDL,
 					  iEvent,
 					  iSetup
-					  ));
-
-    }
+));
+   }
     // TODO: adapt to new synch exe
 
     if(dumpSyncExe2){
@@ -820,7 +832,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	//Add Genweights to the weight map
 	genweights.GetGenWeights(weights, lheInfo, dogenweights);
 	genweights.GetLHAPDFWeight(weights, genInfo, "NNPDF30_nlo_as_0118");
-   
+
   }
  //Add Lepton Scalefactors to weight map
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);

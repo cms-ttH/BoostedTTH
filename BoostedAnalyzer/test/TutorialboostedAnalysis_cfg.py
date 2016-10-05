@@ -179,6 +179,10 @@ process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets",
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 
 
+
+process.load("BoostedTTH.Producers.SelectedBoostedJetProducer_cfi")
+
+
 # load and run the boosted analyzer
 if options.isData:
     if options.analysisType=='SL':
