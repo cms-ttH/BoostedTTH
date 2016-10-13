@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 SelectedBoostedJetProducer = cms.EDProducer(
     "SelectedBoostedJetProducer",
-    boostedJets=cms.InputTag("BoostedJetMatcher:boostedjets:p"),
+    boostedJets=cms.InputTag("BoostedJetMatcher:boostedjets:p"),    
     isData       = cms.bool(False),
     applyCorrection = cms.bool(True),
     jets = cms.InputTag("slimmedJets"),

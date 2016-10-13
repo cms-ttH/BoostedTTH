@@ -106,7 +106,7 @@ SelectedBoostedJetProducer::SelectedBoostedJetProducer(const edm::ParameterSet& 
     // genjetsToken = consumes< reco::GenJetCollection >(iConfig.getParameter<edm::InputTag>("miniAODGenJets"));
     // electronsToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("electrons"));
     // muonsToken  = consumes< pat::MuonCollection >(iConfig.getParameter<edm::InputTag>("muons"));
-    boostedJetsToken        = consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedjets"));
+    boostedJetsToken        = consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets"));
     rhoToken  = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
     // ptMins = iConfig.getParameter< std::vector<double> >("ptMins");
     // etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");

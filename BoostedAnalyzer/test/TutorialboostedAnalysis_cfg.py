@@ -1,6 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 import sys
 import os
+from multiprocessing import Process
+
 
 ##TEST
 # To execute test, run
@@ -65,6 +67,7 @@ print "*****************************************\n\n"
 #register a new process called analysis
 
 process = cms.Process("analysis")
+
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi") # load additional module to log some stuff
@@ -158,6 +161,8 @@ else:
     )
 
 #===============================================================// Load Selected Muon/Electron and Jet Producer
+
+
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
@@ -179,8 +184,8 @@ process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets",
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 
 
-
 process.load("BoostedTTH.Producers.SelectedBoostedJetProducer_cfi")
+
 
 
 # load and run the boosted analyzer
@@ -271,6 +276,7 @@ if options.isData or options.isBoostedMiniAOD:
                      *process.SelectedMuonProducer
  #                    *process.content
                      *process.SelectedJetProducer
+                     #*process.SelectedBoostedJetProducer
                      *process.CorrectedMETproducer
                      #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
                      *process.BoostedAnalyzer
@@ -281,6 +287,7 @@ else:
                      *process.SelectedMuonProducer
  #                    *process.content
                      *process.SelectedJetProducer
+                     #*process.SelectedBoostedJetProducer
                      *process.CorrectedMETproducer
                      *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
                      *process.BoostedAnalyzer
