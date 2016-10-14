@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 # input
 process = cms.Process("p")
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2000Nar_MTp-900Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/10000/3409C34F-B224-E611-AD1F-0025904B11EA.root')
+                            fileNames = cms.untracked.vstring('/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1500Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/70000/7AB1F04E-513D-E611-A814-D4AE526EAD24.root')
                             #fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIIFall15MiniAODv2/TT_TuneEE5C_13TeV-amcatnlo-herwigpp/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/00129514-9FB8-E511-9C7A-00266CFFC544.root')
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
@@ -173,7 +173,7 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
-    fileName = cms.untracked.string('BoostedMiniAOD_ZprimeToTprimeT_TprimeToWB_MZp-2000Nar_MTp-900Nar_LH_MC.root'),
+    fileName = cms.untracked.string('BoostedMiniAOD_ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1500Nar_LH_MC.root'),
     outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*BoostedJetMatcher*_*_*','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*']),
     #SelectEvents = cms.untracked.PSet(
     #    SelectEvents = cms.vstring("boosted_skimmed")
