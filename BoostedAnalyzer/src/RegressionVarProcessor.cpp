@@ -89,6 +89,36 @@ void RegressionVarProcessor::Init(const InputCollections& input,VariableContaine
     vars.InitVars( "RegJet_regcorr", "N_RegJets");
     vars.InitVars( "RegJet_preregPt", "N_RegJets");
     vars.InitVars( "RegJet_preregMt", "N_RegJets");
+
+
+    vars.InitVar( "Evt_Reg_blr_ETH" );
+    vars.InitVar( "Evt_Reg_blr_ETH_transformed" );
+    vars.InitVar( "Evt_Reg_M_Total" );
+    vars.InitVar( "Evt_Reg_H0" );
+    vars.InitVar( "Evt_Reg_H1" );
+    vars.InitVar( "Evt_Reg_H2" );
+    vars.InitVar( "Evt_Reg_H3" );
+    vars.InitVar( "Evt_Reg_H4" );
+
+  
+      
+    vars.InitVar( "Evt_Reg_M_MinDeltaRJets" );
+    vars.InitVar( "Evt_Reg_M_MinDeltaRTaggedJets" );
+    vars.InitVar( "Evt_Reg_M_MinDeltaRUntaggedJets" );
+    vars.InitVar( "Evt_Reg_M_MinDeltaRLeptonTaggedJet" );
+    vars.InitVar( "Evt_Reg_M_MinDeltaRLeptonJet" );
+    
+    vars.InitVar( "Evt_Reg_Dr_MinDeltaRJets" );
+    vars.InitVar( "Evt_Reg_Dr_MinDeltaRTaggedJets" );
+    vars.InitVar( "Evt_Reg_Dr_MinDeltaRUntaggedJets" );
+    vars.InitVar( "Evt_Reg_Dr_MinDeltaRLeptonTaggedJet" );
+    vars.InitVar( "Evt_Reg_Dr_MinDeltaRLeptonJet" );
+    
+    vars.InitVar( "Evt_Reg_Pt_MinDeltaRJets" );
+    vars.InitVar( "Evt_Reg_Pt_MinDeltaRTaggedJets" );
+    vars.InitVar( "Evt_Reg_Pt_MinDeltaRUntaggedJets" );
+
+
 }
 
 
@@ -306,4 +336,136 @@ void RegressionVarProcessor::Process(const InputCollections& input, VariableCont
         iregjet++;
     }
 
+
+    //Additional Evt variables for 80X BDTs not jet in CommonClassifier
+    vector<TLorentzVector> jettvecs;
+    vector<double> jetcsvs;
+    for(uint i=0; i<regressedJets.size(); i++){
+      jettvecs.push_back(BoostedUtils::GetTLorentzVector(regressedJets[i].p4()));
+      jetcsvs.push_back(MiniAODHelper::GetJetCSV(regressedJets[i]));
+    }
+  
+    std::vector<unsigned int> out_best_perm;
+    double out_P_4b=-1;
+    double out_P_2b=-1;
+    double eth_blr=-1;
+    if(regressedJets.size()>3)
+      eth_blr=mem.GetBTagLikelihoodRatio(jettvecs,
+					 jetcsvs,
+					 out_best_perm,
+					 out_P_4b,
+					 out_P_2b);
+
+    vars.FillVar("Evt_Reg_blr_ETH",eth_blr);
+    vars.FillVar("Evt_Reg_blr_ETH_transformed",log(eth_blr/(1-eth_blr)));
+
+
+    std::vector<math::XYZTLorentzVector> looseLeptonVecs = BoostedUtils::GetLepVecs(input.selectedElectronsLoose,input.selectedMuonsLoose);
+    std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(regressedJets);
+    math::XYZTLorentzVector metvec = input.correctedMET.p4();
+    
+    
+    math::XYZTLorentzVector p4all;
+    for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin() ; itJetVec != jetvecs.end(); ++itJetVec){
+      p4all += *itJetVec;
+    }
+    for(std::vector<math::XYZTLorentzVector>::iterator itLep = looseLeptonVecs.begin() ; itLep != looseLeptonVecs.end(); ++itLep){
+      p4all += *itLep;
+    }
+    p4all += metvec;
+    vars.FillVar("Evt_Reg_M_Total",p4all.M());
+
+    vector<TLorentzVector> jetvecsTL=BoostedUtils::GetTLorentzVectors(jetvecs);
+    // Event Shape Variables
+    // Fox Wolfram Moments
+    float h0,h1,h2,h3,h4;
+    h0=-9;
+    h1=-9;
+    h2=-9;
+    h3=-9;
+    h4=-9;
+    bdtvar.getFox(jetvecsTL, h0,h1,h2,h3,h4);
+    vars.FillVar( "Evt_Reg_H0", h0 );
+    vars.FillVar( "Evt_Reg_H1", h1 );
+    vars.FillVar( "Evt_Reg_H2", h2 );
+    vars.FillVar( "Evt_Reg_H3", h3 );
+    vars.FillVar( "Evt_Reg_H4", h4 );
+
+
+   
+    std::vector<pat::Jet> regressedTaggedJets;
+    std::vector<pat::Jet> regressedTaggedJetsT;
+    std::vector<pat::Jet> regressedTaggedJetsL;
+    std::vector<pat::Jet> regressedUntaggedJets;
+    for(std::vector<pat::Jet>::const_iterator itJet = regressedJets.begin(); itJet != regressedJets.end(); ++itJet){
+	if(BoostedUtils::PassesCSV(*itJet, 'M')){
+	    regressedTaggedJets.push_back(*itJet);
+	}
+	else{
+	    regressedUntaggedJets.push_back(*itJet);
+	}
+	if(BoostedUtils::PassesCSV(*itJet, 'L')){
+	    regressedTaggedJetsL.push_back(*itJet);
+	}
+	if(BoostedUtils::PassesCSV(*itJet, 'T')){
+	    regressedTaggedJetsT.push_back(*itJet);
+	}
+    }
+    
+    math::XYZTLorentzVector primLepVec = math::XYZTLorentzVector();
+    if(input.selectedElectrons.size()>0 || input.selectedMuons.size()>0){
+	primLepVec = BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons);
+    }
+
+    if(regressedJets.size()>1){
+	int idClosestJet1 = -1;
+	int idClosestJet2 = -1;
+	float minDrJets = BoostedUtils::GetClosestJetIDs(idClosestJet1,idClosestJet2,regressedJets);
+	math::XYZTLorentzVector closestJetVec1 = regressedJets[idClosestJet1].p4();
+	math::XYZTLorentzVector closestJetVec2 = regressedJets[idClosestJet2].p4();
+	vars.FillVar("Evt_Reg_M_MinDeltaRJets",(closestJetVec1+closestJetVec2).M());
+	vars.FillVar("Evt_Reg_Dr_MinDeltaRJets",minDrJets);
+	vars.FillVar("Evt_Reg_Pt_MinDeltaRJets",(closestJetVec1+closestJetVec2).Pt());
+    }
+    // Tagged Jets
+    if(regressedTaggedJets.size()>1){
+	int idClosestTaggedJet1 = -1;
+	int idClosestTaggedJet2 = -1;
+	float minDrTaggedJets = BoostedUtils::GetClosestJetIDs(idClosestTaggedJet1,idClosestTaggedJet2,regressedTaggedJets);
+	math::XYZTLorentzVector closestTaggedJetVec1 = regressedTaggedJets[idClosestTaggedJet1].p4();
+	math::XYZTLorentzVector closestTaggedJetVec2 = regressedTaggedJets[idClosestTaggedJet2].p4();
+	vars.FillVar("Evt_Reg_M_MinDeltaRTaggedJets",(closestTaggedJetVec1+closestTaggedJetVec2).M());
+	vars.FillVar("Evt_Reg_Dr_MinDeltaRTaggedJets",minDrTaggedJets);
+	vars.FillVar("Evt_Reg_Pt_MinDeltaRTaggedJets",(closestTaggedJetVec1+closestTaggedJetVec2).Pt());
+    }
+    // Untagged Jets
+    if(regressedUntaggedJets.size()>1){
+	int idClosestUntaggedJet1 = -1;
+	int idClosestUntaggedJet2 = -1;
+	float minDrUntaggedJets = BoostedUtils::GetClosestJetIDs(idClosestUntaggedJet1,idClosestUntaggedJet2,regressedUntaggedJets);
+	math::XYZTLorentzVector closestUntaggedJetVec1 = regressedUntaggedJets[idClosestUntaggedJet1].p4();
+	math::XYZTLorentzVector closestUntaggedJetVec2 = regressedUntaggedJets[idClosestUntaggedJet2].p4();
+	vars.FillVar("Evt_Reg_M_MinDeltaRUntaggedJets",(closestUntaggedJetVec1+closestUntaggedJetVec2).M());
+	vars.FillVar("Evt_Reg_Dr_MinDeltaRUntaggedJets",minDrUntaggedJets);
+	vars.FillVar("Evt_Reg_Pt_MinDeltaRUntaggedJets",(closestUntaggedJetVec1+closestUntaggedJetVec2).Pt());
+    }
+    // Jet and Lepton
+    if(regressedJets.size()>1&&(input.selectedElectrons.size()>0||input.selectedMuons.size()>0)){
+	int idClosestJet = -1;
+	float minDrLepJet = BoostedUtils::GetClosestLepJetID(idClosestJet,primLepVec,regressedJets);
+	math::XYZTLorentzVector closestJetVec = regressedJets[idClosestJet].p4();
+	vars.FillVar("Evt_Reg_M_MinDeltaRLeptonJet",(primLepVec+closestJetVec).M());
+	vars.FillVar("Evt_Reg_Dr_MinDeltaRLeptonJet",minDrLepJet);
+    }
+    
+    // Tagged Jet and Lepton
+    if(regressedTaggedJets.size()>1&&(input.selectedElectrons.size()>0||input.selectedMuons.size()>0)){
+	int idClosestTaggedJet = -1;
+	float minDrLepTaggedJet = BoostedUtils::GetClosestLepJetID(idClosestTaggedJet,primLepVec,regressedTaggedJets);
+	math::XYZTLorentzVector closestTaggedJetVec = regressedTaggedJets[idClosestTaggedJet].p4();
+	vars.FillVar("Evt_Reg_M_MinDeltaRLeptonTaggedJet",(primLepVec+closestTaggedJetVec).M());
+	vars.FillVar("Evt_Reg_Dr_MinDeltaRLeptonTaggedJet",minDrLepTaggedJet);
+    }
+    
+     
 }

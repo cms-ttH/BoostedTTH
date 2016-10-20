@@ -165,7 +165,7 @@ else:
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["EndOf15MVA80iso0p15"]*3
+process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
 process.SelectedMuonProducer.ptMins=[15.,25.,25.]
@@ -185,6 +185,7 @@ process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 process.load("BoostedTTH.BoostedProducer.GenJetswNuProducer_cfi")
 
 process.load("BoostedTTH.Producers.RegressedJetProducer_cfi")
+#process.RegressedJetProducer.weightfile = cms.string("BReg_0912_BaseLine_wowortsVars_BDTG.weights.xml")
 process.RegressedJetProducer.inputjets=["SelectedJetProducer:selectedJets"]
 process.RegressedJetProducer.outputprefix="regressedJets"
 process.RegressedJetProducer.doGenJetMatchingforRegression=True
@@ -271,8 +272,8 @@ process.BoostedAnalyzer.minTagsForMEM = 3
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
 
-#process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = cms.vstring("VertexSelection","LeptonSelection","JetTagSelection")
+#process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 

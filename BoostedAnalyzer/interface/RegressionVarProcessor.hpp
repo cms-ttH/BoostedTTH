@@ -4,6 +4,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenJetMatcher.hpp"
+#include "TTH/CommonClassifier/interface/MEMClassifier.h"
+#include "MiniAOD/MiniAODHelper/interface/BDTvars.h"
 
 class RegressionVarProcessor: public TreeProcessor{
 
@@ -20,6 +22,9 @@ private:
   edm::EDGetTokenT< std::vector<reco::GenJet> > genJetswNuToken;
   std::vector< std::string > extentions;
   std::vector< std::string > jecLevels;
+
+  BDTvars bdtvar;
+  MEMClassifier mem;
 };
 
 #endif

@@ -166,7 +166,7 @@ print "Nr. 0"
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,20.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["EndOf15MVA80iso0p15"]*3
+process.SelectedElectronProducer.leptonIDs=["electronNonTrigMVAid80"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
 process.SelectedMuonProducer.ptMins=[15.,20.,25.]
@@ -196,25 +196,25 @@ process.RegressedJetProducer.isData=options.isData
 if options.isData:
     if options.analysisType=='SL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
-        process.BoostedAnalyzer.mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*")
-        process.BoostedAnalyzer.elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*")
-        process.BoostedAnalyzer.elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*")
-        process.BoostedAnalyzer.dlchannel = cms.string("all")
+        #process.BoostedAnalyzer.mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*")
+        #process.BoostedAnalyzer.elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*")
+        #process.BoostedAnalyzer.elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*")
+        #process.BoostedAnalyzer.dlchannel = cms.string("all")
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
 else:
     if options.analysisType=='SL':
         if options.isreHLT:
             process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
-            process.BoostedAnalyzer.mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*")
-            process.BoostedAnalyzer.elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*")
-            process.BoostedAnalyzer.elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*")
+            #process.BoostedAnalyzer.mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*")
+            #process.BoostedAnalyzer.elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*")
+            #process.BoostedAnalyzer.elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*")
         else:
             process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzerNoTrigger_cfi")
-            process.BoostedAnalyzer.mumuTriggers = cms.vstring("None")
-            process.BoostedAnalyzer.elelTriggers = cms.vstring("None")
-            process.BoostedAnalyzer.elmuTriggers = cms.vstring("None")
-        process.BoostedAnalyzer.dlchannel = cms.string("all")
+            #process.BoostedAnalyzer.mumuTriggers = cms.vstring("None")
+            #process.BoostedAnalyzer.elelTriggers = cms.vstring("None")
+            #process.BoostedAnalyzer.elmuTriggers = cms.vstring("None")
+        #process.BoostedAnalyzer.dlchannel = cms.string("all")
 
 
     if options.analysisType=='DL':

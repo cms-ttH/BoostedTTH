@@ -17,6 +17,20 @@ AdditionalPUWeights = cms.VPSet(
     histNameDataNPUEstimated = cms.string("pileup")
   ),
   cms.PSet(
+    namePUWeight = cms.string("Weight_pu69p2_DOWN"),
+    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/Spring16_25nsV1_NumTruePU.root"),
+    histNameMCNPU = cms.string("hNumTruePUPdf"),
+    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-PromptReco-271036-276811_ICHEP_MinBias65740.root"),
+    histNameDataNPUEstimated = cms.string("pileup")
+  ),
+  cms.PSet(
+    namePUWeight = cms.string("Weight_pu69p2_UP"),
+    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/Spring16_25nsV1_NumTruePU.root"),
+    histNameMCNPU = cms.string("hNumTruePUPdf"),
+    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-PromptReco-271036-276811_ICHEP_MinBias72383.root"),
+    histNameDataNPUEstimated = cms.string("pileup")
+  ),
+  cms.PSet(
     namePUWeight = cms.string("Weight_pu71p3"),
     fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/Spring16_25nsV1_NumTruePU.root"),
     histNameMCNPU = cms.string("hNumTruePUPdf"),
