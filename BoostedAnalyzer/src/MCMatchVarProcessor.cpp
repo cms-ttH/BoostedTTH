@@ -102,6 +102,9 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopLep_B_Hadron_Phi",-9., "N_GenTopLep" );
   vars.InitVars( "GenTopHad_B_Hadron_Phi",-9., "N_GenTopHad");
 
+  vars.InitVars("Jet_Dr_bfromTPrime",-9.,"N_Jets");
+
+  
   initialized = true;
 }
 
@@ -146,6 +149,11 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   std::vector<reco::GenParticle> nu;
   reco::GenParticle higgs;
   std::vector<reco::GenParticle> higgs_bs;
+  
+  std::vector<reco::GenParticle> bfromTPrime;
+
+  
+  
   if(input.genTopEvt.IsFilled()){
     tophad=input.genTopEvt.GetAllTopHads();
     whad=input.genTopEvt.GetAllWhads();
@@ -160,6 +168,10 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     higgs=input.genTopEvt.GetHiggs();
     higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
   }
+  if(input.zprimetotprimeallhad.IsFilled()){
+
+    bfromTPrime=input.zprimetotprimeallhad.GetBottom_fromTPrimesandTPrimebars();
+  }
 
   reco::GenParticle b1;
   reco::GenParticle b2;
@@ -167,7 +179,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   reco::GenParticle decProd2;
 
 //if(higgs_bs.size()>2)std::cout<<"MORE THAN TWO HIGGS PRODUCTS"<<std::endl;
-bool dfirst=true;
+  bool dfirst=true;
   for(auto p =higgs_bs.begin(); p!=higgs_bs.end(); p++){
     if(p->pdgId()==5) b1=*p;
     if(p->pdgId()==-5) b2=*p;
@@ -364,6 +376,42 @@ bool dfirst=true;
 	      vars.FillVars( "GenTopLep_B_Hadron_Eta",i,blep_hadron[i].eta());
 	      vars.FillVars( "GenTopLep_B_Hadron_Phi",i,blep_hadron[i].phi());
       }
+    }
+  }
+  cout<<"ZPrime filled ?:  "<<input.zprimetotprimeallhad.IsFilled()<<endl;
+  for(size_t i=0; i<jetvecs.size(); i++){
+    if(input.zprimetotprimeallhad.IsFilled()){
+//        float minDr_GenB_ZTop = 999;
+//        float minDr_GenW_ZTop = 999;
+        float minDr_bfromTPrime = 999;
+//        float minDr_GenZTop_bfromTPrime=999;
+//        float minDr_GenWfromTPrime_bfromTPrime=999;
+//        float minDr_WfromTPrime = 999;
+//        float minDr_GenZTop_WfromTPrime=999;
+//        float minDr_GenbfromTPrime_WfromTPrime=999;        
+        
+        for(size_t j=0;j<bfromTPrime.size();j++){   
+            float Dr_B_temp = BoostedUtils::DeltaR(bfromTPrime[j].p4(),jetvecs[i]);
+                if(Dr_B_temp<minDr_bfromTPrime){
+                    minDr_bfromTPrime = Dr_B_temp;
+                    cout<<"minDr_bfromTPrime:  "<<minDr_bfromTPrime<<endl;
+//                    minDr_GenZTop_bfromTPrime = BoostedUtils::DeltaR(ZTop[j].p4(),input.jetvecs[i].fatjet.p4());
+//                    minDr_GenWfromTPrime_bfromTPrime = BoostedUtils::DeltaR(WfromTPrime[j].p4(),input.jetvecs[i].fatjet.p4());
+                }
+        }        
+
+           
+//        if(minDr_ZTop<999) vars.FillVars("BoostedJet_Dr_ZTop",i,minDr_ZTop);
+//        if(minDr_GenB_ZTop<999) vars.FillVars("BoostedJet_Dr_GenB_ZTop",i,minDr_GenB_ZTop);
+//        if(minDr_GenW_ZTop<999) vars.FillVars("BoostedJet_Dr_GenW_ZTop",i,minDr_GenW_ZTop);
+        if(minDr_bfromTPrime<999) vars.FillVars("Jet_Dr_bfromTPrime",i,minDr_bfromTPrime);
+//        if(minDr_GenZTop_bfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenZTop_bfromTPrime",i,minDr_GenZTop_bfromTPrime);
+//        if(minDr_GenWfromTPrime_bfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenWfromTPrime_bfromTPrime",i,minDr_GenWfromTPrime_bfromTPrime);
+//        if(minDr_WfromTPrime<999) vars.FillVars("BoostedJet_Dr_WfromTPrime",i,minDr_WfromTPrime);
+//        if(minDr_GenZTop_WfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenZTop_WfromTPrime",i,minDr_GenZTop_WfromTPrime);
+//        if(minDr_GenbfromTPrime_WfromTPrime<999) vars.FillVars("BoostedJet_Dr_GenbfromTPrime_WfromTPrime",i,minDr_GenbfromTPrime_WfromTPrime);        
+
+
     }
   }
 }

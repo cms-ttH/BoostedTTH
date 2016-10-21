@@ -47,7 +47,7 @@ if options.globalTag is "NONE":
 		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
 
 if not options.inputFiles:
-    options.inputFiles=['file:/nfs/dust/cms/user/skudella/processed_MC/MC_boosted/BoostedMiniAOD_ZprimeToTprimeT_TprimeToWB_MZp-2000Nar_MTp-900Nar_LH_MC.root']
+    options.inputFiles=['file:/nfs/dust/cms/user/skudella/processed_MC/MC_boosted/BoostedMiniAOD_QCD_HT500to700_MC.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL","VetoL"]:
@@ -241,6 +241,7 @@ if options.additionalSelection!="NONE":
     process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
 process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor","ZPrimeToTPrimeAllHadProcessor","BoostedJetVarProcessor","BoostedMCMatchVarProcessor"]
+#process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","BoostedJetVarProcessor","BoostedMCMatchVarProcessor"]
 process.BoostedAnalyzer.dumpSyncExe2=False
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")

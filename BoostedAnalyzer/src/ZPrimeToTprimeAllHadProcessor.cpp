@@ -41,7 +41,10 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     vars.InitVars("Gen_Topbar_Pt","N_Gen_Topbars");
     vars.InitVars("Gen_TopandTopbar_Pt","N_Gen_TopsandTopbars");
 
+    vars.InitVars("Gen_ZPrime_M","N_Gen_ZPrimes");
+    vars.InitVars("Gen_TPrimeandTPrimebar_M","N_Gen_TPrimesandTPrimebars");   
     vars.InitVars("Gen_ZPrime_Pt","N_Gen_ZPrimes");   
+
 
     vars.InitVars("Gen_TPrime_Pt","N_Gen_TPrimes");
     vars.InitVars("Gen_TPrimebar_Pt","N_Gen_TPrimebars");
@@ -179,6 +182,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         int iParticle = itParticle - input.zprimetotprimeallhad.GetTPrimesandTPrimebars().begin();
             vars.FillVars( "Gen_TPrimeandTPrimebar_Pt",iParticle,itParticle->pt() );
             vars.FillVars( "Gen_TPrimeandTPrimebar_Eta",iParticle,itParticle->eta() );
+            vars.FillVars( "Gen_TPrimeandTPrimebar_M",iParticle,itParticle->mass() );
         }
     }
     if(input.zprimetotprimeallhad.GetZPrimes().size()>0){
@@ -186,6 +190,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         int iParticle = itParticle - input.zprimetotprimeallhad.GetZPrimes().begin();
             vars.FillVars( "Gen_ZPrime_Pt",iParticle,itParticle->pt() );
             vars.FillVars( "Gen_ZPrime_Eta",iParticle,itParticle->eta() );
+            vars.FillVars( "Gen_ZPrime_M",iParticle,itParticle->mass() );
         }
     }
     if(input.zprimetotprimeallhad.GetWplus_fromTops().size()>0){
