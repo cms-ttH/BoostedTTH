@@ -2,7 +2,9 @@ BoostedTTH
 =======
 
 CMSSW tools for analyzing TTH events with boosted objects
+
 !!! Danger !!!
+
 The repository cms-btv-pog:bTagHIPMitigation-PR_from-CMSSW_8_0_17 apparently no longer exists. This means that some variables used in the config do not exist in CMSSW_8_0_19, which leads to failing jobs. If you checkout CMSSW_8_0_20 (which has these variables included) and skip the step with the HIPMitigation the jobs seem to work.
 
 ## Installation
