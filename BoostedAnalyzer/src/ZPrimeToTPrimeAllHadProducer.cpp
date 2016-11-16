@@ -98,10 +98,43 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                 if (abs(p->daughter(i)->pdgId())==6)
                 lastTop=false;
             }
+            bool fromZprime=false;
+            bool fromTPrime=false;
+            bool fromBG=false;
+            const reco::Candidate* mother=&(*p);
+            while(mother!=0 && abs(mother->pdgId())==6){                                           //check where W comes from
+                if (abs(mother->mother()->pdgId())==9900113){
+                    fromZprime=true;
+                    break;
+                }
+                if (abs(mother->mother()->pdgId())==8000001){
+                    fromTPrime=true;
+                    break;
+                }
+                if (abs(mother->mother()->pdgId())!=6 && abs(mother->mother()->pdgId())!=8000001 && abs(mother->mother()->pdgId())!=9900113){
+                    fromBG=true;
+                    break;
+                }
+                else mother=mother->mother();
+	
+            }
+            
             if(lastTop){
-                if(p->pdgId()==6) tops.push_back(*p);
-                if(p->pdgId()==-6) topbars.push_back(*p);
-                topsandtopbars.push_back(*p);
+                if(fromZprime){
+                    if(p->pdgId()==6) tops_fromZprime.push_back(*p);
+                    if(p->pdgId()==-6) topbars_fromZprime.push_back(*p);
+                topsandtopbars_fromZprime.push_back(*p);
+                }
+                if(fromTPrime){
+                    if(p->pdgId()==6) tops_fromTprime.push_back(*p);
+                    if(p->pdgId()==-6) topbars_fromTprime.push_back(*p);
+                topsandtopbars_fromTprime.push_back(*p);
+                }
+                if(fromBG){
+                    if(p->pdgId()==6) tops_fromBG.push_back(*p);
+                    if(p->pdgId()==-6) topbars_fromBG.push_back(*p);
+                topsandtopbars_fromBG.push_back(*p);
+                }
                 bool setTDecay=false;
                 bool setTBarDecay=false;
                 for(uint i=0;i<p->numberOfDaughters();i++){
@@ -121,6 +154,8 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                     }
                     if(abs(p->daughter(i)->pdgId())==5) topandtopbar_decay_bottoms.push_back(*(reco::GenParticle*)p->daughter(i));
                 }
+            
+            
             }
         }
 /*       
@@ -151,6 +186,7 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                 TPrimesandTPrimebars.push_back(*p);
                 bool setTPrimeDecay=false;
                 bool setTPrimeBarDecay=false;
+
                 for(uint i=0;i<p->numberOfDaughters();i++){
                     if(p->pdgId()==8000001 && abs(p->daughter(i)->pdgId())<7){
                         if(setTPrimeDecay) std::cerr << "GenTPrimeEvent: error 1"<<std::endl;
@@ -191,6 +227,7 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
             }
             bool fromTop=false;
             bool fromTPrime=false;
+            bool fromBG=false;
             const reco::Candidate* mother=&(*p);
             while(mother!=0 && abs(mother->pdgId())==24){                                           //check where W comes from
                 if (abs(mother->mother()->pdgId())==6){
@@ -199,6 +236,10 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                 }
                 if (abs(mother->mother()->pdgId())==8000001){
                     fromTPrime=true;
+                    break;
+                }
+                if (abs(mother->mother()->pdgId())!=24 && abs(mother->mother()->pdgId())!=8000001 && abs(mother->mother()->pdgId())!=6){
+                    fromBG=true;
                     break;
                 }
                 else mother=mother->mother();
@@ -231,6 +272,11 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                     }
                 }
             }
+           if(lastW&&fromBG){
+                if(p->pdgId()==24) wplus_fromBG.push_back(*p);
+                if(p->pdgId()==-24) wminus_fromBG.push_back(*p);
+                Ws_fromBG.push_back(*p);
+           }
 /*
             while(mother!=0 && abs(mother->pdgId())==24){                                           //check where W comes from
                     if (abs(mother->mother()->pdgId())!=24){
@@ -253,6 +299,7 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
             }
             bool fromTop=false;
             bool fromTPrime=false;
+            bool fromBG=false;
             const reco::Candidate* mother=&(*p);
             while(mother!=0 && abs(mother->pdgId())==5){                                           //check where b comes from
                 if (abs(mother->mother()->pdgId())==6){
@@ -261,6 +308,10 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                 }
                 if (abs(mother->mother()->pdgId())==8000001){
                     fromTPrime=true;
+                    break;
+                }
+                if (abs(mother->mother()->pdgId())!=5 && abs(mother->mother()->pdgId())!=6 && abs(mother->mother()->pdgId())!=8000001){
+                    fromBG=true;
                     break;
                 }
                 else mother=mother->mother();
@@ -275,6 +326,11 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                 if(p->pdgId()==5) Bottom_fromTPrimes.push_back(*p);
                 if(p->pdgId()==-5) Bottombar_fromTPrimes.push_back(*p);
                 Bottom_fromTPrimesandTPrimebars.push_back(*p);
+            }
+            if(lastBottom&&fromBG){
+                if(p->pdgId()==5) Bottom_fromBG.push_back(*p);
+                if(p->pdgId()==-5) Bottombar_fromBG.push_back(*p);
+                Bottoms_fromBG.push_back(*p);
             }
         }
         
@@ -421,21 +477,54 @@ bool ZPrimeToTPrimeAllHad::IsFilled() const{
 
 
 
-std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTops() const{
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTops_fromZprimes() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
-  return tops;
+  return tops_fromZprime;
 }
-std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopbars() const{
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopbars_fromZprimes() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
-  return topbars;
+  return topbars_fromZprime;
 }
-std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopsandTopbars() const{
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopsandTopbars_fromZprimes() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
-  return topsandtopbars;
+  return topsandtopbars_fromZprime;
 }
+
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTops_fromTprimes() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return tops_fromTprime;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopbars_fromTprimes() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return topbars_fromTprime;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopsandTopbars_fromTprimes() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return topsandtopbars_fromTprime;
+}
+
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTops_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return tops_fromBG;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopbars_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return topbars_fromBG;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopsandTopbars_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return topsandtopbars_fromBG;
+}
+
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTPrimes() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
@@ -498,6 +587,21 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetW_fromTPrimesandTPrimeba
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
   return WfromTPrimesandTPrimebars;
 }
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetWplus_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return wplus_fromBG;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetWminus_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return wminus_fromBG;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetWs_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Ws_fromBG;
+}
 
 
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottom_fromTops() const{
@@ -530,6 +634,22 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottom_fromTPrimesandTPr
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
   return Bottom_fromTPrimesandTPrimebars;
 }
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottoms_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Bottoms_fromBG;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottombars_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Bottoms_fromBG;
+}
+std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetBottomsandBottombars_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  return Bottoms_fromBG;
+}
+
 
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopDecayBottom() const{
     assert(isFilled);
@@ -638,7 +758,7 @@ std::vector<reco::GenParticle>  ZPrimeToTPrimeAllHad::GetW_decay_products_fromTP
 }
 
 
-
+/*
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTPrimeHad() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
@@ -675,6 +795,7 @@ std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTopbarHad() const{
     return std::vector<reco::GenParticle>();      
   }
 }
+*/
 
 /*ZPrimeToTPrimeAllHadProducer::beginStream(edm::StreamID)
 {

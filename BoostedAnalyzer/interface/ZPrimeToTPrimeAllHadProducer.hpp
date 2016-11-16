@@ -47,18 +47,29 @@ class ZPrimeToTPrimeAllHad{
       std::vector<reco::GenParticle> GetHiggs() const;
       std::vector<reco::GenParticle> GetZs() const;
       
-      std::vector<reco::GenParticle> GetTops() const;
-      std::vector<reco::GenParticle> GetTopbars() const;
-      std::vector<reco::GenParticle> GetTopsandTopbars() const;
+      std::vector<reco::GenParticle> GetTops_fromZprimes() const;
+      std::vector<reco::GenParticle> GetTopbars_fromZprimes() const;
+      std::vector<reco::GenParticle> GetTopsandTopbars_fromZprimes() const;
+      std::vector<reco::GenParticle> GetTops_fromTprimes() const;
+      std::vector<reco::GenParticle> GetTopbars_fromTprimes() const;
+      std::vector<reco::GenParticle> GetTopsandTopbars_fromTprimes() const;
+      std::vector<reco::GenParticle> GetTops_fromBG() const;
+      std::vector<reco::GenParticle> GetTopbars_fromBG() const;
+      std::vector<reco::GenParticle> GetTopsandTopbars_fromBG() const;
+      
       std::vector<reco::GenParticle> GetTPrimes() const;
       std::vector<reco::GenParticle> GetTPrimebars() const;
-      std::vector<reco::GenParticle> GetTPrimesandTPrimebars() const;     
+      std::vector<reco::GenParticle> GetTPrimesandTPrimebars() const;   
+      
       std::vector<reco::GenParticle> GetWplus_fromTops() const;
       std::vector<reco::GenParticle> GetWminus_fromTops() const;
       std::vector<reco::GenParticle> GetW_fromTopsandTopbars() const;
       std::vector<reco::GenParticle> GetWplus_fromTPrimes() const;
       std::vector<reco::GenParticle> GetWminus_fromTPrimes() const;
       std::vector<reco::GenParticle> GetW_fromTPrimesandTPrimebars() const;
+      std::vector<reco::GenParticle> GetWplus_fromBG() const;
+      std::vector<reco::GenParticle> GetWminus_fromBG() const;
+      std::vector<reco::GenParticle> GetWs_fromBG() const;
       
       std::vector<reco::GenParticle> GetBottom_fromTops() const;
       std::vector<reco::GenParticle> GetBottom_fromTopbars() const;
@@ -66,6 +77,9 @@ class ZPrimeToTPrimeAllHad{
       std::vector<reco::GenParticle> GetBottom_fromTPrimes() const;
       std::vector<reco::GenParticle> GetBottom_fromTPrimebars() const;
       std::vector<reco::GenParticle> GetBottom_fromTPrimesandTPrimebars() const;
+      std::vector<reco::GenParticle> GetBottoms_fromBG() const;
+      std::vector<reco::GenParticle> GetBottombars_fromBG() const;
+      std::vector<reco::GenParticle> GetBottomsandBottombars_fromBG() const;
       
       std::vector<reco::GenParticle> GetTopDecayQuarks() const;
       std::vector<reco::GenParticle> GetTopBarDecayQuarks() const;
@@ -103,9 +117,16 @@ class ZPrimeToTPrimeAllHad{
 //      virtual void produce(edm::Event&, const edm::EventSetup&) override;
 //     virtual void endStream() override;
 
-      std::vector<reco::GenParticle> tops;
-      std::vector<reco::GenParticle> topbars;
-      std::vector<reco::GenParticle> topsandtopbars;
+      std::vector<reco::GenParticle> tops_fromZprime;
+      std::vector<reco::GenParticle> topbars_fromZprime;
+      std::vector<reco::GenParticle> topsandtopbars_fromZprime;
+      std::vector<reco::GenParticle> tops_fromTprime;
+      std::vector<reco::GenParticle> topbars_fromTprime;
+      std::vector<reco::GenParticle> topsandtopbars_fromTprime;
+      std::vector<reco::GenParticle> tops_fromBG;
+      std::vector<reco::GenParticle> topbars_fromBG;
+      std::vector<reco::GenParticle> topsandtopbars_fromBG;
+      
       std::vector<reco::GenParticle> TPrimes;
       std::vector<reco::GenParticle> TPrimebars;
       std::vector<reco::GenParticle> TPrimesandTPrimebars;
@@ -120,12 +141,19 @@ class ZPrimeToTPrimeAllHad{
       std::vector<reco::GenParticle> wplus_fromTPrimes;
       std::vector<reco::GenParticle> wminus_fromTPrimes;
       std::vector<reco::GenParticle> WfromTPrimesandTPrimebars;
+      std::vector<reco::GenParticle> wplus_fromBG;
+      std::vector<reco::GenParticle> wminus_fromBG;
+      std::vector<reco::GenParticle> Ws_fromBG;   
+      
       std::vector<reco::GenParticle> Bottom_fromTops;
       std::vector<reco::GenParticle> Bottombar_fromTops;
       std::vector<reco::GenParticle> Bottom_fromTopsandTopbars;
       std::vector<reco::GenParticle> Bottom_fromTPrimes;
       std::vector<reco::GenParticle> Bottombar_fromTPrimes;
       std::vector<reco::GenParticle> Bottom_fromTPrimesandTPrimebars;
+      std::vector<reco::GenParticle> Bottom_fromBG;
+      std::vector<reco::GenParticle> Bottombar_fromBG;
+      std::vector<reco::GenParticle> Bottoms_fromBG;      
       
       std::vector<reco::GenParticle> top_decay_quarks;
       std::vector<reco::GenParticle> topbar_decay_quarks;

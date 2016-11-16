@@ -40,6 +40,16 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Electron>&             selectedElectronsDL_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
 		    const std::vector<pat::Jet>&                  rawJets_,
+		    const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHS_,
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropPacked_,
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropSubjets_,
+		    const std::vector<pat::Jet>&                  packedPatJetsAK8PFCHSSoftDrop_,
+
+                    //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau1_,
+                    //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau2_,
+                    //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau3_,
+                    //const edm::ValueMap<float>&                   SoftDropMassAK8CHS_,
+
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
 		    const std::vector<pat::Jet>&                  selectedJetsDL_,
@@ -53,8 +63,9 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		    const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
 		    const std::map<std::string,float>&		  weightsDL_,
-		    const edm::Event& iEvent_,
-		    const edm::EventSetup& iSetup_
+		    const edm::Event&                             iEvent_,
+		    const edm::EventSetup&                        iSetup_
+		    
 		      /**** bjetness code ****/
 
 		            ): 
@@ -68,6 +79,15 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedElectronsDL(selectedElectronsDL_),
                     selectedElectronsLoose(selectedElectronsLoose_),
                     rawJets(rawJets_),
+                    selectedPatJetsAK8PFCHS(selectedPatJetsAK8PFCHS_),
+                    selectedPatJetsAK8PFCHSSoftDropPacked(selectedPatJetsAK8PFCHSSoftDropPacked_),
+                    selectedPatJetsAK8PFCHSSoftDropSubjets(selectedPatJetsAK8PFCHSSoftDropSubjets_),
+                    packedPatJetsAK8PFCHSSoftDrop(packedPatJetsAK8PFCHSSoftDrop_),
+                    //NjettinessAK8CHS_tau1(NjettinessAK8CHS_tau1_),
+                    //NjettinessAK8CHS_tau2(NjettinessAK8CHS_tau2_),
+                    //NjettinessAK8CHS_tau3(NjettinessAK8CHS_tau3_),
+                    //SoftDropMassAK8CHS(SoftDropMassAK8CHS_),
+
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
                     selectedJetsDL(selectedJetsDL_),
@@ -90,6 +110,15 @@ InputCollections(   const EventInfo&                              eventInfo_,
  */
 InputCollections(   const InputCollections&                       input,
 		    const std::vector<pat::Jet>&                  rawJets_,
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHS_,
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropPacked_,
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropSubjets_,
+                    const std::vector<pat::Jet>&                  packedPatJetsAK8PFCHSSoftDrop_,
+                    //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau1_,
+                    //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau2_,
+                    //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau3_,
+                    //const edm::ValueMap<float>&                   SoftDropMassAK8CHS_,
+
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
 		    const std::vector<pat::Jet>&                  selectedJetsDL_,
@@ -109,6 +138,15 @@ InputCollections(   const InputCollections&                       input,
                     selectedElectronsDL(input.selectedElectronsDL),
                     selectedElectronsLoose(input.selectedElectronsLoose),
                     rawJets(rawJets_),
+                    selectedPatJetsAK8PFCHS(selectedPatJetsAK8PFCHS_),
+                    selectedPatJetsAK8PFCHSSoftDropPacked(selectedPatJetsAK8PFCHSSoftDropPacked_),
+                    selectedPatJetsAK8PFCHSSoftDropSubjets(selectedPatJetsAK8PFCHSSoftDropSubjets_),
+                    packedPatJetsAK8PFCHSSoftDrop(packedPatJetsAK8PFCHSSoftDrop_),
+
+                    //NjettinessAK8CHS_tau1(NjettinessAK8CHS_tau1_),
+                    //NjettinessAK8CHS_tau2(NjettinessAK8CHS_tau2_),
+                    //NjettinessAK8CHS_tau3(NjettinessAK8CHS_tau3_),
+                    //SoftDropMassAK8CHS(SoftDropMassAK8CHS_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
                     selectedJetsDL(selectedJetsDL_),
@@ -127,7 +165,8 @@ InputCollections(   const InputCollections&                       input,
 
                     {}
 
-  const EventInfo&                              eventInfo;
+
+                    const EventInfo&                              eventInfo;
   const TriggerInfo&                            triggerInfo;
   const std::vector<reco::Vertex>&              selectedPVs;
   const std::vector<pat::Muon>&                 selectedMuons;
@@ -137,6 +176,15 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Electron>&             selectedElectronsDL;
   const std::vector<pat::Electron>&             selectedElectronsLoose;
   const std::vector<pat::Jet>&                  rawJets;
+  const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHS;
+  const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropPacked;
+  const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropSubjets;
+  const std::vector<pat::Jet>&                  packedPatJetsAK8PFCHSSoftDrop;
+
+  //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau1;
+  //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau2;
+  //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau3;
+  //const edm::ValueMap<float>&                   SoftDropMassAK8CHS;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
   const std::vector<pat::Jet>&                  selectedJetsDL;

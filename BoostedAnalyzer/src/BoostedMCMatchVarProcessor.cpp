@@ -94,7 +94,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
   }
   if(input.zprimetotprimeallhad.IsFilled()){
-    ZTop=input.zprimetotprimeallhad.GetTopsandTopbars();
+    ZTop=input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes();
     TPrime=input.zprimetotprimeallhad.GetTPrimesandTPrimebars();
     WfromTPrime=input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars();
     bfromTPrime=input.zprimetotprimeallhad.GetBottom_fromTPrimesandTPrimebars();

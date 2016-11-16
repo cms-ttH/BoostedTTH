@@ -35,7 +35,7 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 100000 # reset for testing
+    options.maxEvents = 10 # reset for testing
 
 if options.globalTag is "NONE":
 
@@ -47,7 +47,7 @@ if options.globalTag is "NONE":
 		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
 
 if not options.inputFiles:
-    options.inputFiles=['file:/nfs/dust/cms/user/skudella/processed_MC/MC_boosted/BoostedMiniAOD_QCD_HT500to700_MC.root']
+    options.inputFiles=['file:/nfs/dust/cms/user/skudella/processed_MC/MC_boosted/MC_QCD_1500_2000.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL","VetoL"]:
@@ -88,15 +88,21 @@ process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.options.allowUnscheduled = cms.untracked.bool(False)
+process.options.allowUnscheduled = cms.untracked.bool(True)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
 process.source = cms.Source(
     "PoolSource",
     fileNames = cms.untracked.vstring(options.inputFiles),
     skipEvents=cms.untracked.uint32(int(options.skipEvents)),
 )
+
+#
+#JETTOOLBOX
+#from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
+#jetToolbox( process, 'ak8', 'jetSequence', 'out', PUMethod='CHS', miniAOD=True, addPruning=True, addNsub=True ) 
+
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
@@ -244,7 +250,7 @@ process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor",
 #process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","BoostedJetVarProcessor","BoostedMCMatchVarProcessor"]
 process.BoostedAnalyzer.dumpSyncExe2=False
 
-#process.content = cms.EDAnalyzer("EventContentAnalyzer")
+process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:
     process.p = cms.Path(
         process.electronMVAValueMapProducer

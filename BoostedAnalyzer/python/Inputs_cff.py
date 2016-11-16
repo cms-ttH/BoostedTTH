@@ -28,4 +28,15 @@ Inputs_tth_sl= cms.PSet(
     conversionCollection= cms.InputTag("reducedEgamma:reducedConversions"),
     electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
     electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
+    
+    selectedPatJetsAK8PFCHS=cms.InputTag("selectedPatJetsAK8PFCHS"),
+    selectedPatJetsAK8PFCHSSoftDropPacked=cms.InputTag("selectedPatJetsAK8PFCHSSoftDropPacked"),
+    selectedPatJetsAK8PFCHSSoftDropSubjets=cms.InputTag("selectedPatJetsAK8PFCHSSoftDropSubjets"),
+    packedPatJetsAK8PFCHSSoftDrop=cms.InputTag("packedPatJetsAK8PFCHSSoftDrop"),
+    #selectedPatJetsAK8PFCHS=cms.InputTag("slimmedJetsAK8"),
+    #selectedPatJetsAK8PFCHSSoftDropPacked=cms.InputTag("slimmedJetsAK8PFCHSSoftDropPacked"),
+    #selectedPatJetsAK8PFCHSSoftDropSubjets=cms.InputTag("selectedPatJetsAK8PFCHSSoftDropSubjets"),
+    #NjettinessAK8CHS_tau1=cms.InputTag("NjettinessAK8CHS:tau1"),
+    #ak8PFJetsCHSSoftDropMass=cms.InputTag("ak8PFJetsCHSSoftDropMass"),
+
 )

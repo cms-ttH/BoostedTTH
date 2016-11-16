@@ -1,11 +1,12 @@
 import FWCore.ParameterSet.Config as cms
 # input
-process = cms.Process("p")
+process = cms.Process("ps")
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/00000/00A10CC4-4227-E611-BBF1-C4346BBCD528.root')
+                            fileNames = cms.untracked.vstring('/store/mc/RunIISpring16MiniAODv2/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/70000/2A282BF4-A21C-E611-80D9-0CC47A4D7692.root')
                             #fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIIFall15MiniAODv2/TT_TuneEE5C_13TeV-amcatnlo-herwigpp/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/00129514-9FB8-E511-9C7A-00266CFFC544.root')
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -142,6 +143,11 @@ process.patJetPartonMatchSFFilterjetsPF.matched = "prunedGenParticles"
 # all
 process.patJetPartons.particles = "prunedGenParticles"
 
+
+#Add JEtToolboxInformation
+from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
+jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True ) 
+
 #from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
 #process.ak4PFJetsCHS = ak4PFJets.clone(src = 'pfNoElectronsCHS', doAreaFastjet = True)
@@ -157,6 +163,9 @@ process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
 # skim
 process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
 
+
+process.content = cms.EDAnalyzer("EventContentAnalyzer")
+#process.ps = cms.Path(process.content *process.BoostedAnalyzer)
 # execute in the right order
 process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  #*process.LeptonJetsSkim
@@ -169,12 +178,19 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.patJetsSFFatJetsPF
                                  *process.patJetsSFSubjetsPF
                                  *process.patJetsSFFilterjetsPF
-                                 *process.BoostedJetMatcher)
-
+                                 *process.BoostedJetMatcher
+                                 *process.selectedPatJetsAK8PFCHS
+                                 *process.selectedPatJetsAK8PFCHSSoftDropPacked
+                                 *process.packedPatJetsAK8PFCHSSoftDrop
+                                 #*process.slimmedJetsAK8
+                                 #*process.slimmedJetsAK8PFCHSSoftDropPacked
+                                 *process.content
+                                 )
+    
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
-    fileName = cms.untracked.string('BoostedMiniAOD_ttbar_MC.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*BoostedJetMatcher*_*_*','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*']),
+    fileName = cms.untracked.string('MC_QCD_2000_inf.root'),
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*selectedPatJetsAK8PFCHS*_*_*','keep *_*ak8PFJetsCHSSoftDrop*_*_*','keep *_*packedPatJetsAK8PFCHSSoftDrop*_*_*' ,'keep *_*NjettinessAK8CHS*_*_*','keep *_*Nsubjettiness*_*_*','keep *_*cmsTopTagPF*_*_*','keep *_*SecondaryVertex*_*_*','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*BoostedJetMatcher*_*_*','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*']),
     #SelectEvents = cms.untracked.PSet(
     #    SelectEvents = cms.vstring("boosted_skimmed")
     #)
