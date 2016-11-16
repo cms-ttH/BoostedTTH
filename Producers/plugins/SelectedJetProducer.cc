@@ -162,8 +162,8 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
-   helper.SetJetCorrectorUncertainty(iSetup);
-   helper.SetBoostedJetCorrectorUncertainty(iSetup);
+   helper.SetJetCorrectorUncertainty(iSetup,"AK4PFchs");
+   helper.SetAK8JetCorrectorUncertainty(iSetup);
 
    edm::Handle<double> h_rho;
    iEvent.getByToken(rhoToken,h_rho);

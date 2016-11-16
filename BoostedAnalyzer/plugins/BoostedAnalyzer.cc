@@ -911,8 +911,8 @@ void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSet
 {
 
   // initialize JEC
-  helper.SetJetCorrectorUncertainty(iSetup);
-  helper.SetBoostedJetCorrectorUncertainty(iSetup);
+  helper.SetJetCorrectorUncertainty(iSetup,"AK4PFchs");
+  helper.SetAK8JetCorrectorUncertainty(iSetup);
 
 }
 
@@ -921,8 +921,8 @@ void BoostedAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const& iBlock, e
 {
 
   // initialize JEC
-  helper.SetJetCorrectorUncertainty(iSetup);
-  helper.SetBoostedJetCorrectorUncertainty(iSetup);
+  helper.SetJetCorrectorUncertainty(iSetup,"AK4PFchs");
+  helper.SetAK8JetCorrectorUncertainty(iSetup);
 
 }
 
