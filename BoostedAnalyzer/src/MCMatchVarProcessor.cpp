@@ -102,8 +102,8 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopLep_B_Hadron_Phi",-9., "N_GenTopLep" );
   vars.InitVars( "GenTopHad_B_Hadron_Phi",-9., "N_GenTopHad");
 
-  vars.InitVars("Jet_Dr_bfromTPrime",-9.,"N_Jets");
-  vars.InitVars("Jet_Dr_bfromBG",-9.,"N_Jets");
+//  vars.InitVars("Jet_Dr_bfromTPrime",-9.,"N_Jets");
+//  vars.InitVars("Jet_Dr_bfromBG",-9.,"N_Jets");
 
   
   initialized = true;
