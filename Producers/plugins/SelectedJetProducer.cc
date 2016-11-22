@@ -59,6 +59,8 @@ private:
     // ----------member data ---------------------------
     /** input jets data access token **/
     edm::EDGetTokenT< pat::JetCollection > jetsToken;
+    /** genjets data access token (for getcorrected jets) **/
+    edm::EDGetTokenT< reco::GenJetCollection> genjetsToken;
     /** muons data access token (for jet cleaning)**/
     edm::EDGetTokenT< pat::MuonCollection >     muonsToken;  
     /** electrons data access token (for jet cleaning)**/
@@ -80,7 +82,7 @@ private:
     std::vector<sysType::sysType> systematics;
     /** apply jet energy correciton? **/
     bool applyCorrection;
-    
+    bool isData;
 };
 
 //
@@ -98,6 +100,7 @@ private:
 SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
 {
     jetsToken  = consumes< pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
+    genjetsToken = consumes< reco::GenJetCollection >(iConfig.getParameter<edm::InputTag>("miniAODGenJets"));
     electronsToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("electrons"));
     muonsToken  = consumes< pat::MuonCollection >(iConfig.getParameter<edm::InputTag>("muons"));
     rhoToken  = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
@@ -110,7 +113,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     assert(ptMins.size()==etaMaxs.size());
     assert(ptMins.size()==collectionNames.size());
 
-    const bool isData = iConfig.getParameter<bool>("isData");
+    isData = iConfig.getParameter<bool>("isData");
     analysisType::analysisType iAnalysisType = analysisType::LJ;
     const int sampleID = isData? -1 : 1;
     const std::string era = "2015_74x";
@@ -129,8 +132,6 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
  
     }
     helper.SetUp(era, sampleID, iAnalysisType, isData);
-    helper.SetJetCorrectorUncertainty();
-    helper.SetBoostedJetCorrectorUncertainty();
 
     produces<pat::JetCollection>("rawJets");
 
@@ -161,13 +162,18 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
+   helper.SetJetCorrectorUncertainty(iSetup);
+   helper.SetBoostedJetCorrectorUncertainty(iSetup);
+
    edm::Handle<double> h_rho;
    iEvent.getByToken(rhoToken,h_rho);
    helper.SetRho(*h_rho);
 
    edm::Handle< pat::JetCollection > h_inputJets;
    iEvent.getByToken( jetsToken,h_inputJets );
-  
+   edm::Handle< reco::GenJetCollection > h_genJets;
+   if (!isData) {iEvent.getByToken( genjetsToken, h_genJets );}
+
    edm::Handle< pat::ElectronCollection > h_inputElectrons;
    iEvent.getByToken( electronsToken,h_inputElectrons );
 
@@ -188,9 +194,10 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
        iEvent.put(rawJets_, "rawJets");
        // Clean muons and electrons from jets
        std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);
-   // Apply jet corrections
+       // Apply jet corrections
+       //   Get genjets for new JER recommendation
        for(uint i=0; i<systematics.size(); i++){
-	   unsortedJets.push_back(helper.GetCorrectedJets(cleanJets, iEvent, iSetup, systematics[i]));
+	   unsortedJets.push_back(helper.GetCorrectedJets(cleanJets, iEvent, iSetup, h_genJets, systematics[i]));
        }
 
    }

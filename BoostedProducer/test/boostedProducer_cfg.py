@@ -2,7 +2,11 @@ import FWCore.ParameterSet.Config as cms
 # input
 process = cms.Process("ps")
 process.source = cms.Source("PoolSource",
+<<<<<<< HEAD
                             fileNames = cms.untracked.vstring('/store/mc/RunIISpring16MiniAODv2/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v2/00000/0EECAD9D-FA27-E611-B994-0CC47A4C8E1C.root')
+=======
+                            fileNames = cms.untracked.vstring('root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/10000/5CA27EE0-7729-E611-AB70-002590D8C7E2.root/')
+>>>>>>> CMSSW_8_0_8
                             #fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIIFall15MiniAODv2/TT_TuneEE5C_13TeV-amcatnlo-herwigpp/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/00129514-9FB8-E511-9C7A-00266CFFC544.root')
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
@@ -64,20 +68,26 @@ addJetCollection(
     pfCandidates = cms.InputTag('packedPFCandidates'),
     pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
     svSource = cms.InputTag('slimmedSecondaryVertices'),
+    elSource = cms.InputTag('slimmedElectrons'),
+    muSource = cms.InputTag('slimmedMuons'),
     algo = 'CA',
     rParam = 0.8,
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
-    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags' ]
+    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','pfCombinedMVAV2BJetTags' ],
+    explicitJTA = True,
+    svClustering = True,
+    fatJets=cms.InputTag('ca15PFJetsCHS'),
+    groomedFatJets=cms.InputTag('HTTTopJetProducer')
 )
 
-# SF fatjet
+# fatjet
 addJetCollection(
     process,
-    labelName = 'SFFatJetsPF',
+    labelName = 'FatJetsPF',
     postfix = "",
-    jetSource = cms.InputTag('SFJetProducer','fat'),
+    jetSource = cms.InputTag('ca15PFJetsCHS'),
     pfCandidates = cms.InputTag('packedPFCandidates'),
     pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
     svSource = cms.InputTag('slimmedSecondaryVertices'),
@@ -97,15 +107,28 @@ addJetCollection(
     labelName = 'SFSubjetsPF',
     postfix = "",
     jetSource = cms.InputTag('SFJetProducer','sub'),
+    pfCandidates = cms.InputTag('packedPFCandidates'),
+    pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    svSource = cms.InputTag('slimmedSecondaryVertices'),
+    elSource = cms.InputTag('slimmedElectrons'),
+    muSource = cms.InputTag('slimmedMuons'),
     algo = 'CA',
+<<<<<<< HEAD
     rParam = 0.8,
+=======
+    rParam = 1.5,
+>>>>>>> CMSSW_8_0_8
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
-    btagDiscriminators = None
+    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','pfCombinedMVAV2BJetTags' ],
+    explicitJTA = True,
+    svClustering = True,
+    fatJets=cms.InputTag('ca15PFJetsCHS'),
+    groomedFatJets=cms.InputTag('SFJetProducer','subcomp')
 )
 
-# SF filterjets
+# SF filtered subjets
 addJetCollection(
     process,
     labelName = 'SFFilterjetsPF',
@@ -114,31 +137,92 @@ addJetCollection(
     pfCandidates = cms.InputTag('packedPFCandidates'),
     pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
     svSource = cms.InputTag('slimmedSecondaryVertices'),
+    elSource = cms.InputTag('slimmedElectrons'),
+    muSource = cms.InputTag('slimmedMuons'),
     algo = 'CA',
+<<<<<<< HEAD
     rParam = 0.8,
+=======
+    rParam = 1.5,
+>>>>>>> CMSSW_8_0_8
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
-    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags' ]
+    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','pfCombinedMVAV2BJetTags' ],
+    explicitJTA = True,
+    svClustering = True,
+    fatJets = cms.InputTag('ca15PFJetsCHS'),
+    groomedFatJets = cms.InputTag('SFJetProducer','filtercomp')
 )
 
+# pruned subjets
+addJetCollection(
+    process,
+    labelName = 'PrunedSubjetsPF',
+    postfix = "",
+    jetSource = cms.InputTag('ca15PFPrunedJetsCHS','subjets'),
+    pfCandidates = cms.InputTag('packedPFCandidates'),
+    pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    svSource = cms.InputTag('slimmedSecondaryVertices'),
+    elSource = cms.InputTag('slimmedElectrons'),
+    muSource = cms.InputTag('slimmedMuons'),
+    algo = 'CA',
+    rParam = 1.5,
+    getJetMCFlavour = False,
+    genJetCollection = None,
+    jetCorrections = None,
+    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','pfCombinedMVAV2BJetTags' ],
+    explicitJTA = True,
+    svClustering = True,
+    fatJets=cms.InputTag('ca15PFJetsCHS'),
+    groomedFatJets=cms.InputTag('ca15PFPrunedJetsCHS')
+)
+
+# softdrop subjets
+addJetCollection(
+    process,
+    labelName = 'SDSubjetsPF',
+    postfix = "",
+    jetSource = cms.InputTag('ca15PFSoftdropJetsCHS','subjets'),
+    pfCandidates = cms.InputTag('packedPFCandidates'),
+    pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    svSource = cms.InputTag('slimmedSecondaryVertices'),
+    elSource = cms.InputTag('slimmedElectrons'),
+    muSource = cms.InputTag('slimmedMuons'),
+    algo = 'CA',
+    rParam = 1.5,
+    getJetMCFlavour = False,
+    genJetCollection = None,
+    jetCorrections = None,
+    btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags','pfCombinedMVAV2BJetTags' ],
+    explicitJTA = True,
+    svClustering = True,
+    fatJets=cms.InputTag('ca15PFJetsCHS'),
+    groomedFatJets=cms.InputTag('ca15PFSoftdropJetsCHS')
+)
 
 #adjust MC matching for all Boosted Jet collections
+#fatjets
+process.patJetsFatJetsPF.addGenJetMatch=False
+process.patJetPartonMatchFatJetsPF.matched = "prunedGenParticles"
 #HTT topjets
 process.patJetsHTTTopJetsPF.addGenJetMatch=False
 process.patJetPartonMatchHTTTopJetsPF.matched = "prunedGenParticles"
 #HTT subjets
 process.patJetsHTTSubjetsPF.addGenJetMatch=False
 process.patJetPartonMatchHTTSubjetsPF.matched = "prunedGenParticles"
-#SF fatjets
-process.patJetsSFFatJetsPF.addGenJetMatch=False
-process.patJetPartonMatchSFFatJetsPF.matched = "prunedGenParticles"
 #SF subjets
 process.patJetsSFSubjetsPF.addGenJetMatch=False
 process.patJetPartonMatchSFSubjetsPF.matched = "prunedGenParticles"
 #SF filterjets
 process.patJetsSFFilterjetsPF.addGenJetMatch=False
 process.patJetPartonMatchSFFilterjetsPF.matched = "prunedGenParticles"
+#pruned subjets
+process.patJetsPrunedSubjetsPF.addGenJetMatch=False
+process.patJetPartonMatchPrunedSubjetsPF.matched = "prunedGenParticles"
+#soft drop subjets
+process.patJetsSDSubjetsPF.addGenJetMatch=False
+process.patJetPartonMatchSDSubjetsPF.matched = "prunedGenParticles"
 
 # all
 process.patJetPartons.particles = "prunedGenParticles"
@@ -171,13 +255,19 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  #*process.LeptonJetsSkim
                                  *process.SelectedElectronProducer
                                  *process.SelectedMuonProducer
+                                 *process.ca15PFJetsCHS
                                  *process.HTTTopJetProducer
                                  *process.SFJetProducer
+                                 *process.ca15PFPrunedJetsCHS
+                                 *process.ca15PFSoftdropJetsCHS
+                                 *process.ca15PFSoftdropJetsCHSforSubjettiness
+				                         *process.ca15SoftdropSubjettiness
+                                 *process.patJetsFatJetsPF
                                  *process.patJetsHTTTopJetsPF
                                  *process.patJetsHTTSubjetsPF
-                                 *process.patJetsSFFatJetsPF
                                  *process.patJetsSFSubjetsPF
                                  *process.patJetsSFFilterjetsPF
+<<<<<<< HEAD
                                  *process.BoostedJetMatcher
                                  *process.selectedPatJetsAK8PFCHS
                                  *process.selectedPatJetsAK8PFCHSSoftDropPacked
@@ -187,6 +277,12 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.content
                                  )
     
+=======
+                                 *process.patJetsPrunedSubjetsPF
+                                 *process.patJetsSDSubjetsPF
+                                 *process.BoostedJetMatcher)
+
+>>>>>>> CMSSW_8_0_8
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('MC_QCD_1000_1500.root'),

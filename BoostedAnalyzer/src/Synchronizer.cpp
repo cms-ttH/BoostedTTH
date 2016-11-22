@@ -649,14 +649,17 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       bool jetmatched = false;
       for( auto rawJet: input_DL.rawJets){
 	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJetsLooseDL.at(0).p4()) < 0.01 ){
-	  double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
+	    //double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::NA,true,false) ;
+	    double jet1_JES = 1.0;
 	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
 	  
 
 
-	  double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false)/jet1_JES ;
+	    //	  double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESup,true,false)/jet1_JES ;
+	     double JESup =  1.0 ;
 	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
-	  double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false)/jet1_JES;
+	    //double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESdown,true,false)/jet1_JES;
+	     double JESdown =   1.0;
 	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
 
 	  jet1_JecSF = jet1_JES;
@@ -700,14 +703,17 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       bool jetmatched = false;
       for( auto rawJet: input.rawJets){
 	if( BoostedUtils::DeltaR(rawJet.p4(),input.selectedJets.at(0).p4()) < 0.01 ){
-	  double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
+	    //double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::NA,true,false) ;
+	    double jet1_JES = 1.0;
 	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
 	  
 
 
-	  double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false)/jet1_JES ;
+	  //double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESup,true,false)/jet1_JES ;
+	  double JESup =   1.0;
 	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
-	  double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false)/jet1_JES;
+	  //double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESdown,true,false)/jet1_JES;
+	  double JESdown =  1.0;
 	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
 
 	  jet1_JecSF = jet1_JES;

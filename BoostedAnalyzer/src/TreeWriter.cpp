@@ -30,7 +30,7 @@ TreeWriter::~TreeWriter(){
 }
 
 void TreeWriter::Init( std::string fileName){
-    cout << "initializing tree writer with" << fileName <<endl;
+  
   outFile = new TFile( (fileName+"_Tree.root").c_str(), "RECREATE" );
   outFile->cd();
 
@@ -52,7 +52,7 @@ std::vector<std::string> TreeWriter::GetTreeProcessorNames() const{
   return processorNames;
 }
 
-bool TreeWriter::Process(const InputCollections& input) {  
+bool TreeWriter::Process(const InputCollections& input,const bool& verbose) {  
 
   if(!initialized){
     for(uint i=0; i<processors.size(); i++){
@@ -66,9 +66,11 @@ bool TreeWriter::Process(const InputCollections& input) {
   vars.SetDefaultValues();
   
   for(uint i=0; i<processors.size(); i++){
+    if(verbose) std::cout << "Start processing " << processorNames.at(i) << std::endl;
     stopwatches[i].Start(false);
     processors[i]->Process(input,vars);
     stopwatches[i].Stop();
+    if(verbose) std::cout << "Done processing " << processorNames.at(i) << std::endl;
   }
 
   FillTree();

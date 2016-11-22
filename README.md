@@ -29,7 +29,7 @@ Follow These Steps:
     scram b -j 10
 Known issue: Running scram b for the first time results in error.
 Fix: Run scram b multiple times.
-    
+
 ## Overview
 BoostedObjects contains the classes needed for subjet-analysis. They associate fat jets with the corresponding filtered objects.
 
