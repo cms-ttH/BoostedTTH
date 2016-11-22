@@ -2,15 +2,12 @@ import FWCore.ParameterSet.Config as cms
 # input
 process = cms.Process("ps")
 process.source = cms.Source("PoolSource",
-<<<<<<< HEAD
-                            fileNames = cms.untracked.vstring('/store/mc/RunIISpring16MiniAODv2/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v2/00000/0EECAD9D-FA27-E611-B994-0CC47A4C8E1C.root')
-=======
-                            fileNames = cms.untracked.vstring('root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/10000/5CA27EE0-7729-E611-AB70-002590D8C7E2.root/')
->>>>>>> CMSSW_8_0_8
-                            #fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIIFall15MiniAODv2/TT_TuneEE5C_13TeV-amcatnlo-herwigpp/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/00129514-9FB8-E511-9C7A-00266CFFC544.root')
+
+fileNames = cms.untracked.vstring('/store/mc/RunIISpring16MiniAODv2/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v2/00000/0EECAD9D-FA27-E611-B994-0CC47A4C8E1C.root')
+#fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov///store/mc/RunIIFall15MiniAODv2/TT_TuneEE5C_13TeV-amcatnlo-herwigpp/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/00129514-9FB8-E511-9C7A-00266CFFC544.root')
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 # messages
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -71,7 +68,7 @@ addJetCollection(
     elSource = cms.InputTag('slimmedElectrons'),
     muSource = cms.InputTag('slimmedMuons'),
     algo = 'CA',
-    rParam = 0.8,
+    rParam = 0.4,
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
@@ -113,11 +110,8 @@ addJetCollection(
     elSource = cms.InputTag('slimmedElectrons'),
     muSource = cms.InputTag('slimmedMuons'),
     algo = 'CA',
-<<<<<<< HEAD
     rParam = 0.8,
-=======
-    rParam = 1.5,
->>>>>>> CMSSW_8_0_8
+
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
@@ -140,11 +134,8 @@ addJetCollection(
     elSource = cms.InputTag('slimmedElectrons'),
     muSource = cms.InputTag('slimmedMuons'),
     algo = 'CA',
-<<<<<<< HEAD
-    rParam = 0.8,
-=======
-    rParam = 1.5,
->>>>>>> CMSSW_8_0_8
+    rParam = 0.4,
+
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
@@ -167,7 +158,7 @@ addJetCollection(
     elSource = cms.InputTag('slimmedElectrons'),
     muSource = cms.InputTag('slimmedMuons'),
     algo = 'CA',
-    rParam = 1.5,
+    rParam = 0.8,
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
@@ -190,7 +181,7 @@ addJetCollection(
     elSource = cms.InputTag('slimmedElectrons'),
     muSource = cms.InputTag('slimmedMuons'),
     algo = 'CA',
-    rParam = 1.5,
+    rParam = 0.4,
     getJetMCFlavour = False,
     genJetCollection = None,
     jetCorrections = None,
@@ -261,13 +252,12 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  *process.ca15PFPrunedJetsCHS
                                  *process.ca15PFSoftdropJetsCHS
                                  *process.ca15PFSoftdropJetsCHSforSubjettiness
-				                         *process.ca15SoftdropSubjettiness
+				 *process.ca15SoftdropSubjettiness
                                  *process.patJetsFatJetsPF
                                  *process.patJetsHTTTopJetsPF
                                  *process.patJetsHTTSubjetsPF
                                  *process.patJetsSFSubjetsPF
                                  *process.patJetsSFFilterjetsPF
-<<<<<<< HEAD
                                  *process.BoostedJetMatcher
                                  *process.selectedPatJetsAK8PFCHS
                                  *process.selectedPatJetsAK8PFCHSSoftDropPacked
@@ -276,13 +266,7 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
                                  #*process.slimmedJetsAK8PFCHSSoftDropPacked
                                  *process.content
                                  )
-    
-=======
-                                 *process.patJetsPrunedSubjetsPF
-                                 *process.patJetsSDSubjetsPF
-                                 *process.BoostedJetMatcher)
 
->>>>>>> CMSSW_8_0_8
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('MC_QCD_1000_1500.root'),
