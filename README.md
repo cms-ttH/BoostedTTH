@@ -27,6 +27,8 @@ Follow These Steps:
     cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/SubjetFilterJetProducer.cc RecoJets/JetProducers/plugins/
     cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/FastjetJetProducer.cc RecoJets/JetProducers/plugins/ 
     scram b -j 10
+    scram b -j 10
+    
 Known issue: Running scram b for the first time results in error.
 Fix: Run scram b multiple times.
 
