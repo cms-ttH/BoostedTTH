@@ -480,24 +480,24 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     */
     //std::cout<<"selectedPatJetsAK8PFCHSSoftDropSubjets: "<<input.selectedPatJetsAK8PFCHSSoftDropSubjets.size()<<endl;
     
-    std::cout<<"# of packedPatJetsAK8PFCHSSoftDrop: "<<input.packedPatJetsAK8PFCHSSoftDrop.size()<<endl;
+    //std::cout<<"# of packedPatJetsAK8PFCHSSoftDrop: "<<input.packedPatJetsAK8PFCHSSoftDrop.size()<<endl;
     for( std::vector<pat::Jet>::const_iterator itJet=input.packedPatJetsAK8PFCHSSoftDrop.begin(); itJet!= input.packedPatJetsAK8PFCHSSoftDrop.end(); ++itJet){
         int iJet = itJet - input.packedPatJetsAK8PFCHSSoftDrop.begin();
         //std::cout<<"packedPatJetsAK8PFCHSSoftDrop CSV V2 "<<isubJet<<":"<<itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTagsAK8PFCHSSoftDropSubjets")<<endl;
-        std::cout<<"packedPatJetsAK8PFCHSSoftDrop "<<iJet<<" # of subjets:"<<itJet->subjets("SoftDrop").size()<<endl;
+        //std::cout<<"packedPatJetsAK8PFCHSSoftDrop "<<iJet<<" # of subjets:"<<itJet->subjets("SoftDrop").size()<<endl;
 
-            std::cout<<"# of daughters: "<<itJet->numberOfDaughters()<<endl;
+            //std::cout<<"# of daughters: "<<itJet->numberOfDaughters()<<endl;
             double max_subjet_csv_v2=-10;
             auto const & names = itJet->subjets("SoftDrop");
             for( auto const & itsubJet : names ){
-                std::cout<<"Subjet: "<<itsubJet<<endl;
-                std::cout<<"with CSVv2: "<<itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<endl;
+                //std::cout<<"Subjet: "<<itsubJet<<endl;
+                //std::cout<<"with CSVv2: "<<itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<endl;
                 if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
                     max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
                     vars.FillVars("packedPatJetsAK8PFCHSSoftDrop_subjetCSVv2",iJet,max_subjet_csv_v2);
                 }
             }
-            std::cout<<"minVCSV_v2: "<<max_subjet_csv_v2<<endl;
+            //std::cout<<"minVCSV_v2: "<<max_subjet_csv_v2<<endl;
     }
     
     //std::cout<<"selectedPatJetsAK8PFCHSSoftDropSubjets: "<<input.selectedPatJetsAK8PFCHSSoftDropSubjets.size()<<endl;
@@ -606,14 +606,14 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             float Dr_B_temp = BoostedUtils::DeltaR(bfromTPrime[j].p4(),jetvecs[i]);
                 if(Dr_B_temp<minDr_bfromTPrime){
                     minDr_bfromTPrime = Dr_B_temp;
-                    cout<<"minDr_bfromTPrime:  "<<minDr_bfromTPrime<<endl;
+                    //cout<<"minDr_bfromTPrime:  "<<minDr_bfromTPrime<<endl;
                 }
         }        
         for(size_t j=0;j<bfromTPrime.size();j++){   
             float Dr_B_temp = BoostedUtils::DeltaR(bfromTPrime[j].p4(),jetvecs[i]);
                 if(Dr_B_temp<minDr_bfromBG){
                     minDr_bfromBG = Dr_B_temp;
-                    cout<<"minDr_bfromBG:  "<<minDr_bfromBG<<endl;
+                    //cout<<"minDr_bfromBG:  "<<minDr_bfromBG<<endl;
                 }
         } 
            
