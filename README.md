@@ -24,8 +24,9 @@ Follow These Steps:
     cd $CMSSW_BASE/src
     sed -i 's/int member=0/int member/g' TTH/MEIntegratorStandalone/interface/Integrand.h
     sed -i 's/cfg.pdfset/cfg.pdfset, 0/g' TTH/MEIntegratorStandalone/src/Integrand.cpp
+    cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/SubjetFilterJetProducer.cc RecoJets/JetProducers/plugins/
+    cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/FastjetJetProducer.cc RecoJets/JetProducers/plugins/ 
     scram b -j 10
-
 Known issue: Running scram b for the first time results in error.
 Fix: Run scram b multiple times.
     
