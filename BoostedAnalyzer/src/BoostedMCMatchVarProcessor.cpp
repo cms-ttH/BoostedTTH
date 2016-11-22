@@ -54,7 +54,7 @@ void BoostedMCMatchVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "BoostedJet_Dr_GenQ2_CSV2",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_GenB_CSV2",-9.,"N_BoostedJets" );
 
-<<<<<<< HEAD
+
   vars.InitVars("BoostedJet_Dr_ZTop",-9.,"N_BoostedJets");
   vars.InitVars("BoostedJet_Dr_GenB_ZTop",-9.,"N_BoostedJets");
   vars.InitVars("BoostedJet_Dr_GenW_ZTop",-9.,"N_BoostedJets");
@@ -64,7 +64,7 @@ void BoostedMCMatchVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars("BoostedJet_Dr_WfromTPrime",-9.,"N_BoostedJets");
   vars.InitVars("BoostedJet_Dr_GenZTop_WfromTPrime",-9.,"N_BoostedJets");
   vars.InitVars("BoostedJet_Dr_GenbfromTPrime_WfromTPrime",-9.,"N_BoostedJets");  
-=======
+
   vars.InitVars( "BoostedJet_Dr_Subjet1_GenB1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Subjet2_GenB1",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_Subjet1_GenB2",-9.,"N_BoostedJets" );
@@ -93,7 +93,7 @@ void BoostedMCMatchVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet1_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet2_Q",-9.,"N_BoostedJets" );
   vars.InitVars( "BoostedJet_Dr_SoftdropSubjet3_Q",-9.,"N_BoostedJets" );
->>>>>>> CMSSW_8_0_8
+
 
   initialized = true;
 }
@@ -136,7 +136,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     higgs=input.genTopEvt.GetHiggs();
     higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
   }
-<<<<<<< HEAD
+
   if(input.zprimetotprimeallhad.IsFilled()){
     ZTop=input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes();
     TPrime=input.zprimetotprimeallhad.GetTPrimesandTPrimebars();
@@ -144,9 +144,9 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     bfromTPrime=input.zprimetotprimeallhad.GetBottom_fromTPrimesandTPrimebars();
   }
  
-=======
 
->>>>>>> CMSSW_8_0_8
+
+
   reco::GenParticle b1;
   reco::GenParticle b2;
 
@@ -194,12 +194,7 @@ void BoostedMCMatchVarProcessor::Process(const InputCollections& input,VariableC
     float minDr_TopQ2_B = 999;
     float minDr_TopQ2_W1 = 999;
     float minDr_TopQ2_W2 = 999;
-<<<<<<< HEAD
-    
-   
-=======
 
->>>>>>> CMSSW_8_0_8
     for(size_t j=0;j<tophad.size();j++){
 
       float Dr_temp = BoostedUtils::DeltaR(tophad[j].p4(),input.selectedBoostedJets[i].fatjet.p4());

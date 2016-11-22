@@ -515,17 +515,15 @@ void BoostedJetVarProcessor::FillFatJetVars(const InputCollections& input,Variab
 	  primlepvec = BoostedUtils::GetPrimLepVec(input.selectedElectronsLoose,input.selectedMuonsLoose);
 
   vars.FillVar("N_BoostedJets",input.selectedBoostedJets.size());
-<<<<<<< HEAD
-  cout<<"N_BoostedJets  "<<input.selectedBoostedJets.size()<<endl;
 
-  for(size_t i=0; i< input.selectedBoostedJets.size(); i++){
-   
-=======
+  cout<<"N_BoostedJets  "<<input.selectedBoostedJets.size()<<endl;
+ 
+
 
   for(size_t i=0; i< input.selectedBoostedJets.size(); i++){
 
     // Get BoostedJet Objects
->>>>>>> CMSSW_8_0_8
+
     pat::Jet fatjet = input.selectedBoostedJets[i].fatjet;
 
     vars.FillVars( "BoostedJet_E",i,fatjet.energy() );

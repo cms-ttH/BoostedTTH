@@ -57,7 +57,6 @@ SFJetProducer = cms.EDProducer(
       jetPtMin      = cms.double(180.0)
     ),
     AnomalousCellParameters,
-<<<<<<< HEAD
     jetAlgorithm 	  = cms.string("CambridgeAachen"),
     nFatMax      	  = cms.uint32(0),
     rParam       	  = cms.double(0.8),
@@ -65,17 +64,7 @@ SFJetProducer = cms.EDProducer(
     massDropCut  	  = cms.double(0.67),
     asymmCut     	  = cms.double(0.3),
     asymmCutLater	  = cms.bool(True)	
-=======
-    jetAlgorithm 	      = cms.string("CambridgeAachen"),
-    nFatMax      	      = cms.uint32(0),
-    rParam       	      = cms.double(1.5),
-    rFilt        	      = cms.double(0.3),
-    massDropCut  	      = cms.double(0.67),
-    asymmCut     	      = cms.double(0.3),
-    asymmCutLater	      = cms.bool(True)#,
-#    writeCompound       = cms.bool(True),
-#    jetCollInstanceName = cms.string("compjets")
->>>>>>> CMSSW_8_0_8
+
 )
 
 ca15PFPrunedJetsCHS = ca15PFJetsCHS.clone(
