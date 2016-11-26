@@ -30,10 +30,12 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/StreamID.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
+#include "MiniAOD/MiniAODHelper/interface/Systematics.h"
 //
 // class declaration
 //
@@ -119,17 +121,11 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     const std::string era = "2015_74x";
     const std::vector<std::string> s_systematics = iConfig.getParameter< std::vector<std::string> >("systematics");
     for(uint i=0; i<s_systematics.size(); i++){
-	if(s_systematics[i]=="") systematics.push_back(sysType::NA);
- 	else if(s_systematics[i]=="jesup") systematics.push_back(sysType::JESup);
-	else if(s_systematics[i]=="jesdown") systematics.push_back(sysType::JESdown);
-	else if(s_systematics[i]=="jerup") systematics.push_back(sysType::JERup);
-	else if(s_systematics[i]=="jerdown") systematics.push_back(sysType::JERdown);
-	else{
-	    std::cerr << "SelectedJetProducer: systematic name " << s_systematics[i] << " not recognized" << std::endl;
-	    throw std::exception();
-
-	}
- 
+      try {
+	systematics.push_back(sysType::get(s_systematics[i]));
+      } catch(cms::Exception& e) {
+	throw cms::Exception("InvalidUncertaintyName") << "SelectedJetProducer: systematic name " << s_systematics[i] << " not recognized" << std::endl;
+      }
     }
     helper.SetUp(era, sampleID, iAnalysisType, isData);
 
@@ -162,7 +158,7 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
-   helper.SetJetCorrectorUncertainty(iSetup,"AK4PFchs");
+   helper.UpdateJetCorrectorUncertainties(iSetup);
    helper.SetAK8JetCorrectorUncertainty(iSetup);
 
    edm::Handle<double> h_rho;
@@ -221,16 +217,8 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 }
 
 std::string SelectedJetProducer::systName(std::string name,sysType::sysType sysType){
-    if(sysType==sysType::NA) return name;
-    if(sysType==sysType::JESup) return name+"jesup";
-    if(sysType==sysType::JESdown) return name+"jesdown";
-    if(sysType==sysType::JERup) return name+"jerup";
-    if(sysType==sysType::JERdown) return name+"jerdown";
-    std::cerr << "SelectedJetProducer: systematic #"<< sysType<< " not implemented" << std::endl;
-    throw std::exception();
-    return name;
-
-    
+  if( sysType == sysType::NA ) return name;
+  else                         return name + sysType::toString(sysType);
 }
 
 // ------------ method called once each stream before processing any runs, lumis or events  ------------
