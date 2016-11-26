@@ -121,34 +121,34 @@ if options.isData:
 if options.isData:
     process.GlobalTag.toGet.append(
         cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_DATA.db'),
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
             record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK4PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PFchs'),
             label  = cms.untracked.string('AK4PFchs')
         )
     )
     process.GlobalTag.toGet.append(
         cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_DATA.db'),
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
             record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK8PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK8PFchs'),
             label  = cms.untracked.string('AK8PFchs')
         )
     )
 else:
     process.GlobalTag.toGet.append(
         cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_MC.db'),
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
             record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK4PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PFchs'),
             label  = cms.untracked.string('AK4PFchs')
         )
     )
     process.GlobalTag.toGet.append(
         cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_MC.db'),
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
             record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK8PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK8PFchs'),
             label  = cms.untracked.string('AK8PFchs')
         )
     )
@@ -199,7 +199,7 @@ if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
 
 if options.makeSystematicsTrees:
-    systs=["","jesup","jesdown"]#,"jerup","jerdown"]
+    systs=["","JESup","JESdown","JESAbsoluteScaleup","JESAbsoluteScaledown"]#,"JERup","JERdown"]
     process.SelectedJetProducer.systematics=systs
     process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
     process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
