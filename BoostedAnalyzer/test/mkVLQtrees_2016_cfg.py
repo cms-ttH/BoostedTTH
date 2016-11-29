@@ -47,7 +47,7 @@ if options.globalTag is "NONE":
 		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
 
 if not options.inputFiles:
-    options.inputFiles=['file:/afs/cern.ch/user/s/skudella/mergetest/MC_QCD_1000_1500.root']
+    options.inputFiles=['file:/afs/cern.ch/user/s/skudella/mergetest/MC_QCD_1000_1500_small.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL","VetoL"]:
@@ -107,6 +107,7 @@ process.source = cms.Source(
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
 # necessarily reflect actual corrections level
+
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
 process.ak4PFCHSL1Fastjet = cms.ESProducer(
     'L1FastjetCorrectionESProducer',
@@ -134,7 +135,7 @@ process.ak8PFCHSL1Fastjet = cms.ESProducer(
     algorithm = cms.string('AK8PFchs'),
     srcRho = cms.InputTag( 'fixedGridRhoFastjetAll' )
 )
-process.ak8PFchsL2Relative = ak4CaloL2Relative.clone( algorithm = 'AK8PFchs' )
+process.ak8PFchsL2Relative = fixedGridRhoFastjetAllak4CaloL2Relative.clone( algorithm = 'AK8PFchs' )
 process.ak8PFchsL3Absolute = ak4CaloL3Absolute.clone( algorithm = 'AK8PFchs' )
 process.ak8PFchsResidual = ak4CaloResidual.clone( algorithm = 'AK8PFchs' )
 process.ak8PFchsL1L2L3 = cms.ESProducer(
@@ -233,20 +234,26 @@ process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.BoostedAnalyzer.minJets = [3]
 process.BoostedAnalyzer.maxJets = [-1]
-process.BoostedAnalyzer.minTags = [2]
+process.BoostedAnalyzer.minTags = []
 process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 3
 process.BoostedAnalyzer.minTagsForMEM = 1
 process.BoostedAnalyzer.doJERsystematic = False
 
 
-#process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
 process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
 
 if options.additionalSelection!="NONE":
     process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","MCMatchVarProcessor","ZPrimeToTPrimeAllHadProcessor","BoostedJetVarProcessor","BoostedMCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames = ["WeightProcessor",
+"BasicVarProcessor",
+"MVAVarProcessor",
+"MCMatchVarProcessor",
+"ZPrimeToTPrimeAllHadProcessor",
+"BoostedJetVarProcessor",
+"BoostedMCMatchVarProcessor"]
 #process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","BoostedJetVarProcessor","BoostedMCMatchVarProcessor"]
 process.BoostedAnalyzer.dumpSyncExe2=False
 
@@ -269,7 +276,13 @@ else:
         #                    *process.content
         *process.SelectedJetProducer
         *process.CorrectedMETproducer
-        *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+      	*process.genParticlesForJetsNoNu
+	*process.ak4GenJetsCustom
+	*process.selectedHadronsAndPartons
+	*process.genJetFlavourInfos
+	*process.matchGenBHadron
+	*process.matchGenCHadron
+	*process.categorizeGenTtbar
 
         *process.BoostedAnalyzer
     )

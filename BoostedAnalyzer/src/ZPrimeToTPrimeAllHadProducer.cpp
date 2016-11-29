@@ -393,7 +393,7 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
     }
     
     if(wminus_fromTop_decay_products.size()!=2 || wplus_fromTop_decay_products.size()!=2 || wminus_fromTPrime_decay_products.size()!=2 || wplus_fromTPrime_decay_products.size()!=2 || ZPrime_decay_products.size()!=2 || Z_decay_products.size()!=2 || Higgs_decay_products.size()!=2) {
-        std::cerr << "ZPrimeToTPrimeAllHad: error 2"<<std::endl;
+        //std::cerr << "ZPrimeToTPrimeAllHad: error 2"<<std::endl;
         while(wminus_fromTop_decay_products.size()<2){
             wminus_fromTop_decay_products.push_back(reco::GenParticle());
         }

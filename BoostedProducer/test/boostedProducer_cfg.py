@@ -221,7 +221,7 @@ process.patJetPartons.particles = "prunedGenParticles"
 
 #Add JEtToolboxInformation
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True ) 
+jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 80' ) 
 
 #from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
@@ -242,26 +242,26 @@ process.load("BoostedTTH.BoostedProducer.LeptonJetsSkim_cfi")
 process.content = cms.EDAnalyzer("EventContentAnalyzer")
 #process.ps = cms.Path(process.content *process.BoostedAnalyzer)
 # execute in the right order
-process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
+process.boosted_skimmed=cms.Path(#process.electronMVAValueMapProducer
                                  #*process.LeptonJetsSkim
-                                 *process.SelectedElectronProducer
-                                 *process.SelectedMuonProducer
-                                 *process.ca15PFJetsCHS
-                                 *process.HTTTopJetProducer
-                                 *process.SFJetProducer
-                                 *process.ca15PFPrunedJetsCHS
-                                 *process.ca15PFSoftdropJetsCHS
-                                 *process.ca15PFSoftdropJetsCHSforSubjettiness
-				 *process.ca15SoftdropSubjettiness
-                                 *process.patJetsFatJetsPF
-                                 *process.patJetsHTTTopJetsPF
-                                 *process.patJetsHTTSubjetsPF
-                                 *process.patJetsSFSubjetsPF
-                                 *process.patJetsSFFilterjetsPF
-                                 *process.BoostedJetMatcher
-                                 *process.selectedPatJetsAK8PFCHS
-                                 *process.selectedPatJetsAK8PFCHSSoftDropPacked
-                                 *process.packedPatJetsAK8PFCHSSoftDrop
+                                 #*process.SelectedElectronProducer
+                                 #*process.SelectedMuonProducer
+                                 #*process.ca15PFJetsCHS
+                                 #*process.HTTTopJetProducer
+                                 #*process.SFJetProducer
+                                 #*process.ca15PFPrunedJetsCHS
+                                 #*process.ca15PFSoftdropJetsCHS
+                                 #*process.ca15PFSoftdropJetsCHSforSubjettiness
+				 #*process.ca15SoftdropSubjettiness
+                                 #*process.patJetsFatJetsPF
+                                 #*process.patJetsHTTTopJetsPF
+                                 #*process.patJetsHTTSubjetsPF
+                                 #*process.patJetsSFSubjetsPF
+                                 #*process.patJetsSFFilterjetsPF
+                                 #process.BoostedJetMatcher
+                                 #process.selectedPatJetsAK8PFCHS
+                                 #*process.selectedPatJetsAK8PFCHSSoftDropPacked
+                                 process.packedPatJetsAK8PFCHSSoftDrop
                                  #*process.slimmedJetsAK8
                                  #*process.slimmedJetsAK8PFCHSSoftDropPacked
                                  *process.content
@@ -269,8 +269,26 @@ process.boosted_skimmed=cms.Path(process.electronMVAValueMapProducer
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
-    fileName = cms.untracked.string('MC_QCD_1000_1500.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*selectedPatJetsAK8PFCHS*_*_*','keep *_*ak8PFJetsCHSSoftDrop*_*_*','keep *_*packedPatJetsAK8PFCHSSoftDrop*_*_*' ,'keep *_*NjettinessAK8CHS*_*_*','keep *_*Nsubjettiness*_*_*','keep *_*cmsTopTagPF*_*_*','keep *_*SecondaryVertex*_*_*','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_*BoostedJetMatcher*_*_*','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*']),
+    fileName = cms.untracked.string('MC_QCD_1000_1500_small.root'),
+    outputCommands = cms.untracked.vstring([
+	'drop *',
+	#'keep *_*selectedPatJetsAK8PFCHS*_*_*',
+	'keep *_*ak8PFJetsCHSSoftDrop*_*_*',
+	'keep *_*packedPatJetsAK8PFCHSSoftDrop*_*_*' ,
+	'keep *_*NjettinessAK8CHS*_*_*',
+	#'keep *_*Nsubjettiness*_*_*',
+	#'keep *_*cmsTopTagPF*_*_*',
+	'keep *_*SecondaryVertex*_*_*',
+	#'keep *_*_*_PAT',
+	#'keep *_*_*_RECO',
+	#'keep *_*_*_HLT*',
+	#'keep *_*_*_SIM',
+	#'keep *_*_*_LHE',
+	#'keep *_*BoostedJetMatcher*_*_*',
+	#'keep *_matchGen*Hadron_*_*',
+	'keep *_ak4GenJetsCustom_*_*',
+	#'keep *_categorizeGenTtbar_*_*'
+	]),
     #SelectEvents = cms.untracked.PSet(
     #    SelectEvents = cms.vstring("boosted_skimmed")
     #)
