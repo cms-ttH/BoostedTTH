@@ -12,7 +12,7 @@ Follow These Steps:
     cmsenv   
     git cms-merge-topic gkasieczka:htt-v2-76X
     git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_8
-    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_8
+    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_8_VLQ
     mkdir Other
     cd Other
     git clone https://github.com/kit-cn-cms/bjetness-code.git .
@@ -27,6 +27,8 @@ Follow These Steps:
     cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/SubjetFilterJetProducer.cc RecoJets/JetProducers/plugins/
     cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/FastjetJetProducer.cc RecoJets/JetProducers/plugins/ 
     scram b -j 10
+    scram b -j 10
+    
 Known issue: Running scram b for the first time results in error.
 Fix: Run scram b multiple times.
 
