@@ -161,11 +161,22 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
 
 ///Variables after reconstruction
   
-   vars.InitVar("Top_candidates_pt","I");
-   vars.InitVar("Top_candidates_withbtag_pt","I");  
-   vars.InitVar("W_candidates_pt","I");
-   vars.InitVar("Bottom_candidates_pt","I");
-   vars.InitVar("Bottom_anti_candidates_pt","I");
+   vars.InitVar("Top_pt","I");
+   vars.InitVar("Top_eta","I");
+   vars.InitVar("Top_anti_pt","I");
+   vars.InitVar("Top_anti_eta","I");
+   vars.InitVar("Top_withbtag_pt","I");  
+   vars.InitVar("Top_withbtag_eta","I");
+   vars.InitVar("Top_withbtag_anti_pt","I");  
+   vars.InitVar("Top_withbtag_anti_eta","I");  
+   vars.InitVar("W_pt","I");
+   vars.InitVar("W_eta","I");
+   vars.InitVar("W_anti_pt","I");
+   vars.InitVar("W_anti_eta","I");
+   vars.InitVar("Bottom_pt","I");
+   vars.InitVar("Bottom_eta","I");
+   vars.InitVar("Bottom_anti_pt","I");
+   vars.InitVar("Bottom_anti_eta","I");
 
    vars.InitVar("Tprime_M","I");
    vars.InitVar("Tprime_pt","I");   
@@ -879,7 +890,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   
   if (input.zprimetotprimeallhad.IsFilled() && input.packedPatJetsAK8PFCHSSoftDrop.size()>0){
     for(std::vector<pat::Jet>::const_iterator itJet=input.packedPatJetsAK8PFCHSSoftDrop.begin(); itJet != input.packedPatJetsAK8PFCHSSoftDrop.end(); ++itJet){
-        int iJet = itJet - input.selectedJets.begin();
+        int iJet = itJet - input.packedPatJetsAK8PFCHSSoftDrop.begin();
 
         
         float minDr_TopZprime = -999;
