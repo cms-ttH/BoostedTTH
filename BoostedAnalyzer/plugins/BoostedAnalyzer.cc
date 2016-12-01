@@ -98,6 +98,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenJetOrderedJetCollectionProcessor.hpp"
 //
 // class declaration
 //
@@ -318,6 +319,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
       csvReweighter.init( bTagSFsPS.getParameter<std::string>("fileNameHF"),
 			  bTagSFsPS.getParameter<std::string>("fileNameLF"),
 			  bTagSFsPS.getParameter<int>("nHFPtBins") );
+      if( bTagSFsPS.existsAs<bool>("AllowJetsOutOfBinning",true) ) {
+	csvReweighter.allowJetsOutOfBinning(bTagSFsPS.getParameter<bool>("AllowJetsOutOfBinning"));
+      }
     }
 
     // INITIALIZE PU WEIGHTS
@@ -452,6 +456,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"SpinCorrelationProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
+	}
+	if(std::find(processorNames.begin(),processorNames.end(),"GenJetOrderedJetCollectionProcessor")!=processorNames.end()) {
+	  treewriter->AddTreeProcessor(new GenJetOrderedJetCollectionProcessor,"GenJetOrderedJetCollectionProcessor");
 	}
     }
 
