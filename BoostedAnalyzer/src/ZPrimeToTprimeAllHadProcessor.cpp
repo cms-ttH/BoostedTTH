@@ -153,27 +153,46 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Dr_BottomBG",-9.,"N_packedPatJetsAK8PFCHSSoftDrop");
 
     
-///Variables after reconstruction
     
    vars.InitVars("Jet_Dr_bfromTPrime",-9.,"N_Jets");
    vars.InitVars("Jet_Dr_bfromBG",-9.,"N_Jets");    
   
-   vars.InitVar("Zprime_M","I");
-   vars.InitVar("Zprime_withtop_btag_M","I");
-   vars.InitVar("Zprime_bottom_anti_M","I");
-   vars.InitVar("Zprime_bottom_anti_withtop_btag_M","I");
 
-   vars.InitVar("Tprime_M","I");
-   vars.InitVar("Tprime_bottom_anti_M","I");   
-   vars.InitVar("Tprime_pt","I");
-   vars.InitVar("Tprime_bottom_anti_pt","I");
-   
+
+///Variables after reconstruction
+  
    vars.InitVar("Top_candidates_pt","I");
    vars.InitVar("Top_candidates_withbtag_pt","I");  
    vars.InitVar("W_candidates_pt","I");
    vars.InitVar("Bottom_candidates_pt","I");
    vars.InitVar("Bottom_anti_candidates_pt","I");
-  
+
+   vars.InitVar("Tprime_M","I");
+   vars.InitVar("Tprime_pt","I");   
+   vars.InitVar("Tprime_bottom_anti_M","I");
+   vars.InitVar("Tprime_bottom_anti_pt","I");
+   vars.InitVar("Tprime_W_anti_M","I");
+   vars.InitVar("Tprime_W_anti_pt","I");   
+   vars.InitVar("Tprime_W_anti_bottom_anti_M","I");
+   vars.InitVar("Tprime_W_anti_bottom_anti_pt","I");
+   
+   vars.InitVar("Zprime_M","I");
+   vars.InitVar("Zprime_withtopbtag_M","I");
+   vars.InitVar("Zprime_top_anti_M","I");
+   vars.InitVar("Zprime_top_anti_W_anti_M","I");
+   vars.InitVar("Zprime_top_anti_bottom_anti_M","I");
+   vars.InitVar("Zprime_withtop_btag_M","I");
+   vars.InitVar("Zprime_top_withbtag_anti_M","I");
+   vars.InitVar("Zprime_top_withbtag_anti_W_anti_M","I");
+   vars.InitVar("Zprime_top_withbtag_anti_bottom_anti_M","I");
+   vars.InitVar("Zprime_top_withbtag_anti_W_anti_bottom_anti_M","I");
+   vars.InitVar("Zprime_W_anti_M","I");
+   vars.InitVar("Zprime_withtopbtag_W_anti_M","I");
+   vars.InitVar("Zprime_bottom_anti_M","I");
+   vars.InitVar("Zprime_withtopbtag_bottom_anti_M","I");
+   vars.InitVar("Zprime_W_anti_bottom_anti_M","I");
+   vars.InitVar("Zprime_withtopbtag_W_anti_bottom_anti_M","I");
+   
 ///Variables for misstag rates
    vars.InitVar("N_misstagged_top","I");
    vars.InitVars("misstagged_top_pt","N_misstagged_top");
@@ -188,6 +207,39 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVars("misstagged_bottom_pt","N_misstagged_bottom");
    vars.InitVars("misstagged_bottom_eta","N_misstagged_bottom");
    
+   vars.InitVar("N_tagged_top","I");
+   vars.InitVars("tagged_top_pt","N_tagged_top");
+   vars.InitVars("tagged_top_eta","N_tagged_top");
+   vars.InitVar("N_tagged_top_withbtag","I");
+   vars.InitVars("tagged_top_withbtag_pt","N_tagged_top_withbtag");
+   vars.InitVars("tagged_top_withbtag_eta","N_tagged_top_withbtag");
+   vars.InitVar("N_tagged_W","I");
+   vars.InitVars("tagged_W_pt","N_tagged_W");
+   vars.InitVars("tagged_W_eta","N_tagged_W");
+   vars.InitVar("N_tagged_bottom","I");
+   vars.InitVars("tagged_bottom_pt","N_tagged_bottom");
+   vars.InitVars("tagged_bottom_eta","N_tagged_bottom");
+   
+   
+   vars.InitVar("N_AK8_top_candidates","I");
+   vars.InitVars("AK8_top_candidates_pt","N_AK8_top_candidates");
+   vars.InitVars("AK8_top_candidates_eta","N_AK8_top_candidates");
+   vars.InitVar("N_AK8_W_candidates","I");
+   vars.InitVars("AK8_W_candidates_pt","N_AK8_W_candidates");
+   vars.InitVars("AK8_W_candidates_eta","N_AK8_W_candidates");
+   vars.InitVar("N_AK4_bottom_candidates","I");
+   vars.InitVars("AK4_bottom_candidates_pt","N_AK4_bottom_candidates");
+   vars.InitVars("AK4_bottom_candidates_eta","N_AK4_bottom_candidates");
+   
+   vars.InitVar("N_AK8_top_tag_candidates","I");
+   vars.InitVars("AK8_top_tag_candidates_pt","N_AK8_top_tag_candidates");
+   vars.InitVars("AK8_top_tag_candidates_eta","N_AK8_top_tag_candidates");
+   vars.InitVar("N_AK8_W_tag_candidates","I");
+   vars.InitVars("AK8_W_tag_candidates_pt","N_AK8_W_tag_candidates");
+   vars.InitVars("AK8_W_tag_candidates_eta","N_AK8_W_tag_candidates");
+   vars.InitVar("N_AK4_bottom_tag_candidates","I");
+   vars.InitVars("AK4_bottom_tag_candidates_pt","N_AK4_bottom_tag_candidates");
+   vars.InitVars("AK4_bottom_tag_candidates_eta","N_AK4_bottom_tag_candidates");
    vars.InitVar("N_AK8_top_misstag_candidates","I");
    vars.InitVars("AK8_top_misstagged_candidates_pt","N_AK8_top_misstag_candidates");
    vars.InitVars("AK8_top_misstagged_candidates_eta","N_AK8_top_misstag_candidates");
@@ -573,16 +625,26 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     bool Tprime_W_anti_candidatefound=false;
     bool Tprime_W_anti_bottom_anti_candidatefound=false;
 
-    
-    std::vector<pat::Jet> misstagged_top;
-    std::vector<pat::Jet> misstagged_top_withbtag;
-    std::vector<pat::Jet> misstagged_W;
-    std::vector<pat::Jet> misstagged_bottom;
     std::vector<pat::Jet> AK8_top_candidates;
     std::vector<pat::Jet> AK8_W_candidates;
     std::vector<pat::Jet> AK4_bottom_candidates;
     
+    std::vector<pat::Jet> AK8_top_tag_candidates;
+    std::vector<pat::Jet> AK8_W_tag_candidates;
+    std::vector<pat::Jet> AK4_bottom_tag_candidates;
+    std::vector<pat::Jet> AK8_top_misstag_candidates;
+    std::vector<pat::Jet> AK8_W_misstag_candidates;
+    std::vector<pat::Jet> AK4_bottom_misstag_candidates;
 
+    std::vector<pat::Jet> tagged_top;
+    std::vector<pat::Jet> tagged_top_withbtag;
+    std::vector<pat::Jet> tagged_W;
+    std::vector<pat::Jet> tagged_bottom;
+    std::vector<pat::Jet> misstagged_top;
+    std::vector<pat::Jet> misstagged_top_withbtag;
+    std::vector<pat::Jet> misstagged_W;
+    std::vector<pat::Jet> misstagged_bottom;
+    
     //uint N_AK8_top_misstag_candidates=0;
     //uint N_AK8_W_misstag_candidates=0;
     //uint N_AK4_bottom_misstag_candidates=0;
@@ -596,9 +658,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
        
 ///General AK8-Jet        
         for(std::vector<pat::Jet>::const_iterator itJet=input.packedPatJetsAK8PFCHSSoftDrop.begin(); itJet != input.packedPatJetsAK8PFCHSSoftDrop.end(); ++itJet){
-            int iJet = itJet - input.packedPatJetsAK8PFCHSSoftDrop.begin();
+            //int iJet = itJet - input.packedPatJetsAK8PFCHSSoftDrop.begin();
 
-            double max_subjet_csv_v2=-10;
+            /*double max_subjet_csv_v2=-10;
             auto const & names = itJet->subjets("SoftDrop");
             for( auto const & itsubJet : names ){
 
@@ -606,22 +668,19 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                     max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
                     vars.FillVars("packedPatJetsAK8PFCHSSoftDrop_subjetCSVv2",iJet,max_subjet_csv_v2);
                 }
-            }
+            }*/
             
 ///top- and W-candidates
             if (itJet->pt()>200 && abs(itJet->eta())<2.4){
-                //N_AK8_W_misstag_candidates+=1;
-                if (itJet->pt()>400){
-                    //N_AK8_top_misstag_candidates+=1;
-                }
-                
+               
 //top candidates
                 if (itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && (itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2"))<0.86 && 110<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<210 && itJet->pt()>400){
                     if (itJet->pt()>top_pt_max){
                         top=*itJet;
                         top_pt_max=itJet->pt();
                         top_candidatefound=true;
-                        vars.FillVar("Top_candidates_pt",top_pt_max);
+                        vars.FillVar("Top_pt",top.pt());
+                        vars.FillVar("Top_eta",top.eta());
                     }
                     double max_subjet_csv_v2=-10;
                     auto const & names = itJet->subjets("SoftDrop");
@@ -634,7 +693,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                         top_withbtag=*itJet;
                         top_withbtag_candidatefound=true;
                         top_withbtag_pt_max= itJet->pt();
-                        vars.FillVar("Top_candidates_withbtag_pt",top_withbtag_pt_max);
+                        vars.FillVar("Top_withbtag_pt",top_withbtag.pt());
+                        vars.FillVar("Top_withbtag_eta",top_withbtag.eta());
                     }
                     
                 }
@@ -643,6 +703,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                         top_anti=*itJet;
                         top_anti_pt_max=itJet->pt();
                         top_anti_candidatefound=true;
+                        vars.FillVar("Top_anti_pt",top_anti.pt());
+                        vars.FillVar("Top_anti_eta",top_anti.eta());
                     }
                     double max_subjet_csv_v2=-10;
                     auto const & names = itJet->subjets("SoftDrop");
@@ -655,7 +717,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                         top_withbtag_anti=*itJet;
                         top_withbtag_anti_candidatefound=true;
                         top_withbtag_anti_pt_max= itJet->pt();
-                        vars.FillVar("Top_candidates_withbtag_anti_pt",top_withbtag_anti_pt_max);
+                        vars.FillVar("Top_withbtag_anti_pt",top_withbtag_anti.pt());
+                        vars.FillVar("Top_withbtag_anti_eta",top_withbtag_anti.eta());
                     }
                 }
                     
@@ -664,13 +727,15 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                     W=*itJet;
                     W_candidatefound=true;
                     W_pt_max=itJet->pt();
-                    vars.FillVar("W_candidates_pt",W_pt_max);
+                    vars.FillVar("W_pt",W.pt());
+                    vars.FillVar("W_eta",W.eta());
                 }
                 else if (itJet->pt()>W_anti_pt_max){
                     W_anti=*itJet;
                     W_anti_candidatefound=true;
                     W_anti_pt_max=itJet->pt();
-                    vars.FillVar("W_anti_candidates_pt",W_anti_pt_max);
+                    vars.FillVar("W_anti_pt",W_anti.pt());
+                    vars.FillVar("W_anti_eta",W_anti.eta());
                 }
             }  
         }
@@ -679,24 +744,26 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     
 //AK4-Jets
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
-    int iJet = itJet - input.selectedJets.begin();
+    //int iJet = itJet - input.selectedJets.begin();
     if(input.zprimetotprimeallhad.IsFilled()){
         if (itJet->pt()>100 && abs(itJet->eta())<2.4){
             //N_AK4_bottom_misstag_candidates+=1;
-            vars.FillVars("AK4_bottom_misstagged_candidates_pt",iJet,itJet->pt());
-            vars.FillVars("AK4_bottom_misstagged_candidates_eta",iJet,itJet->eta());
+            //vars.FillVars("AK4_bottom_misstagged_candidates_pt",iJet,itJet->pt());
+            //vars.FillVars("AK4_bottom_misstagged_candidates_eta",iJet,itJet->eta());
             
             if (MiniAODHelper::GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.800 && itJet->pt()>bottom_pt_max){
                 bottom=*itJet;
                 bottom_candidatefound=true;
                 bottom_pt_max=itJet->pt();
-                vars.FillVar("Bottom_candidates_pt",bottom.pt());
+                vars.FillVar("Bottom_pt",bottom.pt());
+                vars.FillVar("Bottom_eta",bottom.eta());
             }
             if (MiniAODHelper::GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")<0.800 && itJet->pt()>bottom_anti_pt_max){
                 bottom_anti=*itJet;
                 bottom_anti_candidatefound=true;
                 bottom_anti_pt_max=itJet->pt();
-                vars.FillVar("Bottom_anti_candidates_pt",bottom_anti_pt_max);
+                vars.FillVar("Bottom_anti_pt",bottom_anti.pt());
+                vars.FillVar("Bottom_anti_eta",bottom_anti.eta());
             }
         }
     }
@@ -804,7 +871,6 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
       Zprime_withtopbtag_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+top_withbtag.p4();
       vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_M",Zprime_withtopbtag_W_anti_bottom_anti.mass());
   } 
-///Background estimation
 
 
 
@@ -886,35 +952,63 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                 //vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->pt());
                 //vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->eta());
                 
-                if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.6 && 70<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<100 && minDr_WBG>0.4 && minDr_WfromTPrime>0.4){
-                    misstagged_W.push_back(*itJet);
-                    //vars.FillVars("misstagged_W_pt",iJet,itJet->pt());
-                    //vars.FillVars("misstagged_W_eta",iJet,itJet->eta());
+                if(minDr_WBG>0.4 && minDr_WfromTPrime>0.4){
+                    AK8_W_misstag_candidates.push_back(*itJet);
+                    if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.6 && 70<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<100){
+                        misstagged_W.push_back(*itJet);
+                        //vars.FillVars("misstagged_W_pt",iJet,itJet->pt());
+                        //vars.FillVars("misstagged_W_eta",iJet,itJet->eta());
+                    }
+                } else {
+                    AK8_W_tag_candidates.push_back(*itJet);
+                    if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.6 && 70<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<100){
+                        tagged_W.push_back(*itJet);
+                    }
                 }
-                
                 if (itJet->pt()>400){
                     AK8_top_candidates.push_back(*itJet);
                     //vars.FillVars("AK8_top_misstagged_candidates_pt",iJet,itJet->pt());
                     //vars.FillVars("AK8_top_misstagged_candidates_eta",iJet,itJet->eta());
-                    if (minDr_TopBG>0.4 && itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.86 && 110<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<210 && minDr_TopBG>0.4 && minDr_TopZprime>0.4){
-                        misstagged_top.push_back(*itJet);
+                    if(minDr_TopBG>0.4 && minDr_TopZprime>0.4){
+                        AK8_top_misstag_candidates.push_back(*itJet);
+                        if (itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.86 && 110<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<210){
+                            misstagged_top.push_back(*itJet);
                         //vars.FillVars("misstagged_top_pt",iJet,itJet->pt());
                         //vars.FillVars("misstagged_top_eta",iJet,itJet->eta());
                     
-                        double max_subjet_csv_v2=-10;
-                        auto const & names = itJet->subjets("SoftDrop");
-                        for( auto const & itsubJet : names ){
-                            if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
-                            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+                            double max_subjet_csv_v2=-10;
+                            auto const & names = itJet->subjets("SoftDrop");
+                            for( auto const & itsubJet : names ){
+                                if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+                                max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+                                }
+                            }   
+                            if (max_subjet_csv_v2>0.8){
+                                misstagged_top_withbtag.push_back(*itJet);
+                                //vars.FillVars("misstagged_top_withbtag_pt",iJet,itJet->pt());
+                                //vars.FillVars("misstagged_top_withbtag_eta",iJet,itJet->eta());
                             }
-                        }   
-                        if (max_subjet_csv_v2>0.8){
-                            misstagged_top_withbtag.push_back(*itJet);
-                            //vars.FillVars("misstagged_top_withbtag_pt",iJet,itJet->pt());
-                            //vars.FillVars("misstagged_top_withbtag_eta",iJet,itJet->eta());
+                        }
+                    } else {
+                        AK8_top_tag_candidates.push_back(*itJet);
+                        if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.86 && 110<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<210){
+                            tagged_top.push_back(*itJet);
+                            
+                            double max_subjet_csv_v2=-10;
+                            auto const & names = itJet->subjets("SoftDrop");
+                            for( auto const & itsubJet : names ){
+                                if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+                                max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+                                }
+                            }   
+                            if (max_subjet_csv_v2>0.8){
+                                tagged_top_withbtag.push_back(*itJet);
+                                //vars.FillVars("misstagged_top_withbtag_pt",iJet,itJet->pt());
+                                //vars.FillVars("misstagged_top_withbtag_eta",iJet,itJet->eta());
+                            }
                         }
                     }
-                }   
+                }
         }
     }
   }
@@ -945,8 +1039,16 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             if(minDr_bfromTPrime<999) vars.FillVars("Jet_Dr_bfromTPrime",iJet,minDr_bfromTPrime);
             if(minDr_bfromBG<999) vars.FillVars("Jet_Dr_bfromBG",iJet,minDr_bfromBG);
             
-            if (minDr_bfromBG>0.2 && minDr_bfromTPrime>0.2 && itJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8){
-                misstagged_bottom.push_back(*itJet);
+            if (minDr_bfromBG>0.2 || minDr_bfromTPrime>0.2){
+                AK4_bottom_misstag_candidates.push_back(*itJet);
+                if (itJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8){
+                    misstagged_bottom.push_back(*itJet);
+                }
+            } else {
+                AK4_bottom_tag_candidates.push_back(*itJet);
+                if (itJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8){
+                    tagged_bottom.push_back(*itJet);
+                }
                 //vars.FillVars("misstagged_bottom_pt",iJet,itJet->pt());
                 //vars.FillVars("misstagged_bottom_eta",iJet,itJet->eta());
             }
@@ -954,29 +1056,74 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     }
   }
   
-  vars.FillVar("N_AK8_top_misstag_candidates",AK8_top_candidates.size());
-  vars.FillVar("N_AK8_W_misstag_candidates",AK8_W_candidates.size());
-  vars.FillVar("N_AK4_bottom_misstag_candidates",AK4_bottom_candidates.size()); 
+  vars.FillVar("N_AK8_top_candidates",AK8_top_candidates.size());   
+  vars.FillVar("N_AK8_W_candidates",AK8_W_candidates.size());  
+  vars.FillVar("N_AK4_bottom_candidates",AK4_bottom_candidates.size()); 
+
+  for(std::vector<pat::Jet>::const_iterator itJet = AK8_top_candidates.begin() ; itJet != AK8_top_candidates.end(); ++itJet){
+    int iJet = itJet - AK8_top_candidates.begin();
+    vars.FillVars("AK8_top_candidates_pt",iJet,itJet->pt());
+    vars.FillVars("AK8_top_candidates_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = AK8_W_candidates.begin() ; itJet != AK8_W_candidates.end(); ++itJet){
+    int iJet = itJet - AK8_W_candidates.begin();
+    vars.FillVars("AK8_W_candidates_pt",iJet,itJet->pt());
+    vars.FillVars("AK8_W_candidates_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = AK4_bottom_candidates.begin() ; itJet != AK4_bottom_candidates.end(); ++itJet){
+    int iJet = itJet - AK4_bottom_candidates.begin();
+    vars.FillVars("AK4_bottom_candidates_pt",iJet,itJet->pt());
+    vars.FillVars("AK4_bottom_candidates_eta",iJet,itJet->eta());
+  }   
+  
+  
+  vars.FillVar("N_AK8_top_misstag_candidates",AK8_top_misstag_candidates.size());
+  vars.FillVar("N_AK8_W_misstag_candidates",AK8_W_misstag_candidates.size());
+  vars.FillVar("N_AK4_bottom_misstag_candidates",AK4_bottom_misstag_candidates.size());
+  vars.FillVar("N_AK8_top_tag_candidates",AK8_top_tag_candidates.size());
+  vars.FillVar("N_AK8_W_tag_candidates",AK8_W_tag_candidates.size());
+  vars.FillVar("N_AK4_bottom_tag_candidates",AK4_bottom_tag_candidates.size());
+
+  for(std::vector<pat::Jet>::const_iterator itJet = AK8_top_misstag_candidates.begin() ; itJet != AK8_top_misstag_candidates.end(); ++itJet){
+    int iJet = itJet - AK8_top_misstag_candidates.begin();
+    vars.FillVars("AK8_top_misstagged_candidates_pt",iJet,itJet->pt());
+    vars.FillVars("AK8_top_misstagged_candidates_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = AK8_W_misstag_candidates.begin() ; itJet != AK8_W_misstag_candidates.end(); ++itJet){
+    int iJet = itJet - AK8_W_misstag_candidates.begin();
+    vars.FillVars("AK8_W_misstagged_candidates_pt",iJet,itJet->pt());
+    vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = AK4_bottom_misstag_candidates.begin() ; itJet != AK4_bottom_misstag_candidates.end(); ++itJet){
+    int iJet = itJet - AK4_bottom_misstag_candidates.begin();
+    vars.FillVars("AK4_bottom_misstagged_candidates_pt",iJet,itJet->pt());
+    vars.FillVars("AK4_bottom_misstagged_candidates_eta",iJet,itJet->eta());
+  } 
+  
+  for(std::vector<pat::Jet>::const_iterator itJet = AK8_top_tag_candidates.begin() ; itJet != AK8_top_tag_candidates.end(); ++itJet){
+    int iJet = itJet - AK8_top_tag_candidates.begin();
+    vars.FillVars("AK8_top_tag_candidates_pt",iJet,itJet->pt());
+    vars.FillVars("AK8_top_tag_candidates_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = AK8_W_tag_candidates.begin() ; itJet != AK8_W_tag_candidates.end(); ++itJet){
+    int iJet = itJet - AK8_W_tag_candidates.begin();
+    vars.FillVars("AK8_W_tag_candidates_pt",iJet,itJet->pt());
+    vars.FillVars("AK8_W_tag_candidates_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = AK4_bottom_tag_candidates.begin() ; itJet != AK4_bottom_tag_candidates.end(); ++itJet){
+    int iJet = itJet - AK4_bottom_tag_candidates.begin();
+    vars.FillVars("AK4_bottom_tag_candidates_pt",iJet,itJet->pt());
+    vars.FillVars("AK4_bottom_tag_candidates_eta",iJet,itJet->eta());
+  }    
+  
   vars.FillVar("N_misstagged_top",misstagged_top.size());
   vars.FillVar("N_misstagged_top_withbtag",misstagged_top_withbtag.size());
   vars.FillVar("N_misstagged_W",misstagged_W.size()); 
   vars.FillVar("N_misstagged_bottom",misstagged_bottom.size());
-
-  for(std::vector<pat::Jet>::const_iterator itJet = AK8_top_candidates.begin() ; itJet != AK8_top_candidates.end(); ++itJet){
-    int iJet = itJet - AK8_top_candidates.begin();
-    vars.FillVars("AK8_top_misstagged_candidates_pt",iJet,itJet->pt());
-    vars.FillVars("AK8_top_misstagged_candidates_eta",iJet,itJet->eta());
-  }
-  for(std::vector<pat::Jet>::const_iterator itJet = AK8_W_candidates.begin() ; itJet != AK8_W_candidates.end(); ++itJet){
-    int iJet = itJet - AK8_W_candidates.begin();
-    vars.FillVars("AK8_W_misstagged_candidates_pt",iJet,itJet->pt());
-    vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->eta());
-  }
-  for(std::vector<pat::Jet>::const_iterator itJet = AK4_bottom_candidates.begin() ; itJet != AK4_bottom_candidates.end(); ++itJet){
-    int iJet = itJet - AK4_bottom_candidates.begin();
-    vars.FillVars("AK4_bottom_misstagged_candidates_pt",iJet,itJet->pt());
-    vars.FillVars("AK4_bottom_misstagged_candidates_eta",iJet,itJet->eta());
-  }  
+  vars.FillVar("N_tagged_top",tagged_top.size());
+  vars.FillVar("N_tagged_top_withbtag",tagged_top_withbtag.size());
+  vars.FillVar("N_tagged_W",tagged_W.size()); 
+  vars.FillVar("N_tagged_bottom",tagged_bottom.size());  
   
   for(std::vector<pat::Jet>::const_iterator itJet = misstagged_top.begin() ; itJet != misstagged_top.end(); ++itJet){
     int iJet = itJet - misstagged_top.begin();
@@ -998,7 +1145,27 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("misstagged_bottom_pt",iJet,itJet->pt());
     vars.FillVars("misstagged_bottom_eta",iJet,itJet->eta());
   }
-
+  
+  for(std::vector<pat::Jet>::const_iterator itJet = tagged_top.begin() ; itJet != tagged_top.end(); ++itJet){
+    int iJet = itJet - tagged_top.begin();
+    vars.FillVars("tagged_top_pt",iJet,itJet->pt());
+    vars.FillVars("tagged_top_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = tagged_top_withbtag.begin() ; itJet != tagged_top_withbtag.end(); ++itJet){
+    int iJet = itJet - tagged_top_withbtag.begin();
+    vars.FillVars("tagged_top_withbtag_pt",iJet,itJet->pt());
+    vars.FillVars("tagged_top_withbtag_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = tagged_W.begin() ; itJet != tagged_W.end(); ++itJet){
+    int iJet = itJet - tagged_W.begin();
+    vars.FillVars("tagged_W_pt",iJet,itJet->pt());
+    vars.FillVars("tagged_W_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = tagged_bottom.begin() ; itJet != tagged_bottom.end(); ++itJet){
+    int iJet = itJet - tagged_bottom.begin();
+    vars.FillVars("tagged_bottom_pt",iJet,itJet->pt());
+    vars.FillVars("tagged_bottom_eta",iJet,itJet->eta());
+  }
   ///Background estimation
   
   
