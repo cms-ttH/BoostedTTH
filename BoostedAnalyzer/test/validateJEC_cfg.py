@@ -115,10 +115,10 @@ process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuon
 
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 process.SelectedJetProducer.jets='slimmedJets'
-process.SelectedJetProducer.ptMins=[20,30,20,30]
-process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
+process.SelectedJetProducer.ptMins=[20,5,20,30]
+process.SelectedJetProducer.etaMaxs=[2.4,5.0,2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
-#process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
+process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 
 
 
@@ -136,6 +136,8 @@ process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selected
 process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
 process.BoostedAnalyzer.selectedJetsDL=[cms.InputTag("SelectedJetProducer:selectedJetsDL"+s) for s in systs]
 process.BoostedAnalyzer.selectedJetsLooseDL=[cms.InputTag("SelectedJetProducer:selectedJetsLooseDL"+s) for s in systs]
+process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*len(systs)
+
 
 process.BoostedAnalyzer.useGenHadronMatch = False
 process.BoostedAnalyzer.useFatJets=False
@@ -161,7 +163,7 @@ process.BoostedAnalyzer.maxTags = [-1]
 #process.BoostedAnalyzer.minTagsForMEM = 3
 #process.BoostedAnalyzer.doJERsystematic = False
 
-process.BoostedAnalyzer.selectionNames = []
+process.BoostedAnalyzer.selectionNames = []#"VertexSelection"]#,"LeptonSelection","JetTagSelection"]
 
 process.BoostedAnalyzer.processorNames = ["GenJetOrderedJetCollectionProcessor"]
 
