@@ -15,7 +15,8 @@ public:
 private:
   bool getClosestJet(const reco::GenJet& genJet,
                      const pat::JetCollection& jets,
-		     pat::Jet& closestJet) const;
+		     pat::Jet& closestJet,
+		     double& deltaRMin) const;
   double deltaR(const reco::GenJet& genJet, const pat::Jet& jet) const;
 };
 #endif

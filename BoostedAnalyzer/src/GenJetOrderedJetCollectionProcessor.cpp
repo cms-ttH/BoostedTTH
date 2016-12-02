@@ -24,6 +24,7 @@ void GenJetOrderedJetCollectionProcessor::Init(const InputCollections& input,
   vars.InitVars( "GenJet_Jet_Pt","N_GenJets" );
   vars.InitVars( "GenJet_Jet_Eta","N_GenJets" );
   vars.InitVars( "GenJet_Jet_Phi","N_GenJets" );
+  vars.InitVars( "GenJet_Jet_DeltaR","N_GenJets" );
 
   initialized = true;
 }
@@ -37,7 +38,7 @@ void GenJetOrderedJetCollectionProcessor::Process(const InputCollections& input,
   vars.FillIntVar( "Evt_ID", input.eventInfo.evt );
 
   // jet variables
-  vars.FillVar( "N_Jets", input.genJets.size() );
+  vars.FillVar( "N_GenJets", input.genJets.size() );
   size_t iGenJet = 0;
   for( auto& genJet: input.genJets ) {
     vars.FillVars( "GenJet_E",iGenJet,genJet.energy() );
@@ -46,16 +47,19 @@ void GenJetOrderedJetCollectionProcessor::Process(const InputCollections& input,
     vars.FillVars( "GenJet_Phi",iGenJet,genJet.phi() );
     
     pat::Jet closestJet;
-    if( getClosestJet(genJet,input.selectedJets,closestJet) ) {
+    double deltaRMin = 1000.;
+    if( getClosestJet(genJet,input.selectedJets,closestJet,deltaRMin) ) {
       vars.FillVars( "GenJet_Jet_E",iGenJet,closestJet.energy() );
       vars.FillVars( "GenJet_Jet_Pt",iGenJet,closestJet.pt() );
       vars.FillVars( "GenJet_Jet_Eta",iGenJet,closestJet.eta() );
       vars.FillVars( "GenJet_Jet_Phi",iGenJet,closestJet.phi() );
+      vars.FillVars( "GenJet_Jet_DeltaR",iGenJet,deltaRMin );
     } else {
       vars.FillVars( "GenJet_Jet_E",iGenJet,-1. );
       vars.FillVars( "GenJet_Jet_Pt",iGenJet,-1. );
       vars.FillVars( "GenJet_Jet_Eta",iGenJet,0. );
       vars.FillVars( "GenJet_Jet_Phi",iGenJet,0. );
+      vars.FillVars( "GenJet_Jet_DeltaR",iGenJet,deltaRMin );
     }
 
     ++iGenJet;
@@ -67,7 +71,8 @@ void GenJetOrderedJetCollectionProcessor::Process(const InputCollections& input,
 bool
 GenJetOrderedJetCollectionProcessor::getClosestJet(const reco::GenJet& genJet,
 						   const pat::JetCollection& jets,
-						   pat::Jet& closestJet) const {
+						   pat::Jet& closestJet,
+						   double& deltaRMin) const {
   double dRMin = 1000;
   int idxMin = -1;
   for(size_t i = 0; i < jets.size(); ++i) {
@@ -82,6 +87,7 @@ GenJetOrderedJetCollectionProcessor::getClosestJet(const reco::GenJet& genJet,
     return false;
   } else {
     closestJet = jets.at(idxMin);
+    deltaRMin = dRMin;
     return true;
   }
 }
