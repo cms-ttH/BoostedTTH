@@ -883,21 +883,11 @@ void BoostedAnalyzer::endJob()
 // ------------ method called when starting to processes a run ------------
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
-
-  // initialize JEC
-  helper.UpdateJetCorrectorUncertainties(iSetup);
-  helper.SetAK8JetCorrectorUncertainty(iSetup);
-
 }
 
 // ------------ method called when starting a luminosity block ------------
 void BoostedAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup)
 {
-
-  // initialize JEC
-  helper.UpdateJetCorrectorUncertainties(iSetup);
-  helper.SetAK8JetCorrectorUncertainty(iSetup);
-
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
