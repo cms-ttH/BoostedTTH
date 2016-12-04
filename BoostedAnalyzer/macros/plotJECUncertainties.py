@@ -1,4 +1,4 @@
-from ROOT import TFile, TTree, TH1D, TCanvas, TStyle, gStyle, TLegend, TUUID, gPad
+from ROOT import TFile, TTree, TH1D, TH2D, TCanvas, TStyle, gStyle, TLegend, TUUID, gPad, TProfile
 
 
 
@@ -7,7 +7,7 @@ file_name_base = "../test/testJEC_"
 
 variations = [
     "JES",
-    "JESAbsoluteScale"
+    #"JESAbsoluteScale"
 ]
 
 
@@ -99,6 +99,214 @@ def compare(var, xtitle, varied, nbins, xmin, xmax, apply_selection):
     can.SaveAs(can.GetName()+"_log.pdf")
 
 
+def get_index(bin_edges_low,value):
+    n_bins = len(bin_edges_low)
+    for i in xrange(n_bins):
+        r_i = n_bins-(1+i)
+        if value >= bin_edges_low[r_i]:
+            return r_i
+    return -1
+
+
+def match(idx,vals1,vals2):
+    return abs(vals1[idx]-vals2[idx])/abs(vals1[idx]) < 1E-4
+
+
+def jetsMismatchExit():
+    print "ERROR: jets do not match"
+    exit(2)
+
+
+def plot_dpt_hists(h_up,h_dn,label_variation,outname,ymax):
+    # create profiles
+    h_up_prof = h_up.ProfileX("h_up_prof")
+    h_up_prof.GetYaxis().SetTitle(h_up.GetYaxis().GetTitle())
+    h_up_prof.SetLineWidth(2)
+    h_up_prof.SetLineColor(2)
+
+    h_dn_prof = h_dn.ProfileX("h_dn_prof")
+    h_dn_prof.GetYaxis().SetTitle(h_dn.GetYaxis().GetTitle())
+    h_dn_prof.SetLineWidth(2)
+    h_dn_prof.SetLineColor(4)
+
+    # create frame
+    h_frame = h_up_prof.Clone("h_frame")
+    for bin in xrange(1,h_frame.GetNbinsX()+1):
+        h_frame.SetBinContent(bin,0)
+        h_frame.SetBinError(bin,0)
+    h_frame.SetTitle(h_up.GetTitle())
+    h_frame.SetLineStyle(2)
+    h_frame.SetLineWidth(2)
+    h_frame.SetLineColor(1)
+    h_frame.GetYaxis().SetRangeUser(-ymax,1.3*ymax)
+
+    # plot profiles
+    can = TCanvas("can_dpt"+label_variation,"",500,500)
+    h_frame.Draw("HIST")
+    h_up_prof.Draw("HISTEsame")
+    h_dn_prof.Draw("HISTEsame")
+
+    leg = TLegend(0.2,0.79,0.92,0.88)
+    leg.SetBorderSize(0)
+    leg.SetFillColor(0)
+    leg.SetTextFont(42)
+    leg.AddEntry(h_up_prof,label_variation+" up","L")
+    leg.AddEntry(h_dn_prof,label_variation+" down","L")
+    leg.Draw()
+
+    gPad.RedrawAxis()
+
+    can.SaveAs(outname+".pdf")
+
+    # draw the original 2D distributions
+    title = h_up.GetTitle()
+    can = TCanvas("can2D_dpt"+label_variation,"",500,500)
+    can.SetRightMargin(gStyle.GetPadRightMargin()+0.1);
+
+    h_up.SetTitle(label_variation+" UP,  "+title)
+    h_up.GetYaxis().SetRangeUser(-ymax,ymax)
+    h_up.Draw("colz")    
+    can.SaveAs(outname+"_up.pdf")
+
+    h_dn.SetTitle(label_variation+" DOWN,  "+title)
+    h_dn.GetYaxis().SetRangeUser(-ymax,ymax)
+    h_dn.Draw("colz")    
+    can.SaveAs(outname+"_dn.pdf")
+
+
+
+def plot_delta_pt(variation):
+    # define the pt and eta bins
+    eta_bins_low = [0,0.8,1.4]
+    pt_bins_low = [20,30,50,100,300]
+
+    # create the histograms per pt, eta bin
+    # dpt (in %) vs pt/eta
+    hists_dptvspt_up = []
+    hists_dptvspt_dn = []
+    hists_dptvseta_up = []
+    hists_dptvseta_dn = []
+    dpt_range =30 # in +/-%
+    for i in xrange(len(eta_bins_low)):
+        title = ""
+        if i == len(eta_bins_low)-1:
+            title = "|#eta^{gen}| > %.1f" % (eta_bins_low[i],)
+        else:
+            title = "%.1f < |#eta^{gen}| < %.1f" % (eta_bins_low[i],eta_bins_low[i+1])
+        title += ";p^{gen}_{T} [GeV];#Deltap^{rec}_{T}/p^{rec}_{T,nominal} [%]"
+        name = "hist_dptvspt_"+str(i)
+        hists_dptvspt_up.append( TH2D(name+"up",title,50,0,500,400,-dpt_range,dpt_range) )
+        hists_dptvspt_dn.append( TH2D(name+"dn",title,50,0,500,400,-dpt_range,dpt_range) )
+
+    for i in xrange(len(pt_bins_low)):
+        title = ""
+        if i == len(pt_bins_low)-1:
+            title = "p^{gen}_{T} > %.0f GeV" % (pt_bins_low[i],)
+        else:
+            title = "%.0f < p^{gen}_{T} < %.0f GeV" % (pt_bins_low[i],pt_bins_low[i+1])
+        title += ";|#eta^{gen}|;#Deltap^{rec}_{T}/p^{rec}_{T,nominal} [%]"
+        name = "hist_dptvseta_"+str(i)
+        hists_dptvseta_up.append( TH2D(name+"up",title,50,0,3,400,-dpt_range,dpt_range) )
+        hists_dptvseta_dn.append( TH2D(name+"dn",title,50,0,3,400,-dpt_range,dpt_range) )
+
+    # loop over trees and fill histos
+    file_nom = TFile(file_name_nominal(),"READ")
+    tree_nom = file_nom.Get("MVATree")
+    file_up = TFile(file_name_up(variation),"READ")
+    tree_up = file_up.Get("MVATree")
+    file_dn = TFile(file_name_dn(variation),"READ")
+    tree_dn = file_dn.Get("MVATree")
+
+    for iEvt in xrange(tree_nom.GetEntries()):
+        tree_nom.GetEntry(iEvt)
+        tree_up.GetEntry(iEvt)
+        tree_dn.GetEntry(iEvt)
+
+        # verify same event is being processed
+        if tree_up.Evt_ID != tree_nom.Evt_ID or tree_dn.Evt_ID != tree_nom.Evt_ID:
+            print "ERROR: non-matching event IDs"
+            exit(1)
+
+        for iJet in xrange(min(6,tree_nom.N_GenJets)):
+            # apply gen-jet selection for nominal case
+            if not passes_sel(tree_nom.GenJet_Pt[iJet],tree_nom.GenJet_Eta[iJet],tree_nom.GenJet_Jet_DeltaR[iJet]):
+                continue
+
+            # verify gen-jets match in all trees
+            if tree_up.N_GenJets != tree_nom.N_GenJets:
+                jetsMismatchExit()
+            if tree_dn.N_GenJets != tree_nom.N_GenJets:
+                jetsMismatchExit()
+
+            if not match(iJet,tree_nom.GenJet_Pt,tree_up.GenJet_Pt):
+                jetsMismatchExit()
+            if not match(iJet,tree_nom.GenJet_Eta,tree_up.GenJet_Eta):
+                jetsMismatchExit()
+            if not match(iJet,tree_nom.GenJet_Phi,tree_up.GenJet_Phi):
+                jetsMismatchExit()
+
+            if not match(iJet,tree_nom.GenJet_Pt,tree_dn.GenJet_Pt):
+                jetsMismatchExit()
+            if not match(iJet,tree_nom.GenJet_Eta,tree_dn.GenJet_Eta):
+                jetsMismatchExit()
+            if not match(iJet,tree_nom.GenJet_Phi,tree_dn.GenJet_Phi):
+                jetsMismatchExit()
+
+            # apply gen-jet selection for varied cases
+            # (relevant for deltaR cut!)
+            if not passes_sel(tree_up.GenJet_Pt[iJet],tree_up.GenJet_Eta[iJet],tree_up.GenJet_Jet_DeltaR[iJet]):
+                continue
+            if not passes_sel(tree_dn.GenJet_Pt[iJet],tree_dn.GenJet_Eta[iJet],tree_dn.GenJet_Jet_DeltaR[iJet]):
+                continue
+
+            # compute delta pt (in %) of RECO jets
+            pt_nom = tree_nom.GenJet_Jet_Pt[iJet]
+            pt_up  = tree_up.GenJet_Jet_Pt[iJet]
+            pt_dn  = tree_dn.GenJet_Jet_Pt[iJet]
+            dpt_up = 100.*(pt_up - pt_nom)/pt_nom
+            dpt_dn = -100.*(pt_nom - pt_dn)/pt_nom
+
+            # fill histos, depending on gen-jet (pt,eta)
+            eta_bin_idx = get_index(eta_bins_low,abs(tree_nom.GenJet_Eta[iJet]))
+
+#            print ">>> "+variation+" "+str(iEvt)+" "+str(iJet)+" >>>>>>>>"
+#            print "  ptGen  = "+str(tree_nom.GenJet_Pt[iJet])
+#            print "  etaGen = "+str(abs(tree_nom.GenJet_Eta[iJet]))
+#            print "  etabin = "+str(eta_bin_idx)
+#            print "  ptNom  = "+str(pt_nom)
+#            print "  ptUp   = "+str(pt_up)
+#            print "  dptup  = "+str(dpt_up)
+#            print "  dptdn  = "+str(dpt_dn)
+#
+            if not eta_bin_idx < 0:
+                hists_dptvspt_up[eta_bin_idx].Fill(tree_nom.GenJet_Pt[iJet],dpt_up)
+                hists_dptvspt_dn[eta_bin_idx].Fill(tree_nom.GenJet_Pt[iJet],dpt_dn)
+
+            pt_bin_idx = get_index(pt_bins_low,tree_nom.GenJet_Pt[iJet])
+            if not pt_bin_idx < 0:
+                hists_dptvseta_up[pt_bin_idx].Fill(abs(tree_nom.GenJet_Eta[iJet]),dpt_up)
+                hists_dptvseta_dn[pt_bin_idx].Fill(abs(tree_nom.GenJet_Eta[iJet]),dpt_dn)
+
+
+    # plot dptvspt histograms in bins of eta
+    for bin in xrange(len(eta_bins_low)):
+        outname = "DeltaPt_"+variation+"_vsPt_EtaBin"+str(bin)
+        plot_dpt_hists(hists_dptvspt_up[bin],
+                       hists_dptvspt_dn[bin],
+                       variation,
+                       outname,
+                       ymax=10)
+
+    # plot dptvseta histograms in bins of pt
+    for bin in xrange(len(pt_bins_low)):
+        outname = "DeltaPt_"+variation+"_vsEta_PtBin"+str(bin)
+        plot_dpt_hists(hists_dptvseta_up[bin],
+                       hists_dptvseta_dn[bin],
+                       variation,
+                       outname,
+                       ymax=10)
+
+
 
 def set_style():
     gStyle.SetErrorX(0);
@@ -174,8 +382,10 @@ def set_style():
 set_style()
 
 for variation in variations:
-    apply_selection = True
-    compare("GenJet_Pt","p_{T}^{gen} [GeV]",variation,100,0,200,apply_selection)
-    compare("GenJet_Eta","#eta^{gen}",variation,100,-5,5,apply_selection)
-    compare("GenJet_Jet_Pt","p_{T}^{rec} [GeV]",variation,100,0,200,apply_selection)
-    compare("GenJet_Jet_Eta","#eta^{rec}",variation,100,-5,5,apply_selection)
+#    apply_selection = True
+#    compare("GenJet_Pt","p_{T}^{gen} [GeV]",variation,100,0,200,apply_selection)
+#    compare("GenJet_Eta","#eta^{gen}",variation,100,-5,5,apply_selection)
+#    compare("GenJet_Jet_Pt","p_{T}^{rec} [GeV]",variation,100,0,200,apply_selection)
+#    compare("GenJet_Jet_Eta","#eta^{rec}",variation,100,-5,5,apply_selection)
+
+    plot_delta_pt(variation)
