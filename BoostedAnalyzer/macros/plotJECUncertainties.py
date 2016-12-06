@@ -1,13 +1,40 @@
+import math
 from ROOT import TFile, TTree, TH1D, TH2D, TCanvas, TStyle, gStyle, TLegend, TUUID, gPad, TProfile
 
 
 
 
-file_name_base = "../test/testJEC_"
+file_name_base = "../test/JECUncValidation_"
 
 variations = [
     "JES",
-    #"JESAbsoluteScale"
+    "JESPileUpDataMC",
+    "JESPileUpPtRef",
+    "JESPileUpPtBB",			
+    "JESPileUpPtEC1",
+    "JESPileUpPtEC2",
+    "JESPileUpPtHF",
+    "JESRelativeJEREC1",
+    "JESRelativeJEREC2",		
+    "JESRelativeJERHF",
+    "JESRelativeFSR",
+    "JESRelativeStatFSR",
+#    "JESRelativeStatEC2",
+    "JESRelativeStatEC",		
+    "JESRelativeStatHF",
+    "JESRelativePtBB",
+    "JESRelativePtEC1",
+    "JESRelativePtEC2",
+    "JESRelativePtHF",		
+    "JESTimeEta",
+    "JESAbsoluteScale",
+    "JESAbsoluteMPFBias",
+    "JESAbsoluteStat",
+    "JESSinglePionECAL",		
+    "JESSinglePionHCAL",
+    "JESFragmentation",
+    "JESTimePt",
+    "JESFlavorQCD",			
 ]
 
 
@@ -22,10 +49,19 @@ def file_name_up(label):
     return file_name_base+label+"up_Tree.root"
  
 
+def passes_dR(deltaR):
+    if deltaR > 0.3:
+        return False
+    return True
+ 
+
 def passes_sel(genJetPt, genJetEta, deltaR):
-    if genJetPt < 20:        return False
-    if abs(genJetEta) > 3.0: return False
-    if deltaR > 0.3:         return False
+    if genJetPt < 20:
+        return False
+    if abs(genJetEta) > 3.0:
+        return False
+    if not passes_dR(deltaR):
+        return False
 
     return True
 
@@ -112,8 +148,15 @@ def match(idx,vals1,vals2):
     return abs(vals1[idx]-vals2[idx])/abs(vals1[idx]) < 1E-4
 
 
-def jetsMismatchExit():
+def jetsMismatchExit(iEvt, iJet=None, variation=None):
     print "ERROR: jets do not match"
+    print "  in event "+str(iEvt)
+    if not iJet == None:
+        print "  for jet "+str(iJet)
+    else:
+        print "  different N(Jets)"
+    if not variation == None:
+        print "  variation: '"+variation+"'"
     exit(2)
 
 
@@ -227,36 +270,37 @@ def plot_delta_pt(variation):
             print "ERROR: non-matching event IDs"
             exit(1)
 
+        # verify gen-jets match in all trees
+        if tree_up.N_GenJets != tree_nom.N_GenJets:
+            jetsMismatchExit(iEvt)
+        if tree_dn.N_GenJets != tree_nom.N_GenJets:
+            jetsMismatchExit(iEvt)
+
         for iJet in xrange(min(6,tree_nom.N_GenJets)):
             # apply gen-jet selection for nominal case
-            if not passes_sel(tree_nom.GenJet_Pt[iJet],tree_nom.GenJet_Eta[iJet],tree_nom.GenJet_Jet_DeltaR[iJet]):
+            if not passes_sel(tree_nom.GenJet_Pt[iJet],
+                              tree_nom.GenJet_Eta[iJet],
+                              tree_nom.GenJet_Jet_DeltaR[iJet]):
                 continue
-
-            # verify gen-jets match in all trees
-            if tree_up.N_GenJets != tree_nom.N_GenJets:
-                jetsMismatchExit()
-            if tree_dn.N_GenJets != tree_nom.N_GenJets:
-                jetsMismatchExit()
 
             if not match(iJet,tree_nom.GenJet_Pt,tree_up.GenJet_Pt):
-                jetsMismatchExit()
+                jetsMismatchExit(iEvt,iJet,variation)
             if not match(iJet,tree_nom.GenJet_Eta,tree_up.GenJet_Eta):
-                jetsMismatchExit()
+                jetsMismatchExit(iEvt,iJet,variation)
             if not match(iJet,tree_nom.GenJet_Phi,tree_up.GenJet_Phi):
-                jetsMismatchExit()
+                jetsMismatchExit(iEvt,iJet,variation)
 
             if not match(iJet,tree_nom.GenJet_Pt,tree_dn.GenJet_Pt):
-                jetsMismatchExit()
+                jetsMismatchExit(iEvt,iJet,variation)
             if not match(iJet,tree_nom.GenJet_Eta,tree_dn.GenJet_Eta):
-                jetsMismatchExit()
+                jetsMismatchExit(iEvt,iJet,variation)
             if not match(iJet,tree_nom.GenJet_Phi,tree_dn.GenJet_Phi):
-                jetsMismatchExit()
+                jetsMismatchExit(iEvt,iJet,variation)
 
-            # apply gen-jet selection for varied cases
-            # (relevant for deltaR cut!)
-            if not passes_sel(tree_up.GenJet_Pt[iJet],tree_up.GenJet_Eta[iJet],tree_up.GenJet_Jet_DeltaR[iJet]):
+            # check deltaR for varied cases
+            if not passes_dR(tree_up.GenJet_Jet_DeltaR[iJet]):
                 continue
-            if not passes_sel(tree_dn.GenJet_Pt[iJet],tree_dn.GenJet_Eta[iJet],tree_dn.GenJet_Jet_DeltaR[iJet]):
+            if not passes_dR(tree_dn.GenJet_Jet_DeltaR[iJet]):
                 continue
 
             # compute delta pt (in %) of RECO jets
@@ -295,7 +339,7 @@ def plot_delta_pt(variation):
                        hists_dptvspt_dn[bin],
                        variation,
                        outname,
-                       ymax=10)
+                       ymax=5)
 
     # plot dptvseta histograms in bins of pt
     for bin in xrange(len(pt_bins_low)):
@@ -304,7 +348,129 @@ def plot_delta_pt(variation):
                        hists_dptvseta_dn[bin],
                        variation,
                        outname,
-                       ymax=10)
+                       ymax=5)
+
+
+
+def plot_closure_test(variations):
+    for dir in ["up","dn"]:
+        # difference of total JEC variation and sum of sources
+        h_dpt = TH2D("h_dpt_"+dir,"JEC closure "+dir,50,0,500,50,-10,10)
+        h_dpt.GetXaxis().SetTitle("p^{gen}_{T} [GeV]")
+        h_dpt.GetYaxis().SetTitle("#left(#sum#Deltap^{rec}_{T,i} - #Deltap^{rec}_{T}#right) / #Deltap^{rec}_{T}  [%]")
+
+        # tree with nominal JEC
+        file_nom = TFile(file_name_nominal(),"READ")
+        tree_nom = file_nom.Get("MVATree")
+
+        # tree with total JEC variation
+        if dir == "up":
+            file_tot = TFile(file_name_up("JES"),"READ")
+        else: 
+            file_tot = TFile(file_name_dn("JES"),"READ")
+        tree_tot = file_tot.Get("MVATree")
+
+        # trees with JEC var sources
+        files_var = []
+        trees_var = []
+        for var in variations:
+            if var == "JES":    # this is the total variation
+                continue
+            if dir == "up":
+                files_var.append( TFile(file_name_up(var),"READ") )
+            else: 
+                files_var.append( TFile(file_name_dn(var),"READ") )
+            trees_var.append( files_var[-1].Get("MVATree") )
+
+        # loop over events and get variations
+        for iEvt in xrange(tree_nom.GetEntries()):
+            tree_nom.GetEntry(iEvt)
+            tree_tot.GetEntry(iEvt)
+            for tree in trees_var:
+                tree.GetEntry(iEvt)
+
+            # verify the same event is being processed
+            if tree_nom.Evt_ID != tree_tot.Evt_ID:
+                print "ERROR: non-matching event IDs"
+                exit(1)
+            for tree in trees_var:
+                if tree_nom.Evt_ID != tree.Evt_ID:
+                    print "ERROR: non-matching event IDs"
+                    exit(1)
+
+            # verify N(gen-jets) match in all trees
+            if tree_nom.N_GenJets != tree_tot.N_GenJets:
+                jetsMismatchExit(iEvt)
+            for tree in trees_var:
+                if tree_nom.N_GenJets != tree.N_GenJets:
+                    jetsMismatchExit(iEvt)
+
+
+            # consider leading 6 jets in the event
+            for iJet in xrange(min(6,tree_nom.N_GenJets)):
+                # apply gen-jet selection for nominal case
+                if not passes_sel(tree_nom.GenJet_Pt[iJet],
+                                  tree_nom.GenJet_Eta[iJet],
+                                  tree_nom.GenJet_Jet_DeltaR[iJet]):
+                    continue
+
+                # verify gen-jets match in all trees
+                if not match(iJet,tree_nom.GenJet_Pt,tree_tot.GenJet_Pt):
+                    jetsMismatchExit(iEvt,iJet)
+                if not match(iJet,tree_nom.GenJet_Eta,tree_tot.GenJet_Eta):
+                    jetsMismatchExit(iEvt,iJet)
+                if not match(iJet,tree_nom.GenJet_Phi,tree_tot.GenJet_Phi):
+                    jetsMismatchExit(iEvt,iJet)
+
+                for tree in trees_var:
+                    if not match(iJet,tree_nom.GenJet_Pt,tree.GenJet_Pt):
+                        jetsMismatchExit(iEvt,iJet)
+                    if not match(iJet,tree_nom.GenJet_Eta,tree.GenJet_Eta):
+                        jetsMismatchExit(iEvt,iJet)
+                    if not match(iJet,tree_nom.GenJet_Phi,tree.GenJet_Phi):
+                        jetsMismatchExit(iEvt,iJet) 
+
+
+                # compute delta pt of RECO jets
+                pt_nom = tree_nom.GenJet_Jet_Pt[iJet]
+
+                # dpt for tot variation
+                pt_tot = tree_tot.GenJet_Jet_Pt[iJet]
+                dpt_tot = (pt_tot - pt_nom)/pt_nom
+                if dir == "dn":
+                    dpt_tot *= -1.
+
+                # dpt for sum of all sources
+                dpt_var_sum = 0.
+                for tree in trees_var:
+                    dpt = tree.GenJet_Jet_Pt[iJet] - tree_nom.GenJet_Jet_Pt[iJet]
+                    if dir == "dn":
+                        dpt *= -1.
+                    dpt_var_sum += dpt*dpt
+                dpt_var_sum = math.sqrt(dpt_var_sum)
+
+                dpt_tot = tree_tot.GenJet_Jet_Pt[iJet] - tree_nom.GenJet_Jet_Pt[iJet]
+                if dir == "dn":
+                    dpt_tot *= -1.
+
+                rel_diff = 100.*(dpt_var_sum - dpt_tot)/dpt_tot
+
+                # fill histos
+                h_dpt.Fill(tree_nom.GenJet_Pt[iJet],rel_diff)
+
+
+        # plot histo
+        can = TCanvas("can2D_closure_"+dir,"",500,500)
+        can.SetRightMargin(gStyle.GetPadRightMargin()+0.1);
+        can.SetLeftMargin(gStyle.GetPadLeftMargin()+0.05);
+        h_dpt.Draw("colz")    
+        can.SaveAs("JEC_closure_"+dir+".pdf")
+
+        file_nom.Close()
+        file_tot.Close()
+        for file in files_var:
+            file.Close()
+        
 
 
 
@@ -381,11 +547,13 @@ def set_style():
 
 set_style()
 
-for variation in variations:
-#    apply_selection = True
-#    compare("GenJet_Pt","p_{T}^{gen} [GeV]",variation,100,0,200,apply_selection)
-#    compare("GenJet_Eta","#eta^{gen}",variation,100,-5,5,apply_selection)
-#    compare("GenJet_Jet_Pt","p_{T}^{rec} [GeV]",variation,100,0,200,apply_selection)
-#    compare("GenJet_Jet_Eta","#eta^{rec}",variation,100,-5,5,apply_selection)
+plot_closure_test(variations)
 
+for variation in variations:
+    apply_selection = True
+    compare("GenJet_Pt","p_{T}^{gen} [GeV]",variation,100,0,200,apply_selection)
+    compare("GenJet_Eta","#eta^{gen}",variation,100,-5,5,apply_selection)
+    compare("GenJet_Jet_Pt","p_{T}^{rec} [GeV]",variation,100,0,200,apply_selection)
+    compare("GenJet_Jet_Eta","#eta^{rec}",variation,100,-5,5,apply_selection)
     plot_delta_pt(variation)
+

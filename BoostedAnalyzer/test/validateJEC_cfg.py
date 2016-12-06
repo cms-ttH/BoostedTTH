@@ -3,7 +3,7 @@ import sys
 import os
 
 # To execute test, run
-#  cmsRun validateJECUncertainty_cfg.py outputFile=validateJECUnc maxEvents=100 inputFiles=/store/mc/RunIISpring16MiniAODv2/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/100000/00B939E4-F982-E611-AB1C-F46D042E833B.root
+#  cmsRun validateJEC_cfg.py outName=JECUncValidation maxEvents=5000 inputFiles=/store/mc/RunIISpring16MiniAODv2/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/100000/00B939E4-F982-E611-AB1C-F46D042E833B.root
 
 # parse command-line arguments
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideCommandLineParsing
@@ -16,10 +16,6 @@ options.register( "outName", "testrun", VarParsing.multiplicity.singleton, VarPa
 options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2_v1", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.parseArguments()
 
-
-# re-set some defaults
-if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 1000 # reset for testing
 
 # print settings
 print "\n\n***** JOB SETUP *************************"
@@ -127,8 +123,36 @@ process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 
 systs=[
     "",
+
     "JESup","JESdown",
-    "JESAbsoluteScaleup","JESAbsoluteScaledown"
+
+    "JESPileUpDataMCup",   "JESPileUpDataMCdown",
+    "JESPileUpPtRefup",    "JESPileUpPtRefdown",
+    "JESPileUpPtBBup",     "JESPileUpPtBBdown",
+    "JESPileUpPtEC1up",    "JESPileUpPtEC1down",
+    "JESPileUpPtEC2up",    "JESPileUpPtEC2down",
+    "JESPileUpPtHFup",     "JESPileUpPtHFdown",
+    "JESRelativeJEREC1up", "JESRelativeJEREC1down",
+    "JESRelativeJEREC2up", "JESRelativeJEREC2down",
+    "JESRelativeJERHFup",  "JESRelativeJERHFdown",
+    "JESRelativeFSRup",    "JESRelativeFSRdown",
+    "JESRelativeStatFSRup","JESRelativeStatFSRdown",
+#    "JESRelativeStatEC2up","JESRelativeStatEC2down",
+    "JESRelativeStatECup", "JESRelativeStatECdown",
+    "JESRelativeStatHFup", "JESRelativeStatHFdown",
+    "JESRelativePtBBup",   "JESRelativePtBBdown",
+    "JESRelativePtEC1up",  "JESRelativePtEC1down",
+    "JESRelativePtEC2up",  "JESRelativePtEC2down",
+    "JESRelativePtHFup",   "JESRelativePtHFdown",
+    "JESTimeEtaup",        "JESTimeEtadown",
+    "JESAbsoluteScaleup",  "JESAbsoluteScaledown",
+    "JESAbsoluteMPFBiasup","JESAbsoluteMPFBiasdown",
+    "JESAbsoluteStatup",   "JESAbsoluteStatdown",
+    "JESSinglePionECALup", "JESSinglePionECALdown",
+    "JESSinglePionHCALup", "JESSinglePionHCALdown",
+    "JESFragmentationup",  "JESFragmentationdown",
+    "JESTimePtup",         "JESTimePtdown",
+    "JESFlavorQCDup",      "JESFlavorQCDdown",
 ]
 process.SelectedJetProducer.systematics=systs
 
