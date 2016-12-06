@@ -81,7 +81,7 @@ process.GlobalTag.toGet.append(
     cms.PSet(
         connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
         record = cms.string('JetCorrectionsRecord'),
-        tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PFchs'),
+        tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK4PFchs'),
         label  = cms.untracked.string('AK4PFchs')
 )
 )
@@ -89,7 +89,7 @@ process.GlobalTag.toGet.append(
     cms.PSet(
         connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
         record = cms.string('JetCorrectionsRecord'),
-    tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK8PFchs'),
+    tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK8PFchs'),
         label  = cms.untracked.string('AK8PFchs')
     )
 )
@@ -126,33 +126,42 @@ systs=[
 
     "JESup","JESdown",
 
-    "JESPileUpDataMCup",   "JESPileUpDataMCdown",
-    "JESPileUpPtRefup",    "JESPileUpPtRefdown",
-    "JESPileUpPtBBup",     "JESPileUpPtBBdown",
-    "JESPileUpPtEC1up",    "JESPileUpPtEC1down",
-    "JESPileUpPtEC2up",    "JESPileUpPtEC2down",
-    "JESPileUpPtHFup",     "JESPileUpPtHFdown",
-    "JESRelativeJEREC1up", "JESRelativeJEREC1down",
-    "JESRelativeJEREC2up", "JESRelativeJEREC2down",
-    "JESRelativeJERHFup",  "JESRelativeJERHFdown",
-    "JESRelativeFSRup",    "JESRelativeFSRdown",
-    "JESRelativeStatFSRup","JESRelativeStatFSRdown",
-#    "JESRelativeStatEC2up","JESRelativeStatEC2down",
-    "JESRelativeStatECup", "JESRelativeStatECdown",
-    "JESRelativeStatHFup", "JESRelativeStatHFdown",
-    "JESRelativePtBBup",   "JESRelativePtBBdown",
-    "JESRelativePtEC1up",  "JESRelativePtEC1down",
-    "JESRelativePtEC2up",  "JESRelativePtEC2down",
-    "JESRelativePtHFup",   "JESRelativePtHFdown",
-    "JESTimeEtaup",        "JESTimeEtadown",
-    "JESAbsoluteScaleup",  "JESAbsoluteScaledown",
-    "JESAbsoluteMPFBiasup","JESAbsoluteMPFBiasdown",
-    "JESAbsoluteStatup",   "JESAbsoluteStatdown",
-    "JESSinglePionECALup", "JESSinglePionECALdown",
-    "JESSinglePionHCALup", "JESSinglePionHCALdown",
-    "JESFragmentationup",  "JESFragmentationdown",
-    "JESTimePtup",         "JESTimePtdown",
-    "JESFlavorQCDup",      "JESFlavorQCDdown",
+    "JESAbsoluteStatup",        "JESAbsoluteStatdown",              
+    "JESAbsoluteScaleup",       "JESAbsoluteScaledown",              
+    "JESAbsoluteFlavMapup",     "JESAbsoluteFlavMapdown",              
+    "JESAbsoluteMPFBiasup",     "JESAbsoluteMPFBiasdown",              
+    "JESFragmentationup",       "JESFragmentationdown",              
+    "JESSinglePionECALup",      "JESSinglePionECALdown",              
+    "JESSinglePionHCALup",      "JESSinglePionHCALdown",              
+    "JESFlavorQCDup",           "JESFlavorQCDdown",              
+    "JESTimeEtaup",             "JESTimeEtadown",              
+    "JESTimePtup",              "JESTimePtdown",              
+    "JESRelativeJEREC1up",      "JESRelativeJEREC1down",              
+    "JESRelativeJEREC2up",      "JESRelativeJEREC2down",              
+    "JESRelativeJERHFup",       "JESRelativeJERHFdown",              
+    "JESRelativePtBBup",        "JESRelativePtBBdown",              
+    "JESRelativePtEC1up",       "JESRelativePtEC1down",              
+    "JESRelativePtEC2up",       "JESRelativePtEC2down",              
+    "JESRelativePtHFup",        "JESRelativePtHFdown",              
+    "JESRelativeFSRup",         "JESRelativeFSRdown",              
+    "JESRelativeStatFSRup",     "JESRelativeStatFSRdown",              
+    "JESRelativeStatECup",      "JESRelativeStatECdown",              
+    "JESRelativeStatHFup",      "JESRelativeStatHFdown",              
+    "JESPileUpDataMCup",        "JESPileUpDataMCdown",              
+    "JESPileUpPtRefup",         "JESPileUpPtRefdown",              
+    "JESPileUpPtBBup",          "JESPileUpPtBBdown",              
+    "JESPileUpPtEC1up",         "JESPileUpPtEC1down",              
+    "JESPileUpPtEC2up",         "JESPileUpPtEC2down",              
+    "JESPileUpPtHFup",          "JESPileUpPtHFdown",              
+    "JESPileUpMuZeroup",        "JESPileUpMuZerodown",              
+    "JESPileUpEnvelopeup",      "JESPileUpEnvelopedown",              
+    "JESSubTotalPileUpup",      "JESSubTotalPileUpdown",              
+    "JESSubTotalRelativeup",    "JESSubTotalRelativedown",              
+    "JESSubTotalPtup",          "JESSubTotalPtdown",              
+    "JESSubTotalScaleup",       "JESSubTotalScaledown",              
+    "JESSubTotalMCup",          "JESSubTotalMCdown",              
+    "JESSubTotalAbsoluteup",    "JESSubTotalAbsolutedown",              
+
 ]
 process.SelectedJetProducer.systematics=systs
 

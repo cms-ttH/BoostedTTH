@@ -8,33 +8,42 @@ file_name_base = "../test/JECUncValidation_"
 
 variations = [
     "JES",
-    "JESPileUpDataMC",
-    "JESPileUpPtRef",
-    "JESPileUpPtBB",			
-    "JESPileUpPtEC1",
-    "JESPileUpPtEC2",
-    "JESPileUpPtHF",
+
+    "JESAbsoluteStat",
+    "JESAbsoluteScale",
+    "JESAbsoluteFlavMap",
+    "JESAbsoluteMPFBias",
+    "JESFragmentation",
+    "JESSinglePionECAL",
+    "JESSinglePionHCAL",
+    "JESFlavorQCD",
+    "JESTimeEta",
+    "JESTimePt",
     "JESRelativeJEREC1",
-    "JESRelativeJEREC2",		
+    "JESRelativeJEREC2",
     "JESRelativeJERHF",
-    "JESRelativeFSR",
-    "JESRelativeStatFSR",
-#    "JESRelativeStatEC2",
-    "JESRelativeStatEC",		
-    "JESRelativeStatHF",
     "JESRelativePtBB",
     "JESRelativePtEC1",
     "JESRelativePtEC2",
-    "JESRelativePtHF",		
-    "JESTimeEta",
-    "JESAbsoluteScale",
-    "JESAbsoluteMPFBias",
-    "JESAbsoluteStat",
-    "JESSinglePionECAL",		
-    "JESSinglePionHCAL",
-    "JESFragmentation",
-    "JESTimePt",
-    "JESFlavorQCD",			
+    "JESRelativePtHF",
+    "JESRelativeFSR",
+    "JESRelativeStatFSR",
+    "JESRelativeStatEC",
+    "JESRelativeStatHF",
+    "JESPileUpDataMC",
+    "JESPileUpPtRef",
+    "JESPileUpPtBB",
+    "JESPileUpPtEC1",
+    "JESPileUpPtEC2",
+    "JESPileUpPtHF",
+    "JESPileUpMuZero",
+    "JESPileUpEnvelope",
+#    "JESSubTotalPileUp",
+#    "JESSubTotalRelative",
+#    "JESSubTotalPt",
+#    "JESSubTotalScale",
+#    "JESSubTotalMC",
+#    "JESSubTotalAbsolute",
 ]
 
 
@@ -355,7 +364,7 @@ def plot_delta_pt(variation):
 def plot_closure_test(variations):
     for dir in ["up","dn"]:
         # difference of total JEC variation and sum of sources
-        h_dpt = TH2D("h_dpt_"+dir,"JEC closure "+dir,50,0,500,50,-10,10)
+        h_dpt = TH2D("h_dpt_"+dir,"JEC closure "+dir,50,0,500,51,-50,50)
         h_dpt.GetXaxis().SetTitle("p^{gen}_{T} [GeV]")
         h_dpt.GetYaxis().SetTitle("#left(#sum#Deltap^{rec}_{T,i} - #Deltap^{rec}_{T}#right) / #Deltap^{rec}_{T}  [%]")
 
@@ -383,7 +392,7 @@ def plot_closure_test(variations):
             trees_var.append( files_var[-1].Get("MVATree") )
 
         # loop over events and get variations
-        for iEvt in xrange(tree_nom.GetEntries()):
+        for iEvt in xrange(100):#tree_nom.GetEntries()):
             tree_nom.GetEntry(iEvt)
             tree_tot.GetEntry(iEvt)
             for tree in trees_var:
@@ -549,11 +558,11 @@ set_style()
 
 plot_closure_test(variations)
 
-for variation in variations:
-    apply_selection = True
-    compare("GenJet_Pt","p_{T}^{gen} [GeV]",variation,100,0,200,apply_selection)
-    compare("GenJet_Eta","#eta^{gen}",variation,100,-5,5,apply_selection)
-    compare("GenJet_Jet_Pt","p_{T}^{rec} [GeV]",variation,100,0,200,apply_selection)
-    compare("GenJet_Jet_Eta","#eta^{rec}",variation,100,-5,5,apply_selection)
-    plot_delta_pt(variation)
-
+#for variation in variations:
+#    apply_selection = True
+#    compare("GenJet_Pt","p_{T}^{gen} [GeV]",variation,100,0,200,apply_selection)
+#    compare("GenJet_Eta","#eta^{gen}",variation,100,-5,5,apply_selection)
+#    compare("GenJet_Jet_Pt","p_{T}^{rec} [GeV]",variation,100,0,200,apply_selection)
+#    compare("GenJet_Jet_Eta","#eta^{rec}",variation,100,-5,5,apply_selection)
+#    plot_delta_pt(variation)
+#
