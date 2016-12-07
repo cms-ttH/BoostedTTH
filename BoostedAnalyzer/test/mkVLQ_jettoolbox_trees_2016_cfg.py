@@ -234,7 +234,7 @@ process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.BoostedAnalyzer.minJets = [3]
 process.BoostedAnalyzer.maxJets = [-1]
-process.BoostedAnalyzer.minTags = []
+process.BoostedAnalyzer.minTags = [1]
 process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 3
 process.BoostedAnalyzer.minTagsForMEM = 1
@@ -242,7 +242,7 @@ process.BoostedAnalyzer.doJERsystematic = False
 
 
 process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
-process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
+#process.BoostedAnalyzer.selectionNames = ["VertexSelection"]
 
 if options.additionalSelection!="NONE":
     process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)

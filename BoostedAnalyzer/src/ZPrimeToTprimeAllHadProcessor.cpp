@@ -204,19 +204,7 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("Zprime_W_anti_bottom_anti_M","I");
    vars.InitVar("Zprime_withtopbtag_W_anti_bottom_anti_M","I");
    
-///Variables for misstag rates
-   vars.InitVar("N_misstagged_top","I");
-   vars.InitVars("misstagged_top_pt","N_misstagged_top");
-   vars.InitVars("misstagged_top_eta","N_misstagged_top");
-   vars.InitVar("N_misstagged_top_withbtag","I");
-   vars.InitVars("misstagged_top_withbtag_pt","N_misstagged_top_withbtag");
-   vars.InitVars("misstagged_top_withbtag_eta","N_misstagged_top_withbtag");
-   vars.InitVar("N_misstagged_W","I");
-   vars.InitVars("misstagged_W_pt","N_misstagged_W");
-   vars.InitVars("misstagged_W_eta","N_misstagged_W");
-   vars.InitVar("N_misstagged_bottom","I");
-   vars.InitVars("misstagged_bottom_pt","N_misstagged_bottom");
-   vars.InitVars("misstagged_bottom_eta","N_misstagged_bottom");
+///Variables for misstag rates and tagging efficiencies
    
    vars.InitVar("N_tagged_top","I");
    vars.InitVars("tagged_top_pt","N_tagged_top");
@@ -230,17 +218,19 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("N_tagged_bottom","I");
    vars.InitVars("tagged_bottom_pt","N_tagged_bottom");
    vars.InitVars("tagged_bottom_eta","N_tagged_bottom");
-   
-   
-   vars.InitVar("N_AK8_top_candidates","I");
-   vars.InitVars("AK8_top_candidates_pt","N_AK8_top_candidates");
-   vars.InitVars("AK8_top_candidates_eta","N_AK8_top_candidates");
-   vars.InitVar("N_AK8_W_candidates","I");
-   vars.InitVars("AK8_W_candidates_pt","N_AK8_W_candidates");
-   vars.InitVars("AK8_W_candidates_eta","N_AK8_W_candidates");
-   vars.InitVar("N_AK4_bottom_candidates","I");
-   vars.InitVars("AK4_bottom_candidates_pt","N_AK4_bottom_candidates");
-   vars.InitVars("AK4_bottom_candidates_eta","N_AK4_bottom_candidates");
+
+   vars.InitVar("N_misstagged_top","I");
+   vars.InitVars("misstagged_top_pt","N_misstagged_top");
+   vars.InitVars("misstagged_top_eta","N_misstagged_top");
+   vars.InitVar("N_misstagged_top_withbtag","I");
+   vars.InitVars("misstagged_top_withbtag_pt","N_misstagged_top_withbtag");
+   vars.InitVars("misstagged_top_withbtag_eta","N_misstagged_top_withbtag");
+   vars.InitVar("N_misstagged_W","I");
+   vars.InitVars("misstagged_W_pt","N_misstagged_W");
+   vars.InitVars("misstagged_W_eta","N_misstagged_W");
+   vars.InitVar("N_misstagged_bottom","I");
+   vars.InitVars("misstagged_bottom_pt","N_misstagged_bottom");
+   vars.InitVars("misstagged_bottom_eta","N_misstagged_bottom");
    
    vars.InitVar("N_AK8_top_tag_candidates","I");
    vars.InitVars("AK8_top_tag_candidates_pt","N_AK8_top_tag_candidates");
@@ -251,6 +241,7 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("N_AK4_bottom_tag_candidates","I");
    vars.InitVars("AK4_bottom_tag_candidates_pt","N_AK4_bottom_tag_candidates");
    vars.InitVars("AK4_bottom_tag_candidates_eta","N_AK4_bottom_tag_candidates");
+   
    vars.InitVar("N_AK8_top_misstag_candidates","I");
    vars.InitVars("AK8_top_misstagged_candidates_pt","N_AK8_top_misstag_candidates");
    vars.InitVars("AK8_top_misstagged_candidates_eta","N_AK8_top_misstag_candidates");
@@ -261,10 +252,78 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVars("AK4_bottom_misstagged_candidates_pt","N_AK4_bottom_misstag_candidates");
    vars.InitVars("AK4_bottom_misstagged_candidates_eta","N_AK4_bottom_misstag_candidates");
    
-///Variables for tagging efficiencies
    
+   
+   vars.InitVar("N_tagged_top_anti","I");
+   vars.InitVars("tagged_top_anti_pt","N_misstagged_top_anti");
+   vars.InitVars("tagged_top_anti_eta","N_misstagged_top_anti");
+   vars.InitVar("N_tagged_top_withbtag_anti","I");
+   vars.InitVars("tagged_top_withbtag_anti_pt","N_tagged_top_withbtag_anti");
+   vars.InitVars("tagged_top_withbtag_anti_eta","N_tagged_top_withbtag_anti");
+   vars.InitVar("N_tagged_W_anti","I");
+   vars.InitVars("tagged_W_anti_pt","N_tagged_W_anti");
+   vars.InitVars("tagged_W_anti_eta","N_tagged_W_anti");
+   vars.InitVar("N_tagged_anti_bottom","I");
+   vars.InitVars("tagged_bottom_anti_pt","N_tagged_anti_bottom");
+   vars.InitVars("tagged_bottom_anti_eta","N_tagged_anti_bottom");
+
+   vars.InitVar("N_misstagged_top_anti","I");
+   vars.InitVars("misstagged_top_anti_pt","N_misstagged_top_anti");
+   vars.InitVars("misstagged_top_anti_eta","N_misstagged_top_anti");
+   vars.InitVar("N_misstagged_top_withbtag_anti","I");
+   vars.InitVars("misstagged_top_withbtag_anti_pt","N_misstagged_top_withbtag_anti");
+   vars.InitVars("misstagged_top_withbtag_anti_eta","N_misstagged_top_withbtag_anti");
+   vars.InitVar("N_misstagged_W_anti","I");
+   vars.InitVars("misstagged_W_anti_pt","N_misstagged_W_anti");
+   vars.InitVars("misstagged_W_anti_eta","N_misstagged_W_anti");
+   vars.InitVar("N_misstagged_bottom_anti","I");
+   vars.InitVars("misstagged_bottom_anti_pt","N_misstagged_bottom_anti");
+   vars.InitVars("misstagged_bottom_anti_eta","N_misstagged_bottom_anti");
+
+   //AK8_top_misstag_anti_candidates same as AK8_top_tag_candidates
+   //AK8_W_misstag_anti_candidates same as AK8_W_tag_candidates
+   //AK4_bottom_misstag_anti_candidates same as AK4_bottom_tag_candidates
+   
+   
+/*   
+   vars.InitVar("N_AK8_top_tag_anti_candidates","I");
+   vars.InitVars("AK8_top_tag_anti_candidates_pt","N_AK8_top_tag_anti_candidates");
+   vars.InitVars("AK8_top_tag_anti_candidates_eta","N_AK8_top_tag_anti_candidates");
+   vars.InitVar("N_AK8_W_tag_anti_candidates","I");
+   vars.InitVars("AK8_W_tag_anti_candidates_pt","N_AK8_W_tag_anti_candidates");
+   vars.InitVars("AK8_W_tag_anti_candidates_eta","N_AK8_W_tag_anti_candidates");
+   vars.InitVar("N_AK4_bottom_tag_anti_candidates","I");
+   vars.InitVars("AK4_bottom_tag_anti_candidates_pt","N_AK4_bottom_tag_anti_candidates");
+   vars.InitVars("AK4_bottom_tag_anti_candidates_eta","N_AK4_bottom_tag_anti_candidates");
+   
+   vars.InitVar("N_AK8_top_misstag_anti_candidates","I");
+   vars.InitVars("AK8_top_misstagged_anti_candidates_pt","N_AK8_top_misstag_anti_candidates");
+   vars.InitVars("AK8_top_misstagged_anti_candidates_eta","N_AK8_top_misstag_anti_candidates");
+   vars.InitVar("N_AK8_W_misstag_anti_candidates","I");
+   vars.InitVars("AK8_W_misstagged_anti_candidates_pt","N_AK8_W_misstag_anti_candidates");
+   vars.InitVars("AK8_W_misstagged_anti_candidates_eta","N_AK8_W_misstag_anti_candidates");
+   vars.InitVar("N_AK4_bottom_misstag_anti_candidates","I");
+   vars.InitVars("AK4_bottom_misstagged_anti_candidates_pt","N_AK4_bottom_misstag_anti_candidates");
+   vars.InitVars("AK4_bottom_misstagged_anti_candidates_eta","N_AK4_bottom_misstag_anti_candidates");
+*/   
    
 ///Variables for datadriven Background estimation
+   
+   
+   
+   vars.InitVar("N_AK8_top_candidates","I");
+   vars.InitVars("AK8_top_candidates_pt","N_AK8_top_candidates");
+   vars.InitVars("AK8_top_candidates_eta","N_AK8_top_candidates");
+   vars.InitVar("N_AK8_W_candidates","I");
+   vars.InitVars("AK8_W_candidates_pt","N_AK8_W_candidates");
+   vars.InitVars("AK8_W_candidates_eta","N_AK8_W_candidates");
+   vars.InitVar("N_AK4_bottom_candidates","I");
+   vars.InitVars("AK4_bottom_candidates_pt","N_AK4_bottom_candidates");
+   vars.InitVars("AK4_bottom_candidates_eta","N_AK4_bottom_candidates");   
+   
+   
+   
+///Datadriven Background estimation   
    vars.InitVar("BG_Zprime_M","I");
    vars.InitVar("BG_Zprime_withtop_btag_M","I");
 
@@ -655,6 +714,22 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     std::vector<pat::Jet> misstagged_top_withbtag;
     std::vector<pat::Jet> misstagged_W;
     std::vector<pat::Jet> misstagged_bottom;
+        
+    std::vector<pat::Jet> AK8_top_tag_anti_candidates;
+    std::vector<pat::Jet> AK8_W_tag_anti_candidates;
+    std::vector<pat::Jet> AK4_bottom_tag_anti_candidates;
+    std::vector<pat::Jet> AK8_top_misstag_anti_candidates;
+    std::vector<pat::Jet> AK8_W_misstag_anti_candidates;
+    std::vector<pat::Jet> AK4_bottom_misstag_anti_candidates;
+    
+    std::vector<pat::Jet> tagged_top_anti;
+    std::vector<pat::Jet> tagged_top_withbtag_anti;
+    std::vector<pat::Jet> tagged_W_anti;
+    std::vector<pat::Jet> tagged_bottom_anti;
+    std::vector<pat::Jet> misstagged_top_anti;
+    std::vector<pat::Jet> misstagged_top_withbtag_anti;
+    std::vector<pat::Jet> misstagged_W_anti;
+    std::vector<pat::Jet> misstagged_bottom_anti;
     
     //uint N_AK8_top_misstag_candidates=0;
     //uint N_AK8_W_misstag_candidates=0;
@@ -960,6 +1035,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         
         if(itJet->pt()>200 && abs(itJet->eta())<2.4){
                 AK8_W_candidates.push_back(*itJet);
+                
                 //vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->pt());
                 //vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->eta());
                 
@@ -967,13 +1043,21 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                     AK8_W_misstag_candidates.push_back(*itJet);
                     if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.6 && 70<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<100){
                         misstagged_W.push_back(*itJet);
+                        cout<<"found misstagged W"<<endl;
                         //vars.FillVars("misstagged_W_pt",iJet,itJet->pt());
                         //vars.FillVars("misstagged_W_eta",iJet,itJet->eta());
+                    } else{
+                        tagged_W_anti.push_back(*itJet);
+                        cout<<"found tagged W anti"<<endl;
                     }
                 } else {
                     AK8_W_tag_candidates.push_back(*itJet);
                     if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.6 && 70<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<100){
                         tagged_W.push_back(*itJet);
+                        cout<<"found tagged W"<<endl;
+                    } else {
+                        misstagged_W_anti.push_back(*itJet);
+                        cout<<"found misstagged W anti"<<endl;
                     }
                 }
                 if (itJet->pt()>400){
@@ -984,6 +1068,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                         AK8_top_misstag_candidates.push_back(*itJet);
                         if (itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.86 && 110<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<210){
                             misstagged_top.push_back(*itJet);
+                            cout<<"found misstagged t"<<endl;
                         //vars.FillVars("misstagged_top_pt",iJet,itJet->pt());
                         //vars.FillVars("misstagged_top_eta",iJet,itJet->eta());
                     
@@ -996,9 +1081,15 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                             }   
                             if (max_subjet_csv_v2>0.8){
                                 misstagged_top_withbtag.push_back(*itJet);
+                                cout<<"found misstagged t"<<endl;
                                 //vars.FillVars("misstagged_top_withbtag_pt",iJet,itJet->pt());
                                 //vars.FillVars("misstagged_top_withbtag_eta",iJet,itJet->eta());
+                            } else {
+                                tagged_top_withbtag_anti.push_back(*itJet);
                             }
+                        } else {
+                            tagged_top_anti.push_back(*itJet);
+                            tagged_top_withbtag_anti.push_back(*itJet);
                         }
                     } else {
                         AK8_top_tag_candidates.push_back(*itJet);
@@ -1016,7 +1107,12 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                                 tagged_top_withbtag.push_back(*itJet);
                                 //vars.FillVars("misstagged_top_withbtag_pt",iJet,itJet->pt());
                                 //vars.FillVars("misstagged_top_withbtag_eta",iJet,itJet->eta());
+                            } else {
+                                misstagged_top_withbtag_anti.push_back(*itJet);
                             }
+                        } else {
+                            misstagged_top_anti.push_back(*itJet);
+                            misstagged_top_withbtag_anti.push_back(*itJet);
                         }
                     }
                 }
@@ -1054,11 +1150,19 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                 AK4_bottom_misstag_candidates.push_back(*itJet);
                 if (itJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8){
                     misstagged_bottom.push_back(*itJet);
+                    cout<<"found misstagged b"<<endl;
+                } else {
+                    tagged_bottom_anti.push_back(*itJet);
+                    cout<<"found tagged b anti"<<endl;
                 }
             } else {
                 AK4_bottom_tag_candidates.push_back(*itJet);
                 if (itJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8){
                     tagged_bottom.push_back(*itJet);
+                    cout<<"found tagged b"<<endl;
+                } else {
+                    misstagged_bottom_anti.push_back(*itJet);
+                    cout<<"found misstagged b anti"<<endl;
                 }
                 //vars.FillVars("misstagged_bottom_pt",iJet,itJet->pt());
                 //vars.FillVars("misstagged_bottom_eta",iJet,itJet->eta());
@@ -1177,6 +1281,62 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("tagged_bottom_pt",iJet,itJet->pt());
     vars.FillVars("tagged_bottom_eta",iJet,itJet->eta());
   }
+  
+  
+  vars.FillVar("N_misstagged_top_anti",misstagged_top_anti.size());
+  vars.FillVar("N_misstagged_top_withbtag_anti",misstagged_top_withbtag_anti.size());
+  vars.FillVar("N_misstagged_W_anti",misstagged_W_anti.size()); 
+  vars.FillVar("N_misstagged_bottom_anti",misstagged_bottom_anti.size());
+  vars.FillVar("N_tagged_top_anti",tagged_top_anti.size());
+  vars.FillVar("N_tagged_top_withbtag_anti",tagged_top_withbtag_anti.size());
+  vars.FillVar("N_tagged_W_anti",tagged_W_anti.size()); 
+  vars.FillVar("N_tagged_anti_bottom",tagged_bottom_anti.size());  
+  
+  for(std::vector<pat::Jet>::const_iterator itJet = misstagged_top_anti.begin() ; itJet != misstagged_top_anti.end(); ++itJet){
+    int iJet = itJet - misstagged_top_anti.begin();
+    vars.FillVars("misstagged_top_anti_pt",iJet,itJet->pt());
+    vars.FillVars("misstagged_top_anti_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = misstagged_top_withbtag_anti.begin() ; itJet != misstagged_top_withbtag_anti.end(); ++itJet){
+    int iJet = itJet - misstagged_top_withbtag_anti.begin();
+    vars.FillVars("misstagged_top_withbtag_anti_pt",iJet,itJet->pt());
+    vars.FillVars("misstagged_top_withbtag_anti_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = misstagged_W_anti.begin() ; itJet != misstagged_W_anti.end(); ++itJet){
+    int iJet = itJet - misstagged_W_anti.begin();
+    vars.FillVars("misstagged_W_anti_pt",iJet,itJet->pt());
+    vars.FillVars("misstagged_W_anti_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = misstagged_bottom_anti.begin() ; itJet != misstagged_bottom_anti.end(); ++itJet){
+    int iJet = itJet - misstagged_bottom_anti.begin();
+    vars.FillVars("misstagged_bottom_anti_pt",iJet,itJet->pt());
+    vars.FillVars("misstagged_bottom_anti_eta",iJet,itJet->eta());
+  }
+  
+  for(std::vector<pat::Jet>::const_iterator itJet = tagged_top_anti.begin() ; itJet != tagged_top_anti.end(); ++itJet){
+    int iJet = itJet - tagged_top_anti.begin();
+    vars.FillVars("tagged_top_anti_pt",iJet,itJet->pt());
+    vars.FillVars("tagged_top_anti_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = tagged_top_withbtag_anti.begin() ; itJet != tagged_top_withbtag_anti.end(); ++itJet){
+    int iJet = itJet - tagged_top_withbtag_anti.begin();
+    vars.FillVars("tagged_top_withbtag_anti_pt",iJet,itJet->pt());
+    vars.FillVars("tagged_top_withbtag_anti_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = tagged_W_anti.begin() ; itJet != tagged_W_anti.end(); ++itJet){
+    int iJet = itJet - tagged_W_anti.begin();
+    vars.FillVars("tagged_W_anti_pt",iJet,itJet->pt());
+    vars.FillVars("tagged_W_anti_eta",iJet,itJet->eta());
+  }
+  for(std::vector<pat::Jet>::const_iterator itJet = tagged_bottom_anti.begin() ; itJet != tagged_bottom_anti.end(); ++itJet){
+    int iJet = itJet - tagged_bottom_anti.begin();
+    vars.FillVars("tagged_bottom_anti_pt",iJet,itJet->pt());
+    vars.FillVars("tagged_bottom_anti_eta",iJet,itJet->eta());
+  }
+  
+  
+  
+  
   ///Background estimation
   
   
