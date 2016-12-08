@@ -667,7 +667,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
 
 
-///////EVENT RECONSTRUCTION Wtb-channel///////
+///////EVENT RECONSTRUCTION///////
     float ht =0.;
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
         ht += itJet->pt();
@@ -718,6 +718,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     bool top_anti_candidatefound=false;
     bool top_withbtag_candidatefound=false;
     bool top_withbtag_anti_candidatefound=false;
+    
     bool W_candidatefound=false;
     bool W_anti_candidatefound=false;
     bool bottom_candidatefound=false;
@@ -729,6 +730,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     
     bool Z_candidatefound=false;
     bool Z_anti_candidatefound=false;
+    
+    
+    
     bool Higgs_candidatefound=false;
     bool Higgs_with1btag_candidatefound=false;
     bool Higgs_with2btag_candidatefound=false;
@@ -961,62 +965,64 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   } 
  
 ///Fill Zs
-  vars.FillVar("N_Zs",Ws.size());   
-  vars.FillVar("N_Zs_anti",Ws_anti.size());   
+  vars.FillVar("N_Zs",Zs.size());   
+  vars.FillVar("N_Zs_anti",Zs_anti.size());   
     
   for(std::vector<pat::Jet>::const_iterator itJet = Zs.begin() ; itJet != Zs.end(); ++itJet){
     int iJet = itJet - Zs.begin();
     vars.FillVars("Zs_pt",iJet,itJet->pt());
-    vars.FillVars("Ws_eta",iJet,itJet->eta());
+    vars.FillVars("Zs_eta",iJet,itJet->eta());
   }
   for(std::vector<pat::Jet>::const_iterator itJet = Zs_anti.begin() ; itJet != Zs_anti.end(); ++itJet){
-    int iJet = itJet - Ws_anti.begin();
+    int iJet = itJet - Zs_anti.begin();
     vars.FillVars("Zs_anti_pt",iJet,itJet->pt());
     vars.FillVars("Zs_anti_eta",iJet,itJet->eta());
   }
 
 ///Fill Higgs
-  vars.FillVar("N_Higgs",tops.size());   
-  vars.FillVar("N_Higgs_with1btag",tops_withbtag.size());   
-  vars.FillVar("N_Higgs_with2btag",tops_anti.size());   
-  vars.FillVar("N_Higgs_anti",tops_withbtag_anti.size());   
-  vars.FillVar("N_Higgs_with1btag_anti",tops_withbtag_anti.size());   
-  vars.FillVar("N_Higgs_with2btag_anti",tops_withbtag_anti.size());   
+  vars.FillVar("N_Higgs",Higgs.size());   
+  vars.FillVar("N_Higgs_with1btag",Higgs_with1btag.size());   
+  vars.FillVar("N_Higgs_with2btag",Higgs_with2btag.size());   
+  vars.FillVar("N_Higgs_anti",Higgs_anti.size());   
+  vars.FillVar("N_Higgs_with1btag_anti",Higgs_with1btag_anti.size());   
+  vars.FillVar("N_Higgs_with2btag_anti",Higgs_with2btag_anti.size());   
     
-  for(std::vector<pat::Jet>::const_iterator itJet = tops.begin() ; itJet != tops.end(); ++itJet){
-    int iJet = itJet - tops.begin();
+  for(std::vector<pat::Jet>::const_iterator itJet = Higgs.begin() ; itJet != Higgs.end(); ++itJet){
+    int iJet = itJet - Higgs.begin();
     vars.FillVars("Higgs_pt",iJet,itJet->pt());
     vars.FillVars("Higgs_eta",iJet,itJet->eta());
   }
-  for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag.begin() ; itJet != tops_withbtag.end(); ++itJet){
-    int iJet = itJet - tops_withbtag.begin();
+  for(std::vector<pat::Jet>::const_iterator itJet = Higgs_with1btag.begin() ; itJet != Higgs_with1btag.end(); ++itJet){
+    int iJet = itJet - Higgs_with1btag.begin();
     vars.FillVars("Higgs_with1btag_pt",iJet,itJet->pt());
     vars.FillVars("Higgs_with1btag_eta",iJet,itJet->eta());
   }
-  for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag.begin() ; itJet != tops_withbtag.end(); ++itJet){
-    int iJet = itJet - tops_withbtag.begin();
+  for(std::vector<pat::Jet>::const_iterator itJet = Higgs_with2btag.begin() ; itJet != Higgs_with2btag.end(); ++itJet){
+    int iJet = itJet - Higgs_with2btag.begin();
     vars.FillVars("Higgs_with2btag_pt",iJet,itJet->pt());
     vars.FillVars("Higgs_with2btag_eta",iJet,itJet->eta());
   }
-  for(std::vector<pat::Jet>::const_iterator itJet = tops_anti.begin() ; itJet != tops_anti.end(); ++itJet){
-    int iJet = itJet - tops_anti.begin();
+  for(std::vector<pat::Jet>::const_iterator itJet = Higgs_anti.begin() ; itJet != Higgs_anti.end(); ++itJet){
+    int iJet = itJet - Higgs_anti.begin();
     vars.FillVars("Higgs_anti_pt",iJet,itJet->pt());
     vars.FillVars("Higgs_anti_eta",iJet,itJet->eta());
   }
-  for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag_anti.begin() ; itJet != tops_withbtag_anti.end(); ++itJet){
-    int iJet = itJet - tops_withbtag_anti.begin();
+  for(std::vector<pat::Jet>::const_iterator itJet = Higgs_with1btag_anti.begin() ; itJet != Higgs_with1btag_anti.end(); ++itJet){
+    int iJet = itJet - Higgs_with1btag_anti.begin();
     vars.FillVars("Higgs_with1btag_anti_pt",iJet,itJet->pt());
     vars.FillVars("Higgs_with1btag_anti_eta",iJet,itJet->eta());
   }
-  for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag_anti.begin() ; itJet != tops_withbtag_anti.end(); ++itJet){
-    int iJet = itJet - tops_withbtag_anti.begin();
+  for(std::vector<pat::Jet>::const_iterator itJet = Higgs_with2btag_anti.begin() ; itJet != Higgs_with2btag_anti.end(); ++itJet){
+    int iJet = itJet - Higgs_with2btag_anti.begin();
     vars.FillVars("Higgs_with2btag_anti_pt",iJet,itJet->pt());
     vars.FillVars("Higgs_with2btag_anti_eta",iJet,itJet->eta());
   }
   
+  
+  
   if(Z_candidatefound && Z_anti_candidatefound && Higgs_candidatefound && Higgs_with1btag_candidatefound && Higgs_with2btag_candidatefound && Higgs_anti_candidatefound && Higgs_with1btag_anti_candidatefound && Higgs_with2btag_anti_candidatefound){std::cout<<"this event makes no sense"<<endl;}
   
-///TPrime reconstruction
+///TPrime reconstruction Wtb-channel
   if ((top_candidatefound || top_withbtag_candidatefound) && (W_candidatefound || W_anti_candidatefound) && (bottom_candidatefound ||bottom_anti_candidatefound)){
       if (W_candidatefound && bottom_candidatefound){  /// && BoostedUtils::DeltaR(bottom.p4(),W.p4())>0.8 && BoostedUtils::DeltaR(bottom.p4(), top.p4())){
         Tprime=bottoms[0].p4()+Ws[0].p4();
@@ -1051,9 +1057,96 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         }      
       } 
   }
-
   
-///ZPrime reconstructions
+/*  
+///TPrime reconstruction ttZ-channel
+  if ((Z_candidatefound || Z_anti_candidatefound) && (top_candidatefound || top_anti_candidatefound || top_withbtag_candidatefound || top_withbtag_anti_candidatefound){
+      if(Z_candidatefound){
+          if (tops.size()>1){
+              Tprime_ttZ_t1Z=tops[0].p4()+Zs[0].p4();
+              Tprime_ttZ_t2Z=tops[1].p4()+Zs[0].p4();
+              if(Tprime_ttZ_t1Z.mass()>500){
+                Tprime_ttZ_t1Z_candidatefound=true;
+              }
+              if(Tprime_ttZ_t2Z.mass()>500){
+                Tprime_ttZ_t2Z_candidatefound=true;
+              }
+          }
+          if (tops_anti.size()>1){
+              Tprime_2tantiZ_tanti1Z=tops_anti[0].p4()+Zs[0].p4();
+              Tprime_2tantiZ_tanti2Z=tops_anti[1].p4()+Zs[0].p4();
+              if(Tprime_2tantiZ_tanti1Z.mass()>500){
+                Tprime_2tantiZ_tanti1Z_candidatefound=true;
+              }
+              if(Tprime_2tantiZ_tanti2Z.mass()>500){
+                Tprime_2tantiZ_tanti2Z_candidatefound=true;
+              }
+          }
+          if (tops.size()=1 && top_anti_candidatefound){
+              Tprime_tantitZ_tantiZ=tops_anti[0].p4()+Zs[0].p4();
+              Tprime_tantitZ_tZ=tops[0].p4()+Zs[0].p4();
+              if(Tprime_tantitZ_tantiZ.mass()>500){
+                Tprime_tantitZ_tantiZ_candidatefound=true;
+              }
+              if(Tprime_tantitZ_tZ.mass()>500){
+                Tprime_tantitZ_tZ_candidatefound=true;
+              }
+          }
+      }
+      if (Z_anti_candidatefound){
+          if (tops.size()>1){
+              Tprime_ttZanti_t1Zanti=tops[0].p4()+Zs[0].p4();
+              Tprime_ttZanti_t2Zanti=tops[1].p4()+Zs[0].p4();
+              if(Tprime_ttZanti_t1Zanti.mass()>500){
+                Tprime_ttZanti_t1Zanti_candidatefound=true;
+              }
+              if(Tprime_ttZanti_t2Zanti.mass()>500){
+                Tprime_ttZanti_t2Zanti_candidatefound=true;
+              }
+          }
+          if (tops_anti.size()>1){
+              Tprime_2tantiZanti_tanti1Zanti=tops_anti[0].p4()+Zs[0].p4();
+              Tprime_2tantiZanti_tanti2Zanti=tops_anti[1].p4()+Zs[0].p4();
+              if(Tprime_2tantiZanti_tanti1Zanti.mass()>500){
+                Tprime_2tantiZanti_tanti1Zanti_candidatefound=true;
+              }
+              if(Tprime_2tantiZanti_tanti1Zanti.mass()>500){
+                Tprime_2tantiZanti_tanti2Zanti_candidatefound=true;
+              }    
+          }
+          if (tops.size()=1 && top_anti_candidatefound){
+              Tprime_tantitZanti_tantiZanti=tops_anti[0].p4()+Zs[0].p4();
+              Tprime_tantitZanti_tZanti=tops[0].p4()+Zs[0].p4();
+              if(Tprime_tantitZanti_tantiZanti.mass()>500){
+                Tprime_tantitZanti_tantiZanti_candidatefound=true;
+              }
+              if(Tprime_tantitZanti_tZanti.mass()>500){
+                Tprime_tantitZanti_tZanti_candidatefound=true;
+              }
+          }
+      }
+  }  
+
+///TPrime reconstruction ttH-channel
+  if ((Higgs_candidatefound || Higgs_anti_candidatefound) && (top_candidatefound || top_anti_candidatefound){
+      if(Higgs_candidatefound){
+          if (tops.size()>1){
+              Tprime_t1H=tops[0].p4()+Higgs[0].p4();
+              Tprime_t2H=tops[1].p4()+Higgs[0].p4();
+              Tprime_tH_candidatefound=true;
+          }
+          if (tops_anti.size()>1){
+              Tprime_t_anti_H_candidatefound=true;
+              Tprime_tanti1H=tops_anti[0].p4()+Higgs[0].p4();
+              Tprime_tanti2H=tops_anti[1].p4()+Higgs[0].p4();
+          }
+      }
+      if (Higgs_anti_candidatefound){
+          
+      }
+  }
+*/  
+///ZPrime reconstructions Wtb-channel
   if (top_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops[0].p4())){
       Zprime=Tprime+tops[0].p4();
       vars.FillVar("Zprime_M",Zprime.mass());
@@ -1118,9 +1211,59 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
       Zprime_withtopbtag_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_M",Zprime_withtopbtag_W_anti_bottom_anti.mass());
   } 
-
-
-
+/*
+///ZPrime reconstructions Wtb-channel
+  if(Tprime_ttZ_t1Z_candidatefound){
+      Zprime_ttZ_t1Z=Tprime_ttZ_t1Z+tops[1].p4();
+      vars.FillVar("Zprime_ttZ_t1Z_M",Zprime_ttZ_t1Z.mass());
+  }
+  if(Tprime_ttZ_t2Z_candidatefound){
+      Tprime_ttZ_t2Z=Tprime_ttZ_t2Z+tops[0].p4();
+      vars.FillVar("Tprime_ttZ_t2Z_M",Tprime_ttZ_t2Z.mass());
+  }
+  if(Tprime_2tantiZ_tanti1Z_candidatefound){
+      Zprime_2tantiZ_tanti1Z=Tprime_2tantiZ_tanti1Z+tops_anti[1].p4();
+      vars.FillVar("Zprime_2tantiZ_tanti1Z_M",Zprime_2tantiZ_tanti1Z.mass());
+  }
+  if(Tprime_2tantiZ_tanti2Z_candidatefound){
+      Zprime_2tantiZ_tanti2Z=Tprime_2tantiZ_tanti2Z+tops_anti[0].p4();
+      vars.FillVar("Zprime_2tantiZ_tanti2Z_M",Zprime_2tantiZ_tanti2Z.mass());
+  }
+  if(Tprime_tantitZ_tantiZ_candidatefound){
+      Zprime_tantitZ_tantiZ=Tprime_tantitZ_tantiZ+tops[0].p4();
+      vars.FillVar("Zprime_tantitZ_tantiZ_M",Zprime_tantitZ_tantiZ.mass());
+  }
+  
+  if(Tprime_tantitZanti_tZanti_candidatefound){
+      Zprime_tantitZanti_tZanti=Tprime_tantitZanti_tZanti+tops_anti[0].p4();
+      vars.FillVar("Zprime_tantitZanti_tZanti",Zprime_tantitZanti_tZanti.mass());
+  }
+  if(Tprime_ttZanti_t1Zanti_candidatefound){
+      Zprime_ttZanti_t1Zanti=Tprime_ttZanti_t1Zanti+tops[1].p4();
+      vars.FillVar("Zprime_ttZanti_t1Zanti_M",Zprime_ttZanti_t1Zanti.mass());
+  }
+  if(Tprime_ttZanti_t2Zanti_candidatefound){
+      Zprime_ttZanti_t2Zanti=Tprime_ttZanti_t2Zanti+tops[0].p4();
+      vars.FillVar("Zprime_ttZanti_t2Zanti_M",Zprime_ttZanti_t2Zanti.mass());
+  }
+  if(Tprime_2tantiZanti_tanti1Zanti_candidatefound){
+      Zprime_2tantiZanti_tanti1Zanti=Tprime_2tantiZanti_tanti1Zanti+tops_anti[1].p4();
+      vars.FillVar("Zprime_2tantiZanti_tanti1Zanti_M",Zprime_2tantiZanti_tanti1Zanti.mass());
+  }
+  if(Tprime_2tantiZanti_tanti2Zanti_candidatefound){
+      Zprime_2tantiZanti_tanti2Zanti=Tprime_2tantiZanti_tanti2Zanti+tops_anti[0].p4();
+      vars.FillVar("Zprime_2tantiZanti_tanti2Zanti_M",Zprime_2tantiZanti_tanti2Zanti.mass());
+  }
+  if(Tprime_tantitZanti_tantiZanti_candidatefound){
+      Zprime_tantitZanti_tantiZanti=Tprime_tantitZanti_tantiZanti+tops[0].p4();
+      vars.FillVar("Zprime_tantitZanti_tantiZanti_M",Zprime_tantitZanti_tantiZanti.mass());
+  }
+  if(Tprime_tantitZanti_tZanti_candidatefound){
+      Zprime_tantitZanti_tZanti=Tprime_tantitZanti_tZanti+tops_anti[0].p4();
+      vars.FillVar("Zprime_tantitZanti_tZanti",Zprime_tantitZanti_tZanti.mass());
+  }  
+  
+*/
 ///Misstag rate & tag efficiency
 
   
