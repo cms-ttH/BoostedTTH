@@ -98,6 +98,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTbarReconstructionVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenJetOrderedJetCollectionProcessor.hpp"
 //
 // class declaration
 //
@@ -120,7 +121,6 @@ private:
     map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype=sysType::NA);
     std::string outfileName(const std::string& basename,const sysType::sysType& sysType);
     std::string systName(const sysType::sysType& sysType);
-    sysType::sysType systType(const std::string& name);
 
 
     // ----------member data ---------------------------
@@ -262,11 +262,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     selectionNames= iConfig.getParameter< std::vector<std::string> >("selectionNames");
     std::vector<std::string> systematicsNames = iConfig.getParameter<std::vector<std::string> >("systematics");
     for (auto const &s : systematicsNames){
-	     jetSystematics.push_back(systType(s));
+      jetSystematics.push_back(sysType::get(s));
     }
-
     for (auto const &s : jetSystematics){
-	     outfileNames.push_back(outfileName(outfileNameBase,s));
+      outfileNames.push_back(outfileName(outfileNameBase,s));
     }
     // REGISTER DATA ACCESS
     // This needs to be done in the constructor of this class or via the consumes collector in the constructor of helper classes
@@ -320,6 +319,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
       csvReweighter.init( bTagSFsPS.getParameter<std::string>("fileNameHF"),
 			  bTagSFsPS.getParameter<std::string>("fileNameLF"),
 			  bTagSFsPS.getParameter<int>("nHFPtBins") );
+      if( bTagSFsPS.existsAs<bool>("AllowJetsOutOfBinning",true) ) {
+	csvReweighter.allowJetsOutOfBinning(bTagSFsPS.getParameter<bool>("AllowJetsOutOfBinning"));
+      }
     }
 
     // INITIALIZE PU WEIGHTS
@@ -454,6 +456,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"SpinCorrelationProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
+	}
+	if(std::find(processorNames.begin(),processorNames.end(),"GenJetOrderedJetCollectionProcessor")!=processorNames.end()) {
+	  treewriter->AddTreeProcessor(new GenJetOrderedJetCollectionProcessor,"GenJetOrderedJetCollectionProcessor");
 	}
     }
 
@@ -838,51 +843,20 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     return weights;
 }
 std::string BoostedAnalyzer::systName(const sysType::sysType& sysType){
-    if(sysType==sysType::NA) return "nominal";
-    if(sysType==sysType::JESup) return "jesup";
-    if(sysType==sysType::JESdown) return "jesdown";
-    if(sysType==sysType::JERup) return "jerup";
-    if(sysType==sysType::JERdown) return "jerdown";
-    std::cerr << "BoostedAnalyzer::systName systematic not implemented" << sysType << std::endl;
-    throw std::exception();
-    return "";
+  if( sysType == sysType::NA ) return "nominal";
+  else                         return sysType::toString(sysType);
 }
 
 std::string BoostedAnalyzer::outfileName(const std::string& basename, const sysType::sysType& sysType){
-    size_t stringIndex = basename.find("nominal");
-    if(stringIndex!=std::string::npos){
-	std::string outfileName=basename;
-	if(sysType==sysType::JESup) outfileName.replace(stringIndex,7,"JESUP");
-	else if(sysType==sysType::JESdown) outfileName.replace(stringIndex,7,"JESDOWN");
-	else if(sysType==sysType::JERup) outfileName.replace(stringIndex,7,"JERUP");
-	else if(sysType==sysType::JERdown) outfileName.replace(stringIndex,7,"JERDOWN");
-	else {
-	    std::cerr << "BoostedAnalyzer::outfileName systematic not implemented" << sysType << std::endl;
-	    throw std::exception();
-	}
-	return outfileName;
-    }
-    if(sysType==sysType::NA) return basename+"_nominal";
-    if(sysType==sysType::JESup) return basename+"_JESUP";
-    if(sysType==sysType::JESdown) return basename+"_JESDOWN";
-    if(sysType==sysType::JERup) return basename+"_JERUP";
-    if(sysType==sysType::JERdown) return basename+"_JERDOWN";
-    std::cerr << "BoostedAnalyzer: systematic not implemented" << std::endl;
-    throw std::exception();
-    return basename;
-}
-
-
-
-sysType::sysType BoostedAnalyzer::systType(const std::string& name){
-    if(name=="") return sysType::NA;
-    if(name=="jesup") return sysType::JESup;
-    if(name=="jesdown") return sysType::JESdown;
-    if(name=="jerup") return sysType::JERup;
-    if(name=="jerdown") return sysType::JERdown;
-    std::cerr << "BoostedAnalyzer: systematic "<< name <<" unknown" << std::endl;
-    throw std::exception();
-    return sysType::NA;
+  const std::string systLabel = sysType::toString(sysType);
+  const size_t stringIndex = basename.find("nominal");
+  if(stringIndex!=std::string::npos){
+    std::string outfileName=basename;
+    outfileName.replace(stringIndex,7,systLabel);
+    return outfileName;
+  }
+  if(sysType==sysType::NA) return basename+"_nominal";
+  else                     return basename+"_"+systLabel;
 }
 
 
@@ -909,21 +883,11 @@ void BoostedAnalyzer::endJob()
 // ------------ method called when starting to processes a run ------------
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
-
-  // initialize JEC
-  helper.SetJetCorrectorUncertainty(iSetup);
-  helper.SetBoostedJetCorrectorUncertainty(iSetup);
-
 }
 
 // ------------ method called when starting a luminosity block ------------
 void BoostedAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup)
 {
-
-  // initialize JEC
-  helper.SetJetCorrectorUncertainty(iSetup);
-  helper.SetBoostedJetCorrectorUncertainty(iSetup);
-
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
