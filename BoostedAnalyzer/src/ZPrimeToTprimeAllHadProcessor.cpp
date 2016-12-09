@@ -239,6 +239,23 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("Zprime_W_anti_bottom_anti_M","I");
    vars.InitVar("Zprime_withtopbtag_W_anti_bottom_anti_M","I");
    
+   vars.InitVar("Zprime_Pt","I");
+   vars.InitVar("Zprime_withtopbtag_Pt","I");
+   vars.InitVar("Zprime_top_anti_Pt","I");
+   vars.InitVar("Zprime_top_anti_W_anti_Pt","I");
+   vars.InitVar("Zprime_top_anti_bottom_anti_Pt","I");
+   vars.InitVar("Zprime_withtop_btag_Pt","I");
+   vars.InitVar("Zprime_top_withbtag_anti_Pt","I");
+   vars.InitVar("Zprime_top_withbtag_anti_W_anti_Pt","I");
+   vars.InitVar("Zprime_top_withbtag_anti_bottom_anti_Pt","I");
+   vars.InitVar("Zprime_top_withbtag_anti_W_anti_bottom_anti_Pt","I");
+   vars.InitVar("Zprime_W_anti_Pt","I");
+   vars.InitVar("Zprime_withtopbtag_W_anti_Pt","I");
+   vars.InitVar("Zprime_bottom_anti_Pt","I");
+   vars.InitVar("Zprime_withtopbtag_bottom_anti_Pt","I");
+   vars.InitVar("Zprime_W_anti_bottom_anti_Pt","I");
+   vars.InitVar("Zprime_withtopbtag_W_anti_bottom_anti_Pt","I");
+   
 ///Variables for misstag rates and tagging efficiencies
    
    vars.InitVar("N_tagged_top","I");
@@ -1150,66 +1167,82 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   if (top_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops[0].p4())){
       Zprime=Tprime+tops[0].p4();
       vars.FillVar("Zprime_M",Zprime.mass());
+      vars.FillVar("Zprime_Pt",Zprime.pt());
   }
   if (top_withbtag_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag[0].p4())){
       Zprime_withtopbtag=Tprime+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_M",Zprime_withtopbtag.mass());
+      vars.FillVar("Zprime_withtopbtag_Pt",Zprime_withtopbtag.pt());
   }  
   if (top_anti_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_anti[0].p4())){
       Zprime_top_anti=Tprime+tops_anti[0].p4();
       vars.FillVar("Zprime_top_anti_M",Zprime_top_anti.mass());
+      vars.FillVar("Zprime_top_anti_Pt",Zprime_top_anti.pt());
   }
   if (top_anti_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_anti[0].p4())){
       Zprime_top_anti_W_anti=Tprime_W_anti+tops_anti[0].p4();
       vars.FillVar("Zprime_top_anti_W_anti_M",Zprime_top_anti_W_anti.mass());
+      vars.FillVar("Zprime_top_anti_W_anti_Pt",Zprime_top_anti_W_anti.pt());
   } 
   if (top_anti_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_anti[0].p4())){
       Zprime_top_anti_bottom_anti=Tprime_bottom_anti+tops_anti[0].p4();
       vars.FillVar("Zprime_top_anti_bottom_anti_M",Zprime_top_anti_bottom_anti.mass());
+      vars.FillVar("Zprime_top_anti_bottom_anti_Pt",Zprime_top_anti_bottom_anti.pt());
   }
   if (top_anti_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_anti[0].p4())){
       Zprime_top_anti_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_anti[0].p4();
       vars.FillVar("Zprime_withtop_btag_M",Zprime_top_anti_W_anti_bottom_anti.mass());
+      vars.FillVar("Zprime_withtop_btag_Pt",Zprime_top_anti_W_anti_bottom_anti.pt());
   }  
   if (top_withbtag_anti_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag_anti[0].p4())){
       Zprime_top_withbtag_anti=Tprime+tops_withbtag_anti[0].p4();
       vars.FillVar("Zprime_top_withbtag_anti_M",Zprime_top_withbtag_anti.mass());
+      vars.FillVar("Zprime_top_withbtag_anti_Pt",Zprime_top_withbtag_anti.pt());
   }
   if (top_withbtag_anti_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag_anti[0].p4())){
       Zprime_top_withbtag_anti_W_anti=Tprime_W_anti+tops_withbtag_anti[0].p4();
       vars.FillVar("Zprime_top_withbtag_anti_W_anti_M",Zprime_top_withbtag_anti_W_anti.mass());
+      vars.FillVar("Zprime_top_withbtag_anti_W_anti_Pt",Zprime_top_withbtag_anti_W_anti.pt());
   } 
   if (top_withbtag_anti_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag_anti[0].p4())){
       Zprime_top_withbtag_anti_bottom_anti=Tprime_bottom_anti+tops_withbtag_anti[0].p4();
       vars.FillVar("Zprime_top_withbtag_anti_bottom_anti_M",Zprime_top_withbtag_anti_bottom_anti.mass());
+      vars.FillVar("Zprime_top_withbtag_anti_bottom_anti_Pt",Zprime_top_withbtag_anti_bottom_anti.pt());
   }
   if (top_withbtag_anti_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag_anti[0].p4())){
       Zprime_top_withbtag_anti_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_withbtag_anti[0].p4();
       vars.FillVar("Zprime_top_withbtag_anti_W_anti_bottom_anti_M",Zprime_top_withbtag_anti_W_anti_bottom_anti.mass());
+      vars.FillVar("Zprime_top_withbtag_anti_W_anti_bottom_anti_Pt",Zprime_top_withbtag_anti_W_anti_bottom_anti.pt());
   }  
   if (top_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops[0].p4())){
       Zprime_W_anti=Tprime_bottom_anti+tops[0].p4();
       vars.FillVar("Zprime_W_anti_M",Zprime_W_anti.mass());
+      vars.FillVar("Zprime_W_anti_Pt",Zprime_W_anti.pt());
   }
   if (top_withbtag_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag[0].p4())){
       Zprime_withtopbtag_W_anti=Tprime_W_anti+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_W_anti_M",Zprime_withtopbtag_W_anti.mass());
+      vars.FillVar("Zprime_withtopbtag_W_anti_Pt",Zprime_withtopbtag_W_anti.pt());
   } 
   if (top_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops[0].p4())){
       Zprime_bottom_anti=Tprime_bottom_anti+tops[0].p4();
       vars.FillVar("Zprime_bottom_anti_M",Zprime_bottom_anti.mass());
+      vars.FillVar("Zprime_bottom_anti_Pt",Zprime_bottom_anti.pt());
   }
   if (top_withbtag_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag[0].p4())){
       Zprime_withtopbtag_bottom_anti=Tprime_bottom_anti+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_bottom_anti_M",Zprime_withtopbtag_bottom_anti.mass());
+      vars.FillVar("Zprime_withtopbtag_bottom_anti_Pt",Zprime_withtopbtag_bottom_anti.pt());
   }  
   if (top_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops[0].p4())){
       Zprime_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops[0].p4();
       vars.FillVar("Zprime_W_anti_bottom_anti_M",Zprime_W_anti_bottom_anti.mass());
+      vars.FillVar("Zprime_W_anti_bottom_anti_Pt",Zprime_W_anti_bottom_anti.pt());
   }
   if (top_withbtag_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag[0].p4())){
       Zprime_withtopbtag_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_M",Zprime_withtopbtag_W_anti_bottom_anti.mass());
+      vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_Pt",Zprime_withtopbtag_W_anti_bottom_anti.pt());
   } 
 /*
 ///ZPrime reconstructions Wtb-channel
