@@ -5,7 +5,8 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
   double clusterRadius = 1.5;
 
   boosted::Ak4ClusterCollection outputAk4Cluster;
-
+  
+  // get all ak4jets and create ak4cluster for each ak4jet
   for(std::vector<pat::Jet>::const_iterator itJet=inputAk4Jets.begin();itJet!=inputAk4Jets.end();++itJet){
     int iJet = itJet - inputAk4Jets.begin();
 
@@ -15,7 +16,8 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
 
     outputAk4Cluster.push_back(tempCluster);
   }
-
+  
+  // cluster ak4jets and delete redundant ak4cluster after clustering step
   while(outputAk4Cluster.size() > 1){
     // Calculate two d-parameters:
     //    - dij is the distance-parameter between jet i and j with different
@@ -58,8 +60,15 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
       // discard added jet from cluster
       outputAk4Cluster.erase(outputAk4Cluster.begin()+cluster_jet2_id);
     }
-    else return outputAk4Cluster;
+    //else return outputAk4Cluster;
+    else break;
   }
+  
+  // sort ak4jets in ak4cluster by pT
+  for(unsigned iAk4Cluster=0; iAk4Cluster <outputAk4Cluster.size() ;++iAk4Cluster){ 
+    std::sort(outputAk4Cluster[iAk4Cluster].ak4jets.begin(), outputAk4Cluster[iAk4Cluster].ak4jets.end(),BoostedUtils::FirstJetIsHarder);
+  }
+  
   return outputAk4Cluster;
 }
 
