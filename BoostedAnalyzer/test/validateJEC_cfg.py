@@ -154,7 +154,6 @@ systs=[
     "JESPileUpPtEC2up",         "JESPileUpPtEC2down",              
     "JESPileUpPtHFup",          "JESPileUpPtHFdown",              
     "JESPileUpMuZeroup",        "JESPileUpMuZerodown",              
-    "JESPileUpEnvelopeup",      "JESPileUpEnvelopedown",              
     "JESSubTotalPileUpup",      "JESSubTotalPileUpdown",              
     "JESSubTotalRelativeup",    "JESSubTotalRelativedown",              
     "JESSubTotalPtup",          "JESSubTotalPtdown",              

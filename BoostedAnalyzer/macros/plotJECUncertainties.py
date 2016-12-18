@@ -5,9 +5,12 @@ from ROOT import TFile, TTree, TH1D, TH2D, TCanvas, TStyle, gStyle, TLegend, TUU
 
 
 file_name_base = "../test/JECUncValidation_"
+MAX_EVENTS = 2000
 
 variations = [
     "JES",
+
+#    "JESTotalNoFlavor", # == JES w/o FlavorQCD
 
     "JESAbsoluteStat",
     "JESAbsoluteScale",
@@ -37,7 +40,8 @@ variations = [
     "JESPileUpPtEC2",
     "JESPileUpPtHF",
     "JESPileUpMuZero",
-    "JESPileUpEnvelope",
+#    "JESPileUpEnvelope",
+
 #    "JESSubTotalPileUp",
 #    "JESSubTotalRelative",
 #    "JESSubTotalPt",
@@ -81,7 +85,9 @@ def get_jets_histogram(file_name, var, nbins, xmin, xmax, apply_selection):
     
     file = TFile(file_name,"READ")
     tree = file.Get("MVATree")
-    for event in tree:
+    for iEvt,event in enumerate(tree):
+        if iEvt > MAX_EVENTS:
+            break
         genJetPts   = event.GenJet_Pt
         genJetEtas  = event.GenJet_Eta
         deltaRs     = event.GenJet_Jet_DeltaR
@@ -269,7 +275,7 @@ def plot_delta_pt(variation):
     file_dn = TFile(file_name_dn(variation),"READ")
     tree_dn = file_dn.Get("MVATree")
 
-    for iEvt in xrange(tree_nom.GetEntries()):
+    for iEvt in xrange(min(MAX_EVENTS,tree_nom.GetEntries())):
         tree_nom.GetEntry(iEvt)
         tree_up.GetEntry(iEvt)
         tree_dn.GetEntry(iEvt)
@@ -364,9 +370,9 @@ def plot_delta_pt(variation):
 def plot_closure_test(variations):
     for dir in ["up","dn"]:
         # difference of total JEC variation and sum of sources
-        h_dpt = TH2D("h_dpt_"+dir,"JEC closure "+dir,50,0,500,51,-50,50)
+        h_dpt = TH2D("h_dpt_"+dir,"JEC closure "+dir,50,0,500,51,-20,20)
         h_dpt.GetXaxis().SetTitle("p^{gen}_{T} [GeV]")
-        h_dpt.GetYaxis().SetTitle("#left(#sum#Deltap^{rec}_{T,i} - #Deltap^{rec}_{T}#right) / #Deltap^{rec}_{T}  [%]")
+        h_dpt.GetYaxis().SetTitle("#left(#sqrt{#sum(#Deltap^{rec}_{T,i})^{2}} - #Deltap^{rec}_{T}#right) / #Deltap^{rec}_{T}  [%]")
 
         # tree with nominal JEC
         file_nom = TFile(file_name_nominal(),"READ")
@@ -392,7 +398,7 @@ def plot_closure_test(variations):
             trees_var.append( files_var[-1].Get("MVATree") )
 
         # loop over events and get variations
-        for iEvt in xrange(100):#tree_nom.GetEntries()):
+        for iEvt in xrange(min(MAX_EVENTS,tree_nom.GetEntries())):
             tree_nom.GetEntry(iEvt)
             tree_tot.GetEntry(iEvt)
             for tree in trees_var:
@@ -558,11 +564,11 @@ set_style()
 
 plot_closure_test(variations)
 
-#for variation in variations:
-#    apply_selection = True
-#    compare("GenJet_Pt","p_{T}^{gen} [GeV]",variation,100,0,200,apply_selection)
-#    compare("GenJet_Eta","#eta^{gen}",variation,100,-5,5,apply_selection)
-#    compare("GenJet_Jet_Pt","p_{T}^{rec} [GeV]",variation,100,0,200,apply_selection)
-#    compare("GenJet_Jet_Eta","#eta^{rec}",variation,100,-5,5,apply_selection)
-#    plot_delta_pt(variation)
-#
+for variation in variations:
+    apply_selection = True
+    compare("GenJet_Pt","p_{T}^{gen} [GeV]",variation,100,0,200,apply_selection)
+    compare("GenJet_Eta","#eta^{gen}",variation,100,-5,5,apply_selection)
+    compare("GenJet_Jet_Pt","p_{T}^{rec} [GeV]",variation,100,0,200,apply_selection)
+    compare("GenJet_Jet_Eta","#eta^{rec}",variation,100,-5,5,apply_selection)
+    plot_delta_pt(variation)
+
