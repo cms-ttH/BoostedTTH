@@ -83,6 +83,9 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/essentialMVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/essentialMCMatchVarProcessor.hpp"
+
 //DANGERZONE
 // #include "BoostedTTH/BoostedAnalyzer/interface/MEMProcessor.hpp"
 //DANGERZONE
@@ -392,17 +395,24 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // add processors that have been requested in the config
     for(auto treewriter : treewriters){
 	     if(std::find(processorNames.begin(),processorNames.end(),"WeightProcessor")!=processorNames.end()) {
-         treewriter->AddTreeProcessor(new WeightProcessor(),"WeightProcessor");
+		treewriter->AddTreeProcessor(new WeightProcessor(),"WeightProcessor");
 	     }
 	     if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")!=processorNames.end()) {
-	       treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
-	         }
-	          if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
+		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
+	     }
+	if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
 	    if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
 		cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl;
-		treewriter->AddTreeProcessor(new BasicVarProcessor(),"MVAVarProcessor");
+		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
 	    }
 	    treewriter->AddTreeProcessor(new MVAVarProcessor(),"MVAVarProcessor");
+	}
+	if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
+	    if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
+		cout << "adding BasicVarProcessor, needed for essentialMVAVarProcessor" << endl;
+		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
+	    }
+	    treewriter->AddTreeProcessor(new essentialMVAVarProcessor(),"essentialMVAVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
@@ -432,6 +442,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 //DANGERZONE
 	if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
+	}
+	if(std::find(processorNames.begin(),processorNames.end(),"essentialMCMatchVarProcessor")!=processorNames.end()) {
+	    treewriter->AddTreeProcessor(new essentialMCMatchVarProcessor(),"essentialMCMatchVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
