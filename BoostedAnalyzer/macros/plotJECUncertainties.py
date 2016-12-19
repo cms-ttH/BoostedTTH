@@ -39,7 +39,7 @@ variations = [
     "JESPileUpPtEC1",
     "JESPileUpPtEC2",
     "JESPileUpPtHF",
-    "JESPileUpMuZero",
+#    "JESPileUpMuZero",
 #    "JESPileUpEnvelope",
 
 #    "JESSubTotalPileUp",
