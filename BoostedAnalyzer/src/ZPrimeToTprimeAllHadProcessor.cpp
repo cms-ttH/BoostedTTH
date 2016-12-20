@@ -182,11 +182,14 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVars("Ws_anti_eta","N_Ws_anti");
    vars.InitVar("N_Bottoms","I");
    vars.InitVar("N_Bottoms_anti","I");
+   vars.InitVar("N_no_Bottoms","I");
    vars.InitVars("Bottoms_pt","N_Bottoms");
    vars.InitVars("Bottoms_eta","N_Bottoms");
    vars.InitVars("Bottoms_anti_pt","N_Bottoms_anti");
    vars.InitVars("Bottoms_anti_eta","N_Bottoms_anti");
-
+   vars.InitVars("No_Bottoms_pt","N_no_Bottoms");
+   vars.InitVars("No_Bottoms_eta","N_no_Bottoms");
+   
    vars.InitVar("N_Zs","I");
    vars.InitVar("N_Zs_anti","I");
    vars.InitVars("Zs_pt","N_Zs");
@@ -217,6 +220,8 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("Tprime_pt","I");   
    vars.InitVar("Tprime_bottom_anti_M","I");
    vars.InitVar("Tprime_bottom_anti_pt","I");
+   vars.InitVar("Tprime_no_bottom_M","I");
+   vars.InitVar("Tprime_no_bottom_pt","I");
    vars.InitVar("Tprime_W_anti_M","I");
    vars.InitVar("Tprime_W_anti_pt","I");   
    vars.InitVar("Tprime_W_anti_bottom_anti_M","I");
@@ -255,6 +260,9 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("Zprime_withtopbtag_bottom_anti_Pt","I");
    vars.InitVar("Zprime_W_anti_bottom_anti_Pt","I");
    vars.InitVar("Zprime_withtopbtag_W_anti_bottom_anti_Pt","I");
+
+   vars.InitVar("Zprime_no_bottom_M","I");
+   vars.InitVar("Zprime_no_bottom_Pt","I");
    
 ///Variables for misstag rates and tagging efficiencies
    
@@ -708,8 +716,11 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     std::vector<pat::Jet> Higgs_with1btag_anti;
     std::vector<pat::Jet> Higgs_with2btag_anti;
     
+    std::vector<pat::Jet> no_bottoms;
+    
     math::XYZTLorentzVector Tprime;
     math::XYZTLorentzVector Tprime_bottom_anti;
+    math::XYZTLorentzVector Tprime_no_bottom;
     math::XYZTLorentzVector Tprime_W_anti;
     math::XYZTLorentzVector Tprime_W_anti_bottom_anti;
     
@@ -726,7 +737,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     math::XYZTLorentzVector Zprime_W_anti;
     math::XYZTLorentzVector Zprime_withtopbtag_W_anti;
     math::XYZTLorentzVector Zprime_bottom_anti;
+    math::XYZTLorentzVector Zprime_no_bottom;
     math::XYZTLorentzVector Zprime_withtopbtag_bottom_anti;
+    math::XYZTLorentzVector Zprime_withtopbtag_no_bottom;
     math::XYZTLorentzVector Zprime_W_anti_bottom_anti;
     math::XYZTLorentzVector Zprime_withtopbtag_W_anti_bottom_anti;
     
@@ -739,8 +752,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     bool W_anti_candidatefound=false;
     bool bottom_candidatefound=false;
     bool bottom_anti_candidatefound=false;
+    bool no_bottom_candidatesfound=false;
     bool Tprime_candidatefound=false;
     bool Tprime_bottom_anti_candidatefound=false;
+    bool Tprime_no_bottom_candidatefound=false;
     bool Tprime_W_anti_candidatefound=false;
     bool Tprime_W_anti_bottom_anti_candidatefound=false;
     
@@ -910,6 +925,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             //vars.FillVars("AK4_bottom_misstagged_candidates_pt",iJet,itJet->pt());
             //vars.FillVars("AK4_bottom_misstagged_candidates_eta",iJet,itJet->eta());
             
+            
             if (MiniAODHelper::GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.800){
                 bottoms.push_back(*itJet);
                 bottom_candidatefound=true;
@@ -918,9 +934,27 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                 bottoms_anti.push_back(*itJet);
                 bottom_anti_candidatefound=true;
             }
+        
+        }
+        
+        
+    }
+  }
+  
+  if (!bottom_candidatefound){
+    for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
+        if(input.zprimetotprimeallhad.IsFilled()){
+            if (itJet->pt()>100 && abs(itJet->eta())<2.4){
+                no_bottoms.push_back(*itJet);
+                no_bottom_candidatesfound=true;
+            }
         }
     }
   }
+  
+  
+  
+  
   
     std::cout<<"here3"<<endl;
 ///Fill tops
@@ -968,6 +1002,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 ///Fill bottoms
   vars.FillVar("N_Bottoms",bottoms.size());   
   vars.FillVar("N_Bottoms_anti",bottoms_anti.size());
+  vars.FillVar("N_no_Bottoms",no_bottoms.size());
   
   for(std::vector<pat::Jet>::const_iterator itJet = bottoms.begin() ; itJet != bottoms.end(); ++itJet){
     int iJet = itJet - bottoms.begin();
@@ -979,7 +1014,13 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("Bottoms_anti_pt",iJet,itJet->pt());
     vars.FillVars("Bottoms_anti_eta",iJet,itJet->eta());
   } 
-    std::cout<<"here6"<<endl;
+  for(std::vector<pat::Jet>::const_iterator itJet = no_bottoms.begin() ; itJet != no_bottoms.end(); ++itJet){
+    int iJet = itJet - no_bottoms.begin();
+    vars.FillVars("No_Bottoms_pt",iJet,itJet->pt());
+    vars.FillVars("No_Bottoms_eta",iJet,itJet->eta());
+  } 
+  
+  std::cout<<"here6"<<endl;
 ///Fill Zs
   vars.FillVar("N_Zs",Zs.size());   
   vars.FillVar("N_Zs_anti",Zs_anti.size());   
@@ -1057,7 +1098,14 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             vars.FillVar("Tprime_bottom_anti_pt",Tprime_bottom_anti.pt());
         }      
       }
-      if (W_anti_candidatefound && bottom_candidatefound){
+      if (W_candidatefound && no_bottom_candidatesfound){
+        Tprime_no_bottom=no_bottoms[0].p4()+Ws[0].p4();
+        if (Tprime_no_bottom.mass()>500){
+            Tprime_no_bottom_candidatefound=true;
+            vars.FillVar("Tprime_no_bottom_M",Tprime_no_bottom.mass());
+            vars.FillVar("Tprime_no_bottom_pt",Tprime_no_bottom.pt());
+        }      
+      }      if (W_anti_candidatefound && bottom_candidatefound){
         Tprime_W_anti=bottoms[0].p4()+Ws_anti[0].p4();
         if (Tprime_W_anti.mass()>500){
             Tprime_W_anti_candidatefound=true;
@@ -1203,8 +1251,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
   if (top_anti_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_anti[0].p4())>0.8){
       Zprime_top_anti_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_anti[0].p4();
-      vars.FillVar("Zprime_withtop_btag_M",Zprime_top_anti_W_anti_bottom_anti.mass());
-      vars.FillVar("Zprime_withtop_btag_Pt",Zprime_top_anti_W_anti_bottom_anti.pt());
+      vars.FillVar("Zprime_top_anti_W_anti_bottom_anti_M",Zprime_top_anti_W_anti_bottom_anti.mass());
+      vars.FillVar("Zprime_top_anti_W_anti_bottom_anti_Pt",Zprime_top_anti_W_anti_bottom_anti.pt());
   }  
         std::cout<<"heredetail6"<<endl;
 
@@ -1276,6 +1324,17 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
       vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_M",Zprime_withtopbtag_W_anti_bottom_anti.mass());
       vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_Pt",Zprime_withtopbtag_W_anti_bottom_anti.pt());
   } 
+  
+  if (top_candidatefound && Tprime_no_bottom_candidatefound && BoostedUtils::DeltaR(no_bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(no_bottoms[0].p4(), tops[0].p4())>0.8){
+      Zprime_no_bottom=Tprime_no_bottom+tops[0].p4();
+      vars.FillVar("Zprime_no_bottom_M",Zprime_no_bottom.mass());
+      vars.FillVar("Zprime_no_bottom_Pt",Zprime_no_bottom.pt());
+  }
+  if (top_withbtag_candidatefound && Tprime_no_bottom_candidatefound && BoostedUtils::DeltaR(no_bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(no_bottoms[0].p4(), tops_withbtag[0].p4())>0.8){
+      Zprime_withtopbtag_no_bottom=Tprime_no_bottom+tops_withbtag[0].p4();
+      vars.FillVar("Zprime_withtopbtag_no_bottom_M",Zprime_withtopbtag_no_bottom.mass());
+      vars.FillVar("Zprime_withtopbtag_no_bottom_Pt",Zprime_withtopbtag_no_bottom.pt());
+  }  
     std::cout<<"here12"<<endl;
 /*
 ///ZPrime reconstructions Wtb-channel
