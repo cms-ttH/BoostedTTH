@@ -30,8 +30,8 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
     unsigned int cluster_jet1_id = 99;
     unsigned int cluster_jet2_id = 99;
     double mindiB = 9.;
-    for(unsigned iA=0; iA <outputAk4Cluster.size() ;++iA){
-      for(unsigned iB=0; iB <outputAk4Cluster.size() ;++iB){
+    for(unsigned int iA=0; iA <outputAk4Cluster.size() ;++iA){
+      for(unsigned int iB=0; iB <outputAk4Cluster.size() ;++iB){
         if(iA <= iB) continue;
 
         // get the dij
@@ -65,10 +65,13 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
   }
   
   // sort ak4jets in ak4cluster by pT
-  for(unsigned iAk4Cluster=0; iAk4Cluster <outputAk4Cluster.size() ;++iAk4Cluster){ 
+  for(unsigned int iAk4Cluster=0; iAk4Cluster <outputAk4Cluster.size() ;++iAk4Cluster){ 
     std::sort(outputAk4Cluster[iAk4Cluster].ak4jets.begin(), outputAk4Cluster[iAk4Cluster].ak4jets.end(),BoostedUtils::FirstJetIsHarder);
   }
   
+  // sort ak4cluster by pT
+  std::sort(outputAk4Cluster.begin(), outputAk4Cluster.end(),Ak4Cluster::FirstFatjetInAk4ClusterIsHarder);
+
   return outputAk4Cluster;
 }
 
@@ -142,4 +145,8 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
     if(tempCluster.isGoodHiggsCluster || tempCluster.isGoodTopCluster) selectedAk4Clusters.push_back(tempCluster);
   }
   return selectedAk4Clusters;
+}
+
+bool Ak4Cluster::FirstFatjetInAk4ClusterIsHarder(boosted::Ak4Cluster clu1, boosted::Ak4Cluster clu2){
+  return clu1.fatjet.pt()>clu2.fatjet.pt();
 }
