@@ -96,8 +96,6 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
 
         if(tempCluster.ak4jets.size()<3) tempCluster.isGoodTopCluster = false;
         else tempCluster.isGoodTopCluster = true;
-
-        selectedAk4Clusters.push_back(tempCluster);
       }
     }
     else if(mode == "A" || mode == "B"){
@@ -144,6 +142,7 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
 
     if(tempCluster.isGoodHiggsCluster || tempCluster.isGoodTopCluster) selectedAk4Clusters.push_back(tempCluster);
   }
+  
   return selectedAk4Clusters;
 }
 
