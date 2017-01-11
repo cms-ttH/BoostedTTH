@@ -159,7 +159,7 @@ else:
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["EndOf15MVA80iso0p15"]*3
+process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
 process.SelectedMuonProducer.ptMins=[15.,25.,25.]
@@ -186,7 +186,10 @@ if options.isData:
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
 else:
     if options.analysisType=='SL':
+      if options.isreHLT:
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+      else:
+	process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzerNoTrigger_cfi")
     if options.analysisType=='DL':
         process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
 
@@ -224,12 +227,12 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 if options.isData and options.useJson:
     #print 'use JSON is no longer supported'
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/mwassmer/sync_ex/JSONS/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/kelmorab/CMSSW8/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
 ### electron MVA ####
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
-process.load('Configuration.Geometry.GeometryRecoDB_cff')
+#process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.BoostedAnalyzer.minJets = [4]
@@ -239,17 +242,22 @@ process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
 #process.BoostedAnalyzer.doJERsystematic = False
-process.BoostedAnalyzer.doBoostedMEM = False
 
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
 
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = cms.vstring("VertexSelection","LeptonSelection","JetTagSelection")
+#process.BoostedAnalyzer.selectionNames = cms.vstring()
+#process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedAk4VarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-
+process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
+if options.isData:
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor","BJetnessProcessor")
+else:
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedAk4VarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor","BJetnessProcessor","AdditionalJetProcessor")
+process.BoostedAnalyzer.dumpSyncExe2=False
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:
