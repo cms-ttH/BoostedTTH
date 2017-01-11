@@ -41,7 +41,7 @@ void BJetnessProcessor::Process(const InputCollections& input,VariableContainer&
     double avsip3d_sig=-999;
     double avip1d_sig=-999;
     
-    std::cout<<input.selectedJets.size()<<std::endl;
+    //std::cout<<input.selectedJets.size()<<std::endl;
     vector<pat::Jet> jets_by_csv=GetSortedByCSV(input.selectedJets);
     vector<pat::Jet> bjetness_jets;
     const uint maxjets=6;
