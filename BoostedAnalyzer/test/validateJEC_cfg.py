@@ -202,7 +202,7 @@ process.BoostedAnalyzer.processorNames = ["GenJetOrderedJetCollectionProcessor"]
 
 # Needed to determine tt+x category
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+process.load("BoostedTTH.Producers.genHadronMatching_cfi")
 process.produceGenInfo = cms.Sequence(
     process.genParticlesForJetsNoNu *
     process.ak4GenJetsCustom *

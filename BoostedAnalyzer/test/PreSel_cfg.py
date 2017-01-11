@@ -30,7 +30,7 @@ process.GlobalTag.globaltag = 'MCRUN2_74_V9'
 #process.GlobalTag.globaltag = 'auto:run2_mc'
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+process.load("BoostedTTH.Producers.genHadronMatching_cfi")
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 

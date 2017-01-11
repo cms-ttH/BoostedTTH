@@ -61,7 +61,7 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 # Supplies PDG ID to real name resolution of MC particles
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+process.load("BoostedTTH.Producers.genHadronMatching_cfi")
 
 process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 process.BoostedAnalyzer.useFatJets=False

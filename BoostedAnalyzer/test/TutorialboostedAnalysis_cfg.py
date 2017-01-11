@@ -195,7 +195,7 @@ else:
         # Supplies PDG ID to real name resolution of MC particles
         process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD
-        process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+        process.load("BoostedTTH.Producers.genHadronMatching_cfi")
 
 
 # overwrite some defaults of the boostedAnalyzer default cfi

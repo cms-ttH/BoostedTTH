@@ -1,3 +1,9 @@
+# TODO
+# ele mva
+# jecs
+# bjetness
+# met filter
+
 import FWCore.ParameterSet.Config as cms
 import sys
 import os
@@ -20,11 +26,12 @@ options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, 
 options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
-options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2_v1", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "80X_mcRun2_asymptotic_2016_TrancheIV_v7", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "int flag to identify which dataset is used")#(0,1,2,3,4,5)->(MC,single ele, single mu,ele ele,ele mu,mu mu)
 options.register( "isreHLT",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
+options.register( "calcBJetness",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
 options.parseArguments()
 
 
@@ -33,10 +40,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/00000/0064B539-803A-E611-BDEA-002590D0B060.root']
-
-if options.isData:
-  options.globalTag="80X_dataRun2_Prompt_ICHEP16JEC_v0"
+    options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/0030B9D6-72C1-E611-AE49-02163E00E602.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
@@ -61,7 +65,7 @@ for key in options._register:
         print str(key)+" : "+str( options.__getattr__(key) )
 print "*****************************************\n\n"
 
-process = cms.Process("wtf")
+process = cms.Process("boostedAnalysis")
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -117,48 +121,11 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
-#=================================== JEC from DB file for data ===============
-if options.isData:
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
-        )
-    )
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK8PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
-        )
-    )
-else:
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
-        )
-    )
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK8PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
-        )
-    )
 
-#===============================================================
-#
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electronNonTrigMVAid80"]*3
+process.SelectedElectronProducer.leptonIDs=["electronGeneralPurposeMVA2016WP80"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
 process.SelectedMuonProducer.ptMins=[15.,25.,25.]
@@ -174,6 +141,25 @@ process.SelectedJetProducer.ptMins=[20,30,20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
+
+process.load('Configuration.Geometry.GeometryRecoDB_cff')
+process.load("Configuration.StandardSequences.MagneticField_38T_cff")
+
+
+### electron MVA ####
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+dataFormat = DataFormat.MiniAOD
+switchOnVIDElectronIdProducer(process, dataFormat)
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff']
+for idmod in my_id_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+
+
+### BJetness ###
+if options.calcBJetness:
+    process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")        
+    process.load('BoostedTTH.BoostedAnalyzer.BJetness_cfi')
+    process.BJetness.is_data = options.isData
 
 
 
@@ -193,7 +179,7 @@ else:
         # Supplies PDG ID to real name resolution of MC particles
         process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD
-        process.load("BoostedTTH.BoostedProducer.genHadronMatching_cfi")
+        process.load("BoostedTTH.Producers.genHadronMatching_cfi")
 
 if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
@@ -221,23 +207,15 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 
 
 if options.isData and options.useJson:
-    #print 'use JSON is no longer supported'
     import FWCore.PythonUtilities.LumiList as LumiList
     process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/mwassmer/sync_ex/JSONS/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
-### electron MVA ####
-### electron MVA ####
-# Load the producer for MVA IDs
-process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
-process.load('Configuration.Geometry.GeometryRecoDB_cff')
-process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
-process.load("Configuration.StandardSequences.MagneticField_38T_cff")
+
 process.BoostedAnalyzer.minJets = [4]
 process.BoostedAnalyzer.maxJets = [-1]
 process.BoostedAnalyzer.minTags = [2]
 process.BoostedAnalyzer.maxTags = [-1]
 process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
-#process.BoostedAnalyzer.doJERsystematic = False
 
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
@@ -251,22 +229,24 @@ process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor",
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:
-  process.p = cms.Path(process.electronMVAValueMapProducer
-                     *process.SelectedElectronProducer
-                     *process.SelectedMuonProducer
+  process.p = cms.Path(process.egmGsfElectronIDSequence
+                       *process.BJetness
+                       *process.SelectedElectronProducer
+                       *process.SelectedMuonProducer
  #                    *process.content
-                     *process.SelectedJetProducer
-                     *process.CorrectedMETproducer
+                       *process.SelectedJetProducer
+                       *process.CorrectedMETproducer
                      #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
-                     *process.BoostedAnalyzer
+                       *process.BoostedAnalyzer
                      )
 else:
-  process.p = cms.Path(process.electronMVAValueMapProducer
-                     *process.SelectedElectronProducer
-                     *process.SelectedMuonProducer
+  process.p = cms.Path(process.egmGsfElectronIDSequence
+                       *process.SelectedElectronProducer
+                       *process.BJetness
+                       *process.SelectedMuonProducer
  #                    *process.content
-                     *process.SelectedJetProducer
-                     *process.CorrectedMETproducer
-                     *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
-                     *process.BoostedAnalyzer
+                       *process.SelectedJetProducer
+                       *process.CorrectedMETproducer
+                       *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+                       *process.BoostedAnalyzer
                      )
