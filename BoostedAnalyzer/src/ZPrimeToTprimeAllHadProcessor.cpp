@@ -14,7 +14,7 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     InitSignalandSidbandVars(vars);
     InitTaggingVars(vars);
     InitABCDVars(vars);
-    InitmisstagBKGVars(vars);
+    //InitmisstagBKGVars(vars);
 
     initialized=true;
 }
@@ -540,6 +540,17 @@ void ZPrimeToTPrimeAllHadProcessor::InitTaggingVars(VariableContainer& vars){
    vars.InitVar("N_misstagged_bottom_anti","I");
    vars.InitVars("misstagged_bottom_anti_pt","N_misstagged_bottom_anti");
    vars.InitVars("misstagged_bottom_anti_eta","N_misstagged_bottom_anti");
+   
+   vars.InitVar("N_AK8_top_candidates","I");
+   vars.InitVars("AK8_top_candidates_pt","N_AK8_top_candidates");
+   vars.InitVars("AK8_top_candidates_eta","N_AK8_top_candidates");
+   vars.InitVar("N_AK8_W_candidates","I");
+   vars.InitVars("AK8_W_candidates_pt","N_AK8_W_candidates");
+   vars.InitVars("AK8_W_candidates_eta","N_AK8_W_candidates");
+   vars.InitVar("N_AK4_bottom_candidates","I");
+   vars.InitVars("AK4_bottom_candidates_pt","N_AK4_bottom_candidates");
+   vars.InitVars("AK4_bottom_candidates_eta","N_AK4_bottom_candidates");   
+   
 }
 
 
@@ -571,23 +582,9 @@ void ZPrimeToTPrimeAllHadProcessor::InitTaggingVars(VariableContainer& vars){
    vars.InitVars("AK4_bottom_misstagged_anti_candidates_eta","N_AK4_bottom_misstag_anti_candidates");
 */   
 
-
-
-void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
-
-///Variables for datadriven Background estimation using the misstagrates 
    
   
-   vars.InitVar("N_AK8_top_candidates","I");
-   vars.InitVars("AK8_top_candidates_pt","N_AK8_top_candidates");
-   vars.InitVars("AK8_top_candidates_eta","N_AK8_top_candidates");
-   vars.InitVar("N_AK8_W_candidates","I");
-   vars.InitVars("AK8_W_candidates_pt","N_AK8_W_candidates");
-   vars.InitVars("AK8_W_candidates_eta","N_AK8_W_candidates");
-   vars.InitVar("N_AK4_bottom_candidates","I");
-   vars.InitVars("AK4_bottom_candidates_pt","N_AK4_bottom_candidates");
-   vars.InitVars("AK4_bottom_candidates_eta","N_AK4_bottom_candidates");   
-}
+   
 
    
 void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
