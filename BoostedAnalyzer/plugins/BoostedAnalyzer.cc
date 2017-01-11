@@ -641,8 +641,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     boosted::Ak4ClusterCollection ak4Cluster = Ak4Cluster::GetAk4Cluster(ak4Jets, 0);
     boosted::Ak4ClusterCollection selectedAk4Cluster = Ak4Cluster::GetSelectedAk4Cluster(ak4Cluster, 160., "B");
 
-    Ak4Cluster::StudyMatchingAk4ClusterAndFatjets(selectedAk4Cluster, selectedBoostedJets[0], 0.75);
-
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);
     TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);

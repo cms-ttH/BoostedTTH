@@ -5,7 +5,8 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
   double clusterRadius = 1.5;
 
   boosted::Ak4ClusterCollection outputAk4Cluster;
-
+  
+  // get all ak4jets and create ak4cluster for each ak4jet
   for(std::vector<pat::Jet>::const_iterator itJet=inputAk4Jets.begin();itJet!=inputAk4Jets.end();++itJet){
     int iJet = itJet - inputAk4Jets.begin();
 
@@ -16,6 +17,7 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
     outputAk4Cluster.push_back(tempCluster);
   }
 
+  // cluster ak4jets and delete redundant ak4cluster after clustering step
   while(outputAk4Cluster.size() > 1){
     // Calculate two d-parameters:
     //    - dij is the distance-parameter between jet i and j with different
@@ -58,8 +60,18 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
       // discard added jet from cluster
       outputAk4Cluster.erase(outputAk4Cluster.begin()+cluster_jet2_id);
     }
-    else return outputAk4Cluster;
+    //else return outputAk4Cluster;
+    else break;
   }
+  
+// sort ak4jets in ak4cluster by pT
+  for(unsigned int iAk4Cluster=0; iAk4Cluster <outputAk4Cluster.size() ;++iAk4Cluster){ 
+    std::sort(outputAk4Cluster[iAk4Cluster].ak4jets.begin(), outputAk4Cluster[iAk4Cluster].ak4jets.end(),BoostedUtils::FirstJetIsHarder);
+  }
+  
+  // sort ak4cluster by pT
+  std::sort(outputAk4Cluster.begin(), outputAk4Cluster.end(),Ak4Cluster::FirstFatjetInAk4ClusterIsHarder);
+  
   return outputAk4Cluster;
 }
 
@@ -84,8 +96,6 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
 
         if(tempCluster.ak4jets.size()<3) tempCluster.isGoodTopCluster = false;
         else tempCluster.isGoodTopCluster = true;
-
-        selectedAk4Clusters.push_back(tempCluster);
       }
     }
     else if(mode == "A" || mode == "B"){
@@ -132,33 +142,10 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetSelectedAk4Cluster(const boosted::A
 
     if(tempCluster.isGoodHiggsCluster || tempCluster.isGoodTopCluster) selectedAk4Clusters.push_back(tempCluster);
   }
+  
   return selectedAk4Clusters;
 }
 
-
-void Ak4Cluster::StudyMatchingAk4ClusterAndFatjets(const boosted::Ak4ClusterCollection& ak4Clusters, std::vector<boosted::BoostedJet> fatjets, const double iMaxDeltaR = 0.75){
-  if(ak4Clusters.size() == 0 || fatjets.size() == 0) return;
-
-  unsigned int alreadyMatchedFatJet[fatjets.size()];
-  for(unsigned int iB=0; iB <fatjets.size() ;++iB){
-    alreadyMatchedFatJet[iB] = 9999;
-  }
-
-  //cout << " ---- " << endl;
-  for(unsigned int iA=0; iA <ak4Clusters.size() ;++iA){
-    for(unsigned int iB=0; iB <fatjets.size() ;++iB){
-      if(alreadyMatchedFatJet[iB] != 9999) continue;
-      else if(BoostedUtils::DeltaR(ak4Clusters[iA].fatjet, fatjets[iB].fatjet.p4()) < 0.75) {
-        alreadyMatchedFatJet[iB] = iA;
-      }
-    }
-  }
-
-  int nMatchedFatjets = 0;
-  for(unsigned int iA=0; iA <fatjets.size() ;++iA){
-    if(alreadyMatchedFatJet[iA] != 9999) nMatchedFatjets++;
-  }
-  //cout << "Matched Fatjets: " << nMatchedFatjets << " of " << fatjets.size() << " with " << ak4Clusters.size() << " ak4 cluster (= " << double(nMatchedFatjets)/double(fatjets.size())*100. << "%)" << endl;
-
-  return;
+bool Ak4Cluster::FirstFatjetInAk4ClusterIsHarder(boosted::Ak4Cluster clu1, boosted::Ak4Cluster clu2){
+  return clu1.fatjet.pt()>clu2.fatjet.pt();
 }
