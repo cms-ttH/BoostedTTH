@@ -232,7 +232,7 @@ if options.isData and options.useJson:
 ### electron MVA ####
 # Load the producer for MVA IDs
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
-#process.load('Configuration.Geometry.GeometryRecoDB_cff')
+process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.BoostedAnalyzer.minJets = [4]
