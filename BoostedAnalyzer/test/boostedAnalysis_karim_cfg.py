@@ -91,10 +91,10 @@ updateJetCollection(
   labelName = 'updateBtags',
   postfix='',
   jetSource = cms.InputTag('slimmedJets'),
-  jetCorrections = ('AK4PFchs', jetCorrectionsForBTagging, 'None'),  
+  jetCorrections = ('AK4PFchs', jetCorrectionsForBTagging, 'None'),
   btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags'],
   runIVF=True,
-  btagPrefix = '' # optional, in case interested in accessing both the old and new discriminator values
+  #btagPrefix = '' # optional, in case interested in accessing both the old and new discriminator values
 )
 
 
@@ -220,7 +220,7 @@ else:
 
 if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
-    
+
 if options.makeSystematicsTrees:
     systs=["","jesup","jesdown"]#,"jerup","jerdown"]
     process.SelectedJetProducer.systematics=systs
@@ -276,9 +276,9 @@ if options.additionalSelection!="NONE":
 #process.BoostedAnalyzer.processorNames = []
 process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
 if options.isData:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor","BJetnessProcessor")
 else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor","BJetnessProcessor")
 process.BoostedAnalyzer.dumpSyncExe2=False
 #process.BoostedAnalyzer.processorNames=cms.vstring()
 
