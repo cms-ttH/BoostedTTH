@@ -83,9 +83,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
-//DANGERZONE
-// #include "BoostedTTH/BoostedAnalyzer/interface/MEMProcessor.hpp"
-//DANGERZONE
+#include "BoostedTTH/BoostedAnalyzer/interface/MEMProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
@@ -425,11 +423,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
 	}
-//DANGERZONE
-// 	if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
-// 	    treewriter->AddTreeProcessor(new MEMProcessor(iConfig),"MEMProcessor");
-// 	}
-//DANGERZONE
+ 	if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
+ 	    treewriter->AddTreeProcessor(new MEMProcessor(iConfig),"MEMProcessor");
+ 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
 	}

@@ -6,31 +6,57 @@ CMSSW tools for analyzing TTH events with boosted objects
 ## Installation
 Follow These Steps:
 
-    export SCRAM_ARCH=slc6_amd64_gcc530
-    scram project CMSSW_8_0_19
-    cd CMSSW_8_0_19/src
-    cmsenv   
-    git cms-merge-topic gkasieczka:htt-v2-76X
-    git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_24_v1
-    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_24_v1
-    mkdir Other
-    cd Other
-    git clone https://github.com/kit-cn-cms/bjetness-code.git .
+    # setup environment
+    export SCRAM_ARCH="slc6_amd64_gcc530"
+    export CMSSW_VERSION="CMSSW_8_0_24_patch1"
+    scram project $CMSSW_VERSION
+    cd $CMSSW_VERSION/src
+    export CMSSW_SRC="$( pwd )"
+    cmsenv
+    
+    # MET filters
+    git cms-merge-topic cms-met:METRecipe_8020
+    git cms-merge-topic ahinzmann:METRecipe_8020_Moriond17
+    git cms-merge-topic cms-met:fromCMSSW_8_0_20_postICHEPfilter
+
+    # ele id
+    git cms-merge-topic ikrav:egm_id_80X_v2
+    # compile once to create neccessary folder structure
+    scram b -j10  
+    cd $CMSSW_BASE/external
+    cd $SCRAM_ARCH
+    git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
+    cd data/RecoEgamma/ElectronIdentification/data
+    git checkout egm_id_80X_v1
+    cd $CMSSW_BASE/src
+    
+    # install bjetness code
+    git clone https://github.com/IHEP-CMS/BJetnessTTHbb.git
+    cd BJetnessTTHbb/BJetness
+    mkdir data
+    cp -r /afs/cern.ch/work/f/fromeo/public/BJetnessTTHbb/JEC/ data/
+    cp -r /afs/cern.ch/work/f/fromeo/public/BJetnessTTHbb/JER/ data/
     cd -
+    
+    # install common classifier
     mkdir TTH
     cd TTH
-    git clone https://github.com/cms-ttH/CommonClassifier.git -b subjet-restricted-perms-kit-80X
+    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git
+    # use v0.2 of ME integration -- v0.3 does not compile with CMSSW
+    sed -i 's|git clone https://github.com/jpata/Code.git MEIntegratorStandalone --branch v0.3|git clone https://github.com/bianchini/Code.git MEIntegratorStandalone --branch v0.2|g' CommonClassifier/setup/install_mem.sh
     source CommonClassifier/setup/install_mem.sh
-    cd $CMSSW_BASE/src
-    sed -i 's/int member=0/int member/g' TTH/MEIntegratorStandalone/interface/Integrand.h
-    sed -i 's/cfg.pdfset/cfg.pdfset, 0/g' TTH/MEIntegratorStandalone/src/Integrand.cpp
-    cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/SubjetFilterJetProducer.cc RecoJets/JetProducers/plugins/
-    cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/FastjetJetProducer.cc RecoJets/JetProducers/plugins/ 
-    scram b -j 10
+    # use recent version of LHAPDF header
+    sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
+    sed -i '32i /*' MEIntegratorStandalone/interface/Integrand.h
+    sed -i '44i */' MEIntegratorStandalone/interface/Integrand.h
 
-Known issue: Running scram b for the first time results in error.
-Fix: Run scram b multiple times.
-
+    # install miniaod and boostedtth
+    git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_24_v1_sync
+    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_24_v1_sync   
+    
+    #compile
+    scram b -j10
+    
 ## Overview
 BoostedObjects contains the classes needed for subjet-analysis. They associate fat jets with the corresponding filtered objects.
 

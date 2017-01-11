@@ -7,19 +7,19 @@ SelectedElectronProducer = cms.EDProducer(
     "SelectedLeptonProducer",
     leptonType = cms.string("electron"),
 
-    era          = cms.string("2015_74x"),
+    era          = cms.string("NA"),
     analysisType = cms.string("LJ"),
     isData       = cms.bool(False),
 
     leptons = cms.InputTag("slimmedElectrons"),
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
-    electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
-    electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Categories"),
+    electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
+    electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Categories"),
 
     ptMins   = cms.vdouble(15),
     etaMaxs  = cms.vdouble(2.4),
-    leptonIDs = cms.vstring("electronNonTrigMVAid80"),
+    leptonIDs = cms.vstring("electron80XMVA80"),
     collectionNames= cms.vstring("selectedLeptonsDL"),
 
 
@@ -35,7 +35,7 @@ SelectedMuonProducer = cms.EDProducer(
     "SelectedLeptonProducer",
     leptonType = cms.string("muon"),
 
-    era          = cms.string("2015_74x"),
+    era          = cms.string("NA"),
     analysisType = cms.string("LJ"),
     isData       = cms.bool(False),
 
@@ -53,6 +53,6 @@ SelectedMuonProducer = cms.EDProducer(
     # The following two parameters are dummies in case of muons
     # they are not used for the muon selection, which is defined
     # via the 'leptonID' value
-    electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
-    electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Categories"),
+    electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
+    electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Categories"),
     )
