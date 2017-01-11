@@ -9,6 +9,25 @@ ZPrimeToTPrimeAllHadProcessor::~ZPrimeToTPrimeAllHadProcessor(){}
 
 void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableContainer& vars){
     
+    InitGenVars(vars);
+    InitBasicRecoVars(vars);
+    InitSignalandSidbandVars(vars);
+    InitTaggingVars(vars);
+    InitABCDVars(vars);
+    InitmisstagBKGVars(vars);
+
+    initialized=true;
+}
+
+//void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,VariableContainer& vars){
+//    FillGenVars(vars);
+//    
+//}
+
+
+
+void ZPrimeToTPrimeAllHadProcessor::InitGenVars(VariableContainer& vars){
+    
     vars.InitVar("N_Gen_ZPrimes","I");
     vars.InitVar("N_Gen_Tops","I");
     vars.InitVar("N_Gen_Topbars","I");
@@ -108,7 +127,10 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     vars.InitVar("Gen_Top_BottomfromTPrime_DeltaPhi");
     vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaPhi");
     
-    
+}
+
+void ZPrimeToTPrimeAllHadProcessor::InitBasicRecoVars(VariableContainer& vars){
+
     vars.InitVar("N_packedPatJetsAK8PFCHSSoftDrop","I");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Pt",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Eta",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
@@ -123,8 +145,6 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     vars.InitVars("cmsTopTagPFJetsCHSMassAK8",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_subjetCSVv2",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
 
-
-    
 //    vars.InitVar("N_selectedPatJetsAK8PFCHSSoftDropPacked","I");
 //    vars.InitVar("N_packedPatJetsAK8PFCHSSoftDrop","I");
 /*
@@ -137,7 +157,6 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     vars.InitVars("NsubjettinessAK8PFCHSSoftDropPacked_tau2",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
     vars.InitVars("NsubjettinessAK8PFCHSSoftDropPacked_tau3",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
 */
-    
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Dr_Top",-9.,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Dr_GenB_Top",-9.,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Dr_GenW_Top",-9.,"N_packedPatJetsAK8PFCHSSoftDrop");
@@ -151,15 +170,11 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Dr_TopBG",-9.,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Dr_WBG",-9.,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Dr_BottomBG",-9.,"N_packedPatJetsAK8PFCHSSoftDrop");
-
-    
-    
+ 
    vars.InitVars("Jet_Dr_bfromTPrime",-9.,"N_Jets");
    vars.InitVars("Jet_Dr_bfromBG",-9.,"N_Jets");    
-  
 
-
-///Variables after reconstruction
+///Variables after reconstruction/Identification
   
    vars.InitVar("N_Tops","I");
    vars.InitVar("N_Tops_withbtag","I");
@@ -215,22 +230,21 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVars("Higgs_with2btag_eta","N_Higgs_with2btag");
    vars.InitVars("Higgs_with2btag_anti_pt","N_Higgs_with2btag_anti");  
    vars.InitVars("Higgs_with2btag_anti_eta","N_Higgs_with2btag_anti"); 
-   
-   
-   
+}   
+ 
+void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& vars){
+ 
+//Signal & Sidebands
    
    vars.InitVar("N_Signal_Tops","I");
    vars.InitVars("Signal_Tops_Pt","N_Signal_Tops");
    vars.InitVars("Signal_Tops_Eta","N_Signal_Tops");
-   
    vars.InitVar("N_Signal_Ws","I");
    vars.InitVars("Signal_Ws_Pt","N_Signal_Ws");
    vars.InitVars("Signal_Ws_Eta","N_Signal_Ws");   
-   
    vars.InitVar("N_Signal_Bottoms","I");
    vars.InitVars("Signal_Bottoms_Pt","N_Signal_Bottoms");
    vars.InitVars("Signal_Bottoms_Eta","N_Signal_Bottoms");
-   
    vars.InitVar("Signal_Tprime_M","I");
    vars.InitVar("Signal_Tprime_Pt","I");
    vars.InitVar("Signal_Zprime_M","I");
@@ -240,20 +254,16 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("N_Sideband_bottom_anti_Tops","I");
    vars.InitVars("Sideband_bottom_anti_Tops_Pt","N_Sideband_bottom_anti_Tops");
    vars.InitVars("Sideband_bottom_anti_Tops_Eta","N_Sideband_bottom_anti_Tops");
-   
    vars.InitVar("N_Sideband_bottom_anti_Ws","I");
    vars.InitVars("Sideband_bottom_anti_Ws_Pt","N_Sideband_bottom_anti_Ws");
    vars.InitVars("Sideband_bottom_anti_Ws_Eta","N_Sideband_bottom_anti_Ws");   
-   
    vars.InitVar("N_Sideband_bottom_anti_Bottoms","I");
    vars.InitVars("Sideband_bottom_anti_Bottoms_Pt","N_Signal_Bottoms");
    vars.InitVars("Sideband_bottom_anti_Bottoms_Eta","N_Signal_Bottoms");
-   
    vars.InitVar("Sidband_bottom_anti_Tprime_M","I");
    vars.InitVar("Sidband_bottom_anti_Tprime_Pt","I");
    vars.InitVar("Sidband_bottom_anti_Zprime_M","I");
    vars.InitVar("Sidband_bottom_anti_Zprime_Pt","I");
-      
    
    vars.InitVar("N_Signal_withtoptag_Tops","I");
    vars.InitVars("Signal_withtoptag_Tops_Pt","N_Signal_withtoptag_Tops");
@@ -275,9 +285,9 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("N_Sideband_withtopbtag_bottom_anti_Ws","I");
    vars.InitVars("Sideband_withtopbtag_bottom_anti_Ws_Pt","N_Sideband_withtopbtag_bottom_anti_Ws");
    vars.InitVars("Sideband_withtopbtag_bottom_anti_Ws_Eta","N_Sideband_withtopbtag_bottom_anti_Ws");   
-   vars.InitVar("N_Sideband_bottom_anti_Bottoms","I");
-   vars.InitVars("Sideband_withtopbtag_bottom_anti_Bottoms_Pt","N_Sideband_bottom_anti_Bottoms");
-   vars.InitVars("Sideband_withtopbtag_bottom_anti_Bottoms_Eta","N_Sideband_bottom_anti_Bottoms");
+   vars.InitVar("N_Sideband_withtopbtag_bottom_anti_Bottoms","I");
+   vars.InitVars("Sideband_withtopbtag_bottom_anti_Bottoms_Pt","N_Sideband_withtopbtag_bottom_anti_Bottoms");
+   vars.InitVars("Sideband_withtopbtag_bottom_anti_Bottoms_Eta","N_Sideband_withtopbtag_bottom_anti_Bottoms");
    vars.InitVar("Sideband_withtopbtag_bottom_anti_Tprime_M","I");
    vars.InitVar("Sideband_withtopbtag_bottom_anti_Tprime_Pt","I");
    vars.InitVar("Sideband_withtopbtag_bottom_anti_Zprime_M","I");
@@ -300,21 +310,162 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("N_Sideband_top_anti_bottom_anti_Tops","I");
    vars.InitVars("Sideband_top_anti_bottom_anti_Tops_Pt","N_Sideband_top_anti_bottom_anti_Tops");
    vars.InitVars("Sideband_top_anti_bottom_anti_Tops_Eta","N_Sideband_top_anti_bottom_anti_Tops");
-   vars.InitVar("N_Sideband_top_anti_Ws","I");
-   vars.InitVars("Sideband_top_anti_Ws_Pt","N_Sideband_top_anti_Ws");
-   vars.InitVars("Sideband_top_anti_Ws_Pt","N_Sideband_top_anti_Ws");   
-   vars.InitVar("N_Sideband_top_anti_Bottoms","I");
-   vars.InitVars("Sideband_top_anti_Bottoms_Pt","N_Sideband_top_anti_Bottoms");
-   vars.InitVars("Sideband_top_anti_Bottoms_Eta","N_Sideband_top_anti_Bottoms");
-   vars.InitVar("Sideband_top_anti_Tprime_M","I");
-   vars.InitVar("Sideband_top_anti_Tprime_Pt","I");
-   vars.InitVar("Sideband_top_anti_Zprime_M","I");
-   vars.InitVar("Sideband_top_anti_Zprime_Pt","I");  
+   vars.InitVar("N_Sideband_top_anti_bottom_anti_Ws","I");
+   vars.InitVars("Sideband_top_anti_bottom_anti_Ws_Pt","N_Sideband_top_anti_bottom_anti_Ws");
+   vars.InitVars("Sideband_top_anti_bottom_anti_Ws_Eta","N_Sideband_top_anti_bottom_anti_Ws");   
+   vars.InitVar("N_Sideband_top_anti_bottom_anti_Bottoms","I");
+   vars.InitVars("Sideband_top_anti_bottom_anti_Bottoms_Pt","N_Sideband_top_anti_bottom_anti_Bottoms");
+   vars.InitVars("Sideband_top_anti_bottom_anti_Bottoms_Eta","N_Sideband_top_anti_bottom_anti_Bottoms");
+   vars.InitVar("Sideband_top_anti_bottom_anti_Tprime_M","I");
+   vars.InitVar("Sideband_top_anti_bottom_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_top_anti_bottom_anti_Zprime_M","I");
+   vars.InitVar("Sideband_top_anti_bottom_anti_Zprime_Pt","I");  
    
+   vars.InitVar("N_Sideband_top_withbtag_anti_Tops","I");
+   vars.InitVars("Sideband_top_withbtag_anti_Tops_Pt","N_Sideband_top_withbtag_anti_Tops");
+   vars.InitVars("Sideband_top_withbtag_anti_Tops_Eta","N_Sideband_top_withbtag_anti_Tops");
+   vars.InitVar("N_Sideband_top_withbtag_anti_Ws","I");
+   vars.InitVars("Sideband_top_withbtag_anti_Ws_Pt","N_Sideband_top_withbtag_anti_Ws");
+   vars.InitVars("Sideband_top_withbtag_anti_Ws_Eta","N_Sideband_top_withbtag_anti_Ws");   
+   vars.InitVar("N_Sideband_top_withbtag_anti_Bottoms","I");
+   vars.InitVars("Sideband_top_withbtag_anti_Bottoms_Pt","N_Sideband_top_withbtag_anti_Bottoms");
+   vars.InitVars("Sideband_top_withbtag_anti_Bottoms_Eta","N_Sideband_top_withbtag_anti_Bottoms");
+   vars.InitVar("Sideband_top_withbtag_anti_Tprime_M","I");
+   vars.InitVar("Sideband_top_withbtag_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_top_withbtag_anti_Zprime_M","I");
+   vars.InitVar("Sideband_top_withbtag_anti_Zprime_Pt","I"); 
+
+   vars.InitVar("N_Sideband_top_withbtag_anti_bottom_anti_Tops","I");
+   vars.InitVars("Sideband_top_withbtag_anti_Tops_bottom_anti_Pt","N_Sideband_top_withbtag_anti_bottom_anti_Tops");
+   vars.InitVars("Sideband_top_withbtag_anti_Tops_bottom_anti_Eta","N_Sideband_top_withbtag_anti_bottom_anti_Tops");
+   vars.InitVar("N_Sideband_top_withbtag_anti_bottom_anti_Ws","I");
+   vars.InitVars("Sideband_top_withbtag_anti_bottom_anti_Ws_Pt","N_Sideband_top_withbtag_anti_bottom_anti_Ws");
+   vars.InitVars("Sideband_top_withbtag_anti_bottom_anti_Ws_Eta","N_Sideband_top_withbtag_anti_bottom_anti_Ws");   
+   vars.InitVar("N_Sideband_top_withbtag_anti_bottom_anti_Bottoms","I");
+   vars.InitVars("Sideband_top_withbtag_anti_bottom_anti_Bottoms_Pt","N_Sideband_top_withbtag_anti_bottom_anti_Bottoms");
+   vars.InitVars("Sideband_top_withbtag_anti_bottom_anti_Bottoms_Eta","N_Sideband_top_withbtag_anti_bottom_anti_Bottoms");
+   vars.InitVar("Sideband_top_withbtag_anti_bottom_anti_Tprime_M","I");
+   vars.InitVar("Sideband_top_withbtag_anti_bottom_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_top_withbtag_anti_bottom_anti_Zprime_M","I");
+   vars.InitVar("Sideband_top_withbtag_anti_bottom_anti_Zprime_Pt","I");
+
+   vars.InitVar("N_Sideband_W_anti_Tops","I");
+   vars.InitVars("Sideband_W_anti_Tops_Pt","N_Sideband_W_anti_Tops");
+   vars.InitVars("Sideband_W_anti_Tops_Eta","N_Sideband_W_anti_Tops");
+   vars.InitVar("N_Sideband_W_anti_Ws","I");
+   vars.InitVars("Sideband_W_anti_Ws_Pt","N_Sideband_W_anti_Ws");
+   vars.InitVars("Sideband_W_anti_Ws_Eta","N_Sideband_W_anti_Ws");   
+   vars.InitVar("N_Sideband_W_anti_Bottoms","I");
+   vars.InitVars("Sideband_W_anti_Bottoms_Pt","N_Sideband_W_anti_Bottoms");
+   vars.InitVars("Sideband_W_anti_Bottoms_Eta","N_Sideband_W_anti_Bottoms");
+   vars.InitVar("Sideband_W_anti_Tprime_M","I");
+   vars.InitVar("Sideband_W_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_W_anti_Zprime_M","I");
+   vars.InitVar("Sideband_W_anti_Zprime_Pt","I");
    
+   vars.InitVar("N_Sideband_W_anti_bottom_anti_Tops","I");
+   vars.InitVars("Sideband_W_anti_bottom_anti_Tops_Pt","N_Sideband_W_anti_bottom_anti_Tops");
+   vars.InitVars("Sideband_W_anti_bottom_anti_Tops_Eta","N_Sideband_W_anti_bottom_anti_Tops");
+   vars.InitVar("N_Sideband_W_anti_bottom_anti_Ws","I");
+   vars.InitVars("Sideband_W_anti_bottom_anti_Ws_Pt","N_Sideband_W_anti_bottom_anti_Ws");
+   vars.InitVars("Sideband_W_anti_bottom_anti_Ws_Eta","N_Sideband_W_anti_bottom_anti_Ws");   
+   vars.InitVar("N_Sideband_W_anti_bottom_anti_Bottoms","I");
+   vars.InitVars("Sideband_W_anti_bottom_anti_Bottoms_Pt","N_Sideband_W_anti_bottom_anti_Bottoms");
+   vars.InitVars("Sideband_W_anti_bottom_anti_Bottoms_Eta","N_Sideband_W_anti_bottom_anti_Bottoms");
+   vars.InitVar("Sideband_W_anti_bottom_anti_Tprime_M","I");
+   vars.InitVar("Sideband_W_anti_bottom_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_W_anti_bottom_anti_Zprime_M","I");
+   vars.InitVar("Sideband_W_anti_bottom_anti_Zprime_Pt","I");    
    
+   vars.InitVar("N_Sideband_withtopbtag_W_anti_Tops","I");
+   vars.InitVars("Sideband_withtopbtag_W_anti_Tops_Pt","N_Sideband_withtopbtag_W_anti_Tops");
+   vars.InitVars("Sideband_withtopbtag_W_anti_Tops_Eta","N_Sideband_withtopbtag_W_anti_Tops");
+   vars.InitVar("N_Sideband_withtopbtag_W_anti_Ws","I");
+   vars.InitVars("Sideband_withtopbtag_W_anti_Ws_Pt","N_Sideband_withtopbtag_W_anti_Ws");
+   vars.InitVars("Sideband_withtopbtag_W_anti_Ws_Eta","N_Sideband_withtopbtag_W_anti_Ws");   
+   vars.InitVar("N_Sideband_withtopbtag_W_anti_Bottoms","I");
+   vars.InitVars("Sideband_withtopbtag_W_anti_Bottoms_Pt","N_Sideband_withtopbtag_W_anti_Bottoms");
+   vars.InitVars("Sideband_withtopbtag_W_anti_Bottoms_Eta","N_Sideband_withtopbtag_W_anti_Bottoms");
+   vars.InitVar("Sideband_withtopbtag_W_anti_Tprime_M","I");
+   vars.InitVar("Sideband_withtopbtag_W_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_withtopbtag_W_anti_Zprime_M","I");
+   vars.InitVar("Sideband_withtopbtag_W_anti_Zprime_Pt","I");  
    
-///Variables for misstag rates and tagging efficiencies
+   vars.InitVar("N_Sideband_withtopbtag_W_anti_bottom_anti_Tops","I");
+   vars.InitVars("Sideband_withtopbtag_W_anti_bottom_anti_Tops_Pt","N_Sideband_withtopbtag_W_anti_bottom_anti_Tops");
+   vars.InitVars("Sideband_withtopbtag_W_anti_bottom_anti_Tops_Eta","N_Sideband_withtopbtag_W_anti_bottom_anti_Tops");
+   vars.InitVar("N_Sideband_withtopbtag_W_anti_bottom_anti_Ws","I");
+   vars.InitVars("Sideband_withtopbtag_W_anti_bottom_anti_Ws_Pt","N_Sideband_withtopbtag_W_anti_bottom_anti_Ws");
+   vars.InitVars("Sideband_withtopbtag_W_anti_bottom_anti_Ws_Eta","N_Sideband_withtopbtag_W_anti_bottom_anti_Ws");   
+   vars.InitVar("N_Sideband_withtopbtag_W_anti_bottom_anti_Bottoms","I");
+   vars.InitVars("Sideband_withtopbtag_W_anti_bottom_anti_Bottoms_Pt","N_Sideband_withtopbtag_W_anti_bottom_anti_Bottoms");
+   vars.InitVars("Sideband_withtopbtag_W_anti_bottom_anti_Bottoms_Eta","N_Sideband_withtopbtag_W_anti_bottom_anti_Bottoms");
+   vars.InitVar("Sideband_withtopbtag_W_anti_bottom_anti_Tprime_M","I");
+   vars.InitVar("Sideband_withtopbtag_W_anti_bottom_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_withtopbtag_W_anti_bottom_anti_Zprime_M","I");
+   vars.InitVar("Sideband_withtopbtag_W_anti_bottom_anti_Zprime_Pt","I"); 
+   
+   vars.InitVar("N_Sideband_top_anti_W_anti_Tops","I");
+   vars.InitVars("Sideband_top_anti_W_anti_Tops_Pt","N_Sideband_top_anti_W_anti_Tops");
+   vars.InitVars("Sideband_top_anti_W_anti_Tops_Eta","N_Sideband_top_anti_W_anti_Tops");
+   vars.InitVar("N_Sideband_top_anti_W_anti_Ws","I");
+   vars.InitVars("Sideband_top_anti_W_anti_Ws_Pt","N_Sideband_top_anti_W_anti_Ws");
+   vars.InitVars("Sideband_top_anti_W_anti_Ws_Eta","N_Sideband_top_anti_W_anti_Ws");   
+   vars.InitVar("N_Sideband_top_anti_W_anti_Bottoms","I");
+   vars.InitVars("Sideband_top_anti_W_anti_Bottoms_Pt","N_Sideband_top_anti_W_anti_Bottoms");
+   vars.InitVars("Sideband_top_anti_W_anti_Bottoms_Eta","N_Sideband_top_anti_W_anti_Bottoms");
+   vars.InitVar("Sideband_top_anti_W_anti_Tprime_M","I");
+   vars.InitVar("Sideband_top_anti_W_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_top_anti_W_anti_Zprime_M","I");
+   vars.InitVar("Sideband_top_anti_W_anti_Zprime_Pt","I");
+   
+   vars.InitVar("N_Sideband_top_anti_W_anti_bottom_anti_Tops","I");
+   vars.InitVars("Sideband_top_anti_W_anti_bottom_anti_Tops_Pt","N_Sideband_top_anti_W_anti_bottom_anti_Tops");
+   vars.InitVars("Sideband_top_anti_W_anti_bottom_anti_Tops_Eta","N_Sideband_top_anti_W_anti_bottom_anti_Tops");
+   vars.InitVar("N_Sideband_top_anti_W_anti_bottom_anti_Ws","I");
+   vars.InitVars("Sideband_top_anti_W_anti_bottom_anti_Ws_Pt","N_Sideband_top_anti_W_anti_bottom_anti_Ws");
+   vars.InitVars("Sideband_top_anti_W_anti_bottom_anti_Ws_Eta","N_Sideband_top_anti_W_anti_bottom_anti_Ws");   
+   vars.InitVar("N_Sideband_top_anti_W_anti_bottom_anti_Bottoms","I");
+   vars.InitVars("Sideband_top_anti_W_anti_bottom_anti_Bottoms_Pt","N_Sideband_top_anti_W_anti_bottom_anti_Bottoms");
+   vars.InitVars("Sideband_top_anti_W_anti_bottom_anti_Bottoms_Eta","N_Sideband_top_anti_W_anti_bottom_anti_Bottoms");
+   vars.InitVar("Sideband_top_anti_W_anti_bottom_anti_Tprime_M","I");
+   vars.InitVar("Sideband_top_anti_W_anti_bottom_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_top_anti_W_anti_bottom_anti_Zprime_M","I");
+   vars.InitVar("Sideband_top_anti_W_anti_bottom_anti_Zprime_Pt","I"); 
+
+   vars.InitVar("N_Sideband_top_withbtag_anti_W_anti_Tops","I");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_Tops_Pt","N_Sideband_top_withbtag_anti_W_anti_Tops");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_Tops_Eta","N_Sideband_top_withbtag_anti_W_anti_Tops");
+   vars.InitVar("N_Sideband_top_withbtag_anti_W_anti_Ws","I");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_Ws_Pt","N_Sideband_top_withbtag_anti_W_anti_Ws");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_Ws_Eta","N_Sideband_top_withbtag_anti_W_anti_Ws");   
+   vars.InitVar("N_Sideband_top_withbtag_anti_W_anti_Bottoms","I");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_Bottoms_Pt","N_Sideband_top_withbtag_anti_W_anti_Bottoms");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_Bottoms_Eta","N_Sideband_top_withbtag_anti_W_anti_Bottoms");
+   vars.InitVar("Sideband_top_withbtag_anti_W_anti_Tprime_M","I");
+   vars.InitVar("Sideband_top_withbtag_anti_W_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_top_withbtag_anti_W_anti_Zprime_M","I");
+   vars.InitVar("Sideband_top_withbtag_anti_W_anti_Zprime_Pt","I");
+   
+   vars.InitVar("N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Tops","I");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Tops_Pt","N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Tops");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Tops_Eta","N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Tops");
+   vars.InitVar("N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Ws","I");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Ws_Pt","N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Ws");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Ws_Eta","N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Ws");   
+   vars.InitVar("N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms","I");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms_Pt","N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms");
+   vars.InitVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms_Eta","N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms");
+   vars.InitVar("Sideband_top_withbtag_anti_W_anti_bottom_anti_Tprime_M","I");
+   vars.InitVar("Sideband_top_withbtag_anti_W_anti_bottom_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_top_withbtag_anti_W_anti_bottom_anti_Zprime_M","I");
+   vars.InitVar("Sideband_top_withbtag_anti_W_anti_bottom_anti_Zprime_Pt","I");   
+
+}
+
+void ZPrimeToTPrimeAllHadProcessor::InitTaggingVars(VariableContainer& vars){
+
+    ///Variables for misstag rates and tagging efficiencies
    
    vars.InitVar("N_tagged_top","I");
    vars.InitVars("tagged_top_pt","N_tagged_top");
@@ -389,6 +540,9 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("N_misstagged_bottom_anti","I");
    vars.InitVars("misstagged_bottom_anti_pt","N_misstagged_bottom_anti");
    vars.InitVars("misstagged_bottom_anti_eta","N_misstagged_bottom_anti");
+}
+
+
 
    //AK8_top_misstag_anti_candidates same as AK8_top_tag_candidates
    //AK8_W_misstag_anti_candidates same as AK8_W_tag_candidates
@@ -416,11 +570,14 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVars("AK4_bottom_misstagged_anti_candidates_pt","N_AK4_bottom_misstag_anti_candidates");
    vars.InitVars("AK4_bottom_misstagged_anti_candidates_eta","N_AK4_bottom_misstag_anti_candidates");
 */   
+
+
+
+void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
+
+///Variables for datadriven Background estimation using the misstagrates 
    
-///Variables for datadriven Background estimation
-   
-   
-   
+  
    vars.InitVar("N_AK8_top_candidates","I");
    vars.InitVars("AK8_top_candidates_pt","N_AK8_top_candidates");
    vars.InitVars("AK8_top_candidates_eta","N_AK8_top_candidates");
@@ -430,7 +587,10 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("N_AK4_bottom_candidates","I");
    vars.InitVars("AK4_bottom_candidates_pt","N_AK4_bottom_candidates");
    vars.InitVars("AK4_bottom_candidates_eta","N_AK4_bottom_candidates");   
+}
+
    
+void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
 
 ///ABCD BACKGROUND ESTIMATION
    vars.InitVar("N_Zprime_ABCD","I");
@@ -467,44 +627,38 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
    vars.InitVar("BG_Bottom_candidates_pt","I");
    vars.InitVar("BG_Bottom_anti_candidates_pt","I");
    
-  initialized=true;
 }
 
-std::vector<pat::Jet> ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(const std::vector<pat::Jet> tops, const std::vector<pat::Jet> Ws, const std::vector<pat::Jet> bottoms){
+std::vector<pat::Jet> ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws, std::vector<pat::Jet>& bottoms){
     std::vector<pat::Jet> separated_bottoms;
     for(std::vector<pat::Jet>::const_iterator itbJet = bottoms.begin() ; itbJet != bottoms.end(); ++itbJet){
         bool check_dR_top_bottom=true;
         bool check_dR_W_bottom=true;
-            if (top_candidatefound){
-                for(std::vector<pat::Jet>::const_iterator ittopJet = tops.begin() ; ittopJet != tops.end(); ++ittopJet){
-                    if (BoostedUtils::DeltaR(itbJet->p4(),ittopJet->p4())<0.8){
-                        check_dR_top_bottom=false;
-                    }
+            for(std::vector<pat::Jet>::const_iterator ittopJet = tops.begin() ; ittopJet != tops.end(); ++ittopJet){
+                if (BoostedUtils::DeltaR(itbJet->p4(),ittopJet->p4())<0.8){
+                    check_dR_top_bottom=false;
                 }
-            }         
-            if (W_candidatefound){
-                for(std::vector<pat::Jet>::const_iterator itWJet = Ws.begin() ; itWJet != Ws.end(); ++itWJet){
-                    if (BoostedUtils::DeltaR(itbJet->p4(),itWJet->p4())<0.8){
-                        check_dR_W_bottom=false;
-                    }                    
-                }
-            }            
+            }
+            for(std::vector<pat::Jet>::const_iterator itWJet = Ws.begin() ; itWJet != Ws.end(); ++itWJet){
+                if (BoostedUtils::DeltaR(itbJet->p4(),itWJet->p4())<0.8){
+                    check_dR_W_bottom=false;
+                }                    
+            }
         
-        if (check_dR_top_bottom && check_dR_top_withbtag_bottom && check_dR_W_bottom){
-            separated_bottom_candidatefound=true;
+        if (check_dR_top_bottom && check_dR_W_bottom){
             separated_bottoms.push_back(*itbJet);
         }
     }
     return separated_bottoms;
 }
 
-math::XYZTLorentzVector ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(const std::vector<pat::Jet> Ws, const std::vector<pat::Jet> bottoms){
+math::XYZTLorentzVector ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(const std::vector<pat::Jet>& Ws, const std::vector<pat::Jet>& bottoms){
     math::XYZTLorentzVector TPrime;
     TPrime=bottoms[0].p4()+Ws[0].p4();
     return TPrime;
 }
 
-math::XYZTLorentzVector ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(const std::vector<pat::Jet> tops, const math::XYZTLorentzVector TPrime){
+math::XYZTLorentzVector ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(const std::vector<pat::Jet>& tops, const math::XYZTLorentzVector& TPrime){
     math::XYZTLorentzVector ZPrime;
     ZPrime=TPrime+tops[0].p4();
     return ZPrime;
@@ -741,7 +895,6 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         vars.FillVar( "Gen_WfromTPrime_BottomfromTPrime_DeltaPhi", DeltaPhi );
     }
 
-    std::cout<<"there7"<<endl;
     
     std::vector<reco::GenParticle> TopZprime;
     std::vector<reco::GenParticle> TPrime;
@@ -764,7 +917,6 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     WBG=input.zprimetotprimeallhad.GetWs_fromBG();
 
     }    
-    std::cout<<"there9"<<endl;
 
 //AK8->Jets
     if(input.packedPatJetsAK8PFCHSSoftDrop.size()>0){
@@ -814,6 +966,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     std::vector<pat::Jet> tops_withbtag;
     std::vector<pat::Jet> Ws;
     std::vector<pat::Jet> bottoms;
+    std::vector<pat::Jet> separated_bottoms;
+    
     std::vector<pat::Jet> tops_anti;
     std::vector<pat::Jet> tops_withbtag_anti;
     std::vector<pat::Jet> Ws_anti;
@@ -858,23 +1012,22 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     bool top_anti_candidatefound=false;
     bool top_withbtag_candidatefound=false;
     bool top_withbtag_anti_candidatefound=false;
-    
     bool W_candidatefound=false;
     bool W_anti_candidatefound=false;
     bool bottom_candidatefound=false;
     bool bottom_anti_candidatefound=false;
+    
+/*    
     bool no_bottom_candidatesfound=false;
     bool Tprime_candidatefound=false;
     bool Tprime_bottom_anti_candidatefound=false;
     bool Tprime_no_bottom_candidatefound=false;
     bool Tprime_W_anti_candidatefound=false;
     bool Tprime_W_anti_bottom_anti_candidatefound=false;
-    
+*/    
     bool Z_candidatefound=false;
     bool Z_anti_candidatefound=false;
-    
-    
-    
+
     bool Higgs_candidatefound=false;
     bool Higgs_with1btag_candidatefound=false;
     bool Higgs_with2btag_candidatefound=false;
@@ -918,7 +1071,13 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     std::vector<pat::Jet> misstagged_W_anti;
     std::vector<pat::Jet> misstagged_bottom_anti;
 
-    std::cout<<"here1"<<endl;
+    
+    std::vector<math::XYZTLorentzVector> ZprimesABCD;
+    std::vector<math::XYZTLorentzVector> TprimesABCD;
+    std::vector<pat::Jet> TopsABCD;
+    std::vector<pat::Jet> BottomsABCD;
+    std::vector<pat::Jet> WsABCD;
+    
 //AK8->Jets
     if(input.packedPatJetsAK8PFCHSSoftDrop.size()>0){
        
@@ -1096,25 +1255,18 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("Ws_anti_eta",iJet,itJet->eta());
   }
 ///Fill separated_bottoms
-  vars.FillVar("N_Bottoms",separated_bottoms.size());   
-  vars.FillVar("N_Bottoms_anti",saperated_bottoms_anti.size());
-  if (!separated_bottom_candidatefound){
-    vars.FillVar("N_no_Bottoms",saperated_bottoms_anti.size());
-  }
+  vars.FillVar("N_Bottoms",bottoms.size());   
+  vars.FillVar("N_Bottoms_anti",bottoms_anti.size());
     
-  for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms.begin() ; itJet != separated_bottoms.end(); ++itJet){
-    int iJet = itJet - separated_bottoms.begin();
+  for(std::vector<pat::Jet>::const_iterator itJet = bottoms.begin() ; itJet != bottoms.end(); ++itJet){
+    int iJet = itJet - bottoms.begin();
     vars.FillVars("Bottoms_pt",iJet,itJet->pt());
     vars.FillVars("Bottoms_eta",iJet,itJet->eta());
   }
-  for(std::vector<pat::Jet>::const_iterator itJet = saperated_bottoms_anti.begin() ; itJet != saperated_bottoms_anti.end(); ++itJet){
-    int iJet = itJet - saperated_bottoms_anti.begin();
+  for(std::vector<pat::Jet>::const_iterator itJet = bottoms_anti.begin() ; itJet != bottoms_anti.end(); ++itJet){
+    int iJet = itJet - bottoms_anti.begin();
     vars.FillVars("Bottoms_anti_pt",iJet,itJet->pt());
     vars.FillVars("Bottoms_anti_eta",iJet,itJet->eta());
-    if (!separated_bottom_candidatefound){
-        vars.FillVars("No_Bottoms_pt",iJet,itJet->pt());
-        vars.FillVars("No_Bottoms_eta",iJet,itJet->eta());
-    }
   } 
 /*  for(std::vector<pat::Jet>::const_iterator itJet = no_bottoms.begin() ; itJet != no_bottoms.end(); ++itJet){
     int iJet = itJet - no_bottoms.begin();
@@ -1259,6 +1411,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
       if(W_candidatefound){
          if(top_candidatefound){
              if(bottom_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms;
                  separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops, Ws, bottoms);
                  if(separated_bottoms.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms);
@@ -1294,6 +1447,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                  }
              }
              if(bottom_anti_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms_anti;                 
                  separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops, Ws, bottoms_anti);
                  if(separated_bottoms_anti.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms_anti);
@@ -1331,6 +1485,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          }
          if(top_withbtag_candidatefound){
              if(bottom_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms;                 
                  separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag, Ws, bottoms);
                  if(separated_bottoms.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms);
@@ -1366,6 +1521,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                  }
              }
              if(bottom_anti_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms_anti;                 
                  separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag, Ws, bottoms_anti);
                  if(separated_bottoms_anti.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms_anti);
@@ -1403,6 +1559,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          }
          if(top_anti_candidatefound && !top_candidatefound){
              if(bottom_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms;                 
                  separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_anti, Ws, bottoms);
                  if(separated_bottoms.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms);
@@ -1438,6 +1595,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                  }
              }
              if(bottom_anti_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms_anti;                 
                  separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_anti, Ws, bottoms_anti);
                  if(separated_bottoms_anti.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms_anti);
@@ -1475,6 +1633,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          }
          if(top_withbtag_anti_candidatefound && !top_withbtag_candidatefound){
              if(bottom_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms;                 
                  separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag_anti, Ws, bottoms);
                  if(separated_bottoms.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms);
@@ -1510,6 +1669,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                  }
              }
              if(bottom_anti_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms_anti;                 
                  separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag_anti, Ws, bottoms_anti);
                  if(separated_bottoms_anti.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms_anti);
@@ -1550,6 +1710,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
       if(W_anti_candidatefound  && !W_candidatefound){
          if(top_candidatefound){
              if(bottom_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms_anti;                 
                  separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops, Ws_anti, bottoms);
                  if(separated_bottoms.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms);
@@ -1585,6 +1746,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                  }
              }
              if(bottom_anti_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms_anti;                 
                  separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops, Ws_anti, bottoms_anti);
                  if(separated_bottoms_anti.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms_anti);
@@ -1622,6 +1784,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          }
          if(top_withbtag_candidatefound){
              if(bottom_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms;
                  separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag, Ws_anti, bottoms);
                  if(separated_bottoms.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms);
@@ -1657,6 +1820,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                  }
              }
              if(bottom_anti_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms_anti;
                  separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag, Ws_anti, bottoms_anti);
                  if(separated_bottoms_anti.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms_anti);
@@ -1676,7 +1840,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                             vars.FillVars("Sideband_withtopbtag_W_anti_bottom_anti_Ws_Eta",iJet,itJet->eta());
                         }
                         
-                        vars.FillVar("N_Sideband_withtopbtag_W_anti_Bottoms",separated_bottoms_anti.size());
+                        vars.FillVar("N_Sideband_withtopbtag_W_anti_bottom_anti_Bottoms",separated_bottoms_anti.size());
                         for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
                             int iJet = itJet - separated_bottoms_anti.begin();
                             vars.FillVars("Sideband_withtopbtag_W_anti_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
@@ -1694,6 +1858,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          }
          if(top_anti_candidatefound && !top_candidatefound){
              if(bottom_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms;
                  separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_anti, Ws_anti, bottoms);
                  if(separated_bottoms.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms);
@@ -1729,6 +1894,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                  }
              }
              if(bottom_anti_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms_anti;
                  separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_anti, Ws_anti, bottoms_anti);
                  if(separated_bottoms_anti.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms_anti);
@@ -1766,6 +1932,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          }
          if(top_withbtag_anti_candidatefound && !top_withbtag_candidatefound){
              if(bottom_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms;
                  separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag_anti, Ws_anti, bottoms);
                  if(separated_bottoms.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms);
@@ -1801,6 +1968,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                  }
              }
              if(bottom_anti_candidatefound){
+                 std::vector<pat::Jet> separated_bottoms_anti;
                  separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag_anti, Ws_anti, bottoms_anti);
                  if(separated_bottoms_anti.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms_anti);
@@ -1820,7 +1988,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                             vars.FillVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Ws_Eta",iJet,itJet->eta());
                         }
                         
-                        vars.FillVar("N_Sideband_top_withbtag_anti_W_anti_Bottoms",separated_bottoms_anti.size());
+                        vars.FillVar("N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms",separated_bottoms_anti.size());
                         for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
                             int iJet = itJet - separated_bottoms_anti.begin();
                             vars.FillVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
@@ -2490,6 +2658,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("tagged_bottom_anti_pt",iJet,itJet->pt());
     vars.FillVars("tagged_bottom_anti_eta",iJet,itJet->eta());
   }
+
+  
   
 /////ALL COMBINATIONS FOR ABCD-METHODE
   if(AK8_top_candidates.size()>0 && AK8_W_candidates.size()>1 && AK4_bottom_candidates.size()>0){
@@ -2507,6 +2677,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                                 TopsABCD.push_back(*ittopJet);
                                 BottomsABCD.push_back(*itBJet);
                                 WsABCD.push_back(*itWJet);
+                                std::cout<<"calculated event combination"<<endl;
                             }
                         }
                     }                    
@@ -2519,7 +2690,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   ////FILL ABCD VARIABLES
   vars.FillVar("N_Zprime_ABCD",ZprimesABCD.size());
 
-  for (int i=0, i<ZprimesABCD.size(), i++){
+  for (uint i=0; i<ZprimesABCD.size(); i++){
+  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+     //int i = 
      vars.FillVars("Zprimes_ABCD_M",i,ZprimesABCD[i].mass());
      vars.FillVars("Zprimes_ABCD_Pt",i,ZprimesABCD[i].pt());
      
@@ -2543,6 +2716,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_MSD",i,TopsABCD[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCD_t32",i,TopsABCD[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCD[i].userFloat("NjettinessAK8CHS:tau2"));
   }
+
+
   
  }// end of HT if
   
