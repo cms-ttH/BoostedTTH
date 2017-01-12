@@ -260,10 +260,10 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
    vars.InitVar("N_Sideband_bottom_anti_Bottoms","I");
    vars.InitVars("Sideband_bottom_anti_Bottoms_Pt","N_Signal_Bottoms");
    vars.InitVars("Sideband_bottom_anti_Bottoms_Eta","N_Signal_Bottoms");
-   vars.InitVar("Sidband_bottom_anti_Tprime_M","I");
-   vars.InitVar("Sidband_bottom_anti_Tprime_Pt","I");
-   vars.InitVar("Sidband_bottom_anti_Zprime_M","I");
-   vars.InitVar("Sidband_bottom_anti_Zprime_Pt","I");
+   vars.InitVar("Sideband_bottom_anti_Tprime_M","I");
+   vars.InitVar("Sideband_bottom_anti_Tprime_Pt","I");
+   vars.InitVar("Sideband_bottom_anti_Zprime_M","I");
+   vars.InitVar("Sideband_bottom_anti_Zprime_Pt","I");
    
    vars.InitVar("N_Signal_withtoptag_Tops","I");
    vars.InitVars("Signal_withtoptag_Tops_Pt","N_Signal_withtoptag_Tops");
@@ -649,6 +649,26 @@ std::vector<pat::Jet> ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(std:
     return separated_bottoms;
 }
 
+std::vector<pat::Jet> ZPrimeToTPrimeAllHadProcessor::SelectfromTopSeparatedWs(const std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws){
+    std::vector<pat::Jet> separated_Ws;
+    for(std::vector<pat::Jet>::const_iterator ittopJet = tops.begin() ; ittopJet != tops.end(); ++ittopJet){
+        for(std::vector<pat::Jet>::const_iterator itWJet = Ws.begin() ; itWJet != Ws.end(); ++itWJet){
+            if (BoostedUtils::DeltaR(ittopJet->p4(),itWJet->p4())>0.4){
+                separated_Ws.push_back(*itWJet);
+        }
+    return separated_Ws;
+}
+
+std::vector<pat::Jet> ZPrimeToTPrimeAllHadProcessor::SelectfromWSeparatedTops(std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws){
+    std::vector<pat::Jet> separated_Tops;
+    for(std::vector<pat::Jet>::const_iterator ittopJet = tops.begin() ; ittopJet != tops.end(); ++ittopJet){
+        for(std::vector<pat::Jet>::const_iterator itWJet = Ws.begin() ; itWJet != Ws.end(); ++itWJet){
+            if (BoostedUtils::DeltaR(ittopJet->p4(),itWJet->p4())>0.4){
+                separated_Tops.push_back(*ittopJet);
+        }
+    return separated_Tops;
+}
+
 math::XYZTLorentzVector ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(const std::vector<pat::Jet>& Ws, const std::vector<pat::Jet>& bottoms){
     math::XYZTLorentzVector TPrime;
     TPrime=bottoms[0].p4()+Ws[0].p4();
@@ -659,6 +679,90 @@ math::XYZTLorentzVector ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(c
     math::XYZTLorentzVector ZPrime;
     ZPrime=TPrime+tops[0].p4();
     return ZPrime;
+}
+
+void ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtbCompleteTopfirst(const std::vector<pat::Jet>& tops,const std::vector<pat::Jet>& Ws, const std::vector<pat::Jet>& bottoms){
+    math::XYZTLorentzVector ZPrime;
+    std::vector<pat::Jet> selected_tops;
+    selected_tops.push_back(tops[0]);
+    std::vector<pat::Jet> separated_Ws;
+    separated_Ws=SelectfromTopSeparatedWs(selected_tops, Ws);
+    if(separated_Ws.size()>0){
+        std::vector<pat::Jet> separated_bottoms;
+        separated_bottoms=SelectSeparatedBottoms(selected_tops, separated_Ws, bottoms);
+        if(separated_bottoms.size()>0){
+            math::XYZTLorentzVector TPrime;
+            TPrime=TPrimeReconstructionWtb(separated_Ws,separated_bottoms);
+            if(TPrime.mass()>500){
+                ZPrime=ZPrimeReconstructionWtb(selected_tops,TPrime);
+            }
+        }
+    }
+    
+}
+
+void ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtbCompleteWfirst(const std::vector<pat::Jet>& tops,const std::vector<pat::Jet>& Ws, const std::vector<pat::Jet>& bottoms){
+    math::XYZTLorentzVector ZPrime;
+    std::vector<pat::Jet> selected_Ws;
+    selected_Ws.push_back(Ws[0]);
+    std::vector<pat::Jet> separated_Tops;
+    separated_Tops=SelectfromWSeparatedTops(tops, selected_Ws);
+    if(separated_Tops.size()>0){
+        std::vector<pat::Jet> separated_bottoms;
+        separated_bottoms=SelectSeparatedBottoms(separated_Tops, selected_Ws, bottoms);
+        if(separated_bottoms.size()>0){
+            math::XYZTLorentzVector TPrime;
+            TPrime=TPrimeReconstructionWtb(selected_Ws,separated_bottoms);
+            if(TPrime.mass()>500){
+                ZPrime=ZPrimeReconstructionWtb(separated_Tops,TPrime);
+            }
+        }
+    }
+}
+
+
+void ZPrimeToTPrimeAllHadProcessor::FillSignalSidebandVars(const std::vector<pat::Jet>& tops,const std::vector<pat::Jet>& Ws, const std::vector<pat::Jet>& bottoms, const math::XYZTLorentzVector TPrime, const math::XYZTLorentzVector ZPrime, const bool toptag, bool toptag_withbtag, const bool Wtag, bool bottomtag, bool toptag_anti, bool toptag_withbtag_anti, const bool Wtag_anti, bool bottomtag_anti, std::string str_AK8_selected_first=""){
+    std::string str_region="Sideband_";
+    std::string str_bottom="";
+    std::string str_top="";
+    std::string str_W="";
+    
+    if((toptag || toptag_withbtag )&& Wtag && bottomtag){str_region="Signal_"; str_AK8_selected_first=""};
+    if(toptag_withbtag){str_top="withtopbtag_";};
+    if(toptag_anti){str_top="top_anti_";};
+    if(toptag_withbtag_anti){str_top="top_withbtag_anti_";};
+    if(Wtag_anti){str_W="W_anti_";};
+    if(bottomtag_anti){str_bottom="bottom_anti_";};
+    //if(str_AK8_selected_first="Top_first_"){};
+    //if(str_AK8_selected_first="W_first_"){};
+    
+                        vars.FillVar("N_"+str_region+str_top+str_W+str_bottom+"Tops",tops.size());
+                        for(std::vector<pat::Jet>::const_iterator itJet = tops.begin() ; itJet != tops.end(); ++itJet){
+                            int iJet = itJet - tops.begin();
+                            vars.FillVars(str_region+str_top+str_W+str_bottom+"Tops_Pt",iJet,itJet->pt());
+                            vars.FillVars(str_region+str_top+str_W+str_bottom+"Tops_Eta",iJet,itJet->eta());
+                        }
+                        
+                        vars.FillVar("N_"+str_region+str_top+str_W+str_bottom+"Ws",Ws.size());
+                        for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
+                            int iJet = itJet - Ws.begin();
+                            vars.FillVars(str_region+str_top+str_W+str_bottom+"Ws_Pt",iJet,itJet->pt());
+                            vars.FillVars(str_region+str_top+str_W+str_bottom+"Ws_Eta",iJet,itJet->eta());
+                        }
+                        
+                        vars.FillVar("N_"+str_region+str_top+str_W+str_bottom+"Bottoms",bottoms.size());
+                        for(std::vector<pat::Jet>::const_iterator itJet = bottoms.begin() ; itJet != bottoms.end(); ++itJet){
+                            int iJet = itJet - bottoms.begin();
+                            vars.FillVars(str_region+str_top+str_W+str_bottom+"Bottoms_Pt",iJet,itJet->pt());
+                            vars.FillVars(str_region+str_top+str_W+str_bottom+"Bottoms_Eta",iJet,itJet->eta());
+                        }
+                        
+                        vars.FillVar(str_region+str_top+str_W+str_bottom+str_AK8_selected_first+"Tprime_M",Tprime.mass());
+                        vars.FillVar(str_region+str_top+str_W+str_bottom+str_AK8_selected_first+"Tprime_Pt",Tprime.pt());
+                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops, Tprime);
+                        vars.FillVar(str_region+str_top+str_W+str_bottom+str_AK8_selected_first+"Zprime_M",Zprime.mass());
+                        vars.FillVar(str_region+str_top+str_W+str_bottom+str_AK8_selected_first+"Zprime_Pt",Zprime.pt());
+    
 }
 
 void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,VariableContainer& vars){
@@ -1409,7 +1513,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          if(top_candidatefound){
              if(bottom_candidatefound){
                  std::vector<pat::Jet> separated_bottoms;
+                 std::vector<pat::Jet> separated_Ws;
                  separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops, Ws, bottoms);
+                 separated_Ws=ZPrimeToTPrimeAllHadProcessor::SelectfromTopSeparatedWs(tops[0], Ws);
                  if(separated_bottoms.size()>0){
                      Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms);
                      if(Tprime.mass()>500){
@@ -1471,11 +1577,11 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                             vars.FillVars("Sideband_bottom_anti_Bottoms_Eta",iJet,itJet->eta());
                         }
                         
-                        vars.FillVar("Sidband_bottom_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sidband_bottom_anti_Tprime_Pt",Tprime.pt());
+                        vars.FillVar("Sideband_bottom_anti_Tprime_M",Tprime.mass());
+                        vars.FillVar("Sideband_bottom_anti_Tprime_Pt",Tprime.pt());
                         Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops, Tprime);
-                        vars.FillVar("Sidband_bottom_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sidband_bottom_anti_Zprime_Pt",Zprime.pt());
+                        vars.FillVar("Sideband_bottom_anti_Zprime_M",Zprime.mass());
+                        vars.FillVar("Sideband_bottom_anti_Zprime_Pt",Zprime.pt());
                     }
                  }
              }
