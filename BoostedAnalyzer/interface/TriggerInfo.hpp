@@ -19,6 +19,7 @@ public:
     bool IsTriggered(std::string triggername) const ; 
     bool Exists(std::string triggername) const ; 
     bool GetPrescale(std::string triggername) const ; 
+    void Print() const ; 
     bool IsAnyTriggered(std::vector< std::string > triggers) const ;
     std::map<std::string, bool> GetTriggers() const;
 private:

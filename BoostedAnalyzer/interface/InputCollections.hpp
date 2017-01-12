@@ -14,6 +14,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/FilterInfo.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 
@@ -31,6 +32,7 @@ struct InputCollections{
  */
 InputCollections(   const EventInfo&                              eventInfo_,
 		    const TriggerInfo&                            triggerInfo_,
+		    const FilterInfo&                             filterInfo_,
 		    const std::vector<reco::Vertex>&              selectedPVs_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsDL_,
@@ -58,6 +60,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		            ): 
                     eventInfo(eventInfo_),
                     triggerInfo(triggerInfo_),
+                    filterInfo(filterInfo_),
                     selectedPVs(selectedPVs_),
                     selectedMuons(selectedMuons_),
                     selectedMuonsDL(selectedMuonsDL_),
@@ -98,6 +101,7 @@ InputCollections(   const InputCollections&                       input,
         		    ): 
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
+                    filterInfo(input.filterInfo),
                     selectedPVs(input.selectedPVs),
                     selectedMuons(input.selectedMuons),
                     selectedMuonsDL(input.selectedMuonsDL),
@@ -125,6 +129,7 @@ InputCollections(   const InputCollections&                       input,
 
   const EventInfo&                              eventInfo;
   const TriggerInfo&                            triggerInfo;
+  const FilterInfo&                             filterInfo;
   const std::vector<reco::Vertex>&              selectedPVs;
   const std::vector<pat::Muon>&                 selectedMuons;
   const std::vector<pat::Muon>&                 selectedMuonsDL;

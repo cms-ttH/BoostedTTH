@@ -58,6 +58,7 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/HistoReweighter.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/PUWeights.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/FilterInfo.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
@@ -67,6 +68,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/VertexSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/FilterSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EvenOddSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/HbbSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
@@ -174,6 +176,8 @@ private:
     std::string usedGenerator;
     /** produces MC truth information for ttbar and ttH samples (genTopEvent)*/
     GenTopEventProducer genTopEvtProd;
+    /** produces filter information */
+    FilterInfoProducer filterInfoProd;
     /** Calculated MEM for "boosted" events? Takes several seconds per event */
     bool doBoostedMEM;
     /** processors run */
@@ -239,7 +243,8 @@ private:
 //
 BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // initialize gen top event with consumes collector (allows to access data from file within this class)
-    genTopEvtProd(GenTopEventProducer(consumesCollector()))
+    genTopEvtProd(GenTopEventProducer(consumesCollector())),
+    filterInfoProd(FilterInfoProducer(iConfig,consumesCollector()))
 {
   const bool BTagSystematics = false;
     //
@@ -274,17 +279,14 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     triggerObjectsToken     = consumes< pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("triggerObjects"));
     triggerPrescalesToken   = consumes< pat::PackedTriggerPrescales>(iConfig.getParameter<edm::InputTag>("triggerPrescales"));
     beamSpotToken           = consumes< reco::BeamSpot > (iConfig.getParameter<edm::InputTag>("beamSpot"));
-    primaryVerticesToken      = consumes< reco::VertexCollection > (iConfig.getParameter<edm::InputTag>("primaryVertices"));
+    primaryVerticesToken    = consumes< reco::VertexCollection > (iConfig.getParameter<edm::InputTag>("primaryVertices"));
     selectedMuonsToken      = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuons"));
     selectedMuonsDLToken    = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsDL"));
     selectedMuonsLooseToken      = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsLoose"));
     selectedElectronsToken       = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons"));
     selectedElectronsDLToken     = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL"));
     selectedElectronsLooseToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose"));
-
     rawJetsToken = consumes< std::vector <pat::Jet > >(iConfig.getParameter<edm::InputTag>("rawJets"));
-
-
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJets")){
 	     selectedJetsTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
@@ -300,7 +302,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
 	     correctedMETsTokens.push_back(consumes< std::vector<pat::MET> >(tag));
     }
-
     boostedJetsToken        = consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets"));
     genInfoToken            = consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo"));
     lheInfoToken            = consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo"));
@@ -342,6 +343,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
 	cout << "Initializing " << *itSel << endl;
 	if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
+	if(*itSel == "FilterSelection") selections.push_back(new FilterSelection(iConfig));
 	else if(*itSel == "EvenSelection") selections.push_back(new EvenOddSelection(true));
 	else if(*itSel == "OddSelection") selections.push_back(new EvenOddSelection(false));
 	else if(*itSel == "GenTopFHSelection") selections.push_back(new GenTopFHSelection());
@@ -634,6 +636,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);
     TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
+    FilterInfo filterInfo = filterInfoProd.Produce(iEvent);
+    filterInfo.Print();
+    //    triggerInfo.Print();
 
     // FIGURE OUT SAMPLE
 
@@ -683,6 +688,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	auto weightsDL = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJetsLooseDL[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
+					  filterInfo,
 					  selectedPVs,
 					  *h_selectedMuons,
 					  *h_selectedMuonsDL,

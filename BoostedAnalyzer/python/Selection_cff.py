@@ -94,3 +94,26 @@ checkBasicMCTriggers= cms.PSet(
 checkNoTriggers= cms.PSet(
     relevantTriggers=cms.vstring()
     )
+
+filtersData= cms.PSet(
+    filters=cms.vstring("Flag_goodVertices",
+                        "Flag_globalTightHalo2016Filter",
+                        "Flag_HBHENoiseFilter",
+                        "Flag_HBHENoiseIsoFilter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_eeBadScFilter",
+                        "BadPFMuonFilter",
+                        "BadChargedCandidateFilter",
+                        )
+)
+
+filtersMC= cms.PSet(
+    filters=cms.vstring("Flag_goodVertices",
+                        "Flag_globalTightHalo2016Filter",
+                        "Flag_HBHENoiseFilter",
+                        "Flag_HBHENoiseIsoFilter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "BadPFMuonFilter",
+                        "BadChargedCandidateFilter",
+                        )
+)

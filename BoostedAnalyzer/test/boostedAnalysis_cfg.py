@@ -1,8 +1,3 @@
-# TODO
-# ele mva
-# jecs
-# bjetness
-# met filter
 
 import FWCore.ParameterSet.Config as cms
 import sys
@@ -40,7 +35,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/0030B9D6-72C1-E611-AE49-02163E00E602.root']
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/mc/RunIISummer16MiniAODv2/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/0030B9D6-72C1-E611-AE49-02163E00E602.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL"]:
@@ -122,25 +117,14 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
 
-process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
-process.SelectedElectronProducer.ptMins=[15.,25.,30.]
-process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electronGeneralPurposeMVA2016WP80"]*3
-process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
-process.SelectedMuonProducer.ptMins=[15.,25.,25.]
-process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
-process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
-process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
-process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
-
-process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
-process.SelectedJetProducer.jets='slimmedJets'
-process.SelectedJetProducer.ptMins=[20,30,20,30]
-process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
-process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
-process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
+### additional MET filters ###
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
@@ -161,6 +145,25 @@ if options.calcBJetness:
     process.load('BoostedTTH.BoostedAnalyzer.BJetness_cfi')
     process.BJetness.is_data = options.isData
 
+process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
+process.SelectedElectronProducer.ptMins=[15.,25.,30.]
+process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
+process.SelectedElectronProducer.leptonIDs=["electronGeneralPurposeMVA2016WP80"]*3
+process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
+
+process.SelectedMuonProducer.ptMins=[15.,25.,25.]
+process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
+process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
+process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
+process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
+process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
+
+process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
+process.SelectedJetProducer.jets='slimmedJets'
+process.SelectedJetProducer.ptMins=[20,30,20,30]
+process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
+process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
+process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 
 
 # load and run the boosted analyzer
@@ -220,7 +223,7 @@ process.BoostedAnalyzer.minTagsForMEM = 3
 if options.isData:
   process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
 
-process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = ["FilterSelection","VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
@@ -229,22 +232,26 @@ process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor",
 
 #process.content = cms.EDAnalyzer("EventContentAnalyzer")
 if options.isData or options.isBoostedMiniAOD:
-  process.p = cms.Path(process.egmGsfElectronIDSequence
+  process.p = cms.Path(process.BadPFMuonFilter 
+                       *process.BadChargedCandidateFilter
+                       *process.egmGsfElectronIDSequence
                        *process.BJetness
                        *process.SelectedElectronProducer
                        *process.SelectedMuonProducer
- #                    *process.content
+#                       *process.content
                        *process.SelectedJetProducer
                        *process.CorrectedMETproducer
                      #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
                        *process.BoostedAnalyzer
                      )
 else:
-  process.p = cms.Path(process.egmGsfElectronIDSequence
+  process.p = cms.Path(process.BadPFMuonFilter 
+                       *process.BadChargedCandidateFilter
+                       *process.egmGsfElectronIDSequence
                        *process.SelectedElectronProducer
                        *process.BJetness
                        *process.SelectedMuonProducer
- #                    *process.content
+#                       *process.content
                        *process.SelectedJetProducer
                        *process.CorrectedMETproducer
                        *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar

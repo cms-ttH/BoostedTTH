@@ -11,6 +11,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
+    filtersMC, # defined in Selection_cff
+    
 
     # weight of one event: calculated as
     # cross section * lumi / (number of generated events with positive weight  -  number of generated events with negative weight )

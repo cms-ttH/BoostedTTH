@@ -35,6 +35,14 @@ bool TriggerInfo::Exists(std::string triggername) const {
     return true;
 }
 
+void TriggerInfo::Print() const{
+    std::cout << "Triggers:" << endl;
+    for(auto t : triggers){
+	std::cout << t.first << " " << t.second << "\n";
+    }
+}
+
+
 bool TriggerInfo::GetPrescale(std::string triggername) const {
     if(!Exists(triggername)) return -1;
     else return prescales.at(triggername);
