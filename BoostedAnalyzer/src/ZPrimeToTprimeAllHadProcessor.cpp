@@ -246,6 +246,7 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
                             std::string str_top="";
                             std::string str_W="";
                             std::string str_first="Topfirst_";
+                            std::string fullstring="";
                             
                             if(top && topwbt && W && bottom){str_region="Signal_";};
                             if(top && !topwbt && W && bottom){str_region="Signal_";};
@@ -257,20 +258,32 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
                             if(!bottom){str_bottom="bottom_anti_";};
                             if(!tfirst){str_first="Wfirst_";};
                             
-                            std::cout<<"N_"+str_region+str_top+str_W+str_bottom+str_first+"Tops"+"  created"<<endl;
-                            vars.InitVar("N_"+str_region+str_top+str_W+str_bottom+str_first+"Tops","I");
-                            vars.InitVars(str_region+str_top+str_W+str_bottom+str_first+"Tops_Pt","N_"+str_region+str_top+str_W+str_bottom+str_first+"Tops");
-                            vars.InitVars(str_region+str_top+str_W+str_bottom+str_first+"Tops_Eta","N_"+str_region+str_top+str_W+str_bottom+str_first+"Tops");
-                            vars.InitVar("N_"+str_region+str_top+str_W+str_bottom+str_first+"Ws","I");
-                            vars.InitVars(str_region+str_top+str_W+str_bottom+str_first+"Ws_Pt","N_"+str_region+str_top+str_W+str_bottom+str_first+"Ws");
-                            vars.InitVars(str_region+str_top+str_W+str_bottom+str_first+"Ws_Eta","N_"+str_region+str_top+str_W+str_bottom+str_first+"Ws");
-                            vars.InitVar("N_"+str_region+str_top+str_W+str_bottom+str_first+"Bottoms","I");
-                            vars.InitVars(str_region+str_top+str_W+str_bottom+str_first+"Bottoms_Pt","N_"+str_region+str_top+str_W+str_bottom+str_first+"Bottoms");
-                            vars.InitVars(str_region+str_top+str_W+str_bottom+str_first+"Bottoms_Eta","N_"+str_region+str_top+str_W+str_bottom+str_first+"Bottoms");
-                            vars.InitVar(str_region+str_top+str_W+str_bottom+str_first+"Tprime_M","I");
-                            vars.InitVar(str_region+str_top+str_W+str_bottom+str_first+"Tprime_Pt","I");
-                            vars.InitVar(str_region+str_top+str_W+str_bottom+str_first+"Zprime_M","I");
-                            vars.InitVar(str_region+str_top+str_W+str_bottom+str_first+"Zprime_Pt","I");
+                            fullstring=str_region+str_top+str_W+str_bottom+str_first;
+                            std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
+                            vars.InitVar("N_"+fullstring+"Tops","I");
+                            vars.InitVars(fullstring+"Tops_Pt","N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_Eta","N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_MSD","N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_t32","N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_t21","N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_subjetCSVv2","N_"+fullstring+"Tops");
+                            
+                            vars.InitVar("N_"+fullstring+"Ws","I");
+                            vars.InitVars(fullstring+"Ws_Pt","N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_Eta","N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_MSD","N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_t32","N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_t21","N_"+fullstring+"Ws");
+
+                            vars.InitVar("N_"+fullstring+"Bottoms","I");
+                            vars.InitVars(fullstring+"Bottoms_Pt","N_"+fullstring+"Bottoms");
+                            vars.InitVars(fullstring+"Bottoms_Eta","N_"+fullstring+"Bottoms");
+                            vars.InitVars(fullstring+"Bottoms_CSVv2","N_"+fullstring+"Bottoms");
+                            
+                            vars.InitVar(fullstring+"Tprime_M","I");
+                            vars.InitVar(fullstring+"Tprime_Pt","I");
+                            vars.InitVar(fullstring+"Zprime_M","I");
+                            vars.InitVar(fullstring+"Zprime_Pt","I");
                         }
                     //}
                 }
@@ -815,18 +828,35 @@ void ZPrimeToTPrimeAllHadProcessor::FillZprimeVars(VariableContainer& vars, std:
         int iJet = itJet - tops.begin();
         vars.FillVars(string+"_Tops_Pt",iJet,itJet->pt());
         vars.FillVars(string+"_Tops_Eta",iJet,itJet->eta());
+        vars.FillVars(string+"_Tops_MSD",iJet,itJet->userFloat("ak8PFJetsCHSSoftDropMass"));
+        vars.FillVars(string+"_Tops_t32",iJet,itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2"));
+        vars.FillVars(string+"_Tops_t21",iJet,itJet->userFloat("NjettinessAK8CHS:tau2")/itJet->userFloat("NjettinessAK8CHS:tau1"));
+        
+        double max_subjet_csv_v2=-10;
+        auto const & names = itJet->subjets("SoftDrop");
+        for( auto const & itsubJet : names ){
+            if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+            }
+        }
+        vars.FillVars(string+"_Tops_subjetCSVv2",iJet,max_subjet_csv_v2);
+        
     }
     vars.FillVar("N_"+string+"_Ws",Ws.size());
     for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
         int iJet = itJet - Ws.begin();
         vars.FillVars(string+"_Ws_Pt",iJet,itJet->pt());
         vars.FillVars(string+"_Ws_Eta",iJet,itJet->eta());
+        vars.FillVars(string+"_Ws_MSD",iJet,itJet->userFloat("ak8PFJetsCHSSoftDropMass"));
+        vars.FillVars(string+"_Ws_t32",iJet,itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2"));
+        vars.FillVars(string+"_Ws_t21",iJet,itJet->userFloat("NjettinessAK8CHS:tau2")/itJet->userFloat("NjettinessAK8CHS:tau1"));
     }
     vars.FillVar("N_"+string+"_Bottoms",bottoms.size());
     for(std::vector<pat::Jet>::const_iterator itJet = bottoms.begin() ; itJet != bottoms.end(); ++itJet){
         int iJet = itJet - bottoms.begin();
         vars.FillVars(string+"_Bottoms_Pt",iJet,itJet->pt());
         vars.FillVars(string+"_Bottoms_Eta",iJet,itJet->eta());
+        vars.FillVars(string+"_Bottoms_CSVv2",iJet,MiniAODHelper::GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     }
     
     vars.FillVar(string+"_Tprime_M",Tprime.mass());
