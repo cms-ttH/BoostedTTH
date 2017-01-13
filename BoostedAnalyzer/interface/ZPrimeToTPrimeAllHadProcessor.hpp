@@ -30,8 +30,13 @@ public:
   
   
   std::vector<pat::Jet> SelectSeparatedBottoms(std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws, std::vector<pat::Jet>& bottoms); 
-  math::XYZTLorentzVector TPrimeReconstructionWtb(const std::vector<pat::Jet>& Ws, const std::vector<pat::Jet>& bottoms);
-  math::XYZTLorentzVector ZPrimeReconstructionWtb(const std::vector<pat::Jet>& tops,const math::XYZTLorentzVector& TPrime);  
+  math::XYZTLorentzVector TPrimeReconstructionWtb( std::vector<pat::Jet>& Ws,  std::vector<pat::Jet>& bottoms);
+  math::XYZTLorentzVector ZPrimeReconstructionWtb( std::vector<pat::Jet>& tops, math::XYZTLorentzVector& TPrime);
+  std::vector<pat::Jet> SelectfromTopSeparatedWs( std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws);
+  std::vector<pat::Jet> SelectfromWSeparatedTops( std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws);
+  void ZPrimeReconstructionWtbComplete(VariableContainer& vars,  std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws,  std::vector<pat::Jet>& bottoms, std::vector<pat::Jet>& bottoms_anti, bool toptag, bool toptag_withbtag,  bool Wtag, bool toptag_anti, bool toptag_withbtag_anti,  bool Wtag_anti, std::string str_AK8_selected_first);
+  void FillSignalSidebandVars(VariableContainer& vars, std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws,  std::vector<pat::Jet>& bottoms,  math::XYZTLorentzVector TPrime,  math::XYZTLorentzVector ZPrime,  bool toptag, bool toptag_withbtag,  bool Wtag, bool bottomtag, bool toptag_anti, bool toptag_withbtag_anti,  bool Wtag_anti, std::string str_AK8_selected_first="");
+  void FillZprimeVars(VariableContainer& vars, std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws,  std::vector<pat::Jet>& bottoms,  math::XYZTLorentzVector Tprime,  math::XYZTLorentzVector Zprime,std::string string);
   
 private:
 

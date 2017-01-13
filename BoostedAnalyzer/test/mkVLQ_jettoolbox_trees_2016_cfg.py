@@ -36,6 +36,7 @@ options.parseArguments()
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     options.maxEvents = 100000 # reset for testing
+    #options.maxEvents = 100 # reset for testing
 
 if options.globalTag is "NONE":
 
