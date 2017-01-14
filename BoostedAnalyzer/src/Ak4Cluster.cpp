@@ -16,7 +16,7 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
 
     outputAk4Cluster.push_back(tempCluster);
   }
-
+  
   // cluster ak4jets and delete redundant ak4cluster after clustering step
   while(outputAk4Cluster.size() > 1){
     // Calculate two d-parameters:
@@ -30,8 +30,8 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
     unsigned int cluster_jet1_id = 99;
     unsigned int cluster_jet2_id = 99;
     double mindiB = 9.;
-    for(unsigned iA=0; iA <outputAk4Cluster.size() ;++iA){
-      for(unsigned iB=0; iB <outputAk4Cluster.size() ;++iB){
+    for(unsigned int iA=0; iA <outputAk4Cluster.size() ;++iA){
+      for(unsigned int iB=0; iB <outputAk4Cluster.size() ;++iB){
         if(iA <= iB) continue;
 
         // get the dij
@@ -64,14 +64,14 @@ boosted::Ak4ClusterCollection Ak4Cluster::GetAk4Cluster(const pat::JetCollection
     else break;
   }
   
-// sort ak4jets in ak4cluster by pT
+  // sort ak4jets in ak4cluster by pT
   for(unsigned int iAk4Cluster=0; iAk4Cluster <outputAk4Cluster.size() ;++iAk4Cluster){ 
     std::sort(outputAk4Cluster[iAk4Cluster].ak4jets.begin(), outputAk4Cluster[iAk4Cluster].ak4jets.end(),BoostedUtils::FirstJetIsHarder);
   }
   
   // sort ak4cluster by pT
   std::sort(outputAk4Cluster.begin(), outputAk4Cluster.end(),Ak4Cluster::FirstFatjetInAk4ClusterIsHarder);
-  
+
   return outputAk4Cluster;
 }
 

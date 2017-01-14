@@ -7,7 +7,7 @@ BasicVarProcessor::~BasicVarProcessor(){}
 
 
 void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
- 
+
   vars.InitVar("Evt_ID","I");
   vars.InitVar("Evt_Odd","I");
   vars.InitVar("Evt_Run","I");
@@ -25,7 +25,8 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVar( "N_BTagsT","I" );
   vars.InitVar( "N_BTagsL" ,"I");
   vars.InitVar( "N_PrimaryVertices","I" );
-  
+  vars.InitVar( "N_BoostedAk4Cluster","I" );
+
   vars.InitVars( "Jet_E","N_Jets" );
   vars.InitVars( "Jet_M","N_Jets" );
   vars.InitVars( "Jet_Pt","N_Jets" );
@@ -52,19 +53,19 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "LooseJet_GenJet_Pt","N_LooseJets" );
   vars.InitVars( "LooseJet_GenJet_Eta","N_LooseJets" );
 
-  
+
   vars.InitVars( "TaggedJet_E","N_BTagsM" );
   vars.InitVars( "TaggedJet_M","N_BTagsM" );
   vars.InitVars( "TaggedJet_Pt","N_BTagsM" );
   vars.InitVars( "TaggedJet_Phi","N_BTagsM" );
   vars.InitVars( "TaggedJet_Eta","N_BTagsM" );
-  
+
   vars.InitVars( "LooseLepton_E","N_LooseLeptons" );
   vars.InitVars( "LooseLepton_M","N_LooseLeptons" );
   vars.InitVars( "LooseLepton_Pt","N_LooseLeptons" );
   vars.InitVars( "LooseLepton_Eta","N_LooseLeptons" );
   vars.InitVars( "LooseLepton_Phi","N_LooseLeptons" );
-  
+
   vars.InitVars( "Muon_E","N_LooseMuons" );
   vars.InitVars( "Muon_M","N_LooseMuons" );
   vars.InitVars( "Muon_Pt","N_LooseMuons" );
@@ -72,7 +73,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Muon_Phi","N_LooseMuons" );
   vars.InitVars( "Muon_RelIso","N_LooseMuons" );
   vars.InitVars( "Muon_Charge","N_LooseMuons" );
-  
+
   vars.InitVars( "Electron_E","N_LooseElectrons" );
   vars.InitVars( "Electron_M","N_LooseElectrons" );
   vars.InitVars( "Electron_Pt","N_LooseElectrons" );
@@ -80,7 +81,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Electron_Phi","N_LooseElectrons" );
   vars.InitVars( "Electron_RelIso","N_LooseElectrons" );
   vars.InitVars( "Electron_Charge","N_LooseElectrons" );
-  
+
   vars.InitVar( "Evt_Pt_MET" );
   vars.InitVar( "Evt_Phi_MET" );
   vars.InitVar( "Evt_Pt_GenMET" );
@@ -93,7 +94,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVar("Evt_HT_Jets");
   vars.InitVar("Evt_M_Total");
   vars.InitVar("Evt_MHT");
-  
+
   vars.InitVars( "CSV","N_Jets" );
 
   initialized=true;
@@ -132,18 +133,20 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
       selectedTaggedJetsT.push_back(*itJet);
     }
   }
-  
+
   // Fill Multiplicity Variables
-  vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
+  vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());
   vars.FillVar( "N_Jets",input.selectedJets.size());
   vars.FillVar( "N_LooseJets",input.selectedJetsLoose.size());
-  vars.FillVar( "N_TightLeptons",input.selectedElectrons.size()+ input.selectedMuons.size());  
-  vars.FillVar( "N_LooseLeptons",input.selectedElectronsLoose.size()+ input.selectedMuonsLoose.size());  
-  vars.FillVar( "N_TightElectrons",input.selectedElectrons.size());  
-  vars.FillVar( "N_LooseElectrons",input.selectedElectronsLoose.size());  
-  vars.FillVar( "N_TightMuons",input.selectedMuons.size());  
-  vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());  
-  
+  vars.FillVar( "N_TightLeptons",input.selectedElectrons.size()+ input.selectedMuons.size());
+  vars.FillVar( "N_LooseLeptons",input.selectedElectronsLoose.size()+ input.selectedMuonsLoose.size());
+  vars.FillVar( "N_TightElectrons",input.selectedElectrons.size());
+  vars.FillVar( "N_LooseElectrons",input.selectedElectronsLoose.size());
+  vars.FillVar( "N_TightMuons",input.selectedMuons.size());
+  vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());
+  vars.FillVar( "N_BoostedAk4Cluster",input.selectedAk4Cluster.size()); 
+
+
   // Fill Jet Variables
   // All Jets
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
@@ -190,8 +193,8 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     }
   }
 
-  
-  
+
+
   // Tagged Jets
   for(std::vector<pat::Jet>::iterator itTaggedJet = selectedTaggedJets.begin() ; itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet){
     int iTaggedJet = itTaggedJet - selectedTaggedJets.begin();
@@ -201,7 +204,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "TaggedJet_Eta",iTaggedJet,itTaggedJet->eta() );
     vars.FillVars( "TaggedJet_Phi",iTaggedJet,itTaggedJet->phi() );
   }
-  
+
   // Fill Lepton Variables
   std::vector<math::XYZTLorentzVector> looseLeptonVecs = BoostedUtils::GetLepVecs(input.selectedElectronsLoose,input.selectedMuonsLoose);
   for(std::vector<math::XYZTLorentzVector>::iterator itLep = looseLeptonVecs.begin() ; itLep != looseLeptonVecs.end(); ++itLep){
@@ -212,18 +215,18 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "LooseLepton_Eta",iLep,itLep->Eta());
     vars.FillVars( "LooseLepton_Phi",iLep,itLep->Phi() );
   }
-   
+
   for(std::vector<pat::Electron>::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle){
     int iEle = itEle - input.selectedElectronsLoose.begin();
     vars.FillVars( "Electron_E",iEle,itEle->energy() );
     vars.FillVars( "Electron_M",iEle,itEle->mass() );
     vars.FillVars( "Electron_Pt",iEle,itEle->pt() );
     vars.FillVars( "Electron_Eta",iEle,itEle->eta() );
-    vars.FillVars( "Electron_Phi",iEle,itEle->phi() ); 
+    vars.FillVars( "Electron_Phi",iEle,itEle->phi() );
     if(itEle->hasUserFloat("relIso")){
 	vars.FillVars( "Electron_RelIso",iEle,itEle->userFloat("relIso") );
     }
-    vars.FillVars( "Electron_Charge",iEle,itEle->charge() ); 
+    vars.FillVars( "Electron_Charge",iEle,itEle->charge() );
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     int iMu = itMu - input.selectedMuonsLoose.begin();
@@ -237,31 +240,31 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     }
     vars.FillVars( "Muon_Charge",iMu,itMu->charge() );
   }
-  
+
   vars.FillVar( "Evt_Pt_MET",input.correctedMET.pt() );
   vars.FillVar( "Evt_Phi_MET",input.correctedMET.phi() );
   if(input.correctedMET.genMET()!=0){
       vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
   }
-  
+
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
   math::XYZTLorentzVector metvec = input.correctedMET.p4();
-  
+
   // Fill M3 Variables
   float m3 = -1.;
   float maxpt=-1;
   for(std::vector<math::XYZTLorentzVector>::iterator itJetVec1 = jetvecs.begin() ; itJetVec1 != jetvecs.end(); ++itJetVec1){
     for(std::vector<math::XYZTLorentzVector>::iterator itJetVec2 = itJetVec1+1 ; itJetVec2 != jetvecs.end(); ++itJetVec2){
       for(std::vector<math::XYZTLorentzVector>::iterator itJetVec3 = itJetVec2+1 ; itJetVec3 != jetvecs.end(); ++itJetVec3){
-    
+
         math::XYZTLorentzVector m3vec = *itJetVec1 + *itJetVec2 + *itJetVec3;
-        
+
 	      if(m3vec.Pt() > maxpt){
 	        maxpt = m3vec.Pt();
 	        m3 = m3vec.M();
 	      }
-      } 
+      }
     }
   }
   vars.FillVar("Evt_M3",m3);
@@ -270,14 +273,14 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   for(std::vector<pat::Jet>::iterator itJetUntagged1 = selectedUntaggedJets.begin() ; itJetUntagged1 != selectedUntaggedJets.end(); ++itJetUntagged1){
     for(std::vector<pat::Jet>::iterator itJetUntagged2 = itJetUntagged1+1 ; itJetUntagged2 != selectedUntaggedJets.end(); ++itJetUntagged2){
       for(std::vector<pat::Jet>::iterator itJetTagged = selectedTaggedJets.begin() ; itJetTagged != selectedTaggedJets.end(); ++itJetTagged){
-        
+
         math::XYZTLorentzVector m3vec = itJetUntagged1->p4() + itJetUntagged2->p4() + itJetTagged->p4();
-	      
+
         if(m3vec.Pt() > maxpttagged){
 	        maxpttagged = m3vec.Pt();
 	        m3tagged = m3vec.M();
 	      }
-      } 
+      }
     }
   }
   vars.FillVar("Evt_M3_OneJetTagged",m3tagged);
@@ -288,7 +291,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     mtw = sqrt(2*(primLepVec.Pt()*input.correctedMET.pt() - primLepVec.Px()*input.correctedMET.px() - primLepVec.Py()*input.correctedMET.py()));
   }
   vars.FillVar("Evt_MTW",mtw);
-  
+
   // Fill Ht Variables
   float ht = 0.;
   float htjets = 0.;
@@ -304,20 +307,20 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     ht += itEle->pt();
     mht_px += itEle->px();
     mht_py += itEle->py();
-    
+
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     ht += itMu->pt();
     mht_px += itMu->px();
     mht_py += itMu->py();
-    
+
   }
   ht += input.correctedMET.pt();
-  
+
   vars.FillVar("Evt_HT",ht);
   vars.FillVar("Evt_MHT",sqrt( mht_px*mht_px + mht_py*mht_py ));
   vars.FillVar("Evt_HT_Jets",htjets);
-  
+
   // Fill Event Mass
   math::XYZTLorentzVector p4all;
   for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin() ; itJetVec != jetvecs.end(); ++itJetVec){
@@ -328,12 +331,12 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   }
   p4all += metvec;
   vars.FillVar("Evt_M_Total",p4all.M());
-  
+
   // Fill Number of b Tags
-  vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );  
-  vars.FillVar( "N_BTagsL",selectedTaggedJetsL.size() );  
+  vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );
+  vars.FillVar( "N_BTagsL",selectedTaggedJetsL.size() );
   vars.FillVar( "N_BTagsT",selectedTaggedJetsT.size() );
-  
+
   // Fill CSV Variables
   // All Jets
   std::vector<double> csvJets;
@@ -342,7 +345,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   }
   std::vector<double> csvJetsSorted=csvJets;
   std::sort(csvJetsSorted.begin(),csvJetsSorted.end(),std::greater<double>());
-  
+
   for(std::vector<double>::iterator itCSV = csvJetsSorted.begin() ; itCSV != csvJetsSorted.end(); ++itCSV){
     int iCSV = itCSV - csvJetsSorted.begin();
     vars.FillVars("CSV" ,iCSV,*itCSV);

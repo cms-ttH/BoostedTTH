@@ -31,31 +31,31 @@ struct InputCollections{
    Constructor in which all references to the objects that are analyzed are set
  */
 InputCollections(   const EventInfo&                              eventInfo_,
-		    const TriggerInfo&                            triggerInfo_,
-		    const std::vector<reco::Vertex>&              selectedPVs_,
+                    const TriggerInfo&                            triggerInfo_,
+                    const std::vector<reco::Vertex>&              selectedPVs_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsDL_,
                     const std::vector<pat::Muon>&                 selectedMuonsLoose_,
                     const std::vector<pat::Electron>&             selectedElectrons_,
                     const std::vector<pat::Electron>&             selectedElectronsDL_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
-		    const std::vector<pat::Jet>&                  rawJets_,
+                    const std::vector<pat::Jet>&                  rawJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
-		    const std::vector<pat::Jet>&                  selectedJetsDL_,
+                    const std::vector<pat::Jet>&                  selectedJetsDL_,
                     const std::vector<pat::Jet>&                  selectedJetsLooseDL_,
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
-                    const boosted::Ak4ClusterCollection& selectedAk4Cluster_,
+                    const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
                     const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              genJets_,
                     const SampleType                              sampleType_,
-		    const HiggsDecay::HiggsDecay                  higgsDecay_,
+                    const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
-		    const std::map<std::string,float>&		  weightsDL_,
-		    const edm::Event& iEvent_,
-		    const edm::EventSetup& iSetup_
-		      /**** bjetness code ****/
+                    const std::map<std::string,float>&		        weightsDL_,
+                    const edm::Event& iEvent_,
+                    const edm::EventSetup& iSetup_
+		                /**** bjetness code ****/
 
 		            ):
                     eventInfo(eventInfo_),
@@ -81,24 +81,24 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     higgsDecay(higgsDecay_),
                     weights(weights_),
                     weightsDL(weightsDL_),
-		    iEvent(iEvent_),
-		    iSetup(iSetup_)
+            		    iEvent(iEvent_),
+            		    iSetup(iSetup_)
                     {}
 
 /**
    Constructor that replaces all variables related to jets and copies the remaining ones from a different input colection
  */
 InputCollections(   const InputCollections&                       input,
-		    const std::vector<pat::Jet>&                  rawJets_,
+                    const std::vector<pat::Jet>&                  rawJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
-		    const std::vector<pat::Jet>&                  selectedJetsDL_,
-		    const std::vector<pat::Jet>&                  selectedJetsLooseDL_,
+                    const std::vector<pat::Jet>&                  selectedJetsDL_,
+                    const std::vector<pat::Jet>&                  selectedJetsLooseDL_,
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
-                    const boosted::Ak4ClusterCollection& selectedAk4Cluster_,
+                    const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
                     const std::map<std::string,float>&            weights_,
-		    const std::map<std::string,float>& 		  weightsDL_
+                    const std::map<std::string,float>& 		        weightsDL_
         		    ):
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
@@ -123,8 +123,8 @@ InputCollections(   const InputCollections&                       input,
                     higgsDecay(input.higgsDecay),
                     weights(weights_),
                     weightsDL(weightsDL_),
-		    iEvent(input.iEvent),
-		    iSetup(input.iSetup)
+            		    iEvent(input.iEvent),
+            		    iSetup(input.iSetup)
 
                     {}
 
@@ -144,15 +144,15 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Jet>&                  selectedJetsLooseDL;
   const pat::MET&                               correctedMET;
   const boosted::BoostedJetCollection&          selectedBoostedJets;
-  const boosted::Ak4ClusterCollection& selectedAk4Cluster;
+  const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
   const GenTopEvent&                            genTopEvt;
   const std::vector<reco::GenJet>&              genJets;
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>             weights;
-  const std::map<std::string,float>		weightsDL;
-  const edm::Event & iEvent;
-  const edm::EventSetup & iSetup;
+  const std::map<std::string,float>		          weightsDL;
+  const edm::Event &                            iEvent;
+  const edm::EventSetup &                       iSetup;
 
 };
 
