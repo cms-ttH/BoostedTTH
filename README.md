@@ -23,14 +23,16 @@ Follow These Steps:
     git cms-merge-topic ikrav:egm_id_80X_v2
     # compile once to create neccessary folder structure
     scram b -j10  
+    # ele MVA id data
     cd $CMSSW_BASE/external
     cd $SCRAM_ARCH
     git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
     cd data/RecoEgamma/ElectronIdentification/data
     git checkout egm_id_80X_v1
     cd $CMSSW_BASE/src
+
     
-    # install bjetness code
+    # bjetness code
     git clone https://github.com/IHEP-CMS/BJetnessTTHbb.git
     cd BJetnessTTHbb/BJetness
     mkdir data

@@ -237,7 +237,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	    std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(electronsWithMVAid,ptMins_[i],electronIDs_[i],etaMaxs_[i])) );
 	    for (auto lep : *selectedLeptons){
 		// TODO conesize and corr type should not be hardcoded
-		helper_.AddElectronRelIso(lep,coneSize::R03, corrType::rhoEA,effAreaType::spring15,"relIso");
+		helper_.AddElectronRelIso(lep,coneSize::R03, corrType::rhoEA,effAreaType::summer16,"relIso");
 	    }
 	    iEvent.put(selectedLeptons,collectionNames_[i]);
 	}

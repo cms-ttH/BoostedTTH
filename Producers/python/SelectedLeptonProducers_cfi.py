@@ -19,7 +19,7 @@ SelectedElectronProducer = cms.EDProducer(
 
     ptMins   = cms.vdouble(15),
     etaMaxs  = cms.vdouble(2.4),
-    leptonIDs = cms.vstring("electron80XMVA80"),
+    leptonIDs = cms.vstring("electron80XCutBasedM"),
     collectionNames= cms.vstring("selectedLeptonsDL"),
 
 

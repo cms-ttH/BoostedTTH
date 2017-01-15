@@ -130,14 +130,14 @@ process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
 
-### electron MVA ####
+### electron ID ####
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 dataFormat = DataFormat.MiniAOD
 switchOnVIDElectronIdProducer(process, dataFormat)
+# Spring 16 MVA ID 
 my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff']
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-
 
 ### BJetness ###
 if options.calcBJetness:
@@ -148,10 +148,10 @@ if options.calcBJetness:
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electronGeneralPurposeMVA2016WP80"]*3
+process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
-process.SelectedMuonProducer.ptMins=[15.,25.,25.]
+process.SelectedMuonProducer.ptMins=[15.,25.,26.]
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
 process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
