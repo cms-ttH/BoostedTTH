@@ -176,6 +176,8 @@ private:
     std::string usedGenerator;
     /** produces MC truth information for ttbar and ttH samples (genTopEvent)*/
     GenTopEventProducer genTopEvtProd;
+    /** produces trigger information */
+    TriggerInfoProducer triggerInfoProd;
     /** produces filter information */
     FilterInfoProducer filterInfoProd;
     /** Calculated MEM for "boosted" events? Takes several seconds per event */
@@ -192,12 +194,6 @@ private:
     edm::EDGetTokenT <double> rhoToken;
     /** hcal noise data access token **/
     edm::EDGetTokenT< HcalNoiseSummary > hcalNoiseToken;
-    /** trigger results data access token **/
-    edm::EDGetTokenT<edm::TriggerResults> triggerBitsToken;
-    /** trigger objects data access token **/
-    edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsToken;
-    /** trigger prescales data access token **/
-    edm::EDGetTokenT<pat::PackedTriggerPrescales> triggerPrescalesToken;
     /** beam spot data access token **/
     edm::EDGetTokenT< reco::BeamSpot > beamSpotToken;
     /** Conversions data access token **/
@@ -244,6 +240,7 @@ private:
 BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // initialize gen top event with consumes collector (allows to access data from file within this class)
     genTopEvtProd(GenTopEventProducer(consumesCollector())),
+    triggerInfoProd(TriggerInfoProducer(iConfig,consumesCollector())),
     filterInfoProd(FilterInfoProducer(iConfig,consumesCollector()))
 {
   const bool BTagSystematics = false;
@@ -275,9 +272,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     puInfoToken             = consumes< std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("puInfo") );
     rhoToken                = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
     hcalNoiseToken          = consumes< HcalNoiseSummary >(iConfig.getParameter<edm::InputTag>("hcalNoise"));
-    triggerBitsToken        = consumes< edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerBits"));
-    triggerObjectsToken     = consumes< pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("triggerObjects"));
-    triggerPrescalesToken   = consumes< pat::PackedTriggerPrescales>(iConfig.getParameter<edm::InputTag>("triggerPrescales"));
     beamSpotToken           = consumes< reco::BeamSpot > (iConfig.getParameter<edm::InputTag>("beamSpot"));
     primaryVerticesToken    = consumes< reco::VertexCollection > (iConfig.getParameter<edm::InputTag>("primaryVertices"));
     selectedMuonsToken      = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuons"));
@@ -635,10 +629,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);
-    TriggerInfo triggerInfo(iEvent,triggerBitsToken,triggerObjectsToken,triggerPrescalesToken);
+    TriggerInfo triggerInfo = triggerInfoProd.Produce(iEvent);
     FilterInfo filterInfo = filterInfoProd.Produce(iEvent);
-    filterInfo.Print();
-    //    triggerInfo.Print();
 
     // FIGURE OUT SAMPLE
 

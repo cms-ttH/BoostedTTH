@@ -1,47 +1,16 @@
 #include  "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 using namespace std;
-TriggerInfo::TriggerInfo(const edm::Event& iEvent,
-			 const edm::EDGetTokenT<edm::TriggerResults>& triggerBitsToken,
-			 const edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection>& triggerObjectsToken,
-			 const edm::EDGetTokenT<pat::PackedTriggerPrescales>& triggerPrescalesToken){
+TriggerInfo::TriggerInfo(std::map<std::string, bool> triggers_,std::map<std::string, int> prescales_){
+    triggers=triggers_;
+    prescales=prescales_;
+}
 
-    edm::Handle<edm::TriggerResults> h_triggerBits;
-    edm::Handle<pat::PackedTriggerPrescales> h_triggerPrescales;
-//     std::cout<<"getbytoke"<<std::endl;
-    iEvent.getByToken(triggerBitsToken, h_triggerBits);
-    iEvent.getByToken(triggerPrescalesToken, h_triggerPrescales);
-//     std::cout<<"getbytoken done"<<std::endl;
-    // todo : use trigger objects
-    //    edm::Handle<pat::TriggerObjectStandAloneCollection> h_triggerObjects;
-    //    iEvent.getByToken(triggerObjectsToken, h_triggerObjects);
-
-// std::cout<<"getting trigger names"<<std::endl;
-if (h_triggerBits.isValid()){ 
-   const edm::TriggerNames &names = iEvent.triggerNames(*h_triggerBits);
-    for (unsigned int i = 0; i < h_triggerBits->size(); ++i) {   
-	string name=names.triggerName(i);
-	triggers[name]=h_triggerBits->accept(i);
-	prescales[name]=h_triggerPrescales->getPrescaleForIndex(i);
-    }
-}
-else{
-  std::cout<<"trigger handle is not valid!"<<std::endl;
-}
-}
 bool TriggerInfo::Exists(std::string triggername) const {
     if(triggers.count(triggername)==0){ 
 	return false;
     }
     return true;
 }
-
-void TriggerInfo::Print() const{
-    std::cout << "Triggers:" << endl;
-    for(auto t : triggers){
-	std::cout << t.first << " " << t.second << "\n";
-    }
-}
-
 
 bool TriggerInfo::GetPrescale(std::string triggername) const {
     if(!Exists(triggername)) return -1;
@@ -81,4 +50,42 @@ bool TriggerInfo::IsAnyTriggered(std::vector< std::string > triggernames) const 
 }
 std::map<std::string, bool> TriggerInfo::GetTriggers() const{
     return triggers;
+}
+
+TriggerInfoProducer::TriggerInfoProducer(const edm::ParameterSet& iConfig,
+				       edm::ConsumesCollector && iC){
+    triggerBitsToken        = iC.consumes< edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerBits"));
+    triggerPrescalesToken   = iC.consumes< pat::PackedTriggerPrescales>(iConfig.getParameter<edm::InputTag>("triggerPrescales"));
+
+}
+
+void TriggerInfo::Print() const{
+    std::cout << "Triggers:" << endl;
+    for(auto f : triggers){
+	std::cout << f.first << " " << f.second << "\n";
+    }
+}
+
+
+TriggerInfo TriggerInfoProducer::Produce(const edm::Event& iEvent) const{
+    std::map<std::string, bool> triggers;
+    std::map<std::string, int> prescales;
+    edm::Handle<edm::TriggerResults> h_triggerBits;
+    edm::Handle<pat::PackedTriggerPrescales> h_triggerPrescales;
+    iEvent.getByToken(triggerBitsToken, h_triggerBits);
+    iEvent.getByToken(triggerPrescalesToken, h_triggerPrescales);
+    if (h_triggerBits.isValid()){ 
+	const edm::TriggerNames &names = iEvent.triggerNames(*h_triggerBits);
+	for (unsigned int i = 0; i < h_triggerBits->size(); ++i) {   
+	    string name=names.triggerName(i);
+	    triggers[name]=h_triggerBits->accept(i);
+	    prescales[name]=h_triggerPrescales->getPrescaleForIndex(i);
+	}
+    }
+    else{
+	std::cout<<"trigger handle is not valid!"<<std::endl;
+    }
+
+    return TriggerInfo(triggers,prescales);
+
 }

@@ -4,7 +4,6 @@ Inputs_tth_sl= cms.PSet(
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     hcalNoise=cms.InputTag("hcalnoise"),
     triggerBits=cms.InputTag("TriggerResults::HLT"),
-    triggerObjects=cms.InputTag("selectedPatTrigger"),
     triggerPrescales=cms.InputTag("patTrigger"),
     filterBits=cms.InputTag("TriggerResults::PAT"),
     additionalFilters=cms.VInputTag(["BadChargedCandidateFilter","BadPFMuonFilter"]),
