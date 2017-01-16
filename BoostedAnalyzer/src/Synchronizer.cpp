@@ -2,7 +2,8 @@
 
 using namespace std;
 
-Synchronizer::Synchronizer ():toptagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root"),bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),initializedCutflowsWithSelections(false){
+Synchronizer::Synchronizer ():
+    toptagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root"),bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),initializedCutflowsWithSelections(false){
   cutflowSL_nominal.Init();
   cutflowSL_jesup.Init();
   cutflowSL_jesdown.Init();
@@ -643,12 +644,12 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
 
   if(is_DL){
-    if(input_DL.selectedJetsLooseDL.size()>0){
-      jet1_pt=input_DL.selectedJetsLooseDL.at(0).pt();
-      jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(0));
+    if(input_DL.selectedJetsLoose.size()>0){
+      jet1_pt=input_DL.selectedJetsLoose.at(0).pt();
+      jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLoose.at(0));
       bool jetmatched = false;
       for( auto rawJet: input_DL.rawJets){
-	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJetsLooseDL.at(0).p4()) < 0.01 ){
+	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJetsLoose.at(0).p4()) < 0.01 ){
 	    //double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::NA,true,false) ;
 	    double jet1_JES = 1.0;
 	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
@@ -677,22 +678,22 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       }
     }
 
-    if(input_DL.selectedJetsLooseDL.size()>1){
-      jet2_pt=input_DL.selectedJetsLooseDL.at(1).pt();
-      jet2_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(1));
+    if(input_DL.selectedJetsLoose.size()>1){
+      jet2_pt=input_DL.selectedJetsLoose.at(1).pt();
+      jet2_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLoose.at(1));
     }
 
-    if(input_DL.selectedJetsLooseDL.size()>2){
-      jet3_pt=input_DL.selectedJetsLooseDL.at(2).pt();
-      jet3_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(2));
+    if(input_DL.selectedJetsLoose.size()>2){
+      jet3_pt=input_DL.selectedJetsLoose.at(2).pt();
+      jet3_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLoose.at(2));
     }
 
-    if(input_DL.selectedJetsLooseDL.size()>3){
-      jet4_pt=input_DL.selectedJetsLooseDL.at(3).pt();
-      jet4_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(3));
+    if(input_DL.selectedJetsLoose.size()>3){
+      jet4_pt=input_DL.selectedJetsLoose.at(3).pt();
+      jet4_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLoose.at(3));
     }
-    n_jets=int(input_DL.selectedJetsLooseDL.size());
-    for(auto jet=input_DL.selectedJetsLooseDL.begin();jet!=input_DL.selectedJetsLooseDL.end(); jet++){
+    n_jets=int(input_DL.selectedJetsLoose.size());
+    for(auto jet=input_DL.selectedJetsLoose.begin();jet!=input_DL.selectedJetsLoose.end(); jet++){
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
@@ -851,41 +852,41 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   }
 
   if(is_DL && !runOverData){
-    bWeight=input_DL.weightsDL.at("Weight_CSV");
+    bWeight=input_DL.weights.at("Weight_CSV");
     //if(is_ttjets) {
-      //topweight=input_DL.weightsDL.at("Weight_TopPt");
+      //topweight=input_DL.weights.at("Weight_TopPt");
     //}
-    puweight=input_DL.weightsDL.at("Weight_PU");
-    //mcweight = mcweight * input_DL.weightsDL.at("Weight_CT14nlo13100_nominal");
-    Weight_CSVLFup = input_DL.weightsDL.at("Weight_CSVLFup");
-    //Weight_CSVLFdown = input_DL.weightsDL.at("Weight_CSVLFdown");
-    //Weight_CSVHFup = input_DL.weightsDL.at("Weight_CSVHFup");
-    Weight_CSVHFdown = input_DL.weightsDL.at("Weight_CSVHFdown");
-    /*Weight_CSVHFStats1up  = input_DL.weightsDL.at("Weight_CSVHFStats1up");
-    Weight_CSVHFStats1down = input_DL.weightsDL.at("Weight_CSVHFStats1down");
-    Weight_CSVLFStats1up = input_DL.weightsDL.at("Weight_CSVLFStats1up");
-    Weight_CSVLFStats1down = input_DL.weightsDL.at("Weight_CSVLFStats1down");
-    Weight_CSVHFStats2up = input_DL.weightsDL.at("Weight_CSVHFStats2up");
-    Weight_CSVHFStats2down = input_DL.weightsDL.at("Weight_CSVHFStats2down");
-    Weight_CSVLFStats2up = input_DL.weightsDL.at("Weight_CSVLFStats2up");
-    Weight_CSVLFStats2down = input_DL.weightsDL.at("Weight_CSVLFStats2down");
-    Weight_CSVCErr1up = input_DL.weightsDL.at("Weight_CSVCErr1up");*/
-    Weight_CSVCErr1down = input_DL.weightsDL.at("Weight_CSVCErr1down");
-    //Weight_CSVCErr2up = input_DL.weightsDL.at("Weight_CSVCErr2up");
-  //  Weight_CSVCErr2down = input_DL.weightsDL.at("Weight_CSVCErr2down");
+    puweight=input_DL.weights.at("Weight_PU");
+    //mcweight = mcweight * input_DL.weights.at("Weight_CT14nlo13100_nominal");
+    Weight_CSVLFup = input_DL.weights.at("Weight_CSVLFup");
+    //Weight_CSVLFdown = input_DL.weights.at("Weight_CSVLFdown");
+    //Weight_CSVHFup = input_DL.weights.at("Weight_CSVHFup");
+    Weight_CSVHFdown = input_DL.weights.at("Weight_CSVHFdown");
+    /*Weight_CSVHFStats1up  = input_DL.weights.at("Weight_CSVHFStats1up");
+    Weight_CSVHFStats1down = input_DL.weights.at("Weight_CSVHFStats1down");
+    Weight_CSVLFStats1up = input_DL.weights.at("Weight_CSVLFStats1up");
+    Weight_CSVLFStats1down = input_DL.weights.at("Weight_CSVLFStats1down");
+    Weight_CSVHFStats2up = input_DL.weights.at("Weight_CSVHFStats2up");
+    Weight_CSVHFStats2down = input_DL.weights.at("Weight_CSVHFStats2down");
+    Weight_CSVLFStats2up = input_DL.weights.at("Weight_CSVLFStats2up");
+    Weight_CSVLFStats2down = input_DL.weights.at("Weight_CSVLFStats2down");
+    Weight_CSVCErr1up = input_DL.weights.at("Weight_CSVCErr1up");*/
+    Weight_CSVCErr1down = input_DL.weights.at("Weight_CSVCErr1down");
+    //Weight_CSVCErr2up = input_DL.weights.at("Weight_CSVCErr2up");
+  //  Weight_CSVCErr2down = input_DL.weights.at("Weight_CSVCErr2down");
 
-    q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
-    q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
-    //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
-    pdfup=input_DL.weightsDL.at("Weight_NNPDF30_nlo_as_0118260000_up");
-    //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
-    pdfdown=input_DL.weightsDL.at("Weight_NNPDF30_nlo_as_0118260000_down");
-    //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
-    lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
-    lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
-    if(is_ee) {triggerSF=input_DL.weightsDL.at("Weight_ElectronElectronTriggerSF");}
-    if(is_emu) {triggerSF=input_DL.weightsDL.at("Weight_ElectronMuonTriggerSF");}
-    if(is_mumu) {triggerSF=input_DL.weightsDL.at("Weight_MuonMuonTriggerSF");}
+    q2upup=input_DL.weights.at("Weight_muRupmuFup");
+    q2downdown=input_DL.weights.at("Weight_muRdownmuFdown");
+    //pdfup=input_DL.weights.at("Weight_NNPDFid260067");
+    pdfup=input_DL.weights.at("Weight_NNPDF30_nlo_as_0118260000_up");
+    //pdfdown=input_DL.weights.at("Weight_NNPDFid260005");
+    pdfdown=input_DL.weights.at("Weight_NNPDF30_nlo_as_0118260000_down");
+    //lepSF=input_DL.weights.at("Weight_LeptonSF");
+    lepSFid=input_DL.weights.at("Weight_ElectronSFID")*input_DL.weights.at("Weight_MuonSFID");
+    lepSFiso=input_DL.weights.at("Weight_ElectronSFIso")*input_DL.weights.at("Weight_MuonSFIso");
+    if(is_ee) {triggerSF=input_DL.weights.at("Weight_ElectronElectronTriggerSF");}
+    if(is_emu) {triggerSF=input_DL.weights.at("Weight_ElectronMuonTriggerSF");}
+    if(is_mumu) {triggerSF=input_DL.weights.at("Weight_MuonMuonTriggerSF");}
     
     
 

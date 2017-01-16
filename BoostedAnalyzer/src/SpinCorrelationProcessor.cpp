@@ -809,7 +809,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       
     }
     
-    else if(input.selectedJetsDL.size()>=2 && dec_type.EqualTo("RECO") && ((input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())==2) && !((input.selectedElectrons.size()+input.selectedMuons.size())==1)) {
+    else if(input.selectedJetsLoose.size()>=2 && dec_type.EqualTo("RECO") && ((input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())==2) && !((input.selectedElectrons.size()+input.selectedMuons.size())==1)) {
       isSL=false;
       isDL=true;
       //isAH=false;
@@ -897,7 +897,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	Jets=input.selectedJets;
       }
       else if(isDL) {
-	Jets=input.selectedJetsDL;
+	Jets=input.selectedJetsLoose;
       }
      
       vector< pat::Jet > hadtopjets;

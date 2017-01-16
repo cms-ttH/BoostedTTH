@@ -218,8 +218,6 @@ private:
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsTokens;
     /** tight jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsLooseTokens;
-    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsDLTokens;
-    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsLooseDLTokens;
     /** mets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::MET> > > correctedMETsTokens;
     /** boosted jets data access token **/
@@ -286,12 +284,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     }
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsLoose")){
 	     selectedJetsLooseTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
-    }
-    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsDL")){
-	     selectedJetsDLTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
-    }
-    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsLooseDL")){
-	     selectedJetsLooseDLTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
 	     correctedMETsTokens.push_back(consumes< std::vector<pat::MET> >(tag));
@@ -529,8 +521,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( rawJetsToken, h_rawJets );
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJets;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsLoose;
-    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsDL;
-    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsLooseDL;
     for(auto & selectedJetsToken : selectedJetsTokens){
     	edm::Handle< pat::JetCollection > h_selectedJets;
     	iEvent.getByToken( selectedJetsToken,h_selectedJets );
@@ -540,16 +530,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	edm::Handle< pat::JetCollection > h_selectedJetsLoose;
 	iEvent.getByToken( selectedJetsLooseToken,h_selectedJetsLoose );
 	hs_selectedJetsLoose.push_back(h_selectedJetsLoose);
-    }
-    for(auto & selectedJetsDLToken : selectedJetsDLTokens){
-	edm::Handle< pat::JetCollection > h_selectedJetsDL;
-	iEvent.getByToken( selectedJetsDLToken,h_selectedJetsDL );
-	hs_selectedJetsDL.push_back(h_selectedJetsDL);
-    }
-    for(auto & selectedJetsLooseDLToken : selectedJetsLooseDLTokens){
-	edm::Handle< pat::JetCollection > h_selectedJetsLooseDL;
-	iEvent.getByToken( selectedJetsLooseDLToken,h_selectedJetsLooseDL );
-	hs_selectedJetsLooseDL.push_back(h_selectedJetsLooseDL);
     }
     std::vector<edm::Handle< pat::METCollection > > hs_correctedMETs;
     for(auto & correctedMETsToken : correctedMETsTokens){
@@ -677,7 +657,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     vector<InputCollections> inputs;
     for(uint isys=0; isys<jetSystematics.size(); isys++){
         auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
-	auto weightsDL = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJetsLooseDL[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
 					  filterInfo,
@@ -691,8 +670,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_rawJets,
 					  *(hs_selectedJets[isys]),
 					  *(hs_selectedJetsLoose[isys]),
-					  *(hs_selectedJetsDL[isys]),
-					  *(hs_selectedJetsLooseDL[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
 					  selectedBoostedJets[isys],
 					  genTopEvt,
@@ -700,7 +677,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  sampleType,
 					  higgsdecay,
 					  weights,
-					  weightsDL,
 					  iEvent,
 					  iSetup
 					  ));
