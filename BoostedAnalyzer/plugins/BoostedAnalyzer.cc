@@ -156,14 +156,12 @@ private:
     int eventcount;
     /** is analyzed sample data? */
     bool isData;
-    /** flag to recognize if electron dataset, muon dataset ... is analyzed*/
-    int dataset_flag;
     /** use fat jets? this is only possible if the miniAOD contains them */
     bool useFatJets;
     /** use GenBmatching info? this is only possible if the miniAOD contains them */
     bool useGenHadronMatch;
     /** dump some event content for newer synchronization */
-    bool dumpSyncExe2;
+    bool dumpSyncExe;
     /** Class that tests objects and event selections */
     Synchronizer synchronizer;
     /** systematics */
@@ -241,7 +239,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     triggerInfoProd(TriggerInfoProducer(iConfig,consumesCollector())),
     filterInfoProd(FilterInfoProducer(iConfig,consumesCollector()))
 {
-  const bool BTagSystematics = false;
     //
     // get all configurations from the python config
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
@@ -250,11 +247,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     useFatJets = iConfig.getParameter<bool>("useFatJets");
     useGenHadronMatch = iConfig.getParameter<bool>("useGenHadronMatch");
     if(isData) useGenHadronMatch=false;
-    dumpSyncExe2 = iConfig.getParameter<bool>("dumpSyncExe2");
+    dumpSyncExe = iConfig.getParameter<bool>("dumpSyncExe");
     usedGenerator = iConfig.getParameter<std::string>("generatorName");
     doBoostedMEM = iConfig.getParameter<bool>("doBoostedMEM");
     outfileNameBase = iConfig.getParameter<std::string>("outfileName");
-    dataset_flag = iConfig.getParameter<int>("datasetFlag");
     relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
     processorNames= iConfig.getParameter< std::vector<std::string> >("processorNames");
     selectionNames= iConfig.getParameter< std::vector<std::string> >("selectionNames");
@@ -314,14 +310,14 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // initialize cutflows
     for (uint i=0; i<jetSystematics.size();i++){
-	     cutflows.push_back(Cutflow());
-	     cutflows.back().Init();
+	cutflows.push_back(Cutflow());
+	cutflows.back().Init();
     }
 
 
     // initialize synchronizer
-    if(dumpSyncExe2){
-	     synchronizer.InitDumpSyncFile2(outfileNameBase,BTagSystematics);
+    if(dumpSyncExe){
+	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper);
     }
 
     // initialize selections
@@ -684,11 +680,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
     // TODO: adapt to new synch exe
 
-    if(dumpSyncExe2){
-    	    synchronizer.DumpSyncExe2(0,inputs[0], inputs[1], inputs[2], inputs[0],inputs[0], inputs[1], inputs[2], inputs[0], helper,dataset_flag);
-        }
+    if(dumpSyncExe){
+	synchronizer.DumpSyncExe(inputs);
+    }
 
-//void Synchronizer::DumpSyncExe2(const InputCollections& input,const InputCollections& input_DL, MiniAODHelper& helper, std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, const int number){
     // DO SELECTION
     // loop over jet systematics
     assert(inputs.size()==cutflows.size());
