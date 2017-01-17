@@ -203,7 +203,7 @@ if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
 
 if options.makeSystematicsTrees:
-    systs=["","jesup","jesdown"]#,"jerup","jerdown"]
+    systs=["","jesup","jesdown","jerup","jerdown"]
     process.SelectedJetProducer.systematics=systs
     process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
     process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
