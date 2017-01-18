@@ -84,6 +84,7 @@ private:
     std::vector<sysType::sysType> systematics;
     /** apply jet energy correciton? **/
     bool applyCorrection;
+    bool doJER;
     bool isData;
 };
 
@@ -110,6 +111,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");    
     leptonJetDr = iConfig.getParameter< double >("leptonJetDr");
     applyCorrection = iConfig.getParameter<bool>("applyCorrection");
+    doJER = iConfig.getParameter<bool>("doJER");
     collectionNames = iConfig.getParameter< std::vector<std::string> >("collectionNames");
 
     assert(ptMins.size()==etaMaxs.size());
@@ -176,14 +178,15 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    edm::Handle< pat::MuonCollection > h_inputMuons;
    iEvent.getByToken( muonsToken,h_inputMuons );
 
-   // initialize jetcorrector
-   const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
-   helper.SetJetCorrector(corrector);
    
    // selected jets with jet ID cuts
    const std::vector<pat::Jet> idJets = helper.GetSelectedJets(*h_inputJets, 0., 9999., jetID::jetLoose, '-' );
    std::vector<std::vector<pat::Jet> > unsortedJets;
    if(applyCorrection){
+       // initialize jetcorrector
+       const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+       helper.SetJetCorrector(corrector);
+
        // Get raw jets
        std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
        std::auto_ptr<pat::JetCollection>rawJets_(new pat::JetCollection(rawJets));
@@ -193,7 +196,7 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
        // Apply jet corrections
        //   Get genjets for new JER recommendation
        for(uint i=0; i<systematics.size(); i++){
-	   unsortedJets.push_back(helper.GetCorrectedJets(cleanJets, iEvent, iSetup, h_genJets, systematics[i]));
+	   unsortedJets.push_back(helper.GetCorrectedJets(cleanJets, iEvent, iSetup, h_genJets, systematics[i],doJER));
        }
 
    }

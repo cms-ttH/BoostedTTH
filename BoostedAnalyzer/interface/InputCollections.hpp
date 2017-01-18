@@ -40,7 +40,6 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Electron>&             selectedElectrons_,
                     const std::vector<pat::Electron>&             selectedElectronsDL_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
-		    const std::vector<pat::Jet>&                  rawJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     const pat::MET&                               correctedMET_,
@@ -65,7 +64,6 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedElectrons(selectedElectrons_),
                     selectedElectronsDL(selectedElectronsDL_),
                     selectedElectronsLoose(selectedElectronsLoose_),
-                    rawJets(rawJets_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
                     correctedMET(correctedMET_),
@@ -83,7 +81,6 @@ InputCollections(   const EventInfo&                              eventInfo_,
    Constructor that replaces all variables related to jets and copies the remaining ones from a different input colection
  */
 InputCollections(   const InputCollections&                       input,
-		    const std::vector<pat::Jet>&                  rawJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     const pat::MET&                               correctedMET_,
@@ -100,7 +97,6 @@ InputCollections(   const InputCollections&                       input,
                     selectedElectrons(input.selectedElectrons),
                     selectedElectronsDL(input.selectedElectronsDL),
                     selectedElectronsLoose(input.selectedElectronsLoose),
-                    rawJets(rawJets_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
                     correctedMET(correctedMET_),
@@ -125,7 +121,6 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Electron>&             selectedElectrons;
   const std::vector<pat::Electron>&             selectedElectronsDL;
   const std::vector<pat::Electron>&             selectedElectronsLoose;
-  const std::vector<pat::Jet>&                  rawJets;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
   const pat::MET&                               correctedMET;

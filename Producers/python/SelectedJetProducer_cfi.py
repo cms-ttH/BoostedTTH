@@ -4,6 +4,7 @@ SelectedJetProducer = cms.EDProducer(
     "SelectedJetProducer",
     isData       = cms.bool(False),
     applyCorrection = cms.bool(True),
+    doJER = cms.bool(False),
     jets = cms.InputTag("slimmedJets"),
     miniAODGenJets = cms.InputTag("slimmedGenJets"),
     electrons = cms.InputTag("SelectedElectronProducer:selectedElectronsLoose"),
