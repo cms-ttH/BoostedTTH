@@ -235,9 +235,11 @@ private:
 //
 BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // initialize gen top event with consumes collector (allows to access data from file within this class)
+    synchronizer(Synchronizer(iConfig,consumesCollector())),
     genTopEvtProd(GenTopEventProducer(consumesCollector())),
     triggerInfoProd(TriggerInfoProducer(iConfig,consumesCollector())),
     filterInfoProd(FilterInfoProducer(iConfig,consumesCollector()))
+
 {
     //
     // get all configurations from the python config

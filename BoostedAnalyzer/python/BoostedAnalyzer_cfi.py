@@ -19,7 +19,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     # so that the sum of weights corresponds to the number of events for the given lumi
     eventWeight = cms.double(1.),
     isData = cms.bool(False),
-    datasetFlag=cms.int32(0),
+    datasetFlag=cms.string("NA"),
 
     # b-tag SF, defined in Weights_cff
     bTagSFs = cms.PSet(BTagSFs80X),
@@ -40,7 +40,6 @@ BoostedAnalyzer = cms.EDAnalyzer(
     useGenHadronMatch = cms.bool(True),
 
     dumpSyncExe = cms.bool(False),
-    dumpSyncExe2 = cms.bool(False),
 
     doBoostedMEM = cms.bool(True),
 

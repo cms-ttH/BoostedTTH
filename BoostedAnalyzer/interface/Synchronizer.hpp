@@ -27,7 +27,7 @@
 class Synchronizer{
 
 public:
-    Synchronizer();
+    Synchronizer(const edm::ParameterSet& iConfig,edm::ConsumesCollector && iC);
     ~Synchronizer ();
     void DumpSyncExe(const std::vector<InputCollections>& inputs);
     void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_);
@@ -49,6 +49,11 @@ private:
 
     bool initializedCutflowsWithSelections;
     std::string datasetFlag;
+
+    edm::EDGetTokenT< std::vector<reco::GenJet> > genJetsToken;
+
+    bool isData;
+
 };
 
 

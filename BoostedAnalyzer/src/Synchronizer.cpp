@@ -2,7 +2,8 @@
 
 using namespace std;
 
-Synchronizer::Synchronizer (){
+Synchronizer::Synchronizer (const edm::ParameterSet& iConfig,edm::ConsumesCollector && iC){
+    genJetsToken            = iC.consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets"));
 }
 
 
@@ -38,6 +39,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 			       Cutflow& cutflowSL,
 			       Cutflow& cutflowDL){
 
+    edm::Handle< std::vector<reco::GenJet> > h_genJets;
+    if(!isData){
+	input.iEvent.getByToken( genJetsToken,h_genJets );
+    }
+
+
     int run=input.eventInfo.run;
     int lumi=input.eventInfo.lumiBlock;
     long event=input.eventInfo.evt;
@@ -50,7 +57,6 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     
     int n_jets=-1;
     int n_btags=-1;
-    
     
     float lep1_pt=-1;
     float lep1_iso=-1;
@@ -98,27 +104,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float me_up=-1;
     float me_down=-1;
     
-    bool is_SL=true;
-    cutflowSL.EventSurvivedStep("all",input.weights.at("Weight"));
-    for(uint i=0; i<selectionsSL.size(); i++){
-	if(!selectionsSL[i]->IsSelected(input,cutflowSL)){
-	    is_SL=false;
-	    break;
-	}
-    }
-    cout << is_SL << endl;
-    bool is_DL=true;
-    cutflowDL.EventSurvivedStep("all",input.weights.at("Weight"));
-    for(uint i=0; i<selectionsDL.size(); i++){
-	if(!selectionsDL[i]->IsSelected(input,cutflowDL)){
-	    is_DL=false;
-	    break;
-	}
-    }
-
-    cout << is_SL << endl;
-    cout << is_DL << endl;
-
+    //=================================================
     for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
 	if(iMuon->pt()>lep1_pt){
 	    lep2_pt=lep1_pt;
@@ -152,18 +138,139 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 
 	}
     }
+
+
+    bool is_SL=true;
+    cutflowSL.EventSurvivedStep("all",input.weights.at("Weight"));
+    for(uint i=0; i<selectionsSL.size(); i++){
+	if(!selectionsSL[i]->IsSelected(input,cutflowSL)){
+	    is_SL=false;
+	    break;
+	}
+    }
+    if(is_SL){
+	if(abs(lep1_pdgId)==11) {
+	    is_e=1;
+	    is_mu=0;
+	}
+	else if(abs(lep1_pdgId)==13){
+	    is_mu=1;
+	    is_e=0;
+	}
+    }
+    else{
+	is_e=0;
+	is_mu=0;
+    }
+
+    bool is_DL=true;
+    cutflowDL.EventSurvivedStep("all",input.weights.at("Weight"));
+    for(uint i=0; i<selectionsDL.size(); i++){
+	if(!selectionsDL[i]->IsSelected(input,cutflowDL)){
+	    is_DL=false;
+	    break;
+	}
+    }
+    if(is_DL){
+	if(abs(lep1_pdgId)==11&&abs(lep2_pdgId)==11) {
+	    is_ee=1;
+	    is_emu=0;
+	    is_mumu=0;
+	}
+	else if( (abs(lep1_pdgId)==11&&abs(lep2_pdgId)==13) || (abs(lep1_pdgId)==13&&abs(lep2_pdgId)==11) ){
+	    is_ee=0;
+	    is_emu=1;
+	    is_mumu=0;
+	}
+	if(abs(lep1_pdgId)==13&&abs(lep2_pdgId)==13) {
+	    is_ee=0;
+	    is_emu=0;
+	    is_mumu=1;
+	}
+
+    }
+    else{
+	    is_ee=0;
+	    is_emu=0;
+	    is_mumu=0;
+    }
+
     if(input.selectedJets.size()>0){
 	jet1_pt=input.selectedJets.at(0).pt();
+	jet1_eta=input.selectedJets.at(0).eta();
+	jet1_phi=input.selectedJets.at(0).phi();
 	jet1_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
+	jet1_jesSF=helper->GetJetCorrectionFactor(input.selectedJets.at(0),
+						  input.iEvent,
+						  input.iSetup,
+						  h_genJets,
+						  sysType::NA,
+						  true,//doJEES
+						  false //doJER,
+						  );
+	jet1_jesSF_up=helper->GetJetCorrectionFactor(input.selectedJets.at(0),
+						     input.iEvent,
+						     input.iSetup,
+						     h_genJets,
+						     sysType::JESup,
+						     true,//doJEES
+						     false //doJER,)
+						     );
+	jet1_jesSF_down=helper->GetJetCorrectionFactor(input.selectedJets.at(0),
+						       input.iEvent,
+						       input.iSetup,
+						       h_genJets,
+						       sysType::JESup,
+						       true,//doJEES
+						       false //doJER,)
+						       );
+
     }
+
     if(input.selectedJets.size()>1){
 	jet2_pt=input.selectedJets.at(1).pt();
+	jet2_eta=input.selectedJets.at(1).eta();
+	jet2_phi=input.selectedJets.at(1).phi();
 	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
+	jet2_jesSF=helper->GetJetCorrectionFactor(input.selectedJets.at(1),
+						  input.iEvent,
+						  input.iSetup,
+						  h_genJets,
+						  sysType::NA,
+						  true,//doJEES
+						  false //doJER,
+						  );
+	jet2_jesSF_up=helper->GetJetCorrectionFactor(input.selectedJets.at(1),
+						     input.iEvent,
+						     input.iSetup,
+						     h_genJets,
+						     sysType::JESup,
+						     true,//doJEES
+						     false //doJER,)
+						     );
+	jet2_jesSF_down=helper->GetJetCorrectionFactor(input.selectedJets.at(1),
+						       input.iEvent,
+						       input.iSetup,
+						       h_genJets,
+						       sysType::JESup,
+						       true,//doJEES
+						       false //doJER,)
+						       );
     }
     
-    n_jets=int(input.selectedJets.size());
-    for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
-	if(helper->PassesCSV(*jet,'M')) n_btags++;
+    if(is_DL) {
+	n_jets=int(input.selectedJetsLoose.size());
+	n_btags=0;
+	for(auto jet=input.selectedJetsLoose.begin();jet!=input.selectedJetsLoose.end(); jet++){
+	    if(helper->PassesCSV(*jet,'M')) n_btags++;
+	}
+    }
+    else{
+	n_jets=int(input.selectedJets.size());
+	n_btags=0;
+	for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
+	    if(helper->PassesCSV(*jet,'M')) n_btags++;
+	}
     }
     //calculate mll
     if(is_DL){
@@ -199,21 +306,27 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     
     puWeight=input.weights.at("Weight_PU");
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
+    n_interactions=input.eventInfo.numGenPV;
   
-  
+    csvSF=input.weights.at("Weight_CSV");
+    csvSF_lf_up=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVLFup");
+    csvSF_hf_down=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVHFdown");
+    csvSF_cErr1_down=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVCErr1down");
+
+    me_up =input.weights.at("Weight_muRupmuFup");
+    me_down =input.weights.at("Weight_muRdownmuFdown");
   
     out << boost::format("%i,%i,%i,\
 %i,%i,%i,%i,%i,\
 %i,%i,\
 %.4f,%.4f,%i,\
 %.4f,%.4f,%i,\
-%.4f,%.4f,\
-%.4f,%.4f,\
-%.4f,%.4f,%.4f,\
+%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,\
+%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,\
 %.4f,%.4f,%.4f,\
 %i,%i,\
 %.4f,\
-%.4f,%.4f,%.4f,\
+%.4f,%.4f,%.4f,%.4f,\
 %.4f,%.4f,\
 %.4f,%.4f\n")%
 	run% lumi% event%
@@ -221,13 +334,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	n_jets% n_btags%
 	lep1_pt% lep1_iso% lep1_pdgId%
 	lep2_pt% lep2_iso% lep2_pdgId%
-	jet1_pt% jet2_pt%
-	jet1_csv% jet2_csv%
-	jet1_jesSF% jet1_jesSF_up% jet1_jesSF_down%
+	jet1_pt% jet1_eta% jet1_phi% jet1_jesSF% jet1_jesSF_up% jet1_jesSF_down% jet1_csv% 
+	jet2_pt% jet2_eta% jet2_phi% jet2_jesSF% jet2_jesSF_up% jet2_jesSF_down% jet2_csv% 	
 	MET_pt% MET_phi% mll%
 	ttHFCategory% n_interactions%
 	puWeight%
-	csvSF_lf_up% csvSF_hf_down% csvSF_cErr1_down%
+	csvSF% csvSF_lf_up% csvSF_hf_down% csvSF_cErr1_down%
 	pdf_up% pdf_down%
 	me_up% me_down;
 }
@@ -282,4 +394,5 @@ void Synchronizer::Init(std::string filename, const std::vector<std::string>& je
     }
 
     datasetFlag = iConfig.getParameter<std::string>("datasetFlag");
+    isData = iConfig.getParameter<bool>("isData");
 }
