@@ -19,7 +19,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     # so that the sum of weights corresponds to the number of events for the given lumi
     eventWeight = cms.double(1.),
     isData = cms.bool(False),
-    datasetFlag=cms.string("NA"),
+    dataset=cms.string("NA"),
 
     # b-tag SF, defined in Weights_cff
     bTagSFs = cms.PSet(BTagSFs80X),

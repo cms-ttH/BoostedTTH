@@ -22,7 +22,8 @@ options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, 
 options.register( "globalTag", "80X_mcRun2_asymptotic_2016_TrancheIV_v7", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
-options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "int flag to identify which dataset is used")#(0,1,2,3,4,5)->(MC,single ele, single mu,ele ele,ele mu,mu mu)
+datasets=['NA','mu','el','elel','elmu','mumu']
+options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing.varType.string, "flag to identify which dataset is used, can be "+','.join(datasets))
 options.register( "calcBJetness",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
 options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.parseArguments()
@@ -45,6 +46,9 @@ if "mc" in options.globalTag.lower() and options.isData:
 if not options.inputFiles:
     print "\n\nConfig ERROR: no inputFiles specified\n\n"
     sys.exit()
+if not options.dataset in datasets:
+    print options.dataset,'not an allowed dataset, options are',datasets
+    sys.exit()
 
 # print settings
 print "\n\n***** JOB SETUP *************************"
@@ -65,7 +69,7 @@ process = cms.Process("boostedAnalysis")
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
@@ -210,6 +214,7 @@ process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 # load and run the boosted analyzer
 if options.isData:
     process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
+    process.BoostedAnalyzer.filterBits=cms.InputTag("TriggerResults::RECO")
 
 else:
     process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
@@ -239,7 +244,7 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/mwassmer/sync_ex/JSONS/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
 
 process.BoostedAnalyzer.minJets = [4]
 process.BoostedAnalyzer.maxJets = [-1]
@@ -249,17 +254,20 @@ process.BoostedAnalyzer.minJetsForMEM = 4
 process.BoostedAnalyzer.minTagsForMEM = 3
 
 if options.isData:
-  process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
+  process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
 process.BoostedAnalyzer.selectionNames = ["FilterSelection","VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames = ["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-
+process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","MVAVarProcessor"]#,"BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames=[]
 process.BoostedAnalyzer.dumpSyncExe=options.dumpSyncExe
 
-process.content = cms.EDAnalyzer("EventContentAnalyzer")
+printContent=False
+
+if printContent:
+    process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
 process.p = cms.Path(process.BadPFMuonFilter 
                      *process.BadChargedCandidateFilter
@@ -275,8 +283,11 @@ for s in [""]+systs:
 
 process.p *= process.CorrectedMETproducer
 
-if not options.isData or not options.isBoostedMiniAOD:
+if not options.isData and not options.isBoostedMiniAOD:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
 
-process.p *= process.content*process.BoostedAnalyzer
+if printContent:
+    process.p *= process.content
+
+process.p *= process.BoostedAnalyzer
 

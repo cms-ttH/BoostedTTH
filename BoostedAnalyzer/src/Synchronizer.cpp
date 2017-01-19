@@ -304,19 +304,28 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     MET_pt=input.correctedMET.pt();
     MET_phi=input.correctedMET.phi();
     
-    puWeight=input.weights.at("Weight_PU");
+    if(input.weights.count("Weight_PU")>0) puWeight=input.weights.at("Weight_PU");
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
     n_interactions=input.eventInfo.numGenPV;
-  
-    csvSF=input.weights.at("Weight_CSV");
-    csvSF_lf_up=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVLFup");
-    csvSF_hf_down=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVHFdown");
-    csvSF_cErr1_down=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVCErr1down");
+      
+    if(input.weights.count("Weight_CSV")>0)    csvSF=input.weights.at("Weight_CSV");
+    if(input.weights.count("Weight_CSVLFup")>0) csvSF_lf_up=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVLFup");
+    if(input.weights.count("Weight_CSVHFdown")>0) csvSF_hf_down=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVHFdown");
+    if(input.weights.count("Weight_CSVCErr1down")>0) csvSF_cErr1_down=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVCErr1down");
 
-    me_up =input.weights.at("Weight_muRupmuFup");
-    me_down =input.weights.at("Weight_muRdownmuFdown");
-  
-    out << boost::format("%i,%i,%i,\
+    if(input.weights.count("Weight_muRupmuFup")>0) me_up =input.weights.at("Weight_muRupmuFup");
+    if(input.weights.count("Weight_muRdownmuFdown")>0) me_down =input.weights.at("Weight_muRdownmuFdown");
+
+    bool print=false;
+    if (dataset=="NA" && (is_SL || is_DL)) print =true;
+    if (dataset=="el"&&is_e) print =true;
+    if (dataset=="mu"&&is_mu) print =true;
+    if (dataset=="elel"&&is_ee) print =true;
+    if (dataset=="elmu"&&is_emu) print =true;
+    if (dataset=="mumu"&&is_mumu) print =true;
+
+    
+    if(print) out << boost::format("%i,%i,%i,\
 %i,%i,%i,%i,%i,\
 %i,%i,\
 %.4f,%.4f,%i,\
@@ -393,6 +402,6 @@ void Synchronizer::Init(std::string filename, const std::vector<std::string>& je
 	}
     }
 
-    datasetFlag = iConfig.getParameter<std::string>("datasetFlag");
+    dataset = iConfig.getParameter<std::string>("dataset");
     isData = iConfig.getParameter<bool>("isData");
 }

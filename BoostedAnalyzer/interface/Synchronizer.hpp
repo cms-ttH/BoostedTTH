@@ -22,8 +22,6 @@
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 
-//namespace dataSet{ enum dataSet{ el, mu, elel, elmu, mumu}; }
-
 class Synchronizer{
 
 public:
@@ -48,7 +46,7 @@ private:
     MiniAODHelper* helper;
 
     bool initializedCutflowsWithSelections;
-    std::string datasetFlag;
+    std::string dataset;
 
     edm::EDGetTokenT< std::vector<reco::GenJet> > genJetsToken;
 

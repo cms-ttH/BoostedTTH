@@ -6,6 +6,7 @@ TreeWriter::TreeWriter(){
   tree=0;
   outFile=0;
   initialized=false;
+  firstEvent=true;
 }
 
 
@@ -67,13 +68,14 @@ bool TreeWriter::Process(const InputCollections& input,const bool& verbose) {
   
   for(uint i=0; i<processors.size(); i++){
     if(verbose) std::cout << "Start processing " << processorNames.at(i) << std::endl;
-    stopwatches[i].Start(false);
+    stopwatches[i].Start(firstEvent);
     processors[i]->Process(input,vars);
     stopwatches[i].Stop();
     if(verbose) std::cout << "Done processing " << processorNames.at(i) << std::endl;
   }
 
   FillTree();
+  firstEvent=false;
   return true;
 }
 

@@ -10,6 +10,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
     checkBasicDataTriggers, # defined in Selection_cff
+    filtersMC, # defined in Selection_cff
 
     era = cms.string("2016_80X"), # has little effect so far, might become important for MiniAODhelper
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper

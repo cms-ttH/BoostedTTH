@@ -54,6 +54,7 @@ class TreeWriter{
     TTree* tree;
     TFile* outFile;
     bool initialized;
+    bool firstEvent;
     VariableContainer vars;
     std::vector<TreeProcessor*> processors;
     std::vector<TStopwatch> stopwatches;

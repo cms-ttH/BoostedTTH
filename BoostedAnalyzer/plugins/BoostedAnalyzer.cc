@@ -324,7 +324,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
 	cout << "Initializing " << *itSel << endl;
 	if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
-	if(*itSel == "FilterSelection") selections.push_back(new FilterSelection(iConfig));
+	else if(*itSel == "FilterSelection") selections.push_back(new FilterSelection(iConfig));
 	else if(*itSel == "EvenSelection") selections.push_back(new EvenOddSelection(true));
 	else if(*itSel == "OddSelection") selections.push_back(new EvenOddSelection(false));
 	else if(*itSel == "GenTopFHSelection") selections.push_back(new GenTopFHSelection());
@@ -334,10 +334,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
 	else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
 	else if(*itSel == "DiLeptonJetTagSelection") selections.push_back(new DiLeptonJetTagSelection(iConfig));
-	else if(*itSel == "LeptonSelection1") selections.push_back(new LeptonSelection(iConfig,1));
-	else if(*itSel == "LeptonSelection2") selections.push_back(new LeptonSelection(iConfig,2));
-	else if(*itSel == "LeptonSelection3") selections.push_back(new LeptonSelection(iConfig,3));
-	else if(*itSel == "LeptonSelection4") selections.push_back(new LeptonSelection(iConfig,4));
 	else if(*itSel == "DiLeptonSelection") selections.push_back(new DiLeptonSelection(iConfig));
 	else if(*itSel == "MinDiLeptonMassSelection") selections.push_back(new DiLeptonMassSelection(20.,9999.));
 	else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true,false));
