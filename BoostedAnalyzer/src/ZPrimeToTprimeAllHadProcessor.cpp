@@ -2540,41 +2540,47 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
         for(size_t j=0;j<TopZprime.size();j++){
             float Dr_TopZprime_temp = BoostedUtils::DeltaR(TopZprime[j].p4(),itJet->p4());
-                if(Dr_TopZprime_temp<abs(minDr_TopZprime)){
+                if(Dr_TopZprime_temp>0 && Dr_TopZprime_temp<abs(minDr_TopZprime)){
                     minDr_TopZprime = Dr_TopZprime_temp;
                 }
         }
         for(size_t j=0;j<bfromTPrime.size();j++){   
             float Dr_B_temp = BoostedUtils::DeltaR(bfromTPrime[j].p4(),itJet->p4());
-                if(Dr_B_temp<abs(minDr_bfromTPrime)){
+                if(Dr_B_temp>0 && Dr_B_temp<abs(minDr_bfromTPrime)){
                     minDr_bfromTPrime = Dr_B_temp;
                 }
         }        
         for(size_t j=0;j<WfromTPrime.size();j++){
             float Dr_W_temp = BoostedUtils::DeltaR(WfromTPrime[j].p4(),itJet->p4());
-                if(Dr_W_temp<abs(minDr_WfromTPrime)){
+                if(Dr_W_temp>0 && Dr_W_temp<abs(minDr_WfromTPrime)){
                     minDr_WfromTPrime = Dr_W_temp;
                 }            
         }
         for(size_t j=0;j<TopBG.size();j++){
             float Dr_TopBG_temp = BoostedUtils::DeltaR(TopBG[j].p4(),itJet->p4());
-                if(Dr_TopBG_temp<abs(minDr_TopBG)){
+                if(Dr_TopBG_temp>0 && Dr_TopBG_temp<abs(minDr_TopBG)){
                     minDr_TopBG = Dr_TopBG_temp;
                 }
         }         
         for(size_t j=0;j<BottomBG.size();j++){
             float Dr_BottomBG_temp = BoostedUtils::DeltaR(BottomBG[j].p4(),itJet->p4());
-                if(Dr_BottomBG_temp<abs(minDr_BottomBG)){
+                if(Dr_BottomBG_temp>0 && Dr_BottomBG_temp<abs(minDr_BottomBG)){
                     minDr_BottomBG = Dr_BottomBG_temp;
                 }
         }
         for(size_t j=0;j<WBG.size();j++){
             float Dr_WBG_temp = BoostedUtils::DeltaR(WBG[j].p4(),itJet->p4());
-                if(Dr_WBG_temp<abs(minDr_WBG)){
+                if(Dr_WBG_temp>0 && Dr_WBG_temp<abs(minDr_WBG)){
                     minDr_WBG = Dr_WBG_temp;
                 }
         }
-        
+        std::cout<<"AK8_minDr_TopZprime: "<<minDr_TopZprime<<endl;
+        std::cout<<"AK8_minDr_bfromTPrime: "<<minDr_bfromTPrime<<endl;
+        std::cout<<"AK8_minDr_WfromTPrime: "<<minDr_WfromTPrime<<endl;
+        std::cout<<"AK8_minDr_TopBG: "<<minDr_TopBG<<endl;
+        std::cout<<"AK8_minDr_BottomBG: "<<minDr_BottomBG<<endl;
+        std::cout<<"AK8_minDr_WBG: "<<minDr_WBG<<endl;
+                    
         if(abs(minDr_TopZprime)<999) vars.FillVars("packedPatJetsAK8PFCHSSoftDrop_Dr_Top",iJet,minDr_TopZprime);
         if(abs(minDr_GenB_Top)<999) vars.FillVars("packedPatJetsAK8PFCHSSoftDrop_Dr_GenB_Top",iJet,minDr_GenB_Top);
         if(abs(minDr_GenW_Top)<999) vars.FillVars("packedPatJetsAK8PFCHSSoftDrop_Dr_GenW_Top",iJet,minDr_GenW_Top);
@@ -2594,8 +2600,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                 //vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->pt());
                 //vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->eta());
                 
-                if(minDr_WBG>0.4 && minDr_WfromTPrime>0.4){
+                if(abs(minDr_WBG)>0.4 && abs(minDr_WfromTPrime)>0.4){
                     AK8_W_misstag_candidates.push_back(*itJet);
+                    std::cout<<"AK8 W misstag candidate found with "<<minDr_WBG<<"  "<<minDr_WfromTPrime<<endl;
                     if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.6 && 70<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<100){
                         misstagged_W.push_back(*itJet);
                         cout<<"found misstagged W"<<endl;
@@ -2607,6 +2614,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                     }
                 } else {
                     AK8_W_tag_candidates.push_back(*itJet);
+                    std::cout<<"AK8 W tag candidate found"<<endl;
                     if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.6 && 70<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<100){
                         tagged_W.push_back(*itJet);
                         cout<<"found tagged W"<<endl;
@@ -2619,8 +2627,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                     AK8_top_candidates.push_back(*itJet);
                     //vars.FillVars("AK8_top_misstagged_candidates_pt",iJet,itJet->pt());
                     //vars.FillVars("AK8_top_misstagged_candidates_eta",iJet,itJet->eta());
-                    if(minDr_TopBG>0.4 && minDr_TopZprime>0.4){
+                    if(abs(minDr_TopBG)>0.4 && abs(minDr_TopZprime)>0.4){
                         AK8_top_misstag_candidates.push_back(*itJet);
+                        std::cout<<"AK8 top misstag candidate found"<<endl;
                         if (itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.86 && 110<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<210){
                             misstagged_top.push_back(*itJet);
                             cout<<"found misstagged t"<<endl;
@@ -2648,6 +2657,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                         }
                     } else {
                         AK8_top_tag_candidates.push_back(*itJet);
+                        std::cout<<"AK8 top tag candidate found"<<endl;
                         if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.86 && 110<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<210){
                             tagged_top.push_back(*itJet);
                             
@@ -2678,8 +2688,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
     int iJet = itJet - input.selectedJets.begin();
     if(input.zprimetotprimeallhad.IsFilled()){
-        float minDr_bfromTPrime = 999;    
-        float minDr_bfromBG = 999;
+        float minDr_bfromTPrime = -999;    
+        float minDr_bfromBG = -999;
         if (itJet->pt()>100 && abs(itJet->eta())<2.4){
             //N_AK4_bottom_misstag_candidates+=1;
             AK4_bottom_candidates.push_back(*itJet);
@@ -2688,21 +2698,22 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             
             for(size_t j=0;j<bfromTPrime.size();j++){   
                 float Dr_B_temp = BoostedUtils::DeltaR(bfromTPrime[j].p4(),itJet->p4());
-                if(Dr_B_temp<minDr_bfromTPrime){
+                if(Dr_B_temp>0 && Dr_B_temp<abs(minDr_bfromTPrime)){
                     minDr_bfromTPrime = Dr_B_temp;
                 }
             }        
             for(size_t j=0;j<BottomBG.size();j++){   
                 float Dr_B_temp = BoostedUtils::DeltaR(BottomBG[j].p4(),itJet->p4());
-                if(Dr_B_temp<minDr_bfromBG){
+                if(Dr_B_temp>0 && Dr_B_temp<abs(minDr_bfromBG)){
                     minDr_bfromBG = Dr_B_temp;
                 }
             }
-            if(minDr_bfromTPrime<999) vars.FillVars("Jet_Dr_bfromTPrime",iJet,minDr_bfromTPrime);
-            if(minDr_bfromBG<999) vars.FillVars("Jet_Dr_bfromBG",iJet,minDr_bfromBG);
+            if(abs(minDr_bfromTPrime)<999) vars.FillVars("Jet_Dr_bfromTPrime",iJet,minDr_bfromTPrime);
+            if(abs(minDr_bfromBG)<999) vars.FillVars("Jet_Dr_bfromBG",iJet,minDr_bfromBG);
             
-            if (minDr_bfromBG>0.2 || minDr_bfromTPrime>0.2){
+            if (abs(minDr_bfromBG)>0.2 && abs(minDr_bfromTPrime)>0.2){
                 AK4_bottom_misstag_candidates.push_back(*itJet);
+                std::cout<<"AK4 bottom misstag candidate found"<<endl;
                 if (itJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8){
                     misstagged_bottom.push_back(*itJet);
                     cout<<"found misstagged b"<<endl;
@@ -2712,6 +2723,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                 }
             } else {
                 AK4_bottom_tag_candidates.push_back(*itJet);
+                std::cout<<"AK4 bottom tag candidate found"<<endl;
                 if (itJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8){
                     tagged_bottom.push_back(*itJet);
                     cout<<"found tagged b"<<endl;
@@ -2723,6 +2735,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                 //vars.FillVars("misstagged_bottom_eta",iJet,itJet->eta());
             }
         }
+        std::cout<<"AK4_minDr_BottomTprime: "<<minDr_bfromTPrime<<endl;
+        std::cout<<"AK4_minDr_BottomBG: "<<minDr_bfromBG<<endl;    
+        
     }
   }
   vars.FillVar("N_AK8_top_candidates",AK8_top_candidates.size());   
