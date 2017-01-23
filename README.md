@@ -51,8 +51,9 @@ Follow These Steps:
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
     sed -i '32i /*' MEIntegratorStandalone/interface/Integrand.h
     sed -i '44i */' MEIntegratorStandalone/interface/Integrand.h
-
+    
     # install miniaod and boostedtth
+    cd $CMSSW_BASE/src
     git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_24_v1_sync
     git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_24_v1_sync   
     
