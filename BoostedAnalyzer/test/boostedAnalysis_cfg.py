@@ -58,11 +58,12 @@ for key in options._register:
         print str(key)+" : "+str( options.__getattr__(key) )
 print "*****************************************\n\n"
 
-systsJER=[] 
-systsJES=[] 
 if options.makeSystematicsTrees:
     systsJES=["JESup","JESdown","JESAbsoluteScaleup","JESAbsoluteScaledown"]
     systsJER=["JERup","JERdown"]
+else:
+    systsJER=[] 
+    systsJES=[] 
 systs=systsJER+systsJES
 
 process = cms.Process("boostedAnalysis")
@@ -150,6 +151,7 @@ if options.calcBJetness:
     process.load('BoostedTTH.BoostedAnalyzer.BJetness_cfi')
     process.BJetness.is_data = options.isData
 
+# lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
@@ -204,7 +206,7 @@ for s in systs:
     v=0
     if s=='JERup': v=+1
     elif s=='JERdown': v=-1
-    elif not s in systsJES: print s,'is no valid JER systematic'
+    elif not s in systsJES: print s,'is no valid JER/JES systematic'
     setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=v))
 
 
@@ -246,13 +248,6 @@ if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
     process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
 
-process.BoostedAnalyzer.minJets = [4]
-process.BoostedAnalyzer.maxJets = [-1]
-process.BoostedAnalyzer.minTags = [2]
-process.BoostedAnalyzer.maxTags = [-1]
-process.BoostedAnalyzer.minJetsForMEM = 4
-process.BoostedAnalyzer.minTagsForMEM = 3
-
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
@@ -260,10 +255,11 @@ process.BoostedAnalyzer.selectionNames = ["FilterSelection","VertexSelection","L
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","MVAVarProcessor"]#,"BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
-process.BoostedAnalyzer.processorNames=[]
+process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 process.BoostedAnalyzer.dumpSyncExe=options.dumpSyncExe
-
+if options.dumpSyncExe:
+    process.BoostedAnalyzer.processorNames = []
+    process.BoostedAnalyzer.selectionNames = []
 printContent=False
 
 if printContent:
