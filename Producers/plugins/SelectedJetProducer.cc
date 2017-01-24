@@ -196,7 +196,7 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
        // Apply jet corrections
        //   Get genjets for new JER recommendation
        for(uint i=0; i<systematics.size(); i++){
-	   unsortedJets.push_back(helper.GetCorrectedJets(cleanJets, iEvent, iSetup, h_genJets, systematics[i],doJER));
+	   unsortedJets.push_back(helper.GetCorrectedJets(cleanJets, iEvent, iSetup, h_genJets, systematics[i],true,doJER));
        }
 
    }
@@ -207,12 +207,14 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   unsortedJets.push_back(helper.GetDeltaRCleanedJets(idJets,*h_inputMuons,*h_inputElectrons,leptonJetDr));
        }
    }
+
    for(uint i=0; i<ptMins.size(); i++ ){
        for(uint j=0; j<systematics.size(); j++){
 	   //Get jet Collection which pass selections
 	   std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], jetID::none, '-' );
 	   // Get jet Collection which pass loose selection
 	   std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
+
 	   iEvent.put(selectedJets,systName(collectionNames[i],systematics[j]));
        }
    }
