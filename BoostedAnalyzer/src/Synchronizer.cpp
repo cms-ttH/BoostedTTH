@@ -200,30 +200,9 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet1_eta=input.selectedJets.at(0).eta();
 	jet1_phi=input.selectedJets.at(0).phi();
 	jet1_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
-	jet1_jesSF=helper->GetJetCorrectionFactor(input.selectedJets.at(0),
-						  input.iEvent,
-						  input.iSetup,
-						  h_genJets,
-						  sysType::NA,
-						  true,//doJEES
-						  false //doJER,
-						  );
-	jet1_jesSF_up=helper->GetJetCorrectionFactor(input.selectedJets.at(0),
-						     input.iEvent,
-						     input.iSetup,
-						     h_genJets,
-						     sysType::JESup,
-						     true,//doJEES
-						     false //doJER,)
-						     );
-	jet1_jesSF_down=helper->GetJetCorrectionFactor(input.selectedJets.at(0),
-						       input.iEvent,
-						       input.iSetup,
-						       h_genJets,
-						       sysType::JESup,
-						       true,//doJEES
-						       false //doJER,)
-						       );
+	if(input.selectedJets.at(0).hasUserFloat("HelperJES")) jet1_jesSF=input.selectedJets.at(0).userFloat("HelperJES");
+	if(input.selectedJets.at(0).hasUserFloat("HelperJESUp")) jet1_jesSF_up=input.selectedJets.at(0).userFloat("HelperJESUp");
+	if(input.selectedJets.at(0).hasUserFloat("HelperJESDown")) jet1_jesSF_down=input.selectedJets.at(0).userFloat("HelperJESDown");
 
     }
 
@@ -232,30 +211,9 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet2_eta=input.selectedJets.at(1).eta();
 	jet2_phi=input.selectedJets.at(1).phi();
 	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
-	jet2_jesSF=helper->GetJetCorrectionFactor(input.selectedJets.at(1),
-						  input.iEvent,
-						  input.iSetup,
-						  h_genJets,
-						  sysType::NA,
-						  true,//doJEES
-						  false //doJER,
-						  );
-	jet2_jesSF_up=helper->GetJetCorrectionFactor(input.selectedJets.at(1),
-						     input.iEvent,
-						     input.iSetup,
-						     h_genJets,
-						     sysType::JESup,
-						     true,//doJEES
-						     false //doJER,)
-						     );
-	jet2_jesSF_down=helper->GetJetCorrectionFactor(input.selectedJets.at(1),
-						       input.iEvent,
-						       input.iSetup,
-						       h_genJets,
-						       sysType::JESup,
-						       true,//doJEES
-						       false //doJER,)
-						       );
+	if(input.selectedJets.at(1).hasUserFloat("HelperJES")) jet2_jesSF=input.selectedJets.at(1).userFloat("HelperJES");
+	if(input.selectedJets.at(1).hasUserFloat("HelperJESUp")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESUp");
+	if(input.selectedJets.at(1).hasUserFloat("HelperJESDown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESDown");
     }
     
     if(is_DL) {

@@ -21,6 +21,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
 
 class Synchronizer{
 
