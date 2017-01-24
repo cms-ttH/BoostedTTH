@@ -222,19 +222,28 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	edm::Handle< edm::View<pat::Electron> > hElectrons;
 	iEvent.getByToken(EDMElectronsToken,hElectrons);
 
+
+	std::vector<pat::Electron> updatedElectrons;
 	// get electron mva info
 	edm::Handle<edm::ValueMap<float> > h_mvaValues;
 	iEvent.getByToken(EDMeleMVAvaluesToken,h_mvaValues);
-	edm::Handle<edm::ValueMap<int> > h_mvaCategories;
-	iEvent.getByToken(EDMeleMVAcategoriesToken,h_mvaCategories);
+	if (h_mvaValues.isValid()){
+	    edm::Handle<edm::ValueMap<int> > h_mvaCategories;
+	    iEvent.getByToken(EDMeleMVAcategoriesToken,h_mvaCategories);
 
-      // add electron mva info to electrons
-	std::vector<pat::Electron> electronsWithMVAid = helper_.GetElectronsWithMVAid(hElectrons,h_mvaValues,h_mvaCategories);
+	    // add electron mva info to electrons
+	    updatedElectrons = helper_.GetElectronsWithMVAid(hElectrons,h_mvaValues,h_mvaCategories);
+	}
+	else{
+	    for (size_t i = 0; i < hElectrons->size(); ++i){
+		updatedElectrons.push_back(hElectrons->at(i));
+	    }
+	}
 
 	// produce the different electron collections
 	for(uint i=0; i<ptMins_.size();i++){
 	    // select electron collection
-	    std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(electronsWithMVAid,ptMins_[i],electronIDs_[i],etaMaxs_[i])) );
+	    std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])) );
 	    for (auto lep : *selectedLeptons){
 		// TODO conesize and corr type should not be hardcoded
 		helper_.AddElectronRelIso(lep,coneSize::R03, corrType::rhoEA,effAreaType::spring16,"relIso");

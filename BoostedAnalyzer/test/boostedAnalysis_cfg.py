@@ -24,7 +24,7 @@ options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 datasets=['NA','mu','el','elel','elmu','mumu']
 options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing.varType.string, "flag to identify which dataset is used, can be "+','.join(datasets))
-options.register( "calcBJetness",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
+options.register( "calcBJetness",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
 options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.parseArguments()
 
@@ -70,7 +70,7 @@ process = cms.Process("boostedAnalysis")
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
@@ -137,13 +137,15 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
 
 ### electron ID ####
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-dataFormat = DataFormat.MiniAOD
-switchOnVIDElectronIdProducer(process, dataFormat)
+eleMVAid=False
+if eleMVAid:
+    from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+    dataFormat = DataFormat.MiniAOD
+    switchOnVIDElectronIdProducer(process, dataFormat)
 # Spring 16 MVA ID 
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff']
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+    my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff']
+    for idmod in my_id_modules:
+        setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
 ### BJetness ###
 if options.calcBJetness:
@@ -265,14 +267,16 @@ printContent=False
 if printContent:
     process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
-process.p = cms.Path(process.BadPFMuonFilter 
-                     *process.BadChargedCandidateFilter
-                     *process.egmGsfElectronIDSequence
-                     *process.BJetness
-                     *process.SelectedElectronProducer
-                     *process.SelectedMuonProducer
-                     *process.CorrectedJetProducer)
 
+##### DEFINE PATH ##########
+
+process.p = cms.Path(process.BadPFMuonFilter 
+                     *process.BadChargedCandidateFilter)
+if eleMVAid:
+    process.p *= process.egmGsfElectronIDSequence
+if options.calcBJetness:
+    process.p *= process.BJetness
+process.p *= process.SelectedElectronProducer*process.SelectedMuonProducer*process.CorrectedJetProducer
 for s in [""]+systs:
     process.p *= getattr(process,'patSmearedJets'+s)
     process.p *= getattr(process,'SelectedJetProducer'+s)
