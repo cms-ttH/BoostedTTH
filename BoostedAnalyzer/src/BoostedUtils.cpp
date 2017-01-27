@@ -250,16 +250,17 @@ boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCol
 
 bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
 
-  float CSVLv2wp = 0.460;
-  float CSVMv2wp = 0.800;
-  float CSVTv2wp = 0.935;
+  float CSVLwp = 0.5426;
+  float CSVMwp = 0.8484;
+  float CSVTwp = 0.9535;
+
 
   float csvValue = MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
 
   switch(workingPoint){
-    case 'L': if(csvValue > CSVLv2wp){ return true; } break;
-    case 'M': if(csvValue > CSVMv2wp){ return true; } break;
-    case 'T': if(csvValue > CSVTv2wp){ return true; } break;
+    case 'L': if(csvValue > CSVLwp){ return true; } break;
+    case 'M': if(csvValue > CSVMwp){ return true; } break;
+    case 'T': if(csvValue > CSVTwp){ return true; } break;
     case '-': return true; break;
   }
 
