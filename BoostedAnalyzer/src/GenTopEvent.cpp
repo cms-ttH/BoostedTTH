@@ -59,8 +59,7 @@ GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHad
     iEvent.getByToken(genTtbarIdToken, genTtbarId);
     iEvent.getByToken(prunedGenParticlesToken, prunedGenParticles);
     int ttid_full = *genTtbarId;
-    int ttid = ttid_full%100;
-    genTopEvt.FillTTdecay(*prunedGenParticles,ttid);
+    genTopEvt.FillTTdecay(*prunedGenParticles,ttid_full);
     if(doGenHadronMatch){
 	genTopEvt.FillTTxDetails(*h_customgenjets, 
 				 *genBHadIndex, *genBHadJetIndex, 
@@ -1059,6 +1058,10 @@ std::vector<math::XYZTLorentzVector> GenTopEvent::GetLVs(const std::vector<reco:
 
 int GenTopEvent::GetTTxIdFromProducer() const{
   return ttXid%100;
+}
+
+int GenTopEvent::GetTTxIdFromProducerLong() const{
+  return ttXid;
 }
 
 int GenTopEvent::GetTTxId(bool countPseudoAdditional) const{

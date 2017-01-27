@@ -121,6 +121,7 @@ public:
 
   int GetTTxId(bool countAdditionalAfterTop=true) const;
   int GetTTxIdFromProducer() const;
+  int GetTTxIdFromProducerLong() const;
 
   bool IsTTbar() const;
   bool IsTTH() const;
