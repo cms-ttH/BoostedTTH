@@ -30,20 +30,24 @@ Synchronizer::~Synchronizer (){
 }
 
 
-void Synchronizer::DumpSyncExeHeader(std::ostream &out){
-    out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_csv,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_csv,MET_pt,MET_phi,mll,ttHFCategory,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down" << endl;
+void Synchronizer::DumpSyncExeHeader(std::ostream &out, bool addExtendedInfo){
+    out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_csv,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_csv,MET_pt,MET_phi,mll,ttHFCategory,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down";
+    if(addExtendedInfo){
+	out << ",jet3_pt,jet3_eta,jet3_csv,jet4_pt,jet4_eta,jet4_csv,jet5_pt,jet5_eta,jet5_csv";
+    }
+    out << endl;
 }
 
 void Synchronizer::DumpSyncExe(const InputCollections& input,
 			       std::ostream &out,
 			       Cutflow& cutflowSL,
-			       Cutflow& cutflowDL){
+			       Cutflow& cutflowDL,
+			       bool addExtendedInfo){
 
     edm::Handle< std::vector<reco::GenJet> > h_genJets;
     if(!isData){
 	input.iEvent.getByToken( genJetsToken,h_genJets );
     }
-
 
     int run=input.eventInfo.run;
     int lumi=input.eventInfo.lumiBlock;
@@ -103,6 +107,17 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     
     float me_up=-1;
     float me_down=-1;
+
+    float jet3_pt=-1;
+    float jet3_eta=-1;
+    float jet3_csv=-1;
+    float jet4_pt=-1;
+    float jet4_eta=-1;
+    float jet4_csv=-1;
+    float jet5_pt=-1;
+    float jet5_eta=-1;
+    float jet5_csv=-1;
+
     
     //=================================================
     for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
@@ -215,6 +230,22 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESUp")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESUp");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESDown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESDown");
     }
+    if(input.selectedJets.size()>2){
+	jet3_pt=input.selectedJets.at(2).pt();
+	jet3_eta=input.selectedJets.at(2).eta();
+	jet3_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(2));
+    }
+    if(input.selectedJets.size()>3){
+	jet4_pt=input.selectedJets.at(3).pt();
+	jet4_eta=input.selectedJets.at(3).eta();
+	jet4_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(3));
+    }
+    if(input.selectedJets.size()>4){
+	jet5_pt=input.selectedJets.at(4).pt();
+	jet5_eta=input.selectedJets.at(4).eta();
+	jet5_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(4));
+    }
+
     
     if(is_DL) {
 	n_jets=int(input.selectedJetsLoose.size());
@@ -263,8 +294,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     MET_phi=input.correctedMET.phi();
     
     if(input.weights.count("Weight_PU")>0) puWeight=input.weights.at("Weight_PU");
-    ttHFCategory=input.genTopEvt.GetTTxIdFromProducer();
-    n_interactions=input.eventInfo.numGenPV;
+    ttHFCategory=input.genTopEvt.GetTTxIdFromProducerLong();
+    n_interactions=input.eventInfo.numTruePV;
       
     if(input.weights.count("Weight_CSV")>0)    csvSF=input.weights.at("Weight_CSV");
     if(input.weights.count("Weight_CSVLFup")>0) csvSF_lf_up=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVLFup");
@@ -283,7 +314,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if (dataset=="mumu"&&is_mumu) print =true;
 
     
-    if(print) out << boost::format("%i,%i,%i,\
+    if(print){ out << boost::format("%i,%i,%i,\
 %i,%i,%i,%i,%i,\
 %i,%i,\
 %.4f,%.4f,%i,\
@@ -295,7 +326,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 %.4f,\
 %.4f,%.4f,%.4f,%.4f,\
 %.4f,%.4f,\
-%.4f,%.4f\n")%
+%.4f,%.4f")%
 	run% lumi% event%
 	is_e% is_mu% is_ee% is_emu% is_mumu%
 	n_jets% n_btags%
@@ -309,15 +340,21 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	csvSF% csvSF_lf_up% csvSF_hf_down% csvSF_cErr1_down%
 	pdf_up% pdf_down%
 	me_up% me_down;
+	if(addExtendedInfo){
+	    out << boost::format("%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%jet3_pt%jet3_eta%jet3_csv%jet4_pt%jet4_eta%jet4_csv%jet5_pt%jet5_eta%jet5_csv;
+	}
+	out<<"\n";
+    }
 }
 
 
-void Synchronizer::DumpSyncExe(const std::vector< InputCollections>& inputs){
+void Synchronizer::DumpSyncExe(const std::vector< InputCollections>& inputs, bool addExtendedInfo){
     for(uint i=0; i<inputs.size(); i++){
 	DumpSyncExe(inputs[i],
 		    *(dumpFiles[i]),
 		    cutflowsSL[i],
-		    cutflowsDL[i]);
+		    cutflowsDL[i],
+		    addExtendedInfo);
     }
 }
 

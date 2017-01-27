@@ -28,13 +28,13 @@ class Synchronizer{
 public:
     Synchronizer(const edm::ParameterSet& iConfig,edm::ConsumesCollector && iC);
     ~Synchronizer ();
-    void DumpSyncExe(const std::vector<InputCollections>& inputs);
+    void DumpSyncExe(const std::vector<InputCollections>& inputs, bool addExtendedInfo=false);
     void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_);
-    void DumpSyncExeHeader(std::ostream &out);
+    void DumpSyncExeHeader(std::ostream &out, bool addExtendedInfo=false);
 
 
 private:
-    void DumpSyncExe(const InputCollections& input,std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL);
+    void DumpSyncExe(const InputCollections& input,std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, bool addExtendedInfo=false);
     vector<ofstream*> cutflowFilesDL;
     vector<ofstream*> cutflowFilesSL;
     vector<ofstream*> dumpFiles;
