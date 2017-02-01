@@ -28,7 +28,6 @@ options.register( "calcBJetness",False, VarParsing.multiplicity.singleton, VarPa
 options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.parseArguments()
 
-
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     options.maxEvents = 10000 # reset for testing
@@ -122,6 +121,26 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
+  
+
+## update jes
+if options.isData:
+    process.GlobalTag.toGet.append(
+        cms.PSet(
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV3_DATA_AK4PFchs'),
+            label  = cms.untracked.string('AK4PFchs')
+            )
+        )
+    process.GlobalTag.toGet.append(
+        cms.PSet(
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV3_DATA_AK4PFchs'),
+            label  = cms.untracked.string('AK8PFchs')
+            )
+        )
 
 
 ### additional MET filters ###
@@ -195,13 +214,15 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
     enabled = cms.bool(True),  # If False, no smearing is performed
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
-    algopt = cms.string('AK4PFchs_pt'),
-    algo = cms.string('AK4PFchs'),
+#    algopt = cms.string('AK4PFchs_pt'),
+#    algo = cms.string('AK4PFchs'),
     genJets = cms.InputTag("slimmedGenJets"),
     dRMax = cms.double(0.2),  # = cone size (0.4) / 2
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
-    debug = cms.untracked.bool(False)
+    debug = cms.untracked.bool(False),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
 )
 # up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
 for s in systs:
@@ -257,7 +278,7 @@ process.BoostedAnalyzer.selectionNames = ["FilterSelection","VertexSelection","L
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 process.BoostedAnalyzer.dumpSyncExe=options.dumpSyncExe
 if options.dumpSyncExe:
     process.BoostedAnalyzer.processorNames = []
