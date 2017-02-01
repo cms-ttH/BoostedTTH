@@ -127,12 +127,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    lep2_pdgId=lep1_pdgId;
 	    
 	    lep1_pt=iMuon->pt();
-	    lep1_iso=helper->GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
+	    if(iMuon->hasUserFloat("relIso")) lep1_iso= iMuon->userFloat("relIso");
 	    lep1_pdgId=iMuon->pdgId();
 	}
 	else if(iMuon->pt()>lep2_pt){
 	    lep2_pt=iMuon->pt();
-	    lep2_iso=helper->GetMuonRelIso(*iMuon,coneSize::R04, corrType::deltaBeta);
+	    if(iMuon->hasUserFloat("relIso")) lep2_iso= iMuon->userFloat("relIso");
 	    lep2_pdgId=iMuon->pdgId();
 	}
     }
@@ -143,12 +143,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    lep2_pdgId=lep1_pdgId;
 	    
 	    lep1_pt=iEle->pt();
-	    lep1_iso=helper->GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
+	    if(iEle->hasUserFloat("relIso")) lep1_iso= iEle->userFloat("relIso");
 	    lep1_pdgId=iEle->pdgId();
 	}
 	else if(iEle->pt()>lep2_pt){
 	    lep2_pt=iEle->pt();
-	    lep2_iso=helper->GetElectronRelIso(*iEle, coneSize::R03, corrType::rhoEA,effAreaType::spring15);
+	    if(iEle->hasUserFloat("relIso")) lep2_iso= iEle->userFloat("relIso");
 	    lep2_pdgId=iEle->pdgId();
 
 	}
