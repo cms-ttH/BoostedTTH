@@ -56,6 +56,9 @@ Follow These Steps:
     cd $CMSSW_BASE/src
     git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_24_v1_sync
     git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_25
+
+    # hack to deactivate random JER smearing
+    sed -i '248,259d' PhysicsTools/PatUtils/interface/SmearedJetProducerT.h
     
     #compile
     scram b -j10
