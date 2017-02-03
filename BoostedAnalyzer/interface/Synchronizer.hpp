@@ -28,13 +28,13 @@ class Synchronizer{
 public:
     Synchronizer(const edm::ParameterSet& iConfig,edm::ConsumesCollector && iC);
     ~Synchronizer ();
-    void DumpSyncExe(const std::vector<InputCollections>& inputs, bool addExtendedInfo=false);
-    void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_);
-    void DumpSyncExeHeader(std::ostream &out, bool addExtendedInfo=false);
+    void DumpSyncExe(const std::vector<InputCollections>& inputs, bool dumpExtended, std::vector<int> dumpAlwaysEvents);
+    void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,bool dumpExtended);
+    void DumpSyncExeHeader(std::ostream &out, bool dumpExtended=false);
 
 
 private:
-    void DumpSyncExe(const InputCollections& input,std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, bool addExtendedInfo=false);
+    void DumpSyncExe(const InputCollections& input,std::ostream &out,Cutflow& cutflowSL,Cutflow& cutflowDL, bool dumpExtended,  std::vector<int> dumpAlwaysEvents);
     vector<ofstream*> cutflowFilesDL;
     vector<ofstream*> cutflowFilesSL;
     vector<ofstream*> dumpFiles;
@@ -49,7 +49,8 @@ private:
     bool initializedCutflowsWithSelections;
     std::string dataset;
 
-    edm::EDGetTokenT< std::vector<reco::GenJet> > genJetsToken;
+    edm::EDGetTokenT< std::vector<pat::Electron> > rawElToken;
+    edm::EDGetTokenT< std::vector<pat::Muon> > rawMuToken;
 
     bool isData;
 

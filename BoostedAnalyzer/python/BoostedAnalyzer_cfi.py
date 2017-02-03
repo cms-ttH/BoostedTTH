@@ -40,7 +40,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     useGenHadronMatch = cms.bool(True),
 
     dumpSyncExe = cms.bool(False),
-
+    dumpExtended = cms.bool(False),
+    dumpAlwaysEvents = cms.vint32(),
     doBoostedMEM = cms.bool(True),
 
     minJetsForMEM = cms.int32(4),

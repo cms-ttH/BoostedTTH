@@ -266,7 +266,6 @@ if not options.isData:
 process.BoostedAnalyzer.systematics=[""]+systs
 process.BoostedAnalyzer.generatorName=options.generatorName
 
-
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
     process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
@@ -278,11 +277,94 @@ process.BoostedAnalyzer.selectionNames = ["FilterSelection","VertexSelection","L
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TTbarReconstructionVarProcessor","ReconstructionMEvarProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
+process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","TTbarReconstructionVarProcessor","MCMatchVarProcessor"]
 process.BoostedAnalyzer.dumpSyncExe=options.dumpSyncExe
 if options.dumpSyncExe:
     process.BoostedAnalyzer.processorNames = []
     process.BoostedAnalyzer.selectionNames = []
+    process.BoostedAnalyzer.dumpExtended=True
+    process.BoostedAnalyzer.dumpAlwaysEvents=[
+        47021987,
+        10718174,
+        54977993,
+        57122020,
+        22268223,
+        17931184,
+        50097291,
+        50097097,
+        16003276,
+        1552274,
+        22936201,
+        33645785,
+        56857300,
+        3508271,
+        517551,
+        843637,
+        1210984,
+        2322870,
+        308328,
+        1622142,
+        308297,
+        2660612,
+        3276863,
+        2553141,
+        2125964,
+        2490450,
+        3693577,
+        941878,
+        73181039,
+        227363695,
+        605297195,
+        501575867,
+        603713878,
+        423292385,
+        1137945623,
+        426332989,
+        548206024,
+        222527742,
+        154887103,
+        409712907,
+        1128108454,
+        35086427,
+        477101814,
+        420502890,
+        170799682,
+        541879517,
+        208945512,
+        86847235,
+        609432325,
+        52801065,
+        566870879,
+        469743082,
+        65546629,
+        58904592,
+        307136465,
+        561805932,
+        610483719,
+        558129298,
+        361485101,
+        104000952,
+        573181011,
+        49929786,
+        393986903,
+        210712419,
+        464239596,
+        356522750,
+        426606885,
+        391107504,
+        478363878,
+        232000369,
+        407080141,
+        44714328,
+        564032499,
+        597464911,
+        207608282,
+        598855105,
+        701245175,
+        418972957,
+        307103299,
+        ]
+
 printContent=False
 
 if printContent:

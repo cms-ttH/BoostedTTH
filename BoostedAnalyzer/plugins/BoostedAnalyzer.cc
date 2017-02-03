@@ -162,6 +162,8 @@ private:
     bool useGenHadronMatch;
     /** dump some event content for newer synchronization */
     bool dumpSyncExe;
+    bool dumpExtended;
+    std::vector<int> dumpAlwaysEvents;
     /** Class that tests objects and event selections */
     Synchronizer synchronizer;
     /** systematics */
@@ -248,6 +250,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     useGenHadronMatch = iConfig.getParameter<bool>("useGenHadronMatch");
     if(isData) useGenHadronMatch=false;
     dumpSyncExe = iConfig.getParameter<bool>("dumpSyncExe");
+    dumpExtended = iConfig.getParameter<bool>("dumpExtended");
+    dumpAlwaysEvents = iConfig.getParameter<std::vector<int> >("dumpAlwaysEvents");
     usedGenerator = iConfig.getParameter<std::string>("generatorName");
     doBoostedMEM = iConfig.getParameter<bool>("doBoostedMEM");
     outfileNameBase = iConfig.getParameter<std::string>("outfileName");
@@ -316,7 +320,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // initialize synchronizer
     if(dumpSyncExe){
-	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper);
+	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,dumpExtended);
     }
 
     // initialize selections
@@ -673,7 +677,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // TODO: adapt to new synch exe
 
     if(dumpSyncExe){
-	synchronizer.DumpSyncExe(inputs);
+	synchronizer.DumpSyncExe(inputs,dumpExtended, dumpAlwaysEvents);
     }
 
     // DO SELECTION

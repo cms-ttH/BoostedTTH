@@ -3,7 +3,8 @@
 using namespace std;
 
 Synchronizer::Synchronizer (const edm::ParameterSet& iConfig,edm::ConsumesCollector && iC){
-    genJetsToken            = iC.consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets"));
+    rawElToken = iC.consumes< std::vector<pat::Electron> > (edm::InputTag("slimmedElectrons"));
+    rawMuToken = iC.consumes< std::vector<pat::Muon> > (edm::InputTag("slimmedMuons"));
 }
 
 
@@ -34,6 +35,12 @@ void Synchronizer::DumpSyncExeHeader(std::ostream &out, bool addExtendedInfo){
     out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_csv,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_csv,MET_pt,MET_phi,mll,ttHFCategory,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down";
     if(addExtendedInfo){
 	out << ",jet3_pt,jet3_eta,jet3_csv,jet4_pt,jet4_eta,jet4_csv,jet5_pt,jet5_eta,jet5_csv";
+	out << ",trig_el,trig_mu,trig_elel,trig_elmu,trig_mumu";
+	out << ",n_leps_tight,n_leps_dl,n_leps_loose";
+	out << ",raw_el1_pt,raw_el1_eta,raw_el1_iso,raw_el1_pdgId,raw_el2_pt,raw_el2_eta,raw_el2_iso,raw_el2_pdgId";
+	out << ",raw_mu1_pt,raw_mu1_eta,raw_mu1_iso,raw_mu1_pdgId,raw_mu2_pt,raw_mu2_eta,raw_mu2_iso,raw_mu2_pdgId";
+	out << ",pass_FilterSelection,pass_VertexSelection,pass_LeptonSelection,pass_DiLeptonSelection";
+	    
     }
     out << endl;
 }
@@ -42,12 +49,13 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 			       std::ostream &out,
 			       Cutflow& cutflowSL,
 			       Cutflow& cutflowDL,
-			       bool addExtendedInfo){
+			       bool addExtendedInfo,
+			       std::vector<int> dumpAlwaysEvents){
 
-    edm::Handle< std::vector<reco::GenJet> > h_genJets;
-    if(!isData){
-	input.iEvent.getByToken( genJetsToken,h_genJets );
-    }
+    edm::Handle< std::vector<pat::Muon> > h_rawMu;
+    input.iEvent.getByToken( rawMuToken,h_rawMu );
+    edm::Handle< std::vector<pat::Electron> > h_rawEl;
+    input.iEvent.getByToken( rawElToken,h_rawEl );
 
     int run=input.eventInfo.run;
     int lumi=input.eventInfo.lumiBlock;
@@ -117,8 +125,36 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet5_pt=-1;
     float jet5_eta=-1;
     float jet5_csv=-1;
+    int n_leps_tight=-1;
+    int n_leps_dl=-1;
+    int n_leps_loose=-1;
 
-    
+    float raw_mu1_pt=-1;
+    float raw_mu1_eta=-1;
+    float raw_mu1_iso=-1;
+    float raw_mu1_pdgId=-1;
+    float raw_mu2_pt=-1;
+    float raw_mu2_eta=-1;
+    float raw_mu2_iso=-1;
+    float raw_mu2_pdgId=-1;
+    float raw_el1_pt=-1;
+    float raw_el1_eta=-1;
+    float raw_el1_iso=-1;
+    float raw_el1_pdgId=-1;
+    float raw_el2_pt=-1;
+    float raw_el2_eta=-1;
+    float raw_el2_iso=-1;
+    float raw_el2_pdgId=-1;
+    int trig_el=-1;
+    int trig_mu=-1;
+    int trig_elel=-1;
+    int trig_elmu=-1;
+    int trig_mumu=-1;
+    int pass_FilterSelection=-1;
+    int pass_VertexSelection=-1;
+    int pass_LeptonSelection=-1;
+    int pass_DiLeptonSelection=-1;
+
     //=================================================
     for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
 	if(iMuon->pt()>lep1_pt){
@@ -160,7 +196,16 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     for(uint i=0; i<selectionsSL.size(); i++){
 	if(!selectionsSL[i]->IsSelected(input,cutflowSL)){
 	    is_SL=false;
+	    if(i==0) pass_FilterSelection=0;
+	    if(i==1) pass_VertexSelection=0;
+	    if(i==2) pass_LeptonSelection=0;
+
 	    break;
+	}
+	else{
+	    if(i==0) pass_FilterSelection=1;
+	    if(i==1) pass_VertexSelection=1;
+	    if(i==2) pass_LeptonSelection=1;
 	}
     }
     if(is_SL){
@@ -183,7 +228,11 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     for(uint i=0; i<selectionsDL.size(); i++){
 	if(!selectionsDL[i]->IsSelected(input,cutflowDL)){
 	    is_DL=false;
+	    if(i==2) pass_DiLeptonSelection=0;
 	    break;
+	}
+	else{
+	    if(i==2) pass_DiLeptonSelection=1;
 	}
     }
     if(is_DL){
@@ -230,21 +279,61 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESUp")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESUp");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESDown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESDown");
     }
-    if(input.selectedJets.size()>2){
-	jet3_pt=input.selectedJets.at(2).pt();
-	jet3_eta=input.selectedJets.at(2).eta();
-	jet3_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(2));
+    if(input.selectedJetsLoose.size()>2){
+	jet3_pt=input.selectedJetsLoose.at(2).pt();
+	jet3_eta=input.selectedJetsLoose.at(2).eta();
+	jet3_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(2));
     }
-    if(input.selectedJets.size()>3){
-	jet4_pt=input.selectedJets.at(3).pt();
-	jet4_eta=input.selectedJets.at(3).eta();
-	jet4_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(3));
+    if(input.selectedJetsLoose.size()>3){
+	jet4_pt=input.selectedJetsLoose.at(3).pt();
+	jet4_eta=input.selectedJetsLoose.at(3).eta();
+	jet4_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(3));
     }
-    if(input.selectedJets.size()>4){
-	jet5_pt=input.selectedJets.at(4).pt();
-	jet5_eta=input.selectedJets.at(4).eta();
-	jet5_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(4));
+    if(input.selectedJetsLoose.size()>4){
+	jet5_pt=input.selectedJetsLoose.at(4).pt();
+	jet5_eta=input.selectedJetsLoose.at(4).eta();
+	jet5_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(4));
     }
+    n_leps_tight=input.selectedMuons.size()+input.selectedElectrons.size();
+    n_leps_dl=input.selectedMuonsDL.size()+input.selectedElectronsDL.size();
+    n_leps_loose=input.selectedMuonsLoose.size()+input.selectedElectronsLoose.size();
+    if(h_rawMu->size()>0){
+	raw_mu1_pt=h_rawMu->at(0).pt();
+	raw_mu1_eta=h_rawMu->at(0).eta();
+	raw_mu1_iso=helper->GetMuonRelIso(h_rawMu->at(0),coneSize::R04,corrType::deltaBeta);
+	raw_mu1_pdgId=h_rawMu->at(0).pdgId();
+    }
+    if(h_rawMu->size()>1){
+	raw_mu2_pt=h_rawMu->at(1).pt();
+	raw_mu2_eta=h_rawMu->at(1).eta();
+	raw_mu2_iso=helper->GetMuonRelIso(h_rawMu->at(1),coneSize::R04,corrType::deltaBeta);
+	raw_mu2_pdgId=h_rawMu->at(1).pdgId();
+    }
+    if(h_rawEl->size()>0){
+	raw_el1_pt=h_rawEl->at(0).pt();
+	raw_el1_eta=h_rawEl->at(0).eta();
+	raw_el1_iso=helper->GetElectronRelIso(h_rawEl->at(0), coneSize::R03, corrType::rhoEA,effAreaType::spring16);
+	raw_el1_pdgId=h_rawEl->at(0).pdgId();
+    }
+    if(h_rawEl->size()>1){
+	raw_el2_pt=h_rawEl->at(1).pt();
+	raw_el2_eta=h_rawEl->at(1).eta();
+	raw_el2_iso=helper->GetElectronRelIso(h_rawEl->at(1), coneSize::R03, corrType::rhoEA,effAreaType::spring16);
+	raw_el2_pdgId=h_rawEl->at(1).pdgId();
+    }
+
+
+    trig_el=input.triggerInfo.IsTriggered("HLT_IsoMu24_v*")||input.triggerInfo.IsTriggered("HLT_IsoTkMu24_v*");
+    trig_mu=input.triggerInfo.IsTriggered("HLT_Ele27_eta2p1_WPTight_Gsf_v*");
+    trig_elel=input.triggerInfo.IsTriggered("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
+    trig_elmu=input.triggerInfo.IsTriggered("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*")
+	|| input.triggerInfo.IsTriggered("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*")
+	|| input.triggerInfo.IsTriggered("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*")
+	|| input.triggerInfo.IsTriggered("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*");
+    trig_mumu=input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*")
+	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v*")
+	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*")
+	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
 
     
     if(is_DL) {
@@ -313,7 +402,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if (dataset=="elmu"&&is_emu) print =true;
     if (dataset=="mumu"&&is_mumu) print =true;
 
-    
+    for(uint i=0; i<dumpAlwaysEvents.size(); i++){
+	if (dumpAlwaysEvents[i]==event){
+	    print=true;
+	    break;
+	}       
+    }
     if(print){ out << boost::format("%i,%i,%i,\
 %i,%i,%i,%i,%i,\
 %i,%i,\
@@ -341,27 +435,33 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	pdf_up% pdf_down%
 	me_up% me_down;
 	if(addExtendedInfo){
-	    out << boost::format("%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%jet3_pt%jet3_eta%jet3_csv%jet4_pt%jet4_eta%jet4_csv%jet5_pt%jet5_eta%jet5_csv;
+	    out << boost::format(",%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%jet3_pt%jet3_eta%jet3_csv%jet4_pt%jet4_eta%jet4_csv%jet5_pt%jet5_eta%jet5_csv;
+	    out << boost::format(",%i,%i,%i,%i,%i")%trig_el%trig_mu%trig_elel%trig_elmu%trig_mumu;
+	    out << boost::format(",%i,%i,%i")%n_leps_tight%n_leps_dl%n_leps_loose;
+	    out << boost::format(",%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%i")%raw_el1_pt%raw_el1_eta%raw_el1_iso%raw_el1_pdgId%raw_el2_pt%raw_el2_eta%raw_el2_iso%raw_el2_pdgId;
+	    out << boost::format(",%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%i")%raw_mu1_pt%raw_mu1_eta%raw_mu1_iso%raw_mu1_pdgId%raw_mu2_pt%raw_mu2_eta%raw_mu2_iso%raw_mu2_pdgId;
+	    out << boost::format(",%i,%i,%i,%i")%pass_FilterSelection%pass_VertexSelection%pass_LeptonSelection%pass_DiLeptonSelection;
 	}
 	out<<"\n";
     }
 }
 
 
-void Synchronizer::DumpSyncExe(const std::vector< InputCollections>& inputs, bool addExtendedInfo){
+void Synchronizer::DumpSyncExe(const std::vector< InputCollections>& inputs, bool addExtendedInfo,  std::vector<int> dumpAlwaysEvents){
     for(uint i=0; i<inputs.size(); i++){
 	DumpSyncExe(inputs[i],
 		    *(dumpFiles[i]),
 		    cutflowsSL[i],
 		    cutflowsDL[i],
-		    addExtendedInfo);
+		    addExtendedInfo,
+		    dumpAlwaysEvents);
     }
 }
 
 
 
 
-void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_){
+void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,bool dumpExtended){
     systematics=jetSystematics;
     helper=helper_;
     for(const auto & s : systematics){
@@ -372,7 +472,7 @@ void Synchronizer::Init(std::string filename, const std::vector<std::string>& je
 	cutflowsDL.back().Init();
 	//	cutflowFilesDL.push_back(new ofstream((filename+"_"+s+"_cutflowDL.log").c_str()));
 	dumpFiles.push_back(new ofstream((filename+"_"+s+".csv").c_str()));
-	DumpSyncExeHeader(*(dumpFiles.back()));
+	DumpSyncExeHeader(*(dumpFiles.back()),dumpExtended);
     }
     selectionsDL.push_back(new FilterSelection(iConfig));
     selectionsDL.push_back(new VertexSelection());

@@ -31,7 +31,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     useGenHadronMatch = cms.bool(False),
 
     dumpSyncExe = cms.bool(False),
-    dumpSyncExe2 = cms.bool(False),
+    dumpExtended = cms.bool(False),
+    dumpAlwaysEvents = cms.vint32(),
 
     doBoostedMEM = cms.bool(True),
 
