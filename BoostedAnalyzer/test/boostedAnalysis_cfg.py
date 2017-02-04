@@ -278,6 +278,8 @@ if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
 process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","TTbarReconstructionVarProcessor","MCMatchVarProcessor"]
+#process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","TTbarReconstructionVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
+
 process.BoostedAnalyzer.dumpSyncExe=options.dumpSyncExe
 if options.dumpSyncExe:
     process.BoostedAnalyzer.processorNames = []
@@ -393,4 +395,3 @@ if printContent:
     process.p *= process.content
 
 process.p *= process.BoostedAnalyzer
-

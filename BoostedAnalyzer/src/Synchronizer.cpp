@@ -335,6 +335,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*")
 	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
 
+
     
     if(is_DL) {
 	n_jets=int(input.selectedJetsLoose.size());
