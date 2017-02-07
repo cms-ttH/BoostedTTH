@@ -12,7 +12,7 @@
 
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
 
-enum BoostedRecoType {BoostedTop,BoostedTopHiggs,BoostedHiggs,BoostedTopAk4Higgs};
+enum BoostedRecoType {BoostedTop,BoostedTopHiggs,BoostedHiggs,BoostedTopAk4Higgs,BoostedTopAk4HiggsFromAk4C};
 
 
 class ttHVarProcessor: public TreeProcessor{

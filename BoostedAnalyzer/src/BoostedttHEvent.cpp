@@ -63,9 +63,11 @@ void BoostedttHEvent::ResetEvent(){
   higgsCandIndex = -1;
   higgsCandTag = -1.1;
   higgsCand = boosted::BoostedJet();
+  higgsCandFromAk4C = boosted::Ak4Cluster();
   higgsB1Cand = pat::Jet();
   higgsB2Cand = pat::Jet();
   higgsGCand = pat::Jet();
+  useAk4Cluster = false;
 
   // Hadronic Top Candidate
   foundTopHadCand = false;
@@ -242,12 +244,52 @@ void BoostedttHEvent::ak5JetsClean(bool cleanHiggsCand, bool cleanTopHadCand, bo
 }
 
 
+void BoostedttHEvent::ak4ClusterHiggsCandBoostedRec(const bool cleanTopHadCand, const bool cleanTopLepCand, const float subjetCleaningThreshold){
+  higgsCand = boosted::BoostedJet();
+  higgsB1Cand = pat::Jet();
+  higgsB2Cand = pat::Jet();
+  higgsGCand = pat::Jet();
+  useAk4Cluster = true;
+
+  // loop over ak4 cluster
+  for(std::vector<boosted::Ak4Cluster>::const_iterator itAk4Clu=input->selectedAk4Cluster.begin();itAk4Clu!=input->selectedAk4Cluster.end();++itAk4Clu){
+    int iAk4Clu = itAk4Clu - input->selectedAk4Cluster.begin();
+    if(cleanTopHadCand && foundTopHadCand && iAk4Clu==topHadCandIndex) continue;
+
+    std::vector<pat::Jet> cleanedAk4jets = (*itAk4Clu).ak4jets;
+
+    if((*itAk4Clu).ak4jets.size()<2) continue;
+    if(verbose) std::cout << "found " << (*itAk4Clu).ak4jets.size() << " cleaned Ak4 jets"  << std::endl;
+
+    // Higgs tagger (SecondCSV)
+    std::vector<pat::Jet> sortedAk4jets = BoostedUtils::GetHiggsFilterJets((*itAk4Clu).ak4jets);
+    float tag = MiniAODHelper::GetJetCSV(sortedAk4jets[1],"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    if(verbose) std::cout << "Ak4 higgs tag of fat jet is " << tag  << std::endl;
+
+    if(tag>higgsCandTag){
+      higgsCandTag = tag;
+      foundHiggsCand = true;
+      higgsCandIndex = iAk4Clu;
+
+      higgsCandFromAk4C = *itAk4Clu;
+      if(sortedAk4jets.size()>0) higgsB1Cand = sortedAk4jets[0];
+      if(sortedAk4jets.size()>1) higgsB2Cand = sortedAk4jets[1];
+      if(sortedAk4jets.size()>2) higgsGCand = sortedAk4jets[2];
+    }
+  }
+  if(verbose){
+    if(foundHiggsCand) std::cout << "Ak4: found higgs candidate, max tag " << higgsCandTag << std::endl;
+    else std::cout << "Ak4: did not find higgs candidate" << std::endl;
+  }
+}
+
 void BoostedttHEvent::ak4JetsHiggsCandBoostedRec(const bool cleanTopHadCand, const bool cleanTopLepCand, const float subjetCleaningThreshold){
   higgsCand = boosted::BoostedJet();
   higgsB1Cand = pat::Jet();
   higgsB2Cand = pat::Jet();
   higgsGCand = pat::Jet();
   float fatjetRadius = 1.5;
+  useAk4Cluster = false;
 
   // loop over fatjets
   for(std::vector<boosted::BoostedJet>::const_iterator itBooJet=input->selectedBoostedJets.begin();itBooJet!=input->selectedBoostedJets.end();++itBooJet){
@@ -701,6 +743,28 @@ void BoostedttHEvent::BoostedTopAk4HiggsEventRec(TopTagger toptagger, const boos
   ak5JetsIdentifyTopLepCand(.3);
 }
 
+
+void BoostedttHEvent::BoostedTopAk4HiggsFromAk4CEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger){
+
+  ResetEvent();
+
+  LeptonRec();
+  NeutrinoRec();
+  ak5JetsRec();
+
+  TopHadCandBoostedRec(toptagger,false,false,.2);
+  ak5JetsIdentifyTopHadCand(.3);
+
+  ak4ClusterHiggsCandBoostedRec(true,false,.2);
+  ak5JetsIdentifyHiggsCand(.3);
+
+  ak5JetsClean(true,true,false);
+
+  TopLepCandRec();
+  ak5JetsIdentifyTopLepCand(.3);
+}
+
+
 const InputCollections& BoostedttHEvent::GetInput(){
   return *input;
 }
@@ -917,6 +981,13 @@ boosted::BoostedJet BoostedttHEvent::GetHiggsCandBoosted(){
 }
 
 
+boosted::Ak4Cluster BoostedttHEvent::GetHiggsCandFromAk4C(){
+  if(!foundHiggsCand) return boosted::Ak4Cluster();
+
+  return higgsCandFromAk4C;
+}
+
+
 pat::Jet BoostedttHEvent::GetHiggsB1Cand(){
   if(!foundHiggsCand) return pat::Jet();
 
@@ -953,6 +1024,11 @@ math::XYZTLorentzVector BoostedttHEvent::GetHiggsCandVec2(){
   math::XYZTLorentzVector HiggsCandVec2 = higgsB1Cand.p4()+higgsB2Cand.p4();
 
   return HiggsCandVec2;
+}
+
+
+bool  BoostedttHEvent::GetUseAk4Cluster(){
+  return useAk4Cluster;
 }
 
 

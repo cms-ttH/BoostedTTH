@@ -6,7 +6,7 @@ TriggerInfo::TriggerInfo(std::map<std::string, bool> triggers_,std::map<std::str
 }
 
 bool TriggerInfo::Exists(std::string triggername) const {
-    if(triggers.count(triggername)==0){ 
+    if(triggers.count(triggername)==0){
 	return false;
     }
     return true;
@@ -39,7 +39,7 @@ bool TriggerInfo::IsTriggered(std::string triggername) const {
 	}
     }
     return false;
-    
+
 }
 
 bool TriggerInfo::IsAnyTriggered(std::vector< std::string > triggernames) const {
