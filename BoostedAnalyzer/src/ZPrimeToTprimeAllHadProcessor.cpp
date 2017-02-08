@@ -261,29 +261,29 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
                             fullstring=str_region+str_top+str_W+str_bottom+str_first;
                             std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
                             vars.InitVar("N_"+fullstring+"Tops","I");
-                            vars.InitVars(fullstring+"Tops_Pt","N_"+fullstring+"Tops");
-                            vars.InitVars(fullstring+"Tops_Eta","N_"+fullstring+"Tops");
-                            vars.InitVars(fullstring+"Tops_MSD","N_"+fullstring+"Tops");
-                            vars.InitVars(fullstring+"Tops_t32","N_"+fullstring+"Tops");
-                            vars.InitVars(fullstring+"Tops_t21","N_"+fullstring+"Tops");
-                            vars.InitVars(fullstring+"Tops_subjetCSVv2","N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_Pt","N_"+fullstring+"Tops",-1);
+                            vars.InitVars(fullstring+"Tops_Eta","N_"+fullstring+"Tops",-1);
+                            vars.InitVars(fullstring+"Tops_MSD","N_"+fullstring+"Tops",-1);
+                            vars.InitVars(fullstring+"Tops_t32","N_"+fullstring+"Tops",-1);
+                            vars.InitVars(fullstring+"Tops_t21","N_"+fullstring+"Tops",-1);
+                            vars.InitVars(fullstring+"Tops_subjetCSVv2","N_"+fullstring+"Tops",-1);
                             
                             vars.InitVar("N_"+fullstring+"Ws","I");
-                            vars.InitVars(fullstring+"Ws_Pt","N_"+fullstring+"Ws");
-                            vars.InitVars(fullstring+"Ws_Eta","N_"+fullstring+"Ws");
-                            vars.InitVars(fullstring+"Ws_MSD","N_"+fullstring+"Ws");
-                            vars.InitVars(fullstring+"Ws_t32","N_"+fullstring+"Ws");
-                            vars.InitVars(fullstring+"Ws_t21","N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_Pt","N_"+fullstring+"Ws",-1);
+                            vars.InitVars(fullstring+"Ws_Eta","N_"+fullstring+"Ws",-1);
+                            vars.InitVars(fullstring+"Ws_MSD","N_"+fullstring+"Ws",-1);
+                            vars.InitVars(fullstring+"Ws_t32","N_"+fullstring+"Ws",-1);
+                            vars.InitVars(fullstring+"Ws_t21","N_"+fullstring+"Ws",-1);
 
                             vars.InitVar("N_"+fullstring+"Bottoms","I");
-                            vars.InitVars(fullstring+"Bottoms_Pt","N_"+fullstring+"Bottoms");
-                            vars.InitVars(fullstring+"Bottoms_Eta","N_"+fullstring+"Bottoms");
-                            vars.InitVars(fullstring+"Bottoms_CSVv2","N_"+fullstring+"Bottoms");
+                            vars.InitVars(fullstring+"Bottoms_Pt","N_"+fullstring+"Bottoms",-1);
+                            vars.InitVars(fullstring+"Bottoms_Eta","N_"+fullstring+"Bottoms",-1);
+                            vars.InitVars(fullstring+"Bottoms_CSVv2","N_"+fullstring+"Bottoms",-1);
                             
-                            vars.InitVar(fullstring+"Tprime_M","I");
-                            vars.InitVar(fullstring+"Tprime_Pt","I");
-                            vars.InitVar(fullstring+"Zprime_M","I");
-                            vars.InitVar(fullstring+"Zprime_Pt","I");
+                            vars.InitVar(fullstring+"Tprime_M","F");
+                            vars.InitVar(fullstring+"Tprime_Pt","F");
+                            vars.InitVar(fullstring+"Zprime_M","F");
+                            vars.InitVar(fullstring+"Zprime_Pt","F");
                         }
                     //}
                 }
@@ -673,17 +673,17 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
 
    
 ///Datadriven Background estimation   
-   vars.InitVar("BG_Zprime_M","I");
-   vars.InitVar("BG_Zprime_withtop_btag_M","I");
+   vars.InitVar("BG_Zprime_M","F");
+   vars.InitVar("BG_Zprime_withtop_btag_M","F");
 
-   vars.InitVar("BG_Tprime_M","I");
-   vars.InitVar("BG_Tprime_pt","I");
+   vars.InitVar("BG_Tprime_M","F");
+   vars.InitVar("BG_Tprime_pt","F");
 
-   vars.InitVar("BG_Top_candidates_pt","I");
-   vars.InitVar("BG_Top_candidates_withbtag_pt","I");  
-   vars.InitVar("BG_W_candidates_pt","I");
-   vars.InitVar("BG_Bottom_candidates_pt","I");
-   vars.InitVar("BG_Bottom_anti_candidates_pt","I");
+   vars.InitVar("BG_Top_candidates_pt","F");
+   vars.InitVar("BG_Top_candidates_withbtag_pt","F");  
+   vars.InitVar("BG_W_candidates_pt","F");
+   vars.InitVar("BG_Bottom_candidates_pt","F");
+   vars.InitVar("BG_Bottom_anti_candidates_pt","F");
    
 }
 
