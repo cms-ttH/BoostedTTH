@@ -139,39 +139,40 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
+  
 #=================================== JEC from DB file for data ===============
 if options.isData:
     process.GlobalTag.toGet.append(
         cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_DATA.db'),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
+        record = cms.string('JetCorrectionsRecord'),
+        tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK4PFchs'),
+        label  = cms.untracked.string('AK4PFchs')
         )
     )
     process.GlobalTag.toGet.append(
         cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_DATA.db'),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK8PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
+        record = cms.string('JetCorrectionsRecord'),
+    tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK8PFchs'),
+        label  = cms.untracked.string('AK8PFchs')
         )
     )
 else:
     process.GlobalTag.toGet.append(
         cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_MC.db'),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
+        record = cms.string('JetCorrectionsRecord'),
+        tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK4PFchs'),
+        label  = cms.untracked.string('AK4PFchs')
         )
     )
     process.GlobalTag.toGet.append(
         cms.PSet(
-            connect = cms.string('sqlite:///'+os.environ.get('CMSSW_BASE')+'/src/BoostedTTH/BoostedAnalyzer/data/jecs/Spring16_25nsV6_MC.db'),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK8PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
+        record = cms.string('JetCorrectionsRecord'),
+    tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK8PFchs'),
+        label  = cms.untracked.string('AK8PFchs')
         )
     )
 
@@ -222,7 +223,57 @@ if options.isreHLT:
     process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
 
 if options.makeSystematicsTrees:
-    systs=["","jesup","jesdown","jerup","jerdown"]
+    #systs=["","jesup","jesdown","jerup","jerdown"]
+    systs=[
+    "",
+    # first third
+    "JESup","JESdown",
+    "JERup","JERdown",
+
+    "JESAbsoluteStatup",        "JESAbsoluteStatdown",              
+    "JESAbsoluteScaleup",       "JESAbsoluteScaledown",     
+    
+    "JESAbsoluteFlavMapup",     "JESAbsoluteFlavMapdown",              
+    "JESAbsoluteMPFBiasup",     "JESAbsoluteMPFBiasdown",              
+    "JESFragmentationup",       "JESFragmentationdown",              
+    "JESSinglePionECALup",      "JESSinglePionECALdown",              
+    
+    "JESSinglePionHCALup",      "JESSinglePionHCALdown",              
+    "JESFlavorQCDup",           "JESFlavorQCDdown",    
+    
+    ## second third 
+    "JESTimeEtaup",             "JESTimeEtadown",              
+    "JESTimePtup",              "JESTimePtdown",              
+    "JESRelativeJEREC1up",      "JESRelativeJEREC1down",              
+    "JESRelativeJEREC2up",      "JESRelativeJEREC2down",              
+    "JESRelativeJERHFup",       "JESRelativeJERHFdown",              
+    "JESRelativePtBBup",        "JESRelativePtBBdown",              
+    "JESRelativePtEC1up",       "JESRelativePtEC1down",              
+    "JESRelativePtEC2up",       "JESRelativePtEC2down",              
+    "JESRelativePtHFup",        "JESRelativePtHFdown",              
+    "JESRelativeFSRup",         "JESRelativeFSRdown",  
+    
+    ## third third
+    "JESRelativeStatFSRup",     "JESRelativeStatFSRdown",              
+    "JESRelativeStatECup",      "JESRelativeStatECdown",              
+    "JESRelativeStatHFup",      "JESRelativeStatHFdown",              
+    "JESPileUpDataMCup",        "JESPileUpDataMCdown",              
+    "JESPileUpPtRefup",         "JESPileUpPtRefdown",              
+    "JESPileUpPtBBup",          "JESPileUpPtBBdown",              
+    "JESPileUpPtEC1up",         "JESPileUpPtEC1down",              
+    "JESPileUpPtEC2up",         "JESPileUpPtEC2down",              
+    "JESPileUpPtHFup",          "JESPileUpPtHFdown",              
+    "JESPileUpMuZeroup",        "JESPileUpMuZerodown",              
+    "JESPileUpEnvelopeup",      "JESPileUpEnvelopedown",     
+    
+    
+    #"JESSubTotalPileUpup",      "JESSubTotalPileUpdown",              
+    #"JESSubTotalRelativeup",    "JESSubTotalRelativedown",              
+    #"JESSubTotalPtup",          "JESSubTotalPtdown",              
+    #"JESSubTotalScaleup",       "JESSubTotalScaledown",              
+    #"JESSubTotalMCup",          "JESSubTotalMCdown",              
+    #"JESSubTotalAbsoluteup",    "JESSubTotalAbsolutedown",              
+    ]
     process.SelectedJetProducer.systematics=systs
     process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
     process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
@@ -231,7 +282,7 @@ if options.makeSystematicsTrees:
     process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*len(systs)
 
 if options.isBoostedMiniAOD:
-    process.BoostedAnalyzer.useFatJets=True
+    process.BoostedAnalyzer.useFatJets=False
 else:
     process.BoostedAnalyzer.useFatJets=False
 
@@ -273,9 +324,11 @@ if options.additionalSelection!="NONE":
 
 process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
 if options.isData:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor","BJetnessProcessor","SpinCorrelationProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor")
 else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor","BJetnessProcessor","SpinCorrelationProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialMCMatchVarProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor")
+#process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialMCMatchVarProcessor","TriggerVarProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor")
+
 process.BoostedAnalyzer.dumpSyncExe2=False
 #process.BoostedAnalyzer.processorNames=cms.vstring()
 

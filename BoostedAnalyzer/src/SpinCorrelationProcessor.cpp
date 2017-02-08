@@ -210,6 +210,7 @@ double SpinCorrelationProcessor::GetVars(const TLorentzVector vec_top_,const TLo
 Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::vector<TLorentzVector>& jetvecs,std::vector<float>& jetcsvs,TLorentzVector& lepvec,TVector2& metvec, bool& flag,float& best_lr) {
   bool use_chi2=true;
   if(flag) {
+    
     if(ntags<4) {
       if(njets>5) {
 	generator.SetVars(IntType::tth,10);
@@ -221,8 +222,11 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
     else {
 	generator.SetVars(IntType::tth,10);
     }
+    
+    //generator.SetVars(IntType::tth,10);
   }
   else {
+    
     if(ntags<4) {
       if(njets>5) {
 	generator.SetVars(IntType::tt,8);
@@ -234,6 +238,8 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
     else {
 	generator.SetVars(IntType::tt,8);
     }
+    
+    //generator.SetVars(IntType::tt,10);
   }
   Interpretation** ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);
   uint nints = generator.GetNints();
@@ -243,15 +249,9 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
   for(uint i=0; i<nints; i++){
     // likelihood ratio good ttbar reco / combinatorial background
     float lr=0.;
-    /*
-    if(njets>5 && ntags>2) {
-      lr=quality.TTHLikelihood_comb(*(ints[i]));
-    }
-    else {
-      lr=quality.TTLikelihood_comb(*(ints[i]));
-    }
-    */
+    
     if(flag){
+      
       if(ntags<4) {
 	if(njets>5) {
 	  if(!use_chi2){
@@ -278,8 +278,10 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
 	  lr=quality.TTHChi2(*(ints[i]));
 	}
       }
+      //lr=quality.TTHChi2(*(ints[i]));
     }
     else {
+      
       if(ntags<4) {
 	if(njets>5) {
 	  if(!use_chi2){
@@ -306,6 +308,7 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
 	  lr=quality.TTChi2(*(ints[i]));
 	}
       }
+      //lr=quality.TTChi2(*(ints[i]));
     }
     // simple chi2 reconstruction using hadronic W and both top masses
     /*	
@@ -344,7 +347,7 @@ reco::GenParticle SpinCorrelationProcessor::MatchPartontoJet (vector<reco::GenPa
 
 using namespace std;
 
-SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,8,-9999,9999,0.8)){}
+SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,10,-9999,9999,0.8)){}
 SpinCorrelationProcessor::~SpinCorrelationProcessor (){}
 
 void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContainer& vars){
@@ -738,7 +741,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	//float dR_antitop_switch=dR_max+1.;
 	float dR_b_switch=dR_max+1.;
 	float dR_antib_switch=dR_max+1.;
-	if(gen_evt_filled){
+	if(gen_evt_filled && input.genTopEvt.IsSemiLepton()){
 	  //vars.FillVar("GenTopEvt_filled",1);
 	  //cout << "Gen Top Event is filled " << endl;
 	  dR_top=BoostedUtils::DeltaR(vec_top,vec_top_tmp);
