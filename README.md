@@ -56,7 +56,15 @@ Follow These Steps:
     cd $CMSSW_BASE/src
     git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_24_v1_sync
     git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_25
-
+    
+    # Download the JER correction files
+    cd $CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data
+    mkdir jerfiles
+    cd jerfiles
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_SF_AK4PFchs.txt"
+    cd $CMSSW_BASE/src
+    
     # hack to deactivate random JER smearing
     sed -i '248,259d' PhysicsTools/PatUtils/interface/SmearedJetProducerT.h
     
