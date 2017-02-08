@@ -80,6 +80,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AdditionalJetProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BasicVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/essentialBasicVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
@@ -102,6 +103,11 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BJetnessProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenJetOrderedJetCollectionProcessor.hpp"
+#include "TTH/CommonClassifier/interface/MEMClassifier.h"
+#include "TTH/CommonClassifier/interface/BDTClassifier.h"
+#include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
+
+
 //
 // class declaration
 //
@@ -237,6 +243,11 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenParticle> > genParticlesToken;
     /** gen jets data access token **/
     edm::EDGetTokenT< std::vector<reco::GenJet> > genJetsToken;
+    
+    //mem classifier for MVAVarProcessor
+    MEMClassifier* pointerToMEMClassifier; 
+    BDTClassifier* pointerToCommonBDT5Classifier;
+    ResourceMonitor* ResMon;
 };
 
 //
@@ -247,6 +258,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     genTopEvtProd(GenTopEventProducer(consumesCollector()))
 {
   const bool BTagSystematics = false;
+  
+  //set up resource monitor
+  ResMon= new ResourceMonitor();
     //
     // get all configurations from the python config
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
@@ -379,7 +393,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	// dump some event info after selection step
     }
 
-
+    
+    pointerToMEMClassifier = new MEMClassifier();
+    pointerToCommonBDT5Classifier = new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_v5/");
 
     // INITIALIZE TREEWRITERs
     for (uint i=0; i<jetSystematics.size();i++){
@@ -400,19 +416,22 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	     if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")!=processorNames.end()) {
 		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
 	     }
+	     if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")!=processorNames.end()) {
+		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
+	     }
 	if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
-	    if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
+	    if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {
 		cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl;
-		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
+		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
 	    }
 	    treewriter->AddTreeProcessor(new MVAVarProcessor(),"MVAVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
-	    if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
+	    if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {
 		cout << "adding BasicVarProcessor, needed for essentialMVAVarProcessor" << endl;
-		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
+		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
 	    }
-	    treewriter->AddTreeProcessor(new essentialMVAVarProcessor(),"essentialMVAVarProcessor");
+	    treewriter->AddTreeProcessor(new essentialMVAVarProcessor(pointerToMEMClassifier),"essentialMVAVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
@@ -433,7 +452,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
       treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4Higgs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4Higgs_",doBoostedMEM),"BoostedTopAk4HiggsVarProcessor");
   }
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BDTVarProcessor(),"BDTVarProcessor");
+	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier),"BDTVarProcessor");
 	}
 //DANGERZONE
 // 	if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
@@ -498,6 +517,7 @@ BoostedAnalyzer::~BoostedAnalyzer()
 {
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
+  delete pointerToMEMClassifier;
 
 }
 
@@ -513,6 +533,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	cout << "Analyzing event " << eventcount << endl;
 	watch.Print();
 	watch.Continue();
+	ResMon->PrintMemoryUsage();
+	ResMon->PrintSystemMemory();
+	
     }
 
     eventcount++;
@@ -850,8 +873,9 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	}
 	//Add Genweights to the weight map
 	genweights.GetGenWeights(weights, lheInfo, dogenweights);
-	genweights.GetLHAPDFWeight(weights, genInfo);
-	
+	//DANGERZONE
+// 	genweights.GetLHAPDFWeight(weights, genInfo);
+	//DANGERZONE
 
     return weights;
 }

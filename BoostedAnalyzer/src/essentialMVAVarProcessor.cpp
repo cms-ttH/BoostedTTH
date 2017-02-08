@@ -3,7 +3,15 @@
 using namespace std;
 
 essentialMVAVarProcessor::essentialMVAVarProcessor(){}
-essentialMVAVarProcessor::~essentialMVAVarProcessor(){}
+essentialMVAVarProcessor::~essentialMVAVarProcessor(){
+  mem = new MEMClassifier();
+}
+
+
+essentialMVAVarProcessor::essentialMVAVarProcessor(MEMClassifier* mem_){
+  std::cout<<"non default constructor"<<std::endl;
+  mem=mem_;
+}
 
 
 void essentialMVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
@@ -103,8 +111,8 @@ void essentialMVAVarProcessor::Init(const InputCollections& input,VariableContai
 
   vars.InitVar( "Evt_M_MedianTaggedJets" );
   
-  vars.InitVar( "Evt_Jet_Drmax_Lepton" );
-  vars.InitVar( "Evt_Jet_Detamax_Lepton" );
+//   vars.InitVar( "Evt_Jet_Drmax_Lepton" );
+//   vars.InitVar( "Evt_Jet_Detamax_Lepton" );
   
 //   vars.InitVars( "Jet_CosTheta_cm","N_Jets" );
 //   vars.InitVar( "Evt_Jet_CosThetamax_cm" );
@@ -119,7 +127,7 @@ void essentialMVAVarProcessor::Init(const InputCollections& input,VariableContai
 //   vars.InitVars("Jet_CosThetaStar_Jet3","N_Jets");
 //   vars.InitVars("Jet_CosThetaStar_Jet4","N_Jets");
 
-  vars.InitVars("Jet_Dr_Lepton","N_Jets");
+//   vars.InitVars("Jet_Dr_Lepton","N_Jets");
 //   vars.InitVars("Jet_Dr_Jet1","N_Jets");
 //   vars.InitVars("Jet_Dr_Jet2","N_Jets");
 //   vars.InitVars("Jet_Dr_Jet3","N_Jets");
@@ -131,26 +139,26 @@ void essentialMVAVarProcessor::Init(const InputCollections& input,VariableContai
 //   vars.InitVars("Jet_Dkt_Jet3","N_Jets");
 //   vars.InitVars("Jet_Dkt_Jet4","N_Jets");
 
-  vars.InitVars("Jet_Deta_Lepton","N_Jets");
+//   vars.InitVars("Jet_Deta_Lepton","N_Jets");
 //   vars.InitVars("Jet_Deta_Jet1","N_Jets");
 //   vars.InitVars("Jet_Deta_Jet2","N_Jets");
 //   vars.InitVars("Jet_Deta_Jet3","N_Jets");
 //   vars.InitVars("Jet_Deta_Jet4","N_Jets");
 
-  vars.InitVar( "Evt_Aplanarity" );
-  vars.InitVar( "Evt_Sphericity" );
+//   vars.InitVar( "Evt_Aplanarity" );
+//   vars.InitVar( "Evt_Sphericity" );
     
-  vars.InitVar( "Evt_H0" );
-  vars.InitVar( "Evt_H1" );
-  vars.InitVar( "Evt_H2" );
-  vars.InitVar( "Evt_H3" );
-  vars.InitVar( "Evt_H4" );
+//   vars.InitVar( "Evt_H0" );
+//   vars.InitVar( "Evt_H1" );
+//   vars.InitVar( "Evt_H2" );
+//   vars.InitVar( "Evt_H3" );
+//   vars.InitVar( "Evt_H4" );
   
-  vars.InitVar("Evt_Deta_TopLep_BB_Ohio");
-  vars.InitVar("Evt_Deta_TopHad_BB_Ohio");
-  vars.InitVar("Evt_Best_Higgs_Mass_Ohio");
-  vars.InitVar("Evt_Deta_Fn_Ohio");
-  vars.InitVar("Evt_Dr_BB_Ohio");
+//   vars.InitVar("Evt_Deta_TopLep_BB_Ohio");
+//   vars.InitVar("Evt_Deta_TopHad_BB_Ohio");
+//   vars.InitVar("Evt_Best_Higgs_Mass_Ohio");
+//   vars.InitVar("Evt_Deta_Fn_Ohio");
+//   vars.InitVar("Evt_Dr_BB_Ohio");
 
 //   vars.InitVar("Evt_4bLikelihood");
 //   vars.InitVar("Evt_3bLikelihood");
@@ -535,9 +543,9 @@ void essentialMVAVarProcessor::Process(const InputCollections& input,VariableCon
   vars.FillVar("Evt_TaggedJet_MaxDeta_TaggedJets",BoostedUtils::GetJetAverageJetEtaMax(selectedTaggedJets,selectedTaggedJets));
   
  
-  // Event Angle Variables 
-  float drmax_lj=-1;
-  float detamax_lj=-1;
+   // Event Angle Variables 
+//   float drmax_lj=-1;
+//   float detamax_lj=-1;
   float drmax_j1j=-1;
   float drmax_j2j=-1;
   float drmax_j3j=-1;
@@ -555,12 +563,12 @@ void essentialMVAVarProcessor::Process(const InputCollections& input,VariableCon
 //     float c_j2j=-1.5;
 //     float c_j3j=-1.5;
 //     float c_j4j=-1.5;
-    float deta_lj=-1.;
+//     float deta_lj=-1.;
     float deta_j1j=-1.;
     float deta_j2j=-1.;
     float deta_j3j=-1.;
     float deta_j4j=-1.;
-    float dr_lj=-1.;
+//     float dr_lj=-1.;
     float dr_j1j=-1.;
     float dr_j2j=-1.;
     float dr_j3j=-1.;
@@ -571,12 +579,12 @@ void essentialMVAVarProcessor::Process(const InputCollections& input,VariableCon
 //     float dkt_j3j=-50.;
 //     float dkt_j4j=-50.;
     
-    if(primLepVec.Pt()>1){
-      deta_lj = BoostedUtils::DeltaEta(*itJetVec,primLepVec);
-      dr_lj = BoostedUtils::DeltaR(*itJetVec,primLepVec);
+//     if(primLepVec.Pt()>1){
+//       deta_lj = BoostedUtils::DeltaEta(*itJetVec,primLepVec);
+//       dr_lj = BoostedUtils::DeltaR(*itJetVec,primLepVec);
 //       dkt_lj = BoostedUtils::DeltaKt(*itJetVec,primLepVec);
 //       c_lj = BoostedUtils::CosThetaStar(*itJetVec,primLepVec);
-    }
+//     }
     if(jetvecs.size()>0){
       deta_j1j = BoostedUtils::DeltaEta(*itJetVec,jetvecs[0]);
       dr_j1j = BoostedUtils::DeltaR(*itJetVec,jetvecs[0]);
@@ -602,13 +610,13 @@ void essentialMVAVarProcessor::Process(const InputCollections& input,VariableCon
 //       c_j4j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[3]);
     }
     
-    vars.FillVars("Jet_Deta_Lepton",iJetVec,deta_lj);
+//     vars.FillVars("Jet_Deta_Lepton",iJetVec,deta_lj);
 //     vars.FillVars("Jet_Deta_Jet1",iJetVec,deta_j1j);
 //     vars.FillVars("Jet_Deta_Jet2",iJetVec,deta_j2j);
 //     vars.FillVars("Jet_Deta_Jet3",iJetVec,deta_j3j);
 //     vars.FillVars("Jet_Deta_Jet4",iJetVec,deta_j4j);
-    
-    vars.FillVars("Jet_Dr_Lepton",iJetVec,dr_lj);
+//     
+//     vars.FillVars("Jet_Dr_Lepton",iJetVec,dr_lj);
 //     vars.FillVars("Jet_Dr_Jet1",iJetVec,dr_j1j);
 //     vars.FillVars("Jet_Dr_Jet2",iJetVec,dr_j2j);
 //     vars.FillVars("Jet_Dr_Jet3",iJetVec,dr_j3j);
@@ -619,19 +627,19 @@ void essentialMVAVarProcessor::Process(const InputCollections& input,VariableCon
 //     vars.FillVars("Jet_Dkt_Jet2",iJetVec,dkt_j2j);
 //     vars.FillVars("Jet_Dkt_Jet3",iJetVec,dkt_j3j);
 //     vars.FillVars("Jet_Dkt_Jet4",iJetVec,dkt_j4j);
-    
+//     
 //     vars.FillVars("Jet_CosThetaStar_Lepton",iJetVec,c_lj);
 //     vars.FillVars("Jet_CosThetaStar_Jet1",iJetVec,c_j1j);
 //     vars.FillVars("Jet_CosThetaStar_Jet2",iJetVec,c_j2j);
 //     vars.FillVars("Jet_CosThetaStar_Jet3",iJetVec,c_j3j);
 //     vars.FillVars("Jet_CosThetaStar_Jet4",iJetVec,c_j4j);
     
-    if(drmax_lj < dr_lj){
-      drmax_lj = dr_lj;
-    }
-    if(detamax_lj < deta_lj){
-      detamax_lj = deta_lj;
-    }
+//     if(drmax_lj < dr_lj){
+//       drmax_lj = dr_lj;
+//     }
+//     if(detamax_lj < deta_lj){
+//       detamax_lj = deta_lj;
+//     }
     if(drmax_j1j < dr_j1j){
       drmax_j1j = dr_j1j;
     }
@@ -671,11 +679,6 @@ void essentialMVAVarProcessor::Process(const InputCollections& input,VariableCon
 //       costhetamax_jcm=fabs(costheta_jcm);
 //     }
   }
-  vars.FillVar("Evt_Jet_Drmax_Lepton",drmax_lj);
-  vars.FillVar("Evt_Jet_Detamax_Lepton",detamax_lj);
-//   vars.FillVar("Evt_Jet_Drmax_Jet1",drmax_j1j);
-//   vars.FillVar("Evt_Jet_Detamax_Jet1",detamax_j1j);
-//   vars.FillVar("Evt_Jet_CosThetamax_cm",costhetamax_jcm );
   
   // Ohio Variables
   std::vector<pat::Jet> selectedJetsLooseExclusive;
@@ -690,57 +693,57 @@ void essentialMVAVarProcessor::Process(const InputCollections& input,VariableCon
   vector<TLorentzVector> jetvecsTL=BoostedUtils::GetTLorentzVectors(jetvecs);
   // Event Shape Variables
   // Fox Wolfram Moments
-  float h0,h1,h2,h3,h4;
-  h0=-9;
-  h1=-9;
-  h2=-9;
-  h3=-9;
-  h4=-9;
-  bdtvar.getFox(jetvecsTL, h0,h1,h2,h3,h4);
-  vars.FillVar( "Evt_H0", h0 );
-  vars.FillVar( "Evt_H1", h1 );
-  vars.FillVar( "Evt_H2", h2 );
-  vars.FillVar( "Evt_H3", h3 );
-  vars.FillVar( "Evt_H4", h4 );
-  
-  // Aplanarity and Sphericity;
-  float aplanarity=-1;
-  float sphericity=-1;
-  TLorentzVector primLepVecTL = BoostedUtils::GetTLorentzVector(primLepVec);
-  TLorentzVector metvecTL(input.correctedMET.px(),input.correctedMET.py(),0,input.correctedMET.energy());
-  // workaround to avoid bdtvar crashing
-  if(jetvecsTL.size()>0)
-    bdtvar.getSp(primLepVecTL, metvecTL, jetvecsTL, aplanarity, sphericity) ;
-  vars.FillVar( "Evt_Aplanarity", aplanarity );
-  vars.FillVar( "Evt_Sphericity", sphericity );
-  double minChi,dRbb;
-  TLorentzVector bjet1,bjet2;
-  float best_higgs_mass = bdtvar.getBestHiggsMass(primLepVecTL,metvecTL,jetvecsTL,csvJets,minChi,dRbb,bjet1,bjet2, jet_loose_vecsTL,jetCSV_loose);
-  TLorentzVector dummy_metv;
-  double minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7; 
-  TLorentzVector b1,b2;
-  vector< vector<double> > jets_vvdouble;
-  for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
-    vector<double> pxpypzE;
-    pxpypzE.push_back(jet->px());
-    pxpypzE.push_back(jet->py());
-    pxpypzE.push_back(jet->pz());
-    pxpypzE.push_back(jet->energy());
-    jets_vvdouble.push_back(pxpypzE);
-  }
-  bdtvar.study_tops_bb_syst (input.correctedMET.pt(), input.correctedMET.phi(), dummy_metv, primLepVecTL, jets_vvdouble, csvJets, minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7, b1, b2);
-  float dEta_fn=testquant6;
-
-  vars.FillVar("Evt_Best_Higgs_Mass_Ohio",best_higgs_mass);
-  vars.FillVar("Evt_Deta_Fn_Ohio",dEta_fn);
-
-  float abs_dEta_hadtop_bb=fabs(testquant2);
-  float abs_dEta_leptop_bb=fabs(testquant1);
-
-
-  vars.FillVar("Evt_Deta_TopLep_BB_Ohio",abs_dEta_leptop_bb);
-  vars.FillVar("Evt_Deta_TopHad_BB_Ohio",abs_dEta_hadtop_bb);
-  vars.FillVar("Evt_Dr_BB_Ohio",dRbbStudy);
+//   float h0,h1,h2,h3,h4;
+//   h0=-9;
+//   h1=-9;
+//   h2=-9;
+//   h3=-9;
+//   h4=-9;
+//   bdtvar.getFox(jetvecsTL, h0,h1,h2,h3,h4);
+//   vars.FillVar( "Evt_H0", h0 );
+//   vars.FillVar( "Evt_H1", h1 );
+//   vars.FillVar( "Evt_H2", h2 );
+//   vars.FillVar( "Evt_H3", h3 );
+//   vars.FillVar( "Evt_H4", h4 );
+//   
+//   // Aplanarity and Sphericity;
+//   float aplanarity=-1;
+//   float sphericity=-1;
+//   TLorentzVector primLepVecTL = BoostedUtils::GetTLorentzVector(primLepVec);
+//   TLorentzVector metvecTL(input.correctedMET.px(),input.correctedMET.py(),0,input.correctedMET.energy());
+//   // workaround to avoid bdtvar crashing
+//   if(jetvecsTL.size()>0)
+//     bdtvar.getSp(primLepVecTL, metvecTL, jetvecsTL, aplanarity, sphericity) ;
+//   vars.FillVar( "Evt_Aplanarity", aplanarity );
+//   vars.FillVar( "Evt_Sphericity", sphericity );
+//   double minChi,dRbb;
+//   TLorentzVector bjet1,bjet2;
+//   float best_higgs_mass = bdtvar.getBestHiggsMass(primLepVecTL,metvecTL,jetvecsTL,csvJets,minChi,dRbb,bjet1,bjet2, jet_loose_vecsTL,jetCSV_loose);
+//   TLorentzVector dummy_metv;
+//   double minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7; 
+//   TLorentzVector b1,b2;
+//   vector< vector<double> > jets_vvdouble;
+//   for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
+//     vector<double> pxpypzE;
+//     pxpypzE.push_back(jet->px());
+//     pxpypzE.push_back(jet->py());
+//     pxpypzE.push_back(jet->pz());
+//     pxpypzE.push_back(jet->energy());
+//     jets_vvdouble.push_back(pxpypzE);
+//   }
+//   bdtvar.study_tops_bb_syst (input.correctedMET.pt(), input.correctedMET.phi(), dummy_metv, primLepVecTL, jets_vvdouble, csvJets, minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop, dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7, b1, b2);
+//   float dEta_fn=testquant6;
+// 
+//   vars.FillVar("Evt_Best_Higgs_Mass_Ohio",best_higgs_mass);
+//   vars.FillVar("Evt_Deta_Fn_Ohio",dEta_fn);
+// 
+//   float abs_dEta_hadtop_bb=fabs(testquant2);
+//   float abs_dEta_leptop_bb=fabs(testquant1);
+// 
+// 
+//   vars.FillVar("Evt_Deta_TopLep_BB_Ohio",abs_dEta_leptop_bb);
+//   vars.FillVar("Evt_Deta_TopHad_BB_Ohio",abs_dEta_hadtop_bb);
+//   vars.FillVar("Evt_Dr_BB_Ohio",dRbbStudy);
 
 //   float p_4b=quality.NBLikelihood(4,csvJets.size(),&(csvJets[0]));
 //   float p_3b=quality.NBLikelihood(3,csvJets.size(),&(csvJets[0]));
@@ -771,7 +774,7 @@ void essentialMVAVarProcessor::Process(const InputCollections& input,VariableCon
   double out_P_2b=-1;
   double eth_blr=-1;
   if(input.selectedJets.size()>3)
-      eth_blr=mem.GetBTagLikelihoodRatio(jettvecs,
+      eth_blr=mem->GetBTagLikelihoodRatio(jettvecs,
 					 jetcsvs,
 					 out_best_perm,
 					 out_P_4b,

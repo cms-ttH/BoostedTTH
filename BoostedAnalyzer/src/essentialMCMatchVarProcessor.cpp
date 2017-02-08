@@ -12,8 +12,8 @@ void essentialMCMatchVarProcessor::Init(const InputCollections& input,VariableCo
   vars.InitVar( "GenEvt_I_TTPlusCC",-1,"I" );
   vars.InitVar( "GenEvt_I_TTPlusBB",-1,"I" );
   vars.InitVar( "GenEvt_TTxId_FromProducer",-1,"I" );
-//   vars.InitVar( "N_GoodTagsM",-1,"I" );
-//   vars.InitVar( "N_MisTagsM",-1,"I" );
+  vars.InitVar( "N_GoodTagsM",-1,"I" );
+  vars.InitVar( "N_MisTagsM",-1,"I" );
   
   vars.InitVar( "N_GenTopHad", -1, "I" );
   vars.InitVars( "GenTopHad_Pt",-9.,"N_GenTopHad" );

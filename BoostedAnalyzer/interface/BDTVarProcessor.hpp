@@ -12,6 +12,7 @@
 class BDTVarProcessor: public TreeProcessor{
 public:
   BDTVarProcessor();
+  BDTVarProcessor(BDTClassifier* bdt_);
   ~BDTVarProcessor();
   void Init(const InputCollections& input, VariableContainer& var);
   void Process(const InputCollections& input,VariableContainer& var);
@@ -19,7 +20,8 @@ public:
 private:
 //   BDTOhio_v2 bdtohio2;
 //   BDT_v3 bdt3;
-  BDTClassifier commonBDT5;
+  BDTClassifier* commonBDT5;
+  bool needToDeleteBDTClassifier;
 //   
   
 };

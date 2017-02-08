@@ -226,18 +226,22 @@ if options.makeSystematicsTrees:
     #systs=["","jesup","jesdown","jerup","jerdown"]
     systs=[
     "",
-
+    # first third
     "JESup","JESdown",
     "JERup","JERdown",
 
     "JESAbsoluteStatup",        "JESAbsoluteStatdown",              
-    "JESAbsoluteScaleup",       "JESAbsoluteScaledown",              
+    "JESAbsoluteScaleup",       "JESAbsoluteScaledown",     
+    
     "JESAbsoluteFlavMapup",     "JESAbsoluteFlavMapdown",              
     "JESAbsoluteMPFBiasup",     "JESAbsoluteMPFBiasdown",              
     "JESFragmentationup",       "JESFragmentationdown",              
     "JESSinglePionECALup",      "JESSinglePionECALdown",              
+    
     "JESSinglePionHCALup",      "JESSinglePionHCALdown",              
-    "JESFlavorQCDup",           "JESFlavorQCDdown",              
+    "JESFlavorQCDup",           "JESFlavorQCDdown",    
+    
+    ## second third 
     "JESTimeEtaup",             "JESTimeEtadown",              
     "JESTimePtup",              "JESTimePtdown",              
     "JESRelativeJEREC1up",      "JESRelativeJEREC1down",              
@@ -247,7 +251,9 @@ if options.makeSystematicsTrees:
     "JESRelativePtEC1up",       "JESRelativePtEC1down",              
     "JESRelativePtEC2up",       "JESRelativePtEC2down",              
     "JESRelativePtHFup",        "JESRelativePtHFdown",              
-    "JESRelativeFSRup",         "JESRelativeFSRdown",              
+    "JESRelativeFSRup",         "JESRelativeFSRdown",  
+    
+    ## third third
     "JESRelativeStatFSRup",     "JESRelativeStatFSRdown",              
     "JESRelativeStatECup",      "JESRelativeStatECdown",              
     "JESRelativeStatHFup",      "JESRelativeStatHFdown",              
@@ -258,13 +264,15 @@ if options.makeSystematicsTrees:
     "JESPileUpPtEC2up",         "JESPileUpPtEC2down",              
     "JESPileUpPtHFup",          "JESPileUpPtHFdown",              
     "JESPileUpMuZeroup",        "JESPileUpMuZerodown",              
-    "JESPileUpEnvelopeup",      "JESPileUpEnvelopedown",              
-    "JESSubTotalPileUpup",      "JESSubTotalPileUpdown",              
-    "JESSubTotalRelativeup",    "JESSubTotalRelativedown",              
-    "JESSubTotalPtup",          "JESSubTotalPtdown",              
-    "JESSubTotalScaleup",       "JESSubTotalScaledown",              
-    "JESSubTotalMCup",          "JESSubTotalMCdown",              
-    "JESSubTotalAbsoluteup",    "JESSubTotalAbsolutedown",              
+    "JESPileUpEnvelopeup",      "JESPileUpEnvelopedown",     
+    
+    
+    #"JESSubTotalPileUpup",      "JESSubTotalPileUpdown",              
+    #"JESSubTotalRelativeup",    "JESSubTotalRelativedown",              
+    #"JESSubTotalPtup",          "JESSubTotalPtdown",              
+    #"JESSubTotalScaleup",       "JESSubTotalScaledown",              
+    #"JESSubTotalMCup",          "JESSubTotalMCdown",              
+    #"JESSubTotalAbsoluteup",    "JESSubTotalAbsolutedown",              
     ]
     process.SelectedJetProducer.systematics=systs
     process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
@@ -316,9 +324,11 @@ if options.additionalSelection!="NONE":
 
 process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
 if options.isData:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","BasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor")
 else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialMCMatchVarProcessor","BasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialMCMatchVarProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor")
+#process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialMCMatchVarProcessor","TriggerVarProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor")
+
 process.BoostedAnalyzer.dumpSyncExe2=False
 #process.BoostedAnalyzer.processorNames=cms.vstring()
 

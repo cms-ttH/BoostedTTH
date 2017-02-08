@@ -35,6 +35,11 @@ void TreeWriter::Init( std::string fileName){
   outFile->cd();
 
   tree = new TTree("MVATree","MVATree");
+  // experimentally setting autosave
+  // might lead to larger trees or larger memory footprint
+  // also more disk action
+  tree->SetAutoSave(-5000000);
+//   tree->
 }
 
 

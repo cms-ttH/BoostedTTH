@@ -1,12 +1,12 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/BasicVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/essentialBasicVarProcessor.hpp"
 
 using namespace std;
 
-BasicVarProcessor::BasicVarProcessor(){}
-BasicVarProcessor::~BasicVarProcessor(){}
+essentialBasicVarProcessor::essentialBasicVarProcessor(){}
+essentialBasicVarProcessor::~essentialBasicVarProcessor(){}
 
 
-void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
+void essentialBasicVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
  
   vars.InitVar("Evt_ID","I");
   vars.InitVar("Evt_Odd","I");
@@ -99,7 +99,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   initialized=true;
 }
 
-void BasicVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
+void essentialBasicVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
   //also write the event ID for splitting purposes

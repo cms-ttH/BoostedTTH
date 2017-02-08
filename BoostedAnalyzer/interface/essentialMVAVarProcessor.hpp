@@ -12,6 +12,8 @@ class essentialMVAVarProcessor: public TreeProcessor{
 public:
   
   essentialMVAVarProcessor();
+  essentialMVAVarProcessor(MEMClassifier* mem_);
+  
   ~essentialMVAVarProcessor();
   
   void Init(const InputCollections& input,VariableContainer& var);
@@ -19,7 +21,7 @@ public:
 private:
   BDTvars bdtvar;
 //   ReconstructionQuality quality;
-  MEMClassifier mem;
+  MEMClassifier* mem;
 };
 
 #endif
