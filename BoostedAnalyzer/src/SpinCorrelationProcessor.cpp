@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
 
 // function to do some basic boosts on a TLorentzVectors using the number of the corresponding frame and the top/antitop 4-vectors
-TLorentzVector SpinCorrelationProcessor::Boost(TLorentzVector in_vec, Int_t frame_number, TLorentzVector vec_top_, TLorentzVector vec_antitop_){
+TLorentzVector SpinCorrelationProcessor::Boost(const TLorentzVector in_vec, Int_t frame_number,const TLorentzVector vec_top_,const TLorentzVector vec_antitop_){
   TLorentzVector out_vec=in_vec;
   //cout << "out_vec pt before boost: " << out_vec.Pt() << endl;
   //cout << "boost frame_number: " << frame_number << endl;
@@ -21,6 +21,8 @@ TLorentzVector SpinCorrelationProcessor::Boost(TLorentzVector in_vec, Int_t fram
       // boost in antitop rest frame
       out_vec.Boost(- vec_antitop_.BoostVector() );
       break;
+    default:
+      break;  
   }
   //cout << "out_vec pt after boost: " << out_vec.Pt() << endl;
   return out_vec;
@@ -57,12 +59,12 @@ void SpinCorrelationProcessor::SetAllVectors(TLorentzVector& vec_top_, TLorentzV
       vec_antib_=Boost(vec_antib_tmp,1,vec_top_tmp,vec_antitop_tmp);//boost anti b quark in ttbar cm system
       vec_b_=Boost(vec_b_,2,Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp),Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp));//boost b quark in top rest frame
       vec_antib_=Boost(vec_antib_,3,Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp),Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp));//boost anti b quark in antitop rest frame
-      vec_top_=Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp);
-      vec_antitop_=Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp);
-      vec_d_=Boost(vec_d_tmp,1,vec_top_tmp,vec_antitop_tmp);
-      vec_antid_=Boost(vec_antid_tmp,1,vec_top_tmp,vec_antitop_tmp);
-      vec_d_=Boost(vec_d_,2,Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp),Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp));
-      vec_antid_=Boost(vec_antid_,3,Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp),Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp));
+      vec_top_=Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp);//boost top in ttbar cm frame
+      vec_antitop_=Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp);//boost antitop in ttbar cm frame
+      vec_d_=Boost(vec_d_tmp,1,vec_top_tmp,vec_antitop_tmp);//boost d quark in ttbar cm frame
+      vec_antid_=Boost(vec_antid_tmp,1,vec_top_tmp,vec_antitop_tmp);//boost antid in ttbar cm frame
+      vec_d_=Boost(vec_d_,2,Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp),Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp));//boost d quark in top rest frame
+      vec_antid_=Boost(vec_antid_,3,Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp),Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp));//boost antid in antitop rest frame
       //vec_top_=Boost(vec_top_,2,Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp),Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp));
       //vec_antitop_=Boost(vec_antitop_,3,Boost(vec_top_tmp,1,vec_top_tmp,vec_antitop_tmp),Boost(vec_antitop_tmp,1,vec_top_tmp,vec_antitop_tmp));
       break;
@@ -87,7 +89,7 @@ void SpinCorrelationProcessor::SetAllVectors(TLorentzVector& vec_top_, TLorentzV
 }
 
 // this function calculates all desired variables using their identification number
-double SpinCorrelationProcessor::GetVars(TLorentzVector vec_top_, TLorentzVector vec_antitop_, TLorentzVector vec_b_,TLorentzVector vec_antib_, TLorentzVector vec_lepton_,TLorentzVector vec_antilepton_,TLorentzVector vec_d_,TLorentzVector vec_antid_, Int_t var_number) {
+double SpinCorrelationProcessor::GetVars(const TLorentzVector vec_top_,const TLorentzVector vec_antitop_,const TLorentzVector vec_b_,const TLorentzVector vec_antib_,const TLorentzVector vec_lepton_,const TLorentzVector vec_antilepton_,const TLorentzVector vec_d_,const TLorentzVector vec_antid_, Int_t var_number) {
   double out=-99.;
   //cout << "var number 2: " << var_number << endl;
   switch(var_number) {
@@ -208,6 +210,7 @@ double SpinCorrelationProcessor::GetVars(TLorentzVector vec_top_, TLorentzVector
 Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::vector<TLorentzVector>& jetvecs,std::vector<float>& jetcsvs,TLorentzVector& lepvec,TVector2& metvec, bool& flag,float& best_lr) {
   bool use_chi2=true;
   if(flag) {
+    
     if(ntags<4) {
       if(njets>5) {
 	generator.SetVars(IntType::tth,10);
@@ -219,8 +222,11 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
     else {
 	generator.SetVars(IntType::tth,10);
     }
+    
+    //generator.SetVars(IntType::tth,10);
   }
   else {
+    
     if(ntags<4) {
       if(njets>5) {
 	generator.SetVars(IntType::tt,8);
@@ -232,6 +238,8 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
     else {
 	generator.SetVars(IntType::tt,8);
     }
+    
+    //generator.SetVars(IntType::tt,10);
   }
   Interpretation** ints = generator.GenerateTTHInterpretations(jetvecs,jetcsvs,lepvec,metvec);
   uint nints = generator.GetNints();
@@ -241,15 +249,9 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
   for(uint i=0; i<nints; i++){
     // likelihood ratio good ttbar reco / combinatorial background
     float lr=0.;
-    /*
-    if(njets>5 && ntags>2) {
-      lr=quality.TTHLikelihood_comb(*(ints[i]));
-    }
-    else {
-      lr=quality.TTLikelihood_comb(*(ints[i]));
-    }
-    */
+    
     if(flag){
+      
       if(ntags<4) {
 	if(njets>5) {
 	  if(!use_chi2){
@@ -276,8 +278,10 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
 	  lr=quality.TTHChi2(*(ints[i]));
 	}
       }
+      //lr=quality.TTHChi2(*(ints[i]));
     }
     else {
+      
       if(ntags<4) {
 	if(njets>5) {
 	  if(!use_chi2){
@@ -304,6 +308,7 @@ Interpretation* SpinCorrelationProcessor::GetBestLR(int& njets,int& ntags,std::v
 	  lr=quality.TTChi2(*(ints[i]));
 	}
       }
+      //lr=quality.TTChi2(*(ints[i]));
     }
     // simple chi2 reconstruction using hadronic W and both top masses
     /*	
@@ -342,7 +347,7 @@ reco::GenParticle SpinCorrelationProcessor::MatchPartontoJet (vector<reco::GenPa
 
 using namespace std;
 
-SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,8,-9999,9999,0.8)){}
+SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,10,-9999,9999,0.8)){}
 SpinCorrelationProcessor::~SpinCorrelationProcessor (){}
 
 void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContainer& vars){
@@ -403,8 +408,9 @@ void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContai
   
   vars.InitVar("RECO_flag_before_match",0,"I");
   vars.InitVar("RECO_flag_after_match",0,"I");
+  
+  vars.InitVar("RECO_switch_flag_after_match",0,"I");
   /*
-  vars.InitVar("RECO_switch_flag_after_match_1",0,"I");
   vars.InitVar("RECO_switch_flag_after_match_2",0,"I");
   vars.InitVar("RECO_bb_flag_after_match",0,"I");
   vars.InitVar("RECO_tt_flag_after_match",0,"I");
@@ -733,9 +739,9 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	float dR_antib=dR_max+1.;
 	//float dR_top_switch=dR_max+1.;
 	//float dR_antitop_switch=dR_max+1.;
-	//float dR_b_switch=dR_max+1.;
-	//float dR_antib_switch=dR_max+1.;
-	if(gen_evt_filled){
+	float dR_b_switch=dR_max+1.;
+	float dR_antib_switch=dR_max+1.;
+	if(gen_evt_filled && input.genTopEvt.IsSemiLepton()){
 	  //vars.FillVar("GenTopEvt_filled",1);
 	  //cout << "Gen Top Event is filled " << endl;
 	  dR_top=BoostedUtils::DeltaR(vec_top,vec_top_tmp);
@@ -744,8 +750,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  dR_antib=BoostedUtils::DeltaR(vec_antib,vec_antib_tmp);
 	  //dR_top_switch=BoostedUtils::DeltaR(vec_top,vec_antitop_tmp);
 	  //dR_antitop_switch=BoostedUtils::DeltaR(vec_antitop,vec_top_tmp);
-	  //dR_b_switch=BoostedUtils::DeltaR(vec_b,vec_antib_tmp);
-	  //dR_antib_switch=BoostedUtils::DeltaR(vec_antib,vec_b_tmp);
+	  dR_b_switch=BoostedUtils::DeltaR(vec_b,vec_antib_tmp);
+	  dR_antib_switch=BoostedUtils::DeltaR(vec_antib,vec_b_tmp);
 	}
 	/*
 	// set some flags which are of interest for the reconstruction -> maybe some dedicated processor would be better for this
@@ -790,10 +796,10 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  //cout << "every particle is matched correctly" << endl;
 	  vars.FillVar("RECO_flag_after_match",1);
 	}
-	/*
+	
 	else if(dR_top<dR_max && dR_antitop<dR_max && dR_b_switch<dR_max && dR_antib_switch<dR_max) {
-	  vars.FillVar("RECO_switch_flag_after_match_1",1);
-	}
+	  vars.FillVar("RECO_switch_flag_after_match",1);
+	}/*
 	else if(dR_top_switch<dR_max && dR_antitop_switch<dR_max && dR_b_switch<dR_max && dR_antib_switch<dR_max) {
 	  vars.FillVar("RECO_switch_flag_after_match_2",1);
 	}*/	
@@ -1099,7 +1105,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  variables["cos_theta_ldbar"]=14;
 	  //variables["M_l"]=20;
 	  variables["Delta_Eta_lb"]=22;
-	  variables["triple_product_l"]=24;
+	  //variables["triple_product_l"]=24;
 	}
 	else if(leptonflag==-1) {
 	  variables["cos_theta_lbar"]=7;
@@ -1108,7 +1114,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
 	  variables["cos_theta_lbard"]=15;
 	  //variables["M_lbar"]=21;
 	  variables["Delta_Eta_lbarbbar"]=23;
-	  variables["triple_product_lbar"]=25;
+	  //variables["triple_product_lbar"]=25;
 	}
       }
       // same for DL events

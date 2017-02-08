@@ -21,9 +21,9 @@ public:
   
   void Init(const InputCollections& input,VariableContainer& var);
   void Process(const InputCollections& input,VariableContainer& var);
-  TLorentzVector Boost(TLorentzVector in_vec, Int_t frame_number, TLorentzVector vec_top_, TLorentzVector vec_antitop_);
+  TLorentzVector Boost(const TLorentzVector in_vec, Int_t frame_number,const TLorentzVector vec_top_,const TLorentzVector vec_antitop_);
   void SetAllVectors(TLorentzVector& vec_top_, TLorentzVector& vec_antitop_, TLorentzVector& vec_b_, TLorentzVector& vec_antib_, TLorentzVector& vec_lepton_, TLorentzVector& vec_antilepton_,TLorentzVector& vec_d_,TLorentzVector& vec_antid_, int identifier);
-  double GetVars(TLorentzVector vec_top_, TLorentzVector vec_antitop_, TLorentzVector vec_b_,TLorentzVector vec_antib_, TLorentzVector vec_lepton_,TLorentzVector vec_antilepton_,TLorentzVector vec_d_,TLorentzVector vec_antid_, Int_t var_number);
+  double GetVars(const TLorentzVector vec_top_,const TLorentzVector vec_antitop_,const TLorentzVector vec_b_,const TLorentzVector vec_antib_,const TLorentzVector vec_lepton_,const TLorentzVector vec_antilepton_,const TLorentzVector vec_d_,const TLorentzVector vec_antid_, Int_t var_number);
   Interpretation* GetBestLR(int& njets,int& ntags,std::vector<TLorentzVector>& jetvecs,std::vector<float>& jetcsvs,TLorentzVector& lepvec,TVector2& metvec,bool& flag,float& best_lr);
   reco::GenParticle MatchPartontoJet (vector<reco::GenParticle>& Partons,pat::Jet& Jet);
 private:
