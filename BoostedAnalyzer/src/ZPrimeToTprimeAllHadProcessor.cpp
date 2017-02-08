@@ -260,30 +260,33 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
                             
                             fullstring=str_region+str_top+str_W+str_bottom+str_first;
                             std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
+                            std::cout<<"lala0"<<endl;
                             vars.InitVar("N_"+fullstring+"Tops","I");
-                            vars.InitVars(fullstring+"Tops_Pt","N_"+fullstring+"Tops",-1);
-                            vars.InitVars(fullstring+"Tops_Eta","N_"+fullstring+"Tops",-1);
-                            vars.InitVars(fullstring+"Tops_MSD","N_"+fullstring+"Tops",-1);
-                            vars.InitVars(fullstring+"Tops_t32","N_"+fullstring+"Tops",-1);
-                            vars.InitVars(fullstring+"Tops_t21","N_"+fullstring+"Tops",-1);
-                            vars.InitVars(fullstring+"Tops_subjetCSVv2","N_"+fullstring+"Tops",-1);
+                            vars.InitVars(fullstring+"Tops_Pt",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_Eta",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_MSD",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_t32",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_t21",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_subjetCSVv2",-9.0,"N_"+fullstring+"Tops");
                             
                             vars.InitVar("N_"+fullstring+"Ws","I");
-                            vars.InitVars(fullstring+"Ws_Pt","N_"+fullstring+"Ws",-1);
-                            vars.InitVars(fullstring+"Ws_Eta","N_"+fullstring+"Ws",-1);
-                            vars.InitVars(fullstring+"Ws_MSD","N_"+fullstring+"Ws",-1);
-                            vars.InitVars(fullstring+"Ws_t32","N_"+fullstring+"Ws",-1);
-                            vars.InitVars(fullstring+"Ws_t21","N_"+fullstring+"Ws",-1);
+                            vars.InitVars(fullstring+"Ws_Pt",-9.0,"N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_Eta",-9.0,"N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_MSD",-9.0,"N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_t32",-9.0,"N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_t21",-9.0,"N_"+fullstring+"Ws");
 
                             vars.InitVar("N_"+fullstring+"Bottoms","I");
-                            vars.InitVars(fullstring+"Bottoms_Pt","N_"+fullstring+"Bottoms",-1);
-                            vars.InitVars(fullstring+"Bottoms_Eta","N_"+fullstring+"Bottoms",-1);
-                            vars.InitVars(fullstring+"Bottoms_CSVv2","N_"+fullstring+"Bottoms",-1);
-                            
-                            vars.InitVar(fullstring+"Tprime_M","F");
-                            vars.InitVar(fullstring+"Tprime_Pt","F");
-                            vars.InitVar(fullstring+"Zprime_M","F");
-                            vars.InitVar(fullstring+"Zprime_Pt","F");
+                            vars.InitVars(fullstring+"Bottoms_Pt",-9.0,"N_"+fullstring+"Bottoms");
+                            vars.InitVars(fullstring+"Bottoms_Eta",-9.0,"N_"+fullstring+"Bottoms");
+                            vars.InitVars(fullstring+"Bottoms_CSVv2",-9.0,"N_"+fullstring+"Bottoms");
+                            std::cout<<"lala1"<<endl;
+
+                            vars.InitVar(fullstring+"Tprime_M",-9.0,"F");
+                            vars.InitVar(fullstring+"Tprime_Pt",-9.0,"F");
+                            vars.InitVar(fullstring+"Zprime_M",-9.0,"F");
+                            vars.InitVar(fullstring+"Zprime_Pt",-9.0,"F");
+                            std::cout<<"lala2"<<endl;
                         }
                     //}
                 }
