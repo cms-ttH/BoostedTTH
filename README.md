@@ -14,24 +14,21 @@ Follow These Steps:
     export CMSSW_SRC="$( pwd )"
     cmsenv
     
-    # MET filters
-    git cms-merge-topic cms-met:METRecipe_8020
-    git cms-merge-topic ahinzmann:METRecipe_8020_Moriond17
-    git cms-merge-topic cms-met:fromCMSSW_8_0_20_postICHEPfilter
+    # updated MET tools
+    # this topic is branched from the official cms-met:METRecipe_8020 but fixes the badGlobalMuonTagger
+    # so that it works like any other MET filter module
+    git cms-merge-topic riga:badGlobalMuonTagger_fix
 
-    # ele id
-    git cms-merge-topic ikrav:egm_id_80X_v2
-    # compile once to create neccessary folder structure
-    scram b -j10  
-    # ele MVA id data
-    cd $CMSSW_BASE/external
-    cd $SCRAM_ARCH
-    git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
-    cd data/RecoEgamma/ElectronIdentification/data
-    git checkout egm_id_80X_v1
-    cd $CMSSW_BASE/src
+    # EGMSmearer and data
+    git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+    cd EgammaAnalysis/ElectronTools/data
+    git clone https://github.com/ECALELFS/ScalesSmearings.git
+    cd ../../..
 
-    
+    # ttHFGenFilter
+    # (only required when you use the ttHF filtered ttJets dataset)
+    #git cms-merge-topic riga:ttHFGenFilter_tagging
+ 
     # bjetness code
     git clone https://github.com/IHEP-CMS/BJetnessTTHbb.git
     cd BJetnessTTHbb/BJetness
@@ -55,7 +52,7 @@ Follow These Steps:
     # install miniaod and boostedtth
     cd $CMSSW_BASE/src
     git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_24_v1_sync
-    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_25
+    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_26_patch1
     
     # Download the JER correction files
     cd $CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data
