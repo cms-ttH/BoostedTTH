@@ -8,7 +8,7 @@ Follow These Steps:
 
     # setup environment
     export SCRAM_ARCH="slc6_amd64_gcc530"
-    export CMSSW_VERSION="CMSSW_8_0_25"
+    export CMSSW_VERSION="CMSSW_8_0_26_patch1"
     scram project $CMSSW_VERSION
     cd $CMSSW_VERSION/src
     export CMSSW_SRC="$( pwd )"
