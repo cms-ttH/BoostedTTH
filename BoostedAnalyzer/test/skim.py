@@ -17,7 +17,7 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = "80X_mcRun2_asymptotic_2016_TrancheIV_v7"
+process.GlobalTag.globaltag = "80X_mcRun2_asymptotic_2016_TrancheIV_v8"
 process.load("CondCore.CondDB.CondDB_cfi")
 
 
