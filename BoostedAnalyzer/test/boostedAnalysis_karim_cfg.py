@@ -17,32 +17,25 @@ options.register( "weight", 0.01, VarParsing.multiplicity.singleton, VarParsing.
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
-options.register( "makeSystematicsTrees", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
+options.register( "makeSystematicsTrees", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you need all systematics (e.g. to calculate limits)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
-options.register( "analysisType", "SL", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'SL' or 'DL'" )
-options.register( "globalTag", "80X_mcRun2_asymptotic_2016_miniAODv2_v1", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
-options.register( "useJson",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
+options.register( "globalTag", "80X_mcRun2_asymptotic_2016_TrancheIV_v8", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
-options.register( "datasetFlag", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "int flag to identify which dataset is used")#(0,1,2,3,4,5)->(MC,single ele, single mu,ele ele,ele mu,mu mu)
-options.register( "isreHLT",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use different trigger process name for the TriggerResults collection when using reHLT Samples" )
+datasets=['NA','mu','el','elel','elmu','mumu']
+options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing.varType.string, "flag to identify which dataset is used, can be "+','.join(datasets))
+options.register( "calcBJetness",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
+options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.parseArguments()
-
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 1000 # reset for testing
+    options.maxEvents = 10000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/00000/0064B539-803A-E611-BDEA-002590D0B060.root']
-
-if options.isData:
-  options.globalTag="80X_dataRun2_Prompt_ICHEP16JEC_v0"
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/mc/RunIISummer16MiniAODv2/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/0030B9D6-72C1-E611-AE49-02163E00E602.root']
 
 # checks for correct values and consistency
-if options.analysisType not in ["SL","DL"]:
-    print "\n\nConfig ERROR: unknown analysisType '"+options.analysisType+"'"
-    print "Options are 'SL' or 'DL'\n\n"
-    sys.exit()
 if "data" in options.globalTag.lower() and not options.isData:
     print "\n\nConfig ERROR: GT contains seems to be for data but isData==False\n\n"
     sys.exit()
@@ -51,6 +44,9 @@ if "mc" in options.globalTag.lower() and options.isData:
     sys.exit()
 if not options.inputFiles:
     print "\n\nConfig ERROR: no inputFiles specified\n\n"
+    sys.exit()
+if not options.dataset in datasets:
+    print options.dataset,'not an allowed dataset, options are',datasets
     sys.exit()
 
 # print settings
@@ -61,43 +57,29 @@ for key in options._register:
         print str(key)+" : "+str( options.__getattr__(key) )
 print "*****************************************\n\n"
 
-process = cms.Process("wtf")
+if options.makeSystematicsTrees:
+    systsJES=["JESup","JESdown","JESAbsoluteScaleup","JESAbsoluteScaledown"]
+    systsJER=["JERup","JERdown"]
+else:
+    systsJER=[] 
+    systsJES=[] 
+systs=systsJER+systsJES
+
+process = cms.Process("boostedAnalysis")
 
 # cmssw options
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.options.allowUnscheduled = cms.untracked.bool(True)
+process.options.allowUnscheduled = cms.untracked.bool(False)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
                               skipEvents=cms.untracked.uint32(int(options.skipEvents)),
 )
-
-#update btag
-
-process.load("Configuration.StandardSequences.MagneticField_cff")
-process.load("Configuration.Geometry.GeometryRecoDB_cff")
-
-from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-jetCorrectionsForBTagging=cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
-if options.isData:
-  jetCorrectionsForBTagging=cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'])
-updateJetCollection(
-  process,
-  labelName = 'updateBtags',
-  postfix='',
-  jetSource = cms.InputTag('slimmedJets'),
-  jetCorrections = ('AK4PFchs', jetCorrectionsForBTagging, 'None'),
-  btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags'],
-  runIVF=True,
-  #btagPrefix = '' # optional, in case interested in accessing both the old and new discriminator values
-)
-
-
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
@@ -140,51 +122,64 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
   
-#=================================== JEC from DB file for data ===============
+
+## update jes
 if options.isData:
     process.GlobalTag.toGet.append(
         cms.PSet(
             connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-        record = cms.string('JetCorrectionsRecord'),
-        tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK4PFchs'),
-        label  = cms.untracked.string('AK4PFchs')
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV3_DATA_AK4PFchs'),
+            label  = cms.untracked.string('AK4PFchs')
+            )
         )
-    )
     process.GlobalTag.toGet.append(
         cms.PSet(
             connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-        record = cms.string('JetCorrectionsRecord'),
-    tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_DATA_AK8PFchs'),
-        label  = cms.untracked.string('AK8PFchs')
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV3_DATA_AK4PFchs'),
+            label  = cms.untracked.string('AK8PFchs')
+            )
         )
-    )
-else:
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-        record = cms.string('JetCorrectionsRecord'),
-        tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK4PFchs'),
-        label  = cms.untracked.string('AK4PFchs')
-        )
-    )
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-        record = cms.string('JetCorrectionsRecord'),
-    tag    = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK8PFchs'),
-        label  = cms.untracked.string('AK8PFchs')
-        )
-    )
 
-#===============================================================
-#
+
+### additional MET filters ###
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+
+process.load('Configuration.Geometry.GeometryRecoDB_cff')
+process.load("Configuration.StandardSequences.MagneticField_38T_cff")
+
+
+### electron ID ####
+eleMVAid=False
+if eleMVAid:
+    from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+    dataFormat = DataFormat.MiniAOD
+    switchOnVIDElectronIdProducer(process, dataFormat)
+# Spring 16 MVA ID 
+    my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff']
+    for idmod in my_id_modules:
+        setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+
+### BJetness ###
+if options.calcBJetness:
+    process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")        
+    process.load('BoostedTTH.BoostedAnalyzer.BJetness_cfi')
+    process.BJetness.is_data = options.isData
+
+# lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electronNonTrigMVAid80"]*3
+process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 
-process.SelectedMuonProducer.ptMins=[15.,25.,25.]
+process.SelectedMuonProducer.ptMins=[15.,25.,26.]
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
 process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
@@ -192,26 +187,62 @@ process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
 
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
-process.SelectedJetProducer.jets='selectedUpdatedPatJetsUpdateBtags'
-process.SelectedJetProducer.ptMins=[20,30,20,30]
-process.SelectedJetProducer.etaMaxs=[2.4,2.4,2.4,2.4]
-process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets","selectedJetsLooseDL","selectedJetsDL"]
+# selection of corrected and smeared jets -- one producer for every jet systematic that selects two collections (regular and loose jets) each
+# selection of the nominal jets
+process.SelectedJetProducer.jets='patSmearedJets'
+process.SelectedJetProducer.applyCorrection=False
+process.SelectedJetProducer.ptMins=[20,30]
+process.SelectedJetProducer.etaMaxs=[2.4,2.4]
+process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
+process.SelectedJetProducer.systematics=[""]
+# selection of the systematically shifted jets
+for syst in systs:
+    setattr(process,'SelectedJetProducer'+syst,process.SelectedJetProducer.clone(jets='patSmearedJets'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducer.collectionNames)]))
+
+# correction of  miniAOD jets -- one producer creates a jet collection for nominal JES and every JES systematic
+process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets='slimmedJets', 
+                                                               ptMins=[-1.],
+                                                               etaMaxs=[999.],
+                                                               collectionNames=["correctedJets"],
+                                                               applyCorrection=True,
+                                                               systematics=[""]+systsJES)
+
+# smearing of corrected jets -- producers that create the nominal and up/down JER correction
+# jer shift of nominal sample
+process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
+    src = cms.InputTag("CorrectedJetProducer:correctedJets"),
+    enabled = cms.bool(True),  # If False, no smearing is performed
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
+#    algopt = cms.string('AK4PFchs_pt'),
+#    algo = cms.string('AK4PFchs'),
+    genJets = cms.InputTag("slimmedGenJets"),
+    dRMax = cms.double(0.2),  # = cone size (0.4) / 2
+    dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
+    variation = cms.int32(0),  # systematic +1 0 -1 sigma
+    debug = cms.untracked.bool(False),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
+)
+# up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
+for s in systs:
+    v=0
+    if s=='JERup': v=+1
+    elif s=='JERdown': v=-1
+    elif not s in systsJES: print s,'is no valid JER/JES systematic'
+    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=v))
+
+
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
+
 
 # load and run the boosted analyzer
 if options.isData:
-    if options.analysisType=='SL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
-    if options.analysisType=='DL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_data_cfi")
+    process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
+    process.BoostedAnalyzer.filterBits=cms.InputTag("TriggerResults::RECO")
+
 else:
-    if options.analysisType=='SL':
-      if options.isreHLT:
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
-      else:
-	process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzerNoTrigger_cfi")
-    if options.analysisType=='DL':
-        process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_dilepton_cfi")
+    process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
 
     if not options.isBoostedMiniAOD:
         # Supplies PDG ID to real name resolution of MC particles
@@ -219,70 +250,12 @@ else:
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD
         process.load("BoostedTTH.Producers.genHadronMatching_cfi")
 
-if options.isreHLT:
-    process.BoostedAnalyzer.triggerBits="TriggerResults::HLT2"
-
-if options.makeSystematicsTrees:
-    #systs=["","jesup","jesdown","jerup","jerdown"]
-    systs=[
-    "",
-    # first third
-    "JESup","JESdown",
-    "JERup","JERdown",
-
-    "JESAbsoluteStatup",        "JESAbsoluteStatdown",              
-    "JESAbsoluteScaleup",       "JESAbsoluteScaledown",     
-    
-    "JESAbsoluteFlavMapup",     "JESAbsoluteFlavMapdown",              
-    "JESAbsoluteMPFBiasup",     "JESAbsoluteMPFBiasdown",              
-    "JESFragmentationup",       "JESFragmentationdown",              
-    "JESSinglePionECALup",      "JESSinglePionECALdown",              
-    
-    "JESSinglePionHCALup",      "JESSinglePionHCALdown",              
-    "JESFlavorQCDup",           "JESFlavorQCDdown",    
-    
-    ## second third 
-    "JESTimeEtaup",             "JESTimeEtadown",              
-    "JESTimePtup",              "JESTimePtdown",              
-    "JESRelativeJEREC1up",      "JESRelativeJEREC1down",              
-    "JESRelativeJEREC2up",      "JESRelativeJEREC2down",              
-    "JESRelativeJERHFup",       "JESRelativeJERHFdown",              
-    "JESRelativePtBBup",        "JESRelativePtBBdown",              
-    "JESRelativePtEC1up",       "JESRelativePtEC1down",              
-    "JESRelativePtEC2up",       "JESRelativePtEC2down",              
-    "JESRelativePtHFup",        "JESRelativePtHFdown",              
-    "JESRelativeFSRup",         "JESRelativeFSRdown",  
-    
-    ## third third
-    "JESRelativeStatFSRup",     "JESRelativeStatFSRdown",              
-    "JESRelativeStatECup",      "JESRelativeStatECdown",              
-    "JESRelativeStatHFup",      "JESRelativeStatHFdown",              
-    "JESPileUpDataMCup",        "JESPileUpDataMCdown",              
-    "JESPileUpPtRefup",         "JESPileUpPtRefdown",              
-    "JESPileUpPtBBup",          "JESPileUpPtBBdown",              
-    "JESPileUpPtEC1up",         "JESPileUpPtEC1down",              
-    "JESPileUpPtEC2up",         "JESPileUpPtEC2down",              
-    "JESPileUpPtHFup",          "JESPileUpPtHFdown",              
-    "JESPileUpMuZeroup",        "JESPileUpMuZerodown",              
-    "JESPileUpEnvelopeup",      "JESPileUpEnvelopedown",     
-    
-    
-    #"JESSubTotalPileUpup",      "JESSubTotalPileUpdown",              
-    #"JESSubTotalRelativeup",    "JESSubTotalRelativedown",              
-    #"JESSubTotalPtup",          "JESSubTotalPtdown",              
-    #"JESSubTotalScaleup",       "JESSubTotalScaledown",              
-    #"JESSubTotalMCup",          "JESSubTotalMCdown",              
-    #"JESSubTotalAbsoluteup",    "JESSubTotalAbsolutedown",              
-    ]
-    process.SelectedJetProducer.systematics=systs
-    process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer:selectedJets"+s) for s in systs]
-    process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer:selectedJetsLoose"+s) for s in systs]
-    process.BoostedAnalyzer.selectedJetsDL=[cms.InputTag("SelectedJetProducer:selectedJetsDL"+s) for s in systs]
-    process.BoostedAnalyzer.selectedJetsLooseDL=[cms.InputTag("SelectedJetProducer:selectedJetsLooseDL"+s) for s in systs]
-    process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*len(systs)
+process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer"+s+":selectedJets"+s) for s in ['']+systs]
+process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer"+s+":selectedJetsLoose"+s) for s in ['']+systs]
+process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*(len(systs)+1)
 
 if options.isBoostedMiniAOD:
-    process.BoostedAnalyzer.useFatJets=False
+    process.BoostedAnalyzer.useFatJets=True
 else:
     process.BoostedAnalyzer.useFatJets=False
 
@@ -290,82 +263,135 @@ process.BoostedAnalyzer.outfileName=options.outName
 if not options.isData:
     process.BoostedAnalyzer.eventWeight = options.weight
 
-process.BoostedAnalyzer.systematics=process.SelectedJetProducer.systematics
+process.BoostedAnalyzer.systematics=[""]+systs
 process.BoostedAnalyzer.generatorName=options.generatorName
 
-
 if options.isData and options.useJson:
-    #print 'use JSON is no longer supported'
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/nfs/dust/cms/user/kelmorab/CMSSW8/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
-### electron MVA ####
-### electron MVA ####
-# Load the producer for MVA IDs
-process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
-#process.load('Configuration.Geometry.GeometryRecoDB_cff')
-process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
-process.load("Configuration.StandardSequences.MagneticField_38T_cff")
-process.BoostedAnalyzer.minJets = [4]
-process.BoostedAnalyzer.maxJets = [-1]
-process.BoostedAnalyzer.minTags = [2]
-process.BoostedAnalyzer.maxTags = [-1]
-process.BoostedAnalyzer.minJetsForMEM = 4
-process.BoostedAnalyzer.minTagsForMEM = 3
-#process.BoostedAnalyzer.doJERsystematic = cms.bool(True)
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
 
 if options.isData:
-  process.BoostedAnalyzer.datasetFlag=cms.int32(options.datasetFlag)
+  process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
-process.BoostedAnalyzer.selectionNames = cms.vstring("VertexSelection","LeptonSelection","JetTagSelection")
-#process.BoostedAnalyzer.selectionNames = cms.vstring()
-#process.BoostedAnalyzer.selectionNames = ["VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = ["FilterSelection","VertexSelection","LeptonSelection","JetTagSelection"]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
-process.BoostedAnalyzer.doBoostedMEM = cms.bool(False)
-if options.isData:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor")
-else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialMCMatchVarProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor")
-#process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialMCMatchVarProcessor","TriggerVarProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor")
+process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","TTbarReconstructionVarProcessor","MCMatchVarProcessor"]
+#process.BoostedAnalyzer.processorNames =["WeightProcessor","BasicVarProcessor","TTbarReconstructionVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","BoostedTopAk4HiggsVarProcessor", "BoostedTopAk4HiggsFromAk4CVarProcessor","BJetnessProcessor","AdditionalJetProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor"]
 
-process.BoostedAnalyzer.dumpSyncExe2=False
-#process.BoostedAnalyzer.processorNames=cms.vstring()
+process.BoostedAnalyzer.dumpSyncExe=options.dumpSyncExe
+if options.dumpSyncExe:
+    process.BoostedAnalyzer.processorNames = []
+    process.BoostedAnalyzer.selectionNames = []
+    process.BoostedAnalyzer.dumpExtended=True
+    process.BoostedAnalyzer.dumpAlwaysEvents=[
+        47021987,
+        10718174,
+        54977993,
+        57122020,
+        22268223,
+        17931184,
+        50097291,
+        50097097,
+        16003276,
+        1552274,
+        22936201,
+        33645785,
+        56857300,
+        3508271,
+        517551,
+        843637,
+        1210984,
+        2322870,
+        308328,
+        1622142,
+        308297,
+        2660612,
+        3276863,
+        2553141,
+        2125964,
+        2490450,
+        3693577,
+        941878,
+        73181039,
+        227363695,
+        605297195,
+        501575867,
+        603713878,
+        423292385,
+        1137945623,
+        426332989,
+        548206024,
+        222527742,
+        154887103,
+        409712907,
+        1128108454,
+        35086427,
+        477101814,
+        420502890,
+        170799682,
+        541879517,
+        208945512,
+        86847235,
+        609432325,
+        52801065,
+        566870879,
+        469743082,
+        65546629,
+        58904592,
+        307136465,
+        561805932,
+        610483719,
+        558129298,
+        361485101,
+        104000952,
+        573181011,
+        49929786,
+        393986903,
+        210712419,
+        464239596,
+        356522750,
+        426606885,
+        391107504,
+        478363878,
+        232000369,
+        407080141,
+        44714328,
+        564032499,
+        597464911,
+        207608282,
+        598855105,
+        701245175,
+        418972957,
+        307103299,
+        ]
 
-#process.content = cms.EDAnalyzer("EventContentAnalyzer")
-if options.isData or options.isBoostedMiniAOD:
-  process.p = cms.Path(process.electronMVAValueMapProducer
-                     *process.SelectedElectronProducer
-                     *process.SelectedMuonProducer
-                     *process.patJetCorrFactorsUpdateBtags
-                    *process.updatedPatJetsUpdateBtags
-                    *process.patJetCorrFactorsTransientCorrectedUpdateBtags
-                    *process.pfImpactParameterTagInfosUpdateBtags
-                    *process.pfInclusiveSecondaryVertexFinderTagInfosUpdateBtags
-                    *process.pfCombinedInclusiveSecondaryVertexV2BJetTagsUpdateBtags
-                    *process.updatedPatJetsTransientCorrectedUpdateBtags
-                    *process.selectedUpdatedPatJetsUpdateBtags
-                    #*process.content
-                     *process.SelectedJetProducer
-                     *process.CorrectedMETproducer
-                     #*process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
-                     *process.BoostedAnalyzer
-                     )
-else:
-  process.p = cms.Path(process.electronMVAValueMapProducer
-                     *process.SelectedElectronProducer
-                     *process.SelectedMuonProducer
-                      *process.patJetCorrFactorsUpdateBtags
-                    *process.updatedPatJetsUpdateBtags
-                    *process.patJetCorrFactorsTransientCorrectedUpdateBtags
-                    *process.pfImpactParameterTagInfosUpdateBtags
-                    *process.pfInclusiveSecondaryVertexFinderTagInfosUpdateBtags
-                    *process.pfCombinedInclusiveSecondaryVertexV2BJetTagsUpdateBtags
-                    *process.updatedPatJetsTransientCorrectedUpdateBtags
-                    *process.selectedUpdatedPatJetsUpdateBtags
-                     #*process.content
-                     *process.SelectedJetProducer
-                     *process.CorrectedMETproducer
-                     *process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
-                     *process.BoostedAnalyzer
-                     )
+printContent=False
+
+if printContent:
+    process.content = cms.EDAnalyzer("EventContentAnalyzer")
+
+
+##### DEFINE PATH ##########
+
+process.p = cms.Path(process.BadPFMuonFilter 
+                     *process.BadChargedCandidateFilter)
+if eleMVAid:
+    process.p *= process.egmGsfElectronIDSequence
+if options.calcBJetness:
+    process.p *= process.BJetness
+process.p *= process.SelectedElectronProducer*process.SelectedMuonProducer*process.CorrectedJetProducer
+for s in [""]+systs:
+    process.p *= getattr(process,'patSmearedJets'+s)
+    process.p *= getattr(process,'SelectedJetProducer'+s)
+
+process.p *= process.CorrectedMETproducer
+
+if not options.isData and not options.isBoostedMiniAOD:
+    process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+
+if printContent:
+    process.p *= process.content
+
+process.p *= process.BoostedAnalyzer
