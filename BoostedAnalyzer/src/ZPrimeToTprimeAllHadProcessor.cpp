@@ -56,106 +56,106 @@ void ZPrimeToTPrimeAllHadProcessor::InitGenVars(VariableContainer& vars){
     
 
 
-    vars.InitVars("Gen_Top_Pt","N_Gen_Tops");
-    vars.InitVars("Gen_Topbar_Pt","N_Gen_Topbars");
-    vars.InitVars("Gen_TopandTopbar_Pt","N_Gen_TopsandTopbars");
+    vars.InitVars("Gen_Top_Pt",-9.0,"N_Gen_Tops");
+    vars.InitVars("Gen_Topbar_Pt",-9.0,"N_Gen_Topbars");
+    vars.InitVars("Gen_TopandTopbar_Pt",-9.0,"N_Gen_TopsandTopbars");
 
     vars.InitVars("Gen_ZPrime_M","N_Gen_ZPrimes");
-    vars.InitVars("Gen_TPrimeandTPrimebar_M","N_Gen_TPrimesandTPrimebars");   
-    vars.InitVars("Gen_ZPrime_Pt","N_Gen_ZPrimes");   
+    vars.InitVars("Gen_TPrimeandTPrimebar_M",-9.0,"N_Gen_TPrimesandTPrimebars");   
+    vars.InitVars("Gen_ZPrime_Pt",-9.0,"N_Gen_ZPrimes");   
 
 
-    vars.InitVars("Gen_TPrime_Pt","N_Gen_TPrimes");
-    vars.InitVars("Gen_TPrimebar_Pt","N_Gen_TPrimebars");
-    vars.InitVars("Gen_TPrimeandTPrimebar_Pt","N_Gen_TPrimesandTPrimebars");
+    vars.InitVars("Gen_TPrime_Pt",-9.0,"N_Gen_TPrimes");
+    vars.InitVars("Gen_TPrimebar_Pt",-9.0,"N_Gen_TPrimebars");
+    vars.InitVars("Gen_TPrimeandTPrimebar_Pt",-9.0,"N_Gen_TPrimesandTPrimebars");
 
-    vars.InitVars("Gen_WplusfromTop_Pt","N_Gen_WplusfromTops");
-    vars.InitVars("Gen_WminusfromTopbar_Pt","N_Gen_WminusfromTopbars");
-    vars.InitVars("Gen_WfromTopandTopbar_Pt","N_Gen_WfromTopsandTopbars");
+    vars.InitVars("Gen_WplusfromTop_Pt",-9.0,"N_Gen_WplusfromTops");
+    vars.InitVars("Gen_WminusfromTopbar_Pt",-9.0,"N_Gen_WminusfromTopbars");
+    vars.InitVars("Gen_WfromTopandTopbar_Pt",-9.0,"N_Gen_WfromTopsandTopbars");
 
-    vars.InitVars("Gen_WplusfromTPrime_Pt","N_Gen_WplusfromTPrimes");
-    vars.InitVars("Gen_WminusfromTPrimebar_Pt","N_Gen_WminusfromTPrimebars");
-    vars.InitVars("Gen_WfromTPrimeandTPrimebar_Pt","N_Gen_WfromTPrimesandTPrimebars");
+    vars.InitVars("Gen_WplusfromTPrime_Pt",-9.0,"N_Gen_WplusfromTPrimes");
+    vars.InitVars("Gen_WminusfromTPrimebar_Pt",-9.0,"N_Gen_WminusfromTPrimebars");
+    vars.InitVars("Gen_WfromTPrimeandTPrimebar_Pt",-9.0,"N_Gen_WfromTPrimesandTPrimebars");
 
-    vars.InitVars("Gen_BottomfromTop_Pt","N_Gen_BottomfromTops");
-    vars.InitVars("Gen_BottombarfromTopbar_Pt","N_Gen_BottombarfromTopbars");
-    vars.InitVars("Gen_BottomfromTopandTopbar_Pt","N_Gen_BottomfromTopsandTopbars");
+    vars.InitVars("Gen_BottomfromTop_Pt",-9.0,"N_Gen_BottomfromTops");
+    vars.InitVars("Gen_BottombarfromTopbar_Pt",-9.0,"N_Gen_BottombarfromTopbars");
+    vars.InitVars("Gen_BottomfromTopandTopbar_Pt",-9.0,"N_Gen_BottomfromTopsandTopbars");
 
-    vars.InitVars("Gen_BottomfromTPrime_Pt","N_Gen_BottomfromTPrimes");
-    vars.InitVars("Gen_BottombarfromTPrimebar_Pt","N_Gen_BottombarfromTPrimebars");
-    vars.InitVars("Gen_BottomfromTPrimeandTPrimebar_Pt","N_Gen_BottomfromTPrimesandTPrimebars");
-
-    
-    
-    vars.InitVars("Gen_Top_Eta","N_Gen_Tops");
-    vars.InitVars("Gen_Topbar_Eta","N_Gen_Topbars");
-    vars.InitVars("Gen_TopandTopbar_Eta","N_Gen_TopsandTopbars");
-
-    vars.InitVars("Gen_ZPrime_Eta","N_Gen_ZPrimes");    
-    vars.InitVars("Gen_TPrime_Eta","N_Gen_TPrimes");
-    vars.InitVars("Gen_TPrimebar_Eta","N_Gen_TPrimebars");
-    vars.InitVars("Gen_TPrimeandTPrimebar_Eta","N_Gen_TPrimesandTPrimebars");
-
-    vars.InitVars("Gen_WplusfromTop_Eta","N_Gen_WplusfromTops");
-    vars.InitVars("Gen_WminusfromTopbar_Eta","N_Gen_WminusfromTopbars");
-    vars.InitVars("Gen_WfromTopandTopbar_Eta","N_Gen_WfromTopsandTopbars");
-
-    vars.InitVars("Gen_WplusfromTPrime_Eta","N_Gen_WplusfromTPrimes");
-    vars.InitVars("Gen_WminusfromTPrimebar_Eta","N_Gen_WminusfromTPrimebars");
-    vars.InitVars("Gen_WfromTPrimeandTPrimebar_Eta","N_Gen_WfromTPrimesandTPrimebars");
-    
-    vars.InitVars("Gen_BottomfromTop_Eta","N_Gen_BottomfromTops");
-    vars.InitVars("Gen_BottombarfromTopbar_Eta","N_Gen_BottombarfromTopbars");
-    vars.InitVars("Gen_BottomfromTopandTopbar_Eta","N_Gen_BottomfromTopsandTopbars");
-
-    vars.InitVars("Gen_BottomfromTPrime_Eta","N_Gen_BottomfromTPrimes");
-    vars.InitVars("Gen_BottombarfromTPrimebar_Eta","N_Gen_BottombarfromTPrimebars");
-    vars.InitVars("Gen_BottomfromTPrimeandTPrimebar_Eta","N_Gen_BottomfromTPrimesandTPrimebars");
+    vars.InitVars("Gen_BottomfromTPrime_Pt",-9.0,"N_Gen_BottomfromTPrimes");
+    vars.InitVars("Gen_BottombarfromTPrimebar_Pt",-9.0,"N_Gen_BottombarfromTPrimebars");
+    vars.InitVars("Gen_BottomfromTPrimeandTPrimebar_Pt",-9.0,"N_Gen_BottomfromTPrimesandTPrimebars");
 
     
-    vars.InitVar("Gen_Top_TPrime_DeltaR");//,"input.zprimetotprimeallhad.GetTops_fromZprimes().size()*input.zprimetotprimeallhad.GetTPrimebars().size()");
-    vars.InitVar("Gen_Top_WfromTPrime_DeltaR");//,"input.zprimetotprimeallhad.GetTops_fromZprimes().size()*input.zprimetotprimeallhad.GetWminus_fromTPrimes().size()");
-    vars.InitVar("Gen_Top_BottomfromTPrime_DeltaR");//,"input.zprimetotprimeallhad.GetTop_fromZprimess().size()*input.zprimetotprimeallhad.GetTPrimeDecayQuarks().size()");
-    vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaR");//,"input.zprimetotprimeallhad.GetWplus_fromTPrimes().size()*input.zprimetotprimeallhad.GetTPrimeDecayQuarks().size()");
-    vars.InitVar("Gen_WfromTop_BottomfromTop_DeltaR");//,"input.zprimetotprimeallhad.GetWplus_fromTops().size()*input.zprimetotprimeallhad.GetTopDecayQuarks().size()");
     
-    vars.InitVar("Gen_Top_WfromTPrime_DeltaEta");
-    vars.InitVar("Gen_Top_BottomfromTPrime_DeltaEta");
-    vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaEta");
+    vars.InitVars("Gen_Top_Eta",-9.0,"N_Gen_Tops");
+    vars.InitVars("Gen_Topbar_Eta",-9.0,"N_Gen_Topbars");
+    vars.InitVars("Gen_TopandTopbar_Eta",-9.0,"N_Gen_TopsandTopbars");
+
+    vars.InitVars("Gen_ZPrime_Eta",-9.0,"N_Gen_ZPrimes");    
+    vars.InitVars("Gen_TPrime_Eta",-9.0,"N_Gen_TPrimes");
+    vars.InitVars("Gen_TPrimebar_Eta",-9.0,"N_Gen_TPrimebars");
+    vars.InitVars("Gen_TPrimeandTPrimebar_Eta",-9.0,"N_Gen_TPrimesandTPrimebars");
+
+    vars.InitVars("Gen_WplusfromTop_Eta",-9.0,"N_Gen_WplusfromTops");
+    vars.InitVars("Gen_WminusfromTopbar_Eta",-9.0,"N_Gen_WminusfromTopbars");
+    vars.InitVars("Gen_WfromTopandTopbar_Eta",-9.0,"N_Gen_WfromTopsandTopbars");
+
+    vars.InitVars("Gen_WplusfromTPrime_Eta",-9.0,"N_Gen_WplusfromTPrimes");
+    vars.InitVars("Gen_WminusfromTPrimebar_Eta",-9.0,"N_Gen_WminusfromTPrimebars");
+    vars.InitVars("Gen_WfromTPrimeandTPrimebar_Eta",-9.0,"N_Gen_WfromTPrimesandTPrimebars");
     
-    vars.InitVar("Gen_Top_WfromTPrime_DeltaPhi");
-    vars.InitVar("Gen_Top_BottomfromTPrime_DeltaPhi");
-    vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaPhi");
+    vars.InitVars("Gen_BottomfromTop_Eta",-9.0,"N_Gen_BottomfromTops");
+    vars.InitVars("Gen_BottombarfromTopbar_Eta",-9.0,"N_Gen_BottombarfromTopbars");
+    vars.InitVars("Gen_BottomfromTopandTopbar_Eta",-9.0,"N_Gen_BottomfromTopsandTopbars");
+
+    vars.InitVars("Gen_BottomfromTPrime_Eta",-9.0,"N_Gen_BottomfromTPrimes");
+    vars.InitVars("Gen_BottombarfromTPrimebar_Eta",-9.0,"N_Gen_BottombarfromTPrimebars");
+    vars.InitVars("Gen_BottomfromTPrimeandTPrimebar_Eta",-9.0,"N_Gen_BottomfromTPrimesandTPrimebars");
+
+    
+    vars.InitVar("Gen_Top_TPrime_DeltaR","F");//,"input.zprimetotprimeallhad.GetTops_fromZprimes().size()*input.zprimetotprimeallhad.GetTPrimebars().size()");
+    vars.InitVar("Gen_Top_WfromTPrime_DeltaR","F");//,"input.zprimetotprimeallhad.GetTops_fromZprimes().size()*input.zprimetotprimeallhad.GetWminus_fromTPrimes().size()");
+    vars.InitVar("Gen_Top_BottomfromTPrime_DeltaR","F");//,"input.zprimetotprimeallhad.GetTop_fromZprimess().size()*input.zprimetotprimeallhad.GetTPrimeDecayQuarks().size()");
+    vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaR","F");//,"input.zprimetotprimeallhad.GetWplus_fromTPrimes().size()*input.zprimetotprimeallhad.GetTPrimeDecayQuarks().size()");
+    vars.InitVar("Gen_WfromTop_BottomfromTop_DeltaR","F");//,"input.zprimetotprimeallhad.GetWplus_fromTops().size()*input.zprimetotprimeallhad.GetTopDecayQuarks().size()");
+    
+    vars.InitVar("Gen_Top_WfromTPrime_DeltaEta","F");
+    vars.InitVar("Gen_Top_BottomfromTPrime_DeltaEta","F");
+    vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaEta","F");
+    
+    vars.InitVar("Gen_Top_WfromTPrime_DeltaPhi","F");
+    vars.InitVar("Gen_Top_BottomfromTPrime_DeltaPhi","F");
+    vars.InitVar("Gen_WfromTPrime_BottomfromTPrime_DeltaPhi","F");
     
 }
 
 void ZPrimeToTPrimeAllHadProcessor::InitBasicRecoVars(VariableContainer& vars){
 
     vars.InitVar("N_packedPatJetsAK8PFCHSSoftDrop","I");
-    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Pt",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Eta",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Phi",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_E",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_M",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("NjettinessAK8CHS_tau1",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("NjettinessAK8CHS_tau2",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("NjettinessAK8CHS_tau3",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Pt",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Eta",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Phi",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_E",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_M",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("NjettinessAK8CHS_tau1",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("NjettinessAK8CHS_tau2",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("NjettinessAK8CHS_tau3",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
     
-    vars.InitVars("softDropMassAK8CHS",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("cmsTopTagPFJetsCHSMassAK8",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_subjetCSVv2",-9,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("softDropMassAK8CHS",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("cmsTopTagPFJetsCHSMassAK8",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_subjetCSVv2",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
 
 //    vars.InitVar("N_selectedPatJetsAK8PFCHSSoftDropPacked","I");
 //    vars.InitVar("N_packedPatJetsAK8PFCHSSoftDrop","I");
 /*
-    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_E",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
-    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_M",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
-    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_Pt",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
-    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_Phi",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
-    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_Eta",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
-    vars.InitVars("NsubjettinessAK8PFCHSSoftDropPacked_tau1",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
-    vars.InitVars("NsubjettinessAK8PFCHSSoftDropPacked_tau2",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
-    vars.InitVars("NsubjettinessAK8PFCHSSoftDropPacked_tau3",-9,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
+    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_E",-9.0,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
+    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_M",-9.0,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
+    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_Pt",-9.0,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
+    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_Phi",-9.0,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
+    vars.InitVars("selectedPatJetsAK8PFCHSSoftDropPacked_Eta",-9.0,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
+    vars.InitVars("NsubjettinessAK8PFCHSSoftDropPacked_tau1",-9.0,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
+    vars.InitVars("NsubjettinessAK8PFCHSSoftDropPacked_tau2",-9.0,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
+    vars.InitVars("NsubjettinessAK8PFCHSSoftDropPacked_tau3",-9.0,"N_selectedPatJetsAK8PFCHSSoftDropPacked");
 */
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Dr_Top",-9.,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Dr_GenB_Top",-9.,"N_packedPatJetsAK8PFCHSSoftDrop");
@@ -180,37 +180,37 @@ void ZPrimeToTPrimeAllHadProcessor::InitBasicRecoVars(VariableContainer& vars){
    vars.InitVar("N_Tops_withbtag","I");
    vars.InitVar("N_Tops_anti","I");
    vars.InitVar("N_Tops_withbtag_anti","I");
-   vars.InitVars("Tops_pt","N_Tops");
-   vars.InitVars("Tops_eta","N_Tops");
-   vars.InitVars("Tops_anti_pt","N_Tops_anti");
-   vars.InitVars("Tops_anti_eta","N_Tops_anti");
-   vars.InitVars("Tops_withbtag_pt","N_Tops_withbtag");  
-   vars.InitVars("Tops_withbtag_eta","N_Tops_withbtag");
-   vars.InitVars("Tops_withbtag_anti_pt","N_Tops_withbtag_anti");  
-   vars.InitVars("Tops_withbtag_anti_eta","N_Tops_withbtag_anti");  
+   vars.InitVars("Tops_pt",-9.0,"N_Tops");
+   vars.InitVars("Tops_eta",-9.0,"N_Tops");
+   vars.InitVars("Tops_anti_pt",-9.0,"N_Tops_anti");
+   vars.InitVars("Tops_anti_eta",-9.0,"N_Tops_anti");
+   vars.InitVars("Tops_withbtag_pt",-9.0,"N_Tops_withbtag");  
+   vars.InitVars("Tops_withbtag_eta",-9.0,"N_Tops_withbtag");
+   vars.InitVars("Tops_withbtag_anti_pt",-9.0,"N_Tops_withbtag_anti");  
+   vars.InitVars("Tops_withbtag_anti_eta",-9.0,"N_Tops_withbtag_anti");  
    
    vars.InitVar("N_Ws","I");
    vars.InitVar("N_Ws_anti","I");
-   vars.InitVars("Ws_pt","N_Ws");
-   vars.InitVars("Ws_eta","N_Ws");
-   vars.InitVars("Ws_anti_pt","N_Ws_anti");
-   vars.InitVars("Ws_anti_eta","N_Ws_anti");
+   vars.InitVars("Ws_pt",-9.0,"N_Ws");
+   vars.InitVars("Ws_eta",-9.0,"N_Ws");
+   vars.InitVars("Ws_anti_pt",-9.0,"N_Ws_anti");
+   vars.InitVars("Ws_anti_eta",-9.0,"N_Ws_anti");
    vars.InitVar("N_Bottoms","I");
    vars.InitVar("N_Bottoms_anti","I");
    vars.InitVar("N_no_Bottoms","I");
-   vars.InitVars("Bottoms_pt","N_Bottoms");
-   vars.InitVars("Bottoms_eta","N_Bottoms");
-   vars.InitVars("Bottoms_anti_pt","N_Bottoms_anti");
-   vars.InitVars("Bottoms_anti_eta","N_Bottoms_anti");
-   vars.InitVars("No_Bottoms_pt","N_no_Bottoms");
-   vars.InitVars("No_Bottoms_eta","N_no_Bottoms");
+   vars.InitVars("Bottoms_pt",-9.0,"N_Bottoms");
+   vars.InitVars("Bottoms_eta",-9.0,"N_Bottoms");
+   vars.InitVars("Bottoms_anti_pt",-9.0,"N_Bottoms_anti");
+   vars.InitVars("Bottoms_anti_eta",-9.0,"N_Bottoms_anti");
+   vars.InitVars("No_Bottoms_pt",-9.0,"N_no_Bottoms");
+   vars.InitVars("No_Bottoms_eta",-9.0,"N_no_Bottoms");
    
    vars.InitVar("N_Zs","I");
    vars.InitVar("N_Zs_anti","I");
-   vars.InitVars("Zs_pt","N_Zs");
-   vars.InitVars("Zs_eta","N_Zs");
-   vars.InitVars("Zs_anti_pt","N_Zs_anti");
-   vars.InitVars("Zs_anti_eta","N_Zs_anti");   
+   vars.InitVars("Zs_pt",-9.0,"N_Zs");
+   vars.InitVars("Zs_eta",-9.0,"N_Zs");
+   vars.InitVars("Zs_anti_pt",-9.0,"N_Zs_anti");
+   vars.InitVars("Zs_anti_eta",-9.0,"N_Zs_anti");   
    
    vars.InitVar("N_Higgs","I");
    vars.InitVar("N_Higgs_with1btag","I");
@@ -218,18 +218,18 @@ void ZPrimeToTPrimeAllHadProcessor::InitBasicRecoVars(VariableContainer& vars){
    vars.InitVar("N_Higgs_anti","I");
    vars.InitVar("N_Higgs_with1btag_anti","I");
    vars.InitVar("N_Higgs_with2btag_anti","I");
-   vars.InitVars("Higgs_pt","N_Higgs");
-   vars.InitVars("Higgs_eta","N_Higgs");
-   vars.InitVars("Higgs_anti_pt","N_Higgs_anti");
-   vars.InitVars("Higgs_anti_eta","N_Higgs_anti");
-   vars.InitVars("Higgs_with1btag_pt","N_Higgs_with1btag");  
-   vars.InitVars("Higgs_with1btag_eta","N_Higgs_with1btag");
-   vars.InitVars("Higgs_with1btag_anti_pt","N_Higgs_with1btag_anti");  
-   vars.InitVars("Higgs_with1btag_anti_eta","N_Higgs_with1btag_anti");    
-   vars.InitVars("Higgs_with2btag_pt","N_Higgs_with2btag");  
-   vars.InitVars("Higgs_with2btag_eta","N_Higgs_with2btag");
-   vars.InitVars("Higgs_with2btag_anti_pt","N_Higgs_with2btag_anti");  
-   vars.InitVars("Higgs_with2btag_anti_eta","N_Higgs_with2btag_anti"); 
+   vars.InitVars("Higgs_pt",-9.0,"N_Higgs");
+   vars.InitVars("Higgs_eta",-9.0,"N_Higgs");
+   vars.InitVars("Higgs_anti_pt",-9.0,"N_Higgs_anti");
+   vars.InitVars("Higgs_anti_eta",-9.0,"N_Higgs_anti");
+   vars.InitVars("Higgs_with1btag_pt",-9.0,"N_Higgs_with1btag");  
+   vars.InitVars("Higgs_with1btag_eta",-9.0,"N_Higgs_with1btag");
+   vars.InitVars("Higgs_with1btag_anti_pt",-9.0,"N_Higgs_with1btag_anti");  
+   vars.InitVars("Higgs_with1btag_anti_eta",-9.0,"N_Higgs_with1btag_anti");    
+   vars.InitVars("Higgs_with2btag_pt",-9.0,"N_Higgs_with2btag");  
+   vars.InitVars("Higgs_with2btag_eta",-9.0,"N_Higgs_with2btag");
+   vars.InitVars("Higgs_with2btag_anti_pt",-9.0,"N_Higgs_with2btag_anti");  
+   vars.InitVars("Higgs_with2btag_anti_eta",-9.0,"N_Higgs_with2btag_anti"); 
 }   
 
 void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& vars){
@@ -532,88 +532,88 @@ void ZPrimeToTPrimeAllHadProcessor::InitTaggingVars(VariableContainer& vars){
     ///Variables for misstag rates and tagging efficiencies
    
    vars.InitVar("N_tagged_top","I");
-   vars.InitVars("tagged_top_pt","N_tagged_top");
-   vars.InitVars("tagged_top_eta","N_tagged_top");
+   vars.InitVars("tagged_top_pt",-9.0,"N_tagged_top");
+   vars.InitVars("tagged_top_eta",-9.0,"N_tagged_top");
    vars.InitVar("N_tagged_top_withbtag","I");
-   vars.InitVars("tagged_top_withbtag_pt","N_tagged_top_withbtag");
-   vars.InitVars("tagged_top_withbtag_eta","N_tagged_top_withbtag");
+   vars.InitVars("tagged_top_withbtag_pt",-9.0,"N_tagged_top_withbtag");
+   vars.InitVars("tagged_top_withbtag_eta",-9.0,"N_tagged_top_withbtag");
    vars.InitVar("N_tagged_W","I");
-   vars.InitVars("tagged_W_pt","N_tagged_W");
-   vars.InitVars("tagged_W_eta","N_tagged_W");
+   vars.InitVars("tagged_W_pt",-9.0,"N_tagged_W");
+   vars.InitVars("tagged_W_eta",-9.0,"N_tagged_W");
    vars.InitVar("N_tagged_bottom","I");
-   vars.InitVars("tagged_bottom_pt","N_tagged_bottom");
-   vars.InitVars("tagged_bottom_eta","N_tagged_bottom");
+   vars.InitVars("tagged_bottom_pt",-9.0,"N_tagged_bottom");
+   vars.InitVars("tagged_bottom_eta",-9.0,"N_tagged_bottom");
 
    vars.InitVar("N_misstagged_top","I");
-   vars.InitVars("misstagged_top_pt","N_misstagged_top");
-   vars.InitVars("misstagged_top_eta","N_misstagged_top");
+   vars.InitVars("misstagged_top_pt",-9.0,"N_misstagged_top");
+   vars.InitVars("misstagged_top_eta",-9.0,"N_misstagged_top");
    vars.InitVar("N_misstagged_top_withbtag","I");
-   vars.InitVars("misstagged_top_withbtag_pt","N_misstagged_top_withbtag");
-   vars.InitVars("misstagged_top_withbtag_eta","N_misstagged_top_withbtag");
+   vars.InitVars("misstagged_top_withbtag_pt",-9.0,"N_misstagged_top_withbtag");
+   vars.InitVars("misstagged_top_withbtag_eta",-9.0,"N_misstagged_top_withbtag");
    vars.InitVar("N_misstagged_W","I");
-   vars.InitVars("misstagged_W_pt","N_misstagged_W");
-   vars.InitVars("misstagged_W_eta","N_misstagged_W");
+   vars.InitVars("misstagged_W_pt",-9.0,"N_misstagged_W");
+   vars.InitVars("misstagged_W_eta",-9.0,"N_misstagged_W");
    vars.InitVar("N_misstagged_bottom","I");
-   vars.InitVars("misstagged_bottom_pt","N_misstagged_bottom");
-   vars.InitVars("misstagged_bottom_eta","N_misstagged_bottom");
+   vars.InitVars("misstagged_bottom_pt",-9.0,"N_misstagged_bottom");
+   vars.InitVars("misstagged_bottom_eta",-9.0,"N_misstagged_bottom");
    
    vars.InitVar("N_AK8_top_tag_candidates","I");
-   vars.InitVars("AK8_top_tag_candidates_pt","N_AK8_top_tag_candidates");
-   vars.InitVars("AK8_top_tag_candidates_eta","N_AK8_top_tag_candidates");
+   vars.InitVars("AK8_top_tag_candidates_pt",-9.0,"N_AK8_top_tag_candidates");
+   vars.InitVars("AK8_top_tag_candidates_eta",-9.0,"N_AK8_top_tag_candidates");
    vars.InitVar("N_AK8_W_tag_candidates","I");
-   vars.InitVars("AK8_W_tag_candidates_pt","N_AK8_W_tag_candidates");
-   vars.InitVars("AK8_W_tag_candidates_eta","N_AK8_W_tag_candidates");
+   vars.InitVars("AK8_W_tag_candidates_pt",-9.0,"N_AK8_W_tag_candidates");
+   vars.InitVars("AK8_W_tag_candidates_eta",-9.0,"N_AK8_W_tag_candidates");
    vars.InitVar("N_AK4_bottom_tag_candidates","I");
-   vars.InitVars("AK4_bottom_tag_candidates_pt","N_AK4_bottom_tag_candidates");
-   vars.InitVars("AK4_bottom_tag_candidates_eta","N_AK4_bottom_tag_candidates");
+   vars.InitVars("AK4_bottom_tag_candidates_pt",-9.0,"N_AK4_bottom_tag_candidates");
+   vars.InitVars("AK4_bottom_tag_candidates_eta",-9.0,"N_AK4_bottom_tag_candidates");
    
    vars.InitVar("N_AK8_top_misstag_candidates","I");
-   vars.InitVars("AK8_top_misstagged_candidates_pt","N_AK8_top_misstag_candidates");
-   vars.InitVars("AK8_top_misstagged_candidates_eta","N_AK8_top_misstag_candidates");
+   vars.InitVars("AK8_top_misstagged_candidates_pt",-9.0,"N_AK8_top_misstag_candidates");
+   vars.InitVars("AK8_top_misstagged_candidates_eta",-9.0,"N_AK8_top_misstag_candidates");
    vars.InitVar("N_AK8_W_misstag_candidates","I");
-   vars.InitVars("AK8_W_misstagged_candidates_pt","N_AK8_W_misstag_candidates");
-   vars.InitVars("AK8_W_misstagged_candidates_eta","N_AK8_W_misstag_candidates");
+   vars.InitVars("AK8_W_misstagged_candidates_pt",-9.0,"N_AK8_W_misstag_candidates");
+   vars.InitVars("AK8_W_misstagged_candidates_eta",-9.0,"N_AK8_W_misstag_candidates");
    vars.InitVar("N_AK4_bottom_misstag_candidates","I");
-   vars.InitVars("AK4_bottom_misstagged_candidates_pt","N_AK4_bottom_misstag_candidates");
-   vars.InitVars("AK4_bottom_misstagged_candidates_eta","N_AK4_bottom_misstag_candidates");
+   vars.InitVars("AK4_bottom_misstagged_candidates_pt",-9.0,"N_AK4_bottom_misstag_candidates");
+   vars.InitVars("AK4_bottom_misstagged_candidates_eta",-9.0,"N_AK4_bottom_misstag_candidates");
    
    
    
    vars.InitVar("N_tagged_top_anti","I");
-   vars.InitVars("tagged_top_anti_pt","N_tagged_top_anti");
-   vars.InitVars("tagged_top_anti_eta","N_tagged_top_anti");
+   vars.InitVars("tagged_top_anti_pt",-9.0,"N_tagged_top_anti");
+   vars.InitVars("tagged_top_anti_eta",-9.0,"N_tagged_top_anti");
    vars.InitVar("N_tagged_top_withbtag_anti","I");
-   vars.InitVars("tagged_top_withbtag_anti_pt","N_tagged_top_withbtag_anti");
-   vars.InitVars("tagged_top_withbtag_anti_eta","N_tagged_top_withbtag_anti");
+   vars.InitVars("tagged_top_withbtag_anti_pt",-9.0,"N_tagged_top_withbtag_anti");
+   vars.InitVars("tagged_top_withbtag_anti_eta",-9.0,"N_tagged_top_withbtag_anti");
    vars.InitVar("N_tagged_W_anti","I");
-   vars.InitVars("tagged_W_anti_pt","N_tagged_W_anti");
-   vars.InitVars("tagged_W_anti_eta","N_tagged_W_anti");
+   vars.InitVars("tagged_W_anti_pt",-9.0,"N_tagged_W_anti");
+   vars.InitVars("tagged_W_anti_eta",-9.0,"N_tagged_W_anti");
    vars.InitVar("N_tagged_anti_bottom","I");
-   vars.InitVars("tagged_bottom_anti_pt","N_tagged_anti_bottom");
-   vars.InitVars("tagged_bottom_anti_eta","N_tagged_anti_bottom");
+   vars.InitVars("tagged_bottom_anti_pt",-9.0,"N_tagged_anti_bottom");
+   vars.InitVars("tagged_bottom_anti_eta",-9.0,"N_tagged_anti_bottom");
 
    vars.InitVar("N_misstagged_top_anti","I");
-   vars.InitVars("misstagged_top_anti_pt","N_misstagged_top_anti");
-   vars.InitVars("misstagged_top_anti_eta","N_misstagged_top_anti");
+   vars.InitVars("misstagged_top_anti_pt",-9.0,"N_misstagged_top_anti");
+   vars.InitVars("misstagged_top_anti_eta",-9.0,"N_misstagged_top_anti");
    vars.InitVar("N_misstagged_top_withbtag_anti","I");
-   vars.InitVars("misstagged_top_withbtag_anti_pt","N_misstagged_top_withbtag_anti");
-   vars.InitVars("misstagged_top_withbtag_anti_eta","N_misstagged_top_withbtag_anti");
+   vars.InitVars("misstagged_top_withbtag_anti_pt",-9.0,"N_misstagged_top_withbtag_anti");
+   vars.InitVars("misstagged_top_withbtag_anti_eta",-9.0,"N_misstagged_top_withbtag_anti");
    vars.InitVar("N_misstagged_W_anti","I");
-   vars.InitVars("misstagged_W_anti_pt","N_misstagged_W_anti");
-   vars.InitVars("misstagged_W_anti_eta","N_misstagged_W_anti");
+   vars.InitVars("misstagged_W_anti_pt",-9.0,"N_misstagged_W_anti");
+   vars.InitVars("misstagged_W_anti_eta",-9.0,"N_misstagged_W_anti");
    vars.InitVar("N_misstagged_bottom_anti","I");
-   vars.InitVars("misstagged_bottom_anti_pt","N_misstagged_bottom_anti");
-   vars.InitVars("misstagged_bottom_anti_eta","N_misstagged_bottom_anti");
+   vars.InitVars("misstagged_bottom_anti_pt",-9.0,"N_misstagged_bottom_anti");
+   vars.InitVars("misstagged_bottom_anti_eta",-9.0,"N_misstagged_bottom_anti");
    
    vars.InitVar("N_AK8_top_candidates","I");
-   vars.InitVars("AK8_top_candidates_pt","N_AK8_top_candidates");
-   vars.InitVars("AK8_top_candidates_eta","N_AK8_top_candidates");
+   vars.InitVars("AK8_top_candidates_pt",-9.0,"N_AK8_top_candidates");
+   vars.InitVars("AK8_top_candidates_eta",-9.0,"N_AK8_top_candidates");
    vars.InitVar("N_AK8_W_candidates","I");
-   vars.InitVars("AK8_W_candidates_pt","N_AK8_W_candidates");
-   vars.InitVars("AK8_W_candidates_eta","N_AK8_W_candidates");
+   vars.InitVars("AK8_W_candidates_pt",-9.0,"N_AK8_W_candidates");
+   vars.InitVars("AK8_W_candidates_eta",-9.0,"N_AK8_W_candidates");
    vars.InitVar("N_AK4_bottom_candidates","I");
-   vars.InitVars("AK4_bottom_candidates_pt","N_AK4_bottom_candidates");
-   vars.InitVars("AK4_bottom_candidates_eta","N_AK4_bottom_candidates");   
+   vars.InitVars("AK4_bottom_candidates_pt",-9.0,"N_AK4_bottom_candidates");
+   vars.InitVars("AK4_bottom_candidates_eta",-9.0,"N_AK4_bottom_candidates");   
    
 }
 
@@ -655,24 +655,24 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
 
 ///ABCD BACKGROUND ESTIMATION
    vars.InitVar("N_Zprime_ABCD","I");
-   vars.InitVars("Zprimes_ABCD_M","N_Zprime_ABCD");
-   vars.InitVars("Zprimes_ABCD_Pt","N_Zprime_ABCD");
-   vars.InitVars("Tprimes_ABCD_M","N_Zprime_ABCD");
-   vars.InitVars("Tprimes_ABCD_Pt","N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_Pt","N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_Eta","N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_Phi","N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_CSV","N_Zprime_ABCD");
-   vars.InitVars("Ws_ABCD_Pt","N_Zprime_ABCD");
-   vars.InitVars("Ws_ABCD_Eta","N_Zprime_ABCD");
-   vars.InitVars("Ws_ABCD_Phi","N_Zprime_ABCD");
-   vars.InitVars("Ws_ABCD_MSD","N_Zprime_ABCD");
-   vars.InitVars("Ws_ABCD_t21","N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_Pt","N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_Eta","N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_Phi","N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_MSD","N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_t32","N_Zprime_ABCD");
+   vars.InitVars("Zprimes_ABCD_M",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Zprimes_ABCD_Pt",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Tprimes_ABCD_M",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Tprimes_ABCD_Pt",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Bottoms_ABCD_Pt",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Bottoms_ABCD_Eta",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Bottoms_ABCD_Phi",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Bottoms_ABCD_CSV",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Ws_ABCD_Pt",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Ws_ABCD_Eta",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Ws_ABCD_Phi",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Ws_ABCD_MSD",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Ws_ABCD_t21",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Tops_ABCD_Pt",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Tops_ABCD_Eta",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Tops_ABCD_Phi",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Tops_ABCD_MSD",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Tops_ABCD_t32",-9.0,"N_Zprime_ABCD");
 
    
 ///Datadriven Background estimation   
