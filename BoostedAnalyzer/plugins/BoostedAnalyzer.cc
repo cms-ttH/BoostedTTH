@@ -403,15 +403,15 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
 	     }
 	if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
-	    if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {
+	    if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
 		cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl;
-		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
+		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
 	    }
 	    treewriter->AddTreeProcessor(new MVAVarProcessor(),"MVAVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
 	    if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {
-		cout << "adding BasicVarProcessor, needed for essentialMVAVarProcessor" << endl;
+		cout << "adding essentialBasicVarProcessor, needed for essentialMVAVarProcessor" << endl;
 		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
 	    }
 	    treewriter->AddTreeProcessor(new essentialMVAVarProcessor(pointerToMEMClassifier),"essentialMVAVarProcessor");
