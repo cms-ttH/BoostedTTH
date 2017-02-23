@@ -1051,7 +1051,7 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
         jetcsvs.push_back(MiniAODHelper::GetJetCSV(*itJet));
         jettype.push_back(MEMClassifier::JetType::RESOLVED);
 
-        if(jetcsvs.back()>0.89) ntags++;
+        if(jetcsvs.back()>0.8484) ntags++;
     }
 
     if(jetvecs.size()<minJets) return;

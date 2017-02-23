@@ -18,7 +18,7 @@ private:
     int minJets;
     int minTags;
     MEMClassifier mem;
-    const double btagMcut=0.8;
+    const double btagMcut=0.8484;
     const double btagMcutCMVA= 0.185 ;
   
 };
