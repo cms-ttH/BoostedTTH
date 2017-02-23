@@ -2,8 +2,14 @@
 
 using namespace std;
 
-MVAVarProcessor::MVAVarProcessor(){}
-MVAVarProcessor::~MVAVarProcessor(){}
+MVAVarProcessor::MVAVarProcessor(){
+  mem = new MEMClassifier();
+}
+
+MVAVarProcessor::MVAVarProcessor(MEMClassifier* mem_){
+  std::cout<<"non default constructor"<<std::endl;
+  mem=mem_;
+}
 
 
 void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
@@ -771,11 +777,11 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   double out_P_2b=-1;
   double eth_blr=-1;
   if(input.selectedJets.size()>3)
-      eth_blr=mem.GetBTagLikelihoodRatio(jettvecs,
-					 jetcsvs,
-					 out_best_perm,
-					 out_P_4b,
-					 out_P_2b);
+      eth_blr=mem->GetBTagLikelihoodRatio(jettvecs,
+					  jetcsvs,
+					  out_best_perm,
+					  out_P_4b,
+					  out_P_2b);
 
   vars.FillVar("Evt_blr_ETH",eth_blr);
   vars.FillVar("Evt_blr_ETH_transformed",log(eth_blr/(1-eth_blr)));
