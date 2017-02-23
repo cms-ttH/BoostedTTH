@@ -407,7 +407,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 		cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl;
 		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
 	    }
-	    treewriter->AddTreeProcessor(new MVAVarProcessor(),"MVAVarProcessor");
+	    treewriter->AddTreeProcessor(new MVAVarProcessor(pointerToMEMClassifier),"MVAVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
 	    if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {

@@ -2,10 +2,11 @@
 
 using namespace std;
 
-essentialMVAVarProcessor::essentialMVAVarProcessor(){}
-essentialMVAVarProcessor::~essentialMVAVarProcessor(){
+essentialMVAVarProcessor::essentialMVAVarProcessor(){
   mem = new MEMClassifier();
 }
+
+essentialMVAVarProcessor::~essentialMVAVarProcessor(){}
 
 
 essentialMVAVarProcessor::essentialMVAVarProcessor(MEMClassifier* mem_){

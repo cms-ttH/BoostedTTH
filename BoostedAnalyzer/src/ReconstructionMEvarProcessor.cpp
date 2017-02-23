@@ -108,7 +108,7 @@ void ReconstructionMEvarProcessor::Process(const InputCollections& input,Variabl
 	jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
 	if(BoostedUtils::PassesCSV(*j)) ntags++;
     }
-    if(ntags<4) return;
+    if(ntags<2) return;
     if(input.selectedElectrons.size()+input.selectedMuons.size()<1) return;
     TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
     TVector2 metvec(input.correctedMET.px(),input.correctedMET.py());

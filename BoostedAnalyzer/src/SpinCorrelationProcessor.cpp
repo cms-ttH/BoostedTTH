@@ -347,7 +347,7 @@ reco::GenParticle SpinCorrelationProcessor::MatchPartontoJet (vector<reco::GenPa
 
 using namespace std;
 
-SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,10,-9999,9999,0.8)){}
+SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,10,-9999,9999,0.8484)){}
 SpinCorrelationProcessor::~SpinCorrelationProcessor (){}
 
 void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContainer& vars){
