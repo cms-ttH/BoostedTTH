@@ -51,7 +51,7 @@ private:
     virtual void beginStream(edm::StreamID) override;
     virtual void produce(edm::Event&, const edm::EventSetup&) override;
     virtual void endStream() override;
-    std::string systName(std::string name, sysType::sysType);
+    std::string systName(std::string name, Systematics::Type);
     
     //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
     //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
@@ -81,7 +81,7 @@ private:
     /** names of output jet collections **/
     std::vector<std::string> collectionNames;
     /** systematics used **/
-    std::vector<sysType::sysType> systematics;
+    std::vector<Systematics::Type> systematics;
     /** apply jet energy correciton? **/
     bool applyCorrection;
     bool doJER;
@@ -124,7 +124,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     const std::vector<std::string> s_systematics = iConfig.getParameter< std::vector<std::string> >("systematics");
     for(uint i=0; i<s_systematics.size(); i++){
       try {
-	systematics.push_back(sysType::get(s_systematics[i]));
+	systematics.push_back(Systematics::get(s_systematics[i]));
       } catch(cms::Exception& e) {
 	throw cms::Exception("InvalidUncertaintyName") << "SelectedJetProducer: systematic name " << s_systematics[i] << " not recognized" << std::endl;
       }
@@ -221,9 +221,9 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    
 }
 
-std::string SelectedJetProducer::systName(std::string name,sysType::sysType sysType){
-  if( sysType == sysType::NA ) return name;
-  else                         return name + sysType::toString(sysType);
+std::string SelectedJetProducer::systName(std::string name,Systematics::Type sysType){
+  if( sysType == Systematics::NA ) return name;
+  else                         return name + Systematics::toString(sysType);
 }
 
 // ------------ method called once each stream before processing any runs, lumis or events  ------------

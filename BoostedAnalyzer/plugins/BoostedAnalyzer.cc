@@ -128,9 +128,9 @@ private:
     virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
     virtual void beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup) override;
     float GetTopPtWeight(float toppt1, float toppt2);
-    map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype=sysType::NA);
-    std::string outfileName(const std::string& basename,const sysType::sysType& sysType);
-    std::string systName(const sysType::sysType& sysType);
+    map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, Systematics::Type systype=Systematics::NA);
+    std::string outfileName(const std::string& basename,const Systematics::Type& sysType);
+    std::string systName(const Systematics::Type& sysType);
 
 
     // ----------member data ---------------------------
@@ -177,7 +177,7 @@ private:
     /** Class that tests objects and event selections */
     Synchronizer synchronizer;
     /** systematics */
-    std::vector<sysType::sysType> jetSystematics;
+    std::vector<Systematics::Type> jetSystematics;
     /** generator systematics weigths (pdf, ME scale, etc) */
     bool dogenweights;
     /** class to extract generator weights */
@@ -279,7 +279,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     selectionNames= iConfig.getParameter< std::vector<std::string> >("selectionNames");
     std::vector<std::string> systematicsNames = iConfig.getParameter<std::vector<std::string> >("systematics");
     for (auto const &s : systematicsNames){
-      jetSystematics.push_back(sysType::get(s));
+      jetSystematics.push_back(Systematics::get(s));
     }
     for (auto const &s : jetSystematics){
       outfileNames.push_back(outfileName(outfileNameBase,s));
@@ -756,7 +756,7 @@ float BoostedAnalyzer::GetTopPtWeight(float toppt1,float toppt2){
     return sqrt(sf1*sf2);
 }
 
-map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, sysType::sysType systype){
+map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, Systematics::Type systype){
     map<string,float> weights;
 
     if(isData){
@@ -795,10 +795,10 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	jetFlavors.push_back(itJet->hadronFlavour());
     }
 
-    if(systype==sysType::JESup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,7, csvWgtHF, csvWgtLF, csvWgtCF);
-    else if(systype==sysType::JESdown)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,8, csvWgtHF, csvWgtLF, csvWgtCF);
-    else if(systype==sysType::JERup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
-    else if(systype==sysType::JERdown)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
+    if(systype==Systematics::JESup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,7, csvWgtHF, csvWgtLF, csvWgtCF);
+    else if(systype==Systematics::JESdown)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,8, csvWgtHF, csvWgtLF, csvWgtCF);
+    else if(systype==Systematics::JERup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
+    else if(systype==Systematics::JERdown)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
     else csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF);
 
     // compute PU weights, and set nominal weight
@@ -813,7 +813,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     weights["Weight_TopPt"] = topptweight;
 
     bool doSystematics=true;
-    if(doSystematics && systype != sysType::JESup && systype != sysType::JESdown && systype != sysType::JERup && systype != sysType::JERdown) {
+    if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
 
 	weights["Weight_CSVLFup"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,9, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_CSVLFdown"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,10, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
@@ -855,20 +855,20 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 
     return weights;
 }
-std::string BoostedAnalyzer::systName(const sysType::sysType& sysType){
-  if( sysType == sysType::NA ) return "nominal";
-  else                         return sysType::toString(sysType);
+std::string BoostedAnalyzer::systName(const Systematics::Type& sysType){
+  if( sysType == Systematics::NA ) return "nominal";
+  else                         return Systematics::toString(sysType);
 }
 
-std::string BoostedAnalyzer::outfileName(const std::string& basename, const sysType::sysType& sysType){
-  const std::string systLabel = sysType::toString(sysType);
+std::string BoostedAnalyzer::outfileName(const std::string& basename, const Systematics::Type& sysType){
+  const std::string systLabel = Systematics::toString(sysType);
   const size_t stringIndex = basename.find("nominal");
   if(stringIndex!=std::string::npos){
     std::string outfileName=basename;
     outfileName.replace(stringIndex,7,systLabel);
     return outfileName;
   }
-  if(sysType==sysType::NA) return basename+"_nominal";
+  if(sysType==Systematics::NA) return basename+"_nominal";
   else                     return basename+"_"+systLabel;
 }
 
