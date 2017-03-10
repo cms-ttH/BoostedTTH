@@ -108,6 +108,8 @@
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
 #include "TTH/CommonClassifier/interface/BDTClassifier.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
+
 
 //
 // class declaration
@@ -478,6 +480,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"GenJetOrderedJetCollectionProcessor")!=processorNames.end()) {
 	  treewriter->AddTreeProcessor(new GenJetOrderedJetCollectionProcessor,"GenJetOrderedJetCollectionProcessor");
+	}
+	if(std::find(processorNames.begin(),processorNames.end(),"TTBBStudienProcessor")!=processorNames.end()) {
+	  treewriter->AddTreeProcessor(new TTBBStudienProcessor,"TTBBStudienProcessor");
 	}
     }
 
