@@ -41,8 +41,6 @@ Follow These Steps:
     mkdir TTH
     cd TTH
     git clone --depth 1 https://gitlab.cern.ch/ttH/CommonClassifier.git
-    # use v0.2 of ME integration -- v0.3 does not compile with CMSSW
-    sed -i 's|git clone https://github.com/jpata/Code.git MEIntegratorStandalone --branch v0.3|git clone https://github.com/bianchini/Code.git MEIntegratorStandalone --branch v0.2|g' CommonClassifier/setup/install_mem.sh
     source CommonClassifier/setup/install_mem.sh
     # use recent version of LHAPDF header
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
