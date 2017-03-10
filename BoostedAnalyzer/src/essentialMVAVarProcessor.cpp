@@ -149,11 +149,11 @@ void essentialMVAVarProcessor::Init(const InputCollections& input,VariableContai
   vars.InitVar( "Evt_Aplanarity" );
   vars.InitVar( "Evt_Sphericity" );
     
-  vars.InitVar( "Evt_H0" );
-  vars.InitVar( "Evt_H1" );
-  vars.InitVar( "Evt_H2" );
-  vars.InitVar( "Evt_H3" );
-  vars.InitVar( "Evt_H4" );
+//   vars.InitVar( "Evt_H0" );
+//   vars.InitVar( "Evt_H1" );
+//   vars.InitVar( "Evt_H2" );
+//   vars.InitVar( "Evt_H3" );
+//   vars.InitVar( "Evt_H4" );
   
 //   vars.InitVar("Evt_Deta_TopLep_BB_Ohio");
 //   vars.InitVar("Evt_Deta_TopHad_BB_Ohio");

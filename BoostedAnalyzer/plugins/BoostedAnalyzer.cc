@@ -769,7 +769,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	weights["Weight_XS"] = 1.0;
 	weights["Weight_CSV"] = 1.0;
 	weights["Weight_PU"] = 1.0;
-	weights["Weight_TopPt"] = 1.0;
+// 	weights["Weight_TopPt"] = 1.0;
 	weights["Weight_PV"] = 1.0;
 	return weights;
     }
@@ -799,7 +799,8 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	jetCSVs.push_back(helper.GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
 	jetFlavors.push_back(itJet->hadronFlavour());
     }
-
+    
+    // need to update this when we have the csv scale factors -> Also update in scriptgenerator.py
     if(systype==Systematics::JESup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,7, csvWgtHF, csvWgtLF, csvWgtCF);
     else if(systype==Systematics::JESdown)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,8, csvWgtHF, csvWgtLF, csvWgtCF);
     else if(systype==Systematics::JERup)csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
@@ -815,10 +816,11 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     weights["Weight_XS"] = xsweight;
     weights["Weight_CSV"] = csvweight;
     weights["Weight_PU"] = puweight;
-    weights["Weight_TopPt"] = topptweight;
+//     weights["Weight_TopPt"] = topptweight;
 
     bool doSystematics=true;
-    if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
+//     if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
+     if(doSystematics && systype == Systematics::NA) { // only do these for the nominal samples
 
 	weights["Weight_CSVLFup"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,9, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_CSVLFdown"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,10, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
@@ -836,8 +838,8 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	weights["Weight_CSVCErr1down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,22, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_CSVCErr2up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,23, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_CSVCErr2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,24, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_TopPtup"] = topptweightUp;
-	weights["Weight_TopPtdown"] = topptweightDown;
+// 	weights["Weight_TopPtup"] = topptweightUp;
+// 	weights["Weight_TopPtdown"] = topptweightDown;
   }
 
  //Add Lepton Scalefactors to weight map
@@ -847,13 +849,13 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
       weights["Weight_"+sfit->first] = sfit->second;
     }
 
-	// set optional additional PU weights
-	for(std::vector<PUWeights::Weight>::const_iterator it = puWeights.additionalWeightsBegin();
-	    it != puWeights.additionalWeightsEnd(); ++it) {
-	    weights[it->name()] = it->value();
-	}
+    // set optional additional PU weights
+    for(std::vector<PUWeights::Weight>::const_iterator it = puWeights.additionalWeightsBegin();
+	  it != puWeights.additionalWeightsEnd(); ++it) {
+	  weights[it->name()] = it->value();
+    }
 	//Add Genweights to the weight map
-	genweights.GetGenWeights(weights, lheInfo, dogenweights);
+    genweights.GetGenWeights(weights, lheInfo, dogenweights);
 	//DANGERZONE
 // 	genweights.GetLHAPDFWeight(weights, genInfo);
 	//DANGERZONE
