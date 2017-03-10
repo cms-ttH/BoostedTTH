@@ -87,7 +87,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/MEMProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
@@ -258,7 +257,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     filterInfoProd(FilterInfoProducer(iConfig,consumesCollector()))
 
 {
-  const bool BTagSystematics = false;
   
   //set up resource monitor
   ResMon= new ResourceMonitor();
@@ -445,9 +443,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier),"BDTVarProcessor");
 	}
- 	if(std::find(processorNames.begin(),processorNames.end(),"MEMProcessor")!=processorNames.end()) {
- 	    treewriter->AddTreeProcessor(new MEMProcessor(iConfig),"MEMProcessor");
- 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
 	}

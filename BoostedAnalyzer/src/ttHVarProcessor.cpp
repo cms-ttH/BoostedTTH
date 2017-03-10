@@ -18,7 +18,7 @@ void ttHVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   InitAk5JetsVars(vars);
   InitCombinationVars(vars);
   InitMCVars(vars);
-  InitMEMVars(vars);
+  //InitMEMVars(vars);
 
   initialized = true;
 }
@@ -70,7 +70,7 @@ void ttHVarProcessor::Process(const InputCollections& input,VariableContainer& v
   FillCombinationVars(vars,ttHEvent);
   FillMCVars(vars,ttHEvent,input);
   if(doMEM){
-      FillMEMVars(vars,ttHEvent,input);
+      //FillMEMVars(vars,ttHEvent,input);
   }
 }
 
@@ -335,7 +335,7 @@ void ttHVarProcessor::InitMCVars(VariableContainer& vars){
   vars.InitVar(prefix+"Dr_Lep",-9.);
 }
 
-
+/*
 void ttHVarProcessor::InitMEMVars(VariableContainer& vars){
     vars.InitVar(prefix+"MEM_p",-9.);
     vars.InitVar(prefix+"MEM_p_sig",-9.);
@@ -345,7 +345,7 @@ void ttHVarProcessor::InitMEMVars(VariableContainer& vars){
     vars.InitVar(prefix+"MEM_n_perm_sig",-9.,"I");
     vars.InitVar(prefix+"MEM_n_perm_bkg",-9.,"I");
 }
-
+*/
 
 void ttHVarProcessor::FillHiggsCandidateVars(VariableContainer& vars, BoostedttHEvent& ttHEvent){
 
@@ -941,7 +941,7 @@ void ttHVarProcessor::FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHEve
   }
 }
 
-
+/*
 void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHEvent, const InputCollections& input){
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
@@ -1070,3 +1070,4 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
   vars.FillVar(prefix+"MEM_n_perm_bkg",result.n_perm_bkg);
 
 }
+*/
