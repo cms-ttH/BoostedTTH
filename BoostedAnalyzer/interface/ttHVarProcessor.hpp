@@ -31,7 +31,7 @@ class ttHVarProcessor: public TreeProcessor{
     void InitAk5JetsVars(VariableContainer& vars);
     void InitCombinationVars(VariableContainer& vars);
     void InitMCVars(VariableContainer& vars);
-    void InitMEMVars(VariableContainer& vars);
+    //void InitMEMVars(VariableContainer& vars);
     void InitHiggsCandidateAk4Vars(VariableContainer& vars);
     void InitTopHadCandidateAk4Vars(VariableContainer& vars);
     void InitTopLepCandidateAk4Vars(VariableContainer& vars);
@@ -45,7 +45,7 @@ class ttHVarProcessor: public TreeProcessor{
     void FillAk5JetsVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
     void FillCombinationVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
     void FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHevent,const InputCollections& input);
-    void FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHEvent, const InputCollections& input);
+    //void FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHEvent, const InputCollections& input);
 
   private:
 
