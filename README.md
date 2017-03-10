@@ -22,7 +22,7 @@ Follow These Steps:
     # EGMSmearer and data
     git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
     cd EgammaAnalysis/ElectronTools/data
-    git clone https://github.com/ECALELFS/ScalesSmearings.git
+    git clone --depth 1 --shallow-submodules https://github.com/ECALELFS/ScalesSmearings.git
     cd ../../..
 
     # ttHFGenFilter
@@ -30,7 +30,7 @@ Follow These Steps:
     #git cms-merge-topic riga:ttHFGenFilter_tagging
  
     # bjetness code
-    git clone https://github.com/IHEP-CMS/BJetnessTTHbb.git
+    git clone --depth 1 --shallow-submodules https://github.com/IHEP-CMS/BJetnessTTHbb.git
     cd BJetnessTTHbb/BJetness
     mkdir data
     cp -r /afs/cern.ch/work/f/fromeo/public/BJetnessTTHbb/JEC/ data/
@@ -40,7 +40,7 @@ Follow These Steps:
     # install common classifier
     mkdir TTH
     cd TTH
-    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git
+    git clone --depth 1 --shallow-submodules https://gitlab.cern.ch/ttH/CommonClassifier.git
     # use v0.2 of ME integration -- v0.3 does not compile with CMSSW
     sed -i 's|git clone https://github.com/jpata/Code.git MEIntegratorStandalone --branch v0.3|git clone https://github.com/bianchini/Code.git MEIntegratorStandalone --branch v0.2|g' CommonClassifier/setup/install_mem.sh
     source CommonClassifier/setup/install_mem.sh
@@ -51,8 +51,8 @@ Follow These Steps:
     
     # install miniaod and boostedtth
     cd $CMSSW_BASE/src
-    git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_24_v1_sync
-    git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_26_patch1
+    git clone  -b 'Spring17_v2' --single-branch --depth 1 https://github.com/cms-ttH/MiniAOD.git
+    git clone --depth 1 --shallow-submodules -b CMSSW_8_0_26_patch1 https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
     cd $CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data
