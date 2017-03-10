@@ -241,7 +241,7 @@ for s in systs:
     if s=='JERup': v=+1
     elif s=='JERdown': v=-1
     elif not s in systsJES: print s,'is no valid JER/JES systematic'
-    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=v))
+    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=v,src=cms.InputTag("CorrectedJetProducer:correctedJets"+s)))
 
 
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
