@@ -4,7 +4,7 @@ using namespace std;
 BDTVarProcessor::BDTVarProcessor():
 //     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
 //     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
-    commonBDT5(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_v5/")) {needToDeleteBDTClassifier=true;}
+    commonBDT5(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_ICHEP16/")) {needToDeleteBDTClassifier=true;}
 BDTVarProcessor::~BDTVarProcessor(){
   if(needToDeleteBDTClassifier){
     delete commonBDT5;
