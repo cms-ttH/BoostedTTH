@@ -1,7 +1,8 @@
 BoostedTTH
 =======
-
 CMSSW tools for analyzing TTH events with boosted objects
+
+[![Build Status](https://mharrend.web.cern.ch/buildStatus/icon?job=cms-ttH/BoostedTTH/CMSSW_8_0_26_patch1)](https://mharrend.web.cern.ch/job/cms-ttH/job/BoostedTTH/job/CMSSW_8_0_26_patch1/)
 
 ## Installation
 Follow These Steps:
