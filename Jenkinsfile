@@ -16,7 +16,8 @@ pipeline {
       steps {
         echo 'Start script'
         node(label: 'naf') {
-          sh '''#!/bin/zsh -l
+          catchError() {
+            sh '''#!/bin/zsh -l
 # Use login shell
 
 set -o xtrace
@@ -100,6 +101,8 @@ sed -i '248,259d' PhysicsTools/PatUtils/interface/SmearedJetProducerT.h
 
 #compile
 scram b -j10'''
+          }
+          
         }
         
       }
@@ -107,6 +110,7 @@ scram b -j10'''
     stage('Deploy') {
       steps {
         echo 'Finishing...'
+        catchError()
       }
     }
   }
