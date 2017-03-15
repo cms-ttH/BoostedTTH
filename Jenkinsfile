@@ -9,7 +9,7 @@ pipeline {
     stage('Preparation') {
       steps {
         echo 'Start with preparations'
-        mattermostSend(message: 'Start with preparations', channel: 'harrendorf-devel', endpoint: 'https://mattermost.ekp.kit.edu/hooks/73p15p59tjfdida9o3h9fxnfwe', icon: 'https://wiki.jenkins-ci.org/download/attachments/2916393/headshot.png?version=1&modificationDate=1302753947000')
+        mattermostSend(message: 'Start with preparations', channel: 'harrendorf-devel', icon: 'https://wiki.jenkins-ci.org/download/attachments/2916393/headshot.png?version=1&modificationDate=1302753947000')
       }
     }
     stage('Start script') {
