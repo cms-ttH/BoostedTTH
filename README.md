@@ -26,8 +26,10 @@ Follow These Steps:
     sed -i 's/cfg.pdfset/cfg.pdfset, 0/g' TTH/MEIntegratorStandalone/src/Integrand.cpp
     cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/SubjetFilterJetProducer.cc RecoJets/JetProducers/plugins/
     cp BoostedTTH/BoostedProducer/plugins/ModifiedProducer/FastjetJetProducer.cc RecoJets/JetProducers/plugins/ 
+    git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_80X_V2
     scram b -j 10
     scram b -j 10
+    
     
 Known issue: Running scram b for the first time results in error.
 Fix: Run scram b multiple times.
