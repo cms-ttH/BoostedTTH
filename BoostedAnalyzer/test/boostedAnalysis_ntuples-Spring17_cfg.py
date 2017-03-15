@@ -236,12 +236,13 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
     scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
 )
 # up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
-for s in systs:
+for s in systsJER:
     v=0
     if s=='JERup': v=+1
     elif s=='JERdown': v=-1
-    elif not s in systsJES: print s,'is no valid JER/JES systematic'
-    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=v,src=cms.InputTag("CorrectedJetProducer:correctedJets"+s)))
+    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=v,src=cms.InputTag("CorrectedJetProducer:correctedJets")))
+for s in systsJES:
+    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=0,src=cms.InputTag("CorrectedJetProducer:correctedJets"+s)))
 
 
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
