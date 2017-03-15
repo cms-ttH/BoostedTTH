@@ -110,7 +110,7 @@ scram b -j10'''
     stage('Deploy') {
       steps {
         echo 'Finishing...'
-        catchError()
+        mattermostSend(message: 'Finished with jog', channel: 'harrendorf-devel', color: 'green')
       }
     }
   }
