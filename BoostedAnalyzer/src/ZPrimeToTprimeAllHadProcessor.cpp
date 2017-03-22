@@ -573,19 +573,19 @@ void ZPrimeToTPrimeAllHadProcessor::InitTaggingVars(VariableContainer& vars){
 		
 		//second run
 		
-		vars.InitVar("TTM_Zprime_no_top_M",-9.0,"F");
-		vars.InitVar("TTM_Zprime_no_top_pt",-9.0,"F");
-		vars.InitVar("TTM_Zprime_no_top_eta",-9.0,"F");
-		vars.InitVar("TTM_Tprime_no_top_M",-9.0,"F");
-		vars.InitVar("TTM_Tprime_no_top_pt",-9.0,"F");
-		vars.InitVar("TTM_Tprime_no_top_eta",-9.0,"F");
-		vars.InitVar("TTM_separated_highest_bottoms_no_top_M",-9.0,"F");
-		vars.InitVar("TTM_separated_highest_bottoms_no_top_pt",-9.0,"F");
-		vars.InitVar("TTM_separated_highest_bottoms_no_top_eta",-9.0,"F");
-		vars.InitVar("N_TTM_separated_bottoms_no_top",-9.0,"I");
-		vars.InitVars("TTM_separated_bottoms_no_top_M",-9.0,"N_TTM_separated_bottoms_no_top");
-		vars.InitVars("TTM_separated_bottoms_no_top_pt",-9.0,"N_TTM_separated_bottoms_no_top");
-		vars.InitVars("TTM_separated_bottoms_no_top_eta",-9.0,"N_TTM_separated_bottoms_no_top");
+		vars.InitVar("TTM_no_top_Zprime_M",-9.0,"F");
+		vars.InitVar("TTM_no_top_Zprime_pt",-9.0,"F");
+		vars.InitVar("TTM_no_top_Zprime_eta",-9.0,"F");
+		vars.InitVar("TTM_no_top_Tprime_M",-9.0,"F");
+		vars.InitVar("TTM_no_top_Tprime_pt",-9.0,"F");
+		vars.InitVar("TTM_no_top_Tprime_eta",-9.0,"F");
+		vars.InitVar("TTM_no_top_separated_highest_bottoms_M",-9.0,"F");
+		vars.InitVar("TTM_no_top_separated_highest_bottoms_pt",-9.0,"F");
+		vars.InitVar("TTM_no_top_separated_highest_bottoms_eta",-9.0,"F");
+		vars.InitVar("N_TTM_no_top_separated_bottoms",-9.0,"I");
+		vars.InitVars("TTM_no_top_separated_bottoms_M",-9.0,"N_TTM_no_top_separated_bottoms");
+		vars.InitVars("TTM_no_top_separated_bottoms_pt",-9.0,"N_TTM_no_top_separated_bottoms");
+		vars.InitVars("TTM_no_top_separated_bottoms_eta",-9.0,"N_TTM_no_top_separated_bottoms");
 		
     ///Variables for misstag rates and tagging efficiencies
    
@@ -2989,6 +2989,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 		vars.FillVar("TTM_highest_Ws_eta",TTM_Ws_highest_pt[0].eta());
 		vars.FillVar("TTM_Mistagrate",foo.GetMistagrate(TTM_AK8_top_candidates_highest_pt[0].pt(),TTM_AK8_top_candidates_highest_pt[0].eta()));
 		std::cout << "Mistagrate:  " << foo.GetMistagrate(TTM_AK8_top_candidates_highest_pt[0].pt(),TTM_AK8_top_candidates_highest_pt[0].eta()) << std::endl;
+		std::cout << "TTM_AK8_top_candidates_highest_pt[0].pt():    " << TTM_AK8_top_candidates_highest_pt[0].pt() << std::endl;
+		std::cout << "TTM_AK8_top_candidates_highest_pt[0].eta():   " << TTM_AK8_top_candidates_highest_pt[0].eta() << std::endl;
 		std::cout << "Mass of highest pt AK8 Jet:  " << TTM_AK8_top_candidates_highest_pt[0].mass() << std::endl;
   }
   else 
@@ -3048,9 +3050,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 					}
 				}
 			}
-			
   
-			//second run with converted top
+			//second run with inverted top tag
 			
 			if (ht>850 && bottoms.size()>0 && Ws.size()>0 && AK8_top_candidates.size()>0 && tops.size()==0 ) 
 			{
@@ -3060,10 +3061,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 					for (std::vector<pat::Jet>::const_iterator itJet = TTM_separated_bottoms.begin() ; itJet != TTM_separated_bottoms.end(); ++itJet)
 					{
 						int iJet = itJet-TTM_separated_bottoms.begin();
-						vars.FillVar("N_TTM_separated_bottoms_no_top",TTM_separated_bottoms.size());
-						vars.FillVars("TTM_separated_bottoms_no_top_M",iJet,TTM_separated_bottoms[iJet].mass());
-						vars.FillVars("TTM_separated_bottoms_no_top_pt",iJet,TTM_separated_bottoms[iJet].pt());
-						vars.FillVars("TTM_separated_bottoms_no_top_eta",iJet,TTM_separated_bottoms[iJet].eta());
+						vars.FillVar("N_TTM_no_top_separated_bottoms",TTM_separated_bottoms.size());
+						vars.FillVars("TTM_no_top_separated_bottoms_M",iJet,TTM_separated_bottoms[iJet].mass());
+						vars.FillVars("TTM_no_top_separated_bottoms_pt",iJet,TTM_separated_bottoms[iJet].pt());
+						vars.FillVars("TTM_no_top_separated_bottoms_eta",iJet,TTM_separated_bottoms[iJet].eta());
 					}
 				}
 					
@@ -3071,9 +3072,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 			  {
 			  	while(!TTM_separated_bottoms_highest_pt.empty()) TTM_separated_bottoms_highest_pt.pop_back();
 			  	TTM_separated_bottoms_highest_pt.push_back(TTM_separated_bottoms.at(0));
-			  	vars.FillVar("TTM_separated_highest_bottoms_no_top_M",TTM_separated_bottoms_highest_pt[0].mass());
-					vars.FillVar("TTM_separated_highest_bottoms_no_top_pt",TTM_separated_bottoms_highest_pt[0].pt());
-					vars.FillVar("TTM_separated_highest_bottoms_no_top_eta",TTM_separated_bottoms_highest_pt[0].eta());
+			  	vars.FillVar("TTM_no_top_separated_highest_bottoms_M",TTM_separated_bottoms_highest_pt[0].mass());
+					vars.FillVar("TTM_no_top_separated_highest_bottoms_pt",TTM_separated_bottoms_highest_pt[0].pt());
+					vars.FillVar("TTM_no_top_separated_highest_bottoms_eta",TTM_separated_bottoms_highest_pt[0].eta());
 			  	std::cout << "Highest pt of separated bottoms no top:  " << TTM_separated_bottoms_highest_pt[0].pt() << std::endl;
 			  	
 			  	TTM_Tprime=TPrimeReconstructionWtb(TTM_Ws_highest_pt,TTM_separated_bottoms_highest_pt);
@@ -3088,12 +3089,12 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 				    		std::cout << "Mass of Tprime:  " << TTM_Tprime.mass() << std::endl;
 				    		std::cout << "Mass of Zprime:  " << TTM_Zprime.mass() << std::endl;
 				    		
-				    		vars.FillVar("TTM_Zprime_no_top_M",TTM_Zprime.mass());
-								vars.FillVar("TTM_Zprime_no_top_pt",TTM_Zprime.pt());
-								vars.FillVar("TTM_Zprime_no_top_eta",TTM_Zprime.eta());
-								vars.FillVar("TTM_Zprime_no_top_M",TTM_Tprime.mass());
-								vars.FillVar("TTM_Tprime_no_top_pt",TTM_Tprime.pt());
-								vars.FillVar("TTM_Tprime_no_top_eta",TTM_Tprime.eta());
+				    		vars.FillVar("TTM_no_top_Zprime_M",TTM_Zprime.mass());
+								vars.FillVar("TTM_no_top_Zprime_pt",TTM_Zprime.pt());
+								vars.FillVar("TTM_no_top_Zprime_eta",TTM_Zprime.eta());
+								vars.FillVar("TTM_no_top_Tprime_M",TTM_Tprime.mass());
+								vars.FillVar("TTM_no_top_Tprime_pt",TTM_Tprime.pt());
+								vars.FillVar("TTM_no_top_Tprime_eta",TTM_Tprime.eta());
 						
 					}
 				}
