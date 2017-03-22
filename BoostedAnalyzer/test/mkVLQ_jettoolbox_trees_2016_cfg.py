@@ -17,7 +17,7 @@ options = VarParsing ('analysis')
 # The following variables are already defined in VarParsing class:
 # maxEvents: singleton, int; default = -1
 # inputFiles: (comma separated, no spaces!) list, string: default empty
-options.register( "outName", "testrun_simon", VarParsing.multiplicity.singleton, VarParsing.varType.string, "name and path of the output files (without extension)" )
+options.register( "outName", "QCD_test", VarParsing.multiplicity.singleton, VarParsing.varType.string, "name and path of the output files (without extension)" )
 options.register( "weight", 1., VarParsing.multiplicity.singleton, VarParsing.varType.float, "xs*lumi/(nPosEvents-nNegEvents)" )
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
@@ -35,8 +35,8 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 100000 # reset for testing
-    #options.maxEvents = 100 # reset for testing
+    #options.maxEvents = 100000 # reset for testing
+    options.maxEvents = 10000 # reset for testing
 
 if options.globalTag is "NONE":
 
@@ -48,10 +48,11 @@ if options.globalTag is "NONE":
 		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
 
 if not options.inputFiles:
-    #options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1500Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/70000/469FD823-443D-E611-AF27-D4AE526EAB7F.root']
-    options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/00000/000B9244-4B27-E611-91D2-7845C4FC3C6B.root']
+    options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1500Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/70000/469FD823-443D-E611-AF27-D4AE526EAB7F.root']
+    #options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/00000/000B9244-4B27-E611-91D2-7845C4FC3C6B.root']
     #options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v2/00000/0EECAD9D-FA27-E611-B994-0CC47A4C8E1C.root']
     #options.inputFiles=['file:/afs/cern.ch/user/s/skudella/mergetest/MC_QCD_1000_1500_small.root']
+    #options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/70000/14190847-A21C-E611-B621-3417EBE7009F.root']
 
 # checks for correct values and consistency
 if options.analysisType not in ["SL","DL","VetoL"]:

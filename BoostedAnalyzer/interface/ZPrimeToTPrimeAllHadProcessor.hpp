@@ -2,10 +2,14 @@
 #define BOOSTEDTTH_BOOSTEDANALYZER_ZPRIMETOTPRIMEALLHADPROCESSOR_HPP
 
 #include <vector>
+#include <cstdlib>
+
+
 
 
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "MiniAOD/MiniAODHelper/interface/TTM_SDM.h"
 /*class TreeProcessor{
 public:
     TreeProcessor();
@@ -39,6 +43,13 @@ public:
   void FillZprimeVars(VariableContainer& vars, std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws,  std::vector<pat::Jet>& bottoms,  math::XYZTLorentzVector Tprime,  math::XYZTLorentzVector Zprime,std::string string);
   
 private:
+
+	TTMHelper foo;
+	//bool fEnv=setenv("BoostedTTH/BoostedAnalyzer/data/mistagrateweights/","CMSSW_SEARCH_PATH",0);
+	//edm::FileInPath fQCD;
+	//fQCD.init("../data/mistagrateweights/","BKG_QCD_false_negativ.root");
+	//edm::FileInPath fSDM;
+	//fSDM.init("../data/mistagrateweights/","BKG_QCD_SDM_Cut.root");*/
 
   
 };
