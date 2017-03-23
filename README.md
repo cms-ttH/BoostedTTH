@@ -11,7 +11,7 @@ Follow These Steps:
     cd CMSSW_8_0_12/src
     cmsenv   
     git cms-merge-topic gkasieczka:htt-v2-76X
-    git clone https://github.com/cms-ttH/MiniAOD.git -b CMSSW_8_0_8
+    git clone https://github.com/kit-cn-cms/MiniAOD.git -b CMSSW_8_0_8_VLQ
     git clone https://github.com/cms-ttH/BoostedTTH.git -b CMSSW_8_0_8_VLQ
     mkdir Other
     cd Other
