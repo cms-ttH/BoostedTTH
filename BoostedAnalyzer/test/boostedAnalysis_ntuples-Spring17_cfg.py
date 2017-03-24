@@ -26,6 +26,7 @@ options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing
 options.register( "calcBJetness",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
 options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.register( "systematicVariations","nominal", VarParsing.multiplicity.list, VarParsing.varType.string, "comma-separated list of systematic variations ('nominal' or systematics base name, up/down will be added)" )
+options.register("electronRegression","GT",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
 
 options.parseArguments()
 
@@ -34,7 +35,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 10000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/mc/RunIISummer16MiniAODv2/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/0030B9D6-72C1-E611-AE49-02163E00E602.root']
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mschrode/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Skim-V1_3j20_1l20/170217_171402/0000/Skim_1.root']
 
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
@@ -165,6 +166,31 @@ process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidate
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
+###### electron energy regression #######
+
+electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
+photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
+if options.electronRegression:
+    if options.electronRegression == "GT":
+        from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+        process = regressionWeights(process)
+    else:
+        from EgammaAnalysis.ElectronTools.regressionWeights_local_cfi import GBRDWrapperRcd
+        GBRDWrapperRcd.connect = cms.string("sqlite_file:" + options.electronRegression)
+        process.regressions = GBRDWrapperRcd
+        process.regressions.DumpStat = cms.untracked.bool(False)
+        process.es_prefer_regressions = cms.ESPrefer("PoolDBESSource", "regressions")
+    process.load("EgammaAnalysis.ElectronTools.regressionApplication_cff")
+
+    # set the electron and photon sources
+    process.slimmedElectrons.src = electronCollection
+    process.slimmedPhotons.src = photonCollection
+
+    # overwrite output collections
+    electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
+    photonCollection = cms.InputTag("slimmedPhotons", "", process.name_())
+
+
 
 ### electron ID ####
 eleMVAid=False
@@ -185,6 +211,7 @@ if options.calcBJetness:
 
 # lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
+process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
 process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
@@ -312,7 +339,8 @@ if eleMVAid:
     process.p *= process.egmGsfElectronIDSequence
 if options.calcBJetness:
     process.p *= process.BJetness
-process.p *= process.SelectedElectronProducer*process.SelectedMuonProducer*process.CorrectedJetProducer
+
+process.p *=process.regressionApplication*process.SelectedElectronProducer*process.SelectedMuonProducer*process.CorrectedJetProducer
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed                                    
 for s in [""]+systs:
     process.p *= getattr(process,'patSmearedJets'+s)
