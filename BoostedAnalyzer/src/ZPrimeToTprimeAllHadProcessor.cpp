@@ -2972,10 +2972,12 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 	math::XYZTLorentzVector TTM_Zprime;
   math::XYZTLorentzVector TTM_Tprime; 
   std::vector<pat::Jet> TTM_separated_bottoms;
+  std::vector<pat::Jet> TTM_separated_bottoms_no_top;
   std::vector<pat::Jet> TTM_AK8_top_candidates_separated_highest_pt;
   std::vector<pat::Jet> TTM_AK8_top_candidates_separated;
   std::vector<pat::Jet> TTM_Ws_highest_pt;
   std::vector<pat::Jet> TTM_separated_bottoms_highest_pt;
+  std::vector<pat::Jet> TTM_separated_bottoms_no_top_highest_pt;
   
   for(std::vector<pat::Jet>::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet)
   {
@@ -3075,28 +3077,28 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 			
 			if (ht>850 && bottoms.size()>0 && Ws.size()>0 && TTM_AK8_top_candidates_separated.size()>0 && tops.size()==0) 
 			{
-			  TTM_separated_bottoms=SelectSeparatedBottoms(TTM_AK8_top_candidates_separated_highest_pt,TTM_Ws_highest_pt,bottoms);
-			  if (TTM_separated_bottoms.size()>0)
+			  TTM_separated_bottoms_no_top=SelectSeparatedBottoms(TTM_AK8_top_candidates_separated_highest_pt,TTM_Ws_highest_pt,bottoms);
+			  if (TTM_separated_bottoms_no_top.size()>0)
 			  {
-					for (std::vector<pat::Jet>::const_iterator itJet = TTM_separated_bottoms.begin() ; itJet != TTM_separated_bottoms.end(); ++itJet)
+					for (std::vector<pat::Jet>::const_iterator itJet = TTM_separated_bottoms_no_top.begin() ; itJet != TTM_separated_bottoms_no_top.end(); ++itJet)
 					{
-						int iJet = itJet-TTM_separated_bottoms.begin();
-						vars.FillVar("N_TTM_separated_bottoms",TTM_separated_bottoms.size());
-						vars.FillVars("TTM_separated_bottoms_M",iJet,TTM_separated_bottoms[iJet].mass());
-						vars.FillVars("TTM_separated_bottoms_pt",iJet,TTM_separated_bottoms[iJet].pt());
-						vars.FillVars("TTM_separated_bottoms_eta",iJet,TTM_separated_bottoms[iJet].eta());
+						int iJet = itJet-TTM_separated_bottoms_no_top.begin();
+						vars.FillVar("N_TTM_no_top_separated_bottoms",TTM_separated_bottoms_no_top.size());
+						vars.FillVars("TTM_no_top_separated_bottoms_M",iJet,TTM_separated_bottoms_no_top[iJet].mass());
+						vars.FillVars("TTM_no_top_separated_bottoms_pt",iJet,TTM_separated_bottoms_no_top[iJet].pt());
+						vars.FillVars("TTM_no_top_separated_bottoms_eta",iJet,TTM_separated_bottoms_no_top[iJet].eta());
 					}
 				}
 					
-			  if (TTM_separated_bottoms.size()>0)
+			  if (TTM_separated_bottoms_no_top.size()>0)
 			  {
-			  	TTM_separated_bottoms_highest_pt.push_back(TTM_separated_bottoms.at(0));
-			  	vars.FillVar("TTM_separated_highest_bottoms_M",TTM_separated_bottoms_highest_pt[0].mass());
-					vars.FillVar("TTM_separated_highest_bottoms_pt",TTM_separated_bottoms_highest_pt[0].pt());
-					vars.FillVar("TTM_separated_highest_bottoms_eta",TTM_separated_bottoms_highest_pt[0].eta());
-			  	std::cout << "Highest pt of separated bottoms:  " << TTM_separated_bottoms_highest_pt[0].pt() << std::endl;
+			  	TTM_separated_bottoms_no_top_highest_pt.push_back(TTM_separated_bottoms_no_top.at(0));
+			  	vars.FillVar("TTM_no_top_separated_highest_bottoms_M",TTM_separated_bottoms_no_top_highest_pt[0].mass());
+					vars.FillVar("TTM_no_top_separated_highest_bottoms_pt",TTM_separated_bottoms_no_top_highest_pt[0].pt());
+					vars.FillVar("TTM_no_top_separated_highest_bottoms_eta",TTM_separated_bottoms_no_top_highest_pt[0].eta());
+			  	std::cout << "Highest pt of separated bottoms:  " << TTM_separated_bottoms_no_top_highest_pt[0].pt() << std::endl;
 			  	
-			  	TTM_Tprime=TPrimeReconstructionWtb(TTM_Ws_highest_pt,TTM_separated_bottoms_highest_pt);
+			  	TTM_Tprime=TPrimeReconstructionWtb(TTM_Ws_highest_pt,TTM_separated_bottoms_no_top_highest_pt);
 			  	if (TTM_Tprime.mass()>500)
 					{
 								
@@ -3108,12 +3110,12 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 				    		std::cout << "Mass of Tprime:  " << TTM_Tprime.mass() << std::endl;
 				    		std::cout << "Mass of Zprime:  " << TTM_Zprime.mass() << std::endl;
 				    		
-				    		vars.FillVar("TTM_Zprime_M",TTM_Zprime.mass());
-								vars.FillVar("TTM_Zprime_pt",TTM_Zprime.pt());
-								vars.FillVar("TTM_Zprime_eta",TTM_Zprime.eta());
-								vars.FillVar("TTM_Tprime_M",TTM_Tprime.mass());
-								vars.FillVar("TTM_Tprime_pt",TTM_Tprime.pt());
-								vars.FillVar("TTM_Tprime_eta",TTM_Tprime.eta());
+				    		vars.FillVar("TTM_no_top_Zprime_M",TTM_Zprime.mass());
+								vars.FillVar("TTM_no_top_Zprime_pt",TTM_Zprime.pt());
+								vars.FillVar("TTM_no_top_Zprime_eta",TTM_Zprime.eta());
+								vars.FillVar("TTM_no_top_Tprime_M",TTM_Tprime.mass());
+								vars.FillVar("TTM_no_top_Tprime_pt",TTM_Tprime.pt());
+								vars.FillVar("TTM_no_top_Tprime_eta",TTM_Tprime.eta());
 						
 					}
 				}
