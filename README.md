@@ -15,15 +15,20 @@ Follow These Steps:
     export CMSSW_SRC="$( pwd )"
     cmsenv
     
+    git cms-merge-topic riga:deterministicSeeds
+    
     # updated MET tools
     # this topic is branched from the official cms-met:METRecipe_8020 but fixes the badGlobalMuonTagger
     # so that it works like any other MET filter module
     git cms-merge-topic riga:badGlobalMuonTagger_fix
+    
 
     # EGMSmearer and data
-    git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+    #git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+    git cms-merge-topic riga:deterministicEGMSmearer_v2
     cd EgammaAnalysis/ElectronTools/data
-    git clone --depth 1 https://github.com/ECALELFS/ScalesSmearings.git
+    #git clone --depth 1 https://github.com/ECALELFS/ScalesSmearings.git
+    git clone https://github.com/ECALELFS/ScalesSmearings.git -b Moriond17_gainSwitch_unc
     cd ../../..
 
     # ttHFGenFilter
