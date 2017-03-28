@@ -26,7 +26,9 @@ options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing
 options.register( "calcBJetness",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
 options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.register( "systematicVariations","nominal", VarParsing.multiplicity.list, VarParsing.varType.string, "comma-separated list of systematic variations ('nominal' or systematics base name, up/down will be added)" )
+options.register("deterministicSeeds",True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
 options.register("electronRegression","GT",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
+options.register("electronSmearing","Moriond17_23Jan",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 
 options.parseArguments()
 
@@ -92,6 +94,33 @@ process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
                               skipEvents=cms.untracked.uint32(int(options.skipEvents)),
 )
+
+electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
+photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
+
+
+###### deterministic seed producer ######
+
+if options.deterministicSeeds:
+    process.load("PhysicsTools.PatUtils.deterministicSeeds_cfi")
+    process.deterministicSeeds.produceCollections = cms.bool(True)
+    process.deterministicSeeds.produceValueMaps   = cms.bool(False)
+    process.deterministicSeeds.electronCollection = electronCollection
+    #process.deterministicSeeds.muonCollection     = muonCollection
+    #process.deterministicSeeds.tauCollection      = tauCollection
+    process.deterministicSeeds.photonCollection   = photonCollection
+    #process.deterministicSeeds.jetCollection      = jetCollection
+    #process.deterministicSeeds.METCollection      = METCollection
+
+    # overwrite output collections
+    electronCollection = cms.InputTag("deterministicSeeds", "electronsWithSeed", process.name_())
+    #muonCollection     = cms.InputTag("deterministicSeeds", "muonsWithSeed", process.name_())
+    #tauCollection      = cms.InputTag("deterministicSeeds", "tausWithSeed", process.name_())
+    photonCollection   = cms.InputTag("deterministicSeeds", "photonsWithSeed", process.name_())
+    #jetCollection      = cms.InputTag("deterministicSeeds", "jetsWithSeed", process.name_())
+    #METCollection      = cms.InputTag("deterministicSeeds", "METsWithSeed", process.name_())
+
+
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
@@ -168,8 +197,6 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
 ###### electron energy regression #######
 
-electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
-photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
 if options.electronRegression:
     if options.electronRegression == "GT":
         from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
@@ -190,6 +217,39 @@ if options.electronRegression:
     electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
     photonCollection = cms.InputTag("slimmedPhotons", "", process.name_())
 
+
+##### electron energy smearing #####
+
+if options.electronSmearing and options.electronRegression:
+    # the smearing procedure requires a preselection
+    process.selectedElectrons = cms.EDFilter("PATElectronSelector",
+        src = electronCollection,
+        cut = cms.string("pt>5 && abs(superCluster.eta)<2.5")
+    )
+    electronCollection = cms.InputTag("selectedElectrons", "", process.name_())
+
+    # setup the smearing
+    process.load("EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi")
+    from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import files
+    process.calibratedPatElectrons.isMC           = cms.bool(not options.isData)
+    process.calibratedPatElectrons.correctionFile = cms.string(files[options.electronSmearing])
+    process.calibratedPatElectrons.electrons      = electronCollection
+    #seq += process.calibratedPatElectrons
+
+    # use our deterministic seeds or a random generator service
+    if options.deterministicSeeds:
+        process.calibratedPatElectrons.seedUserInt = process.deterministicSeeds.seedUserInt
+    else:
+        process.load("Configuration.StandardSequences.Services_cff")
+        process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+            calibratedPatElectrons = cms.PSet(
+                initialSeed = cms.untracked.uint32(81),
+                engineName  = cms.untracked.string("TRandom3")
+            )
+        )
+
+    # overwrite output collections
+    electronCollection = cms.InputTag("calibratedPatElectrons", "", process.name_())
 
 
 ### electron ID ####
@@ -339,8 +399,9 @@ if eleMVAid:
     process.p *= process.egmGsfElectronIDSequence
 if options.calcBJetness:
     process.p *= process.BJetness
-
-process.p *=process.regressionApplication*process.SelectedElectronProducer*process.SelectedMuonProducer*process.CorrectedJetProducer
+if options.deterministicSeeds:
+    process.p*=process.deterministicSeeds
+process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer*process.CorrectedJetProducer
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed                                    
 for s in [""]+systs:
     process.p *= getattr(process,'patSmearedJets'+s)
