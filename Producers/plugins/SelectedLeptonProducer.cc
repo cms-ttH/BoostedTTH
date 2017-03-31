@@ -79,6 +79,8 @@ private:
   edm::EDGetTokenT< edm::View<pat::Electron> >EDMElectronsToken;  // electrons
   edm::EDGetTokenT< edm::ValueMap<float> >    EDMeleMVAvaluesToken; // values of electron mva
   edm::EDGetTokenT< edm::ValueMap<int> >      EDMeleMVAcategoriesToken;  // category of electron mva
+  
+  bool isData;
 };
 
 
@@ -195,7 +197,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 
   }
   // Set up MiniAODHelper
-  const bool isData = iConfig.getParameter<bool>("isData");
+  isData = iConfig.getParameter<bool>("isData");
   const int sampleID = -1;
   helper_.SetUp(era,sampleID,iAnalysisType,isData);
 
@@ -257,7 +259,15 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	// get input muon collection
 	edm::Handle<pat::MuonCollection> hMuons;
 	iEvent.getByToken(EDMMuonsToken,hMuons);
-
+        std::vector<pat::Muon> muons = *hMuons;
+        for(uint i=0;i<muons.size();i++) {
+            if(isData) {
+                
+            }
+            else {
+                
+            }
+        }
 	// produce the different muon collections
 	for(uint i=0; i<ptMins_.size();i++){
 	    // select muon collection
