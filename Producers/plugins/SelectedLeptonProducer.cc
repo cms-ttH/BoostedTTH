@@ -270,9 +270,10 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         std::vector<pat::Muon> muons = *hMuons;
         
         if(useMuonRC) {
-            double momentum_sf=0.;
+            double momentum_sf;
             TRandom3 rnd;
             for(uint i=0;i<muons.size();i++) {
+                momentum_sf=1.;
                 if(deterministicSeeds) {
                     int32_t seed = muons[i].userInt("deterministicSeed");
                     rnd.SetSeed((uint32_t)seed);
