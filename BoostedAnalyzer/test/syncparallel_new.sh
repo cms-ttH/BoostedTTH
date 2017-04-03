@@ -1,7 +1,7 @@
-CFG=/nfs/dust/cms/user/mwassmer/CMSSW_8_0_26_patch1/src/BoostedTTH/BoostedAnalyzer/test/boostedAnalysis_ntuples-Spring17_sync_cfg.py
+CFG=/nfs/dust/cms/user/mwassmer/CMSSW_8_0_26_patch2/src/BoostedTTH/BoostedAnalyzer/test/boostedAnalysis_ntuples-Spring17_sync_cfg.py
 OUTFOLDER=/nfs/dust/cms/user/mwassmer/Spring17_sync/syncfiles
 SCRIPTFOLDER=/nfs/dust/cms/user/mwassmer/Spring17_sync/syncscripts
-SETUP="#!/bin/bash \nexport VO_CMS_SW_DIR=/cvmfs/cms.cern.ch; source \$VO_CMS_SW_DIR/cmsset_default.sh; cd /nfs/dust/cms/user/mwassmer/CMSSW_8_0_26_patch1/src; eval \`scram runtime -sh\`;"
+SETUP="#!/bin/bash \nexport VO_CMS_SW_DIR=/cvmfs/cms.cern.ch; source \$VO_CMS_SW_DIR/cmsset_default.sh; cd /nfs/dust/cms/user/mwassmer/CMSSW_8_0_26_patch2/src; eval \`scram runtime -sh\`;"
 
 printf "$SETUP cmsRun $CFG dumpSyncExe=True maxEvents=99999999 inputFiles='file:/pnfs/desy.de/cms/tier2//store/mc/RunIISummer16MiniAODv2/ttHTobb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/44949CF4-96C6-E611-B9A0-0025905A6122.root' outName=${OUTFOLDER}/syncTTH globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8" > ${SCRIPTFOLDER}/syncTTH.sh
 

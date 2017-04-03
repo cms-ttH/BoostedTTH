@@ -29,6 +29,7 @@ options.register( "systematicVariations","nominal", VarParsing.multiplicity.list
 options.register("deterministicSeeds",True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
 options.register("electronRegression","GT",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
 options.register("electronSmearing","Moriond17_23Jan",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
+options.register( "useMuonRC", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
 
 options.parseArguments()
 
@@ -97,7 +98,7 @@ process.source = cms.Source(  "PoolSource",
 
 electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
 photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
-
+muonCollection = cms.InputTag("slimmedMuons", "", "PAT")
 
 ###### deterministic seed producer ######
 
@@ -106,7 +107,7 @@ if options.deterministicSeeds:
     process.deterministicSeeds.produceCollections = cms.bool(True)
     process.deterministicSeeds.produceValueMaps   = cms.bool(False)
     process.deterministicSeeds.electronCollection = electronCollection
-    #process.deterministicSeeds.muonCollection     = muonCollection
+    process.deterministicSeeds.muonCollection     = muonCollection
     #process.deterministicSeeds.tauCollection      = tauCollection
     process.deterministicSeeds.photonCollection   = photonCollection
     #process.deterministicSeeds.jetCollection      = jetCollection
@@ -114,7 +115,7 @@ if options.deterministicSeeds:
 
     # overwrite output collections
     electronCollection = cms.InputTag("deterministicSeeds", "electronsWithSeed", process.name_())
-    #muonCollection     = cms.InputTag("deterministicSeeds", "muonsWithSeed", process.name_())
+    muonCollection     = cms.InputTag("deterministicSeeds", "muonsWithSeed", process.name_())
     #tauCollection      = cms.InputTag("deterministicSeeds", "tausWithSeed", process.name_())
     photonCollection   = cms.InputTag("deterministicSeeds", "photonsWithSeed", process.name_())
     #jetCollection      = cms.InputTag("deterministicSeeds", "jetsWithSeed", process.name_())
@@ -276,13 +277,18 @@ process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
 process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
+process.SelectedElectronProducer.isData=options.isData
 
+process.SelectedMuonProducer.leptons=muonCollection
 process.SelectedMuonProducer.ptMins=[15.,25.,26.]
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
 process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
 process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
+process.SelectedMuonProducer.useMuonRC=options.useMuonRC
+process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
+process.SelectedMuonProducer.isData=options.isData
 
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 # selection of corrected and smeared jets -- one producer for every jet systematic that selects two collections (regular and loose jets) each

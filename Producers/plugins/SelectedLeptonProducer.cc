@@ -39,6 +39,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 
+#include "BoostedTTH/Producers/src/RoccoR.cc" // this is needed to calculate the correction factors of the rochester correction
 //
 // class declaration
 //
@@ -81,6 +82,10 @@ private:
   edm::EDGetTokenT< edm::ValueMap<int> >      EDMeleMVAcategoriesToken;  // category of electron mva
   
   bool isData;
+  bool useMuonRC; // flag to enable or disable Rochester Correction
+  bool deterministicSeeds; // flag to enable or disable deterministic seeds for RC
+  RoccoR rc; // Object to calculate Rochester Correction
+  std::string roccor_dir="/nfs/dust/cms/user/mwassmer/CMSSW_8_0_26_patch2/src/BoostedTTH/Producers/data/rcdata.2016.v3"; // directory of text files used to calculate RC
 };
 
 
@@ -119,7 +124,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   EDMRhoToken               = consumes< double >                  (iConfig.getParameter<edm::InputTag>("rho"));
   EDMeleMVAvaluesToken      = consumes<edm::ValueMap<float> >     (iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
   EDMeleMVAcategoriesToken  = consumes<edm::ValueMap<int> >       (iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
-
+  
   // setup of outputs
   ptMins_ = iConfig.getParameter< std::vector<double> >("ptMins");
   etaMaxs_ = iConfig.getParameter< std::vector<double> >("etaMaxs");
@@ -198,10 +203,13 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   }
   // Set up MiniAODHelper
   isData = iConfig.getParameter<bool>("isData");
+  useMuonRC = iConfig.getParameter<bool>("useMuonRC");
+  deterministicSeeds = iConfig.getParameter<bool>("useDeterministicSeeds");
   const int sampleID = -1;
   helper_.SetUp(era,sampleID,iAnalysisType,isData);
-
-
+  if(useMuonRC) {
+    rc.init(roccor_dir);
+  }
 }
 
 
@@ -260,18 +268,43 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	edm::Handle<pat::MuonCollection> hMuons;
 	iEvent.getByToken(EDMMuonsToken,hMuons);
         std::vector<pat::Muon> muons = *hMuons;
-        for(uint i=0;i<muons.size();i++) {
-            if(isData) {
-                
-            }
-            else {
-                
+        
+        if(useMuonRC) {
+            double momentum_sf=0.;
+            TRandom3 rnd;
+            for(uint i=0;i<muons.size();i++) {
+                if(deterministicSeeds) {
+                    int32_t seed = muons[i].userInt("deterministicSeed");
+                    rnd.SetSeed((uint32_t)seed);
+                }
+                double r1 = rnd.Rndm();
+                int trackerLayersWithMeasurement=0;
+                if(!muons[i].innerTrack().isNull()) {
+                    trackerLayersWithMeasurement = muons[i].innerTrack()->hitPattern().trackerLayersWithMeasurement();
+                }
+                if(isData) {
+                    momentum_sf = rc.kScaleDT(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), 0, 0);
+                }
+                else {
+                    if(muons[i].genLepton()) {
+                        momentum_sf = rc.kScaleFromGenMC(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), trackerLayersWithMeasurement, muons[i].genLepton()->pt(), r1, 0, 0);
+                    }
+                    else {
+                        double r2=r1;
+                        if(!deterministicSeeds) {r2=rnd.Rndm();}
+                        momentum_sf = rc.kScaleAndSmearMC(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), trackerLayersWithMeasurement, r1, r2, 0, 0);
+                    }
+                }
+                auto tmp_vector = muons[i].p4();
+                tmp_vector.SetPxPyPzE(momentum_sf*tmp_vector.Px(),momentum_sf*tmp_vector.Py(),momentum_sf*tmp_vector.Pz(),TMath::Sqrt((1+(tmp_vector.P2()/(tmp_vector.E()*tmp_vector.E())*(momentum_sf*momentum_sf-1))))*tmp_vector.E());
+                muons[i].setP4(tmp_vector);            
             }
         }
+
 	// produce the different muon collections
 	for(uint i=0; i<ptMins_.size();i++){
 	    // select muon collection
-	    std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(*hMuons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i])) );
+	    std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i])) );
 	    for (auto & lep : *selectedLeptons){
 		helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
 	    }
