@@ -378,7 +378,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     
     pointerToMEMClassifier = new MEMClassifier();
-    pointerToCommonBDT5Classifier = new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_ICHEP16/");
+    pointerToCommonBDT5Classifier = new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V1/");
 
     // INITIALIZE TREEWRITERs
     for (uint i=0; i<jetSystematics.size();i++){
