@@ -228,7 +228,6 @@ if options.electronSmearing and options.electronRegression:
         cut = cms.string("pt>5 && abs(superCluster.eta)<2.5")
     )
     electronCollection = cms.InputTag("selectedElectrons", "", process.name_())
-    
     # setup the smearing
     process.load("EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi")
     from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import files
