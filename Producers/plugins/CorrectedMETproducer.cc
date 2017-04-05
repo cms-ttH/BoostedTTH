@@ -35,6 +35,14 @@ private:
     edm::EDGetTokenT< std::vector<pat::Jet> > oldJetsToken;    
     /** input jets data access token -- after (re-)correction **/
     edm::EDGetTokenT< std::vector<pat::Jet> > newJetsToken;
+    /** input electrons data access token -- before (re-)correction **/
+    edm::EDGetTokenT< std::vector<pat::Electron> > oldElectronsToken;    
+    /** input electrons data access token -- after (re-)correction **/
+    edm::EDGetTokenT< std::vector<pat::Electron> > newElectronsToken;    
+    /** input muons data access token -- before (re-)correction **/
+    edm::EDGetTokenT< std::vector<pat::Muon> > oldMuonsToken;    
+    /** input muons data access token -- after (re-)correction **/
+    edm::EDGetTokenT< std::vector<pat::Muon> > newMuonsToken;    
     /** mets data access token **/
     edm::EDGetTokenT< std::vector<pat::MET> > metsToken;
     /** MiniAODHelper, used for jet correction and selection **/
@@ -60,6 +68,13 @@ CorrectedMETproducer::CorrectedMETproducer(const edm::ParameterSet& iConfig)
 {
     oldJetsToken  = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("oldJets"));
     newJetsToken  = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("newJets"));
+    
+    oldElectronsToken  = consumes< std::vector<pat::Electron> >(iConfig.getParameter<edm::InputTag>("oldElectrons"));
+    newElectronsToken  = consumes< std::vector<pat::Electron> >(iConfig.getParameter<edm::InputTag>("newElectrons"));
+    
+    oldMuonsToken  = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("oldMuons"));
+    newMuonsToken  = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("newMuons"));
+    
     metsToken  = consumes< std::vector<pat::MET> >(iConfig.getParameter<edm::InputTag>("mets"));
     collectionName = iConfig.getParameter< std::string>("collectionName");
 
@@ -94,14 +109,23 @@ CorrectedMETproducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    edm::Handle< pat::JetCollection > h_oldJets;
    iEvent.getByToken( oldJetsToken,h_oldJets );
-
    edm::Handle< pat::JetCollection > h_newJets;
-   iEvent.getByToken( oldJetsToken,h_newJets );
-  
+   iEvent.getByToken( newJetsToken,h_newJets );
+   
+   edm::Handle< pat::ElectronCollection > h_oldElectrons;
+   iEvent.getByToken( oldElectronsToken,h_oldElectrons );
+   edm::Handle< pat::ElectronCollection > h_newElectrons;
+   iEvent.getByToken( newElectronsToken,h_newElectrons );
+   
+   edm::Handle< pat::MuonCollection > h_oldMuons;
+   iEvent.getByToken( oldMuonsToken,h_oldMuons );
+   edm::Handle< pat::MuonCollection > h_newMuons;
+   iEvent.getByToken( newMuonsToken,h_newMuons );
+
    edm::Handle< pat::METCollection > h_inputMETs;
    iEvent.getByToken( metsToken,h_inputMETs );
 
-   std::auto_ptr<pat::METCollection> correctedMETs( new pat::METCollection(helper.CorrectMET(*h_oldJets,*h_newJets,*h_inputMETs)) );
+   std::auto_ptr<pat::METCollection> correctedMETs( new pat::METCollection(helper.CorrectMET(*h_oldJets,*h_newJets,*h_oldElectrons,*h_newElectrons,*h_oldMuons,*h_newMuons,*h_inputMETs)) );
    iEvent.put(correctedMETs,collectionName);
    
    

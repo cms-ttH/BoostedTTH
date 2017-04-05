@@ -228,7 +228,7 @@ if options.electronSmearing and options.electronRegression:
         cut = cms.string("pt>5 && abs(superCluster.eta)<2.5")
     )
     electronCollection = cms.InputTag("selectedElectrons", "", process.name_())
-
+    
     # setup the smearing
     process.load("EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi")
     from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import files
@@ -339,7 +339,14 @@ for s in systsJES:
 
 
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
-
+process.CorrectedMETproducer.isData=options.isData
+process.CorrectedMETproducer.oldJets=cms.InputTag("slimmedJets", "", "PAT")
+process.CorrectedMETproducer.newJets=cms.InputTag("slimmedJets", "", "PAT")
+process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
+process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
+process.CorrectedMETproducer.oldMuons=cms.InputTag("slimmedMuons", "", "PAT")
+process.CorrectedMETproducer.newMuons=cms.InputTag("slimmedMuons", "", "PAT")
+process.CorrectedMETproducer.mets=cms.InputTag("slimmedMETs", "", "PAT")
 
 # load and run the boosted analyzer
 if options.isData:
@@ -361,7 +368,7 @@ if writeNominal:
     variations.insert(0,"") # also store nominal case
 process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer"+s+":selectedJets"+s) for s in variations]
 process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer"+s+":selectedJetsLoose"+s) for s in variations]
-process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*(len(variations))
+process.BoostedAnalyzer.correctedMETs=[cms.InputTag("CorrectedMETproducer:correctedMET")]*(len(variations))
 
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
