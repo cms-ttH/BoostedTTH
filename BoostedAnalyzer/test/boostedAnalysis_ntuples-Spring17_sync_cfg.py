@@ -128,7 +128,7 @@ if options.deterministicSeeds:
     jetCollection      = cms.InputTag("deterministicSeeds", "jetsWithSeed", process.name_())
     METCollection      = cms.InputTag("deterministicSeeds", "METsWithSeed", process.name_())
 
-
+##########################################
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
@@ -213,6 +213,7 @@ if options.electronRegression:
     electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
     photonCollection = cms.InputTag("slimmedPhotons", "", process.name_())
 
+##########################################
 
 ##### electron energy smearing #####
 
@@ -246,6 +247,7 @@ if options.electronSmearing and options.electronRegression:
     # overwrite output collections
     electronCollection = cms.InputTag("calibratedPatElectrons", "", process.name_())
 
+##########################################
 
 ### electron ID ####
 eleMVAid=False
@@ -284,56 +286,7 @@ process.SelectedMuonProducer.useMuonRC=options.useMuonRC
 process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
 process.SelectedMuonProducer.isData=options.isData
 
-# jet selection
-process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
-# selection of corrected and smeared jets -- one producer for every jet systematic that selects two collections (regular and loose jets) each
-# selection of the nominal jets
-process.SelectedJetProducer.jets='patSmearedJets'
-process.SelectedJetProducer.applyCorrection=False
-process.SelectedJetProducer.ptMins=[20,30]
-process.SelectedJetProducer.etaMaxs=[2.4,2.4]
-process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
-process.SelectedJetProducer.systematics=[""]
-# selection of the systematically shifted jets
-for syst in systs:
-    setattr(process,'SelectedJetProducer'+syst,process.SelectedJetProducer.clone(jets='patSmearedJets'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducer.collectionNames)]))
-
-# correction of  miniAOD jets -- one producer creates a jet collection for nominal JES and every JES systematic
-process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets='slimmedJets', 
-                                                               ptMins=[-1.],
-                                                               etaMaxs=[999.],
-                                                               collectionNames=["correctedJets"],
-                                                               applyCorrection=True,
-                                                               systematics=[""]+systsJES)
-
-# smearing of corrected jets -- producers that create the nominal and up/down JER correction
-# jer shift of nominal sample
-process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
-    src = cms.InputTag("CorrectedJetProducer:correctedJets"),
-    enabled = cms.bool(True),  # If False, no smearing is performed
-    rho = cms.InputTag("fixedGridRhoFastjetAll"),
-    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
-#    algopt = cms.string('AK4PFchs_pt'),
-#    algo = cms.string('AK4PFchs'),
-    genJets = cms.InputTag("slimmedGenJets"),
-    dRMax = cms.double(0.2),  # = cone size (0.4) / 2
-    dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
-    variation = cms.int32(0),  # systematic +1 0 -1 sigma
-    debug = cms.untracked.bool(False),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
-)
-# up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
-for s in systsJER:
-    v=0
-    if s=='JERup': v=+1
-    elif s=='JERdown': v=-1
-    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=v,src=cms.InputTag("CorrectedJetProducer:correctedJets")))
-for s in systsJES:
-    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=0,src=cms.InputTag("CorrectedJetProducer:correctedJets"+s)))
-
 ### MET correction with official met tool ###
-"""
 if options.recorrectMET:
     # patch the phi correction parameter sets that are used in runMetCorAndUncFromMiniAOD,
     # we only need to overwrite patMultPhiCorrParams_T1Txy_25ns with the new one
@@ -391,7 +344,7 @@ if options.recorrectMET:
 
         # overwrite output collections
         METCollection = cms.InputTag("slimmedMETsMuEGClean", "", process.name_())
-"""
+
 
 ### additional MET filters ###
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
@@ -406,6 +359,59 @@ process.badGlobalMuonTaggerMAOD.taggingMode   = cms.bool(True)
 process.cloneGlobalMuonTaggerMAOD.muons       = muonCollection
 process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
 
+###############################################
+
+# jet selection
+process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
+# selection of corrected and smeared jets -- one producer for every jet systematic that selects two collections (regular and loose jets) each
+# selection of the nominal jets
+process.SelectedJetProducer.jets='patSmearedJets'
+process.SelectedJetProducer.applyCorrection=False
+process.SelectedJetProducer.ptMins=[20,30]
+process.SelectedJetProducer.etaMaxs=[2.4,2.4]
+process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
+process.SelectedJetProducer.systematics=[""]
+# selection of the systematically shifted jets
+for syst in systs:
+    setattr(process,'SelectedJetProducer'+syst,process.SelectedJetProducer.clone(jets='patSmearedJets'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducer.collectionNames)]))
+
+# correction of  miniAOD jets -- one producer creates a jet collection for nominal JES and every JES systematic
+process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets='slimmedJets', 
+                                                               ptMins=[-1.],
+                                                               etaMaxs=[999.],
+                                                               collectionNames=["correctedJets"],
+                                                               applyCorrection=True,
+                                                               systematics=[""]+systsJES)
+
+# smearing of corrected jets -- producers that create the nominal and up/down JER correction
+# jer shift of nominal sample
+process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
+    src = cms.InputTag("CorrectedJetProducer:correctedJets"),
+    enabled = cms.bool(True),  # If False, no smearing is performed
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
+#    algopt = cms.string('AK4PFchs_pt'),
+#    algo = cms.string('AK4PFchs'),
+    genJets = cms.InputTag("slimmedGenJets"),
+    dRMax = cms.double(0.2),  # = cone size (0.4) / 2
+    dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
+    variation = cms.int32(0),  # systematic +1 0 -1 sigma
+    debug = cms.untracked.bool(False),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
+)
+# up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
+for s in systsJER:
+    v=0
+    if s=='JERup': v=+1
+    elif s=='JERdown': v=-1
+    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=v,src=cms.InputTag("CorrectedJetProducer:correctedJets")))
+for s in systsJES:
+    setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=0,src=cms.InputTag("CorrectedJetProducer:correctedJets"+s)))
+
+###############################################
+
+
 ### correct MET manually ###
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 process.CorrectedMETproducer.isData=options.isData
@@ -415,7 +421,7 @@ process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "
 process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
 process.CorrectedMETproducer.oldMuons=cms.InputTag("slimmedMuons", "", "PAT")
 process.CorrectedMETproducer.newMuons=cms.InputTag("slimmedMuons", "", "PAT")
-process.CorrectedMETproducer.mets=cms.InputTag("slimmedMETs", "", "PAT")
+process.CorrectedMETproducer.mets=METCollection
 
 # load and run the boosted analyzer
 if options.isData:
@@ -577,7 +583,7 @@ for s in [""]+systs:
 
 #if options.recorrectMET:
     
-process.p *= process.CorrectedMETproducer
+process.p *= process.fullPatMetSequence*process.CorrectedMETproducer
 
 if not options.isData and not options.isBoostedMiniAOD:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
