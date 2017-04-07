@@ -31,6 +31,7 @@ options.register("electronRegression","GT",VarParsing.multiplicity.singleton,Var
 options.register("electronSmearing","Moriond17_23Jan",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 options.register( "useMuonRC", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
 options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
+options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
 options.parseArguments()
 
 # re-set some defaults
@@ -321,7 +322,7 @@ if options.recorrectMET:
 
     # overwrite output collections
     METCollection = cms.InputTag("slimmedMETs", "", process.name_())
-
+"""
     # also add MET corrections due to e/g corrections, such as the slew rate fix in reMiniAOD
     if options.isData:
         from PhysicsTools.PatUtils.tools.corMETFromMuonAndEG import corMETFromMuonAndEG
@@ -346,7 +347,7 @@ if options.recorrectMET:
 
         # overwrite output collections
         METCollection = cms.InputTag("slimmedMETsMuEGClean", "", process.name_())
-
+"""
 
 ### additional MET filters ###
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
