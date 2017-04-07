@@ -21,7 +21,8 @@ Follow These Steps:
     # this topic is branched from the official cms-met:METRecipe_8020 but fixes the badGlobalMuonTagger
     # so that it works like any other MET filter module
     git cms-merge-topic riga:badGlobalMuonTagger_fix
-    
+    git cms-merge-topic cms-met:METRecipe_80X_part2
+    git clone https://github.com/cms-met/MetTools.git
 
     # EGMSmearer and data
     #git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
