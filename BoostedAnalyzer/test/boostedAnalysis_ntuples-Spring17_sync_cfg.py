@@ -286,6 +286,8 @@ process.SelectedMuonProducer.useMuonRC=options.useMuonRC
 process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
 process.SelectedMuonProducer.isData=options.isData
 
+process.SelectedMuonProducerUncorr=process.SelectedMuonProducer.clone(ptMins=[15.],etaMaxs=[2.4],leptonIDs=["tight"],muonIsoConeSizes=["R04"],muonIsoCorrTypes=["deltaBeta"],collectionNames=["selectedMuonsUncorr"],useMuonRC=False)
+
 ### MET correction with official met tool ###
 if options.recorrectMET:
     # patch the phi correction parameter sets that are used in runMetCorAndUncFromMiniAOD,
@@ -419,8 +421,8 @@ process.CorrectedMETproducer.oldJets=cms.InputTag("slimmedJets", "", "PAT")
 process.CorrectedMETproducer.newJets=cms.InputTag("slimmedJets", "", "PAT")
 process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
 process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
-process.CorrectedMETproducer.oldMuons=cms.InputTag("slimmedMuons", "", "PAT")
-process.CorrectedMETproducer.newMuons=cms.InputTag("slimmedMuons", "", "PAT")
+#process.CorrectedMETproducer.oldMuons=cms.InputTag("SelectedMuonProducerUncorr:selectedMuonsUncorr")
+#process.CorrectedMETproducer.newMuons=cms.InputTag("SelectedMuonProducer:selectedMuons")
 process.CorrectedMETproducer.mets=METCollection
 
 # load and run the boosted analyzer
@@ -575,7 +577,7 @@ if eleMVAid:
     process.p *= process.egmGsfElectronIDSequence
 if options.calcBJetness:
     process.p *= process.BJetness
-process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer*process.CorrectedJetProducer
+process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedMuonProducerUncorr*process.CorrectedJetProducer
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed                                    
 for s in [""]+systs:
     process.p *= getattr(process,'patSmearedJets'+s)
