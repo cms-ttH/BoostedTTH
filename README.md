@@ -63,7 +63,7 @@ Follow These Steps:
     git clone --depth 1 -b CMSSW_8_0_26_patch1 https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
-    cd $JENKINSCMSSWSRCDIR/src/BoostedTTH/BoostedAnalyzer/data
+    cd $JENKINSCMSSWSRCDIR/BoostedTTH/BoostedAnalyzer/data
     mkdir jerfiles
     cd jerfiles
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"
