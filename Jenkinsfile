@@ -59,6 +59,11 @@ git cms-merge-topic riga:badGlobalMuonTagger_fix
 git cms-merge-topic cms-met:METRecipe_80X_part2
 git clone https://github.com/cms-met/MetTools.git
 
+# update PUJetId values
+git remote add ahinzmann https://github.com/ahinzmann/cmssw.git
+git fetch ahinzmann PUidMiniAODfix80
+git cherry-pick ca33756e1747aec27d13971bcfd0874b16724e7f
+
 # EGMSmearer and data
 #git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
 git cms-merge-topic riga:deterministicEGMSmearer_v2
