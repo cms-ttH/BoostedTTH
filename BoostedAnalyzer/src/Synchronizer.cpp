@@ -32,7 +32,7 @@ Synchronizer::~Synchronizer (){
 
 
 void Synchronizer::DumpSyncExeHeader(std::ostream &out, bool addExtendedInfo){
-    out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_iso,lep1_pdgId,lep2_pt,lep2_iso,lep2_pdgId,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_csv,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_csv,MET_pt,MET_phi,mll,ttHFCategory,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down";
+    out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_eta,lep1_iso,lep1_pdgId,lep1_idSF,lep1_isoSF,lep1_seed,lep2_pt,lep2_eta,lep2_iso,lep2_pdgId,lep2_idSF,lep2_isoSF,lep2_seed,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_jesSF_PileUpDataMC_down,jet1_jesSF_RelativeFSR_up,jet1_jerSF_nominal,jet1_csv,jet1_PUJetId,jet1_PUJetDiscriminant,jet1_seed,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_jesSF_PileUpDataMC_down,jet1_2esSF_RelativeFSR_up,jet2_jerSF_nominal,jet2_csv,jet2_PUJetId,jet2_PUJetDiscriminant,jet2_seed,MET_pt,MET_phi,MET_pt_phiCor,MET_phi_phiCor,mll,ttHFCategory,ttHFGenFilterTag,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down,triggerSF,top_pt_weight,bdt_output,dnn_ttH_output,dnn_ttbb_output";
     if(addExtendedInfo){
 	out << ",jet3_pt,jet3_eta,jet3_csv,jet4_pt,jet4_eta,jet4_csv,jet5_pt,jet5_eta,jet5_csv";
 	out << ",trig_el,trig_mu,trig_elel,trig_elmu,trig_mumu";
@@ -72,11 +72,19 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     
     float lep1_pt=-1;
     float lep1_iso=-1;
+    float lep1_eta=-1;
     int lep1_pdgId=-1;
+    float lep1_idSF=-1;
+    float lep1_isoSF=-1;
+    int32_t lep1_seed=-1;
     
     float lep2_pt=-1;
     float lep2_iso=-1;
+    float lep2_eta=-1;
     int lep2_pdgId=-1;
+    float lep2_idSF=-1;
+    float lep2_isoSF=-1;
+    int32_t lep2_seed=-1;
     
     float jet1_pt=-1;
     float jet1_eta=-1;
@@ -84,7 +92,13 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet1_jesSF=-1;
     float jet1_jesSF_up=-1;
     float jet1_jesSF_down=-1;
+    float jet1_jesSF_PileUpDataMC_down=-1;
+    float jet1_jesSF_RelativeFSR_up=-1;
+    float jet1_jerSF_nominal=-1;
     float jet1_csv=-1;
+    float jet1_PUJetId=-1;
+    float jet1_PUJetDiscriminant=-1;
+    int32_t jet1_seed=-1;
     
     float jet2_pt=-1;
     float jet2_eta=-1;
@@ -92,14 +106,23 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet2_jesSF=-1;
     float jet2_jesSF_up=-1;
     float jet2_jesSF_down=-1;
+    float jet2_jesSF_PileUpDataMC_down=-1;
+    float jet2_jesSF_RelativeFSR_up=-1;
+    float jet2_jerSF_nominal=-1;
     float jet2_csv=-1;
+    float jet2_PUJetId=-1;
+    float jet2_PUJetDiscriminant=-1;
+    int32_t jet2_seed=-1;
     
     float MET_pt=-1;
     float MET_phi=-1;
+    float MET_pt_phiCor=-1;
+    float MET_phi_phiCor=-1;
     
     float mll=-1;
     
     int ttHFCategory=-1;
+    int ttHFGenFilterTag=-1;
     
     int n_interactions=-1;
     
@@ -115,6 +138,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     
     float me_up=-1;
     float me_down=-1;
+    
+    float triggerSF=-1;
+    float top_pt_weight=-1;
+    float bdt_output=-1;
+    float dnn_ttH_output=-1;
+    float dnn_ttbb_output=-1;
 
     float jet3_pt=-1;
     float jet3_eta=-1;
@@ -159,33 +188,45 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
 	if(iMuon->pt()>lep1_pt){
 	    lep2_pt=lep1_pt;
+	    lep2_eta=lep1_eta;
 	    lep2_iso=lep1_iso;
 	    lep2_pdgId=lep1_pdgId;
+	    lep2_seed=lep1_seed;
 	    
 	    lep1_pt=iMuon->pt();
+	    lep1_eta=iMuon->eta();
 	    if(iMuon->hasUserFloat("relIso")) lep1_iso= iMuon->userFloat("relIso");
 	    lep1_pdgId=iMuon->pdgId();
+	    lep1_seed=iMuon->userInt("deterministicSeed");
 	}
 	else if(iMuon->pt()>lep2_pt){
 	    lep2_pt=iMuon->pt();
+	    lep2_eta=iMuon->eta();
 	    if(iMuon->hasUserFloat("relIso")) lep2_iso= iMuon->userFloat("relIso");
 	    lep2_pdgId=iMuon->pdgId();
+	    lep2_seed=iMuon->userInt("deterministicSeed");
 	}
     }
     for(std::vector<pat::Electron>::const_iterator iEle = input.selectedElectronsLoose.begin(); iEle != input.selectedElectronsLoose.end(); ++iEle ){
 	if(iEle->pt()>lep1_pt){
 	    lep2_pt=lep1_pt;
+	    lep2_eta=lep1_eta;
 	    lep2_iso=lep1_iso;
 	    lep2_pdgId=lep1_pdgId;
+	    lep2_seed=lep1_seed;
 	    
 	    lep1_pt=iEle->pt();
+	    lep1_eta=iEle->eta();
 	    if(iEle->hasUserFloat("relIso")) lep1_iso= iEle->userFloat("relIso");
 	    lep1_pdgId=iEle->pdgId();
+	    lep1_seed=iEle->userInt("deterministicSeed");
 	}
 	else if(iEle->pt()>lep2_pt){
 	    lep2_pt=iEle->pt();
+	    lep2_eta=iEle->eta();
 	    if(iEle->hasUserFloat("relIso")) lep2_iso= iEle->userFloat("relIso");
 	    lep2_pdgId=iEle->pdgId();
+	    lep2_seed=iEle->userInt("deterministicSeed");
 
 	}
     }
@@ -264,10 +305,10 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet1_eta=input.selectedJets.at(0).eta();
 	jet1_phi=input.selectedJets.at(0).phi();
 	jet1_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
+	jet1_seed=input.selectedJets.at(0).userInt("deterministicSeed");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJES")) jet1_jesSF=input.selectedJets.at(0).userFloat("HelperJES");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJESUp")) jet1_jesSF_up=input.selectedJets.at(0).userFloat("HelperJESUp");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJESDown")) jet1_jesSF_down=input.selectedJets.at(0).userFloat("HelperJESDown");
-
     }
 
     if(input.selectedJets.size()>1){
@@ -275,6 +316,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet2_eta=input.selectedJets.at(1).eta();
 	jet2_phi=input.selectedJets.at(1).phi();
 	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
+	jet2_seed=input.selectedJets.at(1).userInt("deterministicSeed");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJES")) jet2_jesSF=input.selectedJets.at(1).userFloat("HelperJES");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESUp")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESUp");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESDown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESDown");
@@ -323,8 +365,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     }
 
 
-    trig_el=input.triggerInfo.IsTriggered("HLT_IsoMu24_v*")||input.triggerInfo.IsTriggered("HLT_IsoTkMu24_v*");
-    trig_mu=input.triggerInfo.IsTriggered("HLT_Ele27_eta2p1_WPTight_Gsf_v*");
+    trig_mu=input.triggerInfo.IsTriggered("HLT_IsoMu24_v*")||input.triggerInfo.IsTriggered("HLT_IsoTkMu24_v*");
+    trig_el=input.triggerInfo.IsTriggered("HLT_Ele27_WPTight_Gsf_v*");
     trig_elel=input.triggerInfo.IsTriggered("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
     trig_elmu=input.triggerInfo.IsTriggered("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*")
 	|| input.triggerInfo.IsTriggered("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*")
@@ -380,8 +422,10 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	}
     }
     
-    MET_pt=input.correctedMET.pt();
-    MET_phi=input.correctedMET.phi();
+    MET_pt=input.correctedMET.corPt(pat::MET::Type1);
+    MET_phi=input.correctedMET.corPhi(pat::MET::Type1);
+    MET_pt_phiCor=input.correctedMET.corPt(pat::MET::Type1XY);
+    MET_phi_phiCor=input.correctedMET.corPhi(pat::MET::Type1XY);
     
     if(input.weights.count("Weight_PU")>0) puWeight=input.weights.at("Weight_PU");
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducerLong();
@@ -412,29 +456,29 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if(print){ out << boost::format("%i,%i,%i,\
 %i,%i,%i,%i,%i,\
 %i,%i,\
-%.4f,%.4f,%i,\
-%.4f,%.4f,%i,\
-%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,\
-%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,\
-%.4f,%.4f,%.4f,\
-%i,%i,\
+%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,\
+%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,\
+%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,\
+%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,\
+%.4f,%.4f,%.4f,%.4f,%.4f,\
+%i,%i,%i,\
 %.4f,\
 %.4f,%.4f,%.4f,%.4f,\
 %.4f,%.4f,\
-%.4f,%.4f")%
+%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%
 	run% lumi% event%
 	is_e% is_mu% is_ee% is_emu% is_mumu%
 	n_jets% n_btags%
-	lep1_pt% lep1_iso% lep1_pdgId%
-	lep2_pt% lep2_iso% lep2_pdgId%
-	jet1_pt% jet1_eta% jet1_phi% jet1_jesSF% jet1_jesSF_up% jet1_jesSF_down% jet1_csv% 
-	jet2_pt% jet2_eta% jet2_phi% jet2_jesSF% jet2_jesSF_up% jet2_jesSF_down% jet2_csv% 	
-	MET_pt% MET_phi% mll%
-	ttHFCategory% n_interactions%
+	lep1_pt% lep1_eta% lep1_iso% lep1_pdgId% lep1_idSF% lep1_isoSF% lep1_seed%
+	lep2_pt% lep2_eta% lep2_iso% lep2_pdgId% lep2_idSF% lep2_isoSF% lep2_seed%
+	jet1_pt% jet1_eta% jet1_phi% jet1_jesSF% jet1_jesSF_up% jet1_jesSF_down% jet1_jesSF_PileUpDataMC_down% jet1_jesSF_RelativeFSR_up% jet1_jerSF_nominal% jet1_csv% jet1_PUJetId% jet1_PUJetDiscriminant% jet1_seed%
+	jet2_pt% jet2_eta% jet2_phi% jet2_jesSF% jet2_jesSF_up% jet2_jesSF_down% jet2_jesSF_PileUpDataMC_down% jet2_jesSF_RelativeFSR_up% jet2_jerSF_nominal% jet2_csv% jet2_PUJetId% jet2_PUJetDiscriminant% jet2_seed%	
+	MET_pt% MET_phi% MET_pt_phiCor% MET_phi_phiCor% mll%
+	ttHFCategory% ttHFGenFilterTag% n_interactions%
 	puWeight%
 	csvSF% csvSF_lf_up% csvSF_hf_down% csvSF_cErr1_down%
 	pdf_up% pdf_down%
-	me_up% me_down;
+	me_up% me_down% triggerSF% top_pt_weight% bdt_output% dnn_ttH_output% dnn_ttbb_output;
 	if(addExtendedInfo){
 	    out << boost::format(",%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%jet3_pt%jet3_eta%jet3_csv%jet4_pt%jet4_eta%jet4_csv%jet5_pt%jet5_eta%jet5_csv;
 	    out << boost::format(",%i,%i,%i,%i,%i")%trig_el%trig_mu%trig_elel%trig_elmu%trig_mumu;

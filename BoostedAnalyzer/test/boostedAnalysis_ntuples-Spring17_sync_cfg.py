@@ -379,7 +379,7 @@ for syst in systs:
     setattr(process,'SelectedJetProducer'+syst,process.SelectedJetProducer.clone(jets='patSmearedJets'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducer.collectionNames)]))
 
 # correction of  miniAOD jets -- one producer creates a jet collection for nominal JES and every JES systematic
-process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets='slimmedJets', 
+process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets=jetCollection, 
                                                                ptMins=[-1.],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJets"],
@@ -485,7 +485,7 @@ if options.dumpSyncExe:
     process.BoostedAnalyzer.processorNames = []
     process.BoostedAnalyzer.selectionNames = []
     process.BoostedAnalyzer.dumpSyncExe=True
-    process.BoostedAnalyzer.dumpExtended=True
+    process.BoostedAnalyzer.dumpExtended=False
     process.BoostedAnalyzer.dumpAlwaysEvents=[
         47021987,
         10718174,
