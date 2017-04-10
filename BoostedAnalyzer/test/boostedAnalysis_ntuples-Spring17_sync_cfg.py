@@ -323,7 +323,7 @@ if options.recorrectMET:
 
     # overwrite output collections
     METCollection = cms.InputTag("slimmedMETs", "", process.name_())
-"""
+
     # also add MET corrections due to e/g corrections, such as the slew rate fix in reMiniAOD
     if options.isData:
         from PhysicsTools.PatUtils.tools.corMETFromMuonAndEG import corMETFromMuonAndEG
@@ -339,16 +339,33 @@ if options.recorrectMET:
             runOnMiniAOD          = True,
             postfix               = "MuEGClean"
         )
-        process.slimmedMETsMuEGClean = process.slimmedMETsRecorrected.clone(
+        
+        process.slimmedMETsMuEGClean = process.slimmedMETs.clone(
             src             = cms.InputTag("patPFMetT1MuEGClean"),
             rawVariation    = cms.InputTag("patPFMetRawMuEGClean"),
             t1Uncertainties = cms.InputTag("patPFMetT1%sMuEGClean")
         )
         del process.slimmedMETsMuEGClean.caloMET
+        
+        process.egcorrMET = cms.Sequence(
+		    process.cleanedPhotonsMuEGClean+process.cleanedCorPhotonsMuEGClean+
+		    process.matchedPhotonsMuEGClean + process.matchedElectronsMuEGClean +
+		    process.corMETPhotonMuEGClean+process.corMETElectronMuEGClean+
+		    process.patPFMetT1MuEGClean+process.patPFMetRawMuEGClean+
+		    process.patPFMetT1SmearMuEGClean+process.patPFMetT1TxyMuEGClean+
+		    process.patPFMetTxyMuEGClean+process.patPFMetT1JetEnUpMuEGClean+
+		    process.patPFMetT1JetResUpMuEGClean+process.patPFMetT1SmearJetResUpMuEGClean+
+		    process.patPFMetT1ElectronEnUpMuEGClean+process.patPFMetT1PhotonEnUpMuEGClean+
+		    process.patPFMetT1MuonEnUpMuEGClean+process.patPFMetT1TauEnUpMuEGClean+
+		    process.patPFMetT1UnclusteredEnUpMuEGClean+process.patPFMetT1JetEnDownMuEGClean+
+		    process.patPFMetT1JetResDownMuEGClean+process.patPFMetT1SmearJetResDownMuEGClean+
+		    process.patPFMetT1ElectronEnDownMuEGClean+process.patPFMetT1PhotonEnDownMuEGClean+
+		    process.patPFMetT1MuonEnDownMuEGClean+process.patPFMetT1TauEnDownMuEGClean+
+		    process.patPFMetT1UnclusteredEnDownMuEGClean+process.slimmedMETsMuEGClean)
 
         # overwrite output collections
         METCollection = cms.InputTag("slimmedMETsMuEGClean", "", process.name_())
-"""
+
 
 ### additional MET filters ###
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
@@ -614,7 +631,11 @@ for s in [""]+systs:
 
 #if options.recorrectMET:
     
-process.p *= process.fullPatMetSequence*process.CorrectedMETproducer
+process.p *= process.fullPatMetSequence
+if options.isData:
+	process.p *= process.egcorrMET
+
+process.p *= process.CorrectedMETproducer
 
 if not options.isData and not options.isBoostedMiniAOD:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
