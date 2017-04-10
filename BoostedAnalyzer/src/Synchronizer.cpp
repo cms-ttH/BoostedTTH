@@ -96,7 +96,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet1_jesSF_RelativeFSR_up=-1;
     float jet1_jerSF_nominal=-1;
     float jet1_csv=-1;
-    float jet1_PUJetId=-1;
+    int jet1_PUJetId=-1;
     float jet1_PUJetDiscriminant=-1;
     int32_t jet1_seed=-1;
     
@@ -110,7 +110,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet2_jesSF_RelativeFSR_up=-1;
     float jet2_jerSF_nominal=-1;
     float jet2_csv=-1;
-    float jet2_PUJetId=-1;
+    int jet2_PUJetId=-1;
     float jet2_PUJetDiscriminant=-1;
     int32_t jet2_seed=-1;
     
@@ -306,6 +306,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet1_phi=input.selectedJets.at(0).phi();
 	jet1_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
 	jet1_seed=input.selectedJets.at(0).userInt("deterministicSeed");
+	jet1_PUJetId=input.selectedJets.at(0).userInt("pileupJetIdUpdated:fullId");
+	jet1_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetIdUpdated:fullDiscriminant");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJES")) jet1_jesSF=input.selectedJets.at(0).userFloat("HelperJES");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJESUp")) jet1_jesSF_up=input.selectedJets.at(0).userFloat("HelperJESUp");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJESDown")) jet1_jesSF_down=input.selectedJets.at(0).userFloat("HelperJESDown");
@@ -317,6 +319,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet2_phi=input.selectedJets.at(1).phi();
 	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
 	jet2_seed=input.selectedJets.at(1).userInt("deterministicSeed");
+	jet2_PUJetId=input.selectedJets.at(0).userInt("pileupJetIdUpdated:fullId");
+	jet2_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetIdUpdated:fullDiscriminant");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJES")) jet2_jesSF=input.selectedJets.at(1).userFloat("HelperJES");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESUp")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESUp");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESDown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESDown");

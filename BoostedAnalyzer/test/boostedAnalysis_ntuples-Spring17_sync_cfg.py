@@ -32,6 +32,7 @@ options.register("electronSmearing","Moriond17_23Jan",VarParsing.multiplicity.si
 options.register( "useMuonRC", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
 options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
 options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
+options.register("updatePUJetId",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
 options.parseArguments()
 
 # re-set some defaults
@@ -364,6 +365,30 @@ process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
 
 ###############################################
 
+### update PUJetID
+
+if options.updatePUJetId:
+    process.load("RecoJets.JetProducers.PileupJetID_cfi")
+    process.pileupJetIdUpdated = process.pileupJetId.clone(
+        jets             = jetCollection,
+        vertexes         = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        inputIsCorrected = cms.bool(True),
+        applyJec         = cms.bool(True)
+    )
+
+
+    process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+    process.updatedPatJets.jetSource         = jetCollection
+    process.updatedPatJets.addJetCorrFactors = cms.bool(False)
+    process.updatedPatJets.userData.userFloats.src.append("pileupJetIdUpdated:fullDiscriminant")
+    process.updatedPatJets.userData.userInts.src.append("pileupJetIdUpdated:fullId")
+
+    # overwrite output collections
+    jetCollection = cms.InputTag("updatedPatJets", "", process.name_())
+
+
+##############################################
+
 # jet selection
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 # selection of corrected and smeared jets -- one producer for every jet systematic that selects two collections (regular and loose jets) each
@@ -578,7 +603,10 @@ if eleMVAid:
     process.p *= process.egmGsfElectronIDSequence
 if options.calcBJetness:
     process.p *= process.BJetness
-process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedMuonProducerUncorr*process.CorrectedJetProducer
+process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedMuonProducerUncorr
+if options.updatePUJetId:
+	process.p*=process.pileupJetIdUpdated*process.updatedPatJets
+process.p*=process.CorrectedJetProducer
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed                                    
 for s in [""]+systs:
     process.p *= getattr(process,'patSmearedJets'+s)
