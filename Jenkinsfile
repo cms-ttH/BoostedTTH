@@ -50,6 +50,8 @@ scram project $JENKINSCMSSWFOLDER
 cd $JENKINSCMSSWSRCDIR
 eval `scramv1 runtime -sh` 
 
+git cms-merge-topic riga:deterministicSeeds
+
 # updated MET tools
 # this topic is branched from the official cms-met:METRecipe_8020 but fixes the badGlobalMuonTagger
 # so that it works like any other MET filter module
