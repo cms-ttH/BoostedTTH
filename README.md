@@ -10,10 +10,13 @@ Follow These Steps:
     # setup environment
     export SCRAM_ARCH="slc6_amd64_gcc530"
     export CMSSW_VERSION="CMSSW_8_0_26_patch1"
+    
+  
+    # create new CMSSW environment
     scram project $CMSSW_VERSION
     cd $CMSSW_VERSION/src
-    export CMSSW_SRC="$( pwd )"
-    cmsenv
+    export JENKINSCMSSWSRCDIR="$( pwd )"
+    eval `scramv1 runtime -sh` 
     
     git cms-merge-topic riga:deterministicSeeds
     
@@ -30,7 +33,7 @@ Follow These Steps:
     cd EgammaAnalysis/ElectronTools/data
     #git clone --depth 1 https://github.com/ECALELFS/ScalesSmearings.git
     git clone https://github.com/ECALELFS/ScalesSmearings.git -b Moriond17_gainSwitch_unc
-    cd ../../..
+    cd $JENKINSCMSSWSRCDIR
 
     # ttHFGenFilter
     # (only required when you use the ttHF filtered ttJets dataset)
@@ -42,7 +45,7 @@ Follow These Steps:
     mkdir data
     cp -r /afs/cern.ch/work/f/fromeo/public/BJetnessTTHbb/JEC/ data/
     cp -r /afs/cern.ch/work/f/fromeo/public/BJetnessTTHbb/JER/ data/
-    cd -
+    cd $JENKINSCMSSWSRCDIR
     
     # install common classifier
     mkdir TTH
@@ -55,17 +58,17 @@ Follow These Steps:
     sed -i '44i */' MEIntegratorStandalone/interface/Integrand.h
     
     # install miniaod and boostedtth
-    cd $CMSSW_BASE/src
+    cd $JENKINSCMSSWSRCDIR
     git clone  -b 'CMSSW_8_0_24_v1_sync' https://github.com/cms-ttH/MiniAOD.git
     git clone --depth 1 -b CMSSW_8_0_26_patch1 https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
-    cd $CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data
+    cd $JENKINSCMSSWSRCDIR/BoostedTTH/BoostedAnalyzer/data
     mkdir jerfiles
     cd jerfiles
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_SF_AK4PFchs.txt"
-    cd $CMSSW_BASE/src
+    cd $JENKINSCMSSWSRCDIR
     
     # hack to deactivate random JER smearing
     sed -i '248,259d' PhysicsTools/PatUtils/interface/SmearedJetProducerT.h

@@ -50,6 +50,8 @@ scram project $JENKINSCMSSWFOLDER
 cd $JENKINSCMSSWSRCDIR
 eval `scramv1 runtime -sh` 
 
+git cms-merge-topic riga:deterministicSeeds
+
 # updated MET tools
 # this topic is branched from the official cms-met:METRecipe_8020 but fixes the badGlobalMuonTagger
 # so that it works like any other MET filter module
@@ -58,9 +60,11 @@ git cms-merge-topic cms-met:METRecipe_80X_part2
 git clone https://github.com/cms-met/MetTools.git
 
 # EGMSmearer and data
-git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+#git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+git cms-merge-topic riga:deterministicEGMSmearer_v2
 cd EgammaAnalysis/ElectronTools/data
-git clone --depth 1 -b Moriond17_gainSwitch_unc https://github.com/ECALELFS/ScalesSmearings.git 
+#git clone --depth 1 https://github.com/ECALELFS/ScalesSmearings.git
+git clone https://github.com/ECALELFS/ScalesSmearings.git -b Moriond17_gainSwitch_unc
 cd $JENKINSCMSSWSRCDIR
 
 # ttHFGenFilter
@@ -87,7 +91,7 @@ sed -i '44i */' MEIntegratorStandalone/interface/Integrand.h
 
 # install miniaod and boostedtth
 cd $JENKINSCMSSWSRCDIR
-git clone  -b 'Spring17_v2' --single-branch --depth 1 https://github.com/cms-ttH/MiniAOD.git
+git clone  -b 'CMSSW_8_0_24_v1_sync' https://github.com/cms-ttH/MiniAOD.git
 git clone --depth 1 -b CMSSW_8_0_26_patch1 https://github.com/cms-ttH/BoostedTTH.git
 
 # Download the JER correction files
