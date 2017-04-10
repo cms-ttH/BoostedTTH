@@ -60,9 +60,11 @@ git cms-merge-topic cms-met:METRecipe_80X_part2
 git clone https://github.com/cms-met/MetTools.git
 
 # EGMSmearer and data
-git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+#git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+git cms-merge-topic riga:deterministicEGMSmearer_v2
 cd EgammaAnalysis/ElectronTools/data
-git clone --depth 1 -b Moriond17_gainSwitch_unc https://github.com/ECALELFS/ScalesSmearings.git 
+#git clone --depth 1 https://github.com/ECALELFS/ScalesSmearings.git
+git clone https://github.com/ECALELFS/ScalesSmearings.git -b Moriond17_gainSwitch_unc
 cd $JENKINSCMSSWSRCDIR
 
 # ttHFGenFilter
