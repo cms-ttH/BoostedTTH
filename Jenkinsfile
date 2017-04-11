@@ -9,7 +9,7 @@ pipeline {
     stage('Preparation') {
       steps {
         echo 'Start with preparations'
-        mattermostSend(message: 'Start with preparations', channel: 'harrendorf-devel', icon: 'https://wiki.jenkins-ci.org/download/attachments/2916393/headshot.png?version=1&modificationDate=1302753947000')
+        mattermostSend(message: 'BoostedTTH / CMSSW_8_0_26_patch1: Start with job', channel: 'harrendorf-devel', icon: 'https://wiki.jenkins-ci.org/download/attachments/2916393/headshot.png?version=1&modificationDate=1302753947000')
       }
     }
     stage('Start script') {
@@ -121,7 +121,7 @@ scram b -j10'''
     stage('Deploy') {
       steps {
         echo 'Finishing...'
-        mattermostSend(message: 'Finished with jog', channel: 'harrendorf-devel', color: 'green')
+        mattermostSend(message: 'BoostedTTH / CMSSW_8_0_26_patch1:Finished with job', channel: 'harrendorf-devel', color: 'green')
       }
     }
   }
