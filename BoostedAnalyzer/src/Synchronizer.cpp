@@ -319,8 +319,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet2_phi=input.selectedJets.at(1).phi();
 	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
 	jet2_seed=input.selectedJets.at(1).userInt("deterministicSeed");
-	jet2_PUJetId=input.selectedJets.at(0).userInt("pileupJetIdUpdated:fullId");
-	jet2_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetIdUpdated:fullDiscriminant");
+	jet2_PUJetId=input.selectedJets.at(1).userInt("pileupJetIdUpdated:fullId");
+	jet2_PUJetDiscriminant=input.selectedJets.at(1).userFloat("pileupJetIdUpdated:fullDiscriminant");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJES")) jet2_jesSF=input.selectedJets.at(1).userFloat("HelperJES");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESUp")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESUp");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESDown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESDown");
