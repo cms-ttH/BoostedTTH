@@ -80,15 +80,17 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
     
     double weight_up = 1.0;
     double weight_down = 1.0;
+    double weight_nom = 1.0;
     if (std::isfinite(1./pdfNominal)) {
       weight_up = (pdfUnc.central + pdfUnc.errplus) / pdfNominal;
       weight_down = (pdfUnc.central - pdfUnc.errminus) / pdfNominal;
+      weight_nom = pdfUnc.central / pdfNominal;
     }
     
 
-    weights["Weight_"+initializedPDFNames[p]+std::to_string(PDFs[0]->lhapdfID())+"_nominal"] =  pdfs[0] / pdfNominal;
-    weights["Weight_"+initializedPDFNames[p]+std::to_string(PDFs[0]->lhapdfID())+"_up"] =(  pdfs[0] * weight_up )/ pdfNominal;
-    weights["Weight_"+initializedPDFNames[p]+std::to_string(PDFs[0]->lhapdfID())+"_down"] =(  pdfs[0] * weight_down )/ pdfNominal;
+    weights["Weight_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_nominal"] =  weight_nom;
+    weights["Weight_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_up"] = weight_up;
+    weights["Weight_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_down"] = weight_down;
   
   }
 
