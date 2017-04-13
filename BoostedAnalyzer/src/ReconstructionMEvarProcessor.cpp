@@ -24,19 +24,19 @@ ReconstructionMEvarProcessor::~ReconstructionMEvarProcessor(){}
 
 
 void ReconstructionMEvarProcessor::Init(const InputCollections& input,VariableContainer& vars){
-    vars.InitVar("Reco_highest_TopAndWHadLikelihood");
+    vars.InitVar("Gen_highest_TopAndWHadLikelihood");
 
     for(auto tagname=alltags.begin();tagname!=alltags.end();tagname++){
-      vars.InitVar("Reco_highest_"+(*tagname),"I");
-	vars.InitVar("Reco_foundAll_with_"+(*tagname),"I");
-	vars.InitVar("Reco_foundW_with_"+(*tagname),"I");
-	vars.InitVar("Reco_foundH_with_"+(*tagname),"I");
-	vars.InitVar("Reco_foundN_with_"+(*tagname),"I");
+      vars.InitVar("Gen_highest_"+(*tagname),"I");
+	vars.InitVar("Gen_foundAll_with_"+(*tagname),"I");
+	vars.InitVar("Gen_foundW_with_"+(*tagname),"I");
+	vars.InitVar("Gen_foundH_with_"+(*tagname),"I");
+	vars.InitVar("Gen_foundN_with_"+(*tagname),"I");
     }
-    vars.InitVar("Reco_existingAll","I");
-    vars.InitVar("Reco_existingW","I");
-    vars.InitVar("Reco_existingH","I");
-    vars.InitVar("Reco_existingN","I");
+    vars.InitVar("Gen_existingAll","I");
+    vars.InitVar("Gen_existingW","I");
+    vars.InitVar("Gen_existingH","I");
+    vars.InitVar("Gen_existingN","I");
 
     for(auto tagname=tags_tt.begin();tagname!=tags_tt.end();tagname++){
 	vars.InitVar("Reco_Dr_BB_best_"+(*tagname));
@@ -159,7 +159,7 @@ void ReconstructionMEvarProcessor::Process(const InputCollections& input,Variabl
 
     // add best tags to vars
     for(auto t=best_tag.begin(); t!=best_tag.end(); t++){
-	vars.FillVar("Reco_highest_"+t->first,t->second);
+	vars.FillVar("Gen_highest_"+t->first,t->second);
     }
     float toptag=-9999;
     for(uint i=0;i<nints;i++){
@@ -168,17 +168,17 @@ void ReconstructionMEvarProcessor::Process(const InputCollections& input,Variabl
 	    toptag=tag;
 	}        
     }
-    vars.FillVar("Reco_highest_TopAndWHadLikelihood",toptag);
+    vars.FillVar("Gen_highest_TopAndWHadLikelihood",toptag);
 
     // calculate variables for best interpretations
     for(auto tagname=alltags.begin();tagname!=alltags.end();tagname++){
         Interpretation* bi=best_int[*tagname];
         if(bi==0) continue;
 	if(mcmatcher.GetState()==2){
-	  vars.FillVar("Reco_foundAll_with_"+(*tagname),mcmatcher.MatchWHad(*bi));
-	  vars.FillVar("Reco_foundW_with_"+(*tagname),mcmatcher.MatchWHad(*bi));
-	  vars.FillVar("Reco_foundH_with_"+(*tagname),mcmatcher.MatchH(*bi));
-	  vars.FillVar("Reco_foundN_with_"+(*tagname),mcmatcher.MatchNTTH(*bi));
+	  vars.FillVar("Gen_foundAll_with_"+(*tagname),mcmatcher.MatchWHad(*bi));
+	  vars.FillVar("Gen_foundW_with_"+(*tagname),mcmatcher.MatchWHad(*bi));
+	  vars.FillVar("Gen_foundH_with_"+(*tagname),mcmatcher.MatchH(*bi));
+	  vars.FillVar("Gen_foundN_with_"+(*tagname),mcmatcher.MatchNTTH(*bi));
 	}
     }
     bool existingAll=false;
@@ -193,10 +193,10 @@ void ReconstructionMEvarProcessor::Process(const InputCollections& input,Variabl
 	if(mcmatcher.MatchNTTH(*ints[i])>existingN) existingN=mcmatcher.MatchNTTH(*ints[i]);
       }
     }    
-    vars.FillVar("Reco_existingAll",existingAll);
-    vars.FillVar("Reco_existingW",existingW);
-    vars.FillVar("Reco_existingH",existingH);
-    vars.FillVar("Reco_existingN",existingN);
+    vars.FillVar("Gen_existingAll",existingAll);
+    vars.FillVar("Gen_existingW",existingW);
+    vars.FillVar("Gen_existingH",existingH);
+    vars.FillVar("Gen_existingN",existingN);
 
     // calculate variables for best tt interpretations
     for(auto tagname=tags_tt.begin();tagname!=tags_tt.end();tagname++){
