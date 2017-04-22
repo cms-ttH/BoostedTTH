@@ -751,8 +751,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 }
 
 float BoostedAnalyzer::GetTopPtWeight(float toppt1,float toppt2){
-    float sf1=exp(0.156-0.00137*toppt1);
-    float sf2=exp(0.156-0.00137*toppt2);
+    float sf1=exp(0.0615-0.0005*toppt1);
+    float sf2=exp(0.0615-0.0005*toppt2);
     return sqrt(sf1*sf2);
 }
 
@@ -764,7 +764,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	weights["Weight_XS"] = 1.0;
 	weights["Weight_CSV"] = 1.0;
 	weights["Weight_PU"] = 1.0;
-// 	weights["Weight_TopPt"] = 1.0;
+ 	weights["Weight_TopPt"] = 1.0;
 	weights["Weight_PV"] = 1.0;
 	return weights;
     }
@@ -811,7 +811,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     weights["Weight_XS"] = xsweight;
     weights["Weight_CSV"] = csvweight;
     weights["Weight_PU"] = puweight;
-//     weights["Weight_TopPt"] = topptweight;
+    weights["Weight_TopPt"] = topptweight;
 
     bool doSystematics=true;
 //     if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
@@ -833,8 +833,8 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	weights["Weight_CSVCErr1down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,22, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_CSVCErr2up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,23, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_CSVCErr2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,24, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-// 	weights["Weight_TopPtup"] = topptweightUp;
-// 	weights["Weight_TopPtdown"] = topptweightDown;
+ 	weights["Weight_TopPtup"] = topptweightUp;
+ 	weights["Weight_TopPtdown"] = topptweightDown;
   }
 
  //Add Lepton Scalefactors to weight map
@@ -852,7 +852,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	//Add Genweights to the weight map
     genweights.GetGenWeights(weights, lheInfo, dogenweights);
 	//DANGERZONE
-// 	genweights.GetLHAPDFWeight(weights, genInfo);
+ 	genweights.GetLHAPDFWeight(weights, genInfo );
 	//DANGERZONE
 
     return weights;
