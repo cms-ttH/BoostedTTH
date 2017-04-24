@@ -5,6 +5,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTOhio_v2.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
 #include "TTH/CommonClassifier/interface/BDTClassifier.h"
+#include "TTH/CommonClassifier/interface/RecoLikelihoodVariables.h"
 #include "MiniAOD/MiniAODHelper/interface/LJ_BDT_v4.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "TMVA/Reader.h"
@@ -22,7 +23,8 @@ private:
 //   BDT_v3 bdt3;
   BDTClassifier* commonBDT5;
   bool needToDeleteBDTClassifier;
-//   
+//
+  RecoLikelihoodVariables* recoLikelihoodVariables;
   
 };
 

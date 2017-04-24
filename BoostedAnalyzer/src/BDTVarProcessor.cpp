@@ -4,14 +4,16 @@ using namespace std;
 BDTVarProcessor::BDTVarProcessor():
 //     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
 //     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
-    commonBDT5(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V1/")) {needToDeleteBDTClassifier=true;}
+    commonBDT5(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V1/")),
+    recoLikelihoodVariables(new RecoLikelihoodVariables()) {needToDeleteBDTClassifier=true;}
 BDTVarProcessor::~BDTVarProcessor(){
   if(needToDeleteBDTClassifier){
     delete commonBDT5;
   }
+  delete recoLikelihoodVariables;
 }
 
-BDTVarProcessor::BDTVarProcessor(BDTClassifier* bdt_):commonBDT5(bdt_){needToDeleteBDTClassifier=false;}
+BDTVarProcessor::BDTVarProcessor(BDTClassifier* bdt_):commonBDT5(bdt_), recoLikelihoodVariables(new RecoLikelihoodVariables()){needToDeleteBDTClassifier=false;}
 
 
 
@@ -33,6 +35,11 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   map<string,float> bdtinputs_common5=commonBDT5->GetVariablesOfLastEvaluation();
   for(auto it=bdtinputs_common5.begin(); it!=bdtinputs_common5.end(); it++){
     vars.InitVar("BDT_common5_input_"+it->first);
+  }
+
+  map<TString,double> DNN_inputs = recoLikelihoodVariables->GetRecoLikelihoodVariables();
+  for(auto it=DNN_inputs.begin(); it!=DNN_inputs.end(); it++){
+    vars.InitVar("DNN_input_"+it->first);
   }
 
   initialized=true;
@@ -79,5 +86,11 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
       for(auto it=bdtinputs_common5.begin(); it!=bdtinputs_common5.end(); it++){
 	  vars.FillVar("BDT_common5_input_"+it->first,it->second);
       }
+  }
+
+  recoLikelihoodVariables->CalculateRecoLikelihoodVariables(lepvecs, jetvecs, jetcsvs, metP4);
+  map<TString,double> DNN_inputs = recoLikelihoodVariables->GetRecoLikelihoodVariables();
+  for(auto it=DNN_inputs.begin(); it!=DNN_inputs.end(); it++){
+    vars.FillVar("DNN_input_"+it->first, it->second);
   }
 }
