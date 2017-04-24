@@ -24,6 +24,7 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
 	  weights[weightnames.at(i)] = LHEEvent.weights()[i].wgt/LHEEvent.originalXWGTUP();
 	  //cout << "added generator weight " << weightnames.at(i) << " with value " << weights[weightnames.at(i)] << endl;
 	}
+	weights["Weight_LHECentral"]=LHEEvent.originalXWGTUP();
       }
     }
     //Default process:
@@ -56,6 +57,7 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
   }
   
   auto pdfInfos = genInfos.pdf();
+  double gen_weight = genInfos.weight();
   double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
 
   //Loop over all initialized PDFSets
@@ -91,7 +93,7 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
     weights["Weight_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_nominal"] =  weight_nom;
     weights["Weight_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_up"] = weight_up;
     weights["Weight_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_down"] = weight_down;
-  
+    weights["Weight_GEN_nom"]=gen_weight;
   }
 
 
