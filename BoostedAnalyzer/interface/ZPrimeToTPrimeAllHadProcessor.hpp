@@ -44,8 +44,8 @@ public:
   
   bool Bottomtag(pat::Jet bottom,std::string workingpoint);
   bool Wtag(pat::Jet W,std::string workingpoint);
-  bool Toptagwithsubbtag(pat::Jet top,std::string workingpoint,std::string subjet_workingpoint);
   bool Toptag(pat::Jet top,std::string workingpoint);
+  bool Top_subbtag(pat::Jet top,std::string subjet_workingpoint);
   
 private:
 

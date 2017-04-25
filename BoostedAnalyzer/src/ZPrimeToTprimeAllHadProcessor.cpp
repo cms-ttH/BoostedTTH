@@ -769,36 +769,16 @@ bool ZPrimeToTPrimeAllHadProcessor::Toptag(pat::Jet top,std::string workingpoint
         tau32=0.81;
     }
     
-    if(top.userFloat("NjettinessAK8CHS:tau3")>0.0 && top.userFloat("NjettinessAK8CHS:tau2")>0.0 && top.userFloat("NjettinessAK8CHS:tau1")>0.0 && (top.userFloat("NjettinessAK8CHS:tau3")/top.userFloat("NjettinessAK8CHS:tau2"))<tau32 && M_SD_low<top.userFloat("ak8PFJetsCHSSoftDropMass") && top.userFloat("ak8PFJetsCHSSoftDropMass")<M_SD_up)
-    {
+    if(top.userFloat("NjettinessAK8CHS:tau3")>0.0 && top.userFloat("NjettinessAK8CHS:tau2")>0.0 && top.userFloat("NjettinessAK8CHS:tau1")>0.0 && (top.userFloat("NjettinessAK8CHS:tau3")/top.userFloat("NjettinessAK8CHS:tau2"))<tau32 && M_SD_low<top.userFloat("ak8PFJetsCHSSoftDropMass") && top.userFloat("ak8PFJetsCHSSoftDropMass")<M_SD_up){
         return true;
-    }
-    else{
+    }else{
         return false;
     }
 }
 
-bool ZPrimeToTPrimeAllHadProcessor::Toptagwithsubbtag(pat::Jet top,std::string workingpoint,std::string subjet_workingpoint){
-    float M_SD_up=220;
-    float M_SD_low=105;
-    float tau32=0.81;
-    
-    if(workingpoint=="T"){
-        M_SD_up=220;
-        M_SD_low=105;
-        tau32=0.5;
-    }
-    if(workingpoint=="M"){
-        M_SD_up=220;
-        M_SD_low=105;
-        tau32=0.67;
-    }
-    if(workingpoint=="L"){
-        M_SD_up=220;
-        M_SD_low=105;
-        tau32=0.81;
-    }
-    
+
+
+bool ZPrimeToTPrimeAllHadProcessor::Top_subbtag(pat::Jet top,std::string subjet_workingpoint){
     float CSVv2=0.8;
     if(subjet_workingpoint=="T"){
         CSVv2=0.935;
@@ -810,25 +790,23 @@ bool ZPrimeToTPrimeAllHadProcessor::Toptagwithsubbtag(pat::Jet top,std::string w
         CSVv2=0.46;
     }
     
-    if(top.userFloat("NjettinessAK8CHS:tau3")>0.0 && top.userFloat("NjettinessAK8CHS:tau2")>0.0 && top.userFloat("NjettinessAK8CHS:tau1")>0.0 && (top.userFloat("NjettinessAK8CHS:tau3")/top.userFloat("NjettinessAK8CHS:tau2"))<tau32 && M_SD_low<top.userFloat("ak8PFJetsCHSSoftDropMass") && top.userFloat("ak8PFJetsCHSSoftDropMass")<M_SD_up)
-    {
-        double max_subjet_csv_v2=-10;
-        auto const & names = top.subjets("SoftDrop");
-        for( auto const & itsubJet : names ){
-            if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
-                max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-            }
-        };   
-        if (max_subjet_csv_v2>CSVv2){
-            return true;
-        }else{
-            return false;
+    double max_subjet_csv_v2=-10;
+    auto const & names = top.subjets("SoftDrop");
+    for( auto const & itsubJet : names ){
+        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         }
-    }
-    else{
+    };   
+    if (max_subjet_csv_v2>CSVv2){    
+        return true;
+    }else{
         return false;
     }
 }
+    
+
+
+
 
 
 bool ZPrimeToTPrimeAllHadProcessor::Wtag(pat::Jet W,std::string workingpoint){
@@ -1496,24 +1474,27 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             if (itJet->pt()>200 && abs(itJet->eta())<2.4){
                
 //top candidates
-                if (itJet->pt()>400 && ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"L")){
-                    tops.push_back(*itJet);
-                    top_candidatefound=true;
-                    
-                    if(ZPrimeToTPrimeAllHadProcessor::Toptagwithsubbtag(*itJet,"L","M")){
-                        tops_withbtag.push_back(*itJet);
-                        top_withbtag_candidatefound=true;
+                if (itJet->pt()>400){
+                    if(!(ZPrimeToTPrimeAllHadProcessor::Top_subbtag(*itJet,"M"))){
+                        if(ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"L")){
+                            tops.push_back(*itJet);
+                            top_candidatefound=true;
+                        }else{
+                            tops_anti.push_back(*itJet);
+                            top_anti_candidatefound=true;
+                        }
+
                     }else{
-                        tops_withbtag_anti.push_back(*itJet);
-                        top_withbtag_anti_candidatefound=true;                        
+                        if(ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"L")){
+                            tops_withbtag.push_back(*itJet);
+                            top_withbtag_candidatefound=true;
+                        }else{
+                            tops_withbtag_anti.push_back(*itJet);
+                            top_withbtag_anti_candidatefound=true;
+                        }
                     }
                 }
-                else if(itJet->pt()>400){
-                    tops_anti.push_back(*itJet);
-                    top_anti_candidatefound=true;
-                    tops_withbtag_anti.push_back(*itJet);
-                    top_withbtag_anti_candidatefound=true;
-                }
+
                     
 //W candidates
                 if (ZPrimeToTPrimeAllHadProcessor::Wtag(*itJet, "M")){
