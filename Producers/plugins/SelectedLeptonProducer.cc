@@ -297,6 +297,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                     }
                 }
                 auto tmp_vector = muons[i].p4();
+                muons[i].addUserFloat( "PtbeforeRC", tmp_vector.Pt());
                 tmp_vector.SetPxPyPzE(momentum_sf*tmp_vector.Px(),momentum_sf*tmp_vector.Py(),momentum_sf*tmp_vector.Pz(),TMath::Sqrt((1+(tmp_vector.P2()/(tmp_vector.E()*tmp_vector.E())*(momentum_sf*momentum_sf-1))))*tmp_vector.E());
                 muons[i].setP4(tmp_vector);            
             }
