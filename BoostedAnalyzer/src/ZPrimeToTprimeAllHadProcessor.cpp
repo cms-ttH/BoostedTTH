@@ -748,6 +748,140 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    
 }
 
+bool ZPrimeToTPrimeAllHadProcessor::Toptag(pat::Jet top,std::string workingpoint){
+    float M_SD_up=220;
+    float M_SD_low=105;
+    float tau32=0.86;
+    
+    if(workingpoint=="T"){
+        M_SD_up=220;
+        M_SD_low=105;
+        tau32=0.5;
+    }
+    if(workingpoint=="M"){
+        M_SD_up=220;
+        M_SD_low=105;
+        tau32=0.67;
+    }
+    if(workingpoint=="L"){
+        M_SD_up=220;
+        M_SD_low=105;
+        tau32=0.81;
+    }
+    
+    if(top.userFloat("NjettinessAK8CHS:tau3")>0.0 && top.userFloat("NjettinessAK8CHS:tau2")>0.0 && top.userFloat("NjettinessAK8CHS:tau1")>0.0 && (top.userFloat("NjettinessAK8CHS:tau3")/top.userFloat("NjettinessAK8CHS:tau2"))<tau32 && M_SD_low<top.userFloat("ak8PFJetsCHSSoftDropMass") && top.userFloat("ak8PFJetsCHSSoftDropMass")<M_SD_up)
+    {
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool ZPrimeToTPrimeAllHadProcessor::Toptagwithsubbtag(pat::Jet top,std::string workingpoint,std::string subjet_workingpoint){
+    float M_SD_up=220;
+    float M_SD_low=105;
+    float tau32=0.81;
+    
+    if(workingpoint=="T"){
+        M_SD_up=220;
+        M_SD_low=105;
+        tau32=0.5;
+    }
+    if(workingpoint=="M"){
+        M_SD_up=220;
+        M_SD_low=105;
+        tau32=0.67;
+    }
+    if(workingpoint=="L"){
+        M_SD_up=220;
+        M_SD_low=105;
+        tau32=0.81;
+    }
+    
+    float CSVv2=0.8;
+    if(subjet_workingpoint=="T"){
+        CSVv2=0.935;
+    }
+    if(subjet_workingpoint=="M"){
+        CSVv2=0.8;
+    }
+    if(subjet_workingpoint=="L"){
+        CSVv2=0.46;
+    }
+    
+    if(top.userFloat("NjettinessAK8CHS:tau3")>0.0 && top.userFloat("NjettinessAK8CHS:tau2")>0.0 && top.userFloat("NjettinessAK8CHS:tau1")>0.0 && (top.userFloat("NjettinessAK8CHS:tau3")/top.userFloat("NjettinessAK8CHS:tau2"))<tau32 && M_SD_low<top.userFloat("ak8PFJetsCHSSoftDropMass") && top.userFloat("ak8PFJetsCHSSoftDropMass")<M_SD_up)
+    {
+        double max_subjet_csv_v2=-10;
+        auto const & names = top.subjets("SoftDrop");
+        for( auto const & itsubJet : names ){
+            if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+                max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+            }
+        };   
+        if (max_subjet_csv_v2>CSVv2){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    else{
+        return false;
+    }
+}
+
+
+bool ZPrimeToTPrimeAllHadProcessor::Wtag(pat::Jet W,std::string workingpoint){
+    float M_SD_up=100;
+    float M_SD_low=70;
+    float tau21=0.6;
+    
+    if(workingpoint=="T"){
+        M_SD_up=100;
+        M_SD_low=70;
+        tau21=0.5;
+    }
+    if(workingpoint=="M"){
+        M_SD_up=100;
+        M_SD_low=70;
+        tau21=0.6;
+    }
+    if(workingpoint=="L"){
+        M_SD_up=100;
+        M_SD_low=70;
+        tau21=0.5;
+    }
+    
+    if(W.userFloat("NjettinessAK8CHS:tau3")>0.0 && W.userFloat("NjettinessAK8CHS:tau2")>0.0 && W.userFloat("NjettinessAK8CHS:tau1")>0.0 && (W.userFloat("NjettinessAK8CHS:tau2")/W.userFloat("NjettinessAK8CHS:tau1"))<tau21 && M_SD_low<W.userFloat("ak8PFJetsCHSSoftDropMass") && W.userFloat("ak8PFJetsCHSSoftDropMass")<M_SD_up){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+
+
+bool ZPrimeToTPrimeAllHadProcessor::Bottomtag(pat::Jet bottom,std::string workingpoint){
+    float CSVv2=0.46;
+    if(workingpoint=="T"){
+        CSVv2=0.935;
+    }
+    if(workingpoint=="M"){
+        CSVv2=0.8;
+    }
+    if(workingpoint=="L"){
+        CSVv2=0.46;
+    }
+    if(MiniAODHelper::GetJetCSV(bottom,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>CSVv2){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+
 std::vector<pat::Jet> ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws, std::vector<pat::Jet>& bottoms){
     std::vector<pat::Jet> separated_bottoms;
     for(std::vector<pat::Jet>::const_iterator itbJet = bottoms.begin() ; itbJet != bottoms.end(); ++itbJet){
@@ -1362,27 +1496,19 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             if (itJet->pt()>200 && abs(itJet->eta())<2.4){
                
 //top candidates
-                if (itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && (itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2"))<0.86 && 110<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<210 && itJet->pt()>400){
+                if (itJet->pt()>400 && ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"L")){
                     tops.push_back(*itJet);
                     top_candidatefound=true;
                     
-                    double max_subjet_csv_v2=-10;
-                    auto const & names = itJet->subjets("SoftDrop");
-                    for( auto const & itsubJet : names ){
-                        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
-                        max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-                        }
-                    }   
-                    if (max_subjet_csv_v2>0.8){
+                    if(ZPrimeToTPrimeAllHadProcessor::Toptagwithsubbtag(*itJet,"L","M")){
                         tops_withbtag.push_back(*itJet);
                         top_withbtag_candidatefound=true;
-                    } else {
+                    }else{
                         tops_withbtag_anti.push_back(*itJet);
-                        top_withbtag_anti_candidatefound=true;
+                        top_withbtag_anti_candidatefound=true;                        
                     }
-                    
                 }
-                else if (itJet->pt()>400){
+                else if(itJet->pt()>400){
                     tops_anti.push_back(*itJet);
                     top_anti_candidatefound=true;
                     tops_withbtag_anti.push_back(*itJet);
@@ -1390,7 +1516,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                 }
                     
 //W candidates
-                if (itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")/itJet->userFloat("NjettinessAK8CHS:tau1")<0.6 && 70<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<100){
+                if (ZPrimeToTPrimeAllHadProcessor::Wtag(*itJet, "M")){
                     Ws.push_back(*itJet);
                     W_candidatefound=true;
                 }
@@ -1448,7 +1574,6 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         }
     }
 
-    std::cout<<"here2"<<endl;
 //AK4-Jets
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
     //int iJet = itJet - input.selectedJets.begin();
@@ -1459,12 +1584,12 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             //vars.FillVars("AK4_bottom_misstagged_candidates_eta",iJet,itJet->eta());
             
             
-            if (MiniAODHelper::GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.800){
+            if (ZPrimeToTPrimeAllHadProcessor::Bottomtag(*itJet,"M")){
                 bottoms.push_back(*itJet);
                 bottom_candidatefound=true; 
                 //separated_bottom_candidatefound=true;
             }
-            if (MiniAODHelper::GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")<0.800){
+            else{
                 bottoms_anti.push_back(*itJet);
                 bottom_anti_candidatefound=true;
                 //separated_bottom_anti_candidatefound=true;

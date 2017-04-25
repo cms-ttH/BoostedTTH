@@ -42,6 +42,11 @@ public:
   void FillSignalSidebandVars(VariableContainer& vars, std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws,  std::vector<pat::Jet>& bottoms,  math::XYZTLorentzVector TPrime,  math::XYZTLorentzVector ZPrime,  bool toptag, bool toptag_withbtag,  bool Wtag, bool bottomtag, bool toptag_anti, bool toptag_withbtag_anti,  bool Wtag_anti, std::string str_AK8_selected_first="");
   void FillZprimeVars(VariableContainer& vars, std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws,  std::vector<pat::Jet>& bottoms,  math::XYZTLorentzVector Tprime,  math::XYZTLorentzVector Zprime,std::string string);
   
+  bool Bottomtag(pat::Jet bottom,std::string workingpoint);
+  bool Wtag(pat::Jet W,std::string workingpoint);
+  bool Toptagwithsubbtag(pat::Jet top,std::string workingpoint,std::string subjet_workingpoint);
+  bool Toptag(pat::Jet top,std::string workingpoint);
+  
 private:
 
 	TTMHelper foo;
