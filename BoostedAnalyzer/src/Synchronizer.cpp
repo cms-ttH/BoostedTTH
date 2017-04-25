@@ -470,6 +470,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if(input.weights.count("Weight_muRupmuFup")>0) me_up =input.weights.at("Weight_muRupmuFup");
     if(input.weights.count("Weight_muRdownmuFdown")>0) me_down =input.weights.at("Weight_muRdownmuFdown");
     if(input.weights.count("Weight_TopPt")>0) top_pt_weight=input.weights.at("Weight_TopPt");
+    if(input.weights.count("Weight_PDF4LHC15_nlo_30_up")>0) pdf_up=input.weights.at("Weight_PDF4LHC15_nlo_30_up");
+    if(input.weights.count("Weight_PDF4LHC15_nlo_30_down")>0) pdf_down=input.weights.at("Weight_PDF4LHC15_nlo_30_down");
 
     bool print=false;
     if (dataset=="NA" && (is_SL || is_DL)) print =true;
