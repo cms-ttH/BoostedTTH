@@ -339,7 +339,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // initialize synchronizer
     if(dumpSyncExe){
-	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,dumpExtended);
+	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,dumpExtended);
     }
 
     // initialize selections

@@ -183,21 +183,30 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     int pass_VertexSelection=-1;
     int pass_LeptonSelection=-1;
     int pass_DiLeptonSelection=-1;
+    
+    std::map< std::string, float > leptonsfs = leptonsfhelper->GetLeptonSF(input.selectedElectronsLoose,input.selectedMuonsLoose);
 
     //=================================================
     for(std::vector<pat::Muon>::const_iterator iMuon = input.selectedMuonsLoose.begin(); iMuon != input.selectedMuonsLoose.end(); ++iMuon ){
+        std::vector<pat::Muon> muon_tmp(1, *iMuon);
+        std::vector<pat::Electron> ele_tmp;
+        std::map<std::string,float> leptonsfs_tmp = leptonsfhelper->GetLeptonSF(ele_tmp,muon_tmp);
 	if(iMuon->pt()>lep1_pt){
 	    lep2_pt=lep1_pt;
 	    lep2_eta=lep1_eta;
 	    lep2_iso=lep1_iso;
 	    lep2_pdgId=lep1_pdgId;
 	    lep2_seed=lep1_seed;
-	    
+	    lep2_idSF=lep1_idSF;
+            lep2_isoSF=lep1_isoSF;
+            
 	    lep1_pt=iMuon->pt();
 	    lep1_eta=iMuon->eta();
 	    if(iMuon->hasUserFloat("relIso")) lep1_iso= iMuon->userFloat("relIso");
 	    lep1_pdgId=iMuon->pdgId();
 	    lep1_seed=iMuon->userInt("deterministicSeed");
+            lep1_idSF=leptonsfs_tmp["MuonSFID"];//leptonsfhelper->GetMuonSF(iMuon->pt(),iMuon->eta(),0,"ID");
+            lep1_isoSF=leptonsfs_tmp["MuonSFIso"];//leptonsfhelper->GetMuonSF(iMuon->pt(),iMuon->eta(),0,"ISO");
 	}
 	else if(iMuon->pt()>lep2_pt){
 	    lep2_pt=iMuon->pt();
@@ -205,21 +214,30 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    if(iMuon->hasUserFloat("relIso")) lep2_iso= iMuon->userFloat("relIso");
 	    lep2_pdgId=iMuon->pdgId();
 	    lep2_seed=iMuon->userInt("deterministicSeed");
+            lep2_idSF=leptonsfs_tmp["MuonSFID"];//leptonsfhelper->GetMuonSF(iMuon->pt(),iMuon->eta(),0,"ID");
+            lep2_isoSF=leptonsfs_tmp["MuonSFIso"];//leptonsfhelper->GetMuonSF(iMuon->pt(),iMuon->eta(),0,"ISO");
 	}
     }
     for(std::vector<pat::Electron>::const_iterator iEle = input.selectedElectronsLoose.begin(); iEle != input.selectedElectronsLoose.end(); ++iEle ){
+        std::vector<pat::Electron> ele_tmp(1, *iEle);
+        std::vector<pat::Muon> muon_tmp;
+        std::map<std::string,float> leptonsfs_tmp = leptonsfhelper->GetLeptonSF(ele_tmp,muon_tmp);
 	if(iEle->pt()>lep1_pt){
 	    lep2_pt=lep1_pt;
 	    lep2_eta=lep1_eta;
 	    lep2_iso=lep1_iso;
 	    lep2_pdgId=lep1_pdgId;
 	    lep2_seed=lep1_seed;
+            lep2_idSF=lep1_idSF;
+            lep2_isoSF=lep1_isoSF;
 	    
 	    lep1_pt=iEle->pt();
 	    lep1_eta=iEle->eta();
 	    if(iEle->hasUserFloat("relIso")) lep1_iso= iEle->userFloat("relIso");
 	    lep1_pdgId=iEle->pdgId();
 	    lep1_seed=iEle->userInt("deterministicSeed");
+            lep1_idSF=leptonsfs_tmp["ElectronSFID"];//leptonsfhelper->GetElectronSF(iEle->pt(),iEle->eta(),0,"ID");
+            lep1_isoSF=leptonsfs_tmp["ElectronSFIso"];//leptonsfhelper->GetElectronSF(iEle->pt(),iEle->eta(),0,"ISO");
 	}
 	else if(iEle->pt()>lep2_pt){
 	    lep2_pt=iEle->pt();
@@ -227,9 +245,13 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    if(iEle->hasUserFloat("relIso")) lep2_iso= iEle->userFloat("relIso");
 	    lep2_pdgId=iEle->pdgId();
 	    lep2_seed=iEle->userInt("deterministicSeed");
+            lep2_idSF=leptonsfs_tmp["ElectronSFID"];//leptonsfhelper->GetElectronSF(iEle->pt(),iEle->eta(),0,"ID");
+            lep2_isoSF=leptonsfs_tmp["ElectronSFIso"];//leptonsfhelper->GetElectronSF(iEle->pt(),iEle->eta(),0,"ISO");
 
 	}
     }
+    
+    
 
 
     bool is_SL=true;
@@ -253,10 +275,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	if(abs(lep1_pdgId)==11) {
 	    is_e=1;
 	    is_mu=0;
+            triggerSF=leptonsfs["ElectronSFTrigger"];
 	}
 	else if(abs(lep1_pdgId)==13){
 	    is_mu=1;
 	    is_e=0;
+            triggerSF=leptonsfs["MuonSFTrigger"];
 	}
     }
     else{
@@ -281,16 +305,19 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    is_ee=1;
 	    is_emu=0;
 	    is_mumu=0;
+            triggerSF=leptonsfs["ElectronElectronTriggerSF"];
 	}
 	else if( (abs(lep1_pdgId)==11&&abs(lep2_pdgId)==13) || (abs(lep1_pdgId)==13&&abs(lep2_pdgId)==11) ){
 	    is_ee=0;
 	    is_emu=1;
 	    is_mumu=0;
+            triggerSF=leptonsfs["ElectronMuonTriggerSF"];
 	}
 	if(abs(lep1_pdgId)==13&&abs(lep2_pdgId)==13) {
 	    is_ee=0;
 	    is_emu=0;
 	    is_mumu=1;
+            triggerSF=leptonsfs["MuonMuonTriggerSF"];
 	}
 
     }
@@ -442,6 +469,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 
     if(input.weights.count("Weight_muRupmuFup")>0) me_up =input.weights.at("Weight_muRupmuFup");
     if(input.weights.count("Weight_muRdownmuFdown")>0) me_down =input.weights.at("Weight_muRdownmuFdown");
+    if(input.weights.count("Weight_TopPt")>0) top_pt_weight=input.weights.at("Weight_TopPt");
 
     bool print=false;
     if (dataset=="NA" && (is_SL || is_DL)) print =true;
@@ -510,9 +538,10 @@ void Synchronizer::DumpSyncExe(const std::vector< InputCollections>& inputs, boo
 
 
 
-void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,bool dumpExtended){
+void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,bool dumpExtended){
     systematics=jetSystematics;
     helper=helper_;
+    leptonsfhelper=leptonsfhelper_;
     for(const auto & s : systematics){
 	cutflowsSL.push_back(Cutflow());
 	cutflowsSL.back().Init();

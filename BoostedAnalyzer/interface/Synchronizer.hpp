@@ -21,6 +21,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
+#include "MiniAOD/MiniAODHelper/interface/LeptonSFHelper.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
 class Synchronizer{
@@ -29,7 +30,7 @@ public:
     Synchronizer(const edm::ParameterSet& iConfig,edm::ConsumesCollector && iC);
     ~Synchronizer ();
     void DumpSyncExe(const std::vector<InputCollections>& inputs, bool dumpExtended, std::vector<int> dumpAlwaysEvents);
-    void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,bool dumpExtended);
+    void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,bool dumpExtended);
     void DumpSyncExeHeader(std::ostream &out, bool dumpExtended=false);
 
 
@@ -45,6 +46,7 @@ private:
     std::vector<std::string> systematics;
 
     MiniAODHelper* helper;
+    LeptonSFHelper* leptonsfhelper;
 
     bool initializedCutflowsWithSelections;
     std::string dataset;
