@@ -56,7 +56,7 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
     return false;
   }
   
-  auto pdfInfos = genInfos.pdf();
+  const gen::PdfInfo* pdfInfos = genInfos.pdf();
   double gen_weight = genInfos.weight();
   double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
 
