@@ -104,7 +104,7 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 ### some standard collections ####
 electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
 photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
-muonCollection = cms.InputTag("slimmedMuons", "", "PAT")
+muonCollection	   = cms.InputTag("slimmedMuons", "", "PAT")
 tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
 METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
 jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
@@ -288,7 +288,7 @@ process.SelectedMuonProducer.useMuonRC=options.useMuonRC
 process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
 process.SelectedMuonProducer.isData=options.isData
 
-process.SelectedMuonProducerUncorr=process.SelectedMuonProducer.clone(ptMins=[15.],etaMaxs=[2.4],leptonIDs=["tight"],muonIsoConeSizes=["R04"],muonIsoCorrTypes=["deltaBeta"],collectionNames=["selectedMuonsUncorr"],useMuonRC=False)
+#process.SelectedMuonProducerUncorr=process.SelectedMuonProducer.clone(ptMins=[15.],etaMaxs=[2.4],leptonIDs=["tight"],muonIsoConeSizes=["R04"],muonIsoCorrTypes=["deltaBeta"],collectionNames=["selectedMuonsUncorr"],useMuonRC=False)
 
 ### MET correction with official met tool ###
 if options.recorrectMET:
@@ -416,6 +416,7 @@ process.SelectedJetProducer.ptMins=[20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
+process.SelectedJetProducer.PUJetIDMins=["loose","loose"]
 # selection of the systematically shifted jets
 for syst in systs:
     setattr(process,'SelectedJetProducer'+syst,process.SelectedJetProducer.clone(jets='patSmearedJets'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducer.collectionNames)]))
@@ -509,14 +510,36 @@ if options.isData and options.useJson:
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
-process.BoostedAnalyzer.selectionNames = ["FilterSelection","VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = [
+#"FilterSelection",
+#"VertexSelection",
+#"LeptonSelection",
+#"JetTagSelection"
+]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
 if options.isData:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","ReconstructionMEvarProcessor","TTBBStudienProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring(
+  #"WeightProcessor",
+  #"essentialBasicVarProcessor",
+  #"essentialMVAVarProcessor",
+  #"BDTVarProcessor",
+  #"TriggerVarProcessor",
+  #"ReconstructionMEvarProcessor",
+  #"TTBBStudienProcessor"
+  )
 else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialMCMatchVarProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","ReconstructionMEvarProcessor","TTBBStudienProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring(
+  #"WeightProcessor",
+  #"essentialMCMatchVarProcessor",
+  #"essentialBasicVarProcessor",
+  #"essentialMVAVarProcessor",
+  #"BDTVarProcessor",
+  #"TriggerVarProcessor",
+  #"ReconstructionMEvarProcessor",
+  #"TTBBStudienProcessor"
+  )
 
 printContent=False
 
@@ -620,7 +643,7 @@ if eleMVAid:
     process.p *= process.egmGsfElectronIDSequence
 if options.calcBJetness:
     process.p *= process.BJetness
-process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedMuonProducerUncorr
+process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
 if options.updatePUJetId:
 	process.p*=process.pileupJetIdUpdated*process.updatedPatJets
 process.p*=process.CorrectedJetProducer

@@ -36,6 +36,7 @@
 
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "MiniAOD/MiniAODHelper/interface/Systematics.h"
+#include "MiniAOD/MiniAODHelper/interface/PUJetID.h"
 //
 // class declaration
 //
@@ -80,6 +81,8 @@ private:
     double leptonJetDr;
     /** names of output jet collections **/
     std::vector<std::string> collectionNames;
+    /** pileupjetid for collections **/
+    std::vector<std::string> PUJetIDMins;
     /** systematics used **/
     std::vector<Systematics::Type> systematics;
     /** apply jet energy correciton? **/
@@ -113,6 +116,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     applyCorrection = iConfig.getParameter<bool>("applyCorrection");
     doJER = iConfig.getParameter<bool>("doJER");
     collectionNames = iConfig.getParameter< std::vector<std::string> >("collectionNames");
+    PUJetIDMins = iConfig.getParameter<std::vector<std::string>> ("PUJetIDMins");
 
     assert(ptMins.size()==etaMaxs.size());
     assert(ptMins.size()==collectionNames.size());
@@ -211,7 +215,7 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    for(uint i=0; i<ptMins.size(); i++ ){
        for(uint j=0; j<systematics.size(); j++){
 	   //Get jet Collection which pass selections
-	   std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], jetID::none, '-' );
+	   std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], jetID::none, '-',PUJetID::get(PUJetIDMins[i]) );
 	   // Get jet Collection which pass loose selection
 	   std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
 

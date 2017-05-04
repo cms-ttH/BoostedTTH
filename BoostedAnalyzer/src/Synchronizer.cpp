@@ -32,7 +32,7 @@ Synchronizer::~Synchronizer (){
 
 
 void Synchronizer::DumpSyncExeHeader(std::ostream &out, bool addExtendedInfo){
-    out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_eta,lep1_iso,lep1_pdgId,lep1_idSF,lep1_isoSF,lep1_seed,lep2_pt,lep2_eta,lep2_iso,lep2_pdgId,lep2_idSF,lep2_isoSF,lep2_seed,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_jesSF_PileUpDataMC_down,jet1_jesSF_RelativeFSR_up,jet1_jerSF_nominal,jet1_csv,jet1_PUJetId,jet1_PUJetDiscriminant,jet1_seed,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_jesSF_PileUpDataMC_down,jet2_jesSF_RelativeFSR_up,jet2_jerSF_nominal,jet2_csv,jet2_PUJetId,jet2_PUJetDiscriminant,jet2_seed,MET_pt,MET_phi,MET_pt_phiCor,MET_phi_phiCor,mll,ttHFCategory,ttHFGenFilterTag,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down,triggerSF,top_pt_weight,bdt_output,dnn_ttH_output,dnn_ttbb_output";
+    out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_eta,lep1_iso,lep1_pdgId,lep1_idSF,lep1_isoSF,lep1_seed,lep2_pt,lep2_eta,lep2_iso,lep2_pdgId,lep2_idSF,lep2_isoSF,lep2_seed,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_jesSF_PileUpDataMC_down,jet1_jesSF_RelativeFSR_up,jet1_jerSF_nominal,jet1_csv,jet1_PUJetId,jet1_PUJetDiscriminant,jet1_seed,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_jesSF_PileUpDataMC_down,jet2_jesSF_RelativeFSR_up,jet2_jerSF_nominal,jet2_csv,jet2_PUJetId,jet2_PUJetDiscriminant,jet2_seed,MET_pt,MET_phi,mll,ttHFCategory,ttHFGenFilterTag,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down,triggerSF,top_pt_weight,bdt_output,dnn_ttH_output,dnn_ttbb_output";
     if(addExtendedInfo){
 	out << ",jet3_pt,jet3_eta,jet3_csv,jet4_pt,jet4_eta,jet4_csv,jet5_pt,jet5_eta,jet5_csv";
 	out << ",trig_el,trig_mu,trig_elel,trig_elmu,trig_mumu";
@@ -116,8 +116,6 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     
     float MET_pt=-1;
     float MET_phi=-1;
-    float MET_pt_phiCor=-1;
-    float MET_phi_phiCor=-1;
     
     float mll=-1;
     
@@ -457,10 +455,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	}
     }
     
-    MET_pt=input.correctedMET.corPt(pat::MET::Type1);
-    MET_phi=input.correctedMET.corPhi(pat::MET::Type1);
-    MET_pt_phiCor=input.correctedMET.corPt(pat::MET::Type1XY);
-    MET_phi_phiCor=input.correctedMET.corPhi(pat::MET::Type1XY);
+    MET_pt=input.correctedMET.corPt(pat::MET::Type1XY);
+    MET_phi=input.correctedMET.corPhi(pat::MET::Type1XY);
     
     if(input.weights.count("Weight_PU")>0) puWeight=input.weights.at("Weight_PU");
     ttHFCategory=input.genTopEvt.GetTTxIdFromProducerLong();
@@ -498,7 +494,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 %.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,\
 %.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,\
 %.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%i,\
-%.4f,%.4f,%.4f,%.4f,%.4f,\
+%.4f,%.4f,%.4f,\
 %i,%i,%i,\
 %.4f,\
 %.4f,%.4f,%.4f,%.4f,\
@@ -511,7 +507,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	lep2_pt% lep2_eta% lep2_iso% lep2_pdgId% lep2_idSF% lep2_isoSF% lep2_seed%
 	jet1_pt% jet1_eta% jet1_phi% jet1_jesSF% jet1_jesSF_up% jet1_jesSF_down% jet1_jesSF_PileUpDataMC_down% jet1_jesSF_RelativeFSR_up% jet1_jerSF_nominal% jet1_csv% jet1_PUJetId% jet1_PUJetDiscriminant% jet1_seed%
 	jet2_pt% jet2_eta% jet2_phi% jet2_jesSF% jet2_jesSF_up% jet2_jesSF_down% jet2_jesSF_PileUpDataMC_down% jet2_jesSF_RelativeFSR_up% jet2_jerSF_nominal% jet2_csv% jet2_PUJetId% jet2_PUJetDiscriminant% jet2_seed%	
-	MET_pt% MET_phi% MET_pt_phiCor% MET_phi_phiCor% mll%
+	MET_pt% MET_phi% mll%
 	ttHFCategory% ttHFGenFilterTag% n_interactions%
 	puWeight%
 	csvSF% csvSF_lf_up% csvSF_hf_down% csvSF_cErr1_down%

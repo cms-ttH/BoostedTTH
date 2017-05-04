@@ -12,6 +12,7 @@ SelectedJetProducer = cms.EDProducer(
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     ptMins   = cms.vdouble(30,20,30,20),
     etaMaxs  = cms.vdouble(2.4,2.4,2.4,2.4),
+    PUJetIDMins = cms.vstring("none","none","none","none"),
     leptonJetDr = cms.double(0.4),
     collectionNames  = cms.vstring("rawJets","selectedJets","selectedJetsLoose","selectedJetsDL","selectedJetsLooseDL"),
     systematics = cms.vstring(""),

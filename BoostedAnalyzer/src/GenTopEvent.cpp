@@ -423,6 +423,8 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
     if (abs(p->pdgId())==6){
       if(p->pdgId()==6) foundT=true;
       if(p->pdgId()==-6) foundTbar=true;
+      if(p->pdgId()==6 && p->isHardProcess()) hard_top=*p;
+      if(p->pdgId()==-6 && p->isHardProcess()) hard_topbar=*p;
       bool lastTop=true;
       for(uint i=0;i<p->numberOfDaughters();i++){
 	if (abs(p->daughter(i)->pdgId())==6)
@@ -622,6 +624,16 @@ reco::GenParticle GenTopEvent::GetTopBar() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return topbar;
+}
+reco::GenParticle GenTopEvent::GetHardTop() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+  return hard_top;
+}
+reco::GenParticle GenTopEvent::GetHardTopBar() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+  return hard_topbar;
 }
 reco::GenParticle GenTopEvent::GetTopHad() const{
     assert(isFilled);

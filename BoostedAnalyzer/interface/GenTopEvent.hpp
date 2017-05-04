@@ -17,6 +17,8 @@ public:
   bool TTxIsFilled() const;
   reco::GenParticle GetTop() const;
   reco::GenParticle GetTopBar() const;
+  reco::GenParticle GetHardTop() const;
+  reco::GenParticle GetHardTopBar() const;
   reco::GenParticle GetTopDecayQuark() const;
   reco::GenParticle GetTopBarDecayQuark() const;
 
@@ -151,7 +153,9 @@ private:
 
   reco::GenParticle higgs;
   reco::GenParticle top;
+  reco::GenParticle hard_top;
   reco::GenParticle topbar;
+  reco::GenParticle hard_topbar;
   reco::GenParticle wplus;
   reco::GenParticle wminus;
   reco::GenParticle top_decay_quark;
