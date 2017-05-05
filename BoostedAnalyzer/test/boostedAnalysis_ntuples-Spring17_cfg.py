@@ -23,7 +23,7 @@ options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 datasets=['NA','mu','el','elel','elmu','mumu']
 options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing.varType.string, "flag to identify which dataset is used, can be "+','.join(datasets))
-options.register( "calcBJetness",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
+options.register( "calcBJetness",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
 options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.register( "systematicVariations","nominal", VarParsing.multiplicity.list, VarParsing.varType.string, "comma-separated list of systematic variations ('nominal' or systematics base name, up/down will be added)" )
 options.register("deterministicSeeds",True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
@@ -531,7 +531,7 @@ if options.isData:
   "TriggerVarProcessor",
   "ReconstructionMEvarProcessor",
   "TTBBStudienProcessor",
-  "BJetnessProcessor"
+  #"BJetnessProcessor"
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
@@ -543,7 +543,7 @@ else:
   "TriggerVarProcessor",
   "ReconstructionMEvarProcessor",
   "TTBBStudienProcessor",
-  "BJetnessProcessor"
+  #"BJetnessProcessor"
   )
 
 printContent=False
