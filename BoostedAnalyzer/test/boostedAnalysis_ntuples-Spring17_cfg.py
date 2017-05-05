@@ -267,6 +267,9 @@ if options.calcBJetness:
     process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")        
     process.load('BoostedTTH.BoostedAnalyzer.BJetness_cfi')
     process.BJetness.is_data = options.isData
+    process.BJetness.patElectrons = electronCollection
+    process.BJetness.muons = muonCollection
+    
 
 # lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
@@ -643,9 +646,9 @@ if options.deterministicSeeds:
 process.p *= process.BadPFMuonFilter*process.BadChargedCandidateFilter*process.badGlobalMuonTaggerMAOD*process.cloneGlobalMuonTaggerMAOD
 if eleMVAid:
     process.p *= process.egmGsfElectronIDSequence
+process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
 if options.calcBJetness:
     process.p *= process.BJetness
-process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
 if options.updatePUJetId:
 	process.p*=process.pileupJetIdUpdated*process.updatedPatJets
 process.p*=process.CorrectedJetProducer

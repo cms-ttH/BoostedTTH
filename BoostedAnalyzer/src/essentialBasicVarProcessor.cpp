@@ -36,6 +36,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
   vars.InitVars( "Jet_PileUpID","N_Jets" );
+  vars.InitVars( "Jet_PileUpMVA","N_Jets" );
+
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
 
@@ -157,7 +159,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
-    vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat("pileupJetId:fullDiscriminant"));
+    vars.FillVars( "Jet_PileUpID",iJet,itJet->userInt("pileupJetIdUpdated:fullId"));
+    vars.FillVars( "Jet_PileUpMVA",iJet,itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
     if(itJet->genJet()!=NULL){
       vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
       vars.FillVars( "Jet_GenJet_Eta",iJet,itJet->genJet()->eta());
