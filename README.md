@@ -61,6 +61,8 @@ Follow These Steps:
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
     sed -i '32i /*' MEIntegratorStandalone/interface/Integrand.h
     sed -i '44i */' MEIntegratorStandalone/interface/Integrand.h
+    # install reco likelihood variables
+    source TTH/CommonClassifier/setup/install_recoLikelihood.sh
     
     # install miniaod and boostedtth
     cd $JENKINSCMSSWSRCDIR
