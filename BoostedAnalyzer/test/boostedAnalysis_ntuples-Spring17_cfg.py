@@ -30,7 +30,9 @@ options.register("deterministicSeeds",True,VarParsing.multiplicity.singleton,Var
 options.register("electronRegression","GT",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
 options.register("electronSmearing","Moriond17_23Jan",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 options.register( "useMuonRC", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
-
+options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
+options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
+options.register("updatePUJetId",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
 options.parseArguments()
 
 # re-set some defaults
@@ -95,10 +97,17 @@ process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
                               skipEvents=cms.untracked.uint32(int(options.skipEvents)),
 )
+process.load('Configuration.Geometry.GeometryRecoDB_cff')
+process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
+
+### some standard collections ####
 electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
 photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
-muonCollection = cms.InputTag("slimmedMuons", "", "PAT")
+muonCollection	   = cms.InputTag("slimmedMuons", "", "PAT")
+tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
+METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
+jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
 
 ###### deterministic seed producer ######
 
@@ -108,20 +117,20 @@ if options.deterministicSeeds:
     process.deterministicSeeds.produceValueMaps   = cms.bool(False)
     process.deterministicSeeds.electronCollection = electronCollection
     process.deterministicSeeds.muonCollection     = muonCollection
-    #process.deterministicSeeds.tauCollection      = tauCollection
+    process.deterministicSeeds.tauCollection      = tauCollection
     process.deterministicSeeds.photonCollection   = photonCollection
-    #process.deterministicSeeds.jetCollection      = jetCollection
-    #process.deterministicSeeds.METCollection      = METCollection
+    process.deterministicSeeds.jetCollection      = jetCollection
+    process.deterministicSeeds.METCollection      = METCollection
 
     # overwrite output collections
     electronCollection = cms.InputTag("deterministicSeeds", "electronsWithSeed", process.name_())
     muonCollection     = cms.InputTag("deterministicSeeds", "muonsWithSeed", process.name_())
-    #tauCollection      = cms.InputTag("deterministicSeeds", "tausWithSeed", process.name_())
+    tauCollection      = cms.InputTag("deterministicSeeds", "tausWithSeed", process.name_())
     photonCollection   = cms.InputTag("deterministicSeeds", "photonsWithSeed", process.name_())
-    #jetCollection      = cms.InputTag("deterministicSeeds", "jetsWithSeed", process.name_())
-    #METCollection      = cms.InputTag("deterministicSeeds", "METsWithSeed", process.name_())
+    jetCollection      = cms.InputTag("deterministicSeeds", "jetsWithSeed", process.name_())
+    METCollection      = cms.InputTag("deterministicSeeds", "METsWithSeed", process.name_())
 
-
+##########################################
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
@@ -184,18 +193,6 @@ if options.isData:
             )
         )
 
-
-### additional MET filters ###
-process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
-process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
-process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-
-process.load('Configuration.Geometry.GeometryRecoDB_cff')
-process.load("Configuration.StandardSequences.MagneticField_38T_cff")
-
 ###### electron energy regression #######
 
 if options.electronRegression:
@@ -218,6 +215,7 @@ if options.electronRegression:
     electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
     photonCollection = cms.InputTag("slimmedPhotons", "", process.name_())
 
+##########################################
 
 ##### electron energy smearing #####
 
@@ -228,7 +226,6 @@ if options.electronSmearing and options.electronRegression:
         cut = cms.string("pt>5 && abs(superCluster.eta)<2.5")
     )
     electronCollection = cms.InputTag("selectedElectrons", "", process.name_())
-
     # setup the smearing
     process.load("EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi")
     from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import files
@@ -252,6 +249,7 @@ if options.electronSmearing and options.electronRegression:
     # overwrite output collections
     electronCollection = cms.InputTag("calibratedPatElectrons", "", process.name_())
 
+##########################################
 
 ### electron ID ####
 eleMVAid=False
@@ -290,6 +288,125 @@ process.SelectedMuonProducer.useMuonRC=options.useMuonRC
 process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
 process.SelectedMuonProducer.isData=options.isData
 
+#process.SelectedMuonProducerUncorr=process.SelectedMuonProducer.clone(ptMins=[15.],etaMaxs=[2.4],leptonIDs=["tight"],muonIsoConeSizes=["R04"],muonIsoCorrTypes=["deltaBeta"],collectionNames=["selectedMuonsUncorr"],useMuonRC=False)
+
+### MET correction with official met tool ###
+if options.recorrectMET:
+    # patch the phi correction parameter sets that are used in runMetCorAndUncFromMiniAOD,
+    # we only need to overwrite patMultPhiCorrParams_T1Txy_25ns with the new one
+    if options.isData:
+        if options.dataEra in ("2016B", "2016C", "2016D", "2016E", "2016F"):
+            from MetTools.MetPhiCorrections.tools.multPhiCorr_ReMiniAOD_Data_BCDEF_80X_sumPt_cfi \
+                    import multPhiCorr_Data_BCDEF_80X as metPhiCorrParams
+        else: # "2016G", "2016Hv2", "2016Hv3"
+            from MetTools.MetPhiCorrections.tools.multPhiCorr_ReMiniAOD_Data_GH_80X_sumPt_cfi \
+                    import multPhiCorr_Data_GH_80X as metPhiCorrParams
+    else:
+        from MetTools.MetPhiCorrections.tools.multPhiCorr_Summer16_MC_DY_80X_sumPt_cfi \
+                import multPhiCorr_MC_DY_sumPT_80X as metPhiCorrParams
+    # actual patch
+    import PhysicsTools.PatUtils.patPFMETCorrections_cff as metCors
+    metCors.patMultPhiCorrParams_T1Txy_25ns = metPhiCorrParams
+
+    # use the standard tool
+    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+    # do not use a postfix here!
+    runMetCorAndUncFromMiniAOD(process,
+        isData           = options.isData,
+        electronColl     = electronCollection.value(),
+        muonColl         = muonCollection.value(),
+        tauColl          = tauCollection.value(),
+        photonColl       = photonCollection.value(),
+        jetCollUnskimmed = jetCollection.value(),
+        recoMetFromPFCs  = True
+    )
+
+    # overwrite output collections
+    METCollection = cms.InputTag("slimmedMETs", "", process.name_())
+
+    # also add MET corrections due to e/g corrections, such as the slew rate fix in reMiniAOD
+    if options.isData:
+        from PhysicsTools.PatUtils.tools.corMETFromMuonAndEG import corMETFromMuonAndEG
+        corMETFromMuonAndEG(process,
+            pfCandCollection      = "",
+            electronCollection    = "slimmedElectronsBeforeGSFix",
+            photonCollection      = "slimmedPhotonsBeforeGSFix",
+            corElectronCollection = electronCollection.value(),
+            corPhotonCollection   = photonCollection.value(),
+            allMETEGCorrected     = True,
+            muCorrection          = False,
+            eGCorrection          = True,
+            runOnMiniAOD          = True,
+            postfix               = "MuEGClean"
+        )
+        
+        process.slimmedMETsMuEGClean = process.slimmedMETs.clone(
+            src             = cms.InputTag("patPFMetT1MuEGClean"),
+            rawVariation    = cms.InputTag("patPFMetRawMuEGClean"),
+            t1Uncertainties = cms.InputTag("patPFMetT1%sMuEGClean")
+        )
+        del process.slimmedMETsMuEGClean.caloMET
+        
+        process.egcorrMET = cms.Sequence(
+		    process.cleanedPhotonsMuEGClean+process.cleanedCorPhotonsMuEGClean+
+		    process.matchedPhotonsMuEGClean + process.matchedElectronsMuEGClean +
+		    process.corMETPhotonMuEGClean+process.corMETElectronMuEGClean+
+		    process.patPFMetT1MuEGClean+process.patPFMetRawMuEGClean+
+		    process.patPFMetT1SmearMuEGClean+process.patPFMetT1TxyMuEGClean+
+		    process.patPFMetTxyMuEGClean+process.patPFMetT1JetEnUpMuEGClean+
+		    process.patPFMetT1JetResUpMuEGClean+process.patPFMetT1SmearJetResUpMuEGClean+
+		    process.patPFMetT1ElectronEnUpMuEGClean+process.patPFMetT1PhotonEnUpMuEGClean+
+		    process.patPFMetT1MuonEnUpMuEGClean+process.patPFMetT1TauEnUpMuEGClean+
+		    process.patPFMetT1UnclusteredEnUpMuEGClean+process.patPFMetT1JetEnDownMuEGClean+
+		    process.patPFMetT1JetResDownMuEGClean+process.patPFMetT1SmearJetResDownMuEGClean+
+		    process.patPFMetT1ElectronEnDownMuEGClean+process.patPFMetT1PhotonEnDownMuEGClean+
+		    process.patPFMetT1MuonEnDownMuEGClean+process.patPFMetT1TauEnDownMuEGClean+
+		    process.patPFMetT1UnclusteredEnDownMuEGClean+process.slimmedMETsMuEGClean)
+
+        # overwrite output collections
+        METCollection = cms.InputTag("slimmedMETsMuEGClean", "", process.name_())
+
+
+### additional MET filters ###
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadPFMuonFilter.muons = muonCollection
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadChargedCandidateFilter.muons = muonCollection
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.load("RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff")
+process.badGlobalMuonTaggerMAOD.muons         = muonCollection
+process.badGlobalMuonTaggerMAOD.taggingMode   = cms.bool(True)
+process.cloneGlobalMuonTaggerMAOD.muons       = muonCollection
+process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
+
+###############################################
+
+### update PUJetID
+
+if options.updatePUJetId:
+    process.load("RecoJets.JetProducers.PileupJetID_cfi")
+    process.pileupJetIdUpdated = process.pileupJetId.clone(
+        jets             = jetCollection,
+        vertexes         = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        inputIsCorrected = cms.bool(True),
+        applyJec         = cms.bool(True)
+    )
+
+
+    process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+    process.updatedPatJets.jetSource         = jetCollection
+    process.updatedPatJets.addJetCorrFactors = cms.bool(False)
+    process.updatedPatJets.userData.userFloats.src.append("pileupJetIdUpdated:fullDiscriminant")
+    process.updatedPatJets.userData.userInts.src.append("pileupJetIdUpdated:fullId")
+
+    # overwrite output collections
+    jetCollection = cms.InputTag("updatedPatJets", "", process.name_())
+
+
+##############################################
+
+# jet selection
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 # selection of corrected and smeared jets -- one producer for every jet systematic that selects two collections (regular and loose jets) each
 # selection of the nominal jets
@@ -299,12 +416,13 @@ process.SelectedJetProducer.ptMins=[20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
+process.SelectedJetProducer.PUJetIDMins=["loose","loose"]
 # selection of the systematically shifted jets
 for syst in systs:
     setattr(process,'SelectedJetProducer'+syst,process.SelectedJetProducer.clone(jets='patSmearedJets'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducer.collectionNames)]))
 
 # correction of  miniAOD jets -- one producer creates a jet collection for nominal JES and every JES systematic
-process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets='slimmedJets', 
+process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets=jetCollection, 
                                                                ptMins=[-1.],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJets"],
@@ -337,9 +455,19 @@ for s in systsJER:
 for s in systsJES:
     setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=0,src=cms.InputTag("CorrectedJetProducer:correctedJets"+s)))
 
+###############################################
 
+
+### correct MET manually ###
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
-
+process.CorrectedMETproducer.isData=options.isData
+process.CorrectedMETproducer.oldJets=cms.InputTag("slimmedJets", "", "PAT")
+process.CorrectedMETproducer.newJets=cms.InputTag("slimmedJets", "", "PAT")
+process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
+process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
+#process.CorrectedMETproducer.oldMuons=cms.InputTag("SelectedMuonProducerUncorr:selectedMuonsUncorr")
+#process.CorrectedMETproducer.newMuons=cms.InputTag("SelectedMuonProducer:selectedMuons")
+process.CorrectedMETproducer.mets=METCollection
 
 # load and run the boosted analyzer
 if options.isData:
@@ -361,7 +489,7 @@ if writeNominal:
     variations.insert(0,"") # also store nominal case
 process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer"+s+":selectedJets"+s) for s in variations]
 process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer"+s+":selectedJetsLoose"+s) for s in variations]
-process.BoostedAnalyzer.correctedMETs=[cms.InputTag("slimmedMETs")]*(len(variations))
+process.BoostedAnalyzer.correctedMETs=[cms.InputTag("CorrectedMETproducer:correctedMET")]*(len(variations))
 
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
@@ -382,36 +510,155 @@ if options.isData and options.useJson:
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
-process.BoostedAnalyzer.selectionNames = ["FilterSelection","VertexSelection","LeptonSelection","JetTagSelection"]
+process.BoostedAnalyzer.selectionNames = [
+#"FilterSelection",
+#"VertexSelection",
+#"LeptonSelection",
+#"JetTagSelection"
+]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
 
 if options.isData:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","ReconstructionMEvarProcessor","TTBBStudienProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring(
+  "WeightProcessor",
+  "essentialBasicVarProcessor",
+  "essentialMVAVarProcessor",
+  "BDTVarProcessor",
+  "TriggerVarProcessor",
+  "ReconstructionMEvarProcessor",
+  "TTBBStudienProcessor",
+  "BJetnessProcessor"
+  )
 else:
-  process.BoostedAnalyzer.processorNames=cms.vstring("WeightProcessor","essentialMCMatchVarProcessor","essentialBasicVarProcessor","essentialMVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","ReconstructionMEvarProcessor","TTBBStudienProcessor")
+  process.BoostedAnalyzer.processorNames=cms.vstring(
+  "WeightProcessor",
+  "essentialMCMatchVarProcessor",
+  "essentialBasicVarProcessor",
+  "essentialMVAVarProcessor",
+  "BDTVarProcessor",
+  "TriggerVarProcessor",
+  "ReconstructionMEvarProcessor",
+  "TTBBStudienProcessor",
+  "BJetnessProcessor"
+  )
 
 printContent=False
 
 if printContent:
     process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
+if options.dumpSyncExe:
+    process.BoostedAnalyzer.processorNames = []
+    process.BoostedAnalyzer.selectionNames = []
+    process.BoostedAnalyzer.dumpSyncExe=True
+    process.BoostedAnalyzer.dumpExtended=False
+    process.BoostedAnalyzer.dumpAlwaysEvents=[
+        47021987,
+        10718174,
+        54977993,
+        57122020,
+        22268223,
+        17931184,
+        50097291,
+        50097097,
+        16003276,
+        1552274,
+        22936201,
+        33645785,
+        56857300,
+        3508271,
+        517551,
+        843637,
+        1210984,
+        2322870,
+        308328,
+        1622142,
+        308297,
+        2660612,
+        3276863,
+        2553141,
+        2125964,
+        2490450,
+        3693577,
+        941878,
+        73181039,
+        227363695,
+        605297195,
+        501575867,
+        603713878,
+        423292385,
+        1137945623,
+        426332989,
+        548206024,
+        222527742,
+        154887103,
+        409712907,
+        1128108454,
+        35086427,
+        477101814,
+        420502890,
+        170799682,
+        541879517,
+        208945512,
+        86847235,
+        609432325,
+        52801065,
+        566870879,
+        469743082,
+        65546629,
+        58904592,
+        307136465,
+        561805932,
+        610483719,
+        558129298,
+        361485101,
+        104000952,
+        573181011,
+        49929786,
+        393986903,
+        210712419,
+        464239596,
+        356522750,
+        426606885,
+        391107504,
+        478363878,
+        232000369,
+        407080141,
+        44714328,
+        564032499,
+        597464911,
+        207608282,
+        598855105,
+        701245175,
+        418972957,
+        307103299,
+        ]
+
 
 ##### DEFINE PATH ##########
-
-process.p = cms.Path(process.BadPFMuonFilter 
-                     *process.BadChargedCandidateFilter)
+process.p = cms.Path()
+if options.deterministicSeeds:
+    process.p*=process.deterministicSeeds
+process.p *= process.BadPFMuonFilter*process.BadChargedCandidateFilter*process.badGlobalMuonTaggerMAOD*process.cloneGlobalMuonTaggerMAOD
 if eleMVAid:
     process.p *= process.egmGsfElectronIDSequence
 if options.calcBJetness:
     process.p *= process.BJetness
-if options.deterministicSeeds:
-    process.p*=process.deterministicSeeds
-process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer*process.CorrectedJetProducer
+process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
+if options.updatePUJetId:
+	process.p*=process.pileupJetIdUpdated*process.updatedPatJets
+process.p*=process.CorrectedJetProducer
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed                                    
 for s in [""]+systs:
     process.p *= getattr(process,'patSmearedJets'+s)
     process.p *= getattr(process,'SelectedJetProducer'+s)
+
+#if options.recorrectMET:
+    
+process.p *= process.fullPatMetSequence
+if options.isData:
+	process.p *= process.egcorrMET
 
 process.p *= process.CorrectedMETproducer
 
