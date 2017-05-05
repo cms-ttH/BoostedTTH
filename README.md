@@ -9,7 +9,7 @@ Follow These Steps:
 
     # setup environment
     export SCRAM_ARCH="slc6_amd64_gcc530"
-    export CMSSW_VERSION="CMSSW_8_0_26_patch1"
+    export CMSSW_VERSION="CMSSW_8_0_26_patch2"
     
   
     # create new CMSSW environment
@@ -61,6 +61,8 @@ Follow These Steps:
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
     sed -i '32i /*' MEIntegratorStandalone/interface/Integrand.h
     sed -i '44i */' MEIntegratorStandalone/interface/Integrand.h
+    # install reco likelihood variables
+    source TTH/CommonClassifier/setup/install_recoLikelihood.sh
     
     # install miniaod and boostedtth
     cd $JENKINSCMSSWSRCDIR
