@@ -241,8 +241,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Muon_Charge",iMu,itMu->charge() );
   }
   
-  vars.FillVar( "Evt_Pt_MET",input.correctedMET.pt() );
-  vars.FillVar( "Evt_Phi_MET",input.correctedMET.phi() );
+  vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );
+  vars.FillVar( "Evt_Phi_MET",input.correctedMET.corPhi(pat::MET::Type1XY) );
   if(input.correctedMET.genMET()!=0){
       vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
