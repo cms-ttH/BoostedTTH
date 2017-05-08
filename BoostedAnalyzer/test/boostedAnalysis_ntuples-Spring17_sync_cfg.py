@@ -273,7 +273,7 @@ process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedM"]*3
+process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedT"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
 

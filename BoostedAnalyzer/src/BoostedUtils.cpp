@@ -110,7 +110,7 @@ float BoostedUtils::DeltaPhi(const pat::Jet& jet1,const pat::Jet& jet2){
 float BoostedUtils::DeltaR(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2){
   if(vec1.Pt()<0.001||vec2.Pt()<0.001){
     //throw std::invalid_argument( "BoostedUtils::DeltaR: vector with zero pt" );
-    std::cerr << "BoostedUtils::DeltaR: vector with zero pt" << std::endl;
+    //std::cerr << "BoostedUtils::DeltaR: vector with zero pt" << std::endl;
     return -2;
   }
 
