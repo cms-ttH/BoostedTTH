@@ -180,7 +180,7 @@ if options.isData:
         cms.PSet(
             connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
             record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV3_DATA_AK4PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV4_DATA_AK4PFchs'),
             label  = cms.untracked.string('AK4PFchs')
             )
         )
@@ -188,7 +188,7 @@ if options.isData:
         cms.PSet(
             connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
             record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV3_DATA_AK4PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV4_DATA_AK4PFchs'),
             label  = cms.untracked.string('AK8PFchs')
             )
         )
