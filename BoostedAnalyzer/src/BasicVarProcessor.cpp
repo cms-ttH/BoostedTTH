@@ -249,7 +249,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   }
 
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
-  math::XYZTLorentzVector metvec = input.correctedMET.corP4(pat::MET::Type1XY).p4();
+  math::XYZTLorentzVector metvec = input.correctedMET.corP4(pat::MET::Type1XY);
 
   // Fill M3 Variables
   float m3 = -1.;

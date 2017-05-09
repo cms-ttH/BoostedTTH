@@ -669,7 +669,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
 
     p4all += primLepVec;
 
-    p4all += input.correctedMET.corPt(pat::MET::Type1XY);
+    p4all += input.correctedMET.corP4(pat::MET::Type1XY);
 
     float costheta_jcm= BoostedUtils::CosThetaCM(*itJetVec,p4all);
     vars.FillVars("Jet_CosTheta_cm",iJetVec,costheta_jcm  );

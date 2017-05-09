@@ -249,7 +249,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   }
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
-  math::XYZTLorentzVector metvec = input.correctedMET.corPt(pat::MET::Type1XY);
+  math::XYZTLorentzVector metvec = input.correctedMET.corP4(pat::MET::Type1XY);
   
   // Fill M3 Variables
   float m3 = -1.;
@@ -289,7 +289,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   math::XYZTLorentzVector primLepVec = math::XYZTLorentzVector();
   float mtw = -1.;
   if(input.selectedElectrons.size()>0 || input.selectedMuons.size()>0){
-    mtw = sqrt(2*(primLepVec.Pt()*input.correctedMET.corPt(pat::MET::Type1XY) - primLepVec.Px()*input.correctedMET.corPt(pat::MET::Type1XY) - primLepVec.Py()*input.correctedMET.corPy(pat::MET::Type1XY)));
+    mtw = sqrt(2*(primLepVec.Pt()*input.correctedMET.corPt(pat::MET::Type1XY) - primLepVec.Px()*input.correctedMET.corPx(pat::MET::Type1XY) - primLepVec.Py()*input.correctedMET.corPy(pat::MET::Type1XY)));
   }
   vars.FillVar("Evt_MTW",mtw);
   
