@@ -514,10 +514,10 @@ if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
 process.BoostedAnalyzer.selectionNames = [
-#"FilterSelection",
-#"VertexSelection",
-#"LeptonSelection",
-#"JetTagSelection"
+"FilterSelection",
+"VertexSelection",
+"LeptonSelection",
+"JetTagSelection"
 ]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
