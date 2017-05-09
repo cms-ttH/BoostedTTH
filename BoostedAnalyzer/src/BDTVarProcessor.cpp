@@ -69,7 +69,7 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
   vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
   vector<TLorentzVector> loose_jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
-  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.p4());
+  TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
   vector<double> jetcsvs;
   vector<double> loose_jetcsvs;
   for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){

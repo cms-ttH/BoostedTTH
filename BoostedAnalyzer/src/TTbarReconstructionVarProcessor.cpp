@@ -82,7 +82,7 @@ void TTbarReconstructionVarProcessor::Process(const InputCollections& input,Vari
     }
     if(input.selectedElectrons.size()+input.selectedMuons.size()<1) return;
     TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
-    TVector2 metvec(input.correctedMET.px(),input.correctedMET.py());
+    TVector2 metvec(input.correctedMET.corP4(pat::MET::Type1XY).px(),input.correctedMET.corP4(pat::MET::Type1XY).py());
 
     // setup mc matching
     if(input.genTopEvt.IsFilled()&&input.genTopEvt.IsSemiLepton()){
