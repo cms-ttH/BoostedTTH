@@ -37,10 +37,10 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
     vars.InitVar("BDT_common5_input_"+it->first);
   }
 
-  map<TString,double> DNN_inputs = recoLikelihoodVariables->GetRecoLikelihoodVariables();
-  for(auto it=DNN_inputs.begin(); it!=DNN_inputs.end(); it++){
-    vars.InitVar("DNN_input_"+it->first);
-  }
+//   map<TString,double> DNN_inputs = recoLikelihoodVariables->GetRecoLikelihoodVariables();
+//   for(auto it=DNN_inputs.begin(); it!=DNN_inputs.end(); it++){
+//     vars.InitVar("DNN_input_"+it->first);
+//   }
 
   initialized=true;
 }
@@ -88,9 +88,9 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
       }
   }
 
-  recoLikelihoodVariables->CalculateRecoLikelihoodVariables(lepvecs, jetvecs, jetcsvs, metP4);
-  map<TString,double> DNN_inputs = recoLikelihoodVariables->GetRecoLikelihoodVariables();
-  for(auto it=DNN_inputs.begin(); it!=DNN_inputs.end(); it++){
-    vars.FillVar("DNN_input_"+it->first, it->second);
-  }
+//   recoLikelihoodVariables->CalculateRecoLikelihoodVariables(lepvecs, jetvecs, jetcsvs, metP4);
+//   map<TString,double> DNN_inputs = recoLikelihoodVariables->GetRecoLikelihoodVariables();
+//   for(auto it=DNN_inputs.begin(); it!=DNN_inputs.end(); it++){
+//     vars.FillVar("DNN_input_"+it->first, it->second);
+//   }
 }
