@@ -2,17 +2,20 @@
 
 using namespace std;
 
-DiLeptonSelection::DiLeptonSelection(std::vector<std::string> elelTriggers_, std::vector<std::string> mumuTriggers_, std::vector<std::string> elmuTriggers_, std::string channel_, int step_):elelTriggers(elelTriggers_),mumuTriggers(mumuTriggers_),elmuTriggers(elmuTriggers_),channel(channel_),step(step_){
+DiLeptonSelection::DiLeptonSelection(std::vector<std::string> elelTriggers_, std::vector<std::string> mumuTriggers_, std::vector<std::string> elmuTriggers_, std::vector<std::string> elTriggers_, std::vector<std::string> muTriggers_, std::string channel_, int step_, std::string dataset_):elelTriggers(elelTriggers_),mumuTriggers(mumuTriggers_),elmuTriggers(elmuTriggers_),elTriggers(elTriggers_),muTriggers(muTriggers_),channel(channel_),step(step_),dataset(dataset_){
 }
 
-DiLeptonSelection::DiLeptonSelection(std::string elelTrigger, std::string mumuTrigger, std::string elmuTrigger, std::string channel_, int step_):DiLeptonSelection(std::vector<std::string> (1,elelTrigger),std::vector<std::string> (1,mumuTrigger),std::vector<std::string> (1,elmuTrigger),channel_,step_){
+DiLeptonSelection::DiLeptonSelection(std::string elelTrigger, std::string mumuTrigger, std::string elmuTrigger, std::string elTrigger, std::string muTrigger, std::string channel_, int step_, std::string dataset_):DiLeptonSelection(std::vector<std::string> (1,elelTrigger),std::vector<std::string> (1,mumuTrigger),std::vector<std::string> (1,elmuTrigger), std::vector<std::string> (1,elTrigger), std::vector<std::string> (1,muTrigger), channel_, step_, dataset_){
 }
 
 DiLeptonSelection::DiLeptonSelection(const edm::ParameterSet& iConfig, int step_):DiLeptonSelection(iConfig.getParameter< std::vector<std::string> >("elelTriggers"),
 												    iConfig.getParameter< std::vector<std::string> >("mumuTriggers"),
 												    iConfig.getParameter< std::vector<std::string> >("elmuTriggers"),
+                                                                                                    iConfig.getParameter< std::vector<std::string> >("electronTriggers"),
+                                                                                                    iConfig.getParameter< std::vector<std::string> >("muonTriggers"),
 												    iConfig.getParameter<std::string>("dlchannel"),
-												    step_){
+												    step_,
+                                                                                                    iConfig.getParameter<std::string>("dataset")){
 }
 
 DiLeptonSelection::~DiLeptonSelection (){}
@@ -116,10 +119,31 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   bool elelTriggered = input.triggerInfo.IsAnyTriggered(elelTriggers);
   bool mumuTriggered = input.triggerInfo.IsAnyTriggered(mumuTriggers);
   bool elmuTriggered = input.triggerInfo.IsAnyTriggered(elmuTriggers);
+  bool elTriggered = input.triggerInfo.IsAnyTriggered(elTriggers);
+  bool muTriggered = input.triggerInfo.IsAnyTriggered(muTriggers);
 
-  bool elel_step2 = elelTriggered && nleadelectrons>=1 && (nelectrons_p==1&&nelectrons_n==1 && nmuons_p==0&&nmuons_n==0);
-  bool elmu_step2 = elmuTriggered && nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1 && nelectrons_n==0&&nmuons_p==0)||(nelectrons_n==1&&nmuons_p==1 && nelectrons_p==0&&nmuons_n==0));
-  bool mumu_step2 = mumuTriggered && nleadmuons>=1 && (nmuons_p==1&&nmuons_n==1 && nelectrons_p==0 && nelectrons_n==0);
+  bool elel_step2=false;
+  bool elmu_step2=false;
+  bool mumu_step2=false;
+  
+  if(dataset=="NA") {
+    elel_step2 = (elelTriggered || elTriggered) && nleadelectrons>=1 && (nelectrons_p==1&&nelectrons_n==1 && nmuons_p==0&&nmuons_n==0);
+    elmu_step2 = (elmuTriggered || elTriggered || muTriggered) && nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1 && nelectrons_n==0&&nmuons_p==0)||(nelectrons_n==1&&nmuons_p==1 && nelectrons_p==0&&nmuons_n==0));
+    mumu_step2 = (mumuTriggered || muTriggered) && nleadmuons>=1 && (nmuons_p==1&&nmuons_n==1 && nelectrons_p==0 && nelectrons_n==0);
+  }
+  else {
+      if(dataset=="elel") elel_step2 = elelTriggered && nleadelectrons>=1 && (nelectrons_p==1&&nelectrons_n==1 && nmuons_p==0&&nmuons_n==0);
+      else if(dataset=="mumu") mumu_step2 = mumuTriggered && nleadmuons>=1 && (nmuons_p==1&&nmuons_n==1 && nelectrons_p==0 && nelectrons_n==0);
+      else if(dataset=="elmu") elmu_step2 = elmuTriggered && nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1 && nelectrons_n==0&&nmuons_p==0)||(nelectrons_n==1&&nmuons_p==1 && nelectrons_p==0&&nmuons_n==0));
+      else if(dataset=="el") {
+        elel_step2 = (!elelTriggered && elTriggered) && nleadelectrons>=1 && (nelectrons_p==1&&nelectrons_n==1 && nmuons_p==0&&nmuons_n==0);
+        elmu_step2 = (!elmuTriggered && !muTriggered && elTriggered) && nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1 && nelectrons_n==0&&nmuons_p==0)||(nelectrons_n==1&&nmuons_p==1 && nelectrons_p==0&&nmuons_n==0));
+      }
+      else if(dataset=="mu") {
+        mumu_step2 = (!mumuTriggered && muTriggered) && nleadmuons>=1 && (nmuons_p==1&&nmuons_n==1 && nelectrons_p==0 && nelectrons_n==0);      
+        elmu_step2 = (!elmuTriggered && muTriggered && !elTriggered) && nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1 && nelectrons_n==0&&nmuons_p==0)||(nelectrons_n==1&&nmuons_p==1 && nelectrons_p==0&&nmuons_n==0));
+      }
+  }
 
   /*
   std::cout << "elelTriggered: " << elelTriggered << "   mumuTriggered: " << mumuTriggered << "   elmuTriggered: " << elmuTriggered << std::endl;
@@ -129,7 +153,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   
   if(channel=="elel"){
     if(step<0||step==1){
-      if(!elelTriggered) {
+      if(!elelTriggered && !elTriggered) {
       	return false;
       }
       else {
@@ -147,7 +171,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   }
   else  if(channel=="mumu"){
     if(step<0||step==1){
-      if(!mumuTriggered) {
+      if(!mumuTriggered && !muTriggered) {
       	return false;
       }
       else {
@@ -165,7 +189,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   }
   else  if(channel=="elmu"){
     if(step<0||step==1){
-      if(!elmuTriggered) {
+      if(!elmuTriggered && !elTriggered && !muTriggered) {
       	return false;
       }
       else {
@@ -183,7 +207,7 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   }
   else  if(channel=="all"){
     if(step<0||step==1){
-      if(!elmuTriggered&&!elelTriggered&&!mumuTriggered) {
+      if(!elmuTriggered&&!elelTriggered&&!mumuTriggered&&!elTriggered&&!muTriggered) {
       	return false;
       }
       else {

@@ -477,9 +477,9 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if (dataset=="NA" && (is_SL || is_DL)) print =true;
     if (dataset=="el"&&is_e) print =true;
     if (dataset=="mu"&&is_mu) print =true;
-    if (dataset=="elel"&&is_ee) print =true;
-    if (dataset=="elmu"&&is_emu) print =true;
-    if (dataset=="mumu"&&is_mumu) print =true;
+    if ((dataset=="elel"||dataset=="el")&&is_ee) print =true;
+    if ((dataset=="elmu"||dataset=="el"||dataset=="mu")&&is_emu) print =true;
+    if ((dataset=="mumu"||dataset=="mu")&&is_mumu) print =true;
 
     for(uint i=0; i<dumpAlwaysEvents.size(); i++){
 	if (dumpAlwaysEvents[i]==event){
