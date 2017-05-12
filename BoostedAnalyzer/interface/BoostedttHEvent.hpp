@@ -9,7 +9,7 @@
 #include "MiniAOD/BoostedObjects/interface/Ak4Cluster.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/HiggsTagger.h"
-#include "BoostedTTH/TTHReconstruction/interface/MECalculator.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/MECalculator.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
