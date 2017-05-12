@@ -11,7 +11,7 @@
 #include <cmath> 
 #include <complex> 
 
-using namespace std; 
+using std::complex; 
 
 namespace MG5_sm 
 {

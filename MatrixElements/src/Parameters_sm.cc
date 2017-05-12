@@ -8,6 +8,7 @@
 #include <iostream> 
 #include <iomanip> 
 #include "BoostedTTH/MatrixElements/interface/Parameters_sm.h"
+using namespace std; 
 
 // Initialize static instance
 Parameters_sm * Parameters_sm::instance = 0; 

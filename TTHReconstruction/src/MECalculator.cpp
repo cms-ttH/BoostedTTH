@@ -1,5 +1,8 @@
 #include "BoostedTTH/TTHReconstruction/interface/MECalculator.hpp"
 
+using namespace std;
+
+
 MECalculator::MECalculator(){
 
   std::string cmsswbase = getenv("CMSSW_BASE");

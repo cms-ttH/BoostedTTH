@@ -6,6 +6,7 @@
 //==========================================================================
 
 #include "BoostedTTH/MatrixElements/interface/tthbbProcess.h"
+using namespace std; 
 
 using namespace MG5_sm; 
 

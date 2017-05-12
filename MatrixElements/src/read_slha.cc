@@ -4,6 +4,7 @@
 #include "BoostedTTH/MatrixElements/interface/read_slha.h"
 
 using namespace std;
+using namespace std; 
 
 void SLHABlock::set_entry(vector<int> indices, double value)
 {
