@@ -461,10 +461,10 @@ for s in systsJES:
 ### correct MET manually ###
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 process.CorrectedMETproducer.isData=options.isData
-process.CorrectedMETproducer.oldJets=cms.InputTag("slimmedJets", "", "PAT")
-process.CorrectedMETproducer.newJets=cms.InputTag("slimmedJets", "", "PAT")
-process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
-process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
+#process.CorrectedMETproducer.oldJets=cms.InputTag("slimmedJets", "", "PAT")
+#process.CorrectedMETproducer.newJets=cms.InputTag("slimmedJets", "", "PAT")
+#process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
+#process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
 #process.CorrectedMETproducer.oldMuons=cms.InputTag("SelectedMuonProducerUncorr:selectedMuonsUncorr")
 #process.CorrectedMETproducer.newMuons=cms.InputTag("SelectedMuonProducer:selectedMuons")
 process.CorrectedMETproducer.mets=METCollection
@@ -551,7 +551,7 @@ if options.dumpSyncExe:
     process.BoostedAnalyzer.selectionNames = []
     process.BoostedAnalyzer.dumpSyncExe=True
     process.BoostedAnalyzer.dumpExtended=False
-    process.BoostedAnalyzer.dumpAlwaysEvents=[
+    """process.BoostedAnalyzer.dumpAlwaysEvents=[
         47021987,
         10718174,
         54977993,
@@ -631,7 +631,7 @@ if options.dumpSyncExe:
         701245175,
         418972957,
         307103299,
-        ]
+        ]"""
 
 
 ##### DEFINE PATH ##########
