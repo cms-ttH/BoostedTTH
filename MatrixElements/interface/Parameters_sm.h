@@ -11,7 +11,6 @@
 #include <complex> 
 
 #include "BoostedTTH/MatrixElements/interface/read_slha.h"
-using namespace std; 
 
 class Parameters_sm
 {

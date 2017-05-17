@@ -4,7 +4,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "MiniAOD/MiniAODHelper/interface/BDTvars.h"
-#include "BoostedTTH/TTHReconstruction/interface/ReconstructionQuality.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/ReconstructionQuality.hpp"
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
 
 class essentialMVAVarProcessor: public TreeProcessor{

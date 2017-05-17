@@ -2,10 +2,10 @@
 #define BOOSTEDTTH_BOOSTEDANALYZER_TTBARRECONSTRUCTIONVARPROCESSOR_HPP
 
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
-#include "BoostedTTH/TTHReconstruction/interface/ReconstructionQuality.hpp"
-#include "BoostedTTH/TTHReconstruction/interface/InterpretationGenerator.hpp"
-#include "BoostedTTH/TTHReconstruction/interface/Interpretation.hpp"
-#include "BoostedTTH/TTHReconstruction/interface/ReconstructionMCMatching.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/ReconstructionQuality.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/InterpretationGenerator.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/Interpretation.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/ReconstructionMCMatching.hpp"
 #include "TLorentzVector.h"
 
 class TTbarReconstructionVarProcessor: public TreeProcessor{

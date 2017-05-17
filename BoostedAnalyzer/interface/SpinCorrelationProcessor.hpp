@@ -7,10 +7,10 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
-#include "BoostedTTH/TTHReconstruction/interface/ReconstructionQuality.hpp"
-#include "BoostedTTH/TTHReconstruction/interface/InterpretationGenerator.hpp"
-#include "BoostedTTH/TTHReconstruction/interface/Interpretation.hpp"
-#include "BoostedTTH/TTHReconstruction/interface/ReconstructionMCMatching.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/ReconstructionQuality.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/InterpretationGenerator.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/Interpretation.hpp"
+#include "TTH/RecoLikelihoodReconstruction/interface/ReconstructionMCMatching.hpp"
 
 class SpinCorrelationProcessor: public TreeProcessor{
   
