@@ -182,6 +182,14 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     int pass_LeptonSelection=-1;
     int pass_DiLeptonSelection=-1;
     
+    // hack to use loose isolation scale factors for muons in case of dilepton channel
+    if(int(input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())>1) {
+        leptonsfhelper->ChangeMuIsoHistos(true);
+    }
+    else {
+        leptonsfhelper->ChangeMuIsoHistos(false);
+    }
+    
     std::map< std::string, float > leptonsfs = leptonsfhelper->GetLeptonSF(input.selectedElectronsLoose,input.selectedMuonsLoose);
 
     //=================================================
@@ -472,6 +480,49 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if(input.weights.count("Weight_TopPt")>0) top_pt_weight=input.weights.at("Weight_TopPt");
     if(input.weights.count("Weight_PDF4LHC15_nlo_30_up")>0) pdf_up=input.weights.at("Weight_PDF4LHC15_nlo_30_up");
     if(input.weights.count("Weight_PDF4LHC15_nlo_30_down")>0) pdf_down=input.weights.at("Weight_PDF4LHC15_nlo_30_down");
+    
+    if(is_SL) {
+        std::vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
+        std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
+        std::vector<TLorentzVector> loose_jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
+        TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
+        std::vector<double> jetcsvs;
+        std::vector<double> loose_jetcsvs;
+        for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
+            jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+        }
+        for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
+            loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+        }
+        bdt_output=bdtclassifier->GetBDTOutput(lepvecs, jetvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
+        DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs,lepvecs[0],metP4);
+        dnn_ttbb_output = dnn_output.ttbb();
+        dnn_ttH_output = dnn_output.ttH();
+    }
+    
+    else if(is_DL) {
+        std::vector<TLorentzVector> lepvecs;
+        std::vector<double> lepcharges;
+        for(int i=0;i<int(input.selectedElectronsLoose.size());i++) {
+            lepvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedElectronsLoose[i].p4()));
+            lepcharges.push_back(input.selectedElectronsLoose[i].charge());
+        }
+        for(int i=0;i<int(input.selectedMuonsLoose.size());i++) {
+            lepvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedMuonsLoose[i].p4()));
+            lepcharges.push_back(input.selectedMuonsLoose[i].charge());
+        }
+        std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
+        std::vector<double> jetcsvs;
+        TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
+        for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
+            jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+        }
+        bdt_output=dlbdtclassifier->GetBDTOutput(lepvecs,lepcharges,jetvecs,jetcsvs,metP4);
+        DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs,lepvecs,metP4);
+        dnn_ttbb_output = dnn_output.ttbb();
+        dnn_ttH_output = dnn_output.ttH();
+    }
+    
 
     bool print=false;
     if (dataset=="NA" && (is_SL || is_DL)) print =true;
@@ -540,10 +591,14 @@ void Synchronizer::DumpSyncExe(const std::vector< InputCollections>& inputs, boo
 
 
 
-void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,bool dumpExtended){
+void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,BDTClassifier* bdtclassifier_,DLBDTClassifier* dlbdtclassifier_,DNNClassifier_SL* sldnnclassifier_,DNNClassifier_DL* dldnnclassifier_,bool dumpExtended){
     systematics=jetSystematics;
     helper=helper_;
     leptonsfhelper=leptonsfhelper_;
+    bdtclassifier=bdtclassifier_;
+    dlbdtclassifier=dlbdtclassifier_;
+    sldnnclassifier=sldnnclassifier_;
+    dldnnclassifier=dldnnclassifier_;
     for(const auto & s : systematics){
 	cutflowsSL.push_back(Cutflow());
 	cutflowsSL.back().Init();

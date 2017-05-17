@@ -556,7 +556,7 @@ if options.dumpSyncExe:
     process.BoostedAnalyzer.selectionNames = []
     process.BoostedAnalyzer.dumpSyncExe=True
     process.BoostedAnalyzer.dumpExtended=False
-    process.BoostedAnalyzer.dumpAlwaysEvents=[
+    """process.BoostedAnalyzer.dumpAlwaysEvents=[
         47021987,
         10718174,
         54977993,
@@ -636,7 +636,7 @@ if options.dumpSyncExe:
         701245175,
         418972957,
         307103299,
-        ]
+        ]"""
 
 
 ##### DEFINE PATH ##########

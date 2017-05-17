@@ -87,6 +87,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DNNVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
@@ -106,6 +107,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/Ak4Cluster.hpp"
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
 #include "TTH/CommonClassifier/interface/BDTClassifier.h"
+#include "TTH/CommonClassifier/interface/DLBDTClassifier.h"
+#include "TTH/CommonClassifier/interface/DNNClassifier.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
 
@@ -243,6 +246,10 @@ private:
     //mem classifier for MVAVarProcessor
     MEMClassifier* pointerToMEMClassifier; 
     BDTClassifier* pointerToCommonBDT5Classifier;
+    DLBDTClassifier* pointerToDLBDTClassifier;
+    DNNClassifier_SL* pointerToDnnSLClassifier;
+    DNNClassifier_DL* pointerToDnnDLClassifier;
+    
     ResourceMonitor* ResMon;
 };
 
@@ -337,11 +344,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     }
 
 
-    // initialize synchronizer
-    if(dumpSyncExe){
-	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,dumpExtended);
-    }
-
     // initialize selections
     // add requested selections
     for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
@@ -379,6 +381,15 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     
     pointerToMEMClassifier = new MEMClassifier();
     pointerToCommonBDT5Classifier = new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V1/");
+    DNNClassifierBase::pyInitialize();
+    pointerToDnnSLClassifier = new DNNClassifier_SL("v4");
+    
+    // initialize synchronizer
+    if(dumpSyncExe){
+        pointerToDLBDTClassifier = new DLBDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/dlbdtweights_v5/");
+        pointerToDnnDLClassifier = new DNNClassifier_DL("v1");
+	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,pointerToCommonBDT5Classifier,pointerToDLBDTClassifier,pointerToDnnSLClassifier,pointerToDnnDLClassifier,dumpExtended);
+    }
 
     // INITIALIZE TREEWRITERs
     for (uint i=0; i<jetSystematics.size();i++){
@@ -443,6 +454,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier),"BDTVarProcessor");
 	}
+	if(std::find(processorNames.begin(),processorNames.end(),"DNNVarProcessor")!=processorNames.end()) {
+	    treewriter->AddTreeProcessor(new DNNVarProcessor(pointerToDnnSLClassifier),"DNNVarProcessor");
+	}
 	if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
 	}
@@ -505,7 +519,13 @@ BoostedAnalyzer::~BoostedAnalyzer()
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
   delete pointerToMEMClassifier;
-
+  delete pointerToCommonBDT5Classifier;
+  delete pointerToDnnSLClassifier;
+  if(dumpSyncExe) {
+      delete pointerToDLBDTClassifier;
+      delete pointerToDnnDLClassifier;
+  }
+  DNNClassifierBase::pyFinalize();
 }
 
 
