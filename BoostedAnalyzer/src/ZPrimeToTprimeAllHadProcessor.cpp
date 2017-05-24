@@ -301,6 +301,37 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
                             vars.InitVar(fullstring+"Zprime_M",-9.0,"F");
                             vars.InitVar(fullstring+"Zprime_Pt",-9.0,"F");
                             std::cout<<"lala2"<<endl;
+                            
+                            fullstring=str_region+str_top+"MCtopmass_"+str_W+str_bottom+str_first;
+                            std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
+                            std::cout<<"lala0"<<endl;
+                            vars.InitVar("N_"+fullstring+"Tops","I");
+                            vars.InitVars(fullstring+"Tops_Pt",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_Eta",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_MSD",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_t32",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_t21",-9.0,"N_"+fullstring+"Tops");
+                            vars.InitVars(fullstring+"Tops_subjetCSVv2",-9.0,"N_"+fullstring+"Tops");
+                            
+                            vars.InitVar("N_"+fullstring+"Ws","I");
+                            vars.InitVars(fullstring+"Ws_Pt",-9.0,"N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_Eta",-9.0,"N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_MSD",-9.0,"N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_t32",-9.0,"N_"+fullstring+"Ws");
+                            vars.InitVars(fullstring+"Ws_t21",-9.0,"N_"+fullstring+"Ws");
+
+                            vars.InitVar("N_"+fullstring+"Bottoms","I");
+                            vars.InitVars(fullstring+"Bottoms_Pt",-9.0,"N_"+fullstring+"Bottoms");
+                            vars.InitVars(fullstring+"Bottoms_Eta",-9.0,"N_"+fullstring+"Bottoms");
+                            vars.InitVars(fullstring+"Bottoms_CSVv2",-9.0,"N_"+fullstring+"Bottoms");
+                            std::cout<<"lala1"<<endl;
+
+                            vars.InitVar(fullstring+"Tprime_M",-9.0,"F");
+                            vars.InitVar(fullstring+"Tprime_Pt",-9.0,"F");
+                            vars.InitVar(fullstring+"Zprime_M",-9.0,"F");
+                            vars.InitVar(fullstring+"Zprime_Pt",-9.0,"F");
+                            std::cout<<"lala2"<<endl;                            
+                            
                         }
                     //}
                 }
@@ -926,15 +957,15 @@ void ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtbComplete(VariableCont
     std::vector<pat::Jet> selected_Top;
     std::vector<pat::Jet> selected_W;
     if(str_AK8_selected_first=="Topfirst"){
-        std::cout<<"ladida11"<<endl;
+        //std::cout<<"ladida11"<<endl;
         selected_Top.push_back(tops[0]);
         std::vector<pat::Jet> separated_Ws;
         separated_Ws=SelectfromTopSeparatedWs(selected_Top, Ws);
-        std::cout<<"ladida12"<<separated_Ws.size()<<endl;
+        //std::cout<<"ladida12"<<separated_Ws.size()<<endl;
         if(separated_Ws.size()>0){
             selected_W.push_back(separated_Ws[0]); 
         }
-        std::cout<<"ladida13"<<endl;
+        //std::cout<<"ladida13"<<endl;
     }
     if(str_AK8_selected_first=="Wfirst"){
         selected_W.push_back(Ws[0]);
@@ -957,7 +988,7 @@ void ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtbComplete(VariableCont
                 FillSignalSidebandVars(vars, tops,Ws,separated_bottoms_anti,Tprime,Zprime,toptag,toptag_withbtag,Wtag,false,toptag_anti,toptag_withbtag_anti,Wtag_anti,str_AK8_selected_first);
             }
         }
-        std::cout<<"ladida4"<<endl;
+        //std::cout<<"ladida4"<<endl;
         if(separated_bottoms.size()>0){
             Tprime=TPrimeReconstructionWtb(selected_W,separated_bottoms);
             if(Tprime.mass()>500){
@@ -983,6 +1014,15 @@ void ZPrimeToTPrimeAllHadProcessor::FillSignalSidebandVars(VariableContainer& va
     if(toptag_anti && !toptag){str_top="top_anti_";};
     if(toptag_withbtag){str_top="withtopbtag_";};
     if(toptag_withbtag_anti && !toptag_withbtag){str_top="top_withbtag_anti_";};
+
+    
+    
+    FillZprimeVars(vars,tops,Ws,bottoms,Tprime,Zprime,str_region+str_top+str_W+str_bottom+str_AK8_selected_first);
+    
+    str_top+="MCtopmass_";
+    for(std::vector<pat::Jet>::iterator itJet = tops.begin() ; itJet != tops.end(); ++itJet){
+            itJet->setMass(foo.GetRndmSDM());
+    };
 
     FillZprimeVars(vars,tops,Ws,bottoms,Tprime,Zprime,str_region+str_top+str_W+str_bottom+str_AK8_selected_first);
     /*if(toptag_withbtag){
@@ -1037,6 +1077,8 @@ void ZPrimeToTPrimeAllHadProcessor::FillZprimeVars(VariableContainer& vars, std:
     Zprime=ZPrimeReconstructionWtb(tops, Tprime);
     vars.FillVar(string+"_Zprime_M",Zprime.mass());
     vars.FillVar(string+"_Zprime_Pt",Zprime.pt());
+    
+    std::cout<<"HALLLLOOOOOOO  "<<string<<endl;
 }
 
 void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,VariableContainer& vars){
@@ -1476,21 +1518,25 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 //top candidates
                 if (itJet->pt()>400){
                     if(!(ZPrimeToTPrimeAllHadProcessor::Top_subbtag(*itJet,"M"))){
-                        if(ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"L")){
+                        if(ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"M")){
                             tops.push_back(*itJet);
                             top_candidatefound=true;
+                            std::cout<<"top with no subbtag found"<<endl;
                         }else{
                             tops_anti.push_back(*itJet);
                             top_anti_candidatefound=true;
+                            std::cout<<"top anti with no subbtag found"<<endl;
                         }
 
                     }else{
-                        if(ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"L")){
+                        if(ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"M")){
                             tops_withbtag.push_back(*itJet);
                             top_withbtag_candidatefound=true;
+                            std::cout<<"top withsubbtag found"<<endl;
                         }else{
                             tops_withbtag_anti.push_back(*itJet);
                             top_withbtag_anti_candidatefound=true;
+                            std::cout<<"top anti withsubbtag found"<<endl;
                         }
                     }
                 }
