@@ -3332,6 +3332,15 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_Phi",i,TopsABCD[i].phi());
      vars.FillVars("Tops_ABCD_MSD",i,TopsABCD[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCD_t32",i,TopsABCD[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCD[i].userFloat("NjettinessAK8CHS:tau2"));
+
+     double max_subjet_csv_v2=-10;
+     auto const & names = TopsABCD[i].subjets("SoftDrop");
+     for( auto const & itsubJet : names ){
+        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        };
+     };
+     vars.FillVars("Tops_ABCD_maxsubjetCSVv2",i,max_subjet_csv_v2);
   }
 
 
