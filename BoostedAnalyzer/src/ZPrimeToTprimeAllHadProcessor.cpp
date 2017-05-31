@@ -762,7 +762,9 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Tops_ABCD_Phi",-9.0,"N_Zprime_ABCD");
    vars.InitVars("Tops_ABCD_MSD",-9.0,"N_Zprime_ABCD");
    vars.InitVars("Tops_ABCD_t32",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Tops_ABCD_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD");
 
+   
    
 ///Datadriven Background estimation   
    vars.InitVar("BG_Zprime_M","F");
@@ -3341,6 +3343,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         };
      };
      vars.FillVars("Tops_ABCD_maxsubjetCSVv2",i,max_subjet_csv_v2);
+     std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
   }
 
 
