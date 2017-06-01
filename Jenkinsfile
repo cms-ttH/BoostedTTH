@@ -118,10 +118,73 @@ scram b -j10'''
         
       }
     }
-    stage('Deploy') {
+    stage('Production') {
       steps {
-        echo 'Finishing...'
+        echo 'Start production'
         mattermostSend(message: 'BoostedTTH / CMSSW_8_0_26_patch1:Finished with job', channel: 'harrendorf-devel', color: 'green')
+        node(label: 'naf') {
+          catchError() {
+            sh '''#!/bin/zsh -l
+# Use login shell
+
+set -o xtrace
+export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch 
+source $VO_CMS_SW_DIR/cmsset_default.sh
+
+# setup environment
+export SCRAM_ARCH="slc6_amd64_gcc530"
+export CMSSW_VERSION="CMSSW_8_0_26_patch1"
+
+# Variables
+export JENKINSINSTALLDIR="/nfs/dust/cms/user/mharrend/jenkins/Spring17-NTuple-Production"
+echo $JENKINSINSTALLDIR
+export JENKINSCMSSWFOLDER=$CMSSW_VERSION
+echo $JENKINSCMSSWFOLDER
+export JENKINSCMSSWINSTALLDIR="/nfs/dust/cms/user/mharrend/jenkins/Spring17-NTuple-Production/"$JENKINSCMSSWFOLDER
+echo $JENKINSCMSSWINSTALLDIR
+export JENKINSCMSSWSRCDIR=$JENKINSCMSSWINSTALLDIR"/src"
+echo $JENKINSCMSSWSRCDIR
+
+export JENKINSRUNSCRIPTSFOLDER="BoostedAnalyzer_runscripts_NAF"
+echo $JENKINSRUNSCRIPTSFOLDER
+export JENKINSRUNSCRIPTSINSTALLDIR="/nfs/dust/cms/user/mharrend/jenkins/Spring17-NTuple-Production/"$JENKINSRUNSCRIPTSFOLDER
+
+
+# Load CMSSW
+cd $JENKINSCMSSWSRCDIR
+eval `scramv1 runtime -sh` 
+
+
+# clean old environment before creating new one
+cd $JENKINSINSTALLDIR
+rm -rf $JENKINSRUNSCRIPTSFOLDER
+sleep 5
+
+
+# create new environment
+git clone --depth 1 https://github.com/mharrend/BoostedAnalyzer_runscripts_NAF.git $JENKINSRUNSCRIPTSFOLDER
+
+
+# navigate in folder
+cd $JENKINSRUNSCRIPTSFOLDER/published_samples
+
+
+# Generate scripts
+./generate_scripts.py marco_user_config.py
+
+# Start scripts
+./sup.py -f runScripts_Spring17-v5_ttbb/
+
+# 
+qstat
+sleep 15 
+qstat
+sleep 60
+qstat'''
+            
+            }
+        }
+        
       }
     }
   }
