@@ -75,6 +75,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Muon_Phi","N_LooseMuons" );
   vars.InitVars( "Muon_RelIso","N_LooseMuons" );
   vars.InitVars( "Muon_Charge","N_LooseMuons" );
+  vars.InitVars( "Muon_Pt_BeForeRC","N_LooseMuons" );
   
   vars.InitVars( "Electron_E","N_LooseElectrons" );
   vars.InitVars( "Electron_M","N_LooseElectrons" );
@@ -83,6 +84,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Electron_Phi","N_LooseElectrons" );
   vars.InitVars( "Electron_RelIso","N_LooseElectrons" );
   vars.InitVars( "Electron_Charge","N_LooseElectrons" );
+  vars.InitVars( "Electron_Pt_BeforeRun2Calibration","N_LooseElectrons" );
+  vars.InitVars( "Electron_Eta_Supercluster","N_LooseElectrons" );
   
   vars.InitVar( "Evt_Pt_MET" );
   vars.InitVar( "Evt_Phi_MET" );
@@ -161,8 +164,12 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
-    vars.FillVars( "Jet_PileUpID",iJet,itJet->userInt("pileupJetIdUpdated:fullId"));
-    vars.FillVars( "Jet_PileUpMVA",iJet,itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
+    if(itJet->hasUserInt("pileupJetIdUpdated:fullId")) {
+        vars.FillVars( "Jet_PileUpID",iJet,itJet->userInt("pileupJetIdUpdated:fullId"));
+    }
+    if(itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant")) {
+        vars.FillVars( "Jet_PileUpMVA",iJet,itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
+    }
     if(itJet->genJet()!=NULL){
       vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
       vars.FillVars( "Jet_GenJet_Eta",iJet,itJet->genJet()->eta());
@@ -229,6 +236,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
 	vars.FillVars( "Electron_RelIso",iEle,itEle->userFloat("relIso") );
     }
     vars.FillVars( "Electron_Charge",iEle,itEle->charge() ); 
+    if(itEle->hasUserFloat("ptBeforeRun2Calibration")){
+        vars.FillVars("Electron_Pt_BeforeRun2Calibration",iEle,itEle->userFloat("ptBeforeRun2Calibration"));
+    }
+    vars.FillVars("Electron_Eta_Supercluster",iEle,itEle->superCluster()->eta());
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     int iMu = itMu - input.selectedMuonsLoose.begin();
@@ -241,6 +252,9 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
 	vars.FillVars( "Muon_RelIso",iMu,itMu->userFloat("relIso") );
     }
     vars.FillVars( "Muon_Charge",iMu,itMu->charge() );
+    if(itMu->hasUserFloat("PtbeforeRC")){
+	vars.FillVars( "Muon_Pt_BeForeRC",iMu,itMu->userFloat("PtbeforeRC") );
+    }
   }
   
   vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );

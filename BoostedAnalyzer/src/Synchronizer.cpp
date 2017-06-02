@@ -76,7 +76,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     int lep1_pdgId=-1;
     float lep1_idSF=-1;
     float lep1_isoSF=-1;
-    int32_t lep1_seed=-1;
+    uint32_t lep1_seed=0;
     
     float lep2_pt=-1;
     float lep2_iso=-1;
@@ -84,7 +84,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     int lep2_pdgId=-1;
     float lep2_idSF=-1;
     float lep2_isoSF=-1;
-    int32_t lep2_seed=-1;
+    uint32_t lep2_seed=0;
     
     float jet1_pt=-1;
     float jet1_eta=-1;
@@ -98,7 +98,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet1_csv=-1;
     int jet1_PUJetId=-1;
     float jet1_PUJetDiscriminant=-1;
-    int32_t jet1_seed=-1;
+    uint32_t jet1_seed=0;
     
     float jet2_pt=-1;
     float jet2_eta=-1;
@@ -112,7 +112,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet2_csv=-1;
     int jet2_PUJetId=-1;
     float jet2_PUJetDiscriminant=-1;
-    int32_t jet2_seed=-1;
+    uint32_t jet2_seed=0;
     
     float MET_pt=-1;
     float MET_phi=-1;
@@ -210,7 +210,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    lep1_eta=iMuon->eta();
 	    if(iMuon->hasUserFloat("relIso")) lep1_iso= iMuon->userFloat("relIso");
 	    lep1_pdgId=iMuon->pdgId();
-	    lep1_seed=iMuon->userInt("deterministicSeed");
+	    if(iMuon->hasUserInt("deterministicSeed")) lep1_seed=(uint32_t)iMuon->userInt("deterministicSeed");
             lep1_idSF=leptonsfs_tmp["MuonSFID"];//leptonsfhelper->GetMuonSF(iMuon->pt(),iMuon->eta(),0,"ID");
             lep1_isoSF=leptonsfs_tmp["MuonSFIso"];//leptonsfhelper->GetMuonSF(iMuon->pt(),iMuon->eta(),0,"ISO");
 	}
@@ -219,7 +219,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    lep2_eta=iMuon->eta();
 	    if(iMuon->hasUserFloat("relIso")) lep2_iso= iMuon->userFloat("relIso");
 	    lep2_pdgId=iMuon->pdgId();
-	    lep2_seed=iMuon->userInt("deterministicSeed");
+	    if(iMuon->hasUserInt("deterministicSeed")) lep2_seed=(uint32_t)iMuon->userInt("deterministicSeed");
             lep2_idSF=leptonsfs_tmp["MuonSFID"];//leptonsfhelper->GetMuonSF(iMuon->pt(),iMuon->eta(),0,"ID");
             lep2_isoSF=leptonsfs_tmp["MuonSFIso"];//leptonsfhelper->GetMuonSF(iMuon->pt(),iMuon->eta(),0,"ISO");
 	}
@@ -241,7 +241,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    lep1_eta=iEle->eta();
 	    if(iEle->hasUserFloat("relIso")) lep1_iso= iEle->userFloat("relIso");
 	    lep1_pdgId=iEle->pdgId();
-	    lep1_seed=iEle->userInt("deterministicSeed");
+	    if(iEle->hasUserInt("deterministicSeed")) lep1_seed=(uint32_t)iEle->userInt("deterministicSeed");
             lep1_idSF=leptonsfs_tmp["ElectronSFID"];//leptonsfhelper->GetElectronSF(iEle->pt(),iEle->eta(),0,"ID");
             lep1_isoSF=leptonsfs_tmp["ElectronSFIso"];//leptonsfhelper->GetElectronSF(iEle->pt(),iEle->eta(),0,"ISO");
 	}
@@ -250,7 +250,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    lep2_eta=iEle->eta();
 	    if(iEle->hasUserFloat("relIso")) lep2_iso= iEle->userFloat("relIso");
 	    lep2_pdgId=iEle->pdgId();
-	    lep2_seed=iEle->userInt("deterministicSeed");
+	    if(iEle->hasUserInt("deterministicSeed")) lep2_seed=(uint32_t)iEle->userInt("deterministicSeed");
             lep2_idSF=leptonsfs_tmp["ElectronSFID"];//leptonsfhelper->GetElectronSF(iEle->pt(),iEle->eta(),0,"ID");
             lep2_isoSF=leptonsfs_tmp["ElectronSFIso"];//leptonsfhelper->GetElectronSF(iEle->pt(),iEle->eta(),0,"ISO");
 
@@ -338,9 +338,9 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet1_eta=input.selectedJets.at(0).eta();
 	jet1_phi=input.selectedJets.at(0).phi();
 	jet1_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
-	jet1_seed=input.selectedJets.at(0).userInt("deterministicSeed");
-	jet1_PUJetId=input.selectedJets.at(0).userInt("pileupJetIdUpdated:fullId");
-	jet1_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetIdUpdated:fullDiscriminant");
+	if(input.selectedJets.at(0).hasUserInt("deterministicSeed")) jet1_seed=(uint32_t)input.selectedJets.at(0).userInt("deterministicSeed");
+	if(input.selectedJets.at(0).hasUserInt("pileupJetIdUpdated:fullId")) jet1_PUJetId=input.selectedJets.at(0).userInt("pileupJetIdUpdated:fullId");
+	if(input.selectedJets.at(0).hasUserFloat("pileupJetIdUpdated:fullDiscriminant")) jet1_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetIdUpdated:fullDiscriminant");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJES")) jet1_jesSF=input.selectedJets.at(0).userFloat("HelperJES");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJESUp")) jet1_jesSF_up=input.selectedJets.at(0).userFloat("HelperJESUp");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJESDown")) jet1_jesSF_down=input.selectedJets.at(0).userFloat("HelperJESDown");
@@ -353,9 +353,9 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet2_eta=input.selectedJets.at(1).eta();
 	jet2_phi=input.selectedJets.at(1).phi();
 	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
-	jet2_seed=input.selectedJets.at(1).userInt("deterministicSeed");
-	jet2_PUJetId=input.selectedJets.at(1).userInt("pileupJetIdUpdated:fullId");
-	jet2_PUJetDiscriminant=input.selectedJets.at(1).userFloat("pileupJetIdUpdated:fullDiscriminant");
+	if(input.selectedJets.at(1).hasUserInt("deterministicSeed")) jet2_seed=(uint32_t)input.selectedJets.at(1).userInt("deterministicSeed");
+	if(input.selectedJets.at(1).hasUserInt("pileupJetIdUpdated:fullId")) jet2_PUJetId=input.selectedJets.at(1).userInt("pileupJetIdUpdated:fullId");
+	if(input.selectedJets.at(1).hasUserFloat("pileupJetIdUpdated:fullDiscriminant")) jet2_PUJetDiscriminant=input.selectedJets.at(1).userFloat("pileupJetIdUpdated:fullDiscriminant");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJES")) jet2_jesSF=input.selectedJets.at(1).userFloat("HelperJES");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESUp")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESUp");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESDown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESDown");
@@ -487,15 +487,17 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         std::vector<TLorentzVector> loose_jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
         TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
         std::vector<double> jetcsvs;
+        std::vector<double> jetcsvs_dnn;
         std::vector<double> loose_jetcsvs;
         for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
             jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+            jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
         }
         for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
             loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
         }
         bdt_output=bdtclassifier->GetBDTOutput(lepvecs, jetvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
-        DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs,lepvecs[0],metP4);
+        DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs[0],metP4);
         dnn_ttbb_output = dnn_output.ttbb();
         dnn_ttH_output = dnn_output.ttH();
     }
@@ -513,12 +515,14 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         }
         std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
         std::vector<double> jetcsvs;
+        std::vector<double> jetcsvs_dnn;
         TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
         for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
             jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+            jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
         }
         bdt_output=dlbdtclassifier->GetBDTOutput(lepvecs,lepcharges,jetvecs,jetcsvs,metP4);
-        DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs,lepvecs,metP4);
+        DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs,metP4);
         dnn_ttbb_output = dnn_output.ttbb();
         dnn_ttH_output = dnn_output.ttH();
     }
@@ -635,3 +639,12 @@ void Synchronizer::Init(std::string filename, const std::vector<std::string>& je
     dataset = iConfig.getParameter<std::string>("dataset");
     isData = iConfig.getParameter<bool>("isData");
 }
+
+/*
+        if(event==625102) {
+            cout << "Lepton: " << "pt: " << lepvecs[0].Pt() << " eta: " << lepvecs[0].Eta() << " phi: " << lepvecs[0].Phi() << " e: " << lepvecs[0].E() << endl;
+            for(int i=0;i<int(jetvecs.size());i++) {
+                cout << "Jet " << i << " pt: " << jetvecs[i].Pt() << " eta: " << jetvecs[i].Eta() << " phi: " << jetvecs[i].Phi() << " e: " << jetvecs[i].E() << " csv: " << jetcsvs[i] << endl;
+            }
+            cout << "METpt: " << metP4.Pt() << "METphi: " << metP4.Phi() << endl;
+}*/
