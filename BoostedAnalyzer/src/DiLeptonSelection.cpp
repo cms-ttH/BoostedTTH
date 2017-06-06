@@ -125,7 +125,8 @@ bool DiLeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflo
   bool elel_step2=false;
   bool elmu_step2=false;
   bool mumu_step2=false;
-  
+  // TODO
+  // Here we need to make sure that exactly two leptons exist. Lest we overlap with the multilepton analysis
   if(dataset=="NA") {
     elel_step2 = (elelTriggered || elTriggered) && nleadelectrons>=1 && (nelectrons_p==1&&nelectrons_n==1 && nmuons_p==0&&nmuons_n==0);
     elmu_step2 = (elmuTriggered || elTriggered || muTriggered) && nleadleptons>=1 && ((nelectrons_p==1&&nmuons_n==1 && nelectrons_n==0&&nmuons_p==0)||(nelectrons_n==1&&nmuons_p==1 && nelectrons_p==0&&nmuons_n==0));
