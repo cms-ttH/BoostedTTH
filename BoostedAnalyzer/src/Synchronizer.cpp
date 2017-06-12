@@ -34,9 +34,9 @@ Synchronizer::~Synchronizer (){
 void Synchronizer::DumpSyncExeHeader(std::ostream &out, bool addExtendedInfo){
     out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_eta,lep1_iso,lep1_pdgId,lep1_idSF,lep1_isoSF,lep1_seed,lep2_pt,lep2_eta,lep2_iso,lep2_pdgId,lep2_idSF,lep2_isoSF,lep2_seed,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_jesSF_PileUpDataMC_down,jet1_jesSF_RelativeFSR_up,jet1_jerSF_nominal,jet1_csv,jet1_PUJetId,jet1_PUJetDiscriminant,jet1_seed,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_jesSF_PileUpDataMC_down,jet2_jesSF_RelativeFSR_up,jet2_jerSF_nominal,jet2_csv,jet2_PUJetId,jet2_PUJetDiscriminant,jet2_seed,MET_pt,MET_phi,mll,ttHFCategory,ttHFGenFilterTag,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down,triggerSF,top_pt_weight,bdt_output,dnn_ttH_output,dnn_ttbb_output";
     if(addExtendedInfo){
-	out << ",jet3_pt,jet3_eta,jet3_csv,jet4_pt,jet4_eta,jet4_csv,jet5_pt,jet5_eta,jet5_csv";
+	out << ",jet3_pt,jet3_eta,jet3_csv,jet4_pt,jet4_eta,jet4_csv,jet5_pt,jet5_eta,jet5_csv,jet6_pt,jet6_eta,jet6_csv,jet7_pt,jet7_eta,jet7_csv";
 	out << ",trig_el,trig_mu,trig_elel,trig_elmu,trig_mumu";
-	out << ",n_leps_tight,n_leps_dl,n_leps_loose";
+	out << ",n_leps_tight,n_leps_dl,n_leps_loose,rho";
 	out << ",raw_el1_pt,raw_el1_eta,raw_el1_iso,raw_el1_pdgId,raw_el2_pt,raw_el2_eta,raw_el2_iso,raw_el2_pdgId";
 	out << ",raw_mu1_pt,raw_mu1_eta,raw_mu1_iso,raw_mu1_pdgId,raw_mu2_pt,raw_mu2_eta,raw_mu2_iso,raw_mu2_pdgId";
 	out << ",pass_FilterSelection,pass_VertexSelection,pass_LeptonSelection,pass_DiLeptonSelection";
@@ -60,6 +60,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     int run=input.eventInfo.run;
     int lumi=input.eventInfo.lumiBlock;
     long event=input.eventInfo.evt;
+    float rho = input.eventInfo.rho;
     
     int is_e=-1;
     int is_mu=-1;
@@ -95,6 +96,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet1_jesSF_PileUpDataMC_down=-1;
     float jet1_jesSF_RelativeFSR_up=-1;
     float jet1_jerSF_nominal=-1;
+    //float jet1_jerSF_up=-1;
+    //float jet1_jerSF_down=-1;
     float jet1_csv=-1;
     int jet1_PUJetId=-1;
     float jet1_PUJetDiscriminant=-1;
@@ -109,6 +112,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet2_jesSF_PileUpDataMC_down=-1;
     float jet2_jesSF_RelativeFSR_up=-1;
     float jet2_jerSF_nominal=-1;
+    //float jet2_jerSF_up=-1;
+    //float jet2_jerSF_down=-1;
     float jet2_csv=-1;
     int jet2_PUJetId=-1;
     float jet2_PUJetDiscriminant=-1;
@@ -152,6 +157,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     float jet5_pt=-1;
     float jet5_eta=-1;
     float jet5_csv=-1;
+    float jet6_pt=-1;
+    float jet6_eta=-1;
+    float jet6_csv=-1;
+    float jet7_pt=-1;
+    float jet7_eta=-1;
+    float jet7_csv=-1;
     int n_leps_tight=-1;
     int n_leps_dl=-1;
     int n_leps_loose=-1;
@@ -340,10 +351,13 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet1_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
 	if(input.selectedJets.at(0).hasUserInt("deterministicSeed")) jet1_seed=(uint32_t)input.selectedJets.at(0).userInt("deterministicSeed");
 	if(input.selectedJets.at(0).hasUserInt("pileupJetIdUpdated:fullId")) jet1_PUJetId=input.selectedJets.at(0).userInt("pileupJetIdUpdated:fullId");
-	if(input.selectedJets.at(0).hasUserFloat("pileupJetIdUpdated:fullDiscriminant")) jet1_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetIdUpdated:fullDiscriminant");
+	if(input.selectedJets.at(0).hasUserFloat("pileupJetIdUpdated:fullDiscriminant")) { jet1_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetIdUpdated:fullDiscriminant");}
 	if(input.selectedJets.at(0).hasUserFloat("HelperJES")) jet1_jesSF=input.selectedJets.at(0).userFloat("HelperJES");
-	if(input.selectedJets.at(0).hasUserFloat("HelperJESUp")) jet1_jesSF_up=input.selectedJets.at(0).userFloat("HelperJESUp");
-	if(input.selectedJets.at(0).hasUserFloat("HelperJESDown")) jet1_jesSF_down=input.selectedJets.at(0).userFloat("HelperJESDown");
+	if(input.selectedJets.at(0).hasUserFloat("HelperJESup")) jet1_jesSF_up=input.selectedJets.at(0).userFloat("HelperJESup");
+	if(input.selectedJets.at(0).hasUserFloat("HelperJESdown")) jet1_jesSF_down=input.selectedJets.at(0).userFloat("HelperJESdown");
+        if(input.selectedJets.at(0).hasUserFloat("HelperJER")) jet1_jerSF_nominal=input.selectedJets.at(0).userFloat("HelperJER");
+	//if(input.selectedJets.at(0).hasUserFloat("HelperJERUp")) jet1_jerSF_up=input.selectedJets.at(0).userFloat("HelperJERUp");
+	//if(input.selectedJets.at(0).hasUserFloat("HelperJERDown")) jet1_jerSF_down=input.selectedJets.at(0).userFloat("HelperJERDown");
         if(input.selectedJets.at(0).hasUserFloat("HelperJESPileUpDataMCdown")) jet1_jesSF_PileUpDataMC_down=input.selectedJets.at(0).userFloat("HelperJESPileUpDataMCdown");
         if(input.selectedJets.at(0).hasUserFloat("HelperJESRelativeFSRup")) jet1_jesSF_RelativeFSR_up=input.selectedJets.at(0).userFloat("HelperJESRelativeFSRup");
     }
@@ -355,10 +369,13 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
 	if(input.selectedJets.at(1).hasUserInt("deterministicSeed")) jet2_seed=(uint32_t)input.selectedJets.at(1).userInt("deterministicSeed");
 	if(input.selectedJets.at(1).hasUserInt("pileupJetIdUpdated:fullId")) jet2_PUJetId=input.selectedJets.at(1).userInt("pileupJetIdUpdated:fullId");
-	if(input.selectedJets.at(1).hasUserFloat("pileupJetIdUpdated:fullDiscriminant")) jet2_PUJetDiscriminant=input.selectedJets.at(1).userFloat("pileupJetIdUpdated:fullDiscriminant");
+	if(input.selectedJets.at(1).hasUserFloat("pileupJetIdUpdated:fullDiscriminant")){ jet2_PUJetDiscriminant=input.selectedJets.at(1).userFloat("pileupJetIdUpdated:fullDiscriminant");}
 	if(input.selectedJets.at(1).hasUserFloat("HelperJES")) jet2_jesSF=input.selectedJets.at(1).userFloat("HelperJES");
-	if(input.selectedJets.at(1).hasUserFloat("HelperJESUp")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESUp");
-	if(input.selectedJets.at(1).hasUserFloat("HelperJESDown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESDown");
+	if(input.selectedJets.at(1).hasUserFloat("HelperJESup")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESup");
+	if(input.selectedJets.at(1).hasUserFloat("HelperJESdown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESdown");
+        if(input.selectedJets.at(1).hasUserFloat("HelperJER")) jet2_jerSF_nominal=input.selectedJets.at(1).userFloat("HelperJER");
+	//if(input.selectedJets.at(1).hasUserFloat("HelperJERUp")) jet2_jerSF_up=input.selectedJets.at(1).userFloat("HelperJERUp");
+	//if(input.selectedJets.at(1).hasUserFloat("HelperJERDown")) jet2_jerSF_down=input.selectedJets.at(1).userFloat("HelperJERDown");
         if(input.selectedJets.at(1).hasUserFloat("HelperJESPileUpDataMCdown")) jet2_jesSF_PileUpDataMC_down=input.selectedJets.at(1).userFloat("HelperJESPileUpDataMCdown");
         if(input.selectedJets.at(1).hasUserFloat("HelperJESRelativeFSRup")) jet2_jesSF_RelativeFSR_up=input.selectedJets.at(1).userFloat("HelperJESRelativeFSRup");
     }
@@ -376,6 +393,16 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet5_pt=input.selectedJetsLoose.at(4).pt();
 	jet5_eta=input.selectedJetsLoose.at(4).eta();
 	jet5_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(4));
+    }
+    if(input.selectedJetsLoose.size()>5){
+	jet6_pt=input.selectedJetsLoose.at(5).pt();
+	jet6_eta=input.selectedJetsLoose.at(5).eta();
+	jet6_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(5));
+    }
+    if(input.selectedJetsLoose.size()>6){
+	jet7_pt=input.selectedJetsLoose.at(6).pt();
+	jet7_eta=input.selectedJetsLoose.at(6).eta();
+	jet7_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(6));
     }
     n_leps_tight=input.selectedMuons.size()+input.selectedElectrons.size();
     n_leps_dl=input.selectedMuonsDL.size()+input.selectedElectronsDL.size();
@@ -569,9 +596,9 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	pdf_up% pdf_down%
 	me_up% me_down% triggerSF% top_pt_weight% bdt_output% dnn_ttH_output% dnn_ttbb_output;
 	if(addExtendedInfo){
-	    out << boost::format(",%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%jet3_pt%jet3_eta%jet3_csv%jet4_pt%jet4_eta%jet4_csv%jet5_pt%jet5_eta%jet5_csv;
+	    out << boost::format(",%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%jet3_pt%jet3_eta%jet3_csv%jet4_pt%jet4_eta%jet4_csv%jet5_pt%jet5_eta%jet5_csv%jet6_pt%jet6_eta%jet6_csv%jet7_pt%jet7_eta%jet7_csv;
 	    out << boost::format(",%i,%i,%i,%i,%i")%trig_el%trig_mu%trig_elel%trig_elmu%trig_mumu;
-	    out << boost::format(",%i,%i,%i")%n_leps_tight%n_leps_dl%n_leps_loose;
+	    out << boost::format(",%i,%i,%i,%.4f")%n_leps_tight%n_leps_dl%n_leps_loose%rho;
 	    out << boost::format(",%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%i")%raw_el1_pt%raw_el1_eta%raw_el1_iso%raw_el1_pdgId%raw_el2_pt%raw_el2_eta%raw_el2_iso%raw_el2_pdgId;
 	    out << boost::format(",%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%i")%raw_mu1_pt%raw_mu1_eta%raw_mu1_iso%raw_mu1_pdgId%raw_mu2_pt%raw_mu2_eta%raw_mu2_iso%raw_mu2_pdgId;
 	    out << boost::format(",%i,%i,%i,%i")%pass_FilterSelection%pass_VertexSelection%pass_LeptonSelection%pass_DiLeptonSelection;

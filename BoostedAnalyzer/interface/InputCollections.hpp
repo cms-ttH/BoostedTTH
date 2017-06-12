@@ -52,8 +52,9 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const SampleType                              sampleType_,
                     const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
-		    const edm::Event& iEvent_,
-		    const edm::EventSetup& iSetup_
+		    const edm::Event&                             iEvent_,
+		    const edm::EventSetup&                        iSetup_,
+                    const Systematics::Type&                      systematic_
 		      /**** bjetness code ****/
 
 		            ):
@@ -78,7 +79,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     higgsDecay(higgsDecay_),
                     weights(weights_),
 		    iEvent(iEvent_),
-		    iSetup(iSetup_)
+		    iSetup(iSetup_),
+		    systematic(systematic_)
                     {}
 
 /**
@@ -114,7 +116,8 @@ InputCollections(   const InputCollections&                       input,
                     higgsDecay(input.higgsDecay),
                     weights(weights_),
 		    iEvent(input.iEvent),
-		    iSetup(input.iSetup)
+		    iSetup(input.iSetup),
+		    systematic(input.systematic)
 
                     {}
 
@@ -138,8 +141,9 @@ InputCollections(   const InputCollections&                       input,
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>             weights;
-  const edm::Event & iEvent;
-  const edm::EventSetup & iSetup;
+  const edm::Event &                            iEvent;
+  const edm::EventSetup &                       iSetup;
+  const Systematics::Type&                      systematic;
 
 };
 

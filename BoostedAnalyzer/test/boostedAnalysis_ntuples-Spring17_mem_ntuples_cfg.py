@@ -33,7 +33,7 @@ options.register( "useMuonRC", True, VarParsing.multiplicity.singleton, VarParsi
 options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
 options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
 options.register("updatePUJetId",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
-options.register( "ProduceMemNtuples", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
+options.register( "ProduceMemNtuples", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
 
 options.parseArguments()
 
@@ -414,7 +414,7 @@ process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 # selection of the nominal jets
 process.SelectedJetProducer.jets='patSmearedJets'
 process.SelectedJetProducer.applyCorrection=False
-process.SelectedJetProducer.ptMins=[20,30]
+process.SelectedJetProducer.ptMins=[15,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
@@ -516,10 +516,10 @@ if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
 process.BoostedAnalyzer.selectionNames = [
-#"FilterSelection",
-#"VertexSelection",
-#"LeptonSelection",
-#"JetTagSelection"
+"FilterSelection",
+"VertexSelection",
+"LeptonSelection",
+"JetTagSelection"
 ]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
@@ -564,7 +564,7 @@ if options.dumpSyncExe:
         #2688365,
         #2786936,
         ]
-
+    
 if options.ProduceMemNtuples==True:
     process.BoostedAnalyzer.memNtuples=True
     process.BoostedAnalyzer.processorNames=cms.vstring("SlimmedNtuples")

@@ -84,6 +84,32 @@ bool TreeWriter::Process(const InputCollections& input,const bool& verbose) {
   return true;
 }
 
+bool TreeWriter::Process(const std::vector<InputCollections>& input,const bool& verbose) {  
+
+  if(!initialized){
+    for(uint i=0; i<processors.size(); i++){
+      processors[i]->Init(input,vars);
+    }
+    
+    vars.ConnectTree(tree);
+    
+    initialized=true;
+  }
+  vars.SetDefaultValues();
+  
+  for(uint i=0; i<processors.size(); i++){
+    if(verbose) std::cout << "Start processing " << processorNames.at(i) << std::endl;
+    stopwatches[i].Start(firstEvent);
+    processors[i]->Process(input,vars);
+    stopwatches[i].Stop();
+    if(verbose) std::cout << "Done processing " << processorNames.at(i) << std::endl;
+  }
+
+  FillTree();
+  firstEvent=false;
+  return true;
+}
+
 
 void TreeWriter::FillTree(){
   tree->Fill();

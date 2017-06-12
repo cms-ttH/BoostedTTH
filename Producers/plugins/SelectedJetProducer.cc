@@ -83,6 +83,7 @@ private:
     std::vector<std::string> collectionNames;
     /** pileupjetid for collections **/
     std::vector<std::string> PUJetIDMins;
+    std::string JetID;
     /** systematics used **/
     std::vector<Systematics::Type> systematics;
     /** apply jet energy correciton? **/
@@ -117,6 +118,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     doJER = iConfig.getParameter<bool>("doJER");
     collectionNames = iConfig.getParameter< std::vector<std::string> >("collectionNames");
     PUJetIDMins = iConfig.getParameter<std::vector<std::string>> ("PUJetIDMins");
+    JetID = iConfig.getParameter<std::string> ("JetID");
 
     assert(ptMins.size()==etaMaxs.size());
     assert(ptMins.size()==collectionNames.size());
@@ -183,8 +185,8 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    iEvent.getByToken( muonsToken,h_inputMuons );
 
    
-   // selected jets with jet ID cuts
-   const std::vector<pat::Jet> idJets = helper.GetSelectedJets(*h_inputJets, 0., 9999., jetID::jetLoose, '-' );
+   // selected jets with jet ID cuts ( do this before jet energy correction !!! )
+   const std::vector<pat::Jet> idJets = helper.GetSelectedJets(*h_inputJets, 0., 9999., MiniAODHelper::getjetID(JetID) , '-' );
    std::vector<std::vector<pat::Jet> > unsortedJets;
    if(applyCorrection){
        // initialize jetcorrector
@@ -198,25 +200,25 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
        // Clean muons and electrons from jets
        std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);
        // Apply jet corrections
-       //   Get genjets for new JER recommendation
+       //   Get genjets for new JER recommendation ( JER is done in extra producer SmearedJetProducer, the manual JER application is therefore disabled doJER=false)
        for(uint i=0; i<systematics.size(); i++){
 	   unsortedJets.push_back(helper.GetCorrectedJets(cleanJets, iEvent, iSetup, h_genJets, systematics[i],true,doJER));
        }
 
    }
 
-
+   // if no correction is to be applied, still remove jets close to a lepton
    else{
        for(uint i=0; i<systematics.size(); i++){
 	   unsortedJets.push_back(helper.GetDeltaRCleanedJets(idJets,*h_inputMuons,*h_inputElectrons,leptonJetDr));
        }
    }
-
+   // loop over all jetcollections and each systematic and apply pt,eta as well as pujetid cut on them
    for(uint i=0; i<ptMins.size(); i++ ){
        for(uint j=0; j<systematics.size(); j++){
 	   //Get jet Collection which pass selections
 	   std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], jetID::none, '-',PUJetID::get(PUJetIDMins[i]) );
-	   // Get jet Collection which pass loose selection
+	   // sort the selected jets with respect to pt
 	   std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
 
 	   iEvent.put(selectedJets,systName(collectionNames[i],systematics[j]));

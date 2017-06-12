@@ -15,7 +15,6 @@
 <use name="JetMETCorrections/Objects"/>
 <use name="CondFormats/JetMETObjects"/>
 <use name="MiniAOD/MiniAODHelper"/>
-<use name="BoostedTTH/TTHReconstruction"/>
 <use name="BoostedTTH/MatrixElements"/>
 <use name="TTH/CommonClassifier"/>
 <export>

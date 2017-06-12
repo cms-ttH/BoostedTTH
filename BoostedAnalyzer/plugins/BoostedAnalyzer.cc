@@ -105,6 +105,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/SpinCorrelationProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenJetOrderedJetCollectionProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Ak4Cluster.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/SlimmedNtuples.hpp"
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
 #include "TTH/CommonClassifier/interface/BDTClassifier.h"
 #include "TTH/CommonClassifier/interface/DLBDTClassifier.h"
@@ -200,6 +201,8 @@ private:
     std::vector<std::string> processorNames;
     /** selections applied */
     std::vector<std::string> selectionNames;
+    
+    bool ProduceMemNtuples;
 
   // TOKENS =========================
     /** pu summary data access token **/
@@ -284,13 +287,16 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     relevantTriggers = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
     processorNames= iConfig.getParameter< std::vector<std::string> >("processorNames");
     selectionNames= iConfig.getParameter< std::vector<std::string> >("selectionNames");
+    ProduceMemNtuples = iConfig.getParameter<bool>("memNtuples");
     std::vector<std::string> systematicsNames = iConfig.getParameter<std::vector<std::string> >("systematics");
     for (auto const &s : systematicsNames){
       jetSystematics.push_back(Systematics::get(s));
     }
+   
     for (auto const &s : jetSystematics){
-      outfileNames.push_back(outfileName(outfileNameBase,s));
+    outfileNames.push_back(outfileName(outfileNameBase,s));
     }
+    
     // REGISTER DATA ACCESS
     // This needs to be done in the constructor of this class or via the consumes collector in the constructor of helper classes
     puInfoToken             = consumes< std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("puInfo") );
@@ -339,10 +345,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // initialize cutflows
     for (uint i=0; i<jetSystematics.size();i++){
-	cutflows.push_back(Cutflow());
-	cutflows.back().Init();
+        cutflows.push_back(Cutflow());
+        cutflows.back().Init();
     }
-
+    
 
     // initialize selections
     // add requested selections
@@ -392,10 +398,17 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     }
 
     // INITIALIZE TREEWRITERs
-    for (uint i=0; i<jetSystematics.size();i++){
-    	cout << "creating tree writer " << outfileNames[i] << endl;
-    	treewriters.push_back(new TreeWriter());
-    	treewriters.back()->Init(outfileNames[i]);
+    if(!ProduceMemNtuples) {
+        for (uint i=0; i<jetSystematics.size();i++){
+            cout << "creating tree writer " << outfileNames[i] << endl;
+            treewriters.push_back(new TreeWriter());
+            treewriters.back()->Init(outfileNames[i]);
+        }
+    }
+    else {
+        cout << "creating tree writer " << "slimmed_ntuples" << endl;
+        treewriters.push_back(new TreeWriter());
+        treewriters.back()->Init(outfileNameBase+"_slimmed_ntuples");
     }
     // add processors to first tree writer
     cout << "using processors:" << endl;
@@ -492,6 +505,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"TTBBStudienProcessor")!=processorNames.end()) {
 	  treewriter->AddTreeProcessor(new TTBBStudienProcessor,"TTBBStudienProcessor");
+	}
+	if(std::find(processorNames.begin(),processorNames.end(),"SlimmedNtuples")!=processorNames.end()) {
+	  treewriter->AddTreeProcessor(new SlimmedNtuples(),"SlimmedNtuples");
 	}
     }
 
@@ -733,14 +749,15 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *(hs_selectedJetsLoose[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
 					  selectedBoostedJets[isys],
-            selectedAk4Cluster,
+                                          selectedAk4Cluster,
 					  genTopEvt,
 					  *h_genJets,
 					  sampleType,
 					  higgsdecay,
 					  weights,
 					  iEvent,
-					  iSetup
+					  iSetup,
+                                          jetSystematics[isys]
 					  ));
 
     }
@@ -754,9 +771,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // loop over jet systematics
     assert(inputs.size()==cutflows.size());
     assert(inputs.size()==jetSystematics.size());
+    bool at_least_one_selected=true;
     for(uint i_sys=0; i_sys<jetSystematics.size(); i_sys++){
+        if(i_sys==0) {at_least_one_selected=false;}
     	// all events survive step 0
-    	cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight"));
+        cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight"));
+        
     	bool selected=true;
     	// for every systematic: loop over selections
     	for(size_t i_sel=0; i_sel<selections.size() && selected; i_sel++){
@@ -765,8 +785,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     		    selected=false;
     	    }
     	}
-    	if(selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
+    	at_least_one_selected = at_least_one_selected || selected;
+    	if(!ProduceMemNtuples) {
+            if(selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
+        }
     }
+   
+    if(ProduceMemNtuples&&at_least_one_selected) treewriters.back()->Process(inputs, false);
 
 }
 
@@ -911,7 +936,12 @@ void BoostedAnalyzer::endJob()
 	std::ofstream fout(outfileNames[i]+"_Cutflow.txt");
 	cutflows[i].Print(fout);
 	fout.close();
-	delete treewriters[i];
+        if(!ProduceMemNtuples) {
+            delete treewriters[i];
+        }
+    }
+    if(ProduceMemNtuples) {
+        delete treewriters.back();
     }
 }
 

@@ -31,6 +31,7 @@ class TreeWriter{
        @param input the event information that is used to calculate the variables
     */
     bool Process(const InputCollections& input, const bool& verbose = false);
+    bool Process(const std::vector<InputCollections>& input, const bool& verbose = false);
 
     /**
        Before the event loop different processors can be added to the TreeWriter. These will write into the trees whenever Process is called

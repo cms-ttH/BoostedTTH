@@ -43,6 +43,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpExtended = cms.bool(False),
     dumpAlwaysEvents = cms.vint32(),
     doBoostedMEM = cms.bool(True),
+    
+    memNtuples = cms.bool(False),
 
     minJetsForMEM = cms.int32(4),
     minTagsForMEM = cms.int32(3),
