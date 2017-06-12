@@ -33,10 +33,8 @@ Follow These Steps:
     git cherry-pick ca33756e1747aec27d13971bcfd0874b16724e7f
 
     # EGMSmearer and data
-    #git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
     git cms-merge-topic riga:deterministicEGMSmearer_v2
     cd EgammaAnalysis/ElectronTools/data
-    #git clone --depth 1 https://github.com/ECALELFS/ScalesSmearings.git
     git clone https://github.com/ECALELFS/ScalesSmearings.git -b Moriond17_gainSwitch_unc
     cd $JENKINSCMSSWSRCDIR
 
@@ -77,11 +75,10 @@ Follow These Steps:
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_SF_AK4PFchs.txt"
     cd $JENKINSCMSSWSRCDIR
     
-    # hack to deactivate random JER smearing
-    #sed -i '248,259d' PhysicsTools/PatUtils/interface/SmearedJetProducerT.h
+
     
     #compile
-    scram b -j10
+    scram b -j 12
     
 ## Overview
 BoostedObjects contains the classes needed for subjet-analysis. They associate fat jets with the corresponding filtered objects.
