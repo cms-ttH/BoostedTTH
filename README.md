@@ -78,7 +78,7 @@ Follow These Steps:
     cd $JENKINSCMSSWSRCDIR
     
     # hack to deactivate random JER smearing
-    sed -i '248,259d' PhysicsTools/PatUtils/interface/SmearedJetProducerT.h
+    #sed -i '248,259d' PhysicsTools/PatUtils/interface/SmearedJetProducerT.h
     
     #compile
     scram b -j10
