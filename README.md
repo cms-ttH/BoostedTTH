@@ -37,6 +37,8 @@ Follow These Steps:
     cd EgammaAnalysis/ElectronTools/data
     git clone https://github.com/ECALELFS/ScalesSmearings.git -b Moriond17_gainSwitch_unc
     cd $JENKINSCMSSWSRCDIR
+    
+    git cms-merge-topic michaelwassmer:CMSSW_8_0_26_patch2_changed_SmearedJetProducer -s recursive -X theirs
 
     # ttHFGenFilter
     # (only required when you use the ttHF filtered ttJets dataset)
