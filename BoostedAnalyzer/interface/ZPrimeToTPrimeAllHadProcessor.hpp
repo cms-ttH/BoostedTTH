@@ -10,6 +10,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "MiniAOD/MiniAODHelper/interface/TTM_SDM.h"
+#include "TH1F.h"
 /*class TreeProcessor{
 public:
     TreeProcessor();
@@ -50,6 +51,11 @@ public:
 private:
 
 	TTMHelper foo;
+        TH1F* histo_ABCD_QCD_MSD_top_nobtag;
+        TH1F* histo_ABCD_QCD_MSD_top_withbtag;
+        TH1F* histo_ABCD_QCD_MSD_W_nobtag;
+        TH1F* histo_ABCD_QCD_MSD_W_withbtag;
+        TH1F* histo_TTM_SDM;
 	//bool fEnv=setenv("BoostedTTH/BoostedAnalyzer/data/mistagrateweights/","CMSSW_SEARCH_PATH",0);
 	//edm::FileInPath fQCD;
 	//fQCD.init("../data/mistagrateweights/","BKG_QCD_false_negativ.root");

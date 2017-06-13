@@ -9,14 +9,26 @@ ZPrimeToTPrimeAllHadProcessor::ZPrimeToTPrimeAllHadProcessor(){
 		std::string cmsswbase = getenv("CMSSW_BASE");
 		TString filename_QCD=cmsswbase+"/src/BoostedTTH/BoostedAnalyzer/data/mistagrateweights/BKG_QCD_false_negativ.root";
 		TString filename_SDM=cmsswbase+"/src/BoostedTTH/BoostedAnalyzer/data/mistagrateweights/BKG_QCD_SDM_Cut.root";
-		foo.Load_QCDMistag(filename_QCD,"BKG_QCD_false_negativ");
-		foo.Load_DisSDM(filename_SDM,"BKG_QCD_SDM_Cut");
+		TString filename_ABCD_QCD_MSD=cmsswbase+"/src/BoostedTTH/BoostedAnalyzer/data/ABCD_MSD/MSDs_QCD_histos.root";
+                
+		histo_ABCD_QCD_MSD_top_nobtag=foo.Load_DisSDM(filename_ABCD_QCD_MSD,"QCD_HT_Notopbtag_Top_MSD");
+		histo_ABCD_QCD_MSD_top_withbtag=foo.Load_DisSDM(filename_ABCD_QCD_MSD,"QCD_HT_Withtopbtag_Top_MSD");
+		histo_ABCD_QCD_MSD_W_nobtag=foo.Load_DisSDM(filename_ABCD_QCD_MSD,"QCD_HT_Notopbtag_W_MSD");
+		histo_ABCD_QCD_MSD_W_withbtag=foo.Load_DisSDM(filename_ABCD_QCD_MSD,"QCD_HT_Withtopbtag_W_MSD");
+
+                foo.Load_QCDMistag(filename_QCD,"BKG_QCD_false_negativ");
+                histo_TTM_SDM=foo.Load_DisSDM(filename_SDM,"BKG_QCD_SDM_Cut");
+            
+                
 }
-		
-		
-		
-		
-ZPrimeToTPrimeAllHadProcessor::~ZPrimeToTPrimeAllHadProcessor(){}
+            
+            
+            
+            
+ZPrimeToTPrimeAllHadProcessor::~ZPrimeToTPrimeAllHadProcessor(){
+    delete histo_ABCD_QCD_MSD_top_nobtag;
+    
+}
 
 
 void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableContainer& vars){
@@ -66,9 +78,7 @@ void ZPrimeToTPrimeAllHadProcessor::InitGenVars(VariableContainer& vars){
     vars.InitVar("N_Gen_BottomfromTPrimes","I");
     vars.InitVar("N_Gen_BottombarfromTPrimebars","I");
     vars.InitVar("N_Gen_BottomfromTPrimesandTPrimebars","I");
-
-    
-
+    vars.InitVar("N_Gen_BottomfromBG","I");
 
     vars.InitVars("Gen_Top_Pt",-9.0,"N_Gen_Tops");
     vars.InitVars("Gen_Topbar_Pt",-9.0,"N_Gen_Topbars");
@@ -98,7 +108,7 @@ void ZPrimeToTPrimeAllHadProcessor::InitGenVars(VariableContainer& vars){
     vars.InitVars("Gen_BottomfromTPrime_Pt",-9.0,"N_Gen_BottomfromTPrimes");
     vars.InitVars("Gen_BottombarfromTPrimebar_Pt",-9.0,"N_Gen_BottombarfromTPrimebars");
     vars.InitVars("Gen_BottomfromTPrimeandTPrimebar_Pt",-9.0,"N_Gen_BottomfromTPrimesandTPrimebars");
-
+    vars.InitVars("Gen_BottomsfromBG_Pt",-9.0,"N_Gen_BottomfromBG");
     
     
     vars.InitVars("Gen_Top_Eta",-9.0,"N_Gen_Tops");
@@ -125,6 +135,7 @@ void ZPrimeToTPrimeAllHadProcessor::InitGenVars(VariableContainer& vars){
     vars.InitVars("Gen_BottomfromTPrime_Eta",-9.0,"N_Gen_BottomfromTPrimes");
     vars.InitVars("Gen_BottombarfromTPrimebar_Eta",-9.0,"N_Gen_BottombarfromTPrimebars");
     vars.InitVars("Gen_BottomfromTPrimeandTPrimebar_Eta",-9.0,"N_Gen_BottomfromTPrimesandTPrimebars");
+    vars.InitVars("Gen_BottomsfromBG_Eta",-9.0,"N_Gen_BottomfromBG");
 
     
     vars.InitVar("Gen_Top_TPrime_DeltaR","F");//,"input.zprimetotprimeallhad.GetTops_fromZprimes().size()*input.zprimetotprimeallhad.GetTPrimebars().size()");
@@ -764,6 +775,47 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Tops_ABCD_t32",-9.0,"N_Zprime_ABCD");
    vars.InitVars("Tops_ABCD_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD");
 
+   vars.InitVar("N_Zprimes_ABCDmasscorrnotopbtag","I");
+   vars.InitVars("Zprimes_ABCD_masscorrnotopbtag_M",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Zprimes_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Tprimes_ABCD_masscorrnotopbtag_M",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Tprimes_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_CSV",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCD_masscorrnotopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCD_masscorrnotopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCD_masscorrnotopbtag_MSD",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCD_masscorrnotopbtag_t21",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCD_masscorrnotopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCD_masscorrnotopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCD_masscorrnotopbtag_MSD",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCD_masscorrnotopbtag_t32",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCD_masscorrnotopbtag_maxsubjetCSVv2",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+ 
+   vars.InitVar("N_Zprimes_ABCDmasscorrwithtopbtag","I");
+   vars.InitVars("Zprimes_ABCD_masscorrwithtopbtag_M",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Zprimes_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Tprimes_ABCD_masscorrwithtopbtag_M",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Tprimes_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_CSV",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_MSD",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_t21",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_MSD",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_t32",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_maxsubjetCSVv2",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");   
    
    
 ///Datadriven Background estimation   
@@ -1023,7 +1075,7 @@ void ZPrimeToTPrimeAllHadProcessor::FillSignalSidebandVars(VariableContainer& va
     
     str_top+="MCtopmass_";
     for(std::vector<pat::Jet>::iterator itJet = tops.begin() ; itJet != tops.end(); ++itJet){
-            itJet->setMass(foo.GetRndmSDM());
+            itJet->setMass(foo.GetRndmSDM(histo_TTM_SDM));
     };
 
     FillZprimeVars(vars,tops,Ws,bottoms,Tprime,Zprime,str_region+str_top+str_W+str_bottom+str_AK8_selected_first);
@@ -1337,6 +1389,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
     }    
 
+    vars.FillVar("N_Gen_BottomfromBG",BottomBG.size());
+
+    
+    
 //AK8->Jets
     if(input.packedPatJetsAK8PFCHSSoftDrop.size()>0){
             
@@ -1371,7 +1427,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         }
     }
 
-    std::cout<<"there10"<<endl;
+//     std::cout<<"there10"<<endl;
 
 ///////Object Identification///////
     float ht =0.;
@@ -1496,6 +1552,18 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     std::vector<pat::Jet> TopsABCD;
     std::vector<pat::Jet> BottomsABCD;
     std::vector<pat::Jet> WsABCD;
+    
+    std::vector<math::XYZTLorentzVector> ZprimesABCDmasscorrnotopbtag;
+    std::vector<math::XYZTLorentzVector> TprimesABCDmasscorrnotopbtag;
+    std::vector<pat::Jet> TopsABCDmasscorrnotopbtag;
+    std::vector<pat::Jet> BottomsABCDmasscorrnotopbtag;
+    std::vector<pat::Jet> WsABCDmasscorrnotopbtag;
+    
+    std::vector<math::XYZTLorentzVector> ZprimesABCDmasscorrwithtopbtag;
+    std::vector<math::XYZTLorentzVector> TprimesABCDmasscorrwithtopbtag;
+    std::vector<pat::Jet> TopsABCDmasscorrwithtopbtag;
+    std::vector<pat::Jet> BottomsABCDmasscorrwithtopbtag;
+    std::vector<pat::Jet> WsABCDmasscorrwithtopbtag;
     
 //AK8->Jets
     if(input.packedPatJetsAK8PFCHSSoftDrop.size()>0){
@@ -3175,8 +3243,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   }
 
 
-	vars.FillVar("TTM_RndmSDM",foo.GetRndmSDM());
-	std::cout << "Random SoftdropMass:  " << foo.GetRndmSDM() << std::endl;  	
+	vars.FillVar("TTM_RndmSDM",foo.GetRndmSDM(histo_TTM_SDM));
+	std::cout << "Random SoftdropMass:  " << foo.GetRndmSDM(histo_TTM_SDM) << std::endl;  	
   
 
 // go through all cuts
@@ -3209,7 +3277,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 					{
 								
 								
-				    		TTM_AK8_top_candidates_separated_highest_pt[0].setMass(foo.GetRndmSDM());
+				    		TTM_AK8_top_candidates_separated_highest_pt[0].setMass(foo.GetRndmSDM(histo_TTM_SDM));
 				    		std::cout << "New Mass of highest pt AK8 Jet:  " << TTM_AK8_top_candidates_separated_highest_pt[0].mass() << std::endl;
 				    		TTM_Zprime=ZPrimeReconstructionWtb(TTM_AK8_top_candidates_separated_highest_pt,TTM_Tprime);
 				    		
@@ -3257,7 +3325,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 					{
 								
 								
-				    		TTM_AK8_top_candidates_separated_highest_pt[0].setMass(foo.GetRndmSDM());
+				    		TTM_AK8_top_candidates_separated_highest_pt[0].setMass(foo.GetRndmSDM(histo_TTM_SDM));
 				    		std::cout << "New Mass of highest pt AK8 Jet:  " << TTM_AK8_top_candidates_separated_highest_pt[0].mass() << std::endl;
 				    		TTM_Zprime=ZPrimeReconstructionWtb(TTM_AK8_top_candidates_separated_highest_pt,TTM_Tprime);
 				    		
@@ -3304,6 +3372,50 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             }
         }
     }
+    for(std::vector<pat::Jet>::iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+        for(std::vector<pat::Jet>::iterator itWJet = AK8_W_candidates.begin() ; itWJet != AK8_W_candidates.end(); ++itWJet){
+            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
+            }else{
+                if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau3")>0){
+                    for(std::vector<pat::Jet>::iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>0.8 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>0.8){
+                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
+                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
+                            }
+                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
+                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_nobtag));
+                            }
+                            if((itBJet->p4()+itWJet->p4()).mass()>500){
+
+                                ZprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDmasscorrnotopbtag.push_back(*ittopJet);
+                                BottomsABCDmasscorrnotopbtag.push_back(*itBJet);
+                                WsABCDmasscorrnotopbtag.push_back(*itWJet);
+                            }
+                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
+                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_withbtag));
+                            }
+                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
+                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_withbtag));
+                            }
+                            if((itBJet->p4()+itWJet->p4()).mass()>500){
+
+                                ZprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDmasscorrwithtopbtag.push_back(*ittopJet);
+                                BottomsABCDmasscorrwithtopbtag.push_back(*itBJet);
+                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);
+                            }                            
+                        }
+                    }                    
+                }
+            }
+        }
+    }
+    
+    
+    
   }
 
   ////FILL ABCD VARIABLES
@@ -3343,10 +3455,88 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         };
      };
      vars.FillVars("Tops_ABCD_maxsubjetCSVv2",i,max_subjet_csv_v2);
-     std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
   }
 
+  
+  ////FILL ABCD VARIABLES
+  vars.FillVar("N_Zprimes_ABCDmasscorrnotopbtag",ZprimesABCDmasscorrnotopbtag.size());
 
+  for (uint i=0; i<ZprimesABCDmasscorrnotopbtag.size(); i++){
+  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+     //int i = 
+     vars.FillVars("Zprimes_ABCD_masscorrnotopbtag_M",i,ZprimesABCDmasscorrnotopbtag[i].mass());
+     vars.FillVars("Zprimes_ABCD_masscorrnotopbtag_Pt",i,ZprimesABCDmasscorrnotopbtag[i].pt());
+     
+     vars.FillVars("Tprimes_ABCD_masscorrnotopbtag_M",i,TprimesABCDmasscorrnotopbtag[i].mass());
+     vars.FillVars("Tprimes_ABCD_masscorrnotopbtag_Pt",i,TprimesABCDmasscorrnotopbtag[i].pt());
+     
+     vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_Pt",i,BottomsABCDmasscorrnotopbtag[i].pt());
+     vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_Eta",i,BottomsABCDmasscorrnotopbtag[i].eta());
+     vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_Phi",i,BottomsABCDmasscorrnotopbtag[i].phi());
+     vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCDmasscorrnotopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+     
+     vars.FillVars("Ws_ABCD_masscorrnotopbtag_Pt",i,WsABCDmasscorrnotopbtag[i].pt());
+     vars.FillVars("Ws_ABCD_masscorrnotopbtag_Eta",i,WsABCDmasscorrnotopbtag[i].eta());
+     vars.FillVars("Ws_ABCD_masscorrnotopbtag_Phi",i,WsABCDmasscorrnotopbtag[i].phi());
+     vars.FillVars("Ws_ABCD_masscorrnotopbtag_MSD",i,WsABCDmasscorrnotopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Ws_ABCD_masscorrnotopbtag_t21",i,WsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau1"));
+     
+     vars.FillVars("Tops_ABCD_masscorrnotopbtag_Pt",i,TopsABCDmasscorrnotopbtag[i].pt());
+     vars.FillVars("Tops_ABCD_masscorrnotopbtag_Eta",i,TopsABCDmasscorrnotopbtag[i].eta());
+     vars.FillVars("Tops_ABCD_masscorrnotopbtag_Phi",i,TopsABCDmasscorrnotopbtag[i].phi());
+     vars.FillVars("Tops_ABCD_masscorrnotopbtag_MSD",i,TopsABCDmasscorrnotopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCD_masscorrnotopbtag_t32",i,TopsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau2"));
+
+     double max_subjet_csv_v2=-10;
+     auto const & names = TopsABCDmasscorrnotopbtag[i].subjets("SoftDrop");
+     for( auto const & itsubJet : names ){
+        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        };
+     };
+     vars.FillVars("Tops_ABCD_masscorrnotopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
+//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+  }
+
+vars.FillVar("N_Zprimes_ABCDmasscorrwithtopbtag",ZprimesABCDmasscorrwithtopbtag.size());
+
+  for (uint i=0; i<ZprimesABCDmasscorrwithtopbtag.size(); i++){
+  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+     //int i = 
+     vars.FillVars("Zprimes_ABCD_masscorrwithtopbtag_M",i,ZprimesABCDmasscorrwithtopbtag[i].mass());
+     vars.FillVars("Zprimes_ABCD_masscorrwithtopbtag_Pt",i,ZprimesABCDmasscorrwithtopbtag[i].pt());
+     
+     vars.FillVars("Tprimes_ABCD_masscorrwithtopbtag_M",i,TprimesABCDmasscorrwithtopbtag[i].mass());
+     vars.FillVars("Tprimes_ABCD_masscorrwithtopbtag_Pt",i,TprimesABCDmasscorrwithtopbtag[i].pt());
+     
+     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_Pt",i,BottomsABCDmasscorrwithtopbtag[i].pt());
+     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_Eta",i,BottomsABCDmasscorrwithtopbtag[i].eta());
+     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_Phi",i,BottomsABCDmasscorrwithtopbtag[i].phi());
+     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCDmasscorrwithtopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+     
+     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_Pt",i,WsABCDmasscorrwithtopbtag[i].pt());
+     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_Eta",i,WsABCDmasscorrwithtopbtag[i].eta());
+     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_Phi",i,WsABCDmasscorrwithtopbtag[i].phi());
+     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_MSD",i,WsABCDmasscorrwithtopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_t21",i,WsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau1"));
+     
+     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_Pt",i,TopsABCDmasscorrwithtopbtag[i].pt());
+     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_Eta",i,TopsABCDmasscorrwithtopbtag[i].eta());
+     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_Phi",i,TopsABCDmasscorrwithtopbtag[i].phi());
+     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_MSD",i,TopsABCDmasscorrwithtopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_t32",i,TopsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau2"));
+
+     double max_subjet_csv_v2=-10;
+     auto const & names = TopsABCDmasscorrwithtopbtag[i].subjets("SoftDrop");
+     for( auto const & itsubJet : names ){
+        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        };
+     };
+     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
+//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+  }
   
  }// end of HT if 1190
   
