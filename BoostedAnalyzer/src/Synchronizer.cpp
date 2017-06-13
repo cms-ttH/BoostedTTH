@@ -540,6 +540,10 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
             lepvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedMuonsLoose[i].p4()));
             lepcharges.push_back(input.selectedMuonsLoose[i].charge());
         }
+        if(lepvecs[0].Pt()<lepvecs[1].Pt()) {
+            std::swap(lepvecs[0],lepvecs[1]);
+            std::swap(lepcharges[0],lepcharges[1]);
+        }
         std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
         std::vector<double> jetcsvs;
         std::vector<double> jetcsvs_dnn;

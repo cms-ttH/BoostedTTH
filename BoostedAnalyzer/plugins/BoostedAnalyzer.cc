@@ -575,6 +575,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( conversionCollectionToken,h_conversionCollection );
     edm::Handle< reco::VertexCollection > h_primaryVertices;
     iEvent.getByToken( primaryVerticesToken,h_primaryVertices );
+    
     // MUONS
     edm::Handle< pat::MuonCollection > h_selectedMuons;
     edm::Handle< pat::MuonCollection > h_selectedMuonsDL;
@@ -582,6 +583,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( selectedMuonsToken,h_selectedMuons );
     iEvent.getByToken( selectedMuonsDLToken,h_selectedMuonsDL );
     iEvent.getByToken( selectedMuonsLooseToken,h_selectedMuonsLoose );
+    
     // ELECTRONS
     edm::Handle< pat::ElectronCollection > h_selectedElectrons;
     edm::Handle< pat::ElectronCollection > h_selectedElectronsDL;
@@ -589,9 +591,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( selectedElectronsToken,h_selectedElectrons );
     iEvent.getByToken( selectedElectronsDLToken,h_selectedElectronsDL );
     iEvent.getByToken( selectedElectronsLooseToken,h_selectedElectronsLoose );
+    
     // JETs
-
-
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJets;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsLoose;
     for(auto & selectedJetsToken : selectedJetsTokens){
@@ -604,6 +605,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	iEvent.getByToken( selectedJetsLooseToken,h_selectedJetsLoose );
 	hs_selectedJetsLoose.push_back(h_selectedJetsLoose);
     }
+    
+    // MET
     std::vector<edm::Handle< pat::METCollection > > hs_correctedMETs;
     for(auto & correctedMETsToken : correctedMETsTokens){
 	edm::Handle< pat::METCollection > h_correctedMETs;
@@ -611,7 +614,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	hs_correctedMETs.push_back(h_correctedMETs);
     }
 
-    // MC only
+    // MC only (generator weights for example)
     edm::Handle<GenEventInfoProduct> h_genInfo;
     edm::Handle<LHEEventProduct> h_lheInfo;
     edm::Handle<LHEEventProduct> h_dummie;
@@ -691,7 +694,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     FilterInfo filterInfo = filterInfoProd.Produce(iEvent);
 
     // FIGURE OUT SAMPLE
-
     bool foundT=false;
     bool foundTbar=false;
     bool foundHiggs=false;
@@ -734,7 +736,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // inputs
     vector<InputCollections> inputs;
     for(uint isys=0; isys<jetSystematics.size(); isys++){
-        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
+        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
 					  filterInfo,
@@ -897,7 +899,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	//Add Genweights to the weight map
     genweights.GetGenWeights(weights, lheInfo, dogenweights);
 	//DANGERZONE
- 	genweights.GetLHAPDFWeight(weights, genInfo );
+    genweights.GetLHAPDFWeight(weights, genInfo );
 	//DANGERZONE
 
     return weights;
