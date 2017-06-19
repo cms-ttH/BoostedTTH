@@ -28,6 +28,12 @@ Synchronizer::~Synchronizer (){
 	c.Print(cout);
     }
     cout << endl;
+    for(auto &sel : selectionsSL) {
+        delete sel;
+    }
+    for(auto &sel : selectionsDL) {
+        delete sel;
+    }
 }
 
 

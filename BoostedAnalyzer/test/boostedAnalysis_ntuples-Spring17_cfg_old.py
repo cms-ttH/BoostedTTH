@@ -33,8 +33,6 @@ options.register( "useMuonRC", True, VarParsing.multiplicity.singleton, VarParsi
 options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
 options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
 options.register("updatePUJetId",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
-options.register( "ProduceMemNtuples", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
-
 options.parseArguments()
 
 # re-set some defaults
@@ -271,6 +269,7 @@ if options.calcBJetness:
     process.BJetness.is_data = options.isData
     process.BJetness.patElectrons = electronCollection
     process.BJetness.muons = muonCollection
+    
 
 # lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
@@ -421,7 +420,6 @@ process.SelectedJetProducer.etaMaxs=[2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
 process.SelectedJetProducer.PUJetIDMins=["loose","loose"]
-process.SelectedJetProducer.JetID="none"
 # selection of the systematically shifted jets
 for syst in systs:
     setattr(process,'SelectedJetProducer'+syst,process.SelectedJetProducer.clone(jets='patSmearedJets'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducer.collectionNames)]))
@@ -432,9 +430,7 @@ process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets=jetCollectio
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJets"],
                                                                applyCorrection=True,
-                                                               systematics=[""]+systsJES,
-                                                               JetID="loose",
-                                                               PUJetIDMins=["none"])
+                                                               systematics=[""]+systsJES)
 
 # smearing of corrected jets -- producers that create the nominal and up/down JER correction
 # jer shift of nominal sample
@@ -468,10 +464,10 @@ for s in systsJES:
 ### correct MET manually ###
 process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
 process.CorrectedMETproducer.isData=options.isData
-#process.CorrectedMETproducer.oldJets=cms.InputTag("slimmedJets", "", "PAT")
-#process.CorrectedMETproducer.newJets=cms.InputTag("slimmedJets", "", "PAT")
-#process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
-#process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
+process.CorrectedMETproducer.oldJets=cms.InputTag("slimmedJets", "", "PAT")
+process.CorrectedMETproducer.newJets=cms.InputTag("slimmedJets", "", "PAT")
+process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
+process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
 #process.CorrectedMETproducer.oldMuons=cms.InputTag("SelectedMuonProducerUncorr:selectedMuonsUncorr")
 #process.CorrectedMETproducer.newMuons=cms.InputTag("SelectedMuonProducer:selectedMuons")
 process.CorrectedMETproducer.mets=METCollection
@@ -534,7 +530,8 @@ if options.isData:
   "BDTVarProcessor",
   "TriggerVarProcessor",
   "ReconstructionMEvarProcessor",
-  "TTBBStudienProcessor"
+  "TTBBStudienProcessor",
+  #"BJetnessProcessor"
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
@@ -545,10 +542,12 @@ else:
   "BDTVarProcessor",
   "TriggerVarProcessor",
   "ReconstructionMEvarProcessor",
-  "TTBBStudienProcessor"
+  "TTBBStudienProcessor",
+  #"BJetnessProcessor"
   )
 
 printContent=False
+
 if printContent:
     process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
@@ -557,19 +556,88 @@ if options.dumpSyncExe:
     process.BoostedAnalyzer.selectionNames = []
     process.BoostedAnalyzer.dumpSyncExe=True
     process.BoostedAnalyzer.dumpExtended=False
-    process.BoostedAnalyzer.dumpAlwaysEvents=[
-        #3222838,
-        #3211421,
-        #527273,
-        #3163883,
-        #2865714,
-        #2688365,
-        #2786936,
-        ]
+    """process.BoostedAnalyzer.dumpAlwaysEvents=[
+        47021987,
+        10718174,
+        54977993,
+        57122020,
+        22268223,
+        17931184,
+        50097291,
+        50097097,
+        16003276,
+        1552274,
+        22936201,
+        33645785,
+        56857300,
+        3508271,
+        517551,
+        843637,
+        1210984,
+        2322870,
+        308328,
+        1622142,
+        308297,
+        2660612,
+        3276863,
+        2553141,
+        2125964,
+        2490450,
+        3693577,
+        941878,
+        73181039,
+        227363695,
+        605297195,
+        501575867,
+        603713878,
+        423292385,
+        1137945623,
+        426332989,
+        548206024,
+        222527742,
+        154887103,
+        409712907,
+        1128108454,
+        35086427,
+        477101814,
+        420502890,
+        170799682,
+        541879517,
+        208945512,
+        86847235,
+        609432325,
+        52801065,
+        566870879,
+        469743082,
+        65546629,
+        58904592,
+        307136465,
+        561805932,
+        610483719,
+        558129298,
+        361485101,
+        104000952,
+        573181011,
+        49929786,
+        393986903,
+        210712419,
+        464239596,
+        356522750,
+        426606885,
+        391107504,
+        478363878,
+        232000369,
+        407080141,
+        44714328,
+        564032499,
+        597464911,
+        207608282,
+        598855105,
+        701245175,
+        418972957,
+        307103299,
+        ]"""
 
-if options.ProduceMemNtuples==True:
-    process.BoostedAnalyzer.memNtuples=True
-    process.BoostedAnalyzer.processorNames=cms.vstring("SlimmedNtuples")
 
 ##### DEFINE PATH ##########
 process.p = cms.Path()
@@ -578,9 +646,9 @@ if options.deterministicSeeds:
 process.p *= process.BadPFMuonFilter*process.BadChargedCandidateFilter*process.badGlobalMuonTaggerMAOD*process.cloneGlobalMuonTaggerMAOD
 if eleMVAid:
     process.p *= process.egmGsfElectronIDSequence
+process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
 if options.calcBJetness:
     process.p *= process.BJetness
-process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
 if options.updatePUJetId:
 	process.p*=process.pileupJetIdUpdated*process.updatedPatJets
 process.p*=process.CorrectedJetProducer
