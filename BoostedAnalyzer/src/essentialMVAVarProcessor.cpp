@@ -6,7 +6,9 @@ essentialMVAVarProcessor::essentialMVAVarProcessor(){
   mem = new MEMClassifier();
 }
 
-essentialMVAVarProcessor::~essentialMVAVarProcessor(){}
+essentialMVAVarProcessor::~essentialMVAVarProcessor(){
+    delete mem;
+}
 
 
 essentialMVAVarProcessor::essentialMVAVarProcessor(MEMClassifier* mem_){

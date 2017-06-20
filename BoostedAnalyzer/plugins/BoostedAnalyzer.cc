@@ -145,7 +145,7 @@ private:
     /** the csv reweighter calculates the event weight from b-tag reweightung */
     CSVHelper csvReweighter;
     //calculate the scalefactor for leptons
-     LeptonSFHelper leptonSFhelper;
+    LeptonSFHelper leptonSFhelper;
     // reweight the number of primary vertices distribution
     PUWeights puWeights;
     /** writes flat trees  */
@@ -692,6 +692,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     pat::JetCollection ak4Jets = *(hs_selectedJets[0]);
     boosted::Ak4ClusterCollection ak4Cluster = Ak4Cluster::GetAk4Cluster(ak4Jets, 0);
     boosted::Ak4ClusterCollection selectedAk4Cluster = Ak4Cluster::GetSelectedAk4Cluster(ak4Cluster, 200., "A");
+    
 
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);
@@ -799,6 +800,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
    
     if(ProduceMemNtuples&&at_least_one_selected) treewriters.back()->Process(inputs, false);
+    
 
 }
 

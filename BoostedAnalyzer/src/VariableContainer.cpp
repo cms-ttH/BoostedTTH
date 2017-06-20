@@ -10,7 +10,9 @@ VariableContainer::VariableContainer(){
 
 
 VariableContainer::~VariableContainer(){
-
+    for(std::map<TString,Float_t*>::iterator it=arrayMap.begin();it!=arrayMap.end();it++) {
+        delete[] it->second;
+    }
 }
 bool VariableContainer::DoesVarExist( const TString& name ) const {
   return (intMap.count(name)>0||floatMap.count(name)>0||arrayMap.count(name)>0);
