@@ -1,5 +1,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeWriter.hpp"
-
+#include <mutex>
+std::mutex test_mutex;
 using namespace std;
 
 TreeWriter::TreeWriter(){
@@ -92,9 +93,9 @@ bool TreeWriter::Process(const std::vector<InputCollections>& input,const bool& 
     for(uint i=0; i<processors.size(); i++){
       processors[i]->Init(input,vars);
     }
-    
+    test_mutex.lock();
     vars.ConnectTree(tree);
-    
+    test_mutex.unlock();
     initialized=true;
   }
   vars.SetDefaultValues();

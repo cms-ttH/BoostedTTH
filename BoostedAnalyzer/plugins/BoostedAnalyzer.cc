@@ -24,7 +24,7 @@
 #include <vector>
 #include <map>
 #include <fstream>
-
+#include <thread>
 #include "TStopwatch.h"
 
 // user include files
@@ -124,6 +124,7 @@ public:
     ~BoostedAnalyzer();
 
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+    static void ProcessInThread(TreeWriter* treewriter, const InputCollections& input);
 
 
 private:
@@ -779,6 +780,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // loop over jet systematics
     assert(inputs.size()==cutflows.size());
     assert(inputs.size()==jetSystematics.size());
+    std::vector<std::thread> threads;
     bool at_least_one_selected=true;
     for(uint i_sys=0; i_sys<jetSystematics.size(); i_sys++){
         if(i_sys==0) {at_least_one_selected=false;}
@@ -795,8 +797,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	}
     	at_least_one_selected = at_least_one_selected || selected;
     	if(!ProduceMemNtuples) {
-            if(selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
+            if(selected) threads.push_back(std::thread(BoostedAnalyzer::ProcessInThread,treewriters[i_sys],inputs[i_sys]));    
         }
+    }
+    
+    for(auto &thread : threads) {
+        if(thread.joinable()) thread.join();
     }
    
     if(ProduceMemNtuples&&at_least_one_selected) treewriters.back()->Process(inputs, false);
@@ -907,6 +913,11 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 
     return weights;
 }
+
+void BoostedAnalyzer::ProcessInThread(TreeWriter* treewriter, const InputCollections& input) {
+    treewriter->Process(input,false);
+}
+
 std::string BoostedAnalyzer::systName(const Systematics::Type& sysType){
   if( sysType == Systematics::NA ) return "nominal";
   else                         return Systematics::toString(sysType);
