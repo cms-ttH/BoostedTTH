@@ -24,7 +24,7 @@ class TreeWriter{
        Initialize the tree
        @param fileName  filename of the created TTree
     */
-    void Init(std::string fileName);
+    void Init(std::string fileName,std::string fileNameBase="");
 
     /**
        Analyze a single event

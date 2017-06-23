@@ -407,13 +407,13 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
         for (uint i=0; i<jetSystematics.size();i++){
             cout << "creating tree writer " << outfileNames[i] << endl;
             treewriters.push_back(new TreeWriter());
-            treewriters.back()->Init(outfileNames[i]);
+            treewriters.back()->Init(outfileNames[i],outfileNameBase);
         }
     }
     else {
         cout << "creating tree writer " << "slimmed_ntuples" << endl;
         treewriters.push_back(new TreeWriter());
-        treewriters.back()->Init(outfileNameBase+"_slimmed_ntuples");
+        treewriters.back()->Init(outfileNameBase+"_slimmed_ntuples",outfileNameBase);
     }
     // add processors to first tree writer
     cout << "using processors:" << endl;

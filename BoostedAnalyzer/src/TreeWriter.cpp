@@ -33,11 +33,19 @@ TreeWriter::~TreeWriter(){
 
 }
 
-void TreeWriter::Init( std::string fileName){
+void TreeWriter::Init( std::string fileName, std::string fileNameBase){
   
   outFile = new TFile( (fileName+"_Tree.root").c_str(), "RECREATE" );
   outFile->cd();
-
+  /*
+  TString treename = "MVATree"+fileName;
+  treename.ReplaceAll(fileNameBase,"");
+  treename.ReplaceAll("_Tree","");
+  treename.ReplaceAll("_","");
+  treename.ReplaceAll("nominal","");
+  treename.ReplaceAll("slimmedntuples","");
+  tree = new TTree(treename,"MVATree");
+  */
   tree = new TTree("MVATree","MVATree");
   // experimentally setting autosave
   // might lead to larger trees or larger memory footprint
@@ -81,8 +89,9 @@ bool TreeWriter::Process(const InputCollections& input,const bool& verbose) {
     stopwatches[i].Stop();
     if(verbose) std::cout << "Done processing " << processorNames.at(i) << std::endl;
   }
-
+  test_mutex.lock();
   FillTree();
+  test_mutex.unlock();
   firstEvent=false;
   return true;
 }
