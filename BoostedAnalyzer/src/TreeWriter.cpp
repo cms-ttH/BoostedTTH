@@ -67,9 +67,9 @@ bool TreeWriter::Process(const InputCollections& input,const bool& verbose) {
     for(uint i=0; i<processors.size(); i++){
       processors[i]->Init(input,vars);
     }
-    
+    test_mutex.lock();
     vars.ConnectTree(tree);
-    
+    test_mutex.unlock();
     initialized=true;
   }
   vars.SetDefaultValues();
@@ -93,9 +93,9 @@ bool TreeWriter::Process(const std::vector<InputCollections>& input,const bool& 
     for(uint i=0; i<processors.size(); i++){
       processors[i]->Init(input,vars);
     }
-    test_mutex.lock();
+
     vars.ConnectTree(tree);
-    test_mutex.unlock();
+
     initialized=true;
   }
   vars.SetDefaultValues();
