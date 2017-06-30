@@ -816,7 +816,52 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Tops_ABCD_masscorrwithtopbtag_MSD",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
    vars.InitVars("Tops_ABCD_masscorrwithtopbtag_t32",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
    vars.InitVars("Tops_ABCD_masscorrwithtopbtag_maxsubjetCSVv2",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");   
+  
    
+   vars.InitVar("N_Zprime_ABCD_tAK15WAK15bAK4","I");
+   vars.InitVars("Zprimes_ABCD_tAK15WAK15bAK4_M",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Zprimes_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Tprimes_ABCD_tAK15WAK15bAK4_M",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Tprimes_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Bottoms_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Bottoms_ABCD_tAK15WAK15bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Bottoms_ABCD_tAK15WAK15bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Bottoms_ABCD_tAK15WAK15bAK4_CSV",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_t21",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_t32",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");   
+   
+   
+   vars.InitVar("N_Zprime_ABCD_tAK15WAK8bAK4","I");
+   vars.InitVars("Zprimes_ABCD_tAK15WAK8bAK4_M",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Zprimes_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Tprimes_ABCD_tAK15WAK8bAK4_M",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Tprimes_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_CSV",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_t21",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_t32",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");   
+   
+      
    
 ///Datadriven Background estimation   
    vars.InitVar("BG_Zprime_M","F");
@@ -951,12 +996,12 @@ std::vector<pat::Jet> ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(std:
         bool check_dR_top_bottom=true;
         bool check_dR_W_bottom=true;
             for(std::vector<pat::Jet>::const_iterator ittopJet = tops.begin() ; ittopJet != tops.end(); ++ittopJet){
-                if (BoostedUtils::DeltaR(itbJet->p4(),ittopJet->p4())<0.8){
+                if (BoostedUtils::DeltaR(itbJet->p4(),ittopJet->p4())<1.2){
                     check_dR_top_bottom=false;
                 }
             }
             for(std::vector<pat::Jet>::const_iterator itWJet = Ws.begin() ; itWJet != Ws.end(); ++itWJet){
-                if (BoostedUtils::DeltaR(itbJet->p4(),itWJet->p4())<0.8){
+                if (BoostedUtils::DeltaR(itbJet->p4(),itWJet->p4())<1.2){
                     check_dR_W_bottom=false;
                 }                    
             }
@@ -972,7 +1017,7 @@ std::vector<pat::Jet> ZPrimeToTPrimeAllHadProcessor::SelectfromTopSeparatedWs( s
     std::vector<pat::Jet> separated_Ws;
     for(std::vector<pat::Jet>::const_iterator ittopJet = tops.begin() ; ittopJet != tops.end(); ++ittopJet){
         for(std::vector<pat::Jet>::const_iterator itWJet = Ws.begin() ; itWJet != Ws.end(); ++itWJet){
-            if (BoostedUtils::DeltaR(ittopJet->p4(),itWJet->p4())>0.4){
+            if (BoostedUtils::DeltaR(ittopJet->p4(),itWJet->p4())>0.8){
                 separated_Ws.push_back(*itWJet);
             }
         }
@@ -984,7 +1029,7 @@ std::vector<pat::Jet> ZPrimeToTPrimeAllHadProcessor::SelectfromWSeparatedTops(st
     std::vector<pat::Jet> separated_Tops;
     for(std::vector<pat::Jet>::const_iterator ittopJet = tops.begin() ; ittopJet != tops.end(); ++ittopJet){
         for(std::vector<pat::Jet>::const_iterator itWJet = Ws.begin() ; itWJet != Ws.end(); ++itWJet){
-            if (BoostedUtils::DeltaR(ittopJet->p4(),itWJet->p4())>0.4){
+            if (BoostedUtils::DeltaR(ittopJet->p4(),itWJet->p4())>0.8){
                 separated_Tops.push_back(*ittopJet);
             }
         }
@@ -1510,6 +1555,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     bool Higgs_with1btag_anti_candidatefound=false;
     bool Higgs_with2btag_anti_candidatefound=false;
 
+    
+    std::vector<pat::Jet> AK15_top_candidates;
+    std::vector<pat::Jet> AK15_W_candidates;
     std::vector<pat::Jet> AK8_top_candidates;
     std::vector<pat::Jet> AK8_W_candidates;
     std::vector<pat::Jet> AK4_bottom_candidates;
@@ -1564,6 +1612,33 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     std::vector<pat::Jet> TopsABCDmasscorrwithtopbtag;
     std::vector<pat::Jet> BottomsABCDmasscorrwithtopbtag;
     std::vector<pat::Jet> WsABCDmasscorrwithtopbtag;
+    
+    std::vector<math::XYZTLorentzVector> Zprimes_ABCD_tAK15WAK15bAK4;
+    std::vector<math::XYZTLorentzVector> Tprimes_ABCD_tAK15WAK15bAK4;
+    std::vector<pat::Jet> Tops_ABCD_tAK15WAK15bAK4;
+    std::vector<pat::Jet> Bottoms_ABCD_tAK15WAK15bAK4;
+    std::vector<pat::Jet> Ws_ABCD_tAK15WAK15bAK4;    
+
+    std::vector<math::XYZTLorentzVector> Zprimes_ABCD_tAK15WAK8bAK4;
+    std::vector<math::XYZTLorentzVector> Tprimes_ABCD_tAK15WAK8bAK4;
+    std::vector<pat::Jet> Tops_ABCD_tAK15WAK8bAK4;
+    std::vector<pat::Jet> Bottoms_ABCD_tAK15WAK8bAK4;
+    std::vector<pat::Jet> Ws_ABCD_tAK15WAK8bAK4;      
+    
+    
+    if(input.packedPatJetsAK15PFCHSSoftDrop.size()>0){
+/// AK15-Jet        
+        for(std::vector<pat::Jet>::const_iterator itJet=input.packedPatJetsAK15PFCHSSoftDrop.begin(); itJet != input.packedPatJetsAK15PFCHSSoftDrop.end(); ++itJet){
+            if (itJet->pt()>200 || abs(itJet->eta())<2.4){
+                AK15_W_candidates.push_back(*itJet);
+                if (itJet->pt()>400){
+                    AK15_top_candidates.push_back(*itJet);
+                }                
+            }
+        }
+            
+    }    
+    
     
 //AK8->Jets
     if(input.packedPatJetsAK8PFCHSSoftDrop.size()>0){
@@ -2615,123 +2690,123 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     std::cout<<"here11"<<endl;
 
 ///ZPrime reconstructions Wtb-channel
-  if (top_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops[0].p4())>0.8){
+  if (top_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops[0].p4())>1.2){
       Zprime=Tprime+tops[0].p4();
       vars.FillVar("Zprime_M",Zprime.mass());
       vars.FillVar("Zprime_Pt",Zprime.pt());
   }
       std::cout<<"heredetail1"<<endl;
 
-  if (top_withbtag_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag[0].p4())>0.8){
+  if (top_withbtag_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag[0].p4())>1.2){
       Zprime_withtopbtag=Tprime+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_M",Zprime_withtopbtag.mass());
       vars.FillVar("Zprime_withtopbtag_Pt",Zprime_withtopbtag.pt());
   }  
         std::cout<<"heredetail2"<<endl;
 
-  if (top_anti_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_anti[0].p4())>0.8){
+  if (top_anti_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_anti[0].p4())>1.2){
       Zprime_top_anti=Tprime+tops_anti[0].p4();
       vars.FillVar("Zprime_top_anti_M",Zprime_top_anti.mass());
       vars.FillVar("Zprime_top_anti_Pt",Zprime_top_anti.pt());
   }
         std::cout<<"heredetail3"<<endl;
 
-  if (top_anti_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_anti[0].p4())>0.8){
+  if (top_anti_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_anti[0].p4())>1.2){
       Zprime_top_anti_W_anti=Tprime_W_anti+tops_anti[0].p4();
       vars.FillVar("Zprime_top_anti_W_anti_M",Zprime_top_anti_W_anti.mass());
       vars.FillVar("Zprime_top_anti_W_anti_Pt",Zprime_top_anti_W_anti.pt());
   } 
         std::cout<<"heredetail4"<<endl;
 
-  if (top_anti_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_anti[0].p4())>0.8){
+  if (top_anti_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_anti[0].p4())>1.2){
       Zprime_top_anti_bottom_anti=Tprime_bottom_anti+tops_anti[0].p4();
       vars.FillVar("Zprime_top_anti_bottom_anti_M",Zprime_top_anti_bottom_anti.mass());
       vars.FillVar("Zprime_top_anti_bottom_anti_Pt",Zprime_top_anti_bottom_anti.pt());
   }
         std::cout<<"heredetail5"<<endl;
 
-  if (top_anti_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_anti[0].p4())>0.8){
+  if (top_anti_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_anti[0].p4())>1.2){
       Zprime_top_anti_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_anti[0].p4();
       vars.FillVar("Zprime_top_anti_W_anti_bottom_anti_M",Zprime_top_anti_W_anti_bottom_anti.mass());
       vars.FillVar("Zprime_top_anti_W_anti_bottom_anti_Pt",Zprime_top_anti_W_anti_bottom_anti.pt());
   }  
         std::cout<<"heredetail6"<<endl;
 
-  if (top_withbtag_anti_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag_anti[0].p4())>0.8){
+  if (top_withbtag_anti_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag_anti[0].p4())>1.2){
       Zprime_top_withbtag_anti=Tprime+tops_withbtag_anti[0].p4();
       vars.FillVar("Zprime_top_withbtag_anti_M",Zprime_top_withbtag_anti.mass());
       vars.FillVar("Zprime_top_withbtag_anti_Pt",Zprime_top_withbtag_anti.pt());
   }
           std::cout<<"heredetail7"<<endl;
 
-  if (top_withbtag_anti_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag_anti[0].p4())>0.8){
+  if (top_withbtag_anti_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag_anti[0].p4())>1.2){
       Zprime_top_withbtag_anti_W_anti=Tprime_W_anti+tops_withbtag_anti[0].p4();
       vars.FillVar("Zprime_top_withbtag_anti_W_anti_M",Zprime_top_withbtag_anti_W_anti.mass());
       vars.FillVar("Zprime_top_withbtag_anti_W_anti_Pt",Zprime_top_withbtag_anti_W_anti.pt());
   } 
           std::cout<<"heredetail8"<<endl;
 
-  if (top_withbtag_anti_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag_anti[0].p4())>0.8){
+  if (top_withbtag_anti_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag_anti[0].p4())>1.2){
       Zprime_top_withbtag_anti_bottom_anti=Tprime_bottom_anti+tops_withbtag_anti[0].p4();
       vars.FillVar("Zprime_top_withbtag_anti_bottom_anti_M",Zprime_top_withbtag_anti_bottom_anti.mass());
       vars.FillVar("Zprime_top_withbtag_anti_bottom_anti_Pt",Zprime_top_withbtag_anti_bottom_anti.pt());
   }
           std::cout<<"heredetail9"<<endl;
 
-  if (top_withbtag_anti_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag_anti[0].p4())>0.8){
+  if (top_withbtag_anti_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag_anti[0].p4())>1.2){
       Zprime_top_withbtag_anti_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_withbtag_anti[0].p4();
       vars.FillVar("Zprime_top_withbtag_anti_W_anti_bottom_anti_M",Zprime_top_withbtag_anti_W_anti_bottom_anti.mass());
       vars.FillVar("Zprime_top_withbtag_anti_W_anti_bottom_anti_Pt",Zprime_top_withbtag_anti_W_anti_bottom_anti.pt());
   }  
           std::cout<<"heredetail10"<<endl;
 
-  if (top_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops[0].p4())>0.8){
+  if (top_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops[0].p4())>1.2){
       Zprime_W_anti=Tprime_bottom_anti+tops[0].p4();
       vars.FillVar("Zprime_W_anti_M",Zprime_W_anti.mass());
       vars.FillVar("Zprime_W_anti_Pt",Zprime_W_anti.pt());
   }
           std::cout<<"heredetail11"<<endl;
 
-  if (top_withbtag_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag[0].p4())>0.8){
+  if (top_withbtag_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag[0].p4())>1.2){
       Zprime_withtopbtag_W_anti=Tprime_W_anti+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_W_anti_M",Zprime_withtopbtag_W_anti.mass());
       vars.FillVar("Zprime_withtopbtag_W_anti_Pt",Zprime_withtopbtag_W_anti.pt());
   } 
           std::cout<<"heredetail12"<<endl;
 
-  if (top_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops[0].p4())>0.8){
+  if (top_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops[0].p4())>1.2){
       Zprime_bottom_anti=Tprime_bottom_anti+tops[0].p4();
       vars.FillVar("Zprime_bottom_anti_M",Zprime_bottom_anti.mass());
       vars.FillVar("Zprime_bottom_anti_Pt",Zprime_bottom_anti.pt());
   }
           std::cout<<"heredetail613"<<endl;
 
-  if (top_withbtag_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag[0].p4())>0.8){
+  if (top_withbtag_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag[0].p4())>1.2){
       Zprime_withtopbtag_bottom_anti=Tprime_bottom_anti+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_bottom_anti_M",Zprime_withtopbtag_bottom_anti.mass());
       vars.FillVar("Zprime_withtopbtag_bottom_anti_Pt",Zprime_withtopbtag_bottom_anti.pt());
   }  
           std::cout<<"heredetail14"<<endl;
 
-  if (top_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops[0].p4())>0.8){
+  if (top_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops[0].p4())>1.2){
       Zprime_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops[0].p4();
       vars.FillVar("Zprime_W_anti_bottom_anti_M",Zprime_W_anti_bottom_anti.mass());
       vars.FillVar("Zprime_W_anti_bottom_anti_Pt",Zprime_W_anti_bottom_anti.pt());
   }
           std::cout<<"heredetail15"<<endl;
 
-  if (top_withbtag_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>0.8 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag[0].p4())>0.8){
+  if (top_withbtag_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag[0].p4())>1.2){
       Zprime_withtopbtag_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_M",Zprime_withtopbtag_W_anti_bottom_anti.mass());
       vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_Pt",Zprime_withtopbtag_W_anti_bottom_anti.pt());
   } 
   
-  if (top_candidatefound && Tprime_no_bottom_candidatefound && BoostedUtils::DeltaR(no_bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(no_bottoms[0].p4(), tops[0].p4())>0.8){
+  if (top_candidatefound && Tprime_no_bottom_candidatefound && BoostedUtils::DeltaR(no_bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(no_bottoms[0].p4(), tops[0].p4())>1.2){
       Zprime_no_bottom=Tprime_no_bottom+tops[0].p4();
       vars.FillVar("Zprime_no_bottom_M",Zprime_no_bottom.mass());
       vars.FillVar("Zprime_no_bottom_Pt",Zprime_no_bottom.pt());
   }
-  if (top_withbtag_candidatefound && Tprime_no_bottom_candidatefound && BoostedUtils::DeltaR(no_bottoms[0].p4(),Ws[0].p4())>0.8 && BoostedUtils::DeltaR(no_bottoms[0].p4(), tops_withbtag[0].p4())>0.8){
+  if (top_withbtag_candidatefound && Tprime_no_bottom_candidatefound && BoostedUtils::DeltaR(no_bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(no_bottoms[0].p4(), tops_withbtag[0].p4())>1.2){
       Zprime_withtopbtag_no_bottom=Tprime_no_bottom+tops_withbtag[0].p4();
       vars.FillVar("Zprime_withtopbtag_no_bottom_M",Zprime_withtopbtag_no_bottom.mass());
       vars.FillVar("Zprime_withtopbtag_no_bottom_Pt",Zprime_withtopbtag_no_bottom.pt());
@@ -2883,7 +2958,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                 //vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->pt());
                 //vars.FillVars("AK8_W_misstagged_candidates_eta",iJet,itJet->eta());
                 
-                if(abs(minDr_WBG)>0.4 && abs(minDr_WfromTPrime)>0.4){
+                if(abs(minDr_WBG)>0.8 && abs(minDr_WfromTPrime)>0.8){
                     AK8_W_misstag_candidates.push_back(*itJet);
                     std::cout<<"AK8 W misstag candidate found with "<<minDr_WBG<<"  "<<minDr_WfromTPrime<<endl;
                     if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.6 && 70<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<100){
@@ -2910,7 +2985,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                     AK8_top_candidates.push_back(*itJet);
                     //vars.FillVars("AK8_top_misstagged_candidates_pt",iJet,itJet->pt());
                     //vars.FillVars("AK8_top_misstagged_candidates_eta",iJet,itJet->eta());
-                    if(abs(minDr_TopBG)>0.4 && abs(minDr_TopZprime)>0.4){
+                    if(abs(minDr_TopBG)>0.8 && abs(minDr_TopZprime)>0.8){
                         AK8_top_misstag_candidates.push_back(*itJet);
                         std::cout<<"AK8 top misstag candidate found"<<endl;
                         if (itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau3")/itJet->userFloat("NjettinessAK8CHS:tau2")<0.86 && 110<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<210){
@@ -3206,7 +3281,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   	bool check_dR_ak8_W=true;
     for(std::vector<pat::Jet>::const_iterator itWJet = Ws.begin() ; itWJet != Ws.end() ; ++itWJet)
   	{
-  		if(BoostedUtils::DeltaR(ittopJet->p4(),itWJet->p4())<0.4)
+  		if(BoostedUtils::DeltaR(ittopJet->p4(),itWJet->p4())<0.8)
   		{
   			check_dR_ak8_W=false;
   		 	break;
@@ -3350,73 +3425,146 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   
 /////ALL COMBINATIONS FOR ABCD-METHODE
   if(AK8_top_candidates.size()>0 && AK8_W_candidates.size()>1 && AK4_bottom_candidates.size()>0){
-    for(std::vector<pat::Jet>::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
-        for(std::vector<pat::Jet>::const_iterator itWJet = AK8_W_candidates.begin() ; itWJet != AK8_W_candidates.end(); ++itWJet){
+    for(std::vector<pat::Jet>::iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+        for(std::vector<pat::Jet>::iterator itWJet = AK8_W_candidates.begin() ; itWJet != AK8_W_candidates.end(); ++itWJet){
             if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
             }else{
                 if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau3")>0){
                     for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>0.8 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>0.8){
-                            if((itBJet->p4()+itWJet->p4()).mass()>500){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.2){
                                 ZprimesABCD.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
                                 TprimesABCD.push_back(itBJet->p4()+itWJet->p4());
                                 TopsABCD.push_back(*ittopJet);
                                 BottomsABCD.push_back(*itBJet);
                                 WsABCD.push_back(*itWJet);
-                                std::cout<<"calculated event combination"<<endl;
-                            }
-                        }
-                    }                    
-                }
-            }
-        }
-    }
-    for(std::vector<pat::Jet>::iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
-        for(std::vector<pat::Jet>::iterator itWJet = AK8_W_candidates.begin() ; itWJet != AK8_W_candidates.end(); ++itWJet){
-            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
-            }else{
-                if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau3")>0){
-                    for(std::vector<pat::Jet>::iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>0.8 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>0.8){
+                                
                             if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
                                 ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
                             }
                             if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
                                 itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_nobtag));
                             }
-                            if((itBJet->p4()+itWJet->p4()).mass()>500){
-
                                 ZprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
                                 TprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
                                 TopsABCDmasscorrnotopbtag.push_back(*ittopJet);
                                 BottomsABCDmasscorrnotopbtag.push_back(*itBJet);
                                 WsABCDmasscorrnotopbtag.push_back(*itWJet);
-                            }
+                            
                             if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
                                 ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_withbtag));
                             }
                             if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
                                 itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_withbtag));
                             }
-                            if((itBJet->p4()+itWJet->p4()).mass()>500){
-
                                 ZprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
                                 TprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
                                 TopsABCDmasscorrwithtopbtag.push_back(*ittopJet);
                                 BottomsABCDmasscorrwithtopbtag.push_back(*itBJet);
-                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);
-                            }                            
+                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);                            
                         }
                     }                    
                 }
             }
         }
     }
-    
-    
-    
   }
+  
+ 
+/////ALL COMBINATIONS FOR ABCD-METHODE with top AK15-Jets and W AK8-Jets
+  if(AK15_top_candidates.size()>0 && AK8_W_candidates.size()>1 && AK4_bottom_candidates.size()>0){
+    for(std::vector<pat::Jet>::iterator ittopJet = AK15_top_candidates.begin() ; ittopJet != AK15_top_candidates.end(); ++ittopJet){
+        for(std::vector<pat::Jet>::iterator itWJet = AK8_W_candidates.begin() ; itWJet != AK8_W_candidates.end(); ++itWJet){
+            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<2.3){
+                std::cout<<"ah ah ah, W- and top-jets have overlap"<<endl;
+            }else{
+                if(itWJet->userFloat("NjettinessAK15CHS:tau1")>0 && itWJet->userFloat("NjettinessAK15CHS:tau2")>0 && itWJet->userFloat("NjettinessAK15CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau3")>0){
+                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.9){
+                                Zprimes_ABCD_tAK15WAK8bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                Tprimes_ABCD_tAK15WAK8bAK4.push_back(itBJet->p4()+itWJet->p4());
+                                Tops_ABCD_tAK15WAK8bAK4.push_back(*ittopJet);
+                                Bottoms_ABCD_tAK15WAK8bAK4.push_back(*itBJet);
+                                Ws_ABCD_tAK15WAK8bAK4.push_back(*itWJet);
+                                
+/*                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
+                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
+                            }
+                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
+                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_nobtag));
+                            }
+                                ZprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDmasscorrnotopbtag.push_back(*ittopJet);
+                                BottomsABCDmasscorrnotopbtag.push_back(*itBJet);
+                                WsABCDmasscorrnotopbtag.push_back(*itWJet);
+                            
+                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
+                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_withbtag));
+                            }
+                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
+                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_withbtag));
+                            }
+                                ZprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDmasscorrwithtopbtag.push_back(*ittopJet);
+                                BottomsABCDmasscorrwithtopbtag.push_back(*itBJet);
+                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);      */                      
+                        }
+                    }                    
+                }
+            }
+        }
+    }
+  }   
+ 
+  
+/////ALL COMBINATIONS FOR ABCD-METHODE with top AK15-Jets and W AK15-Jets
+  if(AK15_top_candidates.size()>0 && AK15_W_candidates.size()>1 && AK4_bottom_candidates.size()>0){
+    for(std::vector<pat::Jet>::iterator ittopJet = AK15_top_candidates.begin() ; ittopJet != AK15_top_candidates.end(); ++ittopJet){
+        for(std::vector<pat::Jet>::iterator itWJet = AK15_W_candidates.begin() ; itWJet != AK15_W_candidates.end(); ++itWJet){
+            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
+                std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
+            }else{
+                if(itWJet->userFloat("NjettinessAK15CHS:tau1")>0 && itWJet->userFloat("NjettinessAK15CHS:tau2")>0 && itWJet->userFloat("NjettinessAK15CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau3")>0){
+                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.9 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.9){
+                                Zprimes_ABCD_tAK15WAK15bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                Tprimes_ABCD_tAK15WAK15bAK4.push_back(itBJet->p4()+itWJet->p4());
+                                Tops_ABCD_tAK15WAK15bAK4.push_back(*ittopJet);
+                                Bottoms_ABCD_tAK15WAK15bAK4.push_back(*itBJet);
+                                Ws_ABCD_tAK15WAK15bAK4.push_back(*itWJet);
+                                
+/*                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
+                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
+                            }
+                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
+                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_nobtag));
+                            }
+                                ZprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDmasscorrnotopbtag.push_back(*ittopJet);
+                                BottomsABCDmasscorrnotopbtag.push_back(*itBJet);
+                                WsABCDmasscorrnotopbtag.push_back(*itWJet);
+                            
+                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
+                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_withbtag));
+                            }
+                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
+                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_withbtag));
+                            }
+                                ZprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDmasscorrwithtopbtag.push_back(*ittopJet);
+                                BottomsABCDmasscorrwithtopbtag.push_back(*itBJet);
+                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);      */                      
+                        }
+                    }                    
+                }
+            }
+        }
+    }
+  }  
 
   ////FILL ABCD VARIABLES
   vars.FillVar("N_Zprime_ABCD",ZprimesABCD.size());
@@ -3499,7 +3647,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
   }
 
-vars.FillVar("N_Zprimes_ABCDmasscorrwithtopbtag",ZprimesABCDmasscorrwithtopbtag.size());
+  vars.FillVar("N_Zprimes_ABCDmasscorrwithtopbtag",ZprimesABCDmasscorrwithtopbtag.size());
 
   for (uint i=0; i<ZprimesABCDmasscorrwithtopbtag.size(); i++){
   //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
@@ -3538,6 +3686,89 @@ vars.FillVar("N_Zprimes_ABCDmasscorrwithtopbtag",ZprimesABCDmasscorrwithtopbtag.
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
   }
   
+
+  ////FILL ABCD_tAK15WAK15bAK4 VARIABLES
+  vars.FillVar("N_Zprime_ABCD_tAK15WAK15bAK4",Zprimes_ABCD_tAK15WAK15bAK4.size());
+
+  for (uint i=0; i<Zprimes_ABCD_tAK15WAK15bAK4.size(); i++){
+  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+     //int i = 
+     vars.FillVars("Zprimes_ABCD_tAK15WAK15bAK4_M",i,Zprimes_ABCD_tAK15WAK15bAK4[i].mass());
+     vars.FillVars("Zprimes_ABCD_tAK15WAK15bAK4_Pt",i,Zprimes_ABCD_tAK15WAK15bAK4[i].pt());
+     
+     vars.FillVars("Tprimes_ABCD_tAK15WAK15bAK4_M",i,Tprimes_ABCD_tAK15WAK15bAK4[i].mass());
+     vars.FillVars("Tprimes_ABCD_tAK15WAK15bAK4_Pt",i,Tprimes_ABCD_tAK15WAK15bAK4[i].pt());
+     
+     vars.FillVars("Bottoms_ABCD_tAK15WAK15bAK4_Pt",i,Bottoms_ABCD_tAK15WAK15bAK4[i].pt());
+     vars.FillVars("Bottoms_ABCD_tAK15WAK15bAK4_Eta",i,Bottoms_ABCD_tAK15WAK15bAK4[i].eta());
+     vars.FillVars("Bottoms_ABCD_tAK15WAK15bAK4_Phi",i,Bottoms_ABCD_tAK15WAK15bAK4[i].phi());
+     vars.FillVars("Bottoms_ABCD_tAK15WAK15bAK4_CSV",i,MiniAODHelper::GetJetCSV(Bottoms_ABCD_tAK15WAK15bAK4[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+     
+     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_Pt",i,Ws_ABCD_tAK15WAK15bAK4[i].pt());
+     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_Eta",i,Ws_ABCD_tAK15WAK15bAK4[i].eta());
+     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_Phi",i,Ws_ABCD_tAK15WAK15bAK4[i].phi());
+     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_MSD",i,Ws_ABCD_tAK15WAK15bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_t21",i,Ws_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK8CHS:tau2")/Ws_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK8CHS:tau1"));
+     
+     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_Pt",i,Tops_ABCD_tAK15WAK15bAK4[i].pt());
+     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_Eta",i,Tops_ABCD_tAK15WAK15bAK4[i].eta());
+     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_Phi",i,Tops_ABCD_tAK15WAK15bAK4[i].phi());
+     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_MSD",i,Tops_ABCD_tAK15WAK15bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_t32",i,Tops_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK8CHS:tau3")/Tops_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK8CHS:tau2"));
+
+     double max_subjet_csv_v2=-10;
+     auto const & names = Tops_ABCD_tAK15WAK15bAK4[i].subjets("SoftDrop");
+     for( auto const & itsubJet : names ){
+        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        };
+     };
+     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
+//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+  }
+
+
+  ////FILL ABCD_tAK15WAK8bAK4 VARIABLES
+  vars.FillVar("N_Zprime_ABCD_tAK15WAK8bAK4",Zprimes_ABCD_tAK15WAK8bAK4.size());
+
+  for (uint i=0; i<Zprimes_ABCD_tAK15WAK8bAK4.size(); i++){
+  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+     //int i = 
+     vars.FillVars("Zprimes_ABCD_tAK15WAK8bAK4_M",i,Zprimes_ABCD_tAK15WAK8bAK4[i].mass());
+     vars.FillVars("Zprimes_ABCD_tAK15WAK8bAK4_Pt",i,Zprimes_ABCD_tAK15WAK8bAK4[i].pt());
+     
+     vars.FillVars("Tprimes_ABCD_tAK15WAK8bAK4_M",i,Tprimes_ABCD_tAK15WAK8bAK4[i].mass());
+     vars.FillVars("Tprimes_ABCD_tAK15WAK8bAK4_Pt",i,Tprimes_ABCD_tAK15WAK8bAK4[i].pt());
+     
+     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_Pt",i,Bottoms_ABCD_tAK15WAK8bAK4[i].pt());
+     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_Eta",i,Bottoms_ABCD_tAK15WAK8bAK4[i].eta());
+     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_Phi",i,Bottoms_ABCD_tAK15WAK8bAK4[i].phi());
+     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_CSV",i,MiniAODHelper::GetJetCSV(Bottoms_ABCD_tAK15WAK8bAK4[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+     
+     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_Pt",i,Ws_ABCD_tAK15WAK8bAK4[i].pt());
+     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_Eta",i,Ws_ABCD_tAK15WAK8bAK4[i].eta());
+     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_Phi",i,Ws_ABCD_tAK15WAK8bAK4[i].phi());
+     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_MSD",i,Ws_ABCD_tAK15WAK8bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_t21",i,Ws_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau2")/Ws_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau1"));
+     
+     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_Pt",i,Tops_ABCD_tAK15WAK8bAK4[i].pt());
+     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_Eta",i,Tops_ABCD_tAK15WAK8bAK4[i].eta());
+     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_Phi",i,Tops_ABCD_tAK15WAK8bAK4[i].phi());
+     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_MSD",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_t32",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau3")/Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau2"));
+
+     double max_subjet_csv_v2=-10;
+     auto const & names = Tops_ABCD_tAK15WAK8bAK4[i].subjets("SoftDrop");
+     for( auto const & itsubJet : names ){
+        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        };
+     };
+     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
+//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+  }
+            
+            
  }// end of HT if 1190
   
 }

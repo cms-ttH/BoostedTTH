@@ -33,6 +33,11 @@ Inputs_tth_sl= cms.PSet(
     selectedPatJetsAK8PFCHSSoftDropPacked=cms.InputTag("selectedPatJetsAK8PFCHSSoftDropPacked"),
     selectedPatJetsAK8PFCHSSoftDropSubjets=cms.InputTag("selectedPatJetsAK8PFCHSSoftDropSubjets"),
     packedPatJetsAK8PFCHSSoftDrop=cms.InputTag("packedPatJetsAK8PFCHSSoftDrop"),
+    
+    selectedPatJetsAK15PFCHS=cms.InputTag("selectedPatJetsAK15PFCHS"),
+    selectedPatJetsAK15PFCHSSoftDropPacked=cms.InputTag("selectedPatJetsAK15PFCHSSoftDropPacked"),
+    selectedPatJetsAK15PFCHSSoftDropSubjets=cms.InputTag("selectedPatJetsAK15PFCHSSoftDropSubjets"),
+    packedPatJetsAK15PFCHSSoftDrop=cms.InputTag("packedPatJetsAK15PFCHSSoftDrop"),
     #selectedPatJetsAK8PFCHS=cms.InputTag("slimmedJetsAK8"),
     #selectedPatJetsAK8PFCHSSoftDropPacked=cms.InputTag("slimmedJetsAK8PFCHSSoftDropPacked"),
     #selectedPatJetsAK8PFCHSSoftDropSubjets=cms.InputTag("selectedPatJetsAK8PFCHSSoftDropSubjets"),

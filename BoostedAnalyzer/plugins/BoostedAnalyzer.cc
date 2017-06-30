@@ -250,7 +250,10 @@ private:
     edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK8PFCHSSoftDropSubjetsToken;
     edm::EDGetTokenT< std::vector<pat::Jet> > packedPatJetsAK8PFCHSSoftDropToken;
     
-    //edm::EDGetTokenT< edm::ValueMap<float> > ak8PFJetsCHSSoftDropMassToken;
+    edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK15PFCHSToken;
+    edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK15PFCHSSoftDropPackedToken;    
+    edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK15PFCHSSoftDropSubjetsToken;
+    edm::EDGetTokenT< std::vector<pat::Jet> > packedPatJetsAK15PFCHSSoftDropToken;    //edm::EDGetTokenT< edm::ValueMap<float> > ak8PFJetsCHSSoftDropMassToken;
 
 };
 
@@ -306,11 +309,14 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     selectedPatJetsAK8PFCHSToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK8PFCHS"));
     selectedPatJetsAK8PFCHSSoftDropPackedToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK8PFCHSSoftDropPacked"));
     selectedPatJetsAK8PFCHSSoftDropSubjetsToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK8PFCHSSoftDropSubjets"));
-    //EDMNjettinessAK8CHS_tau1Token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("NjettinessAK8CHS_tau1"));
+    selectedPatJetsAK15PFCHSToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK15PFCHS"));
+    selectedPatJetsAK15PFCHSSoftDropPackedToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK15PFCHSSoftDropPacked"));
+    selectedPatJetsAK15PFCHSSoftDropSubjetsToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK15PFCHSSoftDropSubjets"));    //EDMNjettinessAK8CHS_tau1Token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("NjettinessAK8CHS_tau1"));
     //EDMNjettinessAK8CHS_tau2Token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("Njettiness_tau2"));
     //EDMNjettinessAK8CHS_tau3Token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("Njettiness_tau3"));
     //ak8PFJetsCHSSoftDropMassToken = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("ak8PFJetsCHSSoftDropMass"));
     packedPatJetsAK8PFCHSSoftDropToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("packedPatJetsAK8PFCHSSoftDrop"));
+    packedPatJetsAK15PFCHSSoftDropToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("packedPatJetsAK15PFCHSSoftDrop"));
     rawJetsToken = consumes< std::vector <pat::Jet > >(iConfig.getParameter<edm::InputTag>("rawJets"));
 
 
@@ -559,6 +565,16 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( selectedPatJetsAK8PFCHSSoftDropSubjetsToken, h_selectedPatJetsAK8PFCHSSoftDropSubjets);    
     edm::Handle < pat::JetCollection > h_packedPatJetsAK8PFCHSSoftDrop;
     iEvent.getByToken( packedPatJetsAK8PFCHSSoftDropToken, h_packedPatJetsAK8PFCHSSoftDrop);
+    
+    edm::Handle < pat::JetCollection > h_selectedPatJetsAK15PFCHS;
+    iEvent.getByToken( selectedPatJetsAK15PFCHSToken, h_selectedPatJetsAK15PFCHS);
+    edm::Handle < pat::JetCollection > h_selectedPatJetsAK15PFCHSSoftDropPacked;
+    iEvent.getByToken( selectedPatJetsAK15PFCHSSoftDropPackedToken, h_selectedPatJetsAK15PFCHSSoftDropPacked);
+    edm::Handle < pat::JetCollection > h_selectedPatJetsAK15PFCHSSoftDropSubjets;
+    iEvent.getByToken( selectedPatJetsAK15PFCHSSoftDropSubjetsToken, h_selectedPatJetsAK15PFCHSSoftDropSubjets);    
+    edm::Handle < pat::JetCollection > h_packedPatJetsAK15PFCHSSoftDrop;
+    iEvent.getByToken( packedPatJetsAK15PFCHSSoftDropToken, h_packedPatJetsAK15PFCHSSoftDrop);
+    
     //edm::Handle<edm::ValueMap<float> > h_NjettinessAK8CHS_tau1;
     //iEvent.getByToken( EDMNjettinessAK8CHS_tau1Token, h_NjettinessAK8CHS_tau1);
     //edm::Handle<edm::ValueMap<float> > h_NjettinessAK8CHS_tau2;
@@ -740,6 +756,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                                           *h_selectedPatJetsAK8PFCHSSoftDropPacked,
                                           *h_selectedPatJetsAK8PFCHSSoftDropSubjets,
                                           *h_packedPatJetsAK8PFCHSSoftDrop,
+                                   
+                                          *h_selectedPatJetsAK15PFCHS,
+                                          *h_selectedPatJetsAK15PFCHSSoftDropPacked,
+                                          *h_selectedPatJetsAK15PFCHSSoftDropSubjets,
+                                          *h_packedPatJetsAK15PFCHSSoftDrop,
+                                          
                                           //*h_NjettinessAK8CHS_tau1,
                                           //*h_NjettinessAK8CHS_tau2,
                                           //*h_NjettinessAK8CHS_tau3,

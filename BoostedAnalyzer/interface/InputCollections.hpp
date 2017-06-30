@@ -45,6 +45,11 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropSubjets_,
 		    const std::vector<pat::Jet>&                  packedPatJetsAK8PFCHSSoftDrop_,
 
+		    const std::vector<pat::Jet>&                  selectedPatJetsAK15PFCHS_,
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK15PFCHSSoftDropPacked_,
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK15PFCHSSoftDropSubjets_,
+		    const std::vector<pat::Jet>&                  packedPatJetsAK15PFCHSSoftDrop_,
+
                     //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau1_,
                     //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau2_,
                     //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau3_,
@@ -83,6 +88,11 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedPatJetsAK8PFCHSSoftDropPacked(selectedPatJetsAK8PFCHSSoftDropPacked_),
                     selectedPatJetsAK8PFCHSSoftDropSubjets(selectedPatJetsAK8PFCHSSoftDropSubjets_),
                     packedPatJetsAK8PFCHSSoftDrop(packedPatJetsAK8PFCHSSoftDrop_),
+                    
+                    selectedPatJetsAK15PFCHS(selectedPatJetsAK15PFCHS_),
+                    selectedPatJetsAK15PFCHSSoftDropPacked(selectedPatJetsAK15PFCHSSoftDropPacked_),
+                    selectedPatJetsAK15PFCHSSoftDropSubjets(selectedPatJetsAK15PFCHSSoftDropSubjets_),
+                    packedPatJetsAK15PFCHSSoftDrop(packedPatJetsAK15PFCHSSoftDrop_),
                     //NjettinessAK8CHS_tau1(NjettinessAK8CHS_tau1_),
                     //NjettinessAK8CHS_tau2(NjettinessAK8CHS_tau2_),
                     //NjettinessAK8CHS_tau3(NjettinessAK8CHS_tau3_),
@@ -114,6 +124,11 @@ InputCollections(   const InputCollections&                       input,
                     const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropPacked_,
                     const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropSubjets_,
                     const std::vector<pat::Jet>&                  packedPatJetsAK8PFCHSSoftDrop_,
+                    
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK15PFCHS_,
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK15PFCHSSoftDropPacked_,
+                    const std::vector<pat::Jet>&                  selectedPatJetsAK15PFCHSSoftDropSubjets_,
+                    const std::vector<pat::Jet>&                  packedPatJetsAK15PFCHSSoftDrop_,
                     //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau1_,
                     //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau2_,
                     //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau3_,
@@ -143,6 +158,11 @@ InputCollections(   const InputCollections&                       input,
                     selectedPatJetsAK8PFCHSSoftDropSubjets(selectedPatJetsAK8PFCHSSoftDropSubjets_),
                     packedPatJetsAK8PFCHSSoftDrop(packedPatJetsAK8PFCHSSoftDrop_),
 
+                    selectedPatJetsAK15PFCHS(selectedPatJetsAK15PFCHS_),
+                    selectedPatJetsAK15PFCHSSoftDropPacked(selectedPatJetsAK15PFCHSSoftDropPacked_),
+                    selectedPatJetsAK15PFCHSSoftDropSubjets(selectedPatJetsAK15PFCHSSoftDropSubjets_),
+                    packedPatJetsAK15PFCHSSoftDrop(packedPatJetsAK15PFCHSSoftDrop_),
+                    
                     //NjettinessAK8CHS_tau1(NjettinessAK8CHS_tau1_),
                     //NjettinessAK8CHS_tau2(NjettinessAK8CHS_tau2_),
                     //NjettinessAK8CHS_tau3(NjettinessAK8CHS_tau3_),
@@ -181,6 +201,12 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Jet>&                  selectedPatJetsAK8PFCHSSoftDropSubjets;
   const std::vector<pat::Jet>&                  packedPatJetsAK8PFCHSSoftDrop;
 
+  const std::vector<pat::Jet>&                  selectedPatJetsAK15PFCHS;
+  const std::vector<pat::Jet>&                  selectedPatJetsAK15PFCHSSoftDropPacked;
+  const std::vector<pat::Jet>&                  selectedPatJetsAK15PFCHSSoftDropSubjets;
+  const std::vector<pat::Jet>&                  packedPatJetsAK15PFCHSSoftDrop;  
+  
+  
   //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau1;
   //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau2;
   //const edm::ValueMap<float>&                   NjettinessAK8CHS_tau3;
