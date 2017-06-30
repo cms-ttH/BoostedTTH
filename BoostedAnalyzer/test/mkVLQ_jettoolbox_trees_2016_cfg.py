@@ -107,7 +107,8 @@ process.source = cms.Source(
 #JETTOOLBOX
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 80' )
-jetToolbox( process, 'ak15', 'ak15JetSubs', 'out', PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 80' )
+jetToolbox( process, 'ak12', 'ak12JetSubs', 'out', PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 80', JETCorrPayload = 'AK8PFchs', JETCorrLevels = ['L2Relative', 'L3Absolute'])
+jetToolbox( process, 'ak15', 'ak15JetSubs', 'out', PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 80', JETCorrPayload = 'AK8PFchs', JETCorrLevels = ['L2Relative', 'L3Absolute'])
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not

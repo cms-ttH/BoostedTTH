@@ -250,10 +250,18 @@ private:
     edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK8PFCHSSoftDropSubjetsToken;
     edm::EDGetTokenT< std::vector<pat::Jet> > packedPatJetsAK8PFCHSSoftDropToken;
     
+    edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK12PFCHSToken;
+    edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK12PFCHSSoftDropPackedToken;    
+    edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK12PFCHSSoftDropSubjetsToken;
+    edm::EDGetTokenT< std::vector<pat::Jet> > packedPatJetsAK12PFCHSSoftDropToken;   
+        
     edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK15PFCHSToken;
     edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK15PFCHSSoftDropPackedToken;    
     edm::EDGetTokenT< std::vector<pat::Jet> > selectedPatJetsAK15PFCHSSoftDropSubjetsToken;
-    edm::EDGetTokenT< std::vector<pat::Jet> > packedPatJetsAK15PFCHSSoftDropToken;    //edm::EDGetTokenT< edm::ValueMap<float> > ak8PFJetsCHSSoftDropMassToken;
+    edm::EDGetTokenT< std::vector<pat::Jet> > packedPatJetsAK15PFCHSSoftDropToken;   
+    
+    
+    //edm::EDGetTokenT< edm::ValueMap<float> > ak8PFJetsCHSSoftDropMassToken;
 
 };
 
@@ -309,14 +317,24 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     selectedPatJetsAK8PFCHSToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK8PFCHS"));
     selectedPatJetsAK8PFCHSSoftDropPackedToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK8PFCHSSoftDropPacked"));
     selectedPatJetsAK8PFCHSSoftDropSubjetsToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK8PFCHSSoftDropSubjets"));
+    packedPatJetsAK8PFCHSSoftDropToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("packedPatJetsAK8PFCHSSoftDrop"));
+    
+    selectedPatJetsAK12PFCHSToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK12PFCHS"));
+    selectedPatJetsAK12PFCHSSoftDropPackedToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK12PFCHSSoftDropPacked"));
+    selectedPatJetsAK12PFCHSSoftDropSubjetsToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK12PFCHSSoftDropSubjets"));
+    packedPatJetsAK12PFCHSSoftDropToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("packedPatJetsAK12PFCHSSoftDrop"));
+
+    
     selectedPatJetsAK15PFCHSToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK15PFCHS"));
     selectedPatJetsAK15PFCHSSoftDropPackedToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK15PFCHSSoftDropPacked"));
-    selectedPatJetsAK15PFCHSSoftDropSubjetsToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK15PFCHSSoftDropSubjets"));    //EDMNjettinessAK8CHS_tau1Token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("NjettinessAK8CHS_tau1"));
+    selectedPatJetsAK15PFCHSSoftDropSubjetsToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("selectedPatJetsAK15PFCHSSoftDropSubjets"));
+    packedPatJetsAK15PFCHSSoftDropToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("packedPatJetsAK15PFCHSSoftDrop"));
+
+
+    //EDMNjettinessAK8CHS_tau1Token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("NjettinessAK8CHS_tau1"));
     //EDMNjettinessAK8CHS_tau2Token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("Njettiness_tau2"));
     //EDMNjettinessAK8CHS_tau3Token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("Njettiness_tau3"));
     //ak8PFJetsCHSSoftDropMassToken = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("ak8PFJetsCHSSoftDropMass"));
-    packedPatJetsAK8PFCHSSoftDropToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("packedPatJetsAK8PFCHSSoftDrop"));
-    packedPatJetsAK15PFCHSSoftDropToken = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("packedPatJetsAK15PFCHSSoftDrop"));
     rawJetsToken = consumes< std::vector <pat::Jet > >(iConfig.getParameter<edm::InputTag>("rawJets"));
 
 
@@ -566,6 +584,15 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle < pat::JetCollection > h_packedPatJetsAK8PFCHSSoftDrop;
     iEvent.getByToken( packedPatJetsAK8PFCHSSoftDropToken, h_packedPatJetsAK8PFCHSSoftDrop);
     
+    edm::Handle < pat::JetCollection > h_selectedPatJetsAK12PFCHS;
+    iEvent.getByToken( selectedPatJetsAK12PFCHSToken, h_selectedPatJetsAK12PFCHS);
+    edm::Handle < pat::JetCollection > h_selectedPatJetsAK12PFCHSSoftDropPacked;
+    iEvent.getByToken( selectedPatJetsAK12PFCHSSoftDropPackedToken, h_selectedPatJetsAK12PFCHSSoftDropPacked);
+    edm::Handle < pat::JetCollection > h_selectedPatJetsAK12PFCHSSoftDropSubjets;
+    iEvent.getByToken( selectedPatJetsAK12PFCHSSoftDropSubjetsToken, h_selectedPatJetsAK12PFCHSSoftDropSubjets);    
+    edm::Handle < pat::JetCollection > h_packedPatJetsAK12PFCHSSoftDrop;
+    iEvent.getByToken( packedPatJetsAK12PFCHSSoftDropToken, h_packedPatJetsAK12PFCHSSoftDrop);
+    
     edm::Handle < pat::JetCollection > h_selectedPatJetsAK15PFCHS;
     iEvent.getByToken( selectedPatJetsAK15PFCHSToken, h_selectedPatJetsAK15PFCHS);
     edm::Handle < pat::JetCollection > h_selectedPatJetsAK15PFCHSSoftDropPacked;
@@ -757,6 +784,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                                           *h_selectedPatJetsAK8PFCHSSoftDropSubjets,
                                           *h_packedPatJetsAK8PFCHSSoftDrop,
                                    
+                                          *h_selectedPatJetsAK12PFCHS,
+                                          *h_selectedPatJetsAK12PFCHSSoftDropPacked,
+                                          *h_selectedPatJetsAK12PFCHSSoftDropSubjets,
+                                          *h_packedPatJetsAK12PFCHSSoftDrop,
+                                                                             
                                           *h_selectedPatJetsAK15PFCHS,
                                           *h_selectedPatJetsAK15PFCHSSoftDropPacked,
                                           *h_selectedPatJetsAK15PFCHSSoftDropSubjets,
