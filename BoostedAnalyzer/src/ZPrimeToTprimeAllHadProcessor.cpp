@@ -3883,14 +3883,14 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_Pt",i,Ws_ABCD_tAK15WAK15bAK4[i].pt());
      vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_Eta",i,Ws_ABCD_tAK15WAK15bAK4[i].eta());
      vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_Phi",i,Ws_ABCD_tAK15WAK15bAK4[i].phi());
-     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_MSD",i,Ws_ABCD_tAK15WAK15bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_t21",i,Ws_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK8CHS:tau2")/Ws_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK8CHS:tau1"));
+     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_MSD",i,Ws_ABCD_tAK15WAK15bAK4[i].userFloat("ak15PFJetsCHSSoftDropMass"));
+     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_t21",i,Ws_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK15CHS:tau2")/Ws_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK15CHS:tau1"));
      
      vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_Pt",i,Tops_ABCD_tAK15WAK15bAK4[i].pt());
      vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_Eta",i,Tops_ABCD_tAK15WAK15bAK4[i].eta());
      vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_Phi",i,Tops_ABCD_tAK15WAK15bAK4[i].phi());
-     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_MSD",i,Tops_ABCD_tAK15WAK15bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_t32",i,Tops_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK8CHS:tau3")/Tops_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK8CHS:tau2"));
+     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_MSD",i,Tops_ABCD_tAK15WAK15bAK4[i].userFloat("ak15PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_t32",i,Tops_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK15CHS:tau3")/Tops_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK15CHS:tau2"));
 
      double max_subjet_csv_v2=-10;
      auto const & names = Tops_ABCD_tAK15WAK15bAK4[i].subjets("SoftDrop");
@@ -3930,8 +3930,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_Pt",i,Tops_ABCD_tAK15WAK8bAK4[i].pt());
      vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_Eta",i,Tops_ABCD_tAK15WAK8bAK4[i].eta());
      vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_Phi",i,Tops_ABCD_tAK15WAK8bAK4[i].phi());
-     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_MSD",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_t32",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau3")/Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau2"));
+     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_MSD",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("ak15PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_t32",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK15CHS:tau3")/Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK15CHS:tau2"));
 
      double max_subjet_csv_v2=-10;
      auto const & names = Tops_ABCD_tAK15WAK8bAK4[i].subjets("SoftDrop");
@@ -3965,14 +3965,14 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_Pt",i,Ws_ABCD_tAK12WAK12bAK4[i].pt());
      vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_Eta",i,Ws_ABCD_tAK12WAK12bAK4[i].eta());
      vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_Phi",i,Ws_ABCD_tAK12WAK12bAK4[i].phi());
-     vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_MSD",i,Ws_ABCD_tAK12WAK12bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_t21",i,Ws_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK8CHS:tau2")/Ws_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK8CHS:tau1"));
+     vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_MSD",i,Ws_ABCD_tAK12WAK12bAK4[i].userFloat("ak12PFJetsCHSSoftDropMass"));
+     vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_t21",i,Ws_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK12CHS:tau2")/Ws_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK12CHS:tau1"));
      
      vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_Pt",i,Tops_ABCD_tAK12WAK12bAK4[i].pt());
      vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_Eta",i,Tops_ABCD_tAK12WAK12bAK4[i].eta());
      vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_Phi",i,Tops_ABCD_tAK12WAK12bAK4[i].phi());
-     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_MSD",i,Tops_ABCD_tAK12WAK12bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_t32",i,Tops_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK8CHS:tau3")/Tops_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK8CHS:tau2"));
+     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_MSD",i,Tops_ABCD_tAK12WAK12bAK4[i].userFloat("ak12PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_t32",i,Tops_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK12CHS:tau3")/Tops_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK12CHS:tau2"));
 
      double max_subjet_csv_v2=-10;
      auto const & names = Tops_ABCD_tAK12WAK12bAK4[i].subjets("SoftDrop");
@@ -4012,8 +4012,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_Pt",i,Tops_ABCD_tAK12WAK8bAK4[i].pt());
      vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_Eta",i,Tops_ABCD_tAK12WAK8bAK4[i].eta());
      vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_Phi",i,Tops_ABCD_tAK12WAK8bAK4[i].phi());
-     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_MSD",i,Tops_ABCD_tAK12WAK8bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_t32",i,Tops_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau3")/Tops_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau2"));
+     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_MSD",i,Tops_ABCD_tAK12WAK8bAK4[i].userFloat("ak12PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_t32",i,Tops_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK12CHS:tau3")/Tops_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK12CHS:tau2"));
 
      double max_subjet_csv_v2=-10;
      auto const & names = Tops_ABCD_tAK12WAK8bAK4[i].subjets("SoftDrop");
