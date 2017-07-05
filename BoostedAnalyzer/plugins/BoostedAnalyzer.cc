@@ -39,6 +39,8 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
 #include "DataFormats/METReco/interface/HcalNoiseSummary.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/Common/interface/View.h"
@@ -131,6 +133,7 @@ private:
     virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
     virtual void endJob() override;
     virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
+    virtual void endRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
     virtual void beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup) override;
     float GetTopPtWeight(const float& toppt1, const float& toppt2);
     map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype=Systematics::NA);
@@ -245,6 +248,8 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenParticle> > genParticlesToken;
     /** gen jets data access token **/
     edm::EDGetTokenT< std::vector<reco::GenJet> > genJetsToken;
+    // LHERunInfo data access token
+    edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoToken;
     
     //mem classifier for MVAVarProcessor
     MEMClassifier* pointerToMEMClassifier; 
@@ -325,7 +330,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     genParticlesToken       = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles"));
     genJetsToken            = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets"));
     conversionCollectionToken    = consumes< reco::ConversionCollection > (iConfig.getParameter<edm::InputTag>("conversionCollection"));
-
+    LHERunInfoToken = consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer"));
+    
     // initialize helper classes
     helper.SetUp("2015_74x", isData ? -1 : 1, analysisType::LJ, isData);
 
@@ -516,17 +522,15 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
-    bool generatorflag;
+    /*
     if (usedGenerator == "POWHEG"){ generatorflag = genweights.SetGenerator(Generator::POWHEG); }
     else if (usedGenerator == "aMC"){ generatorflag = genweights.SetGenerator(Generator::aMC);}
     else if (usedGenerator == "MadGraph"){ generatorflag = genweights.SetGenerator(Generator::MadGraph);}
     else if (usedGenerator == "pythia8"){ generatorflag = genweights.SetGenerator(Generator::pythia8);}
     else{ generatorflag = false; }
-
-    if (generatorflag) { std::cout << usedGenerator << " was set as Generator" << endl; }
-    else { std::cout << "No Generator was set for Genweight -> no GenWeights are written in tree" << endl; }
-
-    genweights.initLHAPDF("PDF4LHC15_nlo_30");
+    */
+    std::vector<std::string> pdfs = {"PDF4LHC15_nlo_30","NNPDF30_nlo_as_0118"};
+    genweights.initLHAPDF(pdfs);
 
     assert(selectedJetsTokens.size()==selectedJetsLooseTokens.size());
     assert(selectedJetsTokens.size()==jetSystematics.size());
@@ -736,7 +740,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	else if(ttid==43||ttid==44||ttid==45) sampleType = SampleType::ttcc;
     }
     else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
-
+    
+    
     // nominal weight and weights for reweighting
     std::vector<map<string,float> >weightsVector;
     // inputs
@@ -900,7 +905,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	  weights[it->name()] = it->value();
     }
 	//Add Genweights to the weight map
-    genweights.GetGenWeights(weights, lheInfo, dogenweights);
+    genweights.GetGenWeights(weights, lheInfo);
 	//DANGERZONE
     genweights.GetLHAPDFWeight(weights, genInfo );
 	//DANGERZONE
@@ -954,8 +959,31 @@ void BoostedAnalyzer::endJob()
 }
 
 // ------------ method called when starting to processes a run ------------
-void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
-{
+void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {
+    
+    /*
+    lhe_weights["1001"]="Weight_muRnmuFn";
+    lhe_weights["1002"]="Weight_muRnmuFup";
+    lhe_weights["1003"]="Weight_muRnmuFdown";
+    lhe_weights["1004"]="Weight_muRupmuFn";
+    lhe_weights["1005"]="Weight_muRupmuFup";
+    lhe_weights["1006"]="Weight_muRupmuFdown";
+    lhe_weights["1007"]="Weight_muRdownmuFn";
+    lhe_weights["1008"]="Weight_muRdownmuFup";
+    lhe_weights["1009"]="Weight_muRdownmuFdown";
+    */
+    edm::Handle<LHERunInfoProduct> runhandle;
+    //iEvent.getRun()
+    iRun.getByLabel("externalLHEProducer",runhandle);
+    LHERunInfoProduct myLHERunInfoProduct = *(runhandle.product());
+    genweights.GetNamesFromLHE(myLHERunInfoProduct);
+    
+    
+    
+}
+
+void BoostedAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {
+    genweights.Clear();
 }
 
 // ------------ method called when starting a luminosity block ------------

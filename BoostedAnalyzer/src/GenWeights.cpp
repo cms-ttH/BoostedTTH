@@ -3,64 +3,47 @@ using namespace std;
 
 
 GenWeights::GenWeights(){ 
-    GeneratorSet = false;
-    errweightvalue = -1000;
-
     LHAPDFinitialized = false;
+    initialized = false;
 }
 
 
 void GenWeights::GetGenWeights(map<string, float>& weights,
-			       const LHEEventProduct& LHEEvent,
-			       bool& dogenweights ) const {
-  bool doreweighting = dogenweights;
-  if(GeneratorSet){
-    if(doreweighting){
-      int weightnumber = LHEEvent.weights().size();
-      //Fix for Problem with ttHnobb Sample
-      if (weightnumber <= 98 ){ doreweighting = false; }
-      else {
-	for (int i = 0; (i < weightnumber && i < GeneratorWeights ); i++) {
-	  weights[weightnames.at(i)] = LHEEvent.weights()[i].wgt/LHEEvent.originalXWGTUP();
-	  //cout << "added generator weight " << weightnames.at(i) << " with value " << weights[weightnames.at(i)] << endl;
-	}
-	weights["Weight_LHECentral"]=LHEEvent.originalXWGTUP();
-      }
+			       const LHEEventProduct& LHEEvent
+			       ) const {
+    if(!initialized) {
+        cout << "get the names for the genweights from the lhe file before you  want to retrieve the weights " << endl;
+        return;
     }
-    //Default process:
-    if(!doreweighting){
-      for(int i = 0; i < GeneratorWeights; i++){
-	weights[weightnames.at(i)] = errweightvalue;
-      }
+    // number of generator weights which are stored in the LHEEventProduct
+    const uint weightnumber = lhe_weights.size();
+    // central lhe weight which is stored
+    const double LHE_central_weight = LHEEvent.originalXWGTUP();
+    //loop over every generator weight available and add the weight with its corresponding name to the weights map. the name is derived with the generator id and the lhe_weights map which maps the weight id to the corresponding name
+    for (uint i = 0;i < weightnumber; i++) {
+        std::string weight_id = LHEEvent.weights()[i].id;
+        std::string weight_name = lhe_weights.at(weight_id);
+        //cout << weight_id << "   " << weight_name << endl;
+        weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
     }
-  }
+    weights["Weight_LHECentral"]=LHE_central_weight;
 }
 
-bool GenWeights::SetGenerator(const Generator::Generator usedGenerator){
-  if(usedGenerator != Generator::notSpecified){
-    weightnames = GetWeightNames(usedGenerator);
-    GeneratorWeights = weightnames.size();
-    GeneratorSet = true;
-    return true;
-  }
-  else {
-    return false;
-  }
-}
 
 bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
 				  const GenEventInfoProduct& genInfos ) {
 
-  
   if(!LHAPDFinitialized){
     return false;
   }
-  
+  // get the nominal pdf and the nominal gen weight
   const gen::PdfInfo* pdfInfos = genInfos.pdf();
-  double gen_weight = genInfos.weight();
-  double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
+  const double gen_weight = genInfos.weight();
+  const double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
+  
+  weights["Weight_GEN_nom"]=gen_weight;
 
-  //Loop over all initialized PDFSets
+  //Loop over all initialized PDFSets and calculate the weight for a pdf variation
   for( size_t p = 0; p < initializedPDFSets.size(); p++ ) {
 
     LHAPDF::PDFSet PDFSet = initializedPDFSets[p];
@@ -71,13 +54,12 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
       double xpdf1 = PDFs[j]->xfxQ(pdfInfos->id.first, pdfInfos->x.first, pdfInfos->scalePDF);
       double xpdf2 = PDFs[j]->xfxQ(pdfInfos->id.second, pdfInfos->x.second, pdfInfos->scalePDF);
       pdfs.push_back(xpdf1 * xpdf2);
-	  if (std::isfinite(1./pdfNominal)) {
-      	weights["Weight_"+initializedPDFNames[p]+std::to_string(PDFs[j]->lhapdfID())] =  pdfs[j] / pdfNominal;
+      if (std::isfinite(1./pdfNominal)) {
+            weights["Weight_LHA_"+initializedPDFNames[p]+std::to_string(PDFs[j]->lhapdfID())] =  pdfs[j] / pdfNominal;
       }
     }
 
-  
-
+    // use the envelope method from lhapdf to calcualte nominal value and uncertanties
     const LHAPDF::PDFUncertainty pdfUnc = PDFSet.uncertainty(pdfs, 68.);
     
     double weight_up = 1.0;
@@ -89,15 +71,12 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
       weight_nom = pdfUnc.central / pdfNominal;
     }
     
-
-    weights["Weight_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_nominal"] =  weight_nom;
-    weights["Weight_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_up"] = weight_up;
-    weights["Weight_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_down"] = weight_down;
-    weights["Weight_GEN_nom"]=gen_weight;
+    // give values and uncertainties for a specific pdf set from an envelope method in lhapdf
+    weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_nominal"] =  weight_nom;
+    weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_up"] = weight_up;
+    weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_down"] = weight_down;
+    
   }
-
-
-  
 
   return true;
 
@@ -122,11 +101,6 @@ bool GenWeights::initLHAPDF(string name){
 
 
 bool GenWeights::initLHAPDF(vector<string> names){
-
-
-  //++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  // NOT YET TESTED 
-  //++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
   cout << "Initializing additional PDFs for reweighting:" << endl;
   for( auto name: names ){
@@ -145,53 +119,90 @@ bool GenWeights::initLHAPDF(vector<string> names){
 
 }
 
-
-map<int, string> GenWeights::GetWeightNames(const Generator::Generator usedGenerator) const{
-  map<int, string> names;
-  names[0] = "Weight_muRnmuFn";
-  names[1] = "Weight_muRnmuFup";
-  names[2] = "Weight_muRnmuFdown";
-  names[3] = "Weight_muRupmuFn";
-  names[4] = "Weight_muRupmuFup";
-  names[5] = "Weight_muRupmuFdown";
-  names[6] = "Weight_muRdownmuFn";
-  names[7] = "Weight_muRdownmuFup";
-  names[8] = "Weight_muRdownmuFdown";
-  if(usedGenerator == Generator::POWHEG){
-    //NNPDF
-    int set = 260001;
-    for(int i=0; i<100; i++){
-      names[9+i] = "Weight_NNPDFid"+std::to_string(set+i);
-    }
-    names[109] = "Weight_NNPDFasdown265000";
-    names[110] = "Weight_NNPDFasup266000";
-    //CT10
-    set = 11000;
-    for(int i=0; i<53; i++){
-      names[i+111] = "Weight_CT10id"+std::to_string(set+i);
-    }
-    names[164] = "Weight_CT10asdown11067";
-    names[165] = "Weight_CT10asup11069";
-    //MMHT2014
-    set = 25200;
-    for(int i=0; i<=50; i++){
-      names[i+166] = "Weight_MMHT2014"+std::to_string(set+i);
-    } 
-    set = 25260;
-    for(int i=0; i<=4;i++){
-      names[i+217] = "Weight_MMHT2014"+std::to_string(set+i);
-    }
-    for(int i=0; i<28;i++){
-      names[222+i] = "Weight_hdampvar"+std::to_string(i);
-    }
-  }
-  else if (usedGenerator == Generator::aMC) {
-    int set = 292201;
-    for (int i=0; i<=101; i++){
-      names[9+i] = "Weight_NNPDFnf5"+std::to_string(set+i);
-    }
-  }
-  return names;
+void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
+    // function to get a mapping between the ids of the genweights and their actual name/meaning
+    bool is_pdf_var=false;
+    bool is_scale_var=false;
+    bool is_hdamp_var=false;
+    TString name_string = "";
+    int split=0;
+    for (auto iter=myLHERunInfoProduct.begin(); iter!=myLHERunInfoProduct.end(); iter++) {
+        TString line = *iter;
+        line.ToLower();
+        line.ReplaceAll("\n","");
+        line.ReplaceAll(" ","");
+        line.ReplaceAll("<","");
+        line.ReplaceAll(">","");
+        line.ReplaceAll("/","");
+        line.ReplaceAll('"',"");
+        line.ReplaceAll("=","");
+        if(!line.Contains("weight")) continue;
+        
+        if(line.Contains("weightgroupcombine")) {
+            if(line.Contains("pdf")) {
+                is_pdf_var=true;
+                is_scale_var=false;
+                is_hdamp_var=false;
+            }
+            else if(line.Contains("lhgrid")) {
+                is_pdf_var=true;
+                is_scale_var=false;
+                is_hdamp_var=false;
+            }
+            else if(line.Contains("scale")){
+                is_pdf_var=false;
+                is_scale_var=true;
+                is_hdamp_var=false;
+            }
+            else if(line.Contains("hdamp")) {
+                is_pdf_var=false;
+                is_scale_var=false;
+                is_hdamp_var=true;
+            }
+            else {
+                is_pdf_var=false;
+                is_scale_var=false;
+                is_hdamp_var=false;
+            }
+            split=0;
+            if(line.Contains("name")) split=line.Index("name");
+            if(line.Contains("type")) split=line.Index("type");
+            line.Remove(0,split+4);
+            name_string = line;
+            name_string.ReplaceAll(".lhgrid","");
+            //cout << "blablabla " << split << "       " << pdf_string << endl;
+            continue;
+        }
+        
+        if(!is_pdf_var&&!is_scale_var&&!is_hdamp_var) continue;
+        if(!line.Contains("weightid")) continue;
+        
+        line.ReplaceAll("weight","");
+        line.ReplaceAll("id","");
+        
+        split=0;
+        if(line.Contains("pdfset")) split=line.Index("pdfset");
+        if(line.Contains("member")) split=line.Index("member");
+        if(line.Contains("mur")) split=line.Index("mur");
+        //if(line.Contains("mu")) split=line.First("mu");
+        TString id=TString(line,split);
+        line.ReplaceAll(TString(id),"");
+        line.ReplaceAll("pdfset","Weight_"+name_string+"_");
+        line.ReplaceAll("member","Weight_"+name_string+"_");
+        if(line.Contains("mur")) line.ReplaceAll(line,"Weight_"+name_string+"_"+line);
+        //cout << line << "   " << id << endl;
+        lhe_weights[std::string(id)]=line;
+        
+        }
+        
+        initialized = true;
+        
 }
+
+void GenWeights::Clear() {
+    lhe_weights.clear();
+}
+
+
 
 
