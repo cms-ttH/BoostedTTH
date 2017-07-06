@@ -22,9 +22,9 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
     //loop over every generator weight available and add the weight with its corresponding name to the weights map. the name is derived with the generator id and the lhe_weights map which maps the weight id to the corresponding name
     for (uint i = 0;i < weightnumber; i++) {
         std::string weight_id = LHEEvent.weights()[i].id;
+        if(!lhe_weights.count(weight_id)) continue;
         std::string weight_name = lhe_weights.at(weight_id);
         //cout << weight_id << "   " << weight_name << endl;
-        if(!weights.count(weight_name)) continue;
         weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
     }
     weights["Weight_LHECentral"]=LHE_central_weight;
