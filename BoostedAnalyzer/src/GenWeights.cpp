@@ -124,6 +124,10 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
     bool is_pdf_var=false;
     bool is_scale_var=false;
     bool is_hdamp_var=false;
+    TString mur = "";
+    TString muf = "";
+    double mur_d = 0;
+    double muf_d = 0;
     TString name_string = "";
     int split=0;
     for (auto iter=myLHERunInfoProduct.begin(); iter!=myLHERunInfoProduct.end(); iter++) {
@@ -136,6 +140,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
         line.ReplaceAll("/","");
         line.ReplaceAll('"',"");
         line.ReplaceAll("=","");
+        line.ReplaceAll("+","");
         if(!line.Contains("weight")) continue;
         
         if(line.Contains("weightgroupcombine")) {
@@ -173,9 +178,11 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             //cout << "blablabla " << split << "       " << pdf_string << endl;
             continue;
         }
-        
-        if(!is_pdf_var&&!is_scale_var&&!is_hdamp_var) continue;
+        if(is_hdamp_var) continue;
+        if(!is_pdf_var&&!is_scale_var) continue;
         if(!line.Contains("weightid")) continue;
+        
+        //cout << line << endl;
         
         line.ReplaceAll("weight","");
         line.ReplaceAll("id","");
@@ -183,14 +190,39 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
         split=0;
         if(line.Contains("pdfset")) split=line.Index("pdfset");
         if(line.Contains("member")) split=line.Index("member");
-        if(line.Contains("mur")) split=line.Index("mur");
+        
+        
+        if(line.Contains("mur")) {
+            //cout << "-----------------------------------" << endl;
+            //cout << line << endl;
+            split=line.Index("hdamp");
+            line.ReplaceAll(line(split,line.Length()),"");
+            //cout << line << endl;
+            split=line.Index("muf");
+            muf = line(split,line.Length());
+            line.ReplaceAll(muf,"");
+            muf.ReplaceAll("muf","");
+            //cout << line << endl;
+            split=line.Index("mur");
+            mur = line(split,line.Length());
+            line.ReplaceAll(mur,"");
+            mur.ReplaceAll("mur","");
+            //cout << line << endl;
+            //std::string mur_ = mur.Data();
+            //std::string muf_ = muf.Data();
+            mur_d = mur.Atof();
+            muf_d = muf.Atof();
+            mur = TString::Format("%.1f",mur_d);
+            muf = TString::Format("%.1f",muf_d);
+        }
+        
         //if(line.Contains("mu")) split=line.First("mu");
         TString id=TString(line,split);
         line.ReplaceAll(TString(id),"");
         line.ReplaceAll("pdfset","Weight_"+name_string+"_");
         line.ReplaceAll("member","Weight_"+name_string+"_");
-        if(line.Contains("mur")) line.ReplaceAll(line,"Weight_"+name_string+"_"+line);
-        //cout << line << "   " << id << endl;
+        if(is_scale_var) line="Weight_"+name_string+"_muR="+mur+"_muF="+muf;
+        cout << line << "   " << id << endl;
         lhe_weights[std::string(id)]=line;
         
         }
