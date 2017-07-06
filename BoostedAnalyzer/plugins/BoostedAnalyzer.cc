@@ -398,12 +398,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     pointerToMEMClassifier = new MEMClassifier();
     pointerToCommonBDT5Classifier = new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V1/");
     DNNClassifierBase::pyInitialize();
-    pointerToDnnSLClassifier = new DNNClassifier_SL("v4");
+    pointerToDnnSLClassifier = new DNNClassifier_SL("v5a");
     
     // initialize synchronizer
     if(dumpSyncExe){
         pointerToDLBDTClassifier = new DLBDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/dlbdtweights_v5/");
-        pointerToDnnDLClassifier = new DNNClassifier_DL("v1");
+        pointerToDnnDLClassifier = new DNNClassifier_DL("v2a");
 	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,pointerToCommonBDT5Classifier,pointerToDLBDTClassifier,pointerToDnnSLClassifier,pointerToDnnDLClassifier,dumpExtended);
     }
 

@@ -508,11 +508,11 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if(input.weights.count("Weight_CSVHFdown")>0) csvSF_hf_down=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVHFdown");
     if(input.weights.count("Weight_CSVCErr1down")>0) csvSF_cErr1_down=input.weights.at("Weight_CSV")*input.weights.at("Weight_CSVCErr1down");
 
-    if(input.weights.count("Weight_muRupmuFup")>0) me_up =input.weights.at("Weight_muRupmuFup");
-    if(input.weights.count("Weight_muRdownmuFdown")>0) me_down =input.weights.at("Weight_muRdownmuFdown");
+    if(input.weights.count("Weight_scale_variation_muR=2.0_muF=2.0")>0) me_up =input.weights.at("Weight_scale_variation_muR=2.0_muF=2.0");
+    if(input.weights.count("Weight_scale_variation_muR=0.5_muF=0.5")>0) me_down =input.weights.at("Weight_scale_variation_muR=0.5_muF=0.5");
     if(input.weights.count("Weight_TopPt")>0) top_pt_weight=input.weights.at("Weight_TopPt");
-    if(input.weights.count("Weight_PDF4LHC15_nlo_30_up")>0) pdf_up=input.weights.at("Weight_PDF4LHC15_nlo_30_up");
-    if(input.weights.count("Weight_PDF4LHC15_nlo_30_down")>0) pdf_down=input.weights.at("Weight_PDF4LHC15_nlo_30_down");
+    if(input.weights.count("Weight_LHA_PDF4LHC15_nlo_30_up")>0) pdf_up=input.weights.at("Weight_LHA_PDF4LHC15_nlo_30_up");
+    if(input.weights.count("Weight_LHA_PDF4LHC15_nlo_30_down")>0) pdf_down=input.weights.at("Weight_LHA_PDF4LHC15_nlo_30_down");
     
     if(is_SL) {
         std::vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));

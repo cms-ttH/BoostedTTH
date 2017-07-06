@@ -3,7 +3,7 @@ using namespace std;
 
 DNNVarProcessor::DNNVarProcessor(){
     DNNClassifierBase::pyInitialize();
-    sldnnclassifier=new DNNClassifier_SL("v4");
+    sldnnclassifier=new DNNClassifier_SL("v5a");
     classifier_created_inside=true;
 }
 

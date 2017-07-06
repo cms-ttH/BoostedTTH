@@ -236,7 +236,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             line.ReplaceAll("member","Weight_"+name_string+"_");
         }
         if(is_scale_var) line="Weight_"+name_string+"_muR="+mur+"_muF="+muf;
-        cout << line << "   " << id << endl;
+        //cout << line << "   " << id << endl;
         // add the unique weightid and the corresponding name to a map to use later when reading the weights from the events
         lhe_weights[std::string(id)]=line;
         
