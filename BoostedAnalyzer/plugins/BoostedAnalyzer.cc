@@ -975,6 +975,10 @@ void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSet
     edm::Handle<LHERunInfoProduct> runhandle;
     //iEvent.getRun()
     iRun.getByLabel("externalLHEProducer",runhandle);
+    if(!runhandle.isValid()) {
+        cout << "Attention: no genweights will be written because the LHERunInfoProduct is not available!" << endl;
+        return;
+    }
     LHERunInfoProduct myLHERunInfoProduct = *(runhandle.product());
     genweights.GetNamesFromLHE(myLHERunInfoProduct);
     

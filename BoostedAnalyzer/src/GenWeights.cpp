@@ -12,7 +12,8 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
 			       const LHEEventProduct& LHEEvent
 			       ) const {
     if(!initialized) {
-        cout << "get the names for the genweights from the lhe file before you  want to retrieve the weights " << endl;
+        //cout << "genweights can not be read" << endl;
+        //cout << "get the names for the genweights from the lhe file before you retrieve the weights or your file does not have the lheruninfoproduct" << endl;
         return;
     }
     // number of generator weights which are stored in the LHEEventProduct
