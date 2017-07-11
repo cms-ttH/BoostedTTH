@@ -33,8 +33,10 @@ void SlimmedNtuples::Init(const std::vector<InputCollections>& input,VariableCon
     vars.InitVar( "met_phi" );
     
     for(uint i_sys=1;i_sys<uint(input.size());i_sys++) {
-        vars.InitVar("njets"+Systematics::toString(input.at(i_sys).systematic),"I");
-        vars.InitVars("jet_"+Systematics::toString(input.at(i_sys).systematic),"njets"+Systematics::toString(input.at(i_sys).systematic));
+        TString syst_str = Systematics::toString(input.at(i_sys).systematic);
+        syst_str.ReplaceAll("JES","");
+        vars.InitVar("njets"+syst_str,"I");
+        vars.InitVars("jet_"+syst_str,"njets"+syst_str);
     }
     
     vars.InitVar( "njets","I" );
@@ -42,7 +44,9 @@ void SlimmedNtuples::Init(const std::vector<InputCollections>& input,VariableCon
     vars.InitVars( "jet_pt","njets" );
     vars.InitVars( "jet_eta","njets" );
     vars.InitVars( "jet_phi","njets" );
-    vars.InitVars( "jet_","njets" );
+    vars.InitVars( "jet_corr","njets" );
+    vars.InitVars( "jet_csv","njets" );
+    vars.InitVars( "jet_cmva","njets" );
     
     initialized=true;
 }
@@ -96,7 +100,8 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
     vars.FillVars( "jet_pt",iJet,jet.pt() );
     vars.FillVars( "jet_eta",iJet,jet.eta() );
     vars.FillVars( "jet_phi",iJet,jet.phi() );
-    vars.FillVars( "jet_",iJet,(itJet->userFloat("HelperJES"))*(itJet->userFloat("HelperJER")) );
+    vars.FillVars( "jet_csv",iJet,MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+    vars.FillVars( "jet_corr",iJet,(itJet->userFloat("HelperJES"))*(itJet->userFloat("HelperJER")) );
   }
   
   vars.FillVar( "met_pt", input_nom.correctedMET.corPt(pat::MET::Type1XY) );
@@ -108,10 +113,12 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
         const InputCollections&  input_used = input.at(i_sys);
         std::vector<pat::Jet> jets = GetSortedBySeed(input_used.selectedJetsLoose);
         const Systematics::Type& systematic = input_used.systematic;
-        vars.FillIntVar("njets"+Systematics::toString(systematic),jets.size());
+        TString syst_str = Systematics::toString(systematic);
+        syst_str.ReplaceAll("JES","");
+        vars.FillIntVar("njets"+syst_str,jets.size());
         for(std::vector<pat::Jet>::const_iterator itJet = jets.begin() ; itJet != jets.end(); ++itJet){
             int iJet = itJet - jets.begin();
-            vars.FillVars( "jet_"+Systematics::toString(systematic),iJet,itJet->userFloat("Helper"+Systematics::toString(systematic)) );
+            vars.FillVars( "jet_"+syst_str,iJet,itJet->userFloat("Helper"+Systematics::toString(systematic)) );
         }
     }
   
