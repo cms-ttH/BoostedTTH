@@ -115,6 +115,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
 
+#include "BoostedTTH/BoostedAnalyzer/interface/ZPrimeToTPrimeAllHadProducer.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ZPrimeToTPrimeAllHadProcessor.hpp"
 
 //
 // class declaration
@@ -194,6 +196,9 @@ private:
     std::string usedGenerator;
     /** produces MC truth information for ttbar and ttH samples (genTopEvent)*/
     GenTopEventProducer genTopEvtProd;
+    /** produces MC truth information for ZPrime to TPrime samples in all-hadronic channel (zprimetotprimeallhad)*/
+    ZPrimeToTPrimeAllHadProducer zprimetotprimeallhadProd;
+    
     /** produces trigger information */
     TriggerInfoProducer triggerInfoProd;
     /** produces filter information */
@@ -238,6 +243,12 @@ private:
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsLooseTokens;
     /** mets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::MET> > > correctedMETsTokens;
+
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK8Tokens;
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK12Tokens;   
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK15Tokens;   
+                
+    
     /** boosted jets data access token **/
     edm::EDGetTokenT< boosted::BoostedJetCollection > boostedJetsToken;
     /** gen info data access token **/
@@ -259,6 +270,11 @@ private:
     DNNClassifier_DL* pointerToDnnDLClassifier;
     
     ResourceMonitor* ResMon;
+    
+    
+
+    
+    
 };
 
 //
@@ -268,9 +284,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // initialize gen top event with consumes collector (allows to access data from file within this class)
     synchronizer(Synchronizer(iConfig,consumesCollector())),
     genTopEvtProd(GenTopEventProducer(consumesCollector())),
+    zprimetotprimeallhadProd(ZPrimeToTPrimeAllHadProducer(consumesCollector())),
     triggerInfoProd(TriggerInfoProducer(iConfig,consumesCollector())),
     filterInfoProd(FilterInfoProducer(iConfig,consumesCollector()))
-
 {
   
   //set up resource monitor
@@ -324,6 +340,23 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
 	     correctedMETsTokens.push_back(consumes< std::vector<pat::MET> >(tag));
     }
+    
+    
+
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK8")){
+	     selectedJetsAK8Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    } 
+
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK12")){
+	     selectedJetsAK12Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    }     
+
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK15")){
+	     selectedJetsAK15Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    }       
+    
+    
+    
     boostedJetsToken        = consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets"));
     genInfoToken            = consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo"));
     lheInfoToken            = consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo"));
@@ -519,6 +552,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"SlimmedNtuples")!=processorNames.end()) {
 	  treewriter->AddTreeProcessor(new SlimmedNtuples(),"SlimmedNtuples");
 	}
+	if(std::find(processorNames.begin(),processorNames.end(),"ZPrimeToTPrimeAllHadProcessor")!=processorNames.end()) {
+	    treewriter->AddTreeProcessor(new ZPrimeToTPrimeAllHadProcessor(),"ZPrimeToTPrimeAllHadProcessor");
+	}
+        
     }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
@@ -623,6 +660,34 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	hs_correctedMETs.push_back(h_correctedMETs);
     }
 
+    
+    
+ 
+    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK8;
+    for(auto & selectedJetsAK8Token : selectedJetsAK8Tokens){
+    	edm::Handle< pat::JetCollection > h_selectedJetsAK8;
+    	iEvent.getByToken( selectedJetsAK8Token,h_selectedJetsAK8 );
+    	hs_selectedJetsAK8.push_back(h_selectedJetsAK8);
+    }    
+
+   
+    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK12;
+    for(auto & selectedJetsAK12Token : selectedJetsAK12Tokens){
+    	edm::Handle< pat::JetCollection > h_selectedJetsAK12;
+    	iEvent.getByToken( selectedJetsAK12Token,h_selectedJetsAK12 );
+    	hs_selectedJetsAK12.push_back(h_selectedJetsAK12);
+    }    
+    
+ 
+    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK15;
+    for(auto & selectedJetsAK15Token : selectedJetsAK15Tokens){
+    	edm::Handle< pat::JetCollection > h_selectedJetsAK15;
+    	iEvent.getByToken( selectedJetsAK15Token,h_selectedJetsAK15 );
+    	hs_selectedJetsAK15.push_back(h_selectedJetsAK15);
+    }    
+    
+    
+    
     // MC only (generator weights for example)
     edm::Handle<GenEventInfoProduct> h_genInfo;
     edm::Handle<LHEEventProduct> h_lheInfo;
@@ -727,6 +792,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!(!isData&&foundT&&foundTbar));
     int ttid = genTopEvt.IsFilled()? genTopEvt.GetTTxIdFromProducer() : -1;
 
+    ZPrimeToTPrimeAllHad zprimetotprimeallhad=zprimetotprimeallhadProd.Produce(iEvent,useGenHadronMatch,isData);
+    
+    
     SampleType sampleType= SampleType::nonttbkg;
     if(isData) sampleType = SampleType::data;
     else if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
@@ -747,6 +815,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // inputs
     vector<InputCollections> inputs;
     for(uint isys=0; isys<jetSystematics.size(); isys++){
+//         std::cout<<*(hs_selectedJets[isys])<<std::endl;
         auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
@@ -760,18 +829,27 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectronsLoose,
 					  *(hs_selectedJets[isys]),
 					  *(hs_selectedJetsLoose[isys]),
+                                          *(hs_selectedJetsAK8[isys]),
+                                          *(hs_selectedJetsAK12[isys]),
+                                          *(hs_selectedJetsAK15[isys]),
+                                                                                    
+                                          
 					  (*(hs_correctedMETs[isys]))[0],
 					  selectedBoostedJets[isys],
                                           selectedAk4Cluster,
 					  genTopEvt,
+                                          zprimetotprimeallhad,
 					  *h_genJets,
 					  sampleType,
 					  higgsdecay,
 					  weights,
 					  iEvent,
 					  iSetup,
-                                          jetSystematics[isys]
-					  ));
+                                          jetSystematics[isys],
+                                          &csvReweighter
+                                   
+                                          )
+                        );
 
     }
     // TODO: adapt to new synch exe

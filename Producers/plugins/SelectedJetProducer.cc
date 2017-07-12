@@ -90,6 +90,7 @@ private:
     bool applyCorrection;
     bool doJER;
     bool isData;
+    std::string corrLable;
 };
 
 //
@@ -119,6 +120,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     collectionNames = iConfig.getParameter< std::vector<std::string> >("collectionNames");
     PUJetIDMins = iConfig.getParameter<std::vector<std::string>> ("PUJetIDMins");
     JetID = iConfig.getParameter<std::string> ("JetID");
+    corrLable=iConfig.getParameter<std::string> ("corrLable");
 
     assert(ptMins.size()==etaMaxs.size());
     assert(ptMins.size()==collectionNames.size());
@@ -190,7 +192,9 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    std::vector<std::vector<pat::Jet> > unsortedJets;
    if(applyCorrection){
        // initialize jetcorrector
-       const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+//        const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+       
+       const JetCorrector* corrector = JetCorrector::getJetCorrector( corrLable, iSetup );
        helper.SetJetCorrector(corrector);
 
        // Get raw jets

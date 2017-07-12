@@ -17,5 +17,6 @@ SelectedJetProducer = cms.EDProducer(
     collectionNames  = cms.vstring("selectedJets","selectedJetsLoose"),
     systematics = cms.vstring(""),
     JetID = cms.string("none"),
+    corrLable=cms.string("ak4PFchsL1L2L3"),
     )
 

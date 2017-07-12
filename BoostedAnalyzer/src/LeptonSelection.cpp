@@ -27,7 +27,8 @@ void LeptonSelection::InitCutflow(Cutflow& cutflow){
     cutflow.AddStep("== 1 tight lepton same flavor");
   if(step<0||step==4)
     cutflow.AddStep("== 0 loose leptons different flavor");
-
+  if(step<0||step==5)
+    cutflow.AddStep("== No leptons");
   initialized=true;
 }
 
@@ -99,7 +100,16 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
       else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input.weights.at("Weight"));
     }
   }
-  else {
+  else if(channel=="veto"){
+//    if(step<0||step==1){
+//      if(muonTriggered || electronTriggered) return false;
+//      else cutflow.EventSurvivedStep("lepton VETO trigger",input.weights.at("Weight"));
+//    }
+    if(step<0||step==5){
+      if( nmuonsloose==0 && nelectronsloose==0 && !(muonTriggered || electronTriggered)) cutflow.EventSurvivedStep("== No leptons",input.weights.at("Weight"));
+      else return false;
+    }
+  }  else {
     throw cms::Exception("BadSelection")
       << "channel '" << channel << "' of lepton selection does not exist!\n"
       << "Please fix BoostedAnalyzer.channel parameter\n"

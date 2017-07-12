@@ -17,6 +17,12 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/FilterInfo.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
+#include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
+
+
+#include "BoostedTTH/BoostedAnalyzer/interface/ZPrimeToTPrimeAllHadProducer.hpp"
+// #include "BoostedTTH/BoostedAnalyzer/interface/ZPrimeToTPrimeAllHadProcessor.hpp"
+
 
 
 enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg,thq};
@@ -44,18 +50,27 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
+                    
+		    const std::vector<pat::Jet>&                  selectedJetsAK8_,
+		    const std::vector<pat::Jet>&                  selectedJetsAK12_,
+		    const std::vector<pat::Jet>&                  selectedJetsAK15_,
+                    
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
                     const GenTopEvent&                            genTopEvt_,
+                    const ZPrimeToTPrimeAllHad&                   zprimetotprimeallhad_,
                     const std::vector<reco::GenJet>&              genJets_,
                     const SampleType                              sampleType_,
                     const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
 		    const edm::Event&                             iEvent_,
 		    const edm::EventSetup&                        iSetup_,
-                    const Systematics::Type&                      systematic_
-		      /**** bjetness code ****/
+                    const Systematics::Type&                      systematic_,                    
+                    const CSVHelper*                              csvReweighter_
+//                     const sysType::sysType                        systype_
+                    
+                    /**** bjetness code ****/
 
 		            ):
                     eventInfo(eventInfo_),
@@ -70,17 +85,25 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedElectronsLoose(selectedElectronsLoose_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
+                    
+                    selectedJetsAK8(selectedJetsAK8_),
+                    selectedJetsAK12(selectedJetsAK12_),   
+                    selectedJetsAK15(selectedJetsAK15_),
+                    
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
                     selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(genTopEvt_),
+                    zprimetotprimeallhad(zprimetotprimeallhad_),
                     genJets(genJets_),
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
                     weights(weights_),
 		    iEvent(iEvent_),
 		    iSetup(iSetup_),
-		    systematic(systematic_)
+                    systematic(systematic_),		    
+		    csvReweighter(csvReweighter_)
+// 		    systype(systype_)
                     {}
 
 /**
@@ -90,10 +113,17 @@ InputCollections(   const InputCollections&                       input,
                     const std::vector<pat::Jet>&                  rawJets_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
+                    
+                    const std::vector<pat::Jet>&                  selectedJetsAK8_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK12_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK15_,
+
+                    
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
-                    const std::map<std::string,float>&            weights_
+                    const std::map<std::string,float>&            weights_,
+                    const CSVHelper*                              csvReweighter_
         		    ): 
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
@@ -107,18 +137,25 @@ InputCollections(   const InputCollections&                       input,
                     selectedElectronsLoose(input.selectedElectronsLoose),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
+                    
+                    selectedJetsAK8(selectedJetsAK8_),
+                    selectedJetsAK12(selectedJetsAK12_),
+                    selectedJetsAK15(selectedJetsAK15_),
+                    
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
                     selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(input.genTopEvt),
+                    zprimetotprimeallhad(input.zprimetotprimeallhad),
                     genJets(input.genJets),
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
                     weights(weights_),
 		    iEvent(input.iEvent),
 		    iSetup(input.iSetup),
-		    systematic(input.systematic)
-
+                    systematic(input.systematic),
+		    csvReweighter(csvReweighter_)
+// 		    systype(systype_)
                     {}
 
   const EventInfo&                              eventInfo;
@@ -133,10 +170,16 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Electron>&             selectedElectronsLoose;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
+  
+  const std::vector<pat::Jet>&                  selectedJetsAK8;
+  const std::vector<pat::Jet>&                  selectedJetsAK12;  
+  const std::vector<pat::Jet>&                  selectedJetsAK15;  
+  
   const pat::MET&                               correctedMET;
   const boosted::BoostedJetCollection&          selectedBoostedJets;
   const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
   const GenTopEvent&                            genTopEvt;
+  const ZPrimeToTPrimeAllHad&                   zprimetotprimeallhad;
   const std::vector<reco::GenJet>&              genJets;
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
@@ -144,7 +187,8 @@ InputCollections(   const InputCollections&                       input,
   const edm::Event &                            iEvent;
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;
-
+  const CSVHelper*                              csvReweighter;
+//   const sysType::sysType                        systype;
 };
 
 #endif
