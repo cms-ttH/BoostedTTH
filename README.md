@@ -82,7 +82,8 @@ Follow These Steps:
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_SF_AK8PFPuppi.txt"
     cd $JENKINSCMSSWSRCDIR
     
-
+    # install Jettoolbox for reclustering of fat-jets
+    git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_80X_V3
     
     #compile
     scram b -j 12
