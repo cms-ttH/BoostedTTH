@@ -83,7 +83,7 @@ Follow These Steps:
     cd $JENKINSCMSSWSRCDIR
     
     # install Jettoolbox for reclustering of fat-jets
-    git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_80X_V3
+    git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_80X_V3    
     
     #compile
     scram b -j 12
