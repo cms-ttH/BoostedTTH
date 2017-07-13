@@ -65,7 +65,7 @@ Follow These Steps:
     
     # install miniaod and boostedtth
     cd $JENKINSCMSSWSRCDIR
-    git clone  -b 'CMSSW_8_0_24_v1_sync' https://github.com/cms-ttH/MiniAOD.git
+    git clone  -b 'CMSSW_8_0_24_v1_sync' https://github.com/kit-cn-cms/MiniAOD.git
     git clone --depth 1 -b CMSSW_8_0_26_VLQ https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
