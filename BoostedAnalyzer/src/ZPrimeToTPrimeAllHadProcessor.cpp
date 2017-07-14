@@ -4006,6 +4006,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_MSD",i,TopsABCD[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCD_t32",i,TopsABCD[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCD[i].userFloat("NjettinessAK8CHS:tau2"));
 
+     
+//      std::cout<<"debucg1"<<endl;
      std::vector<double> subjetPts;
      std::vector<double> subjetEtas;
      std::vector<double> subjetCSVs;
@@ -4018,7 +4020,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      double max_subjet_csv_v2=-10;
      auto const & names = TopsABCD[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
-         
+        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
         subjetPts.push_back(itsubJet->pt());
         subjetEtas.push_back(itsubJet->eta());
         subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
@@ -4029,15 +4031,14 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         };
      };
      
-     
+//      std::cout<<"debug2.2"<<endl;
      vars.FillVars("Tops_ABCD_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
      
-     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
-     
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
  //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-     
+//      std::cout<<"debug3   "<<subjetPts.size()<<endl;
      vars.FillVars("Topsubjets_ABCD_WeightCSVnominal",i,subjet_csvweight);
      vars.FillVars("Topsubjets_ABCD_WeightCSVLFup",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
      vars.FillVars("Topsubjets_ABCD_WeightCSVLFdown",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
@@ -4055,7 +4056,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Topsubjets_ABCD_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
      vars.FillVars("Topsubjets_ABCD_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
      vars.FillVars("Topsubjets_ABCD_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);  
-    
+//      std::cout<<"debug4"<<endl;
          
     }     
      
@@ -4150,7 +4151,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      double max_subjet_csv_v2=-10;
      auto const & names = TopsABCDmasscorrnotopbtag[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
-         
+        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
         subjetPts.push_back(itsubJet->pt());
         subjetEtas.push_back(itsubJet->eta());
         subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
@@ -4165,7 +4166,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_masscorrnotopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
      
-     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
      
 //     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
@@ -4285,7 +4286,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      double max_subjet_csv_v2=-10;
      auto const & names = TopsABCDmasscorrwithtopbtag[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
-         
+        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
         subjetPts.push_back(itsubJet->pt());
         subjetEtas.push_back(itsubJet->eta());
         subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
@@ -4300,7 +4301,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_masscorrwithtopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
      
-     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
      
 //     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
@@ -4453,7 +4454,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      double max_subjet_csv_v2=-10;
      auto const & names = Tops_ABCD_tAK15WAK8bAK4[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
-         
+        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
         subjetPts.push_back(itsubJet->pt());
         subjetEtas.push_back(itsubJet->eta());
         subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
@@ -4468,7 +4469,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
      
-     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
      
 //     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
@@ -4623,7 +4624,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      double max_subjet_csv_v2=-10;
      auto const & names = Tops_ABCD_tAK12WAK8bAK4[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
-         
+        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
         subjetPts.push_back(itsubJet->pt());
         subjetEtas.push_back(itsubJet->eta());
         subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
@@ -4638,7 +4639,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
      
-     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
      
 //     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
