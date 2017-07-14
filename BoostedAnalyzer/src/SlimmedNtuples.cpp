@@ -32,14 +32,15 @@ void SlimmedNtuples::Init(const std::vector<InputCollections>& input,VariableCon
     vars.InitVar( "met_pt" );
     vars.InitVar( "met_phi" );
     
+    vars.InitVar( "njets","I" );
+    
     for(uint i_sys=1;i_sys<uint(input.size());i_sys++) {
         TString syst_str = Systematics::toString(input.at(i_sys).systematic);
         syst_str.ReplaceAll("JES","");
-        vars.InitVar("njets"+syst_str,"I");
-        vars.InitVars("jet_"+syst_str,"njets"+syst_str);
+        //vars.InitVar("njets"+syst_str,"I");
+        vars.InitVars("jet_"+syst_str,"njets");
     }
     
-    vars.InitVar( "njets","I" );
     vars.InitVars( "jet_mass","njets" );
     vars.InitVars( "jet_pt","njets" );
     vars.InitVars( "jet_eta","njets" );
@@ -73,7 +74,7 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
   
   vars.FillIntVar("nleps",int(input_nom.selectedElectrons.size()+input_nom.selectedMuons.size()));
   // yet to determine what need to be filled here
-  vars.FillIntVar("njets",int(input_nom.selectedJetsLoose.size()));
+  
   
   for(std::vector<pat::Electron>::const_iterator itLep = input_nom.selectedElectrons.begin() ; itLep != input_nom.selectedElectrons.end(); ++itLep){
     int iLep = itLep - input_nom.selectedElectrons.begin();
@@ -92,17 +93,21 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
     vars.FillVars( "lep_charge",iLep,itLep->charge() );
   }
   std::vector<pat::Jet> jets = GetSortedBySeed(input_nom.selectedJetsLoose);
+  uint iJet=0;
   for(std::vector<pat::Jet>::const_iterator itJet = jets.begin() ; itJet != jets.end(); ++itJet){
-    int iJet = itJet - jets.begin();
     pat::Jet jet = *itJet;
     jet.scaleEnergy(1./(jet.userFloat("HelperJES")*jet.userFloat("HelperJER")));
+    if(jet.pt()<20.) continue;
     vars.FillVars( "jet_mass",iJet,jet.mass() );
     vars.FillVars( "jet_pt",iJet,jet.pt() );
     vars.FillVars( "jet_eta",iJet,jet.eta() );
     vars.FillVars( "jet_phi",iJet,jet.phi() );
     vars.FillVars( "jet_csv",iJet,MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags") );
     vars.FillVars( "jet_corr",iJet,(itJet->userFloat("HelperJES"))*(itJet->userFloat("HelperJER")) );
+    iJet++;
   }
+  
+  vars.FillIntVar("njets",iJet);
   
   vars.FillVar( "met_pt", input_nom.correctedMET.corPt(pat::MET::Type1XY) );
   vars.FillVar( "met_phi", input_nom.correctedMET.corPhi(pat::MET::Type1XY) );
@@ -115,10 +120,14 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
         const Systematics::Type& systematic = input_used.systematic;
         TString syst_str = Systematics::toString(systematic);
         syst_str.ReplaceAll("JES","");
-        vars.FillIntVar("njets"+syst_str,jets.size());
+        //vars.FillIntVar("njets"+syst_str,jets.size());
+        iJet=0;
         for(std::vector<pat::Jet>::const_iterator itJet = jets.begin() ; itJet != jets.end(); ++itJet){
-            int iJet = itJet - jets.begin();
+            pat::Jet jet = *itJet;
+            jet.scaleEnergy(1./(jet.userFloat("HelperJES")*jet.userFloat("HelperJER")*jet.userFloat("Helper"+Systematics::toString(systematic))));
+            if(jet.pt()<20.) continue;
             vars.FillVars( "jet_"+syst_str,iJet,itJet->userFloat("Helper"+Systematics::toString(systematic)) );
+            iJet++;
         }
     }
   
