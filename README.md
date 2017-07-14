@@ -65,7 +65,7 @@ Follow These Steps:
     
     # install miniaod and boostedtth
     cd $JENKINSCMSSWSRCDIR
-    git clone  -b 'CMSSW_8_0_24_v1_sync' https://github.com/cms-ttH/MiniAOD.git
+    git clone  -b 'CMSSW_8_0_26_VLQ' https://github.com/kit-cn-cms/MiniAOD.git
     git clone --depth 1 -b CMSSW_8_0_26_VLQ https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
@@ -74,9 +74,16 @@ Follow These Steps:
     cd jerfiles
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_SF_AK4PFchs.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_SF_AK8PFchs.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_PtResolution_AK4PFPuppi.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_SF_AK4PFPuppi.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_PtResolution_AK8PFPuppi.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Spring16_25nsV10_MC/Spring16_25nsV10_MC_SF_AK8PFPuppi.txt"
     cd $JENKINSCMSSWSRCDIR
     
-
+    # install Jettoolbox for reclustering of fat-jets
+    git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_80X_V3    
     
     #compile
     scram b -j 12
