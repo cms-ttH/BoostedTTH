@@ -18,7 +18,9 @@ options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
-options.register( "globalTag", "80X_mcRun2_asymptotic_2016_TrancheIV_v8", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+#options.register( "globalTag", "80X_mcRun2_asymptotic_2016_TrancheIV_v8", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 datasets=['NA','mu','el','elel','elmu','mumu']
@@ -34,12 +36,21 @@ options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton
 options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
 options.register("updatePUJetId",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
 options.register( "ProduceMemNtuples", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
-
 options.register( "LeptonChannel", "veto", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'el' or 'mu' or 'both' or 'veto'" )
 
 
 
 options.parseArguments()
+
+if options.globalTag is "NONE":
+
+	# These GT contain the latest 2015-data derived JEC:
+	# https://hypernews.cern.ch/HyperNews/CMS/get/JetMET/1630.html
+	if options.isData:
+		options.globalTag = "80X_dataRun2_Prompt_ICHEP16JEC_v0"
+	else:
+		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
+
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
