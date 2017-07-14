@@ -59,7 +59,8 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 
 if not options.inputFiles:
     #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mschrode/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Skim-V1_3j20_1l20/170217_171402/0000/Skim_1.root']
-    options.inputFiles=['file:/nfs/dust/cms/user/skudella/E22941D1-F526-E611-9437-B499BAAC078E.root']
+    options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1500Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/70000/469FD823-443D-E611-AF27-D4AE526EAB7F.root']
+    #options.inputFiles=['file:/nfs/dust/cms/user/skudella/E22941D1-F526-E611-9437-B499BAAC078E.root']
 # checks for correct values and consistency
 
 if options.LeptonChannel not in ["el","mu","both","veto"]:
@@ -789,25 +790,25 @@ if options.isData:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
   "essentialBasicVarProcessor",
-  "essentialMVAVarProcessor",
-  "BDTVarProcessor",
+  #"essentialMVAVarProcessor",
+  #"BDTVarProcessor",
   "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
+  #"ReconstructionMEvarProcessor",
   "ZPrimeToTPrimeAllHadProcessor",
-  "TTBBStudienProcessor"
+  #"TTBBStudienProcessor"
   )
 
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-  "essentialMCMatchVarProcessor",
+  #"essentialMCMatchVarProcessor",
   "essentialBasicVarProcessor",
-  "essentialMVAVarProcessor",
-  "BDTVarProcessor",
+  #"essentialMVAVarProcessor",
+  #"BDTVarProcessor",
   "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
+  #"ReconstructionMEvarProcessor",
   "ZPrimeToTPrimeAllHadProcessor",
-  "TTBBStudienProcessor"
+  #"TTBBStudienProcessor"
   )
 
 printContent=False
