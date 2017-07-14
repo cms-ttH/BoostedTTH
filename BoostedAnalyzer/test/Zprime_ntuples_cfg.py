@@ -55,7 +55,7 @@ if options.globalTag is "NONE":
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     #options.maxEvents = 10000 # reset for testing
-    options.maxEvents = 10 # reset for testing
+    options.maxEvents = 999999999 # reset for testing
 
 if not options.inputFiles:
     #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mschrode/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Skim-V1_3j20_1l20/170217_171402/0000/Skim_1.root']

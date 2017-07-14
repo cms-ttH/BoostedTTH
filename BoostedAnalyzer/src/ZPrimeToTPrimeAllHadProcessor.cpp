@@ -266,7 +266,7 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
         for(bool W : { false, true }){
             for(bool bottom : { false, true }){
                 for(bool topwbt : { false, true }){
-                    //if(top){bool tfirst : { false, true }
+//                     if(top){bool tfirst : { false, true }
                         for(bool tfirst : { false, true }){
                             std::string str_region="Sideband_";
                             std::string str_bottom="";
@@ -286,7 +286,7 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
                             if(!tfirst){str_first="Wfirst_";};
                             
                             fullstring=str_region+str_top+str_W+str_bottom+str_first;
-//                             std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
+                             std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
 //                             std::cout<<"lala0"<<endl;
                             vars.InitVar("N_"+fullstring+"Tops","I");
                             vars.InitVars(fullstring+"Tops_Pt",-9.0,"N_"+fullstring+"Tops");
@@ -316,7 +316,7 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
 //                             std::cout<<"lala2"<<endl;
                             
                             fullstring=str_region+str_top+"MCtopmass_"+str_W+str_bottom+str_first;
-//                             std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
+                            std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
 //                             std::cout<<"lala0"<<endl;
                             vars.InitVar("N_"+fullstring+"Tops","I");
                             vars.InitVars(fullstring+"Tops_Pt",-9.0,"N_"+fullstring+"Tops");
@@ -1252,7 +1252,7 @@ void ZPrimeToTPrimeAllHadProcessor::FillSignalSidebandVars(VariableContainer& va
     std::string str_W="";
 //     std::cout<<"top:"<<toptag<<" twbt:"<<toptag_withbtag<<" W:"<<Wtag<<" Bottom:"<<bottomtag<<"  toptaganti:"<< toptag_anti<<"  toptagantiwbt:"<<toptag_withbtag_anti<<"  Wtaganti:"<<Wtag_anti<<endl;
     
-    if(toptag && Wtag && bottomtag && !toptag_withbtag_anti){str_region="Signal_";};
+    if((toptag || toptag_withbtag)&& Wtag && bottomtag){str_region="Signal_";};
     if(Wtag_anti && !Wtag){str_W="W_anti_";};
     if(!bottomtag){str_bottom="bottom_anti_";};
     if(toptag_anti && !toptag){str_top="top_anti_";};
@@ -3617,6 +3617,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                                 TopsABCD.push_back(*ittopJet);
                                 BottomsABCD.push_back(*itBJet);
                                 WsABCD.push_back(*itWJet);
+                                BottomsABCD.push_back(*itBJet);
                                 
                             if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
                                 ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
