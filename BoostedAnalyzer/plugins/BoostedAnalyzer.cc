@@ -784,9 +784,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // loop over jet systematics
     assert(inputs.size()==cutflows.size());
     assert(inputs.size()==jetSystematics.size());
-    bool at_least_one_selected=true;
+    bool at_least_one_selected=false;
     for(uint i_sys=0; i_sys<jetSystematics.size(); i_sys++){
-        if(i_sys==0) {at_least_one_selected=false;}
     	// all events survive step 0
         cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight"));
         
@@ -799,6 +798,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	    }
     	}
     	at_least_one_selected = at_least_one_selected || selected;
+        if(ProduceMemNtuples&&at_least_one_selected) break;
     	if(!ProduceMemNtuples) {
             if(selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
         }
