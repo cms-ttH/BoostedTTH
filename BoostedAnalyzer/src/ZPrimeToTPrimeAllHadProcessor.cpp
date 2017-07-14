@@ -796,6 +796,28 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Tops_ABCD_t32",-9.0,"N_Zprime_ABCD");
    vars.InitVars("Tops_ABCD_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD");
 
+   vars.InitVars("Topsubjets_ABCD_WeightCSVnominal",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVLFup",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVLFdown",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVHFup",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVHFdown",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVCErr1up",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVCErr1down",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVCErr2up",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Topsubjets_ABCD_WeightCSVCErr2down",-9.0,"N_Zprime_ABCD");   
+   
+   
+   
+   
+   
    vars.InitVar("N_Zprimes_ABCDmasscorrnotopbtag","I");
    vars.InitVars("Zprimes_ABCD_masscorrnotopbtag_M",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
    vars.InitVars("Zprimes_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
@@ -836,6 +858,24 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Tops_ABCD_masscorrnotopbtag_t32",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
    vars.InitVars("Tops_ABCD_masscorrnotopbtag_maxsubjetCSVv2",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
  
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");      
+   
    
    
    vars.InitVar("N_Zprimes_ABCDmasscorrwithtopbtag","I");
@@ -878,6 +918,23 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Tops_ABCD_masscorrwithtopbtag_t32",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
    vars.InitVars("Tops_ABCD_masscorrwithtopbtag_maxsubjetCSVv2",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");   
   
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");      
    
    
 /*   vars.InitVar("N_Zprime_ABCD_tAK15WAK15bAK4","I");
@@ -942,6 +999,24 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_t32",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
    vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");   
    
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVnominal",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFup",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFup",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFdown",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");   
+      
   
    
 //    vars.InitVar("N_Zprime_ABCD_tAK12WAK12bAK4","I");
@@ -1006,7 +1081,24 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Tops_ABCD_tAK12WAK8bAK4_t32",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
    vars.InitVars("Tops_ABCD_tAK12WAK8bAK4_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");   
    
-      
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVnominal",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFup",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFup",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFdown",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
+   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");   
+
    
 ///Datadriven Background estimation   
    vars.InitVar("BG_Zprime_M","F");
@@ -3617,7 +3709,6 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                                 TopsABCD.push_back(*ittopJet);
                                 BottomsABCD.push_back(*itBJet);
                                 WsABCD.push_back(*itWJet);
-                                BottomsABCD.push_back(*itBJet);
                                 
                             if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
                                 ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
@@ -3878,13 +3969,6 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      
      csvweight= csvReweighter->getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,input.systematic, csvWgtHF, csvWgtLF, csvWgtCF);
 
-//      if(input.input.systematic==sysType::JESup)csvweight= csvReweighter->getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,7, csvWgtHF, csvWgtLF, csvWgtCF);
-//      else if(input.input.systematic==sysType::JESdown)csvweight= csvReweighter->getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,8, csvWgtHF, csvWgtLF, csvWgtCF);
-//      else if(input.input.systematic==sysType::JERup)csvweight= csvReweighter->getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
-//      else if(input.input.systematic==sysType::JERdown)csvweight= csvReweighter->getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF); //there are now SF for JER yet!!
-//      else csvweight= csvReweighter->getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,0, csvWgtHF, csvWgtLF, csvWgtCF);
-     
-
     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
@@ -3922,15 +4006,59 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_MSD",i,TopsABCD[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCD_t32",i,TopsABCD[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCD[i].userFloat("NjettinessAK8CHS:tau2"));
 
+     std::vector<double> subjetPts;
+     std::vector<double> subjetEtas;
+     std::vector<double> subjetCSVs;
+     std::vector<int> subjetFlavors;
+     double subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF;
+     float subjet_csvweight = 1.;
+     
+
+     
      double max_subjet_csv_v2=-10;
      auto const & names = TopsABCD[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
+         
+        subjetPts.push_back(itsubJet->pt());
+        subjetEtas.push_back(itsubJet->eta());
+        subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        subjetFlavors.push_back(itsubJet->hadronFlavour());
+              
         if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
             max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         };
      };
+     
+     
      vars.FillVars("Tops_ABCD_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+     
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
+     
+ //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+     
+     vars.FillVars("Topsubjets_ABCD_WeightCSVnominal",i,subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVLFup",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVLFdown",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVHFup",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVHFdown",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);  
+    
+         
+    }     
+     
   }
 
   
@@ -4009,15 +4137,61 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_masscorrnotopbtag_MSD",i,TopsABCDmasscorrnotopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCD_masscorrnotopbtag_t32",i,TopsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau2"));
 
+
+     std::vector<double> subjetPts;
+     std::vector<double> subjetEtas;
+     std::vector<double> subjetCSVs;
+     std::vector<int> subjetFlavors;
+     double subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF;
+     float subjet_csvweight = 1.;
+     
+
+     
      double max_subjet_csv_v2=-10;
      auto const & names = TopsABCDmasscorrnotopbtag[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
+         
+        subjetPts.push_back(itsubJet->pt());
+        subjetEtas.push_back(itsubJet->eta());
+        subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        subjetFlavors.push_back(itsubJet->hadronFlavour());
+              
         if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
             max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         };
      };
+     
+     
      vars.FillVars("Tops_ABCD_masscorrnotopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+     
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
+     
+//     bool doSystematics=true;
+//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+     
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVnominal",i,subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);  
+    
+         
+    }     
+     
   }
 
   vars.FillVar("N_Zprimes_ABCDmasscorrwithtopbtag",ZprimesABCDmasscorrwithtopbtag.size());
@@ -4097,15 +4271,59 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_masscorrwithtopbtag_MSD",i,TopsABCDmasscorrwithtopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCD_masscorrwithtopbtag_t32",i,TopsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau2"));
 
+
+
+     std::vector<double> subjetPts;
+     std::vector<double> subjetEtas;
+     std::vector<double> subjetCSVs;
+     std::vector<int> subjetFlavors;
+     double subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF;
+     float subjet_csvweight = 1.;
+     
+
+     
      double max_subjet_csv_v2=-10;
      auto const & names = TopsABCDmasscorrwithtopbtag[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
+         
+        subjetPts.push_back(itsubJet->pt());
+        subjetEtas.push_back(itsubJet->eta());
+        subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        subjetFlavors.push_back(itsubJet->hadronFlavour());
+              
         if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
             max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         };
      };
+     
+     
      vars.FillVars("Tops_ABCD_masscorrwithtopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+     
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
+     
+//     bool doSystematics=true;
+//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+     
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVnominal",i,subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);  
+     }
   }
   
 /*
@@ -4223,17 +4441,59 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_MSD",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("ak15PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_t32",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK15CHS:tau3")/Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK15CHS:tau2"));
 
+     std::vector<double> subjetPts;
+     std::vector<double> subjetEtas;
+     std::vector<double> subjetCSVs;
+     std::vector<int> subjetFlavors;
+     double subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF;
+     float subjet_csvweight = 1.;
+     
+
+     
      double max_subjet_csv_v2=-10;
      auto const & names = Tops_ABCD_tAK15WAK8bAK4[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
+         
+        subjetPts.push_back(itsubJet->pt());
+        subjetEtas.push_back(itsubJet->eta());
+        subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        subjetFlavors.push_back(itsubJet->hadronFlavour());
+              
         if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
             max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         };
      };
+     
+     
      vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+     
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
+     
+//     bool doSystematics=true;
+//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+     
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVnominal",i,subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFdown",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);  
+     }
+
   }
-            
 /*
   ////FILL ABCD_tAK12WAK12bAK4 VARIABLES
   vars.FillVar("N_Zprime_ABCD_tAK12WAK12bAK4",Zprimes_ABCD_tAK12WAK12bAK4.size());
@@ -4352,18 +4612,59 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_MSD",i,Tops_ABCD_tAK12WAK8bAK4[i].userFloat("ak12PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_t32",i,Tops_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK12CHS:tau3")/Tops_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK12CHS:tau2"));
 
+     
+     std::vector<double> subjetPts;
+     std::vector<double> subjetEtas;
+     std::vector<double> subjetCSVs;
+     std::vector<int> subjetFlavors;
+     double subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF;
+     float subjet_csvweight = 1.;
+     
      double max_subjet_csv_v2=-10;
      auto const & names = Tops_ABCD_tAK12WAK8bAK4[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
+         
+        subjetPts.push_back(itsubJet->pt());
+        subjetEtas.push_back(itsubJet->eta());
+        subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        subjetFlavors.push_back(itsubJet->hadronFlavour());
+              
         if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
             max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         };
      };
+     
+     
      vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
-  }
+     
+     subjet_csvweight= csvReweighter->getCSVWeight(subjetPts,subjetEtas,jetCSVs,jetFlavors,input.systematic, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF);
+     
+//     bool doSystematics=true;
+//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+     
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVnominal",i,subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFup, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFdown",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFdown, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVHFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVLFStats2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr1down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2up, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(subjetPts,subjetEtas,subjetCSVs,subjetFlavors,Systematics::CSVCErr2down, subjet_csvWgtHF, subjet_csvWgtLF, subjet_csvWgtCF)/subjet_csvweight);  
+
+     }
             
-    
+  }  
    
  }// end of HT if 1190
   
