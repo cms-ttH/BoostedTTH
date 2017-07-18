@@ -286,7 +286,7 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
                             if(!tfirst){str_first="Wfirst_";};
                             
                             fullstring=str_region+str_top+str_W+str_bottom+str_first;
-                             std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
+//                              std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
 //                             std::cout<<"lala0"<<endl;
                             vars.InitVar("N_"+fullstring+"Tops","I");
                             vars.InitVars(fullstring+"Tops_Pt",-9.0,"N_"+fullstring+"Tops");
@@ -316,7 +316,7 @@ void ZPrimeToTPrimeAllHadProcessor::InitSignalandSidbandVars(VariableContainer& 
 //                             std::cout<<"lala2"<<endl;
                             
                             fullstring=str_region+str_top+"MCtopmass_"+str_W+str_bottom+str_first;
-                            std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
+//                             std::cout<<"N_"+fullstring+"Tops"+"  created"<<endl;
 //                             std::cout<<"lala0"<<endl;
                             vars.InitVar("N_"+fullstring+"Tops","I");
                             vars.InitVars(fullstring+"Tops_Pt",-9.0,"N_"+fullstring+"Tops");
