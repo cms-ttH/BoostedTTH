@@ -47,6 +47,7 @@ void SlimmedNtuples::Init(const std::vector<InputCollections>& input,VariableCon
     vars.InitVars( "jet_phi" , "njets" );
     vars.InitVars( "jet_corr" , "njets" );
     vars.InitVars( "jet_corr_JER" , "njets" );
+    vars.InitVars( "jet_corr_JES" , "njets" );
     vars.InitVars( "jet_csv" , "njets" );
     vars.InitVars( "jet_cmva" , "njets" );
     
@@ -110,6 +111,7 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
     // save the product of the nominal jec, meaning JESnominal*JERnominal
     vars.FillVars( "jet_corr" , iJet , jet.userFloat("HelperJES")*jet.userFloat("HelperJER") );
     vars.FillVars( "jet_corr_JER" , iJet , jet.userFloat("HelperJER") );
+    vars.FillVars( "jet_corr_JES" , iJet , jet.userFloat("HelperJES") );
     iJet++;
   }
   // number of jets
