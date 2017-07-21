@@ -206,6 +206,7 @@ private:
     std::vector<std::string> selectionNames;
     
     bool ProduceMemNtuples;
+    uint jet_tag_pos;
 
   // TOKENS =========================
     /** pu summary data access token **/
@@ -393,7 +394,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	}
 	// dump some event info after selection step
     }
-
+    // find the position of the JetTagSelection to check later if the failed selection is the JetTagSelection or not
+    jet_tag_pos = find (selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
     
     pointerToMEMClassifier = new MEMClassifier();
     pointerToCommonBDT5Classifier = new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V1/");
@@ -780,30 +782,37 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	synchronizer.DumpSyncExe(inputs,dumpExtended, dumpAlwaysEvents);
     }
 
-    // DO SELECTION
-    // loop over jet systematics
     assert(inputs.size()==cutflows.size());
     assert(inputs.size()==jetSystematics.size());
+    // flag to identifiy if the event is selected for at least one of the possible jet collections corresponding to the jec sources
     bool at_least_one_selected=false;
+    // flag to identify if the event does not fulfill selection criteria independent of the jet collections (vertex,filter,lepton) so it can be skipped no matter which jet collection is looked at
+    bool next_event = false;
+    // DO SELECTION
+    // loop over jet systematics
     for(uint i_sys=0; i_sys<jetSystematics.size(); i_sys++){
     	// all events survive step 0
         cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight"));
-        
+        // start with selection=true and change this if one selection fails
     	bool selected=true;
     	// for every systematic: loop over selections
     	for(size_t i_sel=0; i_sel<selections.size() && selected; i_sel++){
     	    // see if event is selected
     	    if(!selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])){
     		    selected=false;
+                    // if the vertex,filter or lepton selection is not fulfilled, set the flag to skip the other jec variations
+                    if(!selected && i_sel!=jet_tag_pos) next_event=true;
     	    }
     	}
+    	// if the vertex,filter or lepton selection is not fulfilled, skip the other jec variations
+    	if(next_event) break;
+        // if one of the jet collections fulfills the selection and mem ntuples are supposed to be written, skip the checks for the other jet collections and go directly to writing 
     	at_least_one_selected = at_least_one_selected || selected;
         if(ProduceMemNtuples&&at_least_one_selected) break;
-    	if(!ProduceMemNtuples) {
-            if(selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
-        }
+        // if normal ntuples are supposed to be written and the selections are fulfilled for the jet collection, then write
+    	if(!ProduceMemNtuples&&selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
     }
-   
+    // write the mem ntuples if the mem ntuples flag is set and at least one jet collection fulfills the selection criteria
     if(ProduceMemNtuples&&at_least_one_selected) treewriters.back()->Process(inputs, false);
     
 
