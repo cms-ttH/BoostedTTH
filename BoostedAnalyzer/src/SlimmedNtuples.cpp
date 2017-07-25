@@ -98,10 +98,14 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
   uint iJet=0;
   for(std::vector<pat::Jet>::const_iterator itJet = jets.begin() ; itJet != jets.end(); ++itJet){
     pat::Jet jet = *itJet;
+    double jes_nom = 1.;
+    double jer_nom = 1.;
+    if(jet.hasUserFloat("HelperJES")) jes_nom = jet.userFloat("HelperJES");
+    if(jet.hasUserFloat("HelperJER")) jer_nom = jet.userFloat("HelperJER");
     // the following steps are done to have exactly the same jets in each considered inputcollection //
-    jet.scaleEnergy(1./(jet.userFloat("HelperJES")*jet.userFloat("HelperJER")));
+    jet.scaleEnergy(1./(jes_nom*jer_nom));
     if(jet.pt()<20.) continue;
-    jet.scaleEnergy(jet.userFloat("HelperJES")*jet.userFloat("HelperJER"));
+    jet.scaleEnergy(jes_nom*jer_nom);
     ////////////////
     vars.FillVars( "jet_mass" , iJet,jet.mass() );
     vars.FillVars( "jet_pt" , iJet , jet.pt() );
@@ -109,9 +113,9 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
     vars.FillVars( "jet_phi" , iJet , jet.phi() );
     vars.FillVars( "jet_csv" , iJet , MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags") );
     // save the product of the nominal jec, meaning JESnominal*JERnominal
-    vars.FillVars( "jet_corr" , iJet , jet.userFloat("HelperJES")*jet.userFloat("HelperJER") );
-    vars.FillVars( "jet_corr_JER" , iJet , jet.userFloat("HelperJER") );
-    vars.FillVars( "jet_corr_JES" , iJet , jet.userFloat("HelperJES") );
+    vars.FillVars( "jet_corr" , iJet , jes_nom*jer_nom );
+    vars.FillVars( "jet_corr_JER" , iJet , jer_nom );
+    vars.FillVars( "jet_corr_JES" , iJet , jes_nom );
     iJet++;
   }
   // number of jets
@@ -132,13 +136,17 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
         iJet=0;
         for(std::vector<pat::Jet>::const_iterator itJet = jets.begin() ; itJet != jets.end(); ++itJet){
             pat::Jet jet = *itJet;
+            double jes_nom = 1.;
+            double jer_nom = 1.;
+            if(jet.hasUserFloat("HelperJES")) jes_nom = jet.userFloat("HelperJES");
+            if(jet.hasUserFloat("HelperJER")) jer_nom = jet.userFloat("HelperJER");
             // the following steps are done to have exactly the same jets in each considered inputcollection //
-            jet.scaleEnergy(1./(jet.userFloat("HelperJES")*jet.userFloat("HelperJER")*jet.userFloat("Helper"+Systematics::toString(systematic))));
+            jet.scaleEnergy(1./(jes_nom*jer_nom*jet.userFloat("Helper"+Systematics::toString(systematic))));
             if(jet.pt()<20.) continue;
-            jet.scaleEnergy(jet.userFloat("HelperJES")*jet.userFloat("HelperJER")*jet.userFloat("Helper"+Systematics::toString(systematic)));
+            jet.scaleEnergy(jes_nom*jer_nom*jet.userFloat("Helper"+Systematics::toString(systematic)));
             ////////////////
             // save the complete product of the jec for each variation, meaning JESnominal*JERnominal*VariationUpDown
-            vars.FillVars( "jet_"+syst_str , iJet , jet.userFloat("HelperJES")*jet.userFloat("HelperJER")*jet.userFloat("Helper"+Systematics::toString(systematic)) );
+            vars.FillVars( "jet_"+syst_str , iJet , jes_nom*jer_nom*jet.userFloat("Helper"+Systematics::toString(systematic)) );
             iJet++;
         }
     }
