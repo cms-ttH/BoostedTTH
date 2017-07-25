@@ -834,12 +834,15 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	weights["Weight_PU"] = 1.0;
  	weights["Weight_TopPt"] = 1.0;
 	weights["Weight_PV"] = 1.0;
+	weights["Weight_GenValue"] = 1.0;
 	return weights;
     }
 
     float weight = 1.;
+    float weight_GenValue=1.0;
     if(genInfo.weights().size()>0){
 	weight = genInfo.weights()[0]>0 ? 1.: -1.;
+	weight_GenValue = genInfo.weights()[0];
     }
 
     //dummy variables for the getCSVWeight function, might be useful for checks
@@ -871,6 +874,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     puweight = puWeights.nominalWeight();
 
     weight *= xsweight;//*puweight;
+    weights["Weight_GenValue"] = weight_GenValue;
     weights["Weight"] = weight;
     weights["Weight_XS"] = xsweight;
     weights["Weight_CSV"] = csvweight;
