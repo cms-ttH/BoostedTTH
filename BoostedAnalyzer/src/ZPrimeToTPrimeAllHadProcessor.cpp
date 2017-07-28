@@ -3971,9 +3971,13 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+    
+     vars.FillVars("Bottoms_ABCD_WeightCSVnominal",i,ABCD_csvweight);    
+    
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
 //      std::cout<<"debug1   "<<ABCD_jetPts.size()<<endl;
-     vars.FillVars("Bottoms_ABCD_WeightCSVnominal",i,ABCD_csvweight);
+     
+     
      vars.FillVars("Bottoms_ABCD_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVLFup, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight);
      vars.FillVars("Bottoms_ABCD_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVLFdown, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight);
      vars.FillVars("Bottoms_ABCD_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVHFup, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight);
@@ -4037,9 +4041,11 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      
      subjet_ABCD_csvweight= csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,input.systematic, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF);
  //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+
+     vars.FillVars("Topsubjets_ABCD_WeightCSVnominal",i,subjet_ABCD_csvweight);
+     
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
 //      std::cout<<"debug3   "<<ABCD_subjetPts.size()<<endl;
-     vars.FillVars("Topsubjets_ABCD_WeightCSVnominal",i,subjet_ABCD_csvweight);
      vars.FillVars("Topsubjets_ABCD_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
      vars.FillVars("Topsubjets_ABCD_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
      vars.FillVars("Topsubjets_ABCD_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
@@ -4097,10 +4103,11 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
-     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-
+    vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVnominal",i,ABCD_csvweight);
      
-     vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVnominal",i,ABCD_csvweight);
+    
+    if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+
      vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVLFup, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
      vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVLFdown, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
      vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVHFup, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
@@ -4163,9 +4170,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      
 //     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVnominal",i,subjet_ABCD_masscorrnotopbtag_csvweight);
+
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
      
-     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVnominal",i,subjet_ABCD_masscorrnotopbtag_csvweight);
      vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
      vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
      vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
@@ -4222,10 +4230,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVnominal",i,ABCD_masscorrwithtopbtag_csvweight);
+     
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
 
-     
-     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVnominal",i,ABCD_masscorrwithtopbtag_csvweight);
      vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFup, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
      vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFdown, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
      vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFup, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
@@ -4291,9 +4299,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      
 //     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVnominal",i,subjet_ABCD_masscorrwithtopbtag_csvweight);
+     
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
      
-     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVnominal",i,subjet_ABCD_masscorrwithtopbtag_csvweight);
      vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
      vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
      vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
@@ -4392,10 +4401,11 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVnominal",i,ABCD_tAK15WAK8bAK4_csvweight);
+
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
 
      
-     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVnominal",i,ABCD_tAK15WAK8bAK4_csvweight);
      vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVLFup, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
      vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVLFdown, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
      vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVHFup, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
@@ -4459,9 +4469,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      
 //     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVnominal",i,subjet_ABCD_tAK15WAK8bAK4_csvweight);
+
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
      
-     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVnominal",i,subjet_ABCD_tAK15WAK8bAK4_csvweight);
      vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
      vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
      vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
@@ -4559,10 +4570,11 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVnominal",i,ABCD_tAK12WAK8bAK4_csvweight);
+
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
 
      
-     vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVnominal",i,ABCD_tAK12WAK8bAK4_csvweight);
      vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVLFup, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
      vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVLFdown, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
      vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVHFup, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
@@ -4624,9 +4636,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      
 //     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVnominal",i,subjet_ABCD_tAK12WAK8bAK4_csvweight);
+
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
      
-     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVnominal",i,subjet_ABCD_tAK12WAK8bAK4_csvweight);
      vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
      vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
      vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
