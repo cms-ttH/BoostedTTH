@@ -226,6 +226,10 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             muf_d = muf.Atof();
             mur = TString::Format("%.1f",mur_d);
             muf = TString::Format("%.1f",muf_d);
+            mur.ReplaceAll(".","p");
+            muf.ReplaceAll(".","p");
+            std::cout<<mur<<std::endl;
+            std::cout<<muf<<std::endl;
         }
         // get the id of the weight
         TString id=TString(line,split);
@@ -235,7 +239,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             line.ReplaceAll("pdfset","Weight_"+name_string+"_");
             line.ReplaceAll("member","Weight_"+name_string+"_");
         }
-        if(is_scale_var) line="Weight_"+name_string+"_muR="+mur+"_muF="+muf;
+        if(is_scale_var) line="Weight_"+name_string+"_muR"+mur+"_muF"+muf;
         //cout << line << "   " << id << endl;
         // add the unique weightid and the corresponding name to a map to use later when reading the weights from the events
         lhe_weights[std::string(id)]=line;

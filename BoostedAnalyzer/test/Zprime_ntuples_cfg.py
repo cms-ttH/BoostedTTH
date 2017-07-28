@@ -502,7 +502,7 @@ process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 # selection of the nominal jets
 process.SelectedJetProducerAK4=process.SelectedJetProducer.clone(jets='patSmearedJetsAK4',
                                                                 applyCorrection=False,
-                                                                ptMins=[20,30],
+                                                                ptMins=[75,75],
                                                                 etaMaxs=[2.4,2.4],
                                                                 collectionNames=["selectedJetsAK4Loose","selectedJetsAK4"],
                                                                 systematics=[""],
@@ -512,7 +512,7 @@ process.SelectedJetProducerAK4=process.SelectedJetProducer.clone(jets='patSmeare
 
 process.SelectedJetProducerAK8=process.SelectedJetProducer.clone(jets='patSmearedJetsAK8',
                                                                 applyCorrection=False,
-                                                                ptMins=[80],
+                                                                ptMins=[150],
                                                                 etaMaxs=[2.4],
                                                                 collectionNames=["selectedJetsAK8"],
                                                                 systematics=[""],

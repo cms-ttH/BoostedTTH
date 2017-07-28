@@ -28,7 +28,7 @@ TreeWriter::~TreeWriter(){
     cout << "Tree Written to " << outFile->GetPath() << endl;
   }
 //   delete tree;
-//   delete outFile;
+  delete outFile;
 
 }
 
