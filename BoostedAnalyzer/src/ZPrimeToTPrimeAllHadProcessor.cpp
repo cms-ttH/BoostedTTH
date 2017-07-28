@@ -3703,7 +3703,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             }else{
                 if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau3")>0){
                     for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.2){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.2 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
                                 ZprimesABCD.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
                                 TprimesABCD.push_back(itBJet->p4()+itWJet->p4());
                                 TopsABCD.push_back(*ittopJet);
@@ -3751,7 +3751,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             }else{
                 if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau3")>0){
                     for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.9){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.9 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
                                 Zprimes_ABCD_tAK15WAK8bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
                                 Tprimes_ABCD_tAK15WAK8bAK4.push_back(itBJet->p4()+itWJet->p4());
                                 Tops_ABCD_tAK15WAK8bAK4.push_back(*ittopJet);
@@ -3799,7 +3799,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             }else{
                 if(itWJet->userFloat("NjettinessAK15CHS:tau1")>0 && itWJet->userFloat("NjettinessAK15CHS:tau2")>0 && itWJet->userFloat("NjettinessAK15CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau3")>0){
                     for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.9 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.9){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.9 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.9 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
                                 Zprimes_ABCD_tAK15WAK15bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
                                 Tprimes_ABCD_tAK15WAK15bAK4.push_back(itBJet->p4()+itWJet->p4());
                                 Tops_ABCD_tAK15WAK15bAK4.push_back(*ittopJet);
@@ -3849,7 +3849,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             }else{
                 if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau3")>0){
                     for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.6){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.6 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
                                 Zprimes_ABCD_tAK12WAK8bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
                                 Tprimes_ABCD_tAK12WAK8bAK4.push_back(itBJet->p4()+itWJet->p4());
                                 Tops_ABCD_tAK12WAK8bAK4.push_back(*ittopJet);
@@ -3897,7 +3897,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             }else{
                 if(itWJet->userFloat("NjettinessAK12CHS:tau1")>0 && itWJet->userFloat("NjettinessAK12CHS:tau2")>0 && itWJet->userFloat("NjettinessAK12CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau3")>0){
                     for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.6 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.6){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.6 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.6 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
                                 Zprimes_ABCD_tAK12WAK12bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
                                 Tprimes_ABCD_tAK12WAK12bAK4.push_back(itBJet->p4()+itWJet->p4());
                                 Tops_ABCD_tAK12WAK12bAK4.push_back(*ittopJet);
