@@ -52,7 +52,7 @@ def split_for_systematic_variations(variations,nvariations):
 for row in reader:
     variation_list = get_list_of_systematics("systematicVariations.txt")
     #print variation_list
-    variations_list = split_for_systematic_variations(variation_list,3)
+    variations_list = split_for_systematic_variations(variation_list,4)
     if 'Single' in row['name']:
         src='template_data_cfg.py'
     else:
@@ -78,4 +78,4 @@ for row in reader:
             repl('GENERATORNAME',row['generator'],out)
             repl('WEIGHT',row['weight'],out)
             repl('SYSTEMATICVARIATIONS',variations,out)
-            repl('OUTPUTFILES',str(filenames),out)
+            repl('OUTPUTFILES',str(filenames).replace("'",'"'),out)

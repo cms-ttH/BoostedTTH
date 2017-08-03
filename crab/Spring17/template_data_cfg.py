@@ -14,9 +14,9 @@ config.JobType.sendPythonFolder=True
 
 config.Data.inputDataset = 'THEINPUTDATASET'
 config.Data.inputDBS = 'global'
-config.Data.splitting = 'EventAwareLumiBased'
-config.Data.unitsPerJob = 10000
-config.Data.publication = True
+config.Data.splitting = 'FileBased'
+config.Data.unitsPerJob = 1
+config.Data.publication = False
 config.Data.publishDBS = 'phys03'
 config.Data.outputDatasetTag = 'KIT_tthbb_sl_ntuples'
 
