@@ -84,6 +84,12 @@ if options.systematicVariations:
             sys.exit()
 systs=systsJER+systsJES
 
+if options.isData:
+    systsJER=[]
+    systsJES=[]
+    systs=[]
+    writeNominal=True
+
 process = cms.Process("boostedAnalysis")
 
 # cmssw options
