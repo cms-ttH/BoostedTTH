@@ -42,7 +42,12 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 10000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mschrode/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Skim-V1_3j20_1l20/170217_171402/0000/Skim_1.root']
+    if options.isData:
+        options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mwassmer/SingleElectron/Skim-V1_3j20_1l20_Run2016B_Final/170714_160923/0000/Skim_2.root']
+        options.globalTag="80X_dataRun2_2016SeptRepro_v7"
+        options.dataEra="2016B"
+    else:
+        options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mschrode/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Skim-V1_3j20_1l20/170217_171402/0000/Skim_1.root']
 
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
@@ -392,7 +397,7 @@ process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
 
 ###############################################
 
-### update PUJetID
+### update PUJetID ###
 
 if options.updatePUJetId:
     process.load("RecoJets.JetProducers.PileupJetID_cfi")
