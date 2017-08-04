@@ -71,7 +71,7 @@ for row in reader:
                     filenames.append("ntuples_"+filename+"up"+"_Tree.root")
                     filenames.append("ntuples_"+filename+"down"+"_Tree.root")
             shutil.copy(src,out)
-            repl('THEREQUESTNAME',row['name']+"_"+str(i),out)
+            repl('THEREQUESTNAME',row['name']+"_"+str(i)+"_"+str(l),out)
             repl('THEINPUTDATASET',dataset,out)
             repl('DATAERA',row['run'],out)
             repl('GLOBALTAG',row['globalTag'],out)
