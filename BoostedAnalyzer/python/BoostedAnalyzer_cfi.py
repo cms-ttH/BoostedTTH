@@ -35,14 +35,14 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     isreHLT = cms.bool(False),
 
-    useFatJets = cms.bool(True),
+    useFatJets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),
 
     dumpSyncExe = cms.bool(False),
     dumpExtended = cms.bool(False),
     dumpAlwaysEvents = cms.vint32(),
-    doBoostedMEM = cms.bool(True),
+    doBoostedMEM = cms.bool(False),
     
     memNtuples = cms.bool(False),
 
