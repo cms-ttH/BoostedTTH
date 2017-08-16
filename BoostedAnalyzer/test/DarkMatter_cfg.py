@@ -238,7 +238,8 @@ process.BoostedAnalyzer.selectionNames = [
 #"LeptonSelection",
 "JetTagSelection",
 "METSelection",
-"MonoJetSelection"
+"MonoJetSelection",
+"LeptonVetoSelection"
 ]
 
 if options.isData:
