@@ -234,9 +234,10 @@ if options.isData:
   
 process.BoostedAnalyzer.selectionNames = [
 #"FilterSelection",
-#"VertexSelection",
+"VertexSelection",
 #"LeptonSelection",
-#"JetTagSelection"
+#"JetTagSelection",
+"METSelection"
 ]
 
 if options.isData:
