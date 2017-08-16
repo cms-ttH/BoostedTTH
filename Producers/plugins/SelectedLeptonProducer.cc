@@ -165,6 +165,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	  else if( leptonIDs[i] == "electronNonTrigMVAid80"  ) electronIDs_[i] = electronID::electronNonTrigMVAid80;
 	  else if( leptonIDs[i] == "electronGeneralPurposeMVA2016WP80"  ) electronIDs_[i] = electronID::electronGeneralPurposeMVA2016WP80;
 	  else if( leptonIDs[i] == "electronGeneralPurposeMVA2016WP90"  ) electronIDs_[i] = electronID::electronGeneralPurposeMVA2016WP90;
+          else if( leptonIDs[i] == "none" ) electronIDs_[i] = electronID::none;
 
 	  else {
 	      std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonIDs[i] << std::endl;
@@ -176,6 +177,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	  else if( leptonIDs[i] == "tight"  )   muonIDs_[i] = muonID::muonTight;
 	  else if( leptonIDs[i] == "tightDL"  ) muonIDs_[i] = muonID::muonTightDL;
 	  else if( leptonIDs[i] == "muonMediumICHEP"  ) muonIDs_[i] = muonID::muonMediumICHEP;
+          else if( leptonIDs[i] == "none"  )   muonIDs_[i] = muonID::none;
 
 	  else {
 	      std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonIDs[i] << std::endl;

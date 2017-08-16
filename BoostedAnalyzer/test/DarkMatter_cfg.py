@@ -27,7 +27,7 @@ if not options.inputFiles:
         options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/Vector_MonoJ_NLO_Mphi-1000_Mchi-300_gSM-0p25_gDM-1p0_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/80000/0405BA3B-71DE-E611-9560-002590E7E01A.root']
 
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 1000 # reset for testing
+    options.maxEvents = 5000 # reset for testing
     
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
@@ -172,16 +172,16 @@ if options.isData:
 # lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.leptons=electronCollection
-process.SelectedElectronProducer.ptMins=[15.,25.,30.]
-process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedT"]*3
+process.SelectedElectronProducer.ptMins=[10.,15.,20.]
+process.SelectedElectronProducer.etaMaxs=[3.0,2.75,2.47]
+process.SelectedElectronProducer.leptonIDs=["none"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
 
 process.SelectedMuonProducer.leptons=muonCollection
-process.SelectedMuonProducer.ptMins=[15.,25.,26.]
-process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
+process.SelectedMuonProducer.ptMins=[5.,7.5,10.]
+process.SelectedMuonProducer.etaMaxs=[3.,2.75,2.5]
+process.SelectedMuonProducer.leptonIDs=["none","none","none"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
 process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
@@ -193,8 +193,8 @@ process.SelectedMuonProducer.isData=options.isData
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 process.SelectedJetProducer.jets=jetCollection
 process.SelectedJetProducer.applyCorrection=False
-process.SelectedJetProducer.ptMins=[20,30]
-process.SelectedJetProducer.etaMaxs=[2.4,2.4]
+process.SelectedJetProducer.ptMins=[10,20]
+process.SelectedJetProducer.etaMaxs=[3.0,2.8]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
 process.SelectedJetProducer.PUJetIDMins=["none","none"]

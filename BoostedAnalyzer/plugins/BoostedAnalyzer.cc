@@ -846,14 +846,14 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     }
 
     //dummy variables for the getCSVWeight function, might be useful for checks
-    double csvWgtHF, csvWgtLF, csvWgtCF;
+    //double csvWgtHF, csvWgtLF, csvWgtCF;
 
     float xsweight = eventWeight;
-    float csvweight = 1.;
+    //float csvweight = 1.;
     float puweight = 1.;
     float topptweight = genTopEvt.IsTTbar()? GetTopPtWeight(genTopEvt.GetHardTop().pt(),genTopEvt.GetHardTopBar().pt()) : 1.;
-    float topptweightUp = 1.0 + 2.0*(topptweight-1.0);
-    float topptweightDown = 1.0;
+    //float topptweightUp = 1.0 + 2.0*(topptweight-1.0);
+    //float topptweightDown = 1.0;
     //get vectors of jet properties
     std::vector<double> jetPts;
     std::vector<double> jetEtas;
@@ -867,7 +867,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     }
     
     // calculate the csv weight for the desired systematic
-    csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,systype, csvWgtHF, csvWgtLF, csvWgtCF);
+    //csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,systype, csvWgtHF, csvWgtLF, csvWgtCF);
     
     // compute PU weights, and set nominal weight
     puWeights.compute(eventInfo);
@@ -877,10 +877,10 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     weights["Weight_GenValue"] = weight_GenValue;
     weights["Weight"] = weight;
     weights["Weight_XS"] = xsweight;
-    weights["Weight_CSV"] = csvweight;
+    //weights["Weight_CSV"] = csvweight;
     weights["Weight_PU"] = puweight;
     weights["Weight_TopPt"] = topptweight;
-
+    /*
     bool doSystematics=true;
 //     if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
      if(doSystematics && systype == Systematics::NA) { // only do these for the nominal samples
@@ -904,14 +904,15 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
  	weights["Weight_TopPtup"] = topptweightUp;
  	weights["Weight_TopPtdown"] = topptweightDown;
   }
-
- //Add Lepton Scalefactors to weight map
+    */
+    //Add Lepton Scalefactors to weight map
+    /*
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
 
     for(  auto sfit = selectedScaleFactors.begin() ; sfit != selectedScaleFactors.end() ; sfit++  ){
       weights["Weight_"+sfit->first] = sfit->second;
     }
-
+    */
     // set optional additional PU weights
     for(std::vector<PUWeights::Weight>::const_iterator it = puWeights.additionalWeightsBegin();
 	  it != puWeights.additionalWeightsEnd(); ++it) {
