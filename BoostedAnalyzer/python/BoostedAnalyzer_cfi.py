@@ -12,6 +12,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
     filtersMC, # defined in Selection_cff
+    MonoJetSelection,
     
 
     # weight of one event: calculated as

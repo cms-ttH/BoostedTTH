@@ -52,9 +52,9 @@ DiLeptonMETSelection = cms.PSet(
 )
 
 JetTagSelection = cms.PSet(
-    minJets = cms.vint32(4),
-    maxJets = cms.vint32(-1),
-    minTags = cms.vint32(2),
+    minJets = cms.vint32(-1),
+    maxJets = cms.vint32(4),
+    minTags = cms.vint32(-1),
     maxTags = cms.vint32(-1)
 )
 
@@ -124,4 +124,9 @@ filtersMC= cms.PSet(
                         "badGlobalMuonTaggerMAOD",
                         "cloneGlobalMuonTaggerMAOD"
                         )
+)
+    
+MonoJetSelection = cms.PSet(
+    MonoJet_Pt=cms.double(250),
+    MonoJet_Eta=cms.double(2.4)
 )

@@ -79,6 +79,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopDLSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopSLSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopFHSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/MonoJetSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -387,6 +388,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
 	else if(*itSel == "BoostedTopSelection") selections.push_back(new BoostedSelection(1,0));
 	else if(*itSel == "BoostedSelection") selections.push_back(new BoostedSelection(0,1));
+        else if(*itSel == "MonoJetSelection") selections.push_back(new MonoJetSelection(iConfig));
 	else cout << "No matching selection found for: " << *itSel << endl;
 	// connect added selection to cutflow
 	for (auto &c : cutflows){

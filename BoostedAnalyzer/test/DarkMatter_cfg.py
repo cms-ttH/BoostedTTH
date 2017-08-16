@@ -192,13 +192,13 @@ process.SelectedMuonProducer.isData=options.isData
 # jet selection
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 process.SelectedJetProducer.jets=jetCollection
-process.SelectedJetProducer.applyCorrection=False
-process.SelectedJetProducer.ptMins=[10,20]
-process.SelectedJetProducer.etaMaxs=[3.0,2.8]
+process.SelectedJetProducer.applyCorrection=True
+process.SelectedJetProducer.ptMins=[20,30]
+process.SelectedJetProducer.etaMaxs=[2.8,2.8]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
 process.SelectedJetProducer.PUJetIDMins=["none","none"]
-process.SelectedJetProducer.JetID="none"
+process.SelectedJetProducer.JetID="loose"
 
 # load and run the boosted analyzer
 if options.isData:
@@ -236,8 +236,9 @@ process.BoostedAnalyzer.selectionNames = [
 #"FilterSelection",
 "VertexSelection",
 #"LeptonSelection",
-#"JetTagSelection",
-"METSelection"
+"JetTagSelection",
+"METSelection",
+"MonoJetSelection"
 ]
 
 if options.isData:
