@@ -42,7 +42,7 @@ void VariableContainer::InitVar( const TString& name,float defaultValue, const s
 
 void VariableContainer::InitVar( const TString& name, const std::string& type ) {
   checkIfVariableAlreadyInit(name);
-  InitVar(name,-1.,type);
+  InitVar(name,-9.,type);
 }
 
 
@@ -102,7 +102,7 @@ void VariableContainer::InitVars( const TString& name, float defaultValue, const
 
 
 void VariableContainer::InitVars( const TString& name, const TString& nEntryVariable, int maxentries ){
-  InitVars(name,-1.,nEntryVariable,maxentries);
+  InitVars(name,-9.,nEntryVariable,maxentries);
 }
 
 
