@@ -24,7 +24,7 @@ if not options.inputFiles:
         options.globalTag="80X_dataRun2_2016SeptRepro_v7"
         options.dataEra="2016B"
     else:
-        options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/Vector_MonoJ_NLO_Mphi-1000_Mchi-300_gSM-0p25_gDM-1p0_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/80000/0405BA3B-71DE-E611-9560-002590E7E01A.root']
+        options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/DMV_NNPDF30_Axial_Mphi-1000_Mchi-1_gSM-0p25_gDM-1p0_v2_13TeV-powheg/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/70000/5AA7E144-8CB8-E611-A77C-0CC47AD99050.root']
 
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     options.maxEvents = 5000 # reset for testing
