@@ -10,7 +10,7 @@ class MonoJetSelection: public Selection{
   public:
   
     MonoJetSelection(const edm::ParameterSet& iConfig);
-    MonoJetSelection(double pt_min_,double eta_max_);
+    MonoJetSelection(double pt_min_,double eta_max_,double chf_min_,double nhf_max_);
     ~MonoJetSelection();
     void InitCutflow(Cutflow& cutflow);
     bool IsSelected(const InputCollections& input,Cutflow& cutflow);
@@ -20,6 +20,8 @@ class MonoJetSelection: public Selection{
 
     double pt_min;
     double eta_max;
+    double charged_hadron_fraction_min;
+    double neutral_hadron_fraction_max;
     std::string pt_str="";
     std::string eta_str="";
 

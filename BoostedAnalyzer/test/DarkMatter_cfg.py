@@ -193,7 +193,7 @@ process.SelectedMuonProducer.isData=options.isData
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 process.SelectedJetProducer.jets=jetCollection
 process.SelectedJetProducer.applyCorrection=True
-process.SelectedJetProducer.ptMins=[20,30]
+process.SelectedJetProducer.ptMins=[15,30]
 process.SelectedJetProducer.etaMaxs=[2.5,2.5]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
