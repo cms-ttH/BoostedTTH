@@ -42,8 +42,8 @@ DiLeptonSelectionData = cms.PSet(
 )
 
 METSelection = cms.PSet(
-    minMET = cms.double(250),
-    maxMET = cms.double(10000),
+    minMET = cms.double(200),
+    maxMET = cms.double(100000),
 )
 
 DiLeptonMETSelection = cms.PSet(
@@ -53,7 +53,7 @@ DiLeptonMETSelection = cms.PSet(
 
 JetTagSelection = cms.PSet(
     minJets = cms.vint32(-1),
-    maxJets = cms.vint32(4),
+    maxJets = cms.vint32(50),
     minTags = cms.vint32(-1),
     maxTags = cms.vint32(-1)
 )
@@ -127,6 +127,6 @@ filtersMC= cms.PSet(
 )
     
 MonoJetSelection = cms.PSet(
-    MonoJet_Pt=cms.double(250),
-    MonoJet_Eta=cms.double(2.4)
+    MonoJet_Pt=cms.double(100),
+    MonoJet_Eta=cms.double(2.5)
 )
