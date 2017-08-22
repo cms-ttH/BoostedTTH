@@ -158,6 +158,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	  else if( leptonIDs[i] == "EndOf15MVA90iso0p1"  )  electronIDs_[i] = electronID::electronEndOf15MVA90iso0p1;
 	  else if( leptonIDs[i] == "EndOf15MVA80iso0p15"  ) electronIDs_[i] = electronID::electronEndOf15MVA80iso0p15;
 	  else if( leptonIDs[i] == "EndOf15MVA90iso0p15"  ) electronIDs_[i] = electronID::electronEndOf15MVA90iso0p15;
+          else if( leptonIDs[i] == "electron80XCutBasedV"  ) electronIDs_[i] = electronID::electron80XCutBasedV;
  	  else if( leptonIDs[i] == "electron80XCutBasedL"  ) electronIDs_[i] = electronID::electron80XCutBasedL;
 	  else if( leptonIDs[i] == "electron80XCutBasedM"  ) electronIDs_[i] = electronID::electron80XCutBasedM;
 	  else if( leptonIDs[i] == "electron80XCutBasedT"  ) electronIDs_[i] = electronID::electron80XCutBasedT;
