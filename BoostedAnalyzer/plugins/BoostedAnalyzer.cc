@@ -236,6 +236,8 @@ private:
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsDLToken;
     /** loose electrons data access token **/
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsLooseToken;
+    /** tau token **/
+    edm::EDGetTokenT< pat::TauCollection > selectedTausToken;
     /** loose jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsTokens;
     /** tight jets data access token **/
@@ -319,6 +321,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     selectedElectronsToken       = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons"));
     selectedElectronsDLToken     = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL"));
     selectedElectronsLooseToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose"));
+    selectedTausToken       = consumes< pat::TauCollection >(iConfig.getParameter<edm::InputTag>("selectedTaus"));
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJets")){
 	     selectedJetsTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
@@ -609,6 +612,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( selectedElectronsDLToken,h_selectedElectronsDL );
     iEvent.getByToken( selectedElectronsLooseToken,h_selectedElectronsLoose );
     
+    edm::Handle< pat::TauCollection > h_selectedTaus;
+    iEvent.getByToken( selectedTausToken,h_selectedTaus );
+    
     // JETs
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJets;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsLoose;
@@ -766,6 +772,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectrons,
 					  *h_selectedElectronsDL,
 					  *h_selectedElectronsLoose,
+                                          *h_selectedTaus,
 					  *(hs_selectedJets[isys]),
 					  *(hs_selectedJetsLoose[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
