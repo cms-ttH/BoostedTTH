@@ -15,19 +15,11 @@ void BTagVetoSelection::InitCutflow(Cutflow& cutflow){
 bool BTagVetoSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "BTagVetoSelection not initialized" << endl;
   
-  uint ntags = 0;
   for(auto& jet : input.selectedJetsLoose){
-    if(BoostedUtils::PassesCSV(jet, 'M')){
-      ntags++;
-    }
+    if(BoostedUtils::PassesCSV(jet, 'M')) return false;
   }
 
-  if(ntags>0) {
-    return false;
-  }
-  else{
-    cutflow.EventSurvivedStep("No bjets",input.weights.at("Weight"));
-    return true;    
-  }
+  cutflow.EventSurvivedStep("No bjets",input.weights.at("Weight"));
+  return true;    
 
 }
