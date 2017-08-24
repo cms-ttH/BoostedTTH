@@ -55,7 +55,7 @@ JetTagSelection = cms.PSet(
     minJets = cms.vint32(-1),
     maxJets = cms.vint32(50),
     minTags = cms.vint32(-1),
-    maxTags = cms.vint32(-1)
+    maxTags = cms.vint32(0)
 )
 
 checkBasicDataTriggers= cms.PSet(

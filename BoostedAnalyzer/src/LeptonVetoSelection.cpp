@@ -15,7 +15,7 @@ void LeptonVetoSelection::InitCutflow(Cutflow& cutflow){
 bool LeptonVetoSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "LeptonVetoSelection not initialized" << endl;
 
-  if(input.selectedElectrons.size()>0 || input.selectedMuons.size()>0) {
+  if(input.selectedElectronsLoose.size()>0 || input.selectedMuonsLoose.size()>0) {
     return false;
   }
   else{

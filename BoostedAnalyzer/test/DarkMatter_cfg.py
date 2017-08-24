@@ -172,16 +172,16 @@ if options.isData:
 # lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.leptons=electronCollection
-process.SelectedElectronProducer.ptMins=[10.,15.,40.]
-process.SelectedElectronProducer.etaMaxs=[2.5,2.75,2.5]
-process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedV","none","electron80XCutBasedT"]
+process.SelectedElectronProducer.ptMins=[10.,10.,40.]
+process.SelectedElectronProducer.etaMaxs=[2.5,2.5,2.5]
+process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedV","electron80XCutBasedT","electron80XCutBasedT"]
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
 
 process.SelectedMuonProducer.leptons=muonCollection
-process.SelectedMuonProducer.ptMins=[10.,7.5,20.]
-process.SelectedMuonProducer.etaMaxs=[2.4,2.5,2.4]
-process.SelectedMuonProducer.leptonIDs=["loose","none","tight"]
+process.SelectedMuonProducer.ptMins=[10.,10.,20.]
+process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.4]
+process.SelectedMuonProducer.leptonIDs=["loose","tight","tight"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
 process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
@@ -193,8 +193,8 @@ process.SelectedMuonProducer.isData=options.isData
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 process.SelectedJetProducer.jets=jetCollection
 process.SelectedJetProducer.applyCorrection=True
-process.SelectedJetProducer.ptMins=[15,30]
-process.SelectedJetProducer.etaMaxs=[2.5,2.5]
+process.SelectedJetProducer.ptMins=[20,30]
+process.SelectedJetProducer.etaMaxs=[2.4,2.5]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
 process.SelectedJetProducer.PUJetIDMins=["none","none"]
@@ -236,10 +236,11 @@ process.BoostedAnalyzer.selectionNames = [
 #"FilterSelection",
 "VertexSelection",
 #"LeptonSelection",
-"JetTagSelection",
+#"JetTagSelection",
 "METSelection",
 "MonoJetSelection",
-"LeptonVetoSelection"
+"LeptonVetoSelection",
+"BTagVetoSelection"
 ]
 
 if options.isData:
