@@ -30,7 +30,7 @@ void VariableContainer::InitVar( const TString& name,float defaultValue, const s
     floatMapDefaults[name] = defaultValue;
     floatMapFilled[name] = false;
   }
-  else if(type=="I"){
+  else if(type=="I" or type=="L"){
     intMap[name] = 0;
     intMapDefaults[name] = defaultValue;
     intMapFilled[name] = false;
@@ -46,21 +46,21 @@ void VariableContainer::InitVar( const TString& name, const std::string& type ) 
 }
 
 
-void VariableContainer::FillVar( const TString& name, float value ) {
+void VariableContainer::FillVar( const TString& name, double value ) {
   bool isInt=intMap.count(name)!=0;
   bool isFloat=floatMap.count(name)!=0;
   if(isFloat){
     FillFloatVar( name, value, false);
   }
   else if(isInt){
-    FillIntVar( name, int(value+0.1), false);
+    FillIntVar( name, long(value+0.1), false);
   }
   else{
     cerr << name << " does not exist!" << endl;
   }
 }
 
-void VariableContainer::FillIntVar( const TString& name, int value, bool checkIfExists) {
+void VariableContainer::FillIntVar( const TString& name, long value, bool checkIfExists) {
     if(checkIfExists&&intMap.count(name)==0){
         cerr << name << " does not exist!" << endl;
         return;
@@ -171,7 +171,7 @@ void VariableContainer::ConnectTree(TTree* tree){
   }
   auto itI= intMap.begin();
   while (itI != intMap.end()) {
-    tree->Branch(itI->first, &(itI->second), itI->first+"/I" );
+    tree->Branch(itI->first, &(itI->second), itI->first+"/L" );
     itI++;
   }
   auto itA= arrayMap.begin();
@@ -227,7 +227,7 @@ float* VariableContainer::GetArrayVarPointer(const TString& name, int entry){
 }
 
 
-int* VariableContainer::GetIntVarPointer(const TString& name){
+long* VariableContainer::GetIntVarPointer(const TString& name){
   if(intMap.count(name)==0&&floatMap.count(name)==0&&arrayMap.count(name)==0){
     cerr << name << " does not exist!" << endl;
     return 0;
@@ -254,8 +254,8 @@ float VariableContainer::GetArrayVar(const TString& name, int entry) {
 }
 
 
-int VariableContainer::GetIntVar(const TString& name) {
-  int* x=GetIntVarPointer(name);
+long VariableContainer::GetIntVar(const TString& name) {
+  long* x=GetIntVarPointer(name);
   if(x!=0)
     return *x;
   else 
