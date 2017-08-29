@@ -189,6 +189,13 @@ process.SelectedMuonProducer.useMuonRC=False
 process.SelectedMuonProducer.useDeterministicSeeds=False
 process.SelectedMuonProducer.isData=options.isData
 
+process.SelectedTauProducer.leptons=tauCollection
+process.SelectedTauProducer.ptMins=[18.,18.,18.]
+process.SelectedTauProducer.etaMaxs=[2.3,2.3,2.3]
+process.SelectedTauProducer.leptonIDs=["tauLoose","tauMedium","tauTight"]
+process.SelectedTauProducer.collectionNames=["selectedTausLoose","selectedTausDL","selectedTaus"]
+process.SelectedTauProducer.isData=options.isData
+
 # jet selection
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 process.SelectedJetProducer.jets=jetCollection
@@ -268,7 +275,7 @@ else:
   ##### DEFINE PATH ##########
 process.p = cms.Path()
 
-process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedJetProducer
+process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedTauProducer*process.SelectedJetProducer
 
 if not options.isData:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar

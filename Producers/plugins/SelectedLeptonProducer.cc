@@ -38,6 +38,7 @@
 #include "DataFormats/PatCandidates/interface/Lepton.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Tau.h"
 
 #include "BoostedTTH/Producers/src/RoccoR.cc" // this is needed to calculate the correction factors of the rochester correction
 //
@@ -52,7 +53,7 @@ public:
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
 private:
-  enum LeptonType { Electron, Muon };
+  enum LeptonType { Electron, Muon, Tau };
 
   virtual void beginJob() override;
   virtual void produce(edm::Event&, const edm::EventSetup&) override;
@@ -69,6 +70,7 @@ private:
 
   std::vector<muonID::muonID> muonIDs_;
   std::vector<electronID::electronID> electronIDs_;
+  std::vector<tauID::tauID> tauIDs_;
   std::vector<coneSize::coneSize> muonIsoConeSizes_;
   std::vector<corrType::corrType> muonIsoCorrTypes_;
   std::vector<std::string> collectionNames_;
@@ -78,6 +80,7 @@ private:
   edm::EDGetTokenT< reco::VertexCollection >  EDMVertexToken; // vertex
   edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  // muons
   edm::EDGetTokenT< edm::View<pat::Electron> >EDMElectronsToken;  // electrons
+  edm::EDGetTokenT< pat::TauCollection >      EDMTausToken;  // taus
   edm::EDGetTokenT< edm::ValueMap<float> >    EDMeleMVAvaluesToken; // values of electron mva
   edm::EDGetTokenT< edm::ValueMap<int> >      EDMeleMVAcategoriesToken;  // category of electron mva
   
@@ -98,6 +101,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   const std::string leptonType = iConfig.getParameter<std::string>("leptonType");
   if(      leptonType == "electron" ) leptonType_ = Electron;
   else if( leptonType == "muon"     ) leptonType_ = Muon;
+  else if( leptonType == "tau"     ) leptonType_ = Tau;
   else {
     std::cerr << "\n\nERROR: Unknown lepton type '" << leptonType << "'" << std::endl;
     std::cerr << "Please select 'electron' or 'muon'\n" << std::endl;
@@ -120,6 +124,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   // inputs
   EDMElectronsToken         = consumes< edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("leptons"));
   EDMMuonsToken             = consumes< pat::MuonCollection >     (iConfig.getParameter<edm::InputTag>("leptons"));
+  EDMTausToken              = consumes< pat::TauCollection >      (iConfig.getParameter<edm::InputTag>("leptons"));
   EDMVertexToken            = consumes< reco::VertexCollection >  (iConfig.getParameter<edm::InputTag>("vertices"));
   EDMRhoToken               = consumes< double >                  (iConfig.getParameter<edm::InputTag>("rho"));
   EDMeleMVAvaluesToken      = consumes<edm::ValueMap<float> >     (iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
@@ -131,6 +136,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   const std::vector<std::string > leptonIDs= iConfig.getParameter< std::vector<std::string> >("leptonIDs");
   electronIDs_ = std::vector<electronID::electronID>(leptonIDs.size(),electronID::electronLoose);
   muonIDs_ = std::vector<muonID::muonID>(leptonIDs.size(),muonID::muonLoose);
+  tauIDs_ = std::vector<tauID::tauID>(leptonIDs.size(),tauID::tauLoose);
   const std::vector<std::string> muonIsoConeSizes = iConfig.getParameter<std::vector<std::string> >("muonIsoConeSizes");
   muonIsoConeSizes_ = std::vector<coneSize::coneSize>(leptonIDs.size(),coneSize::R04);
   const vector<std::string> muonIsoCorrTypes = iConfig.getParameter<std::vector<std::string> >("muonIsoCorrTypes");
@@ -200,8 +206,15 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	      throw std::exception();
 	  }
       }
+      if(leptonType == Tau) {
+          if(      leptonIDs[i] == "nonIso"        )         tauIDs_[i] = tauID::tauNonIso;
+	  else if( leptonIDs[i] == "loose"        )          tauIDs_[i] = tauID::tauLoose;
+	  else if( leptonIDs[i] == "medium"  )               tauIDs_[i] = tauID::tauMedium;
+	  else if( leptonIDs[i] == "tight"  )                tauIDs_[i] = tauID::tauTight;
+      }
       if( leptonType_ == Electron ) produces<pat::ElectronCollection>(collectionNames_[i]);
       if( leptonType_ == Muon     ) produces<pat::MuonCollection>(collectionNames_[i]);
+      if( leptonType_ == Tau ) produces<pat::TauCollection>(collectionNames_[i]);
 
   }
   // Set up MiniAODHelper
@@ -313,6 +326,19 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	    for (auto & lep : *selectedLeptons){
 		helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
 	    }
+	    iEvent.put(selectedLeptons,collectionNames_[i]);
+	}
+    }
+    
+     if( leptonType_ == Tau ) {
+	// get input electron collection
+	edm::Handle< pat::TauCollection > hTaus;
+	iEvent.getByToken(EDMTausToken,hTaus);
+
+	// produce the different tau collections
+	for(uint i=0; i<ptMins_.size();i++){
+	    // select tau collection
+	    std::auto_ptr<pat::TauCollection> selectedLeptons( new pat::TauCollection(helper_.GetSortedByPt(helper_.GetSelectedTaus(*hTaus,ptMins_[i],tauIDs_[i],etaMaxs_[i]))) );
 	    iEvent.put(selectedLeptons,collectionNames_[i]);
 	}
     }

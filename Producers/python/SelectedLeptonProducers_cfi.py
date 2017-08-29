@@ -59,3 +59,30 @@ SelectedMuonProducer = cms.EDProducer(
     electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
     electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Categories"),
     )
+
+SelectedTauProducer = cms.EDProducer(
+    "SelectedLeptonProducer",
+    leptonType = cms.string("tau"),
+
+    era          = cms.string("NA"),
+    analysisType = cms.string("LJ"),
+    isData       = cms.bool(False),
+
+    leptons = cms.InputTag("slimmedTaus"),
+    vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+
+    ptMins   = cms.vdouble(15),
+    etaMaxs  = cms.vdouble(2.4),
+    leptonIDs = cms.vstring("tauLoose"),
+    collectionNames= cms.vstring("selectedLeptonsDL"),
+    muonIsoConeSizes = cms.vstring("R04"),
+    muonIsoCorrTypes = cms.vstring("deltaBeta"),
+    useMuonRC = cms.bool(True),
+    useDeterministicSeeds = cms.bool(False),
+    # The following two parameters are dummies in case of taus
+    # they are not used for the tau selection, which is defined
+    # via the 'leptonID' value
+    electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
+    electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Categories"),
+    )
