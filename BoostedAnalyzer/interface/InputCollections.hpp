@@ -67,7 +67,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		    const edm::Event&                             iEvent_,
 		    const edm::EventSetup&                        iSetup_,
                     const Systematics::Type&                      systematic_,                    
-                    const CSVHelper*                              csvReweighter_
+                    const CSVHelper*                              csvReweighter_,
+                    const bool                                    isData_
 //                     const sysType::sysType                        systype_
                     
                     /**** bjetness code ****/
@@ -102,7 +103,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		    iEvent(iEvent_),
 		    iSetup(iSetup_),
                     systematic(systematic_),		    
-		    csvReweighter(csvReweighter_)
+		    csvReweighter(csvReweighter_),
+		    isData(isData_)
 // 		    systype(systype_)
                     {}
 
@@ -123,7 +125,8 @@ InputCollections(   const InputCollections&                       input,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
                     const std::map<std::string,float>&            weights_,
-                    const CSVHelper*                              csvReweighter_
+                    const CSVHelper*                              csvReweighter_,
+                    const bool                                    isData_
         		    ): 
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
@@ -154,7 +157,8 @@ InputCollections(   const InputCollections&                       input,
 		    iEvent(input.iEvent),
 		    iSetup(input.iSetup),
                     systematic(input.systematic),
-		    csvReweighter(csvReweighter_)
+		    csvReweighter(csvReweighter_),
+		    isData(isData_)
 // 		    systype(systype_)
                     {}
 
@@ -188,6 +192,7 @@ InputCollections(   const InputCollections&                       input,
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;
   const CSVHelper*                              csvReweighter;
+  const bool                                    isData;
 //   const sysType::sysType                        systype;
 };
 

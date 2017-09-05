@@ -83,6 +83,8 @@ checkBasicDataTriggers= cms.PSet(
                                  "HLT_IsoMu24_v*",
                                  "HLT_IsoTkMu24_v*",
                                  "HLT_Ele27_eta2p1_WPTight_Gsf_v*",
+                                 "HLT_PFHT800",
+                                 "HLT_PFHT650",
                                  #"HLT_Ele23_WPLoose_Gsf_v*",
                                  #"HLT_IsoMu20_v*",
                                  #"HLT_Ele27_eta2p1_WPLoose_Gsf_v*"
@@ -104,6 +106,8 @@ checkBasicMCTriggers= cms.PSet(
                                  "HLT_IsoMu24_v*",
                                  "HLT_IsoTkMu24_v*",
                                  "HLT_Ele27_eta2p1_WPTight_Gsf_v*",
+                                 "HLT_PFHT800",
+                                 "HLT_PFHT650",
                                  )
 )
 

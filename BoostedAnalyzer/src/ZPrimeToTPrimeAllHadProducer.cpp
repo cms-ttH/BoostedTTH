@@ -102,16 +102,16 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
             bool fromTPrime=false;
             bool fromBG=false;
             const reco::Candidate* mother=&(*p);
-            while(mother!=0 && abs(mother->pdgId())==6){                                           //check where W comes from
-                if (abs(mother->mother()->pdgId())==9900113){
+            while(mother!=0 && abs(mother->pdgId())==6){                                           //check where W comes from 9000010
+                if ((abs(mother->mother()->pdgId())==9900113) || (abs(mother->mother()->pdgId())==9000010)){
                     fromZprime=true;
                     break;
                 }
-                if (abs(mother->mother()->pdgId())==8000001){
+                if ((abs(mother->mother()->pdgId())==8000001) || (abs(mother->mother()->pdgId())==9000001) || (abs(mother->mother()->pdgId())==9000003)){
                     fromTPrime=true;
                     break;
                 }
-                if (abs(mother->mother()->pdgId())!=6 && abs(mother->mother()->pdgId())!=8000001 && abs(mother->mother()->pdgId())!=9900113){
+                if (abs(mother->mother()->pdgId())!=6 && (abs(mother->mother()->pdgId())!=8000001 || abs(mother->mother()->pdgId())!=9000001 || abs(mother->mother()->pdgId())!=9000003) && ((abs(mother->mother()->pdgId())!=9900113) || (abs(mother->mother()->pdgId())!=9000010))){
                     fromBG=true;
                     break;
                 }
@@ -172,30 +172,30 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
         
         
 */
-        if (abs(p->pdgId())==8000001){                                                                    //check if gen particle is TPrime/TPrimebar
-            if(p->pdgId()==8000001) foundTPrime=true;
-            if(p->pdgId()==-8000001) foundTPrimebar=true;
+        if ((abs(p->pdgId())==8000001) || (abs(p->pdgId())==9000001) || (abs(p->pdgId())==9000003)){                                                                    //check if gen particle is TPrime/TPrimebar 9000001
+            if((p->pdgId()==8000001) || (p->pdgId()==9000001) || (p->pdgId()==9000003)) foundTPrime=true;
+            if((p->pdgId()==-8000001) || (p->pdgId()==-9000001) || (p->pdgId()==-9000003)) foundTPrimebar=true;
             bool lastTPrime=true;
             for(uint i=0;i<p->numberOfDaughters();i++){
-                if (abs(p->daughter(i)->pdgId())==8000001)
+                if ((abs(p->daughter(i)->pdgId())==8000001) || (abs(p->daughter(i)->pdgId())==9000001) || (abs(p->daughter(i)->pdgId())==9000003))
                 lastTPrime=false;
             }                                                                                       //check if last TPrime -> decaying
             if(lastTPrime){
-                if(p->pdgId()==8000001) TPrimes.push_back(*p);
-                if(p->pdgId()==-8000001) TPrimebars.push_back(*p);
+                if((p->pdgId()==8000001) || (p->pdgId()==9000001) || (p->pdgId()==9000003)) TPrimes.push_back(*p);
+                if((p->pdgId()==-8000001) || (p->pdgId()==-9000001) || (p->pdgId()==-9000003)) TPrimebars.push_back(*p);
                 TPrimesandTPrimebars.push_back(*p);
                 bool setTPrimeDecay=false;
                 bool setTPrimeBarDecay=false;
 
                 for(uint i=0;i<p->numberOfDaughters();i++){
-                    if(p->pdgId()==8000001 && abs(p->daughter(i)->pdgId())<7){
+                    if((p->pdgId()==8000001 || p->pdgId()==9000001 || (p->pdgId()==9000003)) && abs(p->daughter(i)->pdgId())<7){
                         if(setTPrimeDecay) std::cerr << "GenTPrimeEvent: error 1"<<std::endl;
                         TPrime_decay_quarks.push_back(*(reco::GenParticle*)p->daughter(i));
                         if (p->daughter(i)->pdgId()==5) TPrime_decay_bottom.push_back(*(reco::GenParticle*)p->daughter(i));
 
                         setTPrimeDecay=true;
                     }
-                    if(p->pdgId()==-8000001 && abs(p->daughter(i)->pdgId())<7){
+                    if((p->pdgId()==-8000001 || p->pdgId()==-9000001 || (p->pdgId()==-9000003)) && abs(p->daughter(i)->pdgId())<7){
                         if(setTPrimeBarDecay) std::cerr << "GenTPrimeEvent: error -1"<<std::endl;
                         TPrimebar_decay_quarks.push_back(*(reco::GenParticle*)p->daughter(i));
                         if (p->daughter(i)->pdgId()==-5) TPrimebar_decay_bottom.push_back(*(reco::GenParticle*)p->daughter(i));
@@ -234,11 +234,11 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                     fromTop=true;
                     break;
                 }
-                if (abs(mother->mother()->pdgId())==8000001){
+                if ((abs(mother->mother()->pdgId())==8000001) || (abs(mother->mother()->pdgId())==9000001) || (abs(mother->mother()->pdgId())==9000003)){
                     fromTPrime=true;
                     break;
                 }
-                if (abs(mother->mother()->pdgId())!=24 && abs(mother->mother()->pdgId())!=8000001 && abs(mother->mother()->pdgId())!=6){
+                if (abs(mother->mother()->pdgId())!=24 && (abs(mother->mother()->pdgId())!=8000001 || abs(mother->mother()->pdgId())!=9000001 || abs(mother->mother()->pdgId())!=9000003) && abs(mother->mother()->pdgId())!=6){
                     fromBG=true;
                     break;
                 }
@@ -306,11 +306,11 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                     fromTop=true;
                     break;
                 }
-                if (abs(mother->mother()->pdgId())==8000001){
+                if ((abs(mother->mother()->pdgId())==8000001) || (abs(mother->mother()->pdgId())==9000001) || (abs(mother->mother()->pdgId())==9000003)){
                     fromTPrime=true;
                     break;
                 }
-                if (abs(mother->mother()->pdgId())!=5 && abs(mother->mother()->pdgId())!=6 && abs(mother->mother()->pdgId())!=8000001){
+                if (abs(mother->mother()->pdgId())!=5 && abs(mother->mother()->pdgId())!=6 && (abs(mother->mother()->pdgId())!=8000001 || abs(mother->mother()->pdgId())!=9000001 || abs(mother->mother()->pdgId())!=9000003)){
                     fromBG=true;
                     break;
                 }
@@ -336,17 +336,17 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
         
         
         
-        if (abs(p->pdgId())==9900113){                                                                    //check if gen particle is ZPrime
+        if ((abs(p->pdgId())==9900113) || (abs(p->pdgId())==9000010) ){                                                                    //check if gen particle is ZPrime
             foundZPrime=true;
             bool lastZPrime=true;
             for(uint i=0;i<p->numberOfDaughters();i++){
-                if (abs(p->daughter(i)->pdgId())==9900113)
+                if ((abs(p->daughter(i)->pdgId())==9900113) || (abs(p->daughter(i)->pdgId())==9000010))
                 lastZPrime=false;
             }                                                                                       //check if last ZPrime -> decaying
             if(lastZPrime){
                 ZPrimes.push_back(*p);
                 for(uint i=0;i<p->numberOfDaughters();i++){
-                    if(abs(p->daughter(i)->pdgId())!=9900113){
+                    if((abs(p->daughter(i)->pdgId())!=9900113) || (abs(p->daughter(i)->pdgId())!=9000010)){
                         ZPrime_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
                     }
                 }

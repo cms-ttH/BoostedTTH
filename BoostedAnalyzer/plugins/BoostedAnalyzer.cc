@@ -606,6 +606,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	ResMon->PrintSystemMemory();
 	
     }
+//     std::cout<<"iEvent  "<<eventcount<<std::endl;
 
     eventcount++;
 
@@ -809,7 +810,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
     else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
     
-    
     // nominal weight and weights for reweighting
     std::vector<map<string,float> >weightsVector;
     // inputs
@@ -846,7 +846,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  iEvent,
 					  iSetup,
                                           jetSystematics[isys],
-                                          &csvReweighter
+                                          &csvReweighter,
+                                          isData
                                    
                                           )
                         );

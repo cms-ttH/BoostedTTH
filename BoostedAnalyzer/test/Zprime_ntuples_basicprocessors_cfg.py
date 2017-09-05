@@ -55,9 +55,8 @@ if options.globalTag is "NONE":
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     #options.maxEvents = 10000 # reset for testing
-    options.maxEvents = 999999999 # reset for testing
-    #options.maxEvents = 10 # reset for testing
-    #options.maxEvents = 100 # reset for testing
+    #options.maxEvents = 999999999 # reset for testing
+    options.maxEvents = 100 # reset for testing
 
 if not options.inputFiles:
     options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mschrode/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Skim-V1_3j20_1l20/170217_171402/0000/Skim_1.root']
@@ -503,7 +502,7 @@ process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 # selection of the nominal jets
 process.SelectedJetProducerAK4=process.SelectedJetProducer.clone(jets='patSmearedJetsAK4',
                                                                 applyCorrection=False,
-                                                                ptMins=[75,75],
+                                                                ptMins=[20,30],
                                                                 etaMaxs=[2.4,2.4],
                                                                 collectionNames=["selectedJetsAK4Loose","selectedJetsAK4"],
                                                                 systematics=[""],
@@ -513,7 +512,7 @@ process.SelectedJetProducerAK4=process.SelectedJetProducer.clone(jets='patSmeare
 
 process.SelectedJetProducerAK8=process.SelectedJetProducer.clone(jets='patSmearedJetsAK8',
                                                                 applyCorrection=False,
-                                                                ptMins=[150],
+                                                                ptMins=[80],
                                                                 etaMaxs=[2.4],
                                                                 collectionNames=["selectedJetsAK8"],
                                                                 systematics=[""],
@@ -792,16 +791,16 @@ if options.isData:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
   "essentialBasicVarProcessor",
-  "TriggerVarProcessor",
-  "ZPrimeToTPrimeAllHadProcessor",
+  #"TriggerVarProcessor",
+  #"ZPrimeToTPrimeAllHadProcessor",
   )
 
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
   "essentialBasicVarProcessor",
-  "TriggerVarProcessor",
-  "ZPrimeToTPrimeAllHadProcessor",
+  #"TriggerVarProcessor",
+  #"ZPrimeToTPrimeAllHadProcessor",
   )
 
 printContent=False
