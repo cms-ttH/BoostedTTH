@@ -161,6 +161,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
  	  else if( leptonIDs[i] == "electron80XCutBasedL"  ) electronIDs_[i] = electronID::electron80XCutBasedL;
 	  else if( leptonIDs[i] == "electron80XCutBasedM"  ) electronIDs_[i] = electronID::electron80XCutBasedM;
 	  else if( leptonIDs[i] == "electron80XCutBasedT"  ) electronIDs_[i] = electronID::electron80XCutBasedT;
+          else if( leptonIDs[i] == "electron80XCutBasedT_IsoInverted"  ) electronIDs_[i] = electronID::electron80XCutBasedT_IsoInverted;
 	  else if( leptonIDs[i] == "electronNonTrigMVAid90"  ) electronIDs_[i] = electronID::electronNonTrigMVAid90;
 	  else if( leptonIDs[i] == "electronNonTrigMVAid80"  ) electronIDs_[i] = electronID::electronNonTrigMVAid80;
 	  else if( leptonIDs[i] == "electronGeneralPurposeMVA2016WP80"  ) electronIDs_[i] = electronID::electronGeneralPurposeMVA2016WP80;
@@ -174,6 +175,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
       if(leptonType_ == Muon){
 	  if(      leptonIDs[i] == "loose"  )   muonIDs_[i] = muonID::muonLoose;
 	  else if( leptonIDs[i] == "tight"  )   muonIDs_[i] = muonID::muonTight;
+          else if( leptonIDs[i] == "tight_IsoInverted"  )   muonIDs_[i] = muonID::muonTight_IsoInverted;
 	  else if( leptonIDs[i] == "tightDL"  ) muonIDs_[i] = muonID::muonTightDL;
 	  else if( leptonIDs[i] == "muonMediumICHEP"  ) muonIDs_[i] = muonID::muonMediumICHEP;
 
