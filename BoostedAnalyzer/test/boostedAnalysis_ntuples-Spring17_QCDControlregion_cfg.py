@@ -526,7 +526,7 @@ if options.isData:
 process.BoostedAnalyzer.selectionNames = [
 "FilterSelection",
 "VertexSelection",
-"LeptonSelection",
+"LeptonSelection_QCDControlregion",
 "JetTagSelection"
 ]
 if options.additionalSelection!="NONE":

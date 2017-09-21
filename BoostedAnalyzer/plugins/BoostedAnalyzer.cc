@@ -65,6 +65,7 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/LeptonSelection_QCDControlregion.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LooseLeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonMassSelection.hpp"
@@ -373,6 +374,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	else if(*itSel == "GenTopSLSelection") selections.push_back(new GenTopSLSelection());
 	else if(*itSel == "GenTopDLSelection") selections.push_back(new GenTopDLSelection());
 	else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
+        else if(*itSel == "LeptonSelection_QCDControlregion") selections.push_back(new LeptonSelection_QCDControlregion(iConfig));
 	else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
 	else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
 	else if(*itSel == "DiLeptonJetTagSelection") selections.push_back(new DiLeptonJetTagSelection(iConfig));

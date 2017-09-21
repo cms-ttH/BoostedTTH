@@ -177,6 +177,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	  else if( leptonIDs[i] == "tight"  )   muonIDs_[i] = muonID::muonTight;
           else if( leptonIDs[i] == "tight_IsoInverted"  )   muonIDs_[i] = muonID::muonTight_IsoInverted;
 	  else if( leptonIDs[i] == "tightDL"  ) muonIDs_[i] = muonID::muonTightDL;
+          else if( leptonIDs[i] == "tightDL_IsoInverted"  )   muonIDs_[i] = muonID::muonTightDL_IsoInverted;
 	  else if( leptonIDs[i] == "muonMediumICHEP"  ) muonIDs_[i] = muonID::muonMediumICHEP;
 
 	  else {
