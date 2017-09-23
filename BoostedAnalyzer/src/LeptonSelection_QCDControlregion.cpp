@@ -59,7 +59,7 @@ bool LeptonSelection_QCDControlregion::IsSelected(const InputCollections& input,
       else cutflow.EventSurvivedStep("== 1 tight lepton same flavor",input.weights.at("Weight"));
     }
     if(step<0||step==4){
-      if(!( (muonTriggered&&nmuonsloose_with_iso==0&&nmuons_iso_inverted==1&&nelectronsloose_with_iso==0) || (electronTriggered&&nelectronsloose_with_iso==1&&nelectrons_iso_inverted==1&&nmuonsloose_with_iso==0) ) ) return false;
+      if(!( (muonTriggered&&nmuonsloose_with_iso==0&&nmuons_iso_inverted==1&&nelectronsloose_with_iso==0&&nelectrons_iso_inverted==0) || (electronTriggered&&nelectronsloose_with_iso==0&&nelectrons_iso_inverted==1&&nmuonsloose_with_iso==0&&nmuons_iso_inverted==0) ) ) return false;
       else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input.weights.at("Weight"));
     }
   }
@@ -77,7 +77,7 @@ bool LeptonSelection_QCDControlregion::IsSelected(const InputCollections& input,
       else cutflow.EventSurvivedStep("== 1 tight lepton same flavor",input.weights.at("Weight"));
     }
     if(step<0||step==4){
-      if( nmuonsloose_with_iso!=0 ) return false;
+      if( nmuonsloose_with_iso!=0 || nmuons_iso_inverted!=0 ) return false;
       else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input.weights.at("Weight"));
     }
   }
@@ -95,7 +95,7 @@ bool LeptonSelection_QCDControlregion::IsSelected(const InputCollections& input,
       else cutflow.EventSurvivedStep("== 1 tight lepton same flavor",input.weights.at("Weight"));
     }
     if(step<0||step==4){
-      if( nelectronsloose_with_iso!=0 ) return false;
+      if( nelectronsloose_with_iso!=0 || nelectrons_iso_inverted!=0 ) return false;
       else cutflow.EventSurvivedStep("== 0 loose leptons different flavor",input.weights.at("Weight"));
     }
   }
