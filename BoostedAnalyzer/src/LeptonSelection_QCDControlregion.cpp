@@ -34,8 +34,8 @@ void LeptonSelection_QCDControlregion::InitCutflow(Cutflow& cutflow){
 bool LeptonSelection_QCDControlregion::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "LeptonSelection_QCDControlregion not initialized" << endl;
 
-  int nelectrons_iso_inverted = input.selectedElectronsDL.size();
-  int nmuons_iso_inverted = input.selectedMuonsDL.size();
+  int nelectrons_iso_inverted = input.selectedElectrons.size();
+  int nmuons_iso_inverted = input.selectedMuons.size();
   int nelectronsloose_with_iso = input.selectedElectronsLoose.size();
   int nmuonsloose_with_iso = input.selectedMuonsLoose.size();
   // todo: fix triggers 
