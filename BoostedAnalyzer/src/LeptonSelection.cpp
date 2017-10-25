@@ -106,7 +106,7 @@ bool LeptonSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
 //      else cutflow.EventSurvivedStep("lepton VETO trigger",input.weights.at("Weight"));
 //    }
     if(step<0||step==5){
-      if( nmuonsloose==0 && nelectronsloose==0 && !(muonTriggered || electronTriggered)) cutflow.EventSurvivedStep("== No leptons",input.weights.at("Weight"));
+      if( nmuons==0 && nelectrons==0 && !(muonTriggered || electronTriggered)) cutflow.EventSurvivedStep("== No leptons",input.weights.at("Weight"));
       else return false;
     }
   }  else {

@@ -244,9 +244,13 @@ private:
     /** mets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::MET> > > correctedMETsTokens;
 
-    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK8Tokens;
-    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK12Tokens;   
-    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK15Tokens;   
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK4PUPPITokens;
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK8CHSSoftDropTokens;
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK8CHSPruningTokens;
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK8PUPPISoftDropTokens;
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK8PUPPIPruningTokens;
+/*    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK12Tokens;   
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK15Tokens; */  
                 
     
     /** boosted jets data access token **/
@@ -342,18 +346,29 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     }
     
     
-
-    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK8")){
-	     selectedJetsAK8Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK4PUPPI")){
+	     selectedJetsAK4PUPPITokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    }
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK8CHSSoftDrop")){
+	     selectedJetsAK8CHSSoftDropTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    } 
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK8CHSPruning")){
+	     selectedJetsAK8CHSPruningTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    } 
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK8PUPPISoftDrop")){
+	     selectedJetsAK8PUPPISoftDropTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    } 
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK8PUPPIPruning")){
+	     selectedJetsAK8PUPPIPruningTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     } 
 
-    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK12")){
-	     selectedJetsAK12Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
-    }     
-
-    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK15")){
-	     selectedJetsAK15Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
-    }       
+//     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK12")){
+// 	     selectedJetsAK12Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+//     }     
+// 
+//     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK15")){
+// 	     selectedJetsAK15Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+//     }       
     
     
     
@@ -662,31 +677,56 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
 
     
-    
+    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK4PUPPI;
+    for(auto & selectedJetsAK4PUPPIToken : selectedJetsAK4PUPPITokens){
+    	edm::Handle< pat::JetCollection > h_selectedJetsAK4PUPPI;
+    	iEvent.getByToken( selectedJetsAK4PUPPIToken,h_selectedJetsAK4PUPPI );
+    	hs_selectedJetsAK4PUPPI.push_back(h_selectedJetsAK4PUPPI);
+    }     
+    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK8CHSSoftDrop;
+    for(auto & selectedJetsAK8CHSSoftDropToken : selectedJetsAK8CHSSoftDropTokens){
+    	edm::Handle< pat::JetCollection > h_selectedJetsAK8CHSSoftDrop;
+    	iEvent.getByToken( selectedJetsAK8CHSSoftDropToken,h_selectedJetsAK8CHSSoftDrop );
+    	hs_selectedJetsAK8CHSSoftDrop.push_back(h_selectedJetsAK8CHSSoftDrop);
+    }    
  
-    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK8;
-    for(auto & selectedJetsAK8Token : selectedJetsAK8Tokens){
-    	edm::Handle< pat::JetCollection > h_selectedJetsAK8;
-    	iEvent.getByToken( selectedJetsAK8Token,h_selectedJetsAK8 );
-    	hs_selectedJetsAK8.push_back(h_selectedJetsAK8);
+    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK8CHSPruning;
+    for(auto & selectedJetsAK8CHSPruningToken : selectedJetsAK8CHSPruningTokens){
+    	edm::Handle< pat::JetCollection > h_selectedJetsAK8CHSPruning;
+    	iEvent.getByToken( selectedJetsAK8CHSPruningToken,h_selectedJetsAK8CHSPruning );
+    	hs_selectedJetsAK8CHSPruning.push_back(h_selectedJetsAK8CHSPruning);
+    }    
+ 
+    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK8PUPPISoftDrop;
+    for(auto & selectedJetsAK8PUPPISoftDropToken : selectedJetsAK8PUPPISoftDropTokens){
+    	edm::Handle< pat::JetCollection > h_selectedJetsAK8PUPPISoftDrop;
+    	iEvent.getByToken( selectedJetsAK8PUPPISoftDropToken,h_selectedJetsAK8PUPPISoftDrop );
+    	hs_selectedJetsAK8PUPPISoftDrop.push_back(h_selectedJetsAK8PUPPISoftDrop);
+    }    
+ 
+    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK8PUPPIPruning;
+    for(auto & selectedJetsAK8PUPPIPruningToken : selectedJetsAK8PUPPIPruningTokens){
+    	edm::Handle< pat::JetCollection > h_selectedJetsAK8PUPPIPruning;
+    	iEvent.getByToken( selectedJetsAK8PUPPIPruningToken,h_selectedJetsAK8PUPPIPruning );
+    	hs_selectedJetsAK8PUPPIPruning.push_back(h_selectedJetsAK8PUPPIPruning);
     }    
 
    
-    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK12;
-    for(auto & selectedJetsAK12Token : selectedJetsAK12Tokens){
-    	edm::Handle< pat::JetCollection > h_selectedJetsAK12;
-    	iEvent.getByToken( selectedJetsAK12Token,h_selectedJetsAK12 );
-    	hs_selectedJetsAK12.push_back(h_selectedJetsAK12);
-    }    
-    
- 
-    std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK15;
-    for(auto & selectedJetsAK15Token : selectedJetsAK15Tokens){
-    	edm::Handle< pat::JetCollection > h_selectedJetsAK15;
-    	iEvent.getByToken( selectedJetsAK15Token,h_selectedJetsAK15 );
-    	hs_selectedJetsAK15.push_back(h_selectedJetsAK15);
-    }    
-    
+//     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK12;
+//     for(auto & selectedJetsAK12Token : selectedJetsAK12Tokens){
+//     	edm::Handle< pat::JetCollection > h_selectedJetsAK12;
+//     	iEvent.getByToken( selectedJetsAK12Token,h_selectedJetsAK12 );
+//     	hs_selectedJetsAK12.push_back(h_selectedJetsAK12);
+//     }    
+//     
+//  
+//     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsAK15;
+//     for(auto & selectedJetsAK15Token : selectedJetsAK15Tokens){
+//     	edm::Handle< pat::JetCollection > h_selectedJetsAK15;
+//     	iEvent.getByToken( selectedJetsAK15Token,h_selectedJetsAK15 );
+//     	hs_selectedJetsAK15.push_back(h_selectedJetsAK15);
+//     }    
+//     
     
     
     // MC only (generator weights for example)
@@ -829,9 +869,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectronsLoose,
 					  *(hs_selectedJets[isys]),
 					  *(hs_selectedJetsLoose[isys]),
-                                          *(hs_selectedJetsAK8[isys]),
-                                          *(hs_selectedJetsAK12[isys]),
-                                          *(hs_selectedJetsAK15[isys]),
+                                          *(hs_selectedJetsAK4PUPPI[isys]),
+                                          *(hs_selectedJetsAK8CHSSoftDrop[isys]),
+                                          *(hs_selectedJetsAK8CHSPruning[isys]),
+                                          *(hs_selectedJetsAK8PUPPISoftDrop[isys]),
+                                          *(hs_selectedJetsAK8PUPPIPruning[isys]),
+//                                           *(hs_selectedJetsAK12[isys]),
+//                                           *(hs_selectedJetsAK15[isys]),
                                                                                     
                                           
 					  (*(hs_correctedMETs[isys]))[0],

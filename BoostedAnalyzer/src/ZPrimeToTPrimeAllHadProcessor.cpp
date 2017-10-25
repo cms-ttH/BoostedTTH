@@ -1,6 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/ZPrimeToTPrimeAllHadProcessor.hpp"
 #include <string> 
 #include "MiniAOD/MiniAODHelper/interface/TTM_SDM.h"
+#include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
 
 
 
@@ -35,6 +36,7 @@ ZPrimeToTPrimeAllHadProcessor::~ZPrimeToTPrimeAllHadProcessor(){
 
 void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableContainer& vars){
     
+    InitLeptonVars(vars);
     InitGenVars(vars);
     InitBasicRecoVars(vars);
     InitSignalandSidbandVars(vars);
@@ -50,6 +52,20 @@ void ZPrimeToTPrimeAllHadProcessor::Init(const InputCollections& input,VariableC
 //    
 //}
 
+void ZPrimeToTPrimeAllHadProcessor::InitLeptonVars(VariableContainer& vars){
+    vars.InitVar("N_electrons","I");
+    vars.InitVar("N_muons","I");
+    vars.InitVar("N_electronsLoose","I");
+    vars.InitVar("N_muonsLoose","I");
+    vars.InitVar("N_electronsMidloose","I");
+    vars.InitVar("N_muonsMidloose","I");    
+    vars.InitVars("Electrons_Pt","N_electrons");
+    vars.InitVars("Muons_Pt","N_muons");
+    vars.InitVars("ElectronsLoose_Pt","N_electronsLoose");
+    vars.InitVars("MuonsLoose_Pt","N_muonsLoose");
+    vars.InitVars("ElectronsMidloose_Pt","N_electronsMidloose");
+    vars.InitVars("MuonsMidloose_Pt","N_muonsMidloose");
+}
 
 
 void ZPrimeToTPrimeAllHadProcessor::InitGenVars(VariableContainer& vars){
@@ -756,349 +772,327 @@ void ZPrimeToTPrimeAllHadProcessor::InitTaggingVars(VariableContainer& vars){
 void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
 
 ///ABCD BACKGROUND ESTIMATION
-   vars.InitVar("N_Zprime_ABCD","I");
-   vars.InitVars("Zprimes_ABCD_M",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Zprimes_ABCD_Pt",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Tprimes_ABCD_M",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Tprimes_ABCD_Pt",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_Pt",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_Eta",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_Phi",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_CSV",-9.0,"N_Zprime_ABCD");
+   vars.InitVar("N_Zprime_ABCDCHSSoftDrop","I");
+   vars.InitVars("Zprimes_ABCDCHSSoftDrop_M",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Zprimes_ABCDCHSSoftDrop_Pt",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tprimes_ABCDCHSSoftDrop_M",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tprimes_ABCDCHSSoftDrop_Pt",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_Pt",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_Eta",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_Phi",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_CSV",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    
-   vars.InitVars("Bottoms_ABCD_WeightCSVnominal",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVLFup",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVLFdown",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVHFup",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVHFdown",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVCErr1up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVCErr1down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVCErr2up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Bottoms_ABCD_WeightCSVCErr2down",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVnominal",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFup",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFdown",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFup",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFdown",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
 
-   vars.InitVars("Ws_ABCD_Pt",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Ws_ABCD_Eta",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Ws_ABCD_Phi",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Ws_ABCD_MSD",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Ws_ABCD_t21",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_Pt",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_Eta",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_Phi",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_MSD",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_t32",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Tops_ABCD_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_Pt",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_real",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_matcheddecays",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_Eta",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_Phi",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_MSD",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_t21",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_Pt",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_real",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_matcheddecays",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_Eta",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_Phi",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_MSD",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_t32",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_maxsubjetCSVv2",-9.0,"N_Zprime_ABCDCHSSoftDrop");
 
-   vars.InitVars("Topsubjets_ABCD_WeightCSVnominal",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVLFup",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVLFdown",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVHFup",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVHFdown",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVCErr1up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVCErr1down",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVCErr2up",-9.0,"N_Zprime_ABCD");
-   vars.InitVars("Topsubjets_ABCD_WeightCSVCErr2down",-9.0,"N_Zprime_ABCD");   
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVnominal",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFup",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFdown",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFup",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFdown",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr1up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr1down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr2up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr2down",-9.0,"N_Zprime_ABCDCHSSoftDrop");   
    
    
    
    
    
-   vars.InitVar("N_Zprimes_ABCDmasscorrnotopbtag","I");
-   vars.InitVars("Zprimes_ABCD_masscorrnotopbtag_M",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Zprimes_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Tprimes_ABCD_masscorrnotopbtag_M",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Tprimes_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_CSV",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVar("N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag","I");
+   vars.InitVars("Zprimes_ABCDCHSSoftDrop_masscorrnotopbtag_M",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Zprimes_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tprimes_ABCDCHSSoftDrop_masscorrnotopbtag_M",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tprimes_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_Eta",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_Phi",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_CSV",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
    
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");   
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");   
    
-   vars.InitVars("Ws_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Ws_ABCD_masscorrnotopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Ws_ABCD_masscorrnotopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Ws_ABCD_masscorrnotopbtag_MSD",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Ws_ABCD_masscorrnotopbtag_t21",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Tops_ABCD_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Tops_ABCD_masscorrnotopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Tops_ABCD_masscorrnotopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Tops_ABCD_masscorrnotopbtag_MSD",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Tops_ABCD_masscorrnotopbtag_t32",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Tops_ABCD_masscorrnotopbtag_maxsubjetCSVv2",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_real",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_matcheddecays",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_Eta",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_Phi",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_MSD",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_t21",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_real",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_matcheddecays",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_Eta",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_Phi",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_MSD",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_t32",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_maxsubjetCSVv2",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
  
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDmasscorrnotopbtag");      
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag");      
    
    
    
-   vars.InitVar("N_Zprimes_ABCDmasscorrwithtopbtag","I");
-   vars.InitVars("Zprimes_ABCD_masscorrwithtopbtag_M",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Zprimes_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Tprimes_ABCD_masscorrwithtopbtag_M",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Tprimes_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_CSV",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
+   vars.InitVar("N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag","I");
+   vars.InitVars("Zprimes_ABCDCHSSoftDrop_masscorrwithtopbtag_M",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Zprimes_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tprimes_ABCDCHSSoftDrop_masscorrwithtopbtag_M",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tprimes_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_Eta",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_Phi",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_CSV",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
    
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");      
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");      
    
-   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_MSD",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Ws_ABCD_masscorrwithtopbtag_t21",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_Eta",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_Phi",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_MSD",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_t32",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Tops_ABCD_masscorrwithtopbtag_maxsubjetCSVv2",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");   
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_real",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_matcheddecays",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_Eta",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_Phi",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_MSD",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_t21",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_real",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_matcheddecays",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_Eta",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_Phi",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_MSD",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_t32",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_maxsubjetCSVv2",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");   
   
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");
-   vars.InitVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDmasscorrwithtopbtag");      
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVnominal",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFup",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFdown",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFup",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFdown",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2up",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");
+   vars.InitVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2down",-9.0,"N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag");      
    
    
-/*   vars.InitVar("N_Zprime_ABCD_tAK15WAK15bAK4","I");
-   vars.InitVars("Zprimes_ABCD_tAK15WAK15bAK4_M",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Zprimes_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Tprimes_ABCD_tAK15WAK15bAK4_M",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Tprimes_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK15bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK15bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK15bAK4_CSV",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Ws_ABCD_tAK15WAK15bAK4_t21",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_t32",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK15bAK4_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD_tAK15WAK15bAK4");   
- */  
+   vars.InitVar("N_Zprime_ABCDCHSPruning","I");
+   vars.InitVars("Zprimes_ABCDCHSPruning_M",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Zprimes_ABCDCHSPruning_Pt",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tprimes_ABCDCHSPruning_M",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tprimes_ABCDCHSPruning_Pt",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_Pt",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_Eta",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_Phi",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_CSV",-9.0,"N_Zprime_ABCDCHSPruning");
    
-   vars.InitVar("N_Zprime_ABCD_tAK15WAK8bAK4","I");
-   vars.InitVars("Zprimes_ABCD_tAK15WAK8bAK4_M",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Zprimes_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Tprimes_ABCD_tAK15WAK8bAK4_M",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Tprimes_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_CSV",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVnominal",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVLFup",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVLFdown",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVHFup",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVHFdown",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVCErr1up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVCErr1down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVCErr2up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Bottoms_ABCDCHSPruning_WeightCSVCErr2down",-9.0,"N_Zprime_ABCDCHSPruning");
+
+   vars.InitVars("Ws_ABCDCHSPruning_matcheddecays",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_real",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_Pt",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_Eta",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_Phi",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_MSD",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_t21",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_matcheddecays",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_real",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_Pt",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_Eta",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_Phi",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_MSD",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_t32",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_maxsubjetCSVv2",-9.0,"N_Zprime_ABCDCHSPruning");
+
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVnominal",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVLFup",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVLFdown",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVHFup",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVHFdown",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr1up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr1down",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr2up",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr2down",-9.0,"N_Zprime_ABCDCHSPruning");   
    
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVnominal",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFup",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFup",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFdown",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr1up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr1down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr2up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr2down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");   
    
-   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Ws_ABCD_tAK15WAK8bAK4_t21",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_t32",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK15WAK8bAK4_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");   
+   vars.InitVar("N_Zprime_ABCDPUPPISoftDrop","I");
+   vars.InitVars("Zprimes_ABCDPUPPISoftDrop_M",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Zprimes_ABCDPUPPISoftDrop_Pt",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tprimes_ABCDPUPPISoftDrop_M",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tprimes_ABCDPUPPISoftDrop_Pt",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_Pt",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_Eta",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_Phi",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_CSV",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVnominal",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFup",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFup",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFdown",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2up",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2down",-9.0,"N_Zprime_ABCD_tAK15WAK8bAK4");   
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVnominal",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFup",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFdown",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFup",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFdown",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+
+   vars.InitVars("Ws_ABCDPUPPISoftDrop_matcheddecays",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Ws_ABCDPUPPISoftDrop_real",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Ws_ABCDPUPPISoftDrop_Pt",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Ws_ABCDPUPPISoftDrop_Eta",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Ws_ABCDPUPPISoftDrop_Phi",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Ws_ABCDPUPPISoftDrop_MSD",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Ws_ABCDPUPPISoftDrop_t21",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_matcheddecays",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_real",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_Pt",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_Eta",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_Phi",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_MSD",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_t32",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_maxsubjetCSVv2",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVnominal",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFup",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFdown",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFup",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFdown",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr1up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr1down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr2up",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr2down",-9.0,"N_Zprime_ABCDPUPPISoftDrop");   
+   
       
-  
    
-//    vars.InitVar("N_Zprime_ABCD_tAK12WAK12bAK4","I");
-//    vars.InitVars("Zprimes_ABCD_tAK12WAK12bAK4_M",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Zprimes_ABCD_tAK12WAK12bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Tprimes_ABCD_tAK12WAK12bAK4_M",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Tprimes_ABCD_tAK12WAK12bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Bottoms_ABCD_tAK12WAK12bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Bottoms_ABCD_tAK12WAK12bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Bottoms_ABCD_tAK12WAK12bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Bottoms_ABCD_tAK12WAK12bAK4_CSV",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Ws_ABCD_tAK12WAK12bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Ws_ABCD_tAK12WAK12bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Ws_ABCD_tAK12WAK12bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Ws_ABCD_tAK12WAK12bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Ws_ABCD_tAK12WAK12bAK4_t21",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Tops_ABCD_tAK12WAK12bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Tops_ABCD_tAK12WAK12bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Tops_ABCD_tAK12WAK12bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Tops_ABCD_tAK12WAK12bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Tops_ABCD_tAK12WAK12bAK4_t32",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");
-//    vars.InitVars("Tops_ABCD_tAK12WAK12bAK4_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD_tAK12WAK12bAK4");   
-//    
    
-   vars.InitVar("N_Zprime_ABCD_tAK12WAK8bAK4","I");
-   vars.InitVars("Zprimes_ABCD_tAK12WAK8bAK4_M",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Zprimes_ABCD_tAK12WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Tprimes_ABCD_tAK12WAK8bAK4_M",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Tprimes_ABCD_tAK12WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_CSV",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVnominal",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFup",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFup",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFdown",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr1up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr1down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr2up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr2down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");   
-
-   vars.InitVars("Ws_ABCD_tAK12WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Ws_ABCD_tAK12WAK8bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Ws_ABCD_tAK12WAK8bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Ws_ABCD_tAK12WAK8bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Ws_ABCD_tAK12WAK8bAK4_t21",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK12WAK8bAK4_Pt",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK12WAK8bAK4_Eta",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK12WAK8bAK4_Phi",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK12WAK8bAK4_MSD",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK12WAK8bAK4_t32",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Tops_ABCD_tAK12WAK8bAK4_maxsubjetCSVv2",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");   
-   
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVnominal",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFup",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFup",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFdown",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2up",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");
-   vars.InitVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2down",-9.0,"N_Zprime_ABCD_tAK12WAK8bAK4");   
-
    
 ///Datadriven Background estimation   
    vars.InitVar("BG_Zprime_M","F");
@@ -1418,6 +1412,209 @@ void ZPrimeToTPrimeAllHadProcessor::FillZprimeVars(VariableContainer& vars, std:
 }
 
 void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,VariableContainer& vars){
+    
+    
+    
+    
+    
+ 
+    //math::XYZTTLorentzVector top;
+    std::vector<pat::Jet> tops;
+    std::vector<pat::Jet> tops_withbtag;
+    std::vector<pat::Jet> Ws;
+    std::vector<pat::Jet> bottoms;
+    std::vector<pat::Jet> separated_bottoms;
+    
+    std::vector<pat::Jet> tops_anti;
+    std::vector<pat::Jet> tops_withbtag_anti;
+    std::vector<pat::Jet> Ws_anti;
+    std::vector<pat::Jet> bottoms_anti;
+    std::vector<pat::Jet> Zs;
+    std::vector<pat::Jet> Higgs;
+    std::vector<pat::Jet> Higgs_with1btag;
+    std::vector<pat::Jet> Higgs_with2btag;
+    std::vector<pat::Jet> Zs_anti;
+    std::vector<pat::Jet> Higgs_anti;
+    std::vector<pat::Jet> Higgs_with1btag_anti;
+    std::vector<pat::Jet> Higgs_with2btag_anti;
+    
+    std::vector<pat::Jet> no_bottoms;
+    
+    math::XYZTLorentzVector Tprime;
+    math::XYZTLorentzVector Tprime_bottom_anti;
+    math::XYZTLorentzVector Tprime_no_bottom;
+    math::XYZTLorentzVector Tprime_W_anti;
+    math::XYZTLorentzVector Tprime_W_anti_bottom_anti;
+    
+    math::XYZTLorentzVector Zprime;
+    math::XYZTLorentzVector Zprime_withtopbtag;
+    math::XYZTLorentzVector Zprime_top_anti;
+    math::XYZTLorentzVector Zprime_top_anti_W_anti;
+    math::XYZTLorentzVector Zprime_top_anti_bottom_anti;
+    math::XYZTLorentzVector Zprime_top_anti_W_anti_bottom_anti;
+    math::XYZTLorentzVector Zprime_top_withbtag_anti;
+    math::XYZTLorentzVector Zprime_top_withbtag_anti_W_anti;
+    math::XYZTLorentzVector Zprime_top_withbtag_anti_bottom_anti;
+    math::XYZTLorentzVector Zprime_top_withbtag_anti_W_anti_bottom_anti;
+    math::XYZTLorentzVector Zprime_W_anti;
+    math::XYZTLorentzVector Zprime_withtopbtag_W_anti;
+    math::XYZTLorentzVector Zprime_bottom_anti;
+    math::XYZTLorentzVector Zprime_no_bottom;
+    math::XYZTLorentzVector Zprime_withtopbtag_bottom_anti;
+    math::XYZTLorentzVector Zprime_withtopbtag_no_bottom;
+    math::XYZTLorentzVector Zprime_W_anti_bottom_anti;
+    math::XYZTLorentzVector Zprime_withtopbtag_W_anti_bottom_anti;
+    
+    bool top_candidatefound=false;
+    bool top_anti_candidatefound=false;
+    bool top_withbtag_candidatefound=false;
+    bool top_withbtag_anti_candidatefound=false;
+    bool W_candidatefound=false;
+    bool W_anti_candidatefound=false;
+    bool bottom_candidatefound=false;
+    bool bottom_anti_candidatefound=false;
+    
+/*    
+    bool no_bottom_candidatesfound=false;
+    bool Tprime_candidatefound=false;
+    bool Tprime_bottom_anti_candidatefound=false;
+    bool Tprime_no_bottom_candidatefound=false;
+    bool Tprime_W_anti_candidatefound=false;
+    bool Tprime_W_anti_bottom_anti_candidatefound=false;
+*/    
+    bool Z_candidatefound=false;
+    bool Z_anti_candidatefound=false;
+
+    bool Higgs_candidatefound=false;
+    bool Higgs_with1btag_candidatefound=false;
+    bool Higgs_with2btag_candidatefound=false;
+    bool Higgs_anti_candidatefound=false;
+    bool Higgs_with1btag_anti_candidatefound=false;
+    bool Higgs_with2btag_anti_candidatefound=false;
+
+    
+//     std::vector<pat::Jet> AK15_top_candidates;
+//     std::vector<pat::Jet> AK15_W_candidates;
+//     std::vector<pat::Jet> AK12_top_candidates;
+//     std::vector<pat::Jet> AK12_W_candidates;
+    std::vector<pat::Jet> AK8_top_candidates;
+    std::vector<pat::Jet> AK8_W_candidates;
+    std::vector<pat::Jet> AK4_bottom_candidates;
+  
+    
+    
+
+    std::vector<pat::Jet> AK8_top_tag_candidates;
+    std::vector<pat::Jet> AK8_W_tag_candidates;
+    std::vector<pat::Jet> AK4_bottom_tag_candidates;
+    std::vector<pat::Jet> AK8_top_misstag_candidates;
+    std::vector<pat::Jet> AK8_W_misstag_candidates;
+    std::vector<pat::Jet> AK4_bottom_misstag_candidates;
+
+    std::vector<pat::Jet> tagged_top;
+    std::vector<pat::Jet> tagged_top_withbtag;
+    std::vector<pat::Jet> tagged_W;
+    std::vector<pat::Jet> tagged_bottom;
+    std::vector<pat::Jet> misstagged_top;
+    std::vector<pat::Jet> misstagged_top_withbtag;
+    std::vector<pat::Jet> misstagged_W;
+    std::vector<pat::Jet> misstagged_bottom;
+        
+    std::vector<pat::Jet> AK8_top_tag_anti_candidates;
+    std::vector<pat::Jet> AK8_W_tag_anti_candidates;
+    std::vector<pat::Jet> AK4_bottom_tag_anti_candidates;
+    std::vector<pat::Jet> AK8_top_misstag_anti_candidates;
+    std::vector<pat::Jet> AK8_W_misstag_anti_candidates;
+    std::vector<pat::Jet> AK4_bottom_misstag_anti_candidates;
+    
+    std::vector<pat::Jet> tagged_top_anti;
+    std::vector<pat::Jet> tagged_top_withbtag_anti;
+    std::vector<pat::Jet> tagged_W_anti;
+    std::vector<pat::Jet> tagged_bottom_anti;
+    std::vector<pat::Jet> misstagged_top_anti;
+    std::vector<pat::Jet> misstagged_top_withbtag_anti;
+    std::vector<pat::Jet> misstagged_W_anti;
+    std::vector<pat::Jet> misstagged_bottom_anti;
+
+    
+    
+    std::vector<pat::Jet> CHSSoftDrop_top_candidates;
+    std::vector<pat::Jet> CHSSoftDrop_W_candidates;
+    std::vector<pat::Jet> CHSPruning_top_candidates;
+    std::vector<pat::Jet> CHSPruning_W_candidates;
+    std::vector<pat::Jet> PUPPISoftDrop_top_candidates;
+    std::vector<pat::Jet> PUPPISoftDrop_W_candidates;    
+    
+    std::vector<pat::Jet> AK4CHS_b_candidates;
+    std::vector<pat::Jet> AK4PUPPI_b_candidates;
+    
+    
+    std::vector<math::XYZTLorentzVector> ZprimesABCDCHSSoftDrop;
+    std::vector<math::XYZTLorentzVector> TprimesABCDCHSSoftDrop;
+    std::vector<pat::Jet> TopsABCDCHSSoftDrop;
+    std::vector<pat::Jet> BottomsABCDCHSSoftDrop;
+    std::vector<pat::Jet> WsABCDCHSSoftDrop;
+    
+    std::vector<math::XYZTLorentzVector> ZprimesABCDCHSSoftDropmasscorrnotopbtag;
+    std::vector<math::XYZTLorentzVector> TprimesABCDCHSSoftDropmasscorrnotopbtag;
+    std::vector<pat::Jet> TopsABCDCHSSoftDropmasscorrnotopbtag;
+    std::vector<pat::Jet> BottomsABCDCHSSoftDropmasscorrnotopbtag;
+    std::vector<pat::Jet> WsABCDCHSSoftDropmasscorrnotopbtag;
+    
+    std::vector<math::XYZTLorentzVector> ZprimesABCDCHSSoftDropmasscorrwithtopbtag;
+    std::vector<math::XYZTLorentzVector> TprimesABCDCHSSoftDropmasscorrwithtopbtag;
+    std::vector<pat::Jet> TopsABCDCHSSoftDropmasscorrwithtopbtag;
+    std::vector<pat::Jet> BottomsABCDCHSSoftDropmasscorrwithtopbtag;
+    std::vector<pat::Jet> WsABCDCHSSoftDropmasscorrwithtopbtag;
+    
+    
+    std::vector<math::XYZTLorentzVector> ZprimesABCDCHSPruning;
+    std::vector<math::XYZTLorentzVector> TprimesABCDCHSPruning;
+    std::vector<pat::Jet> TopsABCDCHSPruning;
+    std::vector<pat::Jet> BottomsABCDCHSPruning;
+    std::vector<pat::Jet> WsABCDCHSPruning;
+
+    
+    std::vector<math::XYZTLorentzVector> ZprimesABCDPUPPISoftDrop;
+    std::vector<math::XYZTLorentzVector> TprimesABCDPUPPISoftDrop;
+    std::vector<pat::Jet> TopsABCDPUPPISoftDrop;
+    std::vector<pat::Jet> BottomsABCDPUPPISoftDrop;
+    std::vector<pat::Jet> WsABCDPUPPISoftDrop;
+  
+        
+    
+    std::vector<reco::GenParticle> TopZprime;
+    std::vector<reco::GenParticle> TPrime;
+    std::vector<reco::GenParticle> WfromTPrime;
+    std::vector<reco::GenParticle> bfromTPrime;
+    
+    std::vector<reco::GenParticle> TopBG;
+    std::vector<reco::GenParticle> TopsTprimes;
+    std::vector<reco::GenParticle> BottomBG;
+    std::vector<reco::GenParticle> WBG;
+    std::vector<reco::GenParticle> WfromTop;
+    
+    std::vector<reco::GenParticle> Top_Decayquarks;
+    std::vector<reco::GenParticle> Topbar_Decayquarks;
+    std::vector<reco::GenParticle> WplusfromTPrime_Decayproducts;
+    std::vector<reco::GenParticle> WminusfromTPrime_Decayproducts;
+    std::vector<reco::GenParticle> WplusfromTop_Decayproducts;
+    std::vector<reco::GenParticle> WminusfromTop_Decayproducts;
+    std::vector<reco::GenParticle> WplusfromBG_Decayproducts;
+    std::vector<reco::GenParticle> WminusfromBG_Decayproducts;
+    
+    
+    std::vector<reco::GenParticle> GenTops;
+    std::vector<reco::GenParticle> GenWs;
+    std::vector<reco::GenParticle> GenTops_decayproducts;
+    std::vector<reco::GenParticle> GenWs_decayproducts;    
+    
+    
+    
+    
+    
+    
+    
   if(!initialized) cerr << "tree processor not initialized" << std::endl; // complain if not initialized but keep running
 //     std::cout<<"here"<<endl;
   
@@ -1448,12 +1645,15 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVar("N_Gen_BottombarfromTPrimebars", input.zprimetotprimeallhad.GetBottom_fromTPrimebars().size());
     vars.FillVar("N_Gen_BottomfromTPrimesandTPrimebars", input.zprimetotprimeallhad.GetBottom_fromTPrimesandTPrimebars().size());
 
-    vars.FillVar("N_packedPatJetsAK8PFCHSSoftDrop", input.selectedJetsAK8.size());
+    vars.FillVar("N_packedPatJetsAK8PFCHSSoftDrop", input.selectedJetsAK8CHSSoftDrop.size());
+//     vars.FillVar("N_packedPatJetsAK8PFCHSPruning", input.selectedJetsAK8CHSPruning.size());
+//     vars.FillVar("N_packedPatJetsAK8PFPUPPISoftDrop", input.selectedJetsAK8PUPPISoftDrop.size());
+//     vars.FillVar("N_packedPatJetsAK8PFPUPPIPruning", input.selectedJetsAK8PUPPIPruning.size());
     
 //    vars.FillVar("N_selectedPatJetsAK8PFCHSSoftDropPacked", input.selectedPatJetsAK8PFCHSSoftDropPacked.size());
-//    vars.FillVar("N_packedPatJetsAK8PFCHSSoftDrop", input.selectedJetsAK8.size());
+//    vars.FillVar("N_packedPatJetsAK8PFCHSSoftDrop", input.selectedJetsAK8CHSSoftDrop.size());
 
-//     std::cout<<"there8"<<endl;
+    std::cout<<"there8"<<endl;
     if(input.zprimetotprimeallhad.GetTops_fromZprimes().size()>0){
         
         for(std::vector<reco::GenParticle>::const_iterator itParticle = input.zprimetotprimeallhad.GetTops_fromZprimes().begin() ; itParticle != input.zprimetotprimeallhad.GetTops_fromZprimes().end(); ++itParticle){
@@ -1652,39 +1852,177 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     }
   }
     
-    std::vector<reco::GenParticle> TopZprime;
-    std::vector<reco::GenParticle> TPrime;
-    std::vector<reco::GenParticle> WfromTPrime;
-    std::vector<reco::GenParticle> bfromTPrime;
-    
-    std::vector<reco::GenParticle> TopBG;
-    std::vector<reco::GenParticle> BottomBG;
-    std::vector<reco::GenParticle> WBG;
 
-    
     
     if(input.zprimetotprimeallhad.IsFilled()){
-        TopZprime=input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes();
         TPrime=input.zprimetotprimeallhad.GetTPrimesandTPrimebars();
-        WfromTPrime=input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars();
         bfromTPrime=input.zprimetotprimeallhad.GetBottom_fromTPrimesandTPrimebars();
-    
-        TopBG=input.zprimetotprimeallhad.GetTopsandTopbars_fromBG();
         BottomBG=input.zprimetotprimeallhad.GetBottomsandBottombars_fromBG();
+        
+        TopZprime=input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes();
+        TopsTprimes=input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes();
+        TopBG=input.zprimetotprimeallhad.GetTopsandTopbars_fromBG();
+        
+        WfromTPrime=input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars();
+        WfromTop=input.zprimetotprimeallhad.GetW_fromTopsandTopbars();
         WBG=input.zprimetotprimeallhad.GetWs_fromBG();
+        
+        Top_Decayquarks=input.zprimetotprimeallhad.GetTopDecayQuarks();
+        Topbar_Decayquarks=input.zprimetotprimeallhad.GetTopBarDecayQuarks();
+//         Top_WDecayquarks=input.zprimetotprimeallhad.GetW_decay_products_fromTop()
+//         Topbar_WDecayquarks=input.zprimetotprimeallhad.GetW_decay_products_fromTopbar()
+        
+        WplusfromTPrime_Decayproducts=input.zprimetotprimeallhad.GetW_decay_products_fromTPrime();
+        WminusfromTPrime_Decayproducts=input.zprimetotprimeallhad.GetW_decay_products_fromTPrimebar();
+        WplusfromTop_Decayproducts=input.zprimetotprimeallhad.GetW_decay_products_fromTop();
+        WminusfromTop_Decayproducts=input.zprimetotprimeallhad.GetW_decay_products_fromTopbar();
+        WplusfromBG_Decayproducts=input.zprimetotprimeallhad.GetWplus_decay_products_fromBG();
+        WminusfromBG_Decayproducts=input.zprimetotprimeallhad.GetWminus_decay_products_fromBG();
+        
+        
+        for (uint i=0;i<TopZprime.size();i++){
+            GenTops.push_back(TopZprime[i]);
+        }
+        for (uint i=0;i<TopsTprimes.size();i++){
+            GenTops.push_back(TopsTprimes[i]);
+        }  
+        for (uint i=0;i<TopBG.size();i++){
+            GenTops.push_back(TopBG[i]);
+        }        
+        
+        for (uint i=0;i<WfromTPrime.size();i++){
+            GenWs.push_back(WfromTPrime[i]);
+        }      
+        for (uint i=0;i<WfromTop.size();i++){
+            GenWs.push_back(WfromTop[i]);
+        }  
+        for (uint i=0;i<WBG.size();i++){
+            GenWs.push_back(WBG[i]);
+        }  
+        
+        for (uint i=0;i<Top_Decayquarks.size();i++){
+            GenTops_decayproducts.push_back(Top_Decayquarks[i]);
+        }
+        for (uint i=0;i<Topbar_Decayquarks.size();i++){
+            GenTops_decayproducts.push_back(Topbar_Decayquarks[i]);
+        }
+        for (uint i=0;i<WplusfromTop_Decayproducts.size();i++){
+            GenTops_decayproducts.push_back(WplusfromTop_Decayproducts[i]);
+        }
+        for (uint i=0;i<WminusfromTop_Decayproducts.size();i++){
+            GenTops_decayproducts.push_back(WminusfromTop_Decayproducts[i]);
+        }
+        
+        for (uint i=0;i<WplusfromTPrime_Decayproducts.size();i++){
+            GenWs_decayproducts.push_back(WplusfromTPrime_Decayproducts[i]);
+        }
+        for (uint i=0;i<WminusfromTPrime_Decayproducts.size();i++){
+            GenWs_decayproducts.push_back(WminusfromTPrime_Decayproducts[i]);
+        }
+        for (uint i=0;i<WplusfromTop_Decayproducts.size();i++){
+            GenWs_decayproducts.push_back(WplusfromTop_Decayproducts[i]);
+        }
+        for (uint i=0;i<WminusfromTop_Decayproducts.size();i++){
+            GenWs_decayproducts.push_back(WminusfromTop_Decayproducts[i]);
+        } 
+        for (uint i=0;i<WplusfromBG_Decayproducts.size();i++){
+            GenWs_decayproducts.push_back(WplusfromBG_Decayproducts[i]);
+        }
+        for (uint i=0;i<WminusfromBG_Decayproducts.size();i++){
+            GenWs_decayproducts.push_back(WminusfromBG_Decayproducts[i]);
+        } /*               
+ ResourceMonitor* ResMon;
+ ResMon= new ResourceMonitor();
 
-    }    
 
+ 
+        std::cout<<"asda1"<<std::endl;
+        if (input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes().size() > 0){
+        std::cout<<"asda1.1"<<std::endl;
+            for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes().begin(); particle != input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes().end(); ++particle){
+        std::cout<<"asda1.2"<<std::endl;
+                std::cout<<input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes().size()<<std::endl;
+//                 GenTops.push_back(*particle);
+        std::cout<<"asda1.3"<<std::endl;
+            };
+            for (uint i=0;i<input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes().size(); i++){
+                std::cout<<input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes().size()<<std::endl;
+//                 l=
+                GenTops.push_back(input.zprimetotprimeallhad.GetTopsandTopbars_fromZprimes()[i]);
+            };
+        ResMon->PrintMemoryUsage();
+        ResMon->PrintSystemMemory();
+        };
+        delete ResMon;
+        std::cout<<"asda1.4"<<std::endl;
+        if (input.zprimetotprimeallhad.GetTopsandTopbars_fromTprimes().size()>0){
+            for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetTopsandTopbars_fromTprimes().begin(); particle != input.zprimetotprimeallhad.GetTopsandTopbars_fromTprimes().end(); ++particle){
+                GenTops.push_back(*particle);
+            };
+        };
+        if (input.zprimetotprimeallhad.GetTopsandTopbars_fromBG().size()>0){
+            for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetTopsandTopbars_fromBG().begin(); particle != input.zprimetotprimeallhad.GetTopsandTopbars_fromBG().end(); ++particle){
+                GenTops.push_back(*particle);
+            };
+        };
+        std::cout<<"asda2"<<std::endl;
+        
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetW_fromTopsandTopbars().begin(); particle != input.zprimetotprimeallhad.GetW_fromTopsandTopbars().end(); ++particle){
+            GenWs.push_back(*particle);
+        };
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetWs_fromBG().begin(); particle != input.zprimetotprimeallhad.GetWs_fromBG().end(); ++particle){
+            GenWs.push_back(*particle);
+        };
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars().begin(); particle != input.zprimetotprimeallhad.GetW_fromTPrimesandTPrimebars().end(); ++particle){
+            GenWs.push_back(*particle);
+        };
+            
+        std::cout<<"asda3"<<std::endl;
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetW_decay_products_fromTop().begin(); particle != input.zprimetotprimeallhad.GetW_decay_products_fromTop().end(); ++particle){
+            GenTops_decayproducts.push_back(*particle);
+        };     
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetW_decay_products_fromTopbar().begin(); particle != input.zprimetotprimeallhad.GetW_decay_products_fromTopbar().end(); ++particle){
+            GenTops_decayproducts.push_back(*particle);
+        };  
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetTopDecayQuarks().begin(); particle != input.zprimetotprimeallhad.GetTopDecayQuarks().end(); ++particle){
+            GenTops_decayproducts.push_back(*particle);
+        };  
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetTopBarDecayQuarks().begin(); particle != input.zprimetotprimeallhad.GetTopBarDecayQuarks().end(); ++particle){
+            GenTops_decayproducts.push_back(*particle);
+        };  
+        std::cout<<"asda5"<<std::endl;
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetW_decay_products_fromTop().begin(); particle != input.zprimetotprimeallhad.GetW_decay_products_fromTop().end(); ++particle){
+            GenWs_decayproducts.push_back(*particle);
+        };     
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetW_decay_products_fromTopbar().begin(); particle != input.zprimetotprimeallhad.GetW_decay_products_fromTopbar().end(); ++particle){
+            GenWs_decayproducts.push_back(*particle);
+        };  
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetW_decay_products_fromTPrime().begin(); particle != input.zprimetotprimeallhad.GetW_decay_products_fromTPrime().end(); ++particle){
+            GenWs_decayproducts.push_back(*particle);
+        };     
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetW_decay_products_fromTPrimebar().begin(); particle != input.zprimetotprimeallhad.GetW_decay_products_fromTPrimebar().end(); ++particle){
+            GenWs_decayproducts.push_back(*particle);
+        };          
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetWplus_decay_products_fromBG().begin(); particle != input.zprimetotprimeallhad.GetWplus_decay_products_fromBG().end(); ++particle){
+            GenWs_decayproducts.push_back(*particle);
+        };     
+        for (std::vector<reco::GenParticle>::const_iterator particle=input.zprimetotprimeallhad.GetWminus_decay_products_fromBG().begin(); particle != input.zprimetotprimeallhad.GetWminus_decay_products_fromBG().end(); ++particle){
+            GenWs_decayproducts.push_back(*particle);
+        };*/
+
+    }
+    
+    
     vars.FillVar("N_Gen_BottomfromBG",BottomBG.size());
 
-//         std::cout<<"after gen"<<endl;
+        std::cout<<"after gen "<<GenWs.size()<<endl;
     
 //AK8->Jets
-    if(input.selectedJetsAK8.size()>0){
+    if(input.selectedJetsAK8CHSSoftDrop.size()>0){
             
 ///General AK8-Jet        
-        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8.begin(); itJet != input.selectedJetsAK8.end(); ++itJet){
-            int iJet = itJet - input.selectedJetsAK8.begin();
+        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8CHSSoftDrop.begin(); itJet != input.selectedJetsAK8CHSSoftDrop.end(); ++itJet){
+            int iJet = itJet - input.selectedJetsAK8CHSSoftDrop.begin();
             if (itJet->pt()<200 || abs(itJet->eta())>2.4){
                 continue;
             }
@@ -1713,211 +2051,23 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         }
     }
 
-//     std::cout<<"there10"<<endl;
+     std::cout<<"there10"<<endl;
 
 ///////Object Identification///////
     float ht =0.;
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
         ht += itJet->pt();
     }
-    if( ht>850){
-    
-    //math::XYZTTLorentzVector top;
-    std::vector<pat::Jet> tops;
-    std::vector<pat::Jet> tops_withbtag;
-    std::vector<pat::Jet> Ws;
-    std::vector<pat::Jet> bottoms;
-    std::vector<pat::Jet> separated_bottoms;
-    
-    std::vector<pat::Jet> tops_anti;
-    std::vector<pat::Jet> tops_withbtag_anti;
-    std::vector<pat::Jet> Ws_anti;
-    std::vector<pat::Jet> bottoms_anti;
-    std::vector<pat::Jet> Zs;
-    std::vector<pat::Jet> Higgs;
-    std::vector<pat::Jet> Higgs_with1btag;
-    std::vector<pat::Jet> Higgs_with2btag;
-    std::vector<pat::Jet> Zs_anti;
-    std::vector<pat::Jet> Higgs_anti;
-    std::vector<pat::Jet> Higgs_with1btag_anti;
-    std::vector<pat::Jet> Higgs_with2btag_anti;
-    
-    std::vector<pat::Jet> no_bottoms;
-    
-    math::XYZTLorentzVector Tprime;
-    math::XYZTLorentzVector Tprime_bottom_anti;
-    math::XYZTLorentzVector Tprime_no_bottom;
-    math::XYZTLorentzVector Tprime_W_anti;
-    math::XYZTLorentzVector Tprime_W_anti_bottom_anti;
-    
-    math::XYZTLorentzVector Zprime;
-    math::XYZTLorentzVector Zprime_withtopbtag;
-    math::XYZTLorentzVector Zprime_top_anti;
-    math::XYZTLorentzVector Zprime_top_anti_W_anti;
-    math::XYZTLorentzVector Zprime_top_anti_bottom_anti;
-    math::XYZTLorentzVector Zprime_top_anti_W_anti_bottom_anti;
-    math::XYZTLorentzVector Zprime_top_withbtag_anti;
-    math::XYZTLorentzVector Zprime_top_withbtag_anti_W_anti;
-    math::XYZTLorentzVector Zprime_top_withbtag_anti_bottom_anti;
-    math::XYZTLorentzVector Zprime_top_withbtag_anti_W_anti_bottom_anti;
-    math::XYZTLorentzVector Zprime_W_anti;
-    math::XYZTLorentzVector Zprime_withtopbtag_W_anti;
-    math::XYZTLorentzVector Zprime_bottom_anti;
-    math::XYZTLorentzVector Zprime_no_bottom;
-    math::XYZTLorentzVector Zprime_withtopbtag_bottom_anti;
-    math::XYZTLorentzVector Zprime_withtopbtag_no_bottom;
-    math::XYZTLorentzVector Zprime_W_anti_bottom_anti;
-    math::XYZTLorentzVector Zprime_withtopbtag_W_anti_bottom_anti;
-    
-    bool top_candidatefound=false;
-    bool top_anti_candidatefound=false;
-    bool top_withbtag_candidatefound=false;
-    bool top_withbtag_anti_candidatefound=false;
-    bool W_candidatefound=false;
-    bool W_anti_candidatefound=false;
-    bool bottom_candidatefound=false;
-    bool bottom_anti_candidatefound=false;
-    
-/*    
-    bool no_bottom_candidatesfound=false;
-    bool Tprime_candidatefound=false;
-    bool Tprime_bottom_anti_candidatefound=false;
-    bool Tprime_no_bottom_candidatefound=false;
-    bool Tprime_W_anti_candidatefound=false;
-    bool Tprime_W_anti_bottom_anti_candidatefound=false;
-*/    
-    bool Z_candidatefound=false;
-    bool Z_anti_candidatefound=false;
-
-    bool Higgs_candidatefound=false;
-    bool Higgs_with1btag_candidatefound=false;
-    bool Higgs_with2btag_candidatefound=false;
-    bool Higgs_anti_candidatefound=false;
-    bool Higgs_with1btag_anti_candidatefound=false;
-    bool Higgs_with2btag_anti_candidatefound=false;
-
-    
-    std::vector<pat::Jet> AK15_top_candidates;
-    std::vector<pat::Jet> AK15_W_candidates;
-    std::vector<pat::Jet> AK12_top_candidates;
-    std::vector<pat::Jet> AK12_W_candidates;
-    std::vector<pat::Jet> AK8_top_candidates;
-    std::vector<pat::Jet> AK8_W_candidates;
-    std::vector<pat::Jet> AK4_bottom_candidates;
-  
-    
+    if( ht>650){
+   
     
 
-    std::vector<pat::Jet> AK8_top_tag_candidates;
-    std::vector<pat::Jet> AK8_W_tag_candidates;
-    std::vector<pat::Jet> AK4_bottom_tag_candidates;
-    std::vector<pat::Jet> AK8_top_misstag_candidates;
-    std::vector<pat::Jet> AK8_W_misstag_candidates;
-    std::vector<pat::Jet> AK4_bottom_misstag_candidates;
-
-    std::vector<pat::Jet> tagged_top;
-    std::vector<pat::Jet> tagged_top_withbtag;
-    std::vector<pat::Jet> tagged_W;
-    std::vector<pat::Jet> tagged_bottom;
-    std::vector<pat::Jet> misstagged_top;
-    std::vector<pat::Jet> misstagged_top_withbtag;
-    std::vector<pat::Jet> misstagged_W;
-    std::vector<pat::Jet> misstagged_bottom;
-        
-    std::vector<pat::Jet> AK8_top_tag_anti_candidates;
-    std::vector<pat::Jet> AK8_W_tag_anti_candidates;
-    std::vector<pat::Jet> AK4_bottom_tag_anti_candidates;
-    std::vector<pat::Jet> AK8_top_misstag_anti_candidates;
-    std::vector<pat::Jet> AK8_W_misstag_anti_candidates;
-    std::vector<pat::Jet> AK4_bottom_misstag_anti_candidates;
-    
-    std::vector<pat::Jet> tagged_top_anti;
-    std::vector<pat::Jet> tagged_top_withbtag_anti;
-    std::vector<pat::Jet> tagged_W_anti;
-    std::vector<pat::Jet> tagged_bottom_anti;
-    std::vector<pat::Jet> misstagged_top_anti;
-    std::vector<pat::Jet> misstagged_top_withbtag_anti;
-    std::vector<pat::Jet> misstagged_W_anti;
-    std::vector<pat::Jet> misstagged_bottom_anti;
-
-    
-    std::vector<math::XYZTLorentzVector> ZprimesABCD;
-    std::vector<math::XYZTLorentzVector> TprimesABCD;
-    std::vector<pat::Jet> TopsABCD;
-    std::vector<pat::Jet> BottomsABCD;
-    std::vector<pat::Jet> WsABCD;
-    
-    std::vector<math::XYZTLorentzVector> ZprimesABCDmasscorrnotopbtag;
-    std::vector<math::XYZTLorentzVector> TprimesABCDmasscorrnotopbtag;
-    std::vector<pat::Jet> TopsABCDmasscorrnotopbtag;
-    std::vector<pat::Jet> BottomsABCDmasscorrnotopbtag;
-    std::vector<pat::Jet> WsABCDmasscorrnotopbtag;
-    
-    std::vector<math::XYZTLorentzVector> ZprimesABCDmasscorrwithtopbtag;
-    std::vector<math::XYZTLorentzVector> TprimesABCDmasscorrwithtopbtag;
-    std::vector<pat::Jet> TopsABCDmasscorrwithtopbtag;
-    std::vector<pat::Jet> BottomsABCDmasscorrwithtopbtag;
-    std::vector<pat::Jet> WsABCDmasscorrwithtopbtag;
-    
-    std::vector<math::XYZTLorentzVector> Zprimes_ABCD_tAK15WAK15bAK4;
-    std::vector<math::XYZTLorentzVector> Tprimes_ABCD_tAK15WAK15bAK4;
-    std::vector<pat::Jet> Tops_ABCD_tAK15WAK15bAK4;
-    std::vector<pat::Jet> Bottoms_ABCD_tAK15WAK15bAK4;
-    std::vector<pat::Jet> Ws_ABCD_tAK15WAK15bAK4;    
-
-    std::vector<math::XYZTLorentzVector> Zprimes_ABCD_tAK15WAK8bAK4;
-    std::vector<math::XYZTLorentzVector> Tprimes_ABCD_tAK15WAK8bAK4;
-    std::vector<pat::Jet> Tops_ABCD_tAK15WAK8bAK4;
-    std::vector<pat::Jet> Bottoms_ABCD_tAK15WAK8bAK4;
-    std::vector<pat::Jet> Ws_ABCD_tAK15WAK8bAK4;      
-    
-    std::vector<math::XYZTLorentzVector> Zprimes_ABCD_tAK12WAK12bAK4;
-    std::vector<math::XYZTLorentzVector> Tprimes_ABCD_tAK12WAK12bAK4;
-    std::vector<pat::Jet> Tops_ABCD_tAK12WAK12bAK4;
-    std::vector<pat::Jet> Bottoms_ABCD_tAK12WAK12bAK4;
-    std::vector<pat::Jet> Ws_ABCD_tAK12WAK12bAK4; 
-    
-    std::vector<math::XYZTLorentzVector> Zprimes_ABCD_tAK12WAK8bAK4;
-    std::vector<math::XYZTLorentzVector> Tprimes_ABCD_tAK12WAK8bAK4;
-    std::vector<pat::Jet> Tops_ABCD_tAK12WAK8bAK4;
-    std::vector<pat::Jet> Bottoms_ABCD_tAK12WAK8bAK4;
-    std::vector<pat::Jet> Ws_ABCD_tAK12WAK8bAK4;
-    
-    if(input.selectedJetsAK15.size()>0){
-/// AK15-Jet        
-        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK15.begin(); itJet != input.selectedJetsAK15.end(); ++itJet){
-            if (itJet->pt()>100 || abs(itJet->eta())<2.4){
-                AK15_W_candidates.push_back(*itJet);
-                if (itJet->pt()>200){
-                    AK15_top_candidates.push_back(*itJet);
-                }                
-            }
-        }
-            
-    }  
-    
-    
-    
-    if(input.selectedJetsAK12.size()>0){
-/// AK12-Jet        
-        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK12.begin(); itJet != input.selectedJetsAK12.end(); ++itJet){
-            if (itJet->pt()>100 || abs(itJet->eta())<2.4){
-                AK12_W_candidates.push_back(*itJet);
-                if (itJet->pt()>200){
-                    AK12_top_candidates.push_back(*itJet);
-                }                
-            }
-        }
-            
-    }
-    
-    
 //AK8->Jets
-    if(input.selectedJetsAK8.size()>0){
+    if(input.selectedJetsAK8CHSSoftDrop.size()>0){
        
 ///General AK8-Jet        
-        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8.begin(); itJet != input.selectedJetsAK8.end(); ++itJet){
-            //int iJet = itJet - input.selectedJetsAK8.begin();
+        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8CHSSoftDrop.begin(); itJet != input.selectedJetsAK8CHSSoftDrop.end(); ++itJet){
+            //int iJet = itJet - input.selectedJetsAK8CHSSoftDrop.begin();
 
             /*double max_subjet_csv_v2=-10;
             auto const & names = itJet->subjets("SoftDrop");
@@ -1925,7 +2075,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
                 if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
                     max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-                    vars.FillVars("selectedJetsAK8_subjetCSVv2",iJet,max_subjet_csv_v2);
+                    vars.FillVars("selectedJetsAK8CHSSoftDrop_subjetCSVv2",iJet,max_subjet_csv_v2);
                 }
             }*/
             
@@ -2045,7 +2195,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     }
   }
   
-  
+        std::cout<<"check GenWs1 "<<GenWs.size()<<endl;
 ///Fill tops
   vars.FillVar("N_Tops",tops.size());   
   vars.FillVar("N_Tops_withbtag",tops_withbtag.size());   
@@ -2128,7 +2278,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("No_Bottoms_eta",iJet,itJet->eta());
   } 
 */  
-//   std::cout<<"here6"<<endl;
+   std::cout<<"here6"<<endl;
 ///Fill Zs
   vars.FillVar("N_Zs",Zs.size());   
   vars.FillVar("N_Zs_anti",Zs_anti.size());   
@@ -2143,7 +2293,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("Zs_anti_pt",iJet,itJet->pt());
     vars.FillVars("Zs_anti_eta",iJet,itJet->eta());
   }
-//     std::cout<<"here7"<<endl;
+     std::cout<<"here7"<<endl;
 ///Fill Higgs
   vars.FillVar("N_Higgs",Higgs.size());   
   vars.FillVar("N_Higgs_with1btag",Higgs_with1btag.size());   
@@ -2183,8 +2333,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("Higgs_with2btag_anti_eta",iJet,itJet->eta());
   }
   
-  
-//     std::cout<<"here8"<<endl;
+        std::cout<<"check GenWs2 "<<GenWs.size()<<endl;
+     std::cout<<"here8"<<endl;
     
   if(Z_candidatefound && Z_anti_candidatefound && Higgs_candidatefound && Higgs_with1btag_candidatefound && Higgs_with2btag_candidatefound && Higgs_anti_candidatefound && Higgs_with1btag_anti_candidatefound && Higgs_with2btag_anti_candidatefound){std::cout<<"this event makes no sense"<<endl;}
 //     std::cout<<"heredetail1"<<endl;
@@ -2244,315 +2394,18 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          if(top_candidatefound){
             ZPrimeReconstructionWtbComplete(vars,tops,Ws,bottoms, bottoms_anti,top_candidatefound, false, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), false, (W_anti_candidatefound  && !W_candidatefound),"Topfirst");
             ZPrimeReconstructionWtbComplete(vars,tops,Ws,bottoms,bottoms_anti,top_candidatefound, false, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), false, (W_anti_candidatefound  && !W_candidatefound),"Wfirst");             
-//              std::cout<<"heredetail2"<<endl;
-            /* if(bottom_candidatefound){
-
-                 
-                 
-                 std::vector<pat::Jet> separated_bottoms;
-                 separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops, Ws, bottoms);
-                 if(separated_bottoms.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Signal_Tops",tops.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops.begin() ; itJet != tops.end(); ++itJet){
-                            int iJet = itJet - tops.begin();
-                            vars.FillVars("Signal_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Signal_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Signal_Ws",Ws.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
-                            int iJet = itJet - Ws.begin();
-                            vars.FillVars("Signal_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Signal_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Signal_Bottoms",separated_bottoms.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms.begin() ; itJet != separated_bottoms.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms.begin();
-                            vars.FillVars("Signal_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Signal_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("Signal_Tprime_M",Tprime.mass());
-                        vars.FillVar("Signal_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops, Tprime);
-                        vars.FillVar("Signal_Zprime_M",Zprime.mass());
-                        vars.FillVar("Signal_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }
-             if(bottom_anti_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms_anti;                 
-                 separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops, Ws, bottoms_anti);
-                 if(separated_bottoms_anti.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms_anti);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_bottom_anti_Tops",tops.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops.begin() ; itJet != tops.end(); ++itJet){
-                            int iJet = itJet - tops.begin();
-                            vars.FillVars("Sideband_bottom_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_bottom_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_bottom_anti_Ws",Ws.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
-                            int iJet = itJet - Ws.begin();
-                            vars.FillVars("Sideband_bottom_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_bottom_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_bottom_anti_Bottoms",separated_bottoms_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms_anti.begin();
-                            vars.FillVars("Sideband_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_bottom_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("Sideband_bottom_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_bottom_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops, Tprime);
-                        vars.FillVar("Sideband_bottom_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_bottom_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }*/
          }
          if(top_withbtag_candidatefound){
             ZPrimeReconstructionWtbComplete(vars,tops_withbtag,Ws,bottoms, bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Topfirst");
-            ZPrimeReconstructionWtbComplete(vars,tops_withbtag,Ws,bottoms,bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Wfirst");  
-//             std::cout<<"heredetail3"<<endl;
-             /*if(bottom_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms;                 
-                 separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag, Ws, bottoms);
-                 if(separated_bottoms.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Signal_withtoptag_Tops",tops_withbtag.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag.begin() ; itJet != tops_withbtag.end(); ++itJet){
-                            int iJet = itJet - tops_withbtag.begin();
-                            vars.FillVars("Signal_withtoptag_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Signal_withtoptag_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Signal_withtoptag_Ws",Ws.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
-                            int iJet = itJet - Ws.begin();
-                            vars.FillVars("Signal_withtoptag_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Signal_withtoptag_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Signal_withtoptag_Bottoms",separated_bottoms.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms.begin() ; itJet != separated_bottoms.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms.begin();
-                            vars.FillVars("Signal_withtoptag_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Signal_withtoptag_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("Signal_withtopbtag_Tprime_M",Tprime.mass());
-                        vars.FillVar("Signal_withtopbtag_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_withbtag, Tprime);
-                        vars.FillVar("Signal_withtopbtag_Zprime_M",Zprime.mass());
-                        vars.FillVar("Signal_withtopbtag_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }
-             if(bottom_anti_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms_anti;                 
-                 separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag, Ws, bottoms_anti);
-                 if(separated_bottoms_anti.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms_anti);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_withtopbtag_bottom_anti_Tops",tops_withbtag.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag.begin() ; itJet != tops_withbtag.end(); ++itJet){
-                            int iJet = itJet - tops_withbtag.begin();
-                            vars.FillVars("Sideband_withtopbtag_bottom_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_withtopbtag_bottom_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_withtopbtag_bottom_anti_Ws",Ws.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
-                            int iJet = itJet - Ws.begin();
-                            vars.FillVars("Sideband_withtopbtag_bottom_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_withtopbtag_bottom_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_bottom_anti_Bottoms",separated_bottoms_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms_anti.begin();
-                            vars.FillVars("Sideband_withtopbtag_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_withtopbtag_bottom_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("Sideband_withtopbtag_bottom_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_withtopbtag_bottom_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_withbtag, Tprime);
-                        vars.FillVar("Sideband_withtopbtag_bottom_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_withtopbtag_bottom_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }*/             
+            ZPrimeReconstructionWtbComplete(vars,tops_withbtag,Ws,bottoms,bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Wfirst");   
          }
          if(top_anti_candidatefound && !top_candidatefound){
             ZPrimeReconstructionWtbComplete(vars,tops_anti,Ws,bottoms, bottoms_anti,top_candidatefound, false, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), false, (W_anti_candidatefound  && !W_candidatefound),"Topfirst");
             ZPrimeReconstructionWtbComplete(vars,tops_anti,Ws,bottoms,bottoms_anti,top_candidatefound, false, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), false, (W_anti_candidatefound  && !W_candidatefound),"Wfirst");
-//             std::cout<<"heredetail4"<<endl;
-            /*if(bottom_candidatefound){
-              
-                 std::vector<pat::Jet> separated_bottoms;                 
-                 separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_anti, Ws, bottoms);
-                 if(separated_bottoms.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_top_anti_Tops",tops_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_anti.begin() ; itJet != tops_anti.end(); ++itJet){
-                            int iJet = itJet - tops_anti.begin();
-                            vars.FillVars("Sideband_top_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_anti_Ws",Ws.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
-                            int iJet = itJet - Ws.begin();
-                            vars.FillVars("Sideband_top_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_anti_Bottoms",separated_bottoms.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms.begin() ; itJet != separated_bottoms.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms.begin();
-                            vars.FillVars("Sideband_top_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("Sideband_top_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_top_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_anti, Tprime);
-                        vars.FillVar("Sideband_top_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_top_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }
-
-             if(bottom_anti_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms_anti;                 
-                 separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_anti, Ws, bottoms_anti);
-                 if(separated_bottoms_anti.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms_anti);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_top_anti_bottom_anti_Tops",tops_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_anti.begin() ; itJet != tops_anti.end(); ++itJet){
-                            int iJet = itJet - tops_anti.begin();
-                            vars.FillVars("Sideband_top_anti_bottom_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_bottom_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_anti_bottom_anti_Ws",Ws.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
-                            int iJet = itJet - Ws.begin();
-                            vars.FillVars("Sideband_top_anti_bottom_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_bottom_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_anti_bottom_anti_Bottoms",separated_bottoms_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms_anti.begin();
-                            vars.FillVars("Sideband_top_anti_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_bottom_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("Sideband_top_anti_bottom_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_top_anti_bottom_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_anti, Tprime);
-                        vars.FillVar("Sideband_top_anti_bottom_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_top_anti_bottom_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }*/
          }
          if(top_withbtag_anti_candidatefound && !top_withbtag_candidatefound){
             ZPrimeReconstructionWtbComplete(vars,tops_withbtag_anti,Ws,bottoms, bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Topfirst");
             ZPrimeReconstructionWtbComplete(vars,tops_withbtag_anti,Ws,bottoms,bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Wfirst");                 
-//              std::cout<<"heredetail5"<<endl;
-             /*if(bottom_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms;                 
-                 separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag_anti, Ws, bottoms);
-                 if(separated_bottoms.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_top_withbtag_anti_Tops",tops_withbtag_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag_anti.begin() ; itJet != tops_withbtag_anti.end(); ++itJet){
-                            int iJet = itJet - tops_withbtag_anti.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_withbtag_anti_Ws",Ws.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
-                            int iJet = itJet - Ws.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_withbtag_anti_Bottoms",separated_bottoms.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms.begin() ; itJet != separated_bottoms.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("Sideband_top_withbtag_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_top_withbtag_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_withbtag_anti, Tprime);
-                        vars.FillVar("Sideband_top_withbtag_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_top_withbtag_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }
-             if(bottom_anti_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms_anti;                 
-                 separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag_anti, Ws, bottoms_anti);
-                 if(separated_bottoms_anti.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws,separated_bottoms_anti);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_top_withbtag_anti_bottom_anti_Tops",tops_withbtag_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag_anti.begin() ; itJet != tops_withbtag_anti.end(); ++itJet){
-                            int iJet = itJet - tops_withbtag_anti.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_Tops_bottom_anti_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_Tops_bottom_anti_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_withbtag_anti_bottom_anti_Ws",Ws.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws.begin() ; itJet != Ws.end(); ++itJet){
-                            int iJet = itJet - Ws.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_bottom_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_bottom_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_withbtag_anti_bottom_anti_Bottoms",separated_bottoms_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms_anti.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_bottom_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("Sideband_top_withbtag_anti_bottom_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_top_withbtag_anti_bottom_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_withbtag_anti, Tprime);
-                        vars.FillVar("Sideband_top_withbtag_anti_bottom_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_top_withbtag_anti_bottom_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }*/
          }
       }
 
@@ -2560,598 +2413,32 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          if(top_candidatefound){
             ZPrimeReconstructionWtbComplete(vars,tops,Ws_anti,bottoms, bottoms_anti,top_candidatefound, false, W_candidatefound, (top_anti_candidatefound && !top_candidatefound),false, (W_anti_candidatefound  && !W_candidatefound),"Topfirst");
             ZPrimeReconstructionWtbComplete(vars,tops,Ws_anti,bottoms,bottoms_anti,top_candidatefound, false, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), false, (W_anti_candidatefound  && !W_candidatefound),"Wfirst"); 
-//              std::cout<<"heredetail6"<<endl;
-            /*if(bottom_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms_anti;                 
-                 separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops, Ws_anti, bottoms);
-                 if(separated_bottoms.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_W_anti_Tops",tops.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops.begin() ; itJet != tops.end(); ++itJet){
-                            int iJet = itJet - tops.begin();
-                            vars.FillVars("Sideband_W_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_W_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_W_anti_Ws",Ws_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws_anti.begin() ; itJet != Ws_anti.end(); ++itJet){
-                            int iJet = itJet - Ws_anti.begin();
-                            vars.FillVars("Sideband_W_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_W_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_W_anti_Bottoms",separated_bottoms.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms.begin() ; itJet != separated_bottoms.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms.begin();
-                            vars.FillVars("Sideband_W_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_W_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                                                 
-                        vars.FillVar("Sideband_W_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_W_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops, Tprime);
-                        vars.FillVar("Sideband_W_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_W_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }
-             if(bottom_anti_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms_anti;                 
-                 separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops, Ws_anti, bottoms_anti);
-                 if(separated_bottoms_anti.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms_anti);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_W_anti_bottom_anti_Tops",tops.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops.begin() ; itJet != tops.end(); ++itJet){
-                            int iJet = itJet - tops.begin();
-                            vars.FillVars("Sideband_W_anti_bottom_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_W_anti_bottom_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_W_anti_bottom_anti_Ws",Ws_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws_anti.begin() ; itJet != Ws_anti.end(); ++itJet){
-                            int iJet = itJet - Ws_anti.begin();
-                            vars.FillVars("Sideband_W_anti_bottom_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_W_anti_bottom_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_W_anti_bottom_anti_Bottoms",separated_bottoms_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms_anti.begin();
-                            vars.FillVars("Sideband_W_anti_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_W_anti_bottom_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                                                      
-                        vars.FillVar("Sideband_W_anti_bottom_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_W_anti_bottom_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops, Tprime);
-                        vars.FillVar("Sideband_W_anti_bottom_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_W_anti_bottom_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }*/
          }
          if(top_withbtag_candidatefound){
             ZPrimeReconstructionWtbComplete(vars,tops_withbtag,Ws_anti,bottoms, bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Topfirst");
-            ZPrimeReconstructionWtbComplete(vars,tops_withbtag,Ws_anti,bottoms,bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Wfirst");
-//              std::cout<<"heredetail7"<<endl;
-             /*if(bottom_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms;
-                 separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag, Ws_anti, bottoms);
-                 if(separated_bottoms.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_withtopbtag_W_anti_Tops",tops_withbtag.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag.begin() ; itJet != tops_withbtag.end(); ++itJet){
-                            int iJet = itJet - tops_withbtag.begin();
-                            vars.FillVars("Sideband_withtopbtag_W_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_withtopbtag_W_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_withtopbtag_W_anti_Ws",Ws_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws_anti.begin() ; itJet != Ws_anti.end(); ++itJet){
-                            int iJet = itJet - Ws_anti.begin();
-                            vars.FillVars("Sideband_withtopbtag_W_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_withtopbtag_W_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_withtopbtag_W_anti_Bottoms",separated_bottoms.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms.begin() ; itJet != separated_bottoms.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms.begin();
-                            vars.FillVars("Sideband_withtopbtag_W_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_withtopbtag_W_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                                                       
-                        vars.FillVar("Sideband_withtopbtag_W_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_withtopbtag_W_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_withbtag, Tprime);
-                        vars.FillVar("Sideband_withtopbtag_W_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_withtopbtag_W_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }
-             if(bottom_anti_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms_anti;
-                 separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag, Ws_anti, bottoms_anti);
-                 if(separated_bottoms_anti.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms_anti);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_withtopbtag_W_anti_bottom_anti_Tops",tops_withbtag.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag.begin() ; itJet != tops_withbtag.end(); ++itJet){
-                            int iJet = itJet - tops_withbtag.begin();
-                            vars.FillVars("Sideband_withtopbtag_W_anti_bottom_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_withtopbtag_W_anti_bottom_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_withtopbtag_W_anti_bottom_anti_Ws",Ws_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws_anti.begin() ; itJet != Ws_anti.end(); ++itJet){
-                            int iJet = itJet - Ws_anti.begin();
-                            vars.FillVars("Sideband_withtopbtag_W_anti_bottom_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_withtopbtag_W_anti_bottom_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_withtopbtag_W_anti_bottom_anti_Bottoms",separated_bottoms_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms_anti.begin();
-                            vars.FillVars("Sideband_withtopbtag_W_anti_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_withtopbtag_W_anti_bottom_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                                                      
-                        vars.FillVar("Sideband_withtopbtag_W_anti_bottom_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_withtopbtag_W_anti_bottom_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_withbtag, Tprime);
-                        vars.FillVar("Sideband_withtopbtag_W_anti_bottom_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_withtopbtag_W_anti_bottom_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }*/             
+            ZPrimeReconstructionWtbComplete(vars,tops_withbtag,Ws_anti,bottoms,bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Wfirst");        
          }
          if(top_anti_candidatefound && !top_candidatefound){
             ZPrimeReconstructionWtbComplete(vars,tops_anti,Ws_anti,bottoms, bottoms_anti,top_candidatefound, false, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), false, (W_anti_candidatefound  && !W_candidatefound),"Topfirst");
             ZPrimeReconstructionWtbComplete(vars,tops_anti,Ws_anti,bottoms,bottoms_anti,top_candidatefound, false, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), false, (W_anti_candidatefound  && !W_candidatefound),"Wfirst"); 
-//              std::cout<<"heredetail8"<<endl;
-             /*if(bottom_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms;
-                 separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_anti, Ws_anti, bottoms);
-                 if(separated_bottoms.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_top_anti_W_anti_Tops",tops_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_anti.begin() ; itJet != tops_anti.end(); ++itJet){
-                            int iJet = itJet - tops_anti.begin();
-                            vars.FillVars("Sideband_top_anti_W_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_W_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_anti_W_anti_Ws",Ws_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws_anti.begin() ; itJet != Ws_anti.end(); ++itJet){
-                            int iJet = itJet - Ws_anti.begin();
-                            vars.FillVars("Sideband_top_anti_W_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_W_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_anti_W_anti_Bottoms",separated_bottoms.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms.begin() ; itJet != separated_bottoms.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms.begin();
-                            vars.FillVars("Sideband_top_anti_W_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_W_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                                                     
-                        vars.FillVar("Sideband_top_anti_W_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_top_anti_W_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_anti, Tprime);
-                        vars.FillVar("Sideband_top_anti_W_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_top_anti_W_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }
-             if(bottom_anti_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms_anti;
-                 separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_anti, Ws_anti, bottoms_anti);
-                 if(separated_bottoms_anti.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms_anti);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_top_anti_W_anti_bottom_anti_Tops",tops_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_anti.begin() ; itJet != tops_anti.end(); ++itJet){
-                            int iJet = itJet - tops_anti.begin();
-                            vars.FillVars("Sideband_top_anti_W_anti_bottom_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_W_anti_bottom_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_anti_W_anti_bottom_anti_Ws",Ws_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws_anti.begin() ; itJet != Ws_anti.end(); ++itJet){
-                            int iJet = itJet - Ws_anti.begin();
-                            vars.FillVars("Sideband_top_anti_W_anti_bottom_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_W_anti_bottom_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_anti_W_anti_bottom_anti_Bottoms",separated_bottoms_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms_anti.begin();
-                            vars.FillVars("Sideband_top_anti_W_anti_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_anti_W_anti_bottom_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                                                           
-                        vars.FillVar("Sideband_top_anti_W_anti_bottom_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_top_anti_W_anti_bottom_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_anti, Tprime);
-                        vars.FillVar("Sideband_top_anti_W_anti_bottom_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_top_anti_W_anti_bottom_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }*/
          }
          if(top_withbtag_anti_candidatefound && !top_withbtag_candidatefound){
             ZPrimeReconstructionWtbComplete(vars,tops_withbtag_anti,Ws_anti,bottoms, bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Topfirst");
             ZPrimeReconstructionWtbComplete(vars,tops_withbtag_anti,Ws_anti,bottoms,bottoms_anti,top_candidatefound, top_withbtag_candidatefound, W_candidatefound, (top_anti_candidatefound && !top_candidatefound), (top_withbtag_anti_candidatefound && !top_withbtag_candidatefound), (W_anti_candidatefound  && !W_candidatefound),"Wfirst"); 
-//              std::cout<<"heredetail9"<<endl;
-            /*if(bottom_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms;
-                 separated_bottoms=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag_anti, Ws_anti, bottoms);
-                 if(separated_bottoms.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_top_withbtag_anti_W_anti_Tops",tops_withbtag_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag_anti.begin() ; itJet != tops_withbtag_anti.end(); ++itJet){
-                            int iJet = itJet - tops_withbtag_anti.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_withbtag_anti_W_anti_Ws",Ws_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws_anti.begin() ; itJet != Ws_anti.end(); ++itJet){
-                            int iJet = itJet - Ws_anti.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_withbtag_anti_W_anti_Bottoms",separated_bottoms.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms.begin() ; itJet != separated_bottoms.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                                                 
-                        vars.FillVar("Sideband_top_withbtag_anti_W_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_top_withbtag_anti_W_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_withbtag_anti, Tprime);
-                        vars.FillVar("Sideband_top_withbtag_anti_W_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_top_withbtag_anti_W_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }
-             if(bottom_anti_candidatefound){
-                 std::vector<pat::Jet> separated_bottoms_anti;
-                 separated_bottoms_anti=ZPrimeToTPrimeAllHadProcessor::SelectSeparatedBottoms(tops_withbtag_anti, Ws_anti, bottoms_anti);
-                 if(separated_bottoms_anti.size()>0){
-                     Tprime=ZPrimeToTPrimeAllHadProcessor::TPrimeReconstructionWtb(Ws_anti,separated_bottoms_anti);
-                     if(Tprime.mass()>500){
-                         
-                        vars.FillVar("N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Tops",tops_withbtag_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = tops_withbtag_anti.begin() ; itJet != tops_withbtag_anti.end(); ++itJet){
-                            int iJet = itJet - tops_withbtag_anti.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Tops_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Tops_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Ws",Ws_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = Ws_anti.begin() ; itJet != Ws_anti.end(); ++itJet){
-                            int iJet = itJet - Ws_anti.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Ws_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Ws_Eta",iJet,itJet->eta());
-                        }
-                        
-                        vars.FillVar("N_Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms",separated_bottoms_anti.size());
-                        for(std::vector<pat::Jet>::const_iterator itJet = separated_bottoms_anti.begin() ; itJet != separated_bottoms_anti.end(); ++itJet){
-                            int iJet = itJet - separated_bottoms_anti.begin();
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms_Pt",iJet,itJet->pt());
-                            vars.FillVars("Sideband_top_withbtag_anti_W_anti_bottom_anti_Bottoms_Eta",iJet,itJet->eta());
-                        }
-                                                        
-                        vars.FillVar("Sideband_top_withbtag_anti_W_anti_bottom_anti_Tprime_M",Tprime.mass());
-                        vars.FillVar("Sideband_top_withbtag_anti_W_anti_bottom_anti_Tprime_Pt",Tprime.pt());
-                        Zprime=ZPrimeToTPrimeAllHadProcessor::ZPrimeReconstructionWtb(tops_withbtag_anti, Tprime);
-                        vars.FillVar("Sideband_top_withbtag_anti_W_anti_bottom_anti_Zprime_M",Zprime.mass());
-                        vars.FillVar("Sideband_top_withbtag_anti_W_anti_bottom_anti_Zprime_Pt",Zprime.pt());
-                    }
-                 }
-             }*/
          }          
      }
   }
-  
-  
-/*  
-///TPrime reconstruction ttZ-channel
-  if ((Z_candidatefound || Z_anti_candidatefound) && (top_candidatefound || top_anti_candidatefound || top_withbtag_candidatefound || top_withbtag_anti_candidatefound){
-      if(Z_candidatefound){
-          if (tops.size()>1){
-              Tprime_ttZ_t1Z=tops[0].p4()+Zs[0].p4();
-              Tprime_ttZ_t2Z=tops[1].p4()+Zs[0].p4();
-              if(Tprime_ttZ_t1Z.mass()>500){
-                Tprime_ttZ_t1Z_candidatefound=true;
-              }
-              if(Tprime_ttZ_t2Z.mass()>500){
-                Tprime_ttZ_t2Z_candidatefound=true;
-              }
-          }
-          if (tops_anti.size()>1){
-              Tprime_2tantiZ_tanti1Z=tops_anti[0].p4()+Zs[0].p4();
-              Tprime_2tantiZ_tanti2Z=tops_anti[1].p4()+Zs[0].p4();
-              if(Tprime_2tantiZ_tanti1Z.mass()>500){
-                Tprime_2tantiZ_tanti1Z_candidatefound=true;
-              }
-              if(Tprime_2tantiZ_tanti2Z.mass()>500){
-                Tprime_2tantiZ_tanti2Z_candidatefound=true;
-              }
-          }
-          if (tops.size()=1 && top_anti_candidatefound){
-              Tprime_tantitZ_tantiZ=tops_anti[0].p4()+Zs[0].p4();
-              Tprime_tantitZ_tZ=tops[0].p4()+Zs[0].p4();
-              if(Tprime_tantitZ_tantiZ.mass()>500){
-                Tprime_tantitZ_tantiZ_candidatefound=true;
-              }
-              if(Tprime_tantitZ_tZ.mass()>500){
-                Tprime_tantitZ_tZ_candidatefound=true;
-              }
-          }
-      }
-      if (Z_anti_candidatefound){
-          if (tops.size()>1){
-              Tprime_ttZanti_t1Zanti=tops[0].p4()+Zs[0].p4();
-              Tprime_ttZanti_t2Zanti=tops[1].p4()+Zs[0].p4();
-              if(Tprime_ttZanti_t1Zanti.mass()>500){
-                Tprime_ttZanti_t1Zanti_candidatefound=true;
-              }
-              if(Tprime_ttZanti_t2Zanti.mass()>500){
-                Tprime_ttZanti_t2Zanti_candidatefound=true;
-              }
-          }
-          if (tops_anti.size()>1){
-              Tprime_2tantiZanti_tanti1Zanti=tops_anti[0].p4()+Zs[0].p4();
-              Tprime_2tantiZanti_tanti2Zanti=tops_anti[1].p4()+Zs[0].p4();
-              if(Tprime_2tantiZanti_tanti1Zanti.mass()>500){
-                Tprime_2tantiZanti_tanti1Zanti_candidatefound=true;
-              }
-              if(Tprime_2tantiZanti_tanti1Zanti.mass()>500){
-                Tprime_2tantiZanti_tanti2Zanti_candidatefound=true;
-              }    
-          }
-          if (tops.size()=1 && top_anti_candidatefound){
-              Tprime_tantitZanti_tantiZanti=tops_anti[0].p4()+Zs[0].p4();
-              Tprime_tantitZanti_tZanti=tops[0].p4()+Zs[0].p4();
-              if(Tprime_tantitZanti_tantiZanti.mass()>500){
-                Tprime_tantitZanti_tantiZanti_candidatefound=true;
-              }
-              if(Tprime_tantitZanti_tZanti.mass()>500){
-                Tprime_tantitZanti_tZanti_candidatefound=true;
-              }
-          }
-      }
-  }  
-
-///TPrime reconstruction ttH-channel
-  if ((Higgs_candidatefound || Higgs_anti_candidatefound) && (top_candidatefound || top_anti_candidatefound){
-      if(Higgs_candidatefound){
-          if (tops.size()>1){
-              Tprime_t1H=tops[0].p4()+Higgs[0].p4();
-              Tprime_t2H=tops[1].p4()+Higgs[0].p4();
-              Tprime_tH_candidatefound=true;
-          }
-          if (tops_anti.size()>1){
-              Tprime_t_anti_H_candidatefound=true;
-              Tprime_tanti1H=tops_anti[0].p4()+Higgs[0].p4();
-              Tprime_tanti2H=tops_anti[1].p4()+Higgs[0].p4();
-          }
-      }
-      if (Higgs_anti_candidatefound){
-          
-      }
-  }
-*/
-
-/*
-    std::cout<<"here11"<<endl;
-
-///ZPrime reconstructions Wtb-channel
-  if (top_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops[0].p4())>1.2){
-      Zprime=Tprime+tops[0].p4();
-      vars.FillVar("Zprime_M",Zprime.mass());
-      vars.FillVar("Zprime_Pt",Zprime.pt());
-  }
-      std::cout<<"heredetail1"<<endl;
-
-  if (top_withbtag_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag[0].p4())>1.2){
-      Zprime_withtopbtag=Tprime+tops_withbtag[0].p4();
-      vars.FillVar("Zprime_withtopbtag_M",Zprime_withtopbtag.mass());
-      vars.FillVar("Zprime_withtopbtag_Pt",Zprime_withtopbtag.pt());
-  }  
-        std::cout<<"heredetail2"<<endl;
-
-  if (top_anti_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_anti[0].p4())>1.2){
-      Zprime_top_anti=Tprime+tops_anti[0].p4();
-      vars.FillVar("Zprime_top_anti_M",Zprime_top_anti.mass());
-      vars.FillVar("Zprime_top_anti_Pt",Zprime_top_anti.pt());
-  }
-        std::cout<<"heredetail3"<<endl;
-
-  if (top_anti_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_anti[0].p4())>1.2){
-      Zprime_top_anti_W_anti=Tprime_W_anti+tops_anti[0].p4();
-      vars.FillVar("Zprime_top_anti_W_anti_M",Zprime_top_anti_W_anti.mass());
-      vars.FillVar("Zprime_top_anti_W_anti_Pt",Zprime_top_anti_W_anti.pt());
-  } 
-        std::cout<<"heredetail4"<<endl;
-
-  if (top_anti_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_anti[0].p4())>1.2){
-      Zprime_top_anti_bottom_anti=Tprime_bottom_anti+tops_anti[0].p4();
-      vars.FillVar("Zprime_top_anti_bottom_anti_M",Zprime_top_anti_bottom_anti.mass());
-      vars.FillVar("Zprime_top_anti_bottom_anti_Pt",Zprime_top_anti_bottom_anti.pt());
-  }
-        std::cout<<"heredetail5"<<endl;
-
-  if (top_anti_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_anti[0].p4())>1.2){
-      Zprime_top_anti_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_anti[0].p4();
-      vars.FillVar("Zprime_top_anti_W_anti_bottom_anti_M",Zprime_top_anti_W_anti_bottom_anti.mass());
-      vars.FillVar("Zprime_top_anti_W_anti_bottom_anti_Pt",Zprime_top_anti_W_anti_bottom_anti.pt());
-  }  
-        std::cout<<"heredetail6"<<endl;
-
-  if (top_withbtag_anti_candidatefound && Tprime_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag_anti[0].p4())>1.2){
-      Zprime_top_withbtag_anti=Tprime+tops_withbtag_anti[0].p4();
-      vars.FillVar("Zprime_top_withbtag_anti_M",Zprime_top_withbtag_anti.mass());
-      vars.FillVar("Zprime_top_withbtag_anti_Pt",Zprime_top_withbtag_anti.pt());
-  }
-          std::cout<<"heredetail7"<<endl;
-
-  if (top_withbtag_anti_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag_anti[0].p4())>1.2){
-      Zprime_top_withbtag_anti_W_anti=Tprime_W_anti+tops_withbtag_anti[0].p4();
-      vars.FillVar("Zprime_top_withbtag_anti_W_anti_M",Zprime_top_withbtag_anti_W_anti.mass());
-      vars.FillVar("Zprime_top_withbtag_anti_W_anti_Pt",Zprime_top_withbtag_anti_W_anti.pt());
-  } 
-          std::cout<<"heredetail8"<<endl;
-
-  if (top_withbtag_anti_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag_anti[0].p4())>1.2){
-      Zprime_top_withbtag_anti_bottom_anti=Tprime_bottom_anti+tops_withbtag_anti[0].p4();
-      vars.FillVar("Zprime_top_withbtag_anti_bottom_anti_M",Zprime_top_withbtag_anti_bottom_anti.mass());
-      vars.FillVar("Zprime_top_withbtag_anti_bottom_anti_Pt",Zprime_top_withbtag_anti_bottom_anti.pt());
-  }
-          std::cout<<"heredetail9"<<endl;
-
-  if (top_withbtag_anti_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag_anti[0].p4())>1.2){
-      Zprime_top_withbtag_anti_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_withbtag_anti[0].p4();
-      vars.FillVar("Zprime_top_withbtag_anti_W_anti_bottom_anti_M",Zprime_top_withbtag_anti_W_anti_bottom_anti.mass());
-      vars.FillVar("Zprime_top_withbtag_anti_W_anti_bottom_anti_Pt",Zprime_top_withbtag_anti_W_anti_bottom_anti.pt());
-  }  
-          std::cout<<"heredetail10"<<endl;
-
-  if (top_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops[0].p4())>1.2){
-      Zprime_W_anti=Tprime_bottom_anti+tops[0].p4();
-      vars.FillVar("Zprime_W_anti_M",Zprime_W_anti.mass());
-      vars.FillVar("Zprime_W_anti_Pt",Zprime_W_anti.pt());
-  }
-          std::cout<<"heredetail11"<<endl;
-
-  if (top_withbtag_candidatefound && Tprime_W_anti_candidatefound && BoostedUtils::DeltaR(bottoms[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms[0].p4(), tops_withbtag[0].p4())>1.2){
-      Zprime_withtopbtag_W_anti=Tprime_W_anti+tops_withbtag[0].p4();
-      vars.FillVar("Zprime_withtopbtag_W_anti_M",Zprime_withtopbtag_W_anti.mass());
-      vars.FillVar("Zprime_withtopbtag_W_anti_Pt",Zprime_withtopbtag_W_anti.pt());
-  } 
-          std::cout<<"heredetail12"<<endl;
-
-  if (top_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops[0].p4())>1.2){
-      Zprime_bottom_anti=Tprime_bottom_anti+tops[0].p4();
-      vars.FillVar("Zprime_bottom_anti_M",Zprime_bottom_anti.mass());
-      vars.FillVar("Zprime_bottom_anti_Pt",Zprime_bottom_anti.pt());
-  }
-          std::cout<<"heredetail613"<<endl;
-
-  if (top_withbtag_candidatefound && Tprime_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag[0].p4())>1.2){
-      Zprime_withtopbtag_bottom_anti=Tprime_bottom_anti+tops_withbtag[0].p4();
-      vars.FillVar("Zprime_withtopbtag_bottom_anti_M",Zprime_withtopbtag_bottom_anti.mass());
-      vars.FillVar("Zprime_withtopbtag_bottom_anti_Pt",Zprime_withtopbtag_bottom_anti.pt());
-  }  
-          std::cout<<"heredetail14"<<endl;
-
-  if (top_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops[0].p4())>1.2){
-      Zprime_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops[0].p4();
-      vars.FillVar("Zprime_W_anti_bottom_anti_M",Zprime_W_anti_bottom_anti.mass());
-      vars.FillVar("Zprime_W_anti_bottom_anti_Pt",Zprime_W_anti_bottom_anti.pt());
-  }
-          std::cout<<"heredetail15"<<endl;
-
-  if (top_withbtag_candidatefound && Tprime_W_anti_bottom_anti_candidatefound && BoostedUtils::DeltaR(bottoms_anti[0].p4(),Ws_anti[0].p4())>1.2 && BoostedUtils::DeltaR(bottoms_anti[0].p4(), tops_withbtag[0].p4())>1.2){
-      Zprime_withtopbtag_W_anti_bottom_anti=Tprime_W_anti_bottom_anti+tops_withbtag[0].p4();
-      vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_M",Zprime_withtopbtag_W_anti_bottom_anti.mass());
-      vars.FillVar("Zprime_withtopbtag_W_anti_bottom_anti_Pt",Zprime_withtopbtag_W_anti_bottom_anti.pt());
-  } 
-  
-  if (top_candidatefound && Tprime_no_bottom_candidatefound && BoostedUtils::DeltaR(no_bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(no_bottoms[0].p4(), tops[0].p4())>1.2){
-      Zprime_no_bottom=Tprime_no_bottom+tops[0].p4();
-      vars.FillVar("Zprime_no_bottom_M",Zprime_no_bottom.mass());
-      vars.FillVar("Zprime_no_bottom_Pt",Zprime_no_bottom.pt());
-  }
-  if (top_withbtag_candidatefound && Tprime_no_bottom_candidatefound && BoostedUtils::DeltaR(no_bottoms[0].p4(),Ws[0].p4())>1.2 && BoostedUtils::DeltaR(no_bottoms[0].p4(), tops_withbtag[0].p4())>1.2){
-      Zprime_withtopbtag_no_bottom=Tprime_no_bottom+tops_withbtag[0].p4();
-      vars.FillVar("Zprime_withtopbtag_no_bottom_M",Zprime_withtopbtag_no_bottom.mass());
-      vars.FillVar("Zprime_withtopbtag_no_bottom_Pt",Zprime_withtopbtag_no_bottom.pt());
-  }  
-    std::cout<<"here12"<<endl;
-*/    
-    
-/*
-///ZPrime reconstructions Ztt-channel
-  if(Tprime_ttZ_t1Z_candidatefound){
-      Zprime_ttZ_t1Z=Tprime_ttZ_t1Z+tops[1].p4();
-      vars.FillVar("Zprime_ttZ_t1Z_M",Zprime_ttZ_t1Z.mass());
-  }
-  if(Tprime_ttZ_t2Z_candidatefound){
-      Tprime_ttZ_t2Z=Tprime_ttZ_t2Z+tops[0].p4();
-      vars.FillVar("Tprime_ttZ_t2Z_M",Tprime_ttZ_t2Z.mass());
-  }
-  if(Tprime_2tantiZ_tanti1Z_candidatefound){
-      Zprime_2tantiZ_tanti1Z=Tprime_2tantiZ_tanti1Z+tops_anti[1].p4();
-      vars.FillVar("Zprime_2tantiZ_tanti1Z_M",Zprime_2tantiZ_tanti1Z.mass());
-  }
-  if(Tprime_2tantiZ_tanti2Z_candidatefound){
-      Zprime_2tantiZ_tanti2Z=Tprime_2tantiZ_tanti2Z+tops_anti[0].p4();
-      vars.FillVar("Zprime_2tantiZ_tanti2Z_M",Zprime_2tantiZ_tanti2Z.mass());
-  }
-  if(Tprime_tantitZ_tantiZ_candidatefound){
-      Zprime_tantitZ_tantiZ=Tprime_tantitZ_tantiZ+tops[0].p4();
-      vars.FillVar("Zprime_tantitZ_tantiZ_M",Zprime_tantitZ_tantiZ.mass());
-  }
-  
-  if(Tprime_tantitZanti_tZanti_candidatefound){
-      Zprime_tantitZanti_tZanti=Tprime_tantitZanti_tZanti+tops_anti[0].p4();
-      vars.FillVar("Zprime_tantitZanti_tZanti",Zprime_tantitZanti_tZanti.mass());
-  }
-  if(Tprime_ttZanti_t1Zanti_candidatefound){
-      Zprime_ttZanti_t1Zanti=Tprime_ttZanti_t1Zanti+tops[1].p4();
-      vars.FillVar("Zprime_ttZanti_t1Zanti_M",Zprime_ttZanti_t1Zanti.mass());
-  }
-  if(Tprime_ttZanti_t2Zanti_candidatefound){
-      Zprime_ttZanti_t2Zanti=Tprime_ttZanti_t2Zanti+tops[0].p4();
-      vars.FillVar("Zprime_ttZanti_t2Zanti_M",Zprime_ttZanti_t2Zanti.mass());
-  }
-  if(Tprime_2tantiZanti_tanti1Zanti_candidatefound){
-      Zprime_2tantiZanti_tanti1Zanti=Tprime_2tantiZanti_tanti1Zanti+tops_anti[1].p4();
-      vars.FillVar("Zprime_2tantiZanti_tanti1Zanti_M",Zprime_2tantiZanti_tanti1Zanti.mass());
-  }
-  if(Tprime_2tantiZanti_tanti2Zanti_candidatefound){
-      Zprime_2tantiZanti_tanti2Zanti=Tprime_2tantiZanti_tanti2Zanti+tops_anti[0].p4();
-      vars.FillVar("Zprime_2tantiZanti_tanti2Zanti_M",Zprime_2tantiZanti_tanti2Zanti.mass());
-  }
-  if(Tprime_tantitZanti_tantiZanti_candidatefound){
-      Zprime_tantitZanti_tantiZanti=Tprime_tantitZanti_tantiZanti+tops[0].p4();
-      vars.FillVar("Zprime_tantitZanti_tantiZanti_M",Zprime_tantitZanti_tantiZanti.mass());
-  }
-  if(Tprime_tantitZanti_tZanti_candidatefound){
-      Zprime_tantitZanti_tZanti=Tprime_tantitZanti_tZanti+tops_anti[0].p4();
-      vars.FillVar("Zprime_tantitZanti_tZanti",Zprime_tantitZanti_tZanti.mass());
-  }  
-  
-*/
+ 
 
 
 
-
-
-
-
+        std::cout<<"check GenWs3 "<<GenWs.size()<<endl;
 
 ///Misstag rate & tag efficiency
   
-  if (input.zprimetotprimeallhad.IsFilled() && input.selectedJetsAK8.size()>0){
-    for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8.begin(); itJet != input.selectedJetsAK8.end(); ++itJet){
-        int iJet = itJet - input.selectedJetsAK8.begin();
+  if (input.zprimetotprimeallhad.IsFilled() && input.selectedJetsAK8CHSSoftDrop.size()>0){
+    for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8CHSSoftDrop.begin(); itJet != input.selectedJetsAK8CHSSoftDrop.end(); ++itJet){
+        int iJet = itJet - input.selectedJetsAK8CHSSoftDrop.begin();
 
         
         float minDr_TopZprime = -999;
@@ -3373,7 +2660,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   vars.FillVar("N_AK8_top_candidates",AK8_top_candidates.size());   
   vars.FillVar("N_AK8_W_candidates",AK8_W_candidates.size());  
   vars.FillVar("N_AK4_bottom_candidates",AK4_bottom_candidates.size()); 
-
+        std::cout<<"check GenWs4 "<<GenWs.size()<<endl;
   for(std::vector<pat::Jet>::const_iterator itJet = AK8_top_candidates.begin() ; itJet != AK8_top_candidates.end(); ++itJet){
     int iJet = itJet - AK8_top_candidates.begin();
     vars.FillVars("AK8_top_candidates_pt",iJet,itJet->pt());
@@ -3537,7 +2824,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
 // select all jets without a top tag added by Kevin ; top tag mistag tag method -> TTM preceding character
 // ht is sum of pt of all Ak4 (selected jets) jets
-	
+        std::cout<<"check GenWs5 "<<GenWs.size()<<endl;
 	math::XYZTLorentzVector TTM_Zprime;
   math::XYZTLorentzVector TTM_Tprime; 
   std::vector<pat::Jet> TTM_separated_bottoms;
@@ -3694,24 +2981,84 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         		
  //**************************************  
   
+        std::cout<<"check GenWs6 "<<GenWs.size()<<endl;
   
+std::cout<<"bugsearch1"<<std::endl;
+   
+    
+/// CHSSoftDrop          
+    if(input.selectedJetsAK8CHSSoftDrop.size()>0){
+        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8CHSSoftDrop.begin(); itJet != input.selectedJetsAK8CHSSoftDrop.end(); ++itJet){
+            if (itJet->pt()>200 || abs(itJet->eta())<2.4){
+                CHSSoftDrop_W_candidates.push_back(*itJet);
+                if (itJet->pt()>400){
+                    CHSSoftDrop_top_candidates.push_back(*itJet);
+                }                
+            }
+        }
+    }        
   
+    
+/// CHSPruning         
+    if(input.selectedJetsAK8CHSPruning.size()>0){
+        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8CHSPruning.begin(); itJet != input.selectedJetsAK8CHSPruning.end(); ++itJet){
+            if (itJet->pt()>200 || abs(itJet->eta())<2.4){
+                CHSPruning_W_candidates.push_back(*itJet);
+                if (itJet->pt()>400){
+                    CHSPruning_top_candidates.push_back(*itJet);
+                }                
+            }
+        }
+    }        
   
-/////ALL COMBINATIONS FOR ABCD-METHODE
-  if(AK8_top_candidates.size()>0 && AK8_W_candidates.size()>1 && AK4_bottom_candidates.size()>0){
-    for(std::vector<pat::Jet>::iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
-        for(std::vector<pat::Jet>::iterator itWJet = AK8_W_candidates.begin() ; itWJet != AK8_W_candidates.end(); ++itWJet){
+    
+/// PUPPISoftDrop          
+    if(input.selectedJetsAK8PUPPISoftDrop.size()>0){
+        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8PUPPISoftDrop.begin(); itJet != input.selectedJetsAK8PUPPISoftDrop.end(); ++itJet){
+            if (itJet->pt()>200 || abs(itJet->eta())<2.4){
+                PUPPISoftDrop_W_candidates.push_back(*itJet);
+                if (itJet->pt()>400){
+                    PUPPISoftDrop_top_candidates.push_back(*itJet);
+                }                
+            }
+        }
+    }     
+    
+    
+/// AK4 bottoms          
+    if(input.selectedJets.size()>0){
+        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
+            if (itJet->pt()>100 || abs(itJet->eta())<2.4){
+                AK4CHS_b_candidates.push_back(*itJet);             
+            }
+        }
+    } 
+/// AK4 bottoms          
+    if(input.selectedJetsAK4PUPPI.size()>0){
+        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK4PUPPI.begin(); itJet != input.selectedJetsAK4PUPPI.end(); ++itJet){
+            if (itJet->pt()>100 || abs(itJet->eta())<2.4){
+                AK4PUPPI_b_candidates.push_back(*itJet);             
+            }
+        }
+    }           
+    
+std::cout<<"bugsearch2"<<std::endl;
+
+/////ALL COMBINATIONS FOR ABCDCHSSoftDrop-METHODE
+  if(CHSSoftDrop_top_candidates.size()>0 && CHSSoftDrop_W_candidates.size()>1 && AK4CHS_b_candidates.size()>0){
+    for(std::vector<pat::Jet>::iterator ittopJet = CHSSoftDrop_top_candidates.begin() ; ittopJet != CHSSoftDrop_top_candidates.end(); ++ittopJet){
+        for(std::vector<pat::Jet>::iterator itWJet = CHSSoftDrop_W_candidates.begin() ; itWJet != CHSSoftDrop_W_candidates.end(); ++itWJet){
             if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
 //                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
             }else{
                 if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau3")>0){
-                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
+                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4CHS_b_candidates.begin() ; itBJet != AK4CHS_b_candidates.end(); ++itBJet){
                         if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.2 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
-                                ZprimesABCD.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCD.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCD.push_back(*ittopJet);
-                                BottomsABCD.push_back(*itBJet);
-                                WsABCD.push_back(*itWJet);
+                                ZprimesABCDCHSSoftDrop.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDCHSSoftDrop.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDCHSSoftDrop.push_back(*ittopJet);
+                                BottomsABCDCHSSoftDrop.push_back(*itBJet);
+                                WsABCDCHSSoftDrop.push_back(*itWJet);
                                 
                             if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
                                 ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
@@ -3719,11 +3066,11 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                             if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
                                 itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_nobtag));
                             }
-                                ZprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrnotopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrnotopbtag.push_back(*itBJet);
-                                WsABCDmasscorrnotopbtag.push_back(*itWJet);
+                                ZprimesABCDCHSSoftDropmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDCHSSoftDropmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDCHSSoftDropmasscorrnotopbtag.push_back(*ittopJet);
+                                BottomsABCDCHSSoftDropmasscorrnotopbtag.push_back(*itBJet);
+                                WsABCDCHSSoftDropmasscorrnotopbtag.push_back(*itWJet);
                             
                             if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
                                 ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_withbtag));
@@ -3731,11 +3078,11 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                             if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
                                 itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_withbtag));
                             }
-                                ZprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrwithtopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrwithtopbtag.push_back(*itBJet);
-                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);                            
+                                ZprimesABCDCHSSoftDropmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDCHSSoftDropmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDCHSSoftDropmasscorrwithtopbtag.push_back(*ittopJet);
+                                BottomsABCDCHSSoftDropmasscorrwithtopbtag.push_back(*itBJet);
+                                WsABCDCHSSoftDropmasscorrwithtopbtag.push_back(*itWJet);                            
                         }
                     }                    
                 }
@@ -3743,337 +3090,900 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         }
     }
   }
-  
- 
-/////ALL COMBINATIONS FOR ABCD-METHODE with top AK15-Jets and W AK8-Jets
-  if(AK15_top_candidates.size()>0 && AK8_W_candidates.size()>1 && AK4_bottom_candidates.size()>0){
-    for(std::vector<pat::Jet>::iterator ittopJet = AK15_top_candidates.begin() ; ittopJet != AK15_top_candidates.end(); ++ittopJet){
-        for(std::vector<pat::Jet>::iterator itWJet = AK8_W_candidates.begin() ; itWJet != AK8_W_candidates.end(); ++itWJet){
-            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<2.3){
-//                 std::cout<<"ah ah ah, W- and top-jets have overlap"<<endl;
-            }else{
-                if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau3")>0){
-                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.9 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
-                                Zprimes_ABCD_tAK15WAK8bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                Tprimes_ABCD_tAK15WAK8bAK4.push_back(itBJet->p4()+itWJet->p4());
-                                Tops_ABCD_tAK15WAK8bAK4.push_back(*ittopJet);
-                                Bottoms_ABCD_tAK15WAK8bAK4.push_back(*itBJet);
-                                Ws_ABCD_tAK15WAK8bAK4.push_back(*itWJet);
-                                
-/*                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
-                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
-                            }
-                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
-                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_nobtag));
-                            }
-                                ZprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrnotopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrnotopbtag.push_back(*itBJet);
-                                WsABCDmasscorrnotopbtag.push_back(*itWJet);
-                            
-                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
-                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_withbtag));
-                            }
-                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
-                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_withbtag));
-                            }
-                                ZprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrwithtopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrwithtopbtag.push_back(*itBJet);
-                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);      */                      
-                        }
-                    }                    
-                }
-            }
-        }
-    }
-  }   
- 
-  
-/////ALL COMBINATIONS FOR ABCD-METHODE with top AK15-Jets and W AK15-Jets
-  if(AK15_top_candidates.size()>0 && AK15_W_candidates.size()>1 && AK4_bottom_candidates.size()>0){
-    for(std::vector<pat::Jet>::iterator ittopJet = AK15_top_candidates.begin() ; ittopJet != AK15_top_candidates.end(); ++ittopJet){
-        for(std::vector<pat::Jet>::iterator itWJet = AK15_W_candidates.begin() ; itWJet != AK15_W_candidates.end(); ++itWJet){
-            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
-//                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
-            }else{
-                if(itWJet->userFloat("NjettinessAK15CHS:tau1")>0 && itWJet->userFloat("NjettinessAK15CHS:tau2")>0 && itWJet->userFloat("NjettinessAK15CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK15CHS:tau3")>0){
-                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.9 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.9 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
-                                Zprimes_ABCD_tAK15WAK15bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                Tprimes_ABCD_tAK15WAK15bAK4.push_back(itBJet->p4()+itWJet->p4());
-                                Tops_ABCD_tAK15WAK15bAK4.push_back(*ittopJet);
-                                Bottoms_ABCD_tAK15WAK15bAK4.push_back(*itBJet);
-                                Ws_ABCD_tAK15WAK15bAK4.push_back(*itWJet);
-                                
-/*                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
-                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
-                            }
-                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
-                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_nobtag));
-                            }
-                                ZprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrnotopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrnotopbtag.push_back(*itBJet);
-                                WsABCDmasscorrnotopbtag.push_back(*itWJet);
-                            
-                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
-                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_withbtag));
-                            }
-                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
-                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_withbtag));
-                            }
-                                ZprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrwithtopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrwithtopbtag.push_back(*itBJet);
-                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);      */                      
-                        }
-                    }                    
-                }
-            }
-        }
-    }
-  }  
 
-  
-  
- 
-/////ALL COMBINATIONS FOR ABCD-METHODE with top AK12-Jets and W AK8-Jets
-  if(AK12_top_candidates.size()>0 && AK8_W_candidates.size()>1 && AK4_bottom_candidates.size()>0){
-    for(std::vector<pat::Jet>::iterator ittopJet = AK12_top_candidates.begin() ; ittopJet != AK12_top_candidates.end(); ++ittopJet){
-        for(std::vector<pat::Jet>::iterator itWJet = AK8_W_candidates.begin() ; itWJet != AK8_W_candidates.end(); ++itWJet){
-            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<2.0){
-//                 std::cout<<"ah ah ah, W- and top-jets have overlap"<<endl;
-            }else{
-                if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau3")>0){
-                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.6 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
-                                Zprimes_ABCD_tAK12WAK8bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                Tprimes_ABCD_tAK12WAK8bAK4.push_back(itBJet->p4()+itWJet->p4());
-                                Tops_ABCD_tAK12WAK8bAK4.push_back(*ittopJet);
-                                Bottoms_ABCD_tAK12WAK8bAK4.push_back(*itBJet);
-                                Ws_ABCD_tAK12WAK8bAK4.push_back(*itWJet);
-                                
-/*                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
-                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
-                            }
-                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
-                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_nobtag));
-                            }
-                                ZprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrnotopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrnotopbtag.push_back(*itBJet);
-                                WsABCDmasscorrnotopbtag.push_back(*itWJet);
-                            
-                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
-                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_withbtag));
-                            }
-                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
-                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_withbtag));
-                            }
-                                ZprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrwithtopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrwithtopbtag.push_back(*itBJet);
-                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);      */                      
-                        }
-                    }                    
-                }
-            }
-        }
-    }
-  }   
- 
-  
-/////ALL COMBINATIONS FOR ABCD-METHODE with top AK12-Jets and W AK12-Jets
-  if(AK12_top_candidates.size()>0 && AK12_W_candidates.size()>1 && AK4_bottom_candidates.size()>0){
-    for(std::vector<pat::Jet>::iterator ittopJet = AK12_top_candidates.begin() ; ittopJet != AK12_top_candidates.end(); ++ittopJet){
-        for(std::vector<pat::Jet>::iterator itWJet = AK12_W_candidates.begin() ; itWJet != AK12_W_candidates.end(); ++itWJet){
+std::cout<<"bugsearch3"<<std::endl;
+
+/////ALL COMBINATIONS FOR ABCDCHSPruning-METHODE
+  if(CHSPruning_top_candidates.size()>0 && CHSPruning_W_candidates.size()>1 && AK4CHS_b_candidates.size()>0){
+    for(std::vector<pat::Jet>::iterator ittopJet = CHSPruning_top_candidates.begin() ; ittopJet != CHSPruning_top_candidates.end(); ++ittopJet){
+        for(std::vector<pat::Jet>::iterator itWJet = CHSPruning_W_candidates.begin() ; itWJet != CHSPruning_W_candidates.end(); ++itWJet){
             if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
 //                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
             }else{
-                if(itWJet->userFloat("NjettinessAK12CHS:tau1")>0 && itWJet->userFloat("NjettinessAK12CHS:tau2")>0 && itWJet->userFloat("NjettinessAK12CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK12CHS:tau3")>0){
-                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4_bottom_candidates.begin() ; itBJet != AK4_bottom_candidates.end(); ++itBJet){
-                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.6 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.6 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
-                                Zprimes_ABCD_tAK12WAK12bAK4.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                Tprimes_ABCD_tAK12WAK12bAK4.push_back(itBJet->p4()+itWJet->p4());
-                                Tops_ABCD_tAK12WAK12bAK4.push_back(*ittopJet);
-                                Bottoms_ABCD_tAK12WAK12bAK4.push_back(*itBJet);
-                                Ws_ABCD_tAK12WAK12bAK4.push_back(*itWJet);
-                                
-/*                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
-                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_nobtag));
-                            }
-                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
-                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_nobtag));
-                            }
-                                ZprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrnotopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrnotopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrnotopbtag.push_back(*itBJet);
-                                WsABCDmasscorrnotopbtag.push_back(*itWJet);
-                            
-                            if(ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")>105.0  && ittopJet->userFloat("ak8PFJetsCHSSoftDropMass")<220.0){
-                                ittopJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_top_withbtag));
-                            }
-                            if(itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>70.0  && itWJet->userFloat("ak8PFJetsCHSSoftDropMass")>100.0){
-                                itWJet->setMass(foo.GetRndmSDM(histo_ABCD_QCD_MSD_W_withbtag));
-                            }
-                                ZprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
-                                TprimesABCDmasscorrwithtopbtag.push_back(itBJet->p4()+itWJet->p4());
-                                TopsABCDmasscorrwithtopbtag.push_back(*ittopJet);
-                                BottomsABCDmasscorrwithtopbtag.push_back(*itBJet);
-                                WsABCDmasscorrwithtopbtag.push_back(*itWJet);      */                      
+                if(itWJet->userFloat("NjettinessAK8:tau1")>0 && itWJet->userFloat("NjettinessAK8:tau2")>0 && itWJet->userFloat("NjettinessAK8:tau3")>0 && ittopJet->userFloat("NjettinessAK8:tau1")>0 && ittopJet->userFloat("NjettinessAK8:tau2")>0 && ittopJet->userFloat("NjettinessAK8:tau3")>0){
+                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4CHS_b_candidates.begin() ; itBJet != AK4CHS_b_candidates.end(); ++itBJet){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.2 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
+                                ZprimesABCDCHSPruning.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDCHSPruning.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDCHSPruning.push_back(*ittopJet);
+                                BottomsABCDCHSPruning.push_back(*itBJet);
+                                WsABCDCHSPruning.push_back(*itWJet);
+                                                          
                         }
                     }                    
                 }
             }
         }
     }
-  }  
-  
+  }
+
+std::cout<<"bugsearch3.5"<<std::endl;
+/////ALL COMBINATIONS FOR ABCDPUPPISoftDrop-METHODE
+  if(PUPPISoftDrop_top_candidates.size()>0 && PUPPISoftDrop_W_candidates.size()>1 && AK4PUPPI_b_candidates.size()>0){
+    for(std::vector<pat::Jet>::iterator ittopJet = PUPPISoftDrop_top_candidates.begin() ; ittopJet != PUPPISoftDrop_top_candidates.end(); ++ittopJet){
+        for(std::vector<pat::Jet>::iterator itWJet = PUPPISoftDrop_W_candidates.begin() ; itWJet != PUPPISoftDrop_W_candidates.end(); ++itWJet){
+            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
+//                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
+            }else{
+                if(itWJet->userFloat("NjettinessAK8:tau1")>0 && itWJet->userFloat("NjettinessAK8:tau2")>0 && itWJet->userFloat("NjettinessAK8:tau3")>0 && ittopJet->userFloat("NjettinessAK8:tau1")>0 && ittopJet->userFloat("NjettinessAK8:tau2")>0 && ittopJet->userFloat("NjettinessAK8:tau3")>0){
+                    for(std::vector<pat::Jet>::const_iterator itBJet = AK4PUPPI_b_candidates.begin() ; itBJet != AK4PUPPI_b_candidates.end(); ++itBJet){
+                        if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.2 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
+                                ZprimesABCDPUPPISoftDrop.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
+                                TprimesABCDPUPPISoftDrop.push_back(itBJet->p4()+itWJet->p4());
+                                TopsABCDPUPPISoftDrop.push_back(*ittopJet);
+                                BottomsABCDPUPPISoftDrop.push_back(*itBJet);
+                                WsABCDPUPPISoftDrop.push_back(*itWJet);
+                                                          
+                        }
+                    }                    
+                }
+            }
+        }
+    }
+  }
+std::cout<<"bugsearch4"<<std::endl;
+        std::cout<<"check GenWs7 "<<GenWs.size()<<endl;
   const CSVHelper *csvReweighter=input.csvReweighter;
   
-  ////FILL ABCD VARIABLES
-  vars.FillVar("N_Zprime_ABCD",ZprimesABCD.size());
+  ////FILL ABCDCHSSoftDrop VARIABLES
+  vars.FillVar("N_Zprime_ABCDCHSSoftDrop",ZprimesABCDCHSSoftDrop.size());
 
-  for (uint i=0; i<ZprimesABCD.size(); i++){
+  for (uint i=0; i<ZprimesABCDCHSSoftDrop.size(); i++){
   //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
      //int i = 
-     vars.FillVars("Zprimes_ABCD_M",i,ZprimesABCD[i].mass());
-     vars.FillVars("Zprimes_ABCD_Pt",i,ZprimesABCD[i].pt());
+     vars.FillVars("Zprimes_ABCDCHSSoftDrop_M",i,ZprimesABCDCHSSoftDrop[i].mass());
+     vars.FillVars("Zprimes_ABCDCHSSoftDrop_Pt",i,ZprimesABCDCHSSoftDrop[i].pt());
      
-     vars.FillVars("Tprimes_ABCD_M",i,TprimesABCD[i].mass());
-     vars.FillVars("Tprimes_ABCD_Pt",i,TprimesABCD[i].pt());
+     vars.FillVars("Tprimes_ABCDCHSSoftDrop_M",i,TprimesABCDCHSSoftDrop[i].mass());
+     vars.FillVars("Tprimes_ABCDCHSSoftDrop_Pt",i,TprimesABCDCHSSoftDrop[i].pt());
      
-     vars.FillVars("Bottoms_ABCD_Pt",i,BottomsABCD[i].pt());
-     vars.FillVars("Bottoms_ABCD_Eta",i,BottomsABCD[i].eta());
-     vars.FillVars("Bottoms_ABCD_Phi",i,BottomsABCD[i].phi());
-     vars.FillVars("Bottoms_ABCD_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCD[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_Pt",i,BottomsABCDCHSSoftDrop[i].pt());
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_Eta",i,BottomsABCDCHSSoftDrop[i].eta());
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_Phi",i,BottomsABCDCHSSoftDrop[i].phi());
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCDCHSSoftDrop[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
      
 //      CSVHelper csvReweighter;
-     std::vector<double> ABCD_jetPts;
-     std::vector<double> ABCD_jetEtas;
-     std::vector<double> ABCD_jetCSVs;
-     std::vector<int> ABCD_jetFlavors;
-     double ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF;
-     float ABCD_csvweight = 1.;
+     std::vector<double> ABCDCHSSoftDrop_jetPts;
+     std::vector<double> ABCDCHSSoftDrop_jetEtas;
+     std::vector<double> ABCDCHSSoftDrop_jetCSVs;
+     std::vector<int> ABCDCHSSoftDrop_jetFlavors;
+     double ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF;
+     float ABCDCHSSoftDrop_csvweight = 1.;
      
      
 
      if(!input.isData){
-        ABCD_jetPts.push_back(BottomsABCD[i].pt());
-        ABCD_jetEtas.push_back(BottomsABCD[i].eta());
-        ABCD_jetCSVs.push_back(MiniAODHelper::GetJetCSV(BottomsABCD[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-        ABCD_jetFlavors.push_back(BottomsABCD[i].hadronFlavour());
-        ABCD_csvweight= csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,input.systematic, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF);
+        ABCDCHSSoftDrop_jetPts.push_back(BottomsABCDCHSSoftDrop[i].pt());
+        ABCDCHSSoftDrop_jetEtas.push_back(BottomsABCDCHSSoftDrop[i].eta());
+        ABCDCHSSoftDrop_jetCSVs.push_back(MiniAODHelper::GetJetCSV(BottomsABCDCHSSoftDrop[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        ABCDCHSSoftDrop_jetFlavors.push_back(BottomsABCDCHSSoftDrop[i].hadronFlavour());
+        ABCDCHSSoftDrop_csvweight= csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,input.systematic, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF);
      }
      
     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
     
-     vars.FillVars("Bottoms_ABCD_WeightCSVnominal",i,ABCD_csvweight);    
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVnominal",i,ABCDCHSSoftDrop_csvweight);    
     
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-//      std::cout<<"debug1   "<<ABCD_jetPts.size()<<endl;
+//      std::cout<<"debug1   "<<ABCDCHSSoftDrop_jetPts.size()<<endl;
      
      
          
-     float Bottoms_ABCD_WeightCSVLFup=1.0;    
-     float Bottoms_ABCD_WeightCSVLFdown=1.0;    
-     float Bottoms_ABCD_WeightCSVHFup=1.0;    
-     float Bottoms_ABCD_WeightCSVHFdown=1.0;    
-     float Bottoms_ABCD_WeightCSVHFStats1up=1.0;    
-     float Bottoms_ABCD_WeightCSVHFStats1down=1.0;    
-     float Bottoms_ABCD_WeightCSVLFStats1up=1.0;    
-     float Bottoms_ABCD_WeightCSVLFStats1down=1.0;    
-     float Bottoms_ABCD_WeightCSVHFStats2up=1.0;    
-     float Bottoms_ABCD_WeightCSVHFStats2down=1.0;    
-     float Bottoms_ABCD_WeightCSVLFStats2up=1.0;    
-     float Bottoms_ABCD_WeightCSVLFStats2down=1.0;    
-     float Bottoms_ABCD_WeightCSVCErr1up=1.0;    
-     float Bottoms_ABCD_WeightCSVCErr1down=1.0;    
-     float Bottoms_ABCD_WeightCSVCErr2up=1.0;    
-     float Bottoms_ABCD_WeightCSVCErr2down=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVLFup=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVLFdown=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVHFup=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVHFdown=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1up=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1down=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1up=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1down=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2up=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2down=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2up=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2down=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1up=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1down=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2up=1.0;    
+     float Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2down=1.0;    
         
      if(!input.isData){
-         Bottoms_ABCD_WeightCSVLFup=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVLFup, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVLFdown=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVLFdown, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVHFup=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVHFup, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVHFdown=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVHFdown, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVHFStats1up=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVHFStats1up, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVHFStats1down=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVHFStats1down, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVLFStats1up=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVLFStats1up, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVLFStats1down=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVLFStats1down, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVHFStats2up=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVHFStats2up, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVHFStats2down=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVHFStats2down, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVLFStats2up=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVLFStats2up, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVLFStats2down=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVLFStats2down, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVCErr1up=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVCErr1up, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVCErr1down=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVCErr1down, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVCErr2up=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVCErr2up, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
-         Bottoms_ABCD_WeightCSVCErr2down=csvReweighter->getCSVWeight(ABCD_jetPts,ABCD_jetEtas,ABCD_jetCSVs,ABCD_jetFlavors,Systematics::CSVCErr2down, ABCD_csvWgtHF, ABCD_csvWgtLF, ABCD_csvWgtCF)/ABCD_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVLFup=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVLFup, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVLFdown=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVLFdown, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVHFup=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVHFup, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVHFdown=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVHFdown, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1up=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVHFStats1up, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1down=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVHFStats1down, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1up=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVLFStats1up, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1down=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVLFStats1down, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2up=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVHFStats2up, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2down=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVHFStats2down, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2up=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVLFStats2up, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2down=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVLFStats2down, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1up=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVCErr1up, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1down=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVCErr1down, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2up=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVCErr2up, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
+         Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2down=csvReweighter->getCSVWeight(ABCDCHSSoftDrop_jetPts,ABCDCHSSoftDrop_jetEtas,ABCDCHSSoftDrop_jetCSVs,ABCDCHSSoftDrop_jetFlavors,Systematics::CSVCErr2down, ABCDCHSSoftDrop_csvWgtHF, ABCDCHSSoftDrop_csvWgtLF, ABCDCHSSoftDrop_csvWgtCF)/ABCDCHSSoftDrop_csvweight;
      }
          
-     vars.FillVars("Bottoms_ABCD_WeightCSVLFup",i,Bottoms_ABCD_WeightCSVLFup);
-     vars.FillVars("Bottoms_ABCD_WeightCSVLFdown",i,Bottoms_ABCD_WeightCSVLFdown);
-     vars.FillVars("Bottoms_ABCD_WeightCSVHFup",i, Bottoms_ABCD_WeightCSVHFup);
-     vars.FillVars("Bottoms_ABCD_WeightCSVHFdown",i, Bottoms_ABCD_WeightCSVHFdown);
-     vars.FillVars("Bottoms_ABCD_WeightCSVHFStats1up",i, Bottoms_ABCD_WeightCSVHFStats1up);
-     vars.FillVars("Bottoms_ABCD_WeightCSVHFStats1down",i, Bottoms_ABCD_WeightCSVHFStats1down);
-     vars.FillVars("Bottoms_ABCD_WeightCSVLFStats1up",i, Bottoms_ABCD_WeightCSVLFStats1up);
-     vars.FillVars("Bottoms_ABCD_WeightCSVLFStats1down",i, Bottoms_ABCD_WeightCSVLFStats1down);
-     vars.FillVars("Bottoms_ABCD_WeightCSVHFStats2up",i, Bottoms_ABCD_WeightCSVHFStats2up);
-     vars.FillVars("Bottoms_ABCD_WeightCSVHFStats2down",i, Bottoms_ABCD_WeightCSVHFStats2down);
-     vars.FillVars("Bottoms_ABCD_WeightCSVLFStats2up",i, Bottoms_ABCD_WeightCSVLFStats2up);
-     vars.FillVars("Bottoms_ABCD_WeightCSVLFStats2down",i, Bottoms_ABCD_WeightCSVLFStats2down);
-     vars.FillVars("Bottoms_ABCD_WeightCSVCErr1up",i, Bottoms_ABCD_WeightCSVCErr1up);
-     vars.FillVars("Bottoms_ABCD_WeightCSVCErr1down",i, Bottoms_ABCD_WeightCSVCErr1down);
-     vars.FillVars("Bottoms_ABCD_WeightCSVCErr2up",i, Bottoms_ABCD_WeightCSVCErr2up);
-     vars.FillVars("Bottoms_ABCD_WeightCSVCErr2down",i, Bottoms_ABCD_WeightCSVCErr2down);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFup",i,Bottoms_ABCDCHSSoftDrop_WeightCSVLFup);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFdown",i,Bottoms_ABCDCHSSoftDrop_WeightCSVLFdown);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFup",i, Bottoms_ABCDCHSSoftDrop_WeightCSVHFup);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFdown",i, Bottoms_ABCDCHSSoftDrop_WeightCSVHFdown);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1up",i, Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1up);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1down",i, Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats1down);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1up",i, Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1up);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1down",i, Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats1down);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2up",i, Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2up);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2down",i, Bottoms_ABCDCHSSoftDrop_WeightCSVHFStats2down);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2up",i, Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2up);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2down",i, Bottoms_ABCDCHSSoftDrop_WeightCSVLFStats2down);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1up",i, Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1up);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1down",i, Bottoms_ABCDCHSSoftDrop_WeightCSVCErr1down);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2up",i, Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2up);
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2down",i, Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2down);
      
     }
 //      std::cout<<"debug2   "<<jetPts.size()<<endl;
      
      
-     vars.FillVars("Ws_ABCD_Pt",i,WsABCD[i].pt());
-     vars.FillVars("Ws_ABCD_Eta",i,WsABCD[i].eta());
-     vars.FillVars("Ws_ABCD_Phi",i,WsABCD[i].phi());
-     vars.FillVars("Ws_ABCD_MSD",i,WsABCD[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCD_t21",i,WsABCD[i].userFloat("NjettinessAK8CHS:tau2")/WsABCD[i].userFloat("NjettinessAK8CHS:tau1"));
+     vars.FillVars("Ws_ABCDCHSSoftDrop_Pt",i,WsABCDCHSSoftDrop[i].pt());
+     vars.FillVars("Ws_ABCDCHSSoftDrop_Eta",i,WsABCDCHSSoftDrop[i].eta());
+     vars.FillVars("Ws_ABCDCHSSoftDrop_Phi",i,WsABCDCHSSoftDrop[i].phi());
+     vars.FillVars("Ws_ABCDCHSSoftDrop_MSD",i,WsABCDCHSSoftDrop[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Ws_ABCDCHSSoftDrop_t21",i,WsABCDCHSSoftDrop[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDCHSSoftDrop[i].userFloat("NjettinessAK8CHS:tau1"));
+    
      
-     vars.FillVars("Tops_ABCD_Pt",i,TopsABCD[i].pt());
-     vars.FillVars("Tops_ABCD_Eta",i,TopsABCD[i].eta());
-     vars.FillVars("Tops_ABCD_Phi",i,TopsABCD[i].phi());
-     vars.FillVars("Tops_ABCD_MSD",i,TopsABCD[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_t32",i,TopsABCD[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCD[i].userFloat("NjettinessAK8CHS:tau2"));
+     vars.FillVars("Tops_ABCDCHSSoftDrop_Pt",i,TopsABCDCHSSoftDrop[i].pt());
+     vars.FillVars("Tops_ABCDCHSSoftDrop_Eta",i,TopsABCDCHSSoftDrop[i].eta());
+     vars.FillVars("Tops_ABCDCHSSoftDrop_Phi",i,TopsABCDCHSSoftDrop[i].phi());
+     vars.FillVars("Tops_ABCDCHSSoftDrop_MSD",i,TopsABCDCHSSoftDrop[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCDCHSSoftDrop_t32",i,TopsABCDCHSSoftDrop[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDCHSSoftDrop[i].userFloat("NjettinessAK8CHS:tau2"));
+        std::cout<<"check GenWs8 "<<GenWs.size()<<endl;
+     
+std::cout<<"bugsearch6"<<std::endl;
+     
+     int realW=0;
+     int nmatchedaughters_WCHSSoftDrop=0;
+std::cout<<"bugsearch6.0  "<<((input.zprimetotprimeallhad.IsFilled()) && (!input.isData))<<std::endl;
+        std::cout<<"check GenWs9 "<<GenWs.size()<<endl;
+//         if (GenWs != NULL){ std::cout<<"check GenWs10 "<<GenWs.size()<<endl;}
+        
+     if((input.zprimetotprimeallhad.IsFilled()) && (!input.isData) && (GenWs.size() > 0)){
+std::cout<<"bugsearch6.1  "<<GenWs.size()<<std::endl;
+        for(uint j=0; j<GenWs.size();j++){
+std::cout<<"bugsearch6.2"<<std::endl;
+            if (BoostedUtils::DeltaR(WsABCDCHSSoftDrop[i].p4(),GenWs[j].p4())<0.8){
+std::cout<<"bugsearch6.3"<<std::endl;
+                realW=1;
+            for(uint k=0;k<GenWs_decayproducts.size();k++){
+std::cout<<"bugsearch6.4"<<std::endl;
+                if (BoostedUtils::DeltaR(WsABCDCHSSoftDrop[i].p4(),GenWs_decayproducts[k].p4())<0.8){
+                    nmatchedaughters_WCHSSoftDrop++;
+std::cout<<"bugsearch6.5"<<std::endl;
+                }
+            }
+            }
+        }
+     }
+std::cout<<"bugsearch6.6"<<std::endl;
+          
+     int realtop=0;
+     int nmatchedaughters_topCHSSoftDrop=0;
+std::cout<<"bugsearch6.6.0"<<std::endl;
+     if((input.zprimetotprimeallhad.IsFilled()) && (!input.isData) && (GenTops.size() > 0)){
+std::cout<<"bugsearch6.6.1"<<std::endl;
+        for(uint j=0; j<GenTops.size();j++){
+            if (BoostedUtils::DeltaR(TopsABCDCHSSoftDrop[i].p4(),GenTops[j].p4())<0.8){
+std::cout<<"bugsearch6.6.2"<<std::endl;
+                realtop=1;
+std::cout<<"bugsearch6.6.2.1"<<std::endl;
+            for(uint k=0;k<GenTops_decayproducts.size();k++){
 
-     
+                if (BoostedUtils::DeltaR(TopsABCDCHSSoftDrop[i].p4(),GenTops_decayproducts[k].p4())<0.8){
+std::cout<<"bugsearch6.6.3"<<std::endl;
+                    nmatchedaughters_topCHSSoftDrop++;
+                }
+            } 
+            }
+        }
+     }
+std::cout<<"bugsearch6.6.4"<<std::endl;
+     vars.FillVars("Ws_ABCDCHSSoftDrop_real",i,realW);
+     vars.FillVars("Ws_ABCDCHSSoftDrop_matcheddecays",i,nmatchedaughters_WCHSSoftDrop);
+     vars.FillVars("Tops_ABCDCHSSoftDrop_real",i,realtop);
+     vars.FillVars("Tops_ABCDCHSSoftDrop_matcheddecays",i,nmatchedaughters_topCHSSoftDrop);
+std::cout<<"bugsearch6.7"<<std::endl;
 //      std::cout<<"debucg1"<<endl;
-     std::vector<double> ABCD_subjetPts;
-     std::vector<double> ABCD_subjetEtas;
-     std::vector<double> ABCD_subjetCSVs;
-     std::vector<int> ABCD_subjetFlavors;
-     double subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF;
-     float subjet_ABCD_csvweight = 1.;
+     std::vector<double> ABCDCHSSoftDrop_subjetPts;
+     std::vector<double> ABCDCHSSoftDrop_subjetEtas;
+     std::vector<double> ABCDCHSSoftDrop_subjetCSVs;
+     std::vector<int> ABCDCHSSoftDrop_subjetFlavors;
+     double subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF;
+     float subjet_ABCDCHSSoftDrop_csvweight = 1.;
      
 
      
      double max_subjet_csv_v2=-10;
-     auto const & names = TopsABCD[i].subjets("SoftDrop");
+     auto const & names = TopsABCDCHSSoftDrop[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
         if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
         if(!input.isData){
-            ABCD_subjetPts.push_back(itsubJet->pt());
-            ABCD_subjetEtas.push_back(itsubJet->eta());
-            ABCD_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-            ABCD_subjetFlavors.push_back(itsubJet->hadronFlavour());
+            ABCDCHSSoftDrop_subjetPts.push_back(itsubJet->pt());
+            ABCDCHSSoftDrop_subjetEtas.push_back(itsubJet->eta());
+            ABCDCHSSoftDrop_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+            ABCDCHSSoftDrop_subjetFlavors.push_back(itsubJet->hadronFlavour());
+        }      
+        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        };
+     };
+std::cout<<"bugsearch6.8"<<std::endl;
+//      std::cout<<"debug2.2"<<endl;
+     vars.FillVars("Tops_ABCDCHSSoftDrop_maxsubjetCSVv2",i,max_subjet_csv_v2);
+//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+     if(!input.isData){
+         subjet_ABCDCHSSoftDrop_csvweight= csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,input.systematic, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF);
+     }
+ //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+
+     vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVnominal",i,subjet_ABCDCHSSoftDrop_csvweight);
+     
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+//      std::cout<<"debug3   "<<ABCDCHSSoftDrop_subjetPts.size()<<endl;
+         
+            if (input.isData){
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFup",i,1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFdown",i,1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFup",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFdown",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats1up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats1down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats1up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats1down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats2up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats2down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats2up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats2down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr1up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr1down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr2up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr2down",i, 1.0);  
+                
+            }else{
+          
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVLFup, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVLFdown, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVHFup, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVHFdown, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSSoftDrop_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_subjetPts,ABCDCHSSoftDrop_subjetEtas,ABCDCHSSoftDrop_subjetCSVs,ABCDCHSSoftDrop_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCDCHSSoftDrop_csvWgtHF, subjet_ABCDCHSSoftDrop_csvWgtLF, subjet_ABCDCHSSoftDrop_csvWgtCF)/subjet_ABCDCHSSoftDrop_csvweight);  
+//      std::cout<<"debug4"<<endl;
+            }
+    }     
+     
+  }
+std::cout<<"bugsearch7"<<std::endl;
+
+  
+  ////FILL ABCDCHSSoftDrop VARIABLES
+  vars.FillVar("N_Zprimes_ABCDCHSSoftDropmasscorrnotopbtag",ZprimesABCDCHSSoftDropmasscorrnotopbtag.size());
+
+  for (uint i=0; i<ZprimesABCDCHSSoftDropmasscorrnotopbtag.size(); i++){
+  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+     //int i = 
+     vars.FillVars("Zprimes_ABCDCHSSoftDrop_masscorrnotopbtag_M",i,ZprimesABCDCHSSoftDropmasscorrnotopbtag[i].mass());
+     vars.FillVars("Zprimes_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",i,ZprimesABCDCHSSoftDropmasscorrnotopbtag[i].pt());
+     
+     vars.FillVars("Tprimes_ABCDCHSSoftDrop_masscorrnotopbtag_M",i,TprimesABCDCHSSoftDropmasscorrnotopbtag[i].mass());
+     vars.FillVars("Tprimes_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",i,TprimesABCDCHSSoftDropmasscorrnotopbtag[i].pt());
+     
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",i,BottomsABCDCHSSoftDropmasscorrnotopbtag[i].pt());
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_Eta",i,BottomsABCDCHSSoftDropmasscorrnotopbtag[i].eta());
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_Phi",i,BottomsABCDCHSSoftDropmasscorrnotopbtag[i].phi());
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCDCHSSoftDropmasscorrnotopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+     
+//      CSVHelper csvReweighter=input.csvReweighter;
+     std::vector<double> ABCDCHSSoftDrop_masscorrnotopbtag_jetPts;
+     std::vector<double> ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas;
+     std::vector<double> ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs;
+     std::vector<int> ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors;
+     double ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF;
+     float ABCDCHSSoftDrop_csvweight = 1.;
+     
+     if(!input.isData){
+        ABCDCHSSoftDrop_masscorrnotopbtag_jetPts.push_back(BottomsABCDCHSSoftDropmasscorrnotopbtag[i].pt());
+        ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas.push_back(BottomsABCDCHSSoftDropmasscorrnotopbtag[i].eta());
+        ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs.push_back(MiniAODHelper::GetJetCSV(BottomsABCDCHSSoftDropmasscorrnotopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors.push_back(BottomsABCDCHSSoftDropmasscorrnotopbtag[i].hadronFlavour());
+     
+        ABCDCHSSoftDrop_csvweight= csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,input.systematic, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF,   ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF);
+     }
+    bool doSystematics=true;
+//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+    vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVnominal",i,ABCDCHSSoftDrop_csvweight);
+     
+    
+    if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+
+        if(input.isData){         
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFup",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFdown",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFup",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFdown",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2down",i, 1.0);  
+        }else{
+            
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVLFup, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVLFdown, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVHFup, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVHFdown, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVHFStats1up, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVHFStats1down, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVLFStats1up, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVLFStats1down, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVHFStats2up, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVHFStats2down, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVLFStats2up, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVLFStats2down, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVCErr1up, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVCErr1down, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVCErr2up, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_jetPts,ABCDCHSSoftDrop_masscorrnotopbtag_jetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_jetFlavors,Systematics::CSVCErr2down, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/ABCDCHSSoftDrop_csvweight);  
+            
+        }
+    }
+     
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",i,WsABCDCHSSoftDropmasscorrnotopbtag[i].pt());
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_Eta",i,WsABCDCHSSoftDropmasscorrnotopbtag[i].eta());
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_Phi",i,WsABCDCHSSoftDropmasscorrnotopbtag[i].phi());
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_MSD",i,WsABCDCHSSoftDropmasscorrnotopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_t21",i,WsABCDCHSSoftDropmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDCHSSoftDropmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau1"));
+     
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_Pt",i,TopsABCDCHSSoftDropmasscorrnotopbtag[i].pt());
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_Eta",i,TopsABCDCHSSoftDropmasscorrnotopbtag[i].eta());
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_Phi",i,TopsABCDCHSSoftDropmasscorrnotopbtag[i].phi());
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_MSD",i,TopsABCDCHSSoftDropmasscorrnotopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_t32",i,TopsABCDCHSSoftDropmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDCHSSoftDropmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau2"));
+
+     
+     int realW_CHSSoftDropmasscorrnotopbtag=0;
+     int nmatchedaughters_WCHSSoftDropmasscorrnotopbtag=0;
+     if(input.zprimetotprimeallhad.IsFilled() && !input.isData && GenWs.size()>0){
+        for(uint j=0; j<GenWs.size();j++){
+            if (BoostedUtils::DeltaR(WsABCDCHSSoftDropmasscorrnotopbtag[i].p4(),GenWs[j].p4())<0.8){
+                realW_CHSSoftDropmasscorrnotopbtag=1;
+            for(uint k=0;k<GenWs_decayproducts.size();k++){
+                if (BoostedUtils::DeltaR(WsABCDCHSSoftDropmasscorrnotopbtag[i].p4(),GenWs_decayproducts[k].p4())<0.8){
+                    nmatchedaughters_WCHSSoftDropmasscorrnotopbtag++;
+                }
+            } 
+            }
+        }
+     }
+
+          
+     int realtop_CHSSoftDropmasscorrnotopbtag=0;
+     int nmatchedaughters_topCHSSoftDropmasscorrnotopbtag=0;
+     if(input.zprimetotprimeallhad.IsFilled() && !input.isData && GenTops.size()>0){
+        for(uint j=0; j<GenTops.size();j++){
+            if (BoostedUtils::DeltaR(TopsABCDCHSSoftDropmasscorrnotopbtag[i].p4(),GenTops[j].p4())<0.8){
+                realtop_CHSSoftDropmasscorrnotopbtag=1;
+            for(uint k=0;k<GenTops[j].numberOfDaughters();k++){
+                if (BoostedUtils::DeltaR(TopsABCDCHSSoftDropmasscorrnotopbtag[i].p4(),GenTops_decayproducts[k].p4())<0.8){
+                    nmatchedaughters_topCHSSoftDropmasscorrnotopbtag++;
+                }
+            } 
+            }
+        }
+     }
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_real",i,realW_CHSSoftDropmasscorrnotopbtag);
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrnotopbtag_matcheddecays",i,nmatchedaughters_WCHSSoftDropmasscorrnotopbtag);
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_real",i,realtop_CHSSoftDropmasscorrnotopbtag);     
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_matcheddecays",i,nmatchedaughters_topCHSSoftDropmasscorrnotopbtag);
+     
+
+     
+     std::vector<double> ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts;
+     std::vector<double> ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas;
+     std::vector<double> ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs;
+     std::vector<int> ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors;
+     double subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF;
+     float subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight = 1.;
+     
+
+     
+     double max_subjet_csv_v2=-10;
+     auto const & names = TopsABCDCHSSoftDropmasscorrnotopbtag[i].subjets("SoftDrop");
+     for( auto const & itsubJet : names ){
+        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
+        if(!input.isData){
+            ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts.push_back(itsubJet->pt());
+            ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas.push_back(itsubJet->eta());
+            ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+            ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors.push_back(itsubJet->hadronFlavour());
+        }
+        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        };
+     };
+     
+     
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrnotopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
+//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+     if(!input.isData){
+        subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight= csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,input.systematic, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF);
+     }
+//     bool doSystematics=true;
+//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVnominal",i,subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+     
+     if(!input.isData){
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFup, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFdown, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFup, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFdown, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrnotopbtag_subjetPts,ABCDCHSSoftDrop_masscorrnotopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrnotopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrnotopbtag_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrnotopbtag_csvweight);  
+     }else{
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFup",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFdown",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFup",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFdown",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1up",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats1down",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1up",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats1down",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2up",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVHFStats2down",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2up",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVLFStats2down",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1up",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr1down",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2up",i, 1.0);
+        vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrnotopbtag_WeightCSVCErr2down",i, 1.0); 
+     }     
+     }     
+  }
+
+  
+  vars.FillVar("N_Zprimes_ABCDCHSSoftDropmasscorrwithtopbtag",ZprimesABCDCHSSoftDropmasscorrwithtopbtag.size());
+
+  for (uint i=0; i<ZprimesABCDCHSSoftDropmasscorrwithtopbtag.size(); i++){
+  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+     //int i = 
+     vars.FillVars("Zprimes_ABCDCHSSoftDrop_masscorrwithtopbtag_M",i,ZprimesABCDCHSSoftDropmasscorrwithtopbtag[i].mass());
+     vars.FillVars("Zprimes_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",i,ZprimesABCDCHSSoftDropmasscorrwithtopbtag[i].pt());
+     
+     vars.FillVars("Tprimes_ABCDCHSSoftDrop_masscorrwithtopbtag_M",i,TprimesABCDCHSSoftDropmasscorrwithtopbtag[i].mass());
+     vars.FillVars("Tprimes_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",i,TprimesABCDCHSSoftDropmasscorrwithtopbtag[i].pt());
+     
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",i,BottomsABCDCHSSoftDropmasscorrwithtopbtag[i].pt());
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_Eta",i,BottomsABCDCHSSoftDropmasscorrwithtopbtag[i].eta());
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_Phi",i,BottomsABCDCHSSoftDropmasscorrwithtopbtag[i].phi());
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCDCHSSoftDropmasscorrwithtopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+     
+//      CSVHelper csvReweighter;
+     std::vector<double> ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts;
+     std::vector<double> ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas;
+     std::vector<double> ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs;
+     std::vector<int> ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors;
+     double ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF;
+     float ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight = 1.;
+     
+     if(!input.isData){
+        ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts.push_back(BottomsABCDCHSSoftDropmasscorrwithtopbtag[i].pt());
+        ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas.push_back(BottomsABCDCHSSoftDropmasscorrwithtopbtag[i].eta());
+        ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs.push_back(MiniAODHelper::GetJetCSV(BottomsABCDCHSSoftDropmasscorrwithtopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors.push_back(BottomsABCDCHSSoftDropmasscorrwithtopbtag[i].hadronFlavour());
+        ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight= csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,input.systematic, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF);
+     }
+     
+
+    bool doSystematics=true;
+//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVnominal",i,ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+     
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+
+        if(input.isData){
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFup",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFdown",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFup",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFdown",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1down",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2up",i, 1.0);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2down",i, 1.0);
+            
+        }else{
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFup, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFdown, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFup, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFdown, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFStats1up, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFStats1down, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFStats1up, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFStats1down, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFStats2up, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFStats2down, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFStats2up, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFStats2down, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVCErr1up, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVCErr1down, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVCErr2up, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Bottoms_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_jetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_jetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_jetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_jetFlavors,Systematics::CSVCErr2down, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);  
+        }
+    }
+
+     
+     
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].pt());
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_Eta",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].eta());
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_Phi",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].phi());
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_MSD",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_t21",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau1"));
+     
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",i,TopsABCDCHSSoftDropmasscorrwithtopbtag[i].pt());
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_Eta",i,TopsABCDCHSSoftDropmasscorrwithtopbtag[i].eta());
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_Phi",i,TopsABCDCHSSoftDropmasscorrwithtopbtag[i].phi());
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_MSD",i,TopsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_t32",i,TopsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau2"));
+
+    
+     int realW_CHSSoftDropmasscorrwithtopbtag=0;
+     int nmatchedaughters_WCHSSoftDropmasscorrwithtopbtag=0;
+     if(input.zprimetotprimeallhad.IsFilled() && !input.isData && GenWs.size()>0){
+        for(uint j=0; j<GenWs.size();j++){
+            if (BoostedUtils::DeltaR(WsABCDCHSSoftDropmasscorrwithtopbtag[i].p4(),GenWs[j].p4())<0.8){
+                realW_CHSSoftDropmasscorrwithtopbtag=1;
+            for(uint k=0;k<GenWs_decayproducts.size();k++){
+                if (BoostedUtils::DeltaR(WsABCDCHSSoftDrop[i].p4(),GenWs_decayproducts[k].p4())<0.8){
+                    nmatchedaughters_WCHSSoftDropmasscorrwithtopbtag++;
+                }
+            } 
+            }
+        }
+     }
+
+          
+     int realtop_CHSSoftDropmasscorrwithtopbtag=0;
+     int nmatchedaughters_topCHSSoftDropmasscorrwithtopbtag=0;
+     if(input.zprimetotprimeallhad.IsFilled() && !input.isData && GenTops.size()>0){
+        for(uint j=0; j<GenTops.size();j++){
+            if (BoostedUtils::DeltaR(TopsABCDCHSSoftDropmasscorrwithtopbtag[i].p4(),GenTops[j].p4())<0.8){
+                realtop_CHSSoftDropmasscorrwithtopbtag=1;
+           
+            for(uint k=0;k<GenTops_decayproducts.size();k++){
+                if (BoostedUtils::DeltaR(TopsABCDCHSSoftDropmasscorrwithtopbtag[i].p4(),GenTops_decayproducts[k].p4())<0.8){
+                    nmatchedaughters_topCHSSoftDropmasscorrwithtopbtag++;
+                }
+            } 
+            }
+        }
+     }
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_real",i,realW_CHSSoftDropmasscorrwithtopbtag);
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_matcheddecays",i,nmatchedaughters_WCHSSoftDropmasscorrwithtopbtag);
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_real",i,realtop_CHSSoftDropmasscorrwithtopbtag); 
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_matcheddecays",i,nmatchedaughters_topCHSSoftDropmasscorrwithtopbtag);
+     
+     
+     
+     
+     std::vector<double> ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts;
+     std::vector<double> ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas;
+     std::vector<double> ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs;
+     std::vector<int> ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors;
+     double subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF;
+     float subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight = 1.;
+     
+
+     
+     double max_subjet_csv_v2=-10;
+     auto const & names = TopsABCDCHSSoftDropmasscorrwithtopbtag[i].subjets("SoftDrop");
+     for( auto const & itsubJet : names ){
+        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
+        if(!input.isData){
+            ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts.push_back(itsubJet->pt());
+            ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas.push_back(itsubJet->eta());
+            ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+            ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors.push_back(itsubJet->hadronFlavour());
+        }      
+        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        };
+     };
+     
+     vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
+//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
+     if(!input.isData){
+        subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight= csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,input.systematic, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF);
+     }
+//     bool doSystematics=true;
+//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+     vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVnominal",i,subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+     
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+     
+         if(input.isData){
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFup",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFdown",i,1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFup",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFdown",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1up",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1down",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1up",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1down",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2up",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2down",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2up",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2down",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1up",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1down",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2up",i, 1.0);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2down",i, 1.0);  
+             
+        }else{
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFup, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFdown, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFup, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFdown, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);
+            vars.FillVars("Topsubjets_ABCDCHSSoftDrop_masscorrwithtopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCDCHSSoftDrop_masscorrwithtopbtag_subjetPts,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetEtas,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetCSVs,ABCDCHSSoftDrop_masscorrwithtopbtag_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtHF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtLF, subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvWgtCF)/subjet_ABCDCHSSoftDrop_masscorrwithtopbtag_csvweight);  
+            
+        }
+ 
+     }
+  }
+  
+  
+  
+  
+  std::cout<<"furtherdebugging1"<<std::endl;
+ 
+  ////FILL ABCDCHSPruning VARIABLES
+  vars.FillVar("N_Zprime_ABCDCHSPruning",ZprimesABCDCHSPruning.size());
+
+  for (uint i=0; i<ZprimesABCDCHSPruning.size(); i++){
+  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
+     //int i = 
+     vars.FillVars("Zprimes_ABCDCHSPruning_M",i,ZprimesABCDCHSPruning[i].mass());
+     vars.FillVars("Zprimes_ABCDCHSPruning_Pt",i,ZprimesABCDCHSPruning[i].pt());
+     
+     vars.FillVars("Tprimes_ABCDCHSPruning_M",i,TprimesABCDCHSPruning[i].mass());
+     vars.FillVars("Tprimes_ABCDCHSPruning_Pt",i,TprimesABCDCHSPruning[i].pt());
+     
+     vars.FillVars("Bottoms_ABCDCHSPruning_Pt",i,BottomsABCDCHSPruning[i].pt());
+     vars.FillVars("Bottoms_ABCDCHSPruning_Eta",i,BottomsABCDCHSPruning[i].eta());
+     vars.FillVars("Bottoms_ABCDCHSPruning_Phi",i,BottomsABCDCHSPruning[i].phi());
+     vars.FillVars("Bottoms_ABCDCHSPruning_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCDCHSPruning[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+     
+//      CSVHelper csvReweighter;
+     std::vector<double> ABCDCHSPruning_jetPts;
+     std::vector<double> ABCDCHSPruning_jetEtas;
+     std::vector<double> ABCDCHSPruning_jetCSVs;
+     std::vector<int> ABCDCHSPruning_jetFlavors;
+     double ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF;
+     float ABCDCHSPruning_csvweight = 1.;
+     
+     
+
+     if(!input.isData){
+        ABCDCHSPruning_jetPts.push_back(BottomsABCDCHSPruning[i].pt());
+        ABCDCHSPruning_jetEtas.push_back(BottomsABCDCHSPruning[i].eta());
+        ABCDCHSPruning_jetCSVs.push_back(MiniAODHelper::GetJetCSV(BottomsABCDCHSPruning[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        ABCDCHSPruning_jetFlavors.push_back(BottomsABCDCHSPruning[i].hadronFlavour());
+        ABCDCHSPruning_csvweight= csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,input.systematic, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF);
+     }
+     
+    bool doSystematics=true;
+//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+    
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVnominal",i,ABCDCHSPruning_csvweight);    
+    
+     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
+//      std::cout<<"debug1   "<<ABCDCHSPruning_jetPts.size()<<endl;
+     
+     
+         
+     float Bottoms_ABCDCHSPruning_WeightCSVLFup=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVLFdown=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVHFup=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVHFdown=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVHFStats1up=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVHFStats1down=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVLFStats1up=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVLFStats1down=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVHFStats2up=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVHFStats2down=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVLFStats2up=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVLFStats2down=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVCErr1up=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVCErr1down=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVCErr2up=1.0;    
+     float Bottoms_ABCDCHSPruning_WeightCSVCErr2down=1.0;    
+        
+     if(!input.isData){
+         Bottoms_ABCDCHSPruning_WeightCSVLFup=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVLFup, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVLFdown=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVLFdown, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVHFup=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVHFup, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVHFdown=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVHFdown, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVHFStats1up=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVHFStats1up, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVHFStats1down=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVHFStats1down, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVLFStats1up=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVLFStats1up, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVLFStats1down=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVLFStats1down, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVHFStats2up=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVHFStats2up, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVHFStats2down=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVHFStats2down, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVLFStats2up=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVLFStats2up, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVLFStats2down=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVLFStats2down, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVCErr1up=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVCErr1up, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVCErr1down=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVCErr1down, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVCErr2up=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVCErr2up, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+         Bottoms_ABCDCHSPruning_WeightCSVCErr2down=csvReweighter->getCSVWeight(ABCDCHSPruning_jetPts,ABCDCHSPruning_jetEtas,ABCDCHSPruning_jetCSVs,ABCDCHSPruning_jetFlavors,Systematics::CSVCErr2down, ABCDCHSPruning_csvWgtHF, ABCDCHSPruning_csvWgtLF, ABCDCHSPruning_csvWgtCF)/ABCDCHSPruning_csvweight;
+     }
+         
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVLFup",i,Bottoms_ABCDCHSPruning_WeightCSVLFup);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVLFdown",i,Bottoms_ABCDCHSPruning_WeightCSVLFdown);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVHFup",i, Bottoms_ABCDCHSPruning_WeightCSVHFup);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVHFdown",i, Bottoms_ABCDCHSPruning_WeightCSVHFdown);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVHFStats1up",i, Bottoms_ABCDCHSPruning_WeightCSVHFStats1up);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVHFStats1down",i, Bottoms_ABCDCHSPruning_WeightCSVHFStats1down);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVLFStats1up",i, Bottoms_ABCDCHSPruning_WeightCSVLFStats1up);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVLFStats1down",i, Bottoms_ABCDCHSPruning_WeightCSVLFStats1down);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVHFStats2up",i, Bottoms_ABCDCHSPruning_WeightCSVHFStats2up);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVHFStats2down",i, Bottoms_ABCDCHSPruning_WeightCSVHFStats2down);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVLFStats2up",i, Bottoms_ABCDCHSPruning_WeightCSVLFStats2up);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVLFStats2down",i, Bottoms_ABCDCHSPruning_WeightCSVLFStats2down);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVCErr1up",i, Bottoms_ABCDCHSPruning_WeightCSVCErr1up);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVCErr1down",i, Bottoms_ABCDCHSPruning_WeightCSVCErr1down);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVCErr2up",i, Bottoms_ABCDCHSPruning_WeightCSVCErr2up);
+     vars.FillVars("Bottoms_ABCDCHSPruning_WeightCSVCErr2down",i, Bottoms_ABCDCHSPruning_WeightCSVCErr2down);
+     
+    }
+//      std::cout<<"debug2   "<<jetPts.size()<<endl;
+     
+     
+     vars.FillVars("Ws_ABCDCHSPruning_Pt",i,WsABCDCHSPruning[i].pt());
+     vars.FillVars("Ws_ABCDCHSPruning_Eta",i,WsABCDCHSPruning[i].eta());
+     vars.FillVars("Ws_ABCDCHSPruning_Phi",i,WsABCDCHSPruning[i].phi());
+     vars.FillVars("Ws_ABCDCHSPruning_MSD",i,WsABCDCHSPruning[i].userFloat("ak8PFJetsPrunedMass"));
+     vars.FillVars("Ws_ABCDCHSPruning_t21",i,WsABCDCHSPruning[i].userFloat("NjettinessAK8:tau2")/WsABCDCHSPruning[i].userFloat("NjettinessAK8:tau1"));
+     
+     vars.FillVars("Tops_ABCDCHSPruning_Pt",i,TopsABCDCHSPruning[i].pt());
+     vars.FillVars("Tops_ABCDCHSPruning_Eta",i,TopsABCDCHSPruning[i].eta());
+     vars.FillVars("Tops_ABCDCHSPruning_Phi",i,TopsABCDCHSPruning[i].phi());
+     vars.FillVars("Tops_ABCDCHSPruning_MSD",i,TopsABCDCHSPruning[i].userFloat("ak8PFJetsPrunedMass"));
+     vars.FillVars("Tops_ABCDCHSPruning_t32",i,TopsABCDCHSPruning[i].userFloat("NjettinessAK8:tau3")/TopsABCDCHSPruning[i].userFloat("NjettinessAK8:tau2"));
+
+     int realW_CHSPruning=0;
+     int nmatchedaughters_topCHSPruning=0;
+     if(input.zprimetotprimeallhad.IsFilled() && !input.isData && GenWs.size()>0){
+        for(uint j=0; j<GenWs.size();j++){
+            if (BoostedUtils::DeltaR(WsABCDCHSPruning[i].p4(),GenWs[j].p4())<0.8){
+                realW_CHSPruning=1;
+            for(uint k=0;k<GenWs_decayproducts.size();k++){
+                if (BoostedUtils::DeltaR(WsABCDCHSPruning[i].p4(),GenWs_decayproducts[k].p4())<0.8){
+                    nmatchedaughters_topCHSPruning++;
+                }
+            } 
+            }
+        }
+     }
+
+          
+     int realtop_CHSPruning=0;
+     int nmatchedaughters_WCHSPruning=0;
+     if(input.zprimetotprimeallhad.IsFilled() && !input.isData && GenTops.size()>0){
+        for(uint j=0; j<GenTops.size();j++){
+            if (BoostedUtils::DeltaR(TopsABCDCHSPruning[i].p4(),GenTops[j].p4())<0.8){
+                realtop_CHSPruning=1;
+            for(uint k=0;k<GenTops_decayproducts.size();k++){
+                if (BoostedUtils::DeltaR(TopsABCDCHSPruning[i].p4(),GenTops_decayproducts[k].p4())<0.8){
+                    nmatchedaughters_WCHSPruning++;
+                }
+            }  
+            }
+        }
+     }
+     vars.FillVars("Ws_ABCDCHSPruning_real",i,realW_CHSPruning);
+     vars.FillVars("Ws_ABCDCHSPruning_matcheddecays",i,nmatchedaughters_topCHSPruning);
+     vars.FillVars("Tops_ABCDCHSPruning_real",i,realtop_CHSPruning);       
+     vars.FillVars("Tops_ABCDCHSPruning_matcheddecays",i,nmatchedaughters_WCHSPruning);
+  
+
+     
+  std::cout<<"furtherdebugging1"<<std::endl;
+     
+//      std::cout<<"debucg1"<<endl;
+     std::vector<double> ABCDCHSPruning_subjetPts;
+     std::vector<double> ABCDCHSPruning_subjetEtas;
+     std::vector<double> ABCDCHSPruning_subjetCSVs;
+     std::vector<int> ABCDCHSPruning_subjetFlavors;
+     double subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF;
+     float subjet_ABCDCHSPruning_csvweight = 1.;
+     
+
+     
+     double max_subjet_csv_v2=-10;
+     auto const & names = TopsABCDCHSPruning[i].subjets("Pruned");
+     for( auto const & itsubJet : names ){
+        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
+        if(!input.isData){
+            ABCDCHSPruning_subjetPts.push_back(itsubJet->pt());
+            ABCDCHSPruning_subjetEtas.push_back(itsubJet->eta());
+            ABCDCHSPruning_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+            ABCDCHSPruning_subjetFlavors.push_back(itsubJet->hadronFlavour());
         }      
         if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
             max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
@@ -4081,821 +3991,330 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      };
      
 //      std::cout<<"debug2.2"<<endl;
-     vars.FillVars("Tops_ABCD_maxsubjetCSVv2",i,max_subjet_csv_v2);
+     vars.FillVars("Tops_ABCDCHSPruning_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
      if(!input.isData){
-         subjet_ABCD_csvweight= csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,input.systematic, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF);
+         subjet_ABCDCHSPruning_csvweight= csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,input.systematic, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF);
      }
  //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
 
-     vars.FillVars("Topsubjets_ABCD_WeightCSVnominal",i,subjet_ABCD_csvweight);
+     vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVnominal",i,subjet_ABCDCHSPruning_csvweight);
      
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-//      std::cout<<"debug3   "<<ABCD_subjetPts.size()<<endl;
+//      std::cout<<"debug3   "<<ABCDCHSPruning_subjetPts.size()<<endl;
          
             if (input.isData){
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFup",i,1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFdown",i,1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFup",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFdown",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats1up",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats1down",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats1up",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats1down",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats2up",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats2down",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats2up",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats2down",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVCErr1up",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVCErr1down",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVCErr2up",i, 1.0);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVCErr2down",i, 1.0);  
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFup",i,1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFdown",i,1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFup",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFdown",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats1up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats1down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats1up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats1down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats2up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats2down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats2up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats2down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr1up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr1down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr2up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr2down",i, 1.0);  
                 
             }else{
           
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVHFdown, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);
-                vars.FillVars("Topsubjets_ABCD_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCD_subjetPts,ABCD_subjetEtas,ABCD_subjetCSVs,ABCD_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCD_csvWgtHF, subjet_ABCD_csvWgtLF, subjet_ABCD_csvWgtCF)/subjet_ABCD_csvweight);  
-//      std::cout<<"debug4"<<endl;
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVLFup, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVLFdown, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVHFup, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVHFdown, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
+                vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);  
+      std::cout<<"debug4"<<endl;
             }
     }     
      
   }
-
   
-  ////FILL ABCD VARIABLES
-  vars.FillVar("N_Zprimes_ABCDmasscorrnotopbtag",ZprimesABCDmasscorrnotopbtag.size());
+  
+ 
+  ////FILL ABCDPUPPISoftDrop VARIABLES
+  vars.FillVar("N_Zprime_ABCDPUPPISoftDrop",ZprimesABCDPUPPISoftDrop.size());
 
-  for (uint i=0; i<ZprimesABCDmasscorrnotopbtag.size(); i++){
+  for (uint i=0; i<ZprimesABCDPUPPISoftDrop.size(); i++){
   //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
      //int i = 
-     vars.FillVars("Zprimes_ABCD_masscorrnotopbtag_M",i,ZprimesABCDmasscorrnotopbtag[i].mass());
-     vars.FillVars("Zprimes_ABCD_masscorrnotopbtag_Pt",i,ZprimesABCDmasscorrnotopbtag[i].pt());
+     vars.FillVars("Zprimes_ABCDPUPPISoftDrop_M",i,ZprimesABCDPUPPISoftDrop[i].mass());
+     vars.FillVars("Zprimes_ABCDPUPPISoftDrop_Pt",i,ZprimesABCDPUPPISoftDrop[i].pt());
      
-     vars.FillVars("Tprimes_ABCD_masscorrnotopbtag_M",i,TprimesABCDmasscorrnotopbtag[i].mass());
-     vars.FillVars("Tprimes_ABCD_masscorrnotopbtag_Pt",i,TprimesABCDmasscorrnotopbtag[i].pt());
+     vars.FillVars("Tprimes_ABCDPUPPISoftDrop_M",i,TprimesABCDPUPPISoftDrop[i].mass());
+     vars.FillVars("Tprimes_ABCDPUPPISoftDrop_Pt",i,TprimesABCDPUPPISoftDrop[i].pt());
      
-     vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_Pt",i,BottomsABCDmasscorrnotopbtag[i].pt());
-     vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_Eta",i,BottomsABCDmasscorrnotopbtag[i].eta());
-     vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_Phi",i,BottomsABCDmasscorrnotopbtag[i].phi());
-     vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCDmasscorrnotopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-     
-//      CSVHelper csvReweighter=input.csvReweighter;
-     std::vector<double> ABCD_masscorrnotopbtag_jetPts;
-     std::vector<double> ABCD_masscorrnotopbtag_jetEtas;
-     std::vector<double> ABCD_masscorrnotopbtag_jetCSVs;
-     std::vector<int> ABCD_masscorrnotopbtag_jetFlavors;
-     double ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF;
-     float ABCD_csvweight = 1.;
-     
-     if(!input.isData){
-        ABCD_masscorrnotopbtag_jetPts.push_back(BottomsABCDmasscorrnotopbtag[i].pt());
-        ABCD_masscorrnotopbtag_jetEtas.push_back(BottomsABCDmasscorrnotopbtag[i].eta());
-        ABCD_masscorrnotopbtag_jetCSVs.push_back(MiniAODHelper::GetJetCSV(BottomsABCDmasscorrnotopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-        ABCD_masscorrnotopbtag_jetFlavors.push_back(BottomsABCDmasscorrnotopbtag[i].hadronFlavour());
-     
-        ABCD_csvweight= csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,input.systematic, ABCD_masscorrnotopbtag_csvWgtHF,   ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF);
-     }
-    bool doSystematics=true;
-//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
-    vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVnominal",i,ABCD_csvweight);
-     
-    
-    if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-
-        if(input.isData){         
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFup",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFdown",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFup",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFdown",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats1up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats1down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats1up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats1down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats2up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats2down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats2up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats2down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr1up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr1down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr2up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr2down",i, 1.0);  
-        }else{
-            
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVLFup, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVLFdown, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVHFup, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVHFdown, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVHFStats1up, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVHFStats1down, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVLFStats1up, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVLFStats1down, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVHFStats2up, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVHFStats2down, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVLFStats2up, ABCD_masscorrnotopbtag_csvWgtHF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVLFStats2down, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVCErr1up, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVCErr1down, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVCErr2up, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrnotopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_jetPts,ABCD_masscorrnotopbtag_jetEtas,ABCD_masscorrnotopbtag_jetCSVs,ABCD_masscorrnotopbtag_jetFlavors,Systematics::CSVCErr2down, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtLF, ABCD_masscorrnotopbtag_csvWgtCF)/ABCD_csvweight);  
-            
-        }
-    }
-     
-     vars.FillVars("Ws_ABCD_masscorrnotopbtag_Pt",i,WsABCDmasscorrnotopbtag[i].pt());
-     vars.FillVars("Ws_ABCD_masscorrnotopbtag_Eta",i,WsABCDmasscorrnotopbtag[i].eta());
-     vars.FillVars("Ws_ABCD_masscorrnotopbtag_Phi",i,WsABCDmasscorrnotopbtag[i].phi());
-     vars.FillVars("Ws_ABCD_masscorrnotopbtag_MSD",i,WsABCDmasscorrnotopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCD_masscorrnotopbtag_t21",i,WsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau1"));
-     
-     vars.FillVars("Tops_ABCD_masscorrnotopbtag_Pt",i,TopsABCDmasscorrnotopbtag[i].pt());
-     vars.FillVars("Tops_ABCD_masscorrnotopbtag_Eta",i,TopsABCDmasscorrnotopbtag[i].eta());
-     vars.FillVars("Tops_ABCD_masscorrnotopbtag_Phi",i,TopsABCDmasscorrnotopbtag[i].phi());
-     vars.FillVars("Tops_ABCD_masscorrnotopbtag_MSD",i,TopsABCDmasscorrnotopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_masscorrnotopbtag_t32",i,TopsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDmasscorrnotopbtag[i].userFloat("NjettinessAK8CHS:tau2"));
-
-
-     std::vector<double> ABCD_masscorrnotopbtag_subjetPts;
-     std::vector<double> ABCD_masscorrnotopbtag_subjetEtas;
-     std::vector<double> ABCD_masscorrnotopbtag_subjetCSVs;
-     std::vector<int> ABCD_masscorrnotopbtag_subjetFlavors;
-     double subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF;
-     float subjet_ABCD_masscorrnotopbtag_csvweight = 1.;
-     
-
-     
-     double max_subjet_csv_v2=-10;
-     auto const & names = TopsABCDmasscorrnotopbtag[i].subjets("SoftDrop");
-     for( auto const & itsubJet : names ){
-        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
-        if(!input.isData){
-            ABCD_masscorrnotopbtag_subjetPts.push_back(itsubJet->pt());
-            ABCD_masscorrnotopbtag_subjetEtas.push_back(itsubJet->eta());
-            ABCD_masscorrnotopbtag_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-            ABCD_masscorrnotopbtag_subjetFlavors.push_back(itsubJet->hadronFlavour());
-        }
-        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
-            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-        };
-     };
-     
-     
-     vars.FillVars("Tops_ABCD_masscorrnotopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
-//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
-     if(!input.isData){
-        subjet_ABCD_masscorrnotopbtag_csvweight= csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,input.systematic, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF);
-     }
-//     bool doSystematics=true;
-//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
-     vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVnominal",i,subjet_ABCD_masscorrnotopbtag_csvweight);
-
-     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-     
-     if(!input.isData){
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFdown, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCD_masscorrnotopbtag_subjetPts,ABCD_masscorrnotopbtag_subjetEtas,ABCD_masscorrnotopbtag_subjetCSVs,ABCD_masscorrnotopbtag_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCD_masscorrnotopbtag_csvWgtHF, subjet_ABCD_masscorrnotopbtag_csvWgtLF, subjet_ABCD_masscorrnotopbtag_csvWgtCF)/subjet_ABCD_masscorrnotopbtag_csvweight);  
-     }else{
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFup",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFdown",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFup",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFdown",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1up",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats1down",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1up",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats1down",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2up",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVHFStats2down",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2up",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVLFStats2down",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1up",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr1down",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2up",i, 1.0);
-        vars.FillVars("Topsubjets_ABCD_masscorrnotopbtag_WeightCSVCErr2down",i, 1.0); 
-     }     
-     }     
-  }
-
-  
-  vars.FillVar("N_Zprimes_ABCDmasscorrwithtopbtag",ZprimesABCDmasscorrwithtopbtag.size());
-
-  for (uint i=0; i<ZprimesABCDmasscorrwithtopbtag.size(); i++){
-  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
-     //int i = 
-     vars.FillVars("Zprimes_ABCD_masscorrwithtopbtag_M",i,ZprimesABCDmasscorrwithtopbtag[i].mass());
-     vars.FillVars("Zprimes_ABCD_masscorrwithtopbtag_Pt",i,ZprimesABCDmasscorrwithtopbtag[i].pt());
-     
-     vars.FillVars("Tprimes_ABCD_masscorrwithtopbtag_M",i,TprimesABCDmasscorrwithtopbtag[i].mass());
-     vars.FillVars("Tprimes_ABCD_masscorrwithtopbtag_Pt",i,TprimesABCDmasscorrwithtopbtag[i].pt());
-     
-     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_Pt",i,BottomsABCDmasscorrwithtopbtag[i].pt());
-     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_Eta",i,BottomsABCDmasscorrwithtopbtag[i].eta());
-     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_Phi",i,BottomsABCDmasscorrwithtopbtag[i].phi());
-     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCDmasscorrwithtopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_Pt",i,BottomsABCDPUPPISoftDrop[i].pt());
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_Eta",i,BottomsABCDPUPPISoftDrop[i].eta());
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_Phi",i,BottomsABCDPUPPISoftDrop[i].phi());
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_CSV",i,MiniAODHelper::GetJetCSV(BottomsABCDPUPPISoftDrop[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
      
 //      CSVHelper csvReweighter;
-     std::vector<double> ABCD_masscorrwithtopbtag_jetPts;
-     std::vector<double> ABCD_masscorrwithtopbtag_jetEtas;
-     std::vector<double> ABCD_masscorrwithtopbtag_jetCSVs;
-     std::vector<int> ABCD_masscorrwithtopbtag_jetFlavors;
-     double ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF;
-     float ABCD_masscorrwithtopbtag_csvweight = 1.;
+     std::vector<double> ABCDPUPPISoftDrop_jetPts;
+     std::vector<double> ABCDPUPPISoftDrop_jetEtas;
+     std::vector<double> ABCDPUPPISoftDrop_jetCSVs;
+     std::vector<int> ABCDPUPPISoftDrop_jetFlavors;
+     double ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF;
+     float ABCDPUPPISoftDrop_csvweight = 1.;
      
+     
+
      if(!input.isData){
-        ABCD_masscorrwithtopbtag_jetPts.push_back(BottomsABCDmasscorrwithtopbtag[i].pt());
-        ABCD_masscorrwithtopbtag_jetEtas.push_back(BottomsABCDmasscorrwithtopbtag[i].eta());
-        ABCD_masscorrwithtopbtag_jetCSVs.push_back(MiniAODHelper::GetJetCSV(BottomsABCDmasscorrwithtopbtag[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-        ABCD_masscorrwithtopbtag_jetFlavors.push_back(BottomsABCDmasscorrwithtopbtag[i].hadronFlavour());
-        ABCD_masscorrwithtopbtag_csvweight= csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,input.systematic, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF);
+        ABCDPUPPISoftDrop_jetPts.push_back(BottomsABCDPUPPISoftDrop[i].pt());
+        ABCDPUPPISoftDrop_jetEtas.push_back(BottomsABCDPUPPISoftDrop[i].eta());
+        ABCDPUPPISoftDrop_jetCSVs.push_back(MiniAODHelper::GetJetCSV(BottomsABCDPUPPISoftDrop[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+        ABCDPUPPISoftDrop_jetFlavors.push_back(BottomsABCDPUPPISoftDrop[i].hadronFlavour());
+        ABCDPUPPISoftDrop_csvweight= csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,input.systematic, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF);
      }
      
-
     bool doSystematics=true;
 //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
-     vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVnominal",i,ABCD_masscorrwithtopbtag_csvweight);
-     
+    
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVnominal",i,ABCDPUPPISoftDrop_csvweight);    
+    
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-
-        if(input.isData){
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFup",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFdown",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFup",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFdown",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats1up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats1down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats1up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats1down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats2up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats2down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats2up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats2down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr1up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr1down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr2up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr2down",i, 1.0);
-            
-        }else{
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFup, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFdown, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFup, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFdown, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFStats1up, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFStats1down, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFStats1up, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFStats1down, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFStats2up, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVHFStats2down, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFStats2up, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVLFStats2down, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVCErr1up, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVCErr1down, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVCErr2up, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Bottoms_ABCD_masscorrwithtopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_jetPts,ABCD_masscorrwithtopbtag_jetEtas,ABCD_masscorrwithtopbtag_jetCSVs,ABCD_masscorrwithtopbtag_jetFlavors,Systematics::CSVCErr2down, ABCD_masscorrwithtopbtag_csvWgtHF, ABCD_masscorrwithtopbtag_csvWgtLF, ABCD_masscorrwithtopbtag_csvWgtCF)/ABCD_masscorrwithtopbtag_csvweight);  
-        }
+      std::cout<<"debug1   "<<ABCDPUPPISoftDrop_jetPts.size()<<endl;
+     
+     
+         
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVLFup=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVLFdown=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVHFup=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVHFdown=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1up=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1down=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1up=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1down=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2up=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2down=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2up=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2down=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1up=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1down=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2up=1.0;    
+     float Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2down=1.0;    
+        
+     if(!input.isData){
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVLFup=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVLFup, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVLFdown=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVLFdown, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVHFup=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVHFup, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVHFdown=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVHFdown, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1up=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVHFStats1up, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1down=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVHFStats1down, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1up=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVLFStats1up, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1down=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVLFStats1down, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2up=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVHFStats2up, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2down=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVHFStats2down, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2up=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVLFStats2up, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2down=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVLFStats2down, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1up=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVCErr1up, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1down=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVCErr1down, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2up=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVCErr2up, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+         Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2down=csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_jetPts,ABCDPUPPISoftDrop_jetEtas,ABCDPUPPISoftDrop_jetCSVs,ABCDPUPPISoftDrop_jetFlavors,Systematics::CSVCErr2down, ABCDPUPPISoftDrop_csvWgtHF, ABCDPUPPISoftDrop_csvWgtLF, ABCDPUPPISoftDrop_csvWgtCF)/ABCDPUPPISoftDrop_csvweight;
+     }
+         
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFup",i,Bottoms_ABCDPUPPISoftDrop_WeightCSVLFup);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFdown",i,Bottoms_ABCDPUPPISoftDrop_WeightCSVLFdown);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFup",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVHFup);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFdown",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVHFdown);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1up",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1up);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1down",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats1down);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1up",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1up);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1down",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats1down);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2up",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2up);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2down",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVHFStats2down);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2up",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2up);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2down",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVLFStats2down);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1up",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1up);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1down",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr1down);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2up",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2up);
+     vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2down",i, Bottoms_ABCDPUPPISoftDrop_WeightCSVCErr2down);
+     
     }
-
+//      std::cout<<"debug2   "<<jetPts.size()<<endl;
      
      
-     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_Pt",i,WsABCDmasscorrwithtopbtag[i].pt());
-     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_Eta",i,WsABCDmasscorrwithtopbtag[i].eta());
-     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_Phi",i,WsABCDmasscorrwithtopbtag[i].phi());
-     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_MSD",i,WsABCDmasscorrwithtopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCD_masscorrwithtopbtag_t21",i,WsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau1"));
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_Pt",i,WsABCDPUPPISoftDrop[i].pt());
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_Eta",i,WsABCDPUPPISoftDrop[i].eta());
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_Phi",i,WsABCDPUPPISoftDrop[i].phi());
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_MSD",i,WsABCDPUPPISoftDrop[i].userFloat("ak8PFJetsPrunedMass"));
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_t21",i,WsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8:tau2")/WsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8:tau1"));
      
-     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_Pt",i,TopsABCDmasscorrwithtopbtag[i].pt());
-     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_Eta",i,TopsABCDmasscorrwithtopbtag[i].eta());
-     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_Phi",i,TopsABCDmasscorrwithtopbtag[i].phi());
-     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_MSD",i,TopsABCDmasscorrwithtopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_t32",i,TopsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau2"));
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_Pt",i,TopsABCDPUPPISoftDrop[i].pt());
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_Eta",i,TopsABCDPUPPISoftDrop[i].eta());
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_Phi",i,TopsABCDPUPPISoftDrop[i].phi());
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_MSD",i,TopsABCDPUPPISoftDrop[i].userFloat("ak8PFJetsPrunedMass"));
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_t32",i,TopsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8:tau3")/TopsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8:tau2"));
 
+     int realW_PUPPISoftDrop=0;
+    int nmatchedaughters_topPUPPISoftDrop=0;
+     if(input.zprimetotprimeallhad.IsFilled() && !input.isData && GenWs.size()>0){
+        for(uint j=0; j<GenWs.size();j++){
+            if (BoostedUtils::DeltaR(WsABCDPUPPISoftDrop[i].p4(),GenWs[j].p4())<0.8){
+                realW_PUPPISoftDrop=1;
+            for(uint k=0;k<GenWs_decayproducts.size();k++){
+                if (BoostedUtils::DeltaR(WsABCDPUPPISoftDrop[i].p4(),GenWs_decayproducts[k].p4())<0.8){
+                    nmatchedaughters_topPUPPISoftDrop++;
+                }
+            }
+            
+            }
+        }
+     }
 
-
-     std::vector<double> ABCD_masscorrwithtopbtag_subjetPts;
-     std::vector<double> ABCD_masscorrwithtopbtag_subjetEtas;
-     std::vector<double> ABCD_masscorrwithtopbtag_subjetCSVs;
-     std::vector<int> ABCD_masscorrwithtopbtag_subjetFlavors;
-     double subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF;
-     float subjet_ABCD_masscorrwithtopbtag_csvweight = 1.;
+          
+     int realtop_PUPPISoftDrop=0;
+     int nmatchedaughters_WPUPPISoftDrop=0;
+     if(input.zprimetotprimeallhad.IsFilled() && !input.isData && GenTops.size()>0){
+        for(uint j=0; j<GenTops.size();j++){
+            if (BoostedUtils::DeltaR(TopsABCDPUPPISoftDrop[i].p4(),GenTops[j].p4())<0.8){
+                realtop_PUPPISoftDrop=1;
+            for(uint k=0;k<GenTops_decayproducts.size();k++){
+                if (BoostedUtils::DeltaR(TopsABCDPUPPISoftDrop[i].p4(),GenTops_decayproducts[k].p4())<0.8){
+                    nmatchedaughters_WPUPPISoftDrop++;
+                }
+            }
+            }
+        }
+     }
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_real",i,realW_PUPPISoftDrop);
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_matcheddecays",i,nmatchedaughters_topPUPPISoftDrop);
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_real",i,realtop_PUPPISoftDrop); 
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_matcheddecays",i,nmatchedaughters_WPUPPISoftDrop);
+ 
+     
+     //      std::cout<<"debucg1"<<endl;
+     std::vector<double> ABCDPUPPISoftDrop_subjetPts;
+     std::vector<double> ABCDPUPPISoftDrop_subjetEtas;
+     std::vector<double> ABCDPUPPISoftDrop_subjetCSVs;
+     std::vector<int> ABCDPUPPISoftDrop_subjetFlavors;
+     double subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF;
+     float subjet_ABCDPUPPISoftDrop_csvweight = 1.;
      
 
      
      double max_subjet_csv_v2=-10;
-     auto const & names = TopsABCDmasscorrwithtopbtag[i].subjets("SoftDrop");
+     auto const & names = TopsABCDPUPPISoftDrop[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
         if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
         if(!input.isData){
-            ABCD_masscorrwithtopbtag_subjetPts.push_back(itsubJet->pt());
-            ABCD_masscorrwithtopbtag_subjetEtas.push_back(itsubJet->eta());
-            ABCD_masscorrwithtopbtag_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-            ABCD_masscorrwithtopbtag_subjetFlavors.push_back(itsubJet->hadronFlavour());
+            ABCDPUPPISoftDrop_subjetPts.push_back(itsubJet->pt());
+            ABCDPUPPISoftDrop_subjetEtas.push_back(itsubJet->eta());
+            ABCDPUPPISoftDrop_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+            ABCDPUPPISoftDrop_subjetFlavors.push_back(itsubJet->hadronFlavour());
         }      
         if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
             max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         };
      };
      
-     vars.FillVars("Tops_ABCD_masscorrwithtopbtag_maxsubjetCSVv2",i,max_subjet_csv_v2);
+//      std::cout<<"debug2.2"<<endl;
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
      if(!input.isData){
-        subjet_ABCD_masscorrwithtopbtag_csvweight= csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,input.systematic, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF);
+         subjet_ABCDPUPPISoftDrop_csvweight= csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,input.systematic, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF);
      }
-//     bool doSystematics=true;
-//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
-     vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVnominal",i,subjet_ABCD_masscorrwithtopbtag_csvweight);
+ //     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
+
+     vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVnominal",i,subjet_ABCDPUPPISoftDrop_csvweight);
      
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-     
-         if(input.isData){
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFup",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFdown",i,1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFup",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFdown",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2down",i, 1.0);  
-             
-        }else{
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFdown, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);
-            vars.FillVars("Topsubjets_ABCD_masscorrwithtopbtag_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCD_masscorrwithtopbtag_subjetPts,ABCD_masscorrwithtopbtag_subjetEtas,ABCD_masscorrwithtopbtag_subjetCSVs,ABCD_masscorrwithtopbtag_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCD_masscorrwithtopbtag_csvWgtHF, subjet_ABCD_masscorrwithtopbtag_csvWgtLF, subjet_ABCD_masscorrwithtopbtag_csvWgtCF)/subjet_ABCD_masscorrwithtopbtag_csvweight);  
-            
-        }
- 
-     }
-  }
-  
-/*
-  ////FILL ABCD_tAK15WAK15bAK4 VARIABLES
-  vars.FillVar("N_Zprime_ABCD_tAK15WAK15bAK4",Zprimes_ABCD_tAK15WAK15bAK4.size());
-
-  for (uint i=0; i<Zprimes_ABCD_tAK15WAK15bAK4.size(); i++){
-  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
-     //int i = 
-     vars.FillVars("Zprimes_ABCD_tAK15WAK15bAK4_M",i,Zprimes_ABCD_tAK15WAK15bAK4[i].mass());
-     vars.FillVars("Zprimes_ABCD_tAK15WAK15bAK4_Pt",i,Zprimes_ABCD_tAK15WAK15bAK4[i].pt());
-     
-     vars.FillVars("Tprimes_ABCD_tAK15WAK15bAK4_M",i,Tprimes_ABCD_tAK15WAK15bAK4[i].mass());
-     vars.FillVars("Tprimes_ABCD_tAK15WAK15bAK4_Pt",i,Tprimes_ABCD_tAK15WAK15bAK4[i].pt());
-     
-     vars.FillVars("Bottoms_ABCD_tAK15WAK15bAK4_Pt",i,Bottoms_ABCD_tAK15WAK15bAK4[i].pt());
-     vars.FillVars("Bottoms_ABCD_tAK15WAK15bAK4_Eta",i,Bottoms_ABCD_tAK15WAK15bAK4[i].eta());
-     vars.FillVars("Bottoms_ABCD_tAK15WAK15bAK4_Phi",i,Bottoms_ABCD_tAK15WAK15bAK4[i].phi());
-     vars.FillVars("Bottoms_ABCD_tAK15WAK15bAK4_CSV",i,MiniAODHelper::GetJetCSV(Bottoms_ABCD_tAK15WAK15bAK4[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-     
-     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_Pt",i,Ws_ABCD_tAK15WAK15bAK4[i].pt());
-     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_Eta",i,Ws_ABCD_tAK15WAK15bAK4[i].eta());
-     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_Phi",i,Ws_ABCD_tAK15WAK15bAK4[i].phi());
-     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_MSD",i,Ws_ABCD_tAK15WAK15bAK4[i].userFloat("ak15PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCD_tAK15WAK15bAK4_t21",i,Ws_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK15CHS:tau2")/Ws_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK15CHS:tau1"));
-     
-     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_Pt",i,Tops_ABCD_tAK15WAK15bAK4[i].pt());
-     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_Eta",i,Tops_ABCD_tAK15WAK15bAK4[i].eta());
-     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_Phi",i,Tops_ABCD_tAK15WAK15bAK4[i].phi());
-     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_MSD",i,Tops_ABCD_tAK15WAK15bAK4[i].userFloat("ak15PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_t32",i,Tops_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK15CHS:tau3")/Tops_ABCD_tAK15WAK15bAK4[i].userFloat("NjettinessAK15CHS:tau2"));
-
-     double max_subjet_csv_v2=-10;
-     auto const & names = Tops_ABCD_tAK15WAK15bAK4[i].subjets("SoftDrop");
-     for( auto const & itsubJet : names ){
-        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
-            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-        };
-     };
-     vars.FillVars("Tops_ABCD_tAK15WAK15bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
-//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
-  }
-*/
-
-  ////FILL ABCD_tAK15WAK8bAK4 VARIABLES
-  vars.FillVar("N_Zprime_ABCD_tAK15WAK8bAK4",Zprimes_ABCD_tAK15WAK8bAK4.size());
-
-  for (uint i=0; i<Zprimes_ABCD_tAK15WAK8bAK4.size(); i++){
-  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
-     //int i = 
-     vars.FillVars("Zprimes_ABCD_tAK15WAK8bAK4_M",i,Zprimes_ABCD_tAK15WAK8bAK4[i].mass());
-     vars.FillVars("Zprimes_ABCD_tAK15WAK8bAK4_Pt",i,Zprimes_ABCD_tAK15WAK8bAK4[i].pt());
-     
-     vars.FillVars("Tprimes_ABCD_tAK15WAK8bAK4_M",i,Tprimes_ABCD_tAK15WAK8bAK4[i].mass());
-     vars.FillVars("Tprimes_ABCD_tAK15WAK8bAK4_Pt",i,Tprimes_ABCD_tAK15WAK8bAK4[i].pt());
-     
-     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_Pt",i,Bottoms_ABCD_tAK15WAK8bAK4[i].pt());
-     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_Eta",i,Bottoms_ABCD_tAK15WAK8bAK4[i].eta());
-     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_Phi",i,Bottoms_ABCD_tAK15WAK8bAK4[i].phi());
-     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_CSV",i,MiniAODHelper::GetJetCSV(Bottoms_ABCD_tAK15WAK8bAK4[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-     
-//      CSVHelper csvReweighter;
-     std::vector<double> ABCD_tAK15WAK8bAK4_jetPts;
-     std::vector<double> ABCD_tAK15WAK8bAK4_jetEtas;
-     std::vector<double> ABCD_tAK15WAK8bAK4_jetCSVs;
-     std::vector<int> ABCD_tAK15WAK8bAK4_jetFlavors;
-     double ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF;
-     float ABCD_tAK15WAK8bAK4_csvweight = 1.;
-     if(!input.isData){
-        ABCD_tAK15WAK8bAK4_jetPts.push_back(Bottoms_ABCD_tAK15WAK8bAK4[i].pt());
-        ABCD_tAK15WAK8bAK4_jetEtas.push_back(Bottoms_ABCD_tAK15WAK8bAK4[i].eta());
-        ABCD_tAK15WAK8bAK4_jetCSVs.push_back(MiniAODHelper::GetJetCSV(Bottoms_ABCD_tAK15WAK8bAK4[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-        ABCD_tAK15WAK8bAK4_jetFlavors.push_back(Bottoms_ABCD_tAK15WAK8bAK4[i].hadronFlavour());
-        ABCD_tAK15WAK8bAK4_csvweight= csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,input.systematic, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF);
-     }
-     
-
-
-
-    bool doSystematics=true;
-//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
-     vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVnominal",i,ABCD_tAK15WAK8bAK4_csvweight);
-
-     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-
-     if(input.isData){
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFup",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFup",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFdown",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1up",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1down",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1up",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1down",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2up",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2down",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2up",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2down",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr1up",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr1down",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr2up",i, 1.0);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr2down",i, 1.0); 
+//      std::cout<<"debug3   "<<ABCDPUPPISoftDrop_subjetPts.size()<<endl;
          
-    }else{
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVLFup, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVLFdown, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVHFup, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVHFdown, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVHFStats1up, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVHFStats1down, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVLFStats1up, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVLFStats1down, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVHFStats2up, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVHFStats2down, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVLFStats2up, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVLFStats2down, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVCErr1up, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVCErr1down, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVCErr2up, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);
-        vars.FillVars("Bottoms_ABCD_tAK15WAK8bAK4_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_jetPts,ABCD_tAK15WAK8bAK4_jetEtas,ABCD_tAK15WAK8bAK4_jetCSVs,ABCD_tAK15WAK8bAK4_jetFlavors,Systematics::CSVCErr2down, ABCD_tAK15WAK8bAK4_csvWgtHF, ABCD_tAK15WAK8bAK4_csvWgtLF, ABCD_tAK15WAK8bAK4_csvWgtCF)/ABCD_tAK15WAK8bAK4_csvweight);  
-     }
-    }
-
+            if (input.isData){
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFup",i,1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFdown",i,1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFup",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFdown",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats1up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats1down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats1up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats1down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats2up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats2down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats2up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats2down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr1up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr1down",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr2up",i, 1.0);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr2down",i, 1.0);  
+                
+            }else{
+          
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVLFup, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVLFdown, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVHFup, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVHFdown, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);
+                vars.FillVars("Topsubjets_ABCDPUPPISoftDrop_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCDPUPPISoftDrop_subjetPts,ABCDPUPPISoftDrop_subjetEtas,ABCDPUPPISoftDrop_subjetCSVs,ABCDPUPPISoftDrop_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCDPUPPISoftDrop_csvWgtHF, subjet_ABCDPUPPISoftDrop_csvWgtLF, subjet_ABCDPUPPISoftDrop_csvWgtCF)/subjet_ABCDPUPPISoftDrop_csvweight);  
+//      std::cout<<"debug4"<<endl;
+            }
+    }     
      
-     
-     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_Pt",i,Ws_ABCD_tAK15WAK8bAK4[i].pt());
-     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_Eta",i,Ws_ABCD_tAK15WAK8bAK4[i].eta());
-     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_Phi",i,Ws_ABCD_tAK15WAK8bAK4[i].phi());
-     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_MSD",i,Ws_ABCD_tAK15WAK8bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCD_tAK15WAK8bAK4_t21",i,Ws_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau2")/Ws_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau1"));
-     
-     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_Pt",i,Tops_ABCD_tAK15WAK8bAK4[i].pt());
-     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_Eta",i,Tops_ABCD_tAK15WAK8bAK4[i].eta());
-     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_Phi",i,Tops_ABCD_tAK15WAK8bAK4[i].phi());
-     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_MSD",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("ak15PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_t32",i,Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK15CHS:tau3")/Tops_ABCD_tAK15WAK8bAK4[i].userFloat("NjettinessAK15CHS:tau2"));
-
-     std::vector<double> ABCD_tAK15WAK8bAK4_subjetPts;
-     std::vector<double> ABCD_tAK15WAK8bAK4_subjetEtas;
-     std::vector<double> ABCD_tAK15WAK8bAK4_subjetCSVs;
-     std::vector<int> ABCD_tAK15WAK8bAK4_subjetFlavors;
-     double subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF;
-     float subjet_ABCD_tAK15WAK8bAK4_csvweight = 1.;
-     
-
-     
-     double max_subjet_csv_v2=-10;
-     auto const & names = Tops_ABCD_tAK15WAK8bAK4[i].subjets("SoftDrop");
-     for( auto const & itsubJet : names ){
-        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
-        if(!input.isData){
-            ABCD_tAK15WAK8bAK4_subjetPts.push_back(itsubJet->pt());
-            ABCD_tAK15WAK8bAK4_subjetEtas.push_back(itsubJet->eta());
-            ABCD_tAK15WAK8bAK4_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-            ABCD_tAK15WAK8bAK4_subjetFlavors.push_back(itsubJet->hadronFlavour());
-        }
-        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
-            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-        };
-     };
-     
-     
-     vars.FillVars("Tops_ABCD_tAK15WAK8bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
-//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
-     if(!input.isData){
-        subjet_ABCD_tAK15WAK8bAK4_csvweight= csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,input.systematic, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF);
-     }
-//     bool doSystematics=true;
-//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
-     vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVnominal",i,subjet_ABCD_tAK15WAK8bAK4_csvweight);
-
-     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-     
-         if(input.isData){
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFup",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",i,1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFup",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFdown",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2down",i, 1.0);
-             
-        }else{
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVHFdown, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK15WAK8bAK4_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCD_tAK15WAK8bAK4_subjetPts,ABCD_tAK15WAK8bAK4_subjetEtas,ABCD_tAK15WAK8bAK4_subjetCSVs,ABCD_tAK15WAK8bAK4_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCD_tAK15WAK8bAK4_csvWgtHF, subjet_ABCD_tAK15WAK8bAK4_csvWgtLF, subjet_ABCD_tAK15WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK15WAK8bAK4_csvweight);
-         }
-     }
-
-  }
-/*
-  ////FILL ABCD_tAK12WAK12bAK4 VARIABLES
-  vars.FillVar("N_Zprime_ABCD_tAK12WAK12bAK4",Zprimes_ABCD_tAK12WAK12bAK4.size());
-
-  for (uint i=0; i<Zprimes_ABCD_tAK12WAK12bAK4.size(); i++){
-  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
-     //int i = 
-     vars.FillVars("Zprimes_ABCD_tAK12WAK12bAK4_M",i,Zprimes_ABCD_tAK12WAK12bAK4[i].mass());
-     vars.FillVars("Zprimes_ABCD_tAK12WAK12bAK4_Pt",i,Zprimes_ABCD_tAK12WAK12bAK4[i].pt());
-     
-     vars.FillVars("Tprimes_ABCD_tAK12WAK12bAK4_M",i,Tprimes_ABCD_tAK12WAK12bAK4[i].mass());
-     vars.FillVars("Tprimes_ABCD_tAK12WAK12bAK4_Pt",i,Tprimes_ABCD_tAK12WAK12bAK4[i].pt());
-     
-     vars.FillVars("Bottoms_ABCD_tAK12WAK12bAK4_Pt",i,Bottoms_ABCD_tAK12WAK12bAK4[i].pt());
-     vars.FillVars("Bottoms_ABCD_tAK12WAK12bAK4_Eta",i,Bottoms_ABCD_tAK12WAK12bAK4[i].eta());
-     vars.FillVars("Bottoms_ABCD_tAK12WAK12bAK4_Phi",i,Bottoms_ABCD_tAK12WAK12bAK4[i].phi());
-     vars.FillVars("Bottoms_ABCD_tAK12WAK12bAK4_CSV",i,MiniAODHelper::GetJetCSV(Bottoms_ABCD_tAK12WAK12bAK4[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-     
-     vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_Pt",i,Ws_ABCD_tAK12WAK12bAK4[i].pt());
-     vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_Eta",i,Ws_ABCD_tAK12WAK12bAK4[i].eta());
-     vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_Phi",i,Ws_ABCD_tAK12WAK12bAK4[i].phi());
-     vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_MSD",i,Ws_ABCD_tAK12WAK12bAK4[i].userFloat("ak12PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCD_tAK12WAK12bAK4_t21",i,Ws_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK12CHS:tau2")/Ws_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK12CHS:tau1"));
-     
-     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_Pt",i,Tops_ABCD_tAK12WAK12bAK4[i].pt());
-     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_Eta",i,Tops_ABCD_tAK12WAK12bAK4[i].eta());
-     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_Phi",i,Tops_ABCD_tAK12WAK12bAK4[i].phi());
-     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_MSD",i,Tops_ABCD_tAK12WAK12bAK4[i].userFloat("ak12PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_t32",i,Tops_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK12CHS:tau3")/Tops_ABCD_tAK12WAK12bAK4[i].userFloat("NjettinessAK12CHS:tau2"));
-
-     double max_subjet_csv_v2=-10;
-     auto const & names = Tops_ABCD_tAK12WAK12bAK4[i].subjets("SoftDrop");
-     for( auto const & itsubJet : names ){
-        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
-            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-        };
-     };
-     vars.FillVars("Tops_ABCD_tAK12WAK12bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
-//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
-  }
-*/
-
-  ////FILL ABCD_tAK12WAK8bAK4 VARIABLES
-  vars.FillVar("N_Zprime_ABCD_tAK12WAK8bAK4",Zprimes_ABCD_tAK12WAK8bAK4.size());
-
-  for (uint i=0; i<Zprimes_ABCD_tAK12WAK8bAK4.size(); i++){
-  //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
-     //int i = 
-     vars.FillVars("Zprimes_ABCD_tAK12WAK8bAK4_M",i,Zprimes_ABCD_tAK12WAK8bAK4[i].mass());
-     vars.FillVars("Zprimes_ABCD_tAK12WAK8bAK4_Pt",i,Zprimes_ABCD_tAK12WAK8bAK4[i].pt());
-     
-     vars.FillVars("Tprimes_ABCD_tAK12WAK8bAK4_M",i,Tprimes_ABCD_tAK12WAK8bAK4[i].mass());
-     vars.FillVars("Tprimes_ABCD_tAK12WAK8bAK4_Pt",i,Tprimes_ABCD_tAK12WAK8bAK4[i].pt());
-     
-     vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_Pt",i,Bottoms_ABCD_tAK12WAK8bAK4[i].pt());
-     vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_Eta",i,Bottoms_ABCD_tAK12WAK8bAK4[i].eta());
-     vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_Phi",i,Bottoms_ABCD_tAK12WAK8bAK4[i].phi());
-     vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_CSV",i,MiniAODHelper::GetJetCSV(Bottoms_ABCD_tAK12WAK8bAK4[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-     
-//      CSVHelper csvReweighter;
-     std::vector<double> ABCD_tAK12WAK8bAK4_jetPts;
-     std::vector<double> ABCD_tAK12WAK8bAK4_jetEtas;
-     std::vector<double> ABCD_tAK12WAK8bAK4_jetCSVs;
-     std::vector<int> ABCD_tAK12WAK8bAK4_jetFlavors;
-     double ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF;
-     float ABCD_tAK12WAK8bAK4_csvweight = 1.;
-     
-     if(!input.isData){
-        ABCD_tAK12WAK8bAK4_jetPts.push_back(Bottoms_ABCD_tAK12WAK8bAK4[i].pt());
-        ABCD_tAK12WAK8bAK4_jetEtas.push_back(Bottoms_ABCD_tAK12WAK8bAK4[i].eta());
-        ABCD_tAK12WAK8bAK4_jetCSVs.push_back(MiniAODHelper::GetJetCSV(Bottoms_ABCD_tAK12WAK8bAK4[i],"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-        ABCD_tAK12WAK8bAK4_jetFlavors.push_back(Bottoms_ABCD_tAK12WAK8bAK4[i].hadronFlavour());
-        ABCD_tAK12WAK8bAK4_csvweight= csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,input.systematic, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF);
-     }
-
-
-
-    bool doSystematics=true;
-//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
-     vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVnominal",i,ABCD_tAK12WAK8bAK4_csvweight);
-
-     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-
-        if(input.isData){
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFup",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFup",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFdown",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr1up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr1down",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr2up",i, 1.0);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr2down",i, 1.0);  
-            
-        }else{
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVLFup, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVLFdown, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVHFup, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVHFdown, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVHFStats1up, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVHFStats1down, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVLFStats1up, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVLFStats1down, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVHFStats2up, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVHFStats2down, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVLFStats2up, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVLFStats2down, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVCErr1up, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVCErr1down, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVCErr2up, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Bottoms_ABCD_tAK12WAK8bAK4_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_jetPts,ABCD_tAK12WAK8bAK4_jetEtas,ABCD_tAK12WAK8bAK4_jetCSVs,ABCD_tAK12WAK8bAK4_jetFlavors,Systematics::CSVCErr2down, ABCD_tAK12WAK8bAK4_csvWgtHF, ABCD_tAK12WAK8bAK4_csvWgtLF, ABCD_tAK12WAK8bAK4_csvWgtCF)/ABCD_tAK12WAK8bAK4_csvweight);  
-            
-        }
-
-    }
-
-     
-     vars.FillVars("Ws_ABCD_tAK12WAK8bAK4_Pt",i,Ws_ABCD_tAK12WAK8bAK4[i].pt());
-     vars.FillVars("Ws_ABCD_tAK12WAK8bAK4_Eta",i,Ws_ABCD_tAK12WAK8bAK4[i].eta());
-     vars.FillVars("Ws_ABCD_tAK12WAK8bAK4_Phi",i,Ws_ABCD_tAK12WAK8bAK4[i].phi());
-     vars.FillVars("Ws_ABCD_tAK12WAK8bAK4_MSD",i,Ws_ABCD_tAK12WAK8bAK4[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCD_tAK12WAK8bAK4_t21",i,Ws_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau2")/Ws_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK8CHS:tau1"));
-     
-     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_Pt",i,Tops_ABCD_tAK12WAK8bAK4[i].pt());
-     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_Eta",i,Tops_ABCD_tAK12WAK8bAK4[i].eta());
-     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_Phi",i,Tops_ABCD_tAK12WAK8bAK4[i].phi());
-     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_MSD",i,Tops_ABCD_tAK12WAK8bAK4[i].userFloat("ak12PFJetsCHSSoftDropMass"));
-     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_t32",i,Tops_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK12CHS:tau3")/Tops_ABCD_tAK12WAK8bAK4[i].userFloat("NjettinessAK12CHS:tau2"));
-
-     
-     std::vector<double> ABCD_tAK12WAK8bAK4_subjetPts;
-     std::vector<double> ABCD_tAK12WAK8bAK4_subjetEtas;
-     std::vector<double> ABCD_tAK12WAK8bAK4_subjetCSVs;
-     std::vector<int> ABCD_tAK12WAK8bAK4_subjetFlavors;
-     double subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF;
-     float subjet_ABCD_tAK12WAK8bAK4_csvweight = 1.;
-     
-     double max_subjet_csv_v2=-10;
-     auto const & names = Tops_ABCD_tAK12WAK8bAK4[i].subjets("SoftDrop");
-     for( auto const & itsubJet : names ){
-        if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
-        if(!input.isData){
-            ABCD_tAK12WAK8bAK4_subjetPts.push_back(itsubJet->pt());
-            ABCD_tAK12WAK8bAK4_subjetEtas.push_back(itsubJet->eta());
-            ABCD_tAK12WAK8bAK4_subjetCSVs.push_back(MiniAODHelper::GetJetCSV(*itsubJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-            ABCD_tAK12WAK8bAK4_subjetFlavors.push_back(itsubJet->hadronFlavour());
-        }
-        if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
-            max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-        };
-     };
-     
-     
-     vars.FillVars("Tops_ABCD_tAK12WAK8bAK4_maxsubjetCSVv2",i,max_subjet_csv_v2);
-//      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
-     if(!input.isData){
-        subjet_ABCD_tAK12WAK8bAK4_csvweight= csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,input.systematic, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF);
-     }
-//     bool doSystematics=true;
-//     if(doSystematics && input.input.systematic != sysType::JESup && input.input.systematic != sysType::JESdown && input.input.systematic != sysType::JERup && input.input.systematic != sysType::JERdown) {
-     vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVnominal",i,subjet_ABCD_tAK12WAK8bAK4_csvweight);
-
-     if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-     
-         if(input.isData){
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFup",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",i,1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFup",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFdown",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1down",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2up",i, 1.0);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2down",i, 1.0);  
-             
-        }else{
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFup",i,csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVLFup, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFdown",i,csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVLFdown, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFup",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVHFup, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFdown",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVHFdown, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVHFStats1up, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats1down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVHFStats1down, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVLFStats1up, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats1down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVLFStats1down, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVHFStats2up, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVHFStats2down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVHFStats2down, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVLFStats2up, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVLFStats2down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVLFStats2down, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVCErr1up, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);
-            vars.FillVars("Topsubjets_ABCD_tAK12WAK8bAK4_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCD_tAK12WAK8bAK4_subjetPts,ABCD_tAK12WAK8bAK4_subjetEtas,ABCD_tAK12WAK8bAK4_subjetCSVs,ABCD_tAK12WAK8bAK4_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCD_tAK12WAK8bAK4_csvWgtHF, subjet_ABCD_tAK12WAK8bAK4_csvWgtLF, subjet_ABCD_tAK12WAK8bAK4_csvWgtCF)/subjet_ABCD_tAK12WAK8bAK4_csvweight);  
-            
-        }
-
-
-     }
-            
   }  
+
+  
+  
    
  }// end of HT if 1190
-  
+ 
+ std::cout<<"last"<<std::endl;
+ vars.FillVar("N_electrons",input.selectedElectrons.size());
+ vars.FillVar("N_muons",input.selectedMuons.size());
+ vars.FillVar("N_electronsMidloose",input.selectedElectronsDL.size());
+ vars.FillVar("N_muonsMidloose",input.selectedMuonsDL.size());
+ vars.FillVar("N_electronsLoose",input.selectedElectronsLoose.size());
+ vars.FillVar("N_muonsLoose",input.selectedMuonsLoose.size());
+ 
+ for(std::vector<pat::Electron>::const_iterator itParticle = input.selectedElectrons.begin() ; itParticle != input.selectedElectrons.end(); ++itParticle){
+    int iParticle = itParticle - input.selectedElectrons.begin();
+    vars.FillVars("Electrons_Pt",iParticle,itParticle->pt());
+ }
+ for(std::vector<pat::Muon>::const_iterator itParticle = input.selectedMuons.begin() ; itParticle != input.selectedMuons.end(); ++itParticle){
+    int iParticle = itParticle - input.selectedMuons.begin();    
+    vars.FillVars("Muons_Pt",iParticle,itParticle->pt());
+ } 
+ for(std::vector<pat::Electron>::const_iterator itParticle = input.selectedElectronsDL.begin() ; itParticle != input.selectedElectronsDL.end(); ++itParticle){
+    int iParticle = itParticle - input.selectedElectronsDL.begin();
+    vars.FillVars("ElectronsMidloose_Pt",iParticle,itParticle->pt());
+ }
+ for(std::vector<pat::Muon>::const_iterator itParticle = input.selectedMuonsDL.begin() ; itParticle != input.selectedMuonsDL.end(); ++itParticle){
+    int iParticle = itParticle - input.selectedMuonsDL.begin();
+    vars.FillVars("MuonsMidloose_Pt",iParticle,itParticle->pt());
+ } 
+ 
+ for(std::vector<pat::Electron>::const_iterator itParticle = input.selectedElectronsLoose.begin() ; itParticle != input.selectedElectronsLoose.end(); ++itParticle){
+    int iParticle = itParticle - input.selectedElectronsLoose.begin();
+    vars.FillVars("ElectronsLoose_Pt",iParticle,itParticle->pt());
+ }
+ for(std::vector<pat::Muon>::const_iterator itParticle = input.selectedMuonsLoose.begin() ; itParticle != input.selectedMuonsLoose.end(); ++itParticle){
+    int iParticle = itParticle - input.selectedMuonsLoose.begin();
+    vars.FillVars("MuonsLoose_Pt",iParticle,itParticle->pt());
+ }
+ 
 }

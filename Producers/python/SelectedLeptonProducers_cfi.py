@@ -21,8 +21,8 @@ SelectedElectronProducer = cms.EDProducer(
     etaMaxs  = cms.vdouble(2.4),
     leptonIDs = cms.vstring("electron80XCutBasedM"),
     collectionNames= cms.vstring("selectedLeptonsDL"),
-
-
+    electronIsoConeSizes = cms.vstring("R03"),
+    electronIsoCorrTypes = cms.vstring("rhoEA"),
     # The following two parameters are dummies in case of electrons
     # they are not used for the electron selection, which is defined
     # via the 'leptonID' value

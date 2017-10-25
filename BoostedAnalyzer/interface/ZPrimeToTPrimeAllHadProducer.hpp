@@ -98,6 +98,8 @@ class ZPrimeToTPrimeAllHad{
       std::vector<reco::GenParticle> GetW_decay_products_fromTopbar() const;
       std::vector<reco::GenParticle> GetW_decay_products_fromTPrime() const;
       std::vector<reco::GenParticle> GetW_decay_products_fromTPrimebar() const;
+      std::vector<reco::GenParticle> GetWplus_decay_products_fromBG() const;
+      std::vector<reco::GenParticle> GetWminus_decay_products_fromBG() const;
       std::vector<reco::GenParticle> GetHiggsDecayProducts() const;
       std::vector<reco::GenParticle> GetZDecayProducts() const;
 
@@ -173,6 +175,8 @@ class ZPrimeToTPrimeAllHad{
       std::vector<reco::GenParticle> wminus_fromTop_decay_products;
       std::vector<reco::GenParticle> wplus_fromTPrime_decay_products;
       std::vector<reco::GenParticle> wminus_fromTPrime_decay_products;
+      std::vector<reco::GenParticle> wplus_fromBG_decay_products;
+      std::vector<reco::GenParticle> wminus_fromBG_decay_products;
       std::vector<reco::GenParticle> Higgs_decay_products;
       std::vector<reco::GenParticle> Z_decay_products;
       std::vector<reco::GenParticle> ZPrime_decay_products;

@@ -51,9 +51,14 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     
-		    const std::vector<pat::Jet>&                  selectedJetsAK8_,
-		    const std::vector<pat::Jet>&                  selectedJetsAK12_,
-		    const std::vector<pat::Jet>&                  selectedJetsAK15_,
+                    
+		    const std::vector<pat::Jet>&                  selectedJetsAK4PUPPI_,
+		    const std::vector<pat::Jet>&                  selectedJetsAK8CHSSoftDrop_,
+		    const std::vector<pat::Jet>&                  selectedJetsAK8CHSPruning_,
+		    const std::vector<pat::Jet>&                  selectedJetsAK8PUPPISoftDrop_,
+		    const std::vector<pat::Jet>&                  selectedJetsAK8PUPPIPruning_,
+// 		    const std::vector<pat::Jet>&                  selectedJetsAK12_,
+// 		    const std::vector<pat::Jet>&                  selectedJetsAK15_,
                     
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
@@ -87,9 +92,13 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
                     
-                    selectedJetsAK8(selectedJetsAK8_),
+                    selectedJetsAK4PUPPI(selectedJetsAK4PUPPI_),
+                    selectedJetsAK8CHSSoftDrop(selectedJetsAK8CHSSoftDrop_),
+                    selectedJetsAK8CHSPruning(selectedJetsAK8CHSPruning_),
+                    selectedJetsAK8PUPPISoftDrop(selectedJetsAK8PUPPISoftDrop_),
+                    selectedJetsAK8PUPPIPruning(selectedJetsAK8PUPPIPruning_),/*
                     selectedJetsAK12(selectedJetsAK12_),   
-                    selectedJetsAK15(selectedJetsAK15_),
+                    selectedJetsAK15(selectedJetsAK15_),*/
                     
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
@@ -116,9 +125,15 @@ InputCollections(   const InputCollections&                       input,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     
-                    const std::vector<pat::Jet>&                  selectedJetsAK8_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK4PUPPI_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK8CHSSoftDrop_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK8CHSPruning_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK8PUPPISoftDrop_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK8PUPPIPruning_,
+                    
+                    /*
                     const std::vector<pat::Jet>&                  selectedJetsAK12_,
-                    const std::vector<pat::Jet>&                  selectedJetsAK15_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK15_,*/
 
                     
                     const pat::MET&                               correctedMET_,
@@ -141,9 +156,15 @@ InputCollections(   const InputCollections&                       input,
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
                     
-                    selectedJetsAK8(selectedJetsAK8_),
+                    selectedJetsAK4PUPPI(selectedJetsAK4PUPPI_),
+                    selectedJetsAK8CHSSoftDrop(selectedJetsAK8CHSSoftDrop_),
+                    selectedJetsAK8CHSPruning(selectedJetsAK8CHSPruning_),
+                    selectedJetsAK8PUPPISoftDrop(selectedJetsAK8PUPPISoftDrop_),
+                    selectedJetsAK8PUPPIPruning(selectedJetsAK8PUPPIPruning_),
+                    
+                    /*
                     selectedJetsAK12(selectedJetsAK12_),
-                    selectedJetsAK15(selectedJetsAK15_),
+                    selectedJetsAK15(selectedJetsAK15_),*/
                     
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
@@ -175,9 +196,13 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
   
-  const std::vector<pat::Jet>&                  selectedJetsAK8;
-  const std::vector<pat::Jet>&                  selectedJetsAK12;  
-  const std::vector<pat::Jet>&                  selectedJetsAK15;  
+  const std::vector<pat::Jet>&                  selectedJetsAK4PUPPI;
+  const std::vector<pat::Jet>&                  selectedJetsAK8CHSSoftDrop;
+  const std::vector<pat::Jet>&                  selectedJetsAK8CHSPruning;
+  const std::vector<pat::Jet>&                  selectedJetsAK8PUPPISoftDrop;
+  const std::vector<pat::Jet>&                  selectedJetsAK8PUPPIPruning;
+/*  const std::vector<pat::Jet>&                  selectedJetsAK12;  
+  const std::vector<pat::Jet>&                  selectedJetsAK15;*/  
   
   const pat::MET&                               correctedMET;
   const boosted::BoostedJetCollection&          selectedBoostedJets;

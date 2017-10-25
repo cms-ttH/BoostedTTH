@@ -38,7 +38,7 @@ public:
   void InitSignalandSidbandVars(VariableContainer& vars);
   void InitTaggingVars(VariableContainer& vars);
   void InitABCDVars(VariableContainer& vars);
-  
+  void InitLeptonVars(VariableContainer& vars);
   
   std::vector<pat::Jet> SelectSeparatedBottoms(std::vector<pat::Jet>& tops, std::vector<pat::Jet>& Ws, std::vector<pat::Jet>& bottoms); 
   math::XYZTLorentzVector TPrimeReconstructionWtb( std::vector<pat::Jet>& Ws,  std::vector<pat::Jet>& bottoms);
