@@ -154,8 +154,7 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                     }
                     if(abs(p->daughter(i)->pdgId())==5) topandtopbar_decay_bottoms.push_back(*(reco::GenParticle*)p->daughter(i));
                 }
-            
-            
+
             }
         }
 /*       
@@ -276,6 +275,15 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
                 if(p->pdgId()==24) wplus_fromBG.push_back(*p);
                 if(p->pdgId()==-24) wminus_fromBG.push_back(*p);
                 Ws_fromBG.push_back(*p);
+                for(uint i=0;i<p->numberOfDaughters();i++){
+                    if(p->pdgId()==24 && abs(p->daughter(i)->pdgId())<=16){
+                        wplus_fromBG_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
+                    }
+                    if(p->pdgId()==-24 && abs(p->daughter(i)->pdgId())<=16){
+                        wminus_fromBG_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
+                    }
+                }
+               
            }
 /*
             while(mother!=0 && abs(mother->pdgId())==24){                                           //check where W comes from
@@ -466,6 +474,18 @@ void ZPrimeToTPrimeAllHad::fillGenZPrimeTPrimeEvent(const std::vector<reco::GenP
     isZPrimeTPrimeZtAllHad=(isZPrimeTPrimeAllHad&&foundZ&&foundT&&foundTbar);
     isZPrimeTPrimeHtAllHad=(isZPrimeTPrimeAllHad&&foundHiggs&&foundT&&foundTbar);
 
+//     if (tops_fromZprime.size()>0){
+//         std::cout<<"WOW pointer? ProdZprime"<<tops_fromZprime.at(0)<<std::endl;
+//         std::cout<<"daughter"<<tops_fromZprime[0].daughter(0)<<std::endl;
+//     }
+//     if (tops_fromTprime.size()>0){
+//         std::cout<<"WOW pointer ProdTprime? "<<tops_fromTprime.at(0)<<std::endl;
+//         std::cout<<"daughter"<<tops_fromTprime[0].daughter(0)<<std::endl;
+//     }
+//     if (tops_fromBG.size()>0){
+//         std::cout<<"WOW pointer ProdBKG? "<<tops_fromBG.at(0)<<std::endl;
+//         std::cout<<"daughter"<<tops_fromBG[0].daughter(0)<<std::endl;
+//     }    
     isFilled=true;
     
     
@@ -756,8 +776,24 @@ std::vector<reco::GenParticle>  ZPrimeToTPrimeAllHad::GetW_decay_products_fromTP
     return std::vector<reco::GenParticle>();
   }
 }
-
-
+std::vector<reco::GenParticle>  ZPrimeToTPrimeAllHad::GetWplus_decay_products_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  if(TPrimebarIsHadronic) return wminus_fromBG_decay_products;
+  else{
+    std::cerr <<"hadronic/leptonic function called in ZPrimeToTPrimeAllHad, but not a semileptonic event" << std::endl;
+    return std::vector<reco::GenParticle>();
+  }
+}
+std::vector<reco::GenParticle>  ZPrimeToTPrimeAllHad::GetWminus_decay_products_fromBG() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access ZPrimeToTPrimeAllHad but it is not filled" << std::endl;
+  if(TPrimebarIsHadronic) return wminus_fromBG_decay_products;
+  else{
+    std::cerr <<"hadronic/leptonic function called in ZPrimeToTPrimeAllHad, but not a semileptonic event" << std::endl;
+    return std::vector<reco::GenParticle>();
+  }
+}
 /*
 std::vector<reco::GenParticle> ZPrimeToTPrimeAllHad::GetTPrimeHad() const{
     assert(isFilled);
