@@ -1653,7 +1653,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 //    vars.FillVar("N_selectedPatJetsAK8PFCHSSoftDropPacked", input.selectedPatJetsAK8PFCHSSoftDropPacked.size());
 //    vars.FillVar("N_packedPatJetsAK8PFCHSSoftDrop", input.selectedJetsAK8CHSSoftDrop.size());
 
-    std::cout<<"there8"<<endl;
+   //std::cout<<"there8"<<endl;
     if(input.zprimetotprimeallhad.GetTops_fromZprimes().size()>0){
         
         for(std::vector<reco::GenParticle>::const_iterator itParticle = input.zprimetotprimeallhad.GetTops_fromZprimes().begin() ; itParticle != input.zprimetotprimeallhad.GetTops_fromZprimes().end(); ++itParticle){
@@ -2015,7 +2015,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     
     vars.FillVar("N_Gen_BottomfromBG",BottomBG.size());
 
-        std::cout<<"after gen "<<GenWs.size()<<endl;
+       //std::cout<<"after gen "<<GenWs.size()<<endl;
     
 //AK8->Jets
     if(input.selectedJetsAK8CHSSoftDrop.size()>0){
@@ -2051,7 +2051,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         }
     }
 
-     std::cout<<"there10"<<endl;
+    //std::cout<<"there10"<<endl;
 
 ///////Object Identification///////
     float ht =0.;
@@ -2195,7 +2195,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     }
   }
   
-        std::cout<<"check GenWs1 "<<GenWs.size()<<endl;
+       //std::cout<<"check GenWs1 "<<GenWs.size()<<endl;
 ///Fill tops
   vars.FillVar("N_Tops",tops.size());   
   vars.FillVar("N_Tops_withbtag",tops_withbtag.size());   
@@ -2278,7 +2278,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("No_Bottoms_eta",iJet,itJet->eta());
   } 
 */  
-   std::cout<<"here6"<<endl;
+  //std::cout<<"here6"<<endl;
 ///Fill Zs
   vars.FillVar("N_Zs",Zs.size());   
   vars.FillVar("N_Zs_anti",Zs_anti.size());   
@@ -2293,7 +2293,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("Zs_anti_pt",iJet,itJet->pt());
     vars.FillVars("Zs_anti_eta",iJet,itJet->eta());
   }
-     std::cout<<"here7"<<endl;
+    //std::cout<<"here7"<<endl;
 ///Fill Higgs
   vars.FillVar("N_Higgs",Higgs.size());   
   vars.FillVar("N_Higgs_with1btag",Higgs_with1btag.size());   
@@ -2333,8 +2333,8 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     vars.FillVars("Higgs_with2btag_anti_eta",iJet,itJet->eta());
   }
   
-        std::cout<<"check GenWs2 "<<GenWs.size()<<endl;
-     std::cout<<"here8"<<endl;
+       //std::cout<<"check GenWs2 "<<GenWs.size()<<endl;
+    //std::cout<<"here8"<<endl;
     
   if(Z_candidatefound && Z_anti_candidatefound && Higgs_candidatefound && Higgs_with1btag_candidatefound && Higgs_with2btag_candidatefound && Higgs_anti_candidatefound && Higgs_with1btag_anti_candidatefound && Higgs_with2btag_anti_candidatefound){std::cout<<"this event makes no sense"<<endl;}
 //     std::cout<<"heredetail1"<<endl;
@@ -2432,7 +2432,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
 
 
-        std::cout<<"check GenWs3 "<<GenWs.size()<<endl;
+       //std::cout<<"check GenWs3 "<<GenWs.size()<<endl;
 
 ///Misstag rate & tag efficiency
   
@@ -2660,7 +2660,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   vars.FillVar("N_AK8_top_candidates",AK8_top_candidates.size());   
   vars.FillVar("N_AK8_W_candidates",AK8_W_candidates.size());  
   vars.FillVar("N_AK4_bottom_candidates",AK4_bottom_candidates.size()); 
-        std::cout<<"check GenWs4 "<<GenWs.size()<<endl;
+       //std::cout<<"check GenWs4 "<<GenWs.size()<<endl;
   for(std::vector<pat::Jet>::const_iterator itJet = AK8_top_candidates.begin() ; itJet != AK8_top_candidates.end(); ++itJet){
     int iJet = itJet - AK8_top_candidates.begin();
     vars.FillVars("AK8_top_candidates_pt",iJet,itJet->pt());
@@ -2824,7 +2824,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
 // select all jets without a top tag added by Kevin ; top tag mistag tag method -> TTM preceding character
 // ht is sum of pt of all Ak4 (selected jets) jets
-        std::cout<<"check GenWs5 "<<GenWs.size()<<endl;
+       //std::cout<<"check GenWs5 "<<GenWs.size()<<endl;
 	math::XYZTLorentzVector TTM_Zprime;
   math::XYZTLorentzVector TTM_Tprime; 
   std::vector<pat::Jet> TTM_separated_bottoms;
@@ -2981,9 +2981,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         		
  //**************************************  
   
-        std::cout<<"check GenWs6 "<<GenWs.size()<<endl;
+       //std::cout<<"check GenWs6 "<<GenWs.size()<<endl;
   
-std::cout<<"bugsearch1"<<std::endl;
+//std::cout<<"bugsearch1"<<std::endl;
    
     
 /// CHSSoftDrop          
@@ -3021,6 +3021,7 @@ std::cout<<"bugsearch1"<<std::endl;
                     PUPPISoftDrop_top_candidates.push_back(*itJet);
                 }                
             }
+            
         }
     }     
     
@@ -3042,7 +3043,7 @@ std::cout<<"bugsearch1"<<std::endl;
         }
     }           
     
-std::cout<<"bugsearch2"<<std::endl;
+//std::cout<<"bugsearch2"<<std::endl;
 
 /////ALL COMBINATIONS FOR ABCDCHSSoftDrop-METHODE
   if(CHSSoftDrop_top_candidates.size()>0 && CHSSoftDrop_W_candidates.size()>1 && AK4CHS_b_candidates.size()>0){
@@ -3091,7 +3092,7 @@ std::cout<<"bugsearch2"<<std::endl;
     }
   }
 
-std::cout<<"bugsearch3"<<std::endl;
+//std::cout<<"bugsearch3"<<std::endl;
 
 /////ALL COMBINATIONS FOR ABCDCHSPruning-METHODE
   if(CHSPruning_top_candidates.size()>0 && CHSPruning_W_candidates.size()>1 && AK4CHS_b_candidates.size()>0){
@@ -3117,7 +3118,7 @@ std::cout<<"bugsearch3"<<std::endl;
     }
   }
 
-std::cout<<"bugsearch3.5"<<std::endl;
+//std::cout<<"bugsearch3.5"<<std::endl;
 /////ALL COMBINATIONS FOR ABCDPUPPISoftDrop-METHODE
   if(PUPPISoftDrop_top_candidates.size()>0 && PUPPISoftDrop_W_candidates.size()>1 && AK4PUPPI_b_candidates.size()>0){
     for(std::vector<pat::Jet>::iterator ittopJet = PUPPISoftDrop_top_candidates.begin() ; ittopJet != PUPPISoftDrop_top_candidates.end(); ++ittopJet){
@@ -3141,8 +3142,8 @@ std::cout<<"bugsearch3.5"<<std::endl;
         }
     }
   }
-std::cout<<"bugsearch4"<<std::endl;
-        std::cout<<"check GenWs7 "<<GenWs.size()<<endl;
+//std::cout<<"bugsearch4"<<std::endl;
+        //std::cout<<"check GenWs7 "<<GenWs.size()<<endl;
   const CSVHelper *csvReweighter=input.csvReweighter;
   
   ////FILL ABCDCHSSoftDrop VARIABLES
@@ -3259,61 +3260,61 @@ std::cout<<"bugsearch4"<<std::endl;
      vars.FillVars("Tops_ABCDCHSSoftDrop_Phi",i,TopsABCDCHSSoftDrop[i].phi());
      vars.FillVars("Tops_ABCDCHSSoftDrop_MSD",i,TopsABCDCHSSoftDrop[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCDCHSSoftDrop_t32",i,TopsABCDCHSSoftDrop[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDCHSSoftDrop[i].userFloat("NjettinessAK8CHS:tau2"));
-        std::cout<<"check GenWs8 "<<GenWs.size()<<endl;
+        //std::cout<<"check GenWs8 "<<GenWs.size()<<endl;
      
-std::cout<<"bugsearch6"<<std::endl;
+//std::cout<<"bugsearch6"<<std::endl;
      
      int realW=0;
      int nmatchedaughters_WCHSSoftDrop=0;
-std::cout<<"bugsearch6.0  "<<((input.zprimetotprimeallhad.IsFilled()) && (!input.isData))<<std::endl;
-        std::cout<<"check GenWs9 "<<GenWs.size()<<endl;
+//std::cout<<"bugsearch6.0  "<<((input.zprimetotprimeallhad.IsFilled()) && (!input.isData))<<std::endl;
+        //std::cout<<"check GenWs9 "<<GenWs.size()<<endl;
 //         if (GenWs != NULL){ std::cout<<"check GenWs10 "<<GenWs.size()<<endl;}
         
      if((input.zprimetotprimeallhad.IsFilled()) && (!input.isData) && (GenWs.size() > 0)){
-std::cout<<"bugsearch6.1  "<<GenWs.size()<<std::endl;
+//std::cout<<"bugsearch6.1  "<<GenWs.size()<<std::endl;
         for(uint j=0; j<GenWs.size();j++){
-std::cout<<"bugsearch6.2"<<std::endl;
+//std::cout<<"bugsearch6.2"<<std::endl;
             if (BoostedUtils::DeltaR(WsABCDCHSSoftDrop[i].p4(),GenWs[j].p4())<0.8){
-std::cout<<"bugsearch6.3"<<std::endl;
+//std::cout<<"bugsearch6.3"<<std::endl;
                 realW=1;
             for(uint k=0;k<GenWs_decayproducts.size();k++){
-std::cout<<"bugsearch6.4"<<std::endl;
+//std::cout<<"bugsearch6.4"<<std::endl;
                 if (BoostedUtils::DeltaR(WsABCDCHSSoftDrop[i].p4(),GenWs_decayproducts[k].p4())<0.8){
                     nmatchedaughters_WCHSSoftDrop++;
-std::cout<<"bugsearch6.5"<<std::endl;
+//std::cout<<"bugsearch6.5"<<std::endl;
                 }
             }
             }
         }
      }
-std::cout<<"bugsearch6.6"<<std::endl;
+//std::cout<<"bugsearch6.6"<<std::endl;
           
      int realtop=0;
      int nmatchedaughters_topCHSSoftDrop=0;
-std::cout<<"bugsearch6.6.0"<<std::endl;
+//std::cout<<"bugsearch6.6.0"<<std::endl;
      if((input.zprimetotprimeallhad.IsFilled()) && (!input.isData) && (GenTops.size() > 0)){
-std::cout<<"bugsearch6.6.1"<<std::endl;
+//std::cout<<"bugsearch6.6.1"<<std::endl;
         for(uint j=0; j<GenTops.size();j++){
             if (BoostedUtils::DeltaR(TopsABCDCHSSoftDrop[i].p4(),GenTops[j].p4())<0.8){
-std::cout<<"bugsearch6.6.2"<<std::endl;
+//std::cout<<"bugsearch6.6.2"<<std::endl;
                 realtop=1;
-std::cout<<"bugsearch6.6.2.1"<<std::endl;
+//std::cout<<"bugsearch6.6.2.1"<<std::endl;
             for(uint k=0;k<GenTops_decayproducts.size();k++){
 
                 if (BoostedUtils::DeltaR(TopsABCDCHSSoftDrop[i].p4(),GenTops_decayproducts[k].p4())<0.8){
-std::cout<<"bugsearch6.6.3"<<std::endl;
+//std::cout<<"bugsearch6.6.3"<<std::endl;
                     nmatchedaughters_topCHSSoftDrop++;
                 }
             } 
             }
         }
      }
-std::cout<<"bugsearch6.6.4"<<std::endl;
+//std::cout<<"bugsearch6.6.4"<<std::endl;
      vars.FillVars("Ws_ABCDCHSSoftDrop_real",i,realW);
      vars.FillVars("Ws_ABCDCHSSoftDrop_matcheddecays",i,nmatchedaughters_WCHSSoftDrop);
      vars.FillVars("Tops_ABCDCHSSoftDrop_real",i,realtop);
      vars.FillVars("Tops_ABCDCHSSoftDrop_matcheddecays",i,nmatchedaughters_topCHSSoftDrop);
-std::cout<<"bugsearch6.7"<<std::endl;
+//std::cout<<"bugsearch6.7"<<std::endl;
 //      std::cout<<"debucg1"<<endl;
      std::vector<double> ABCDCHSSoftDrop_subjetPts;
      std::vector<double> ABCDCHSSoftDrop_subjetEtas;
@@ -3338,7 +3339,7 @@ std::cout<<"bugsearch6.7"<<std::endl;
             max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         };
      };
-std::cout<<"bugsearch6.8"<<std::endl;
+//std::cout<<"bugsearch6.8"<<std::endl;
 //      std::cout<<"debug2.2"<<endl;
      vars.FillVars("Tops_ABCDCHSSoftDrop_maxsubjetCSVv2",i,max_subjet_csv_v2);
 //      std::cout<<"max_subjet_csv_v2  "<<max_subjet_csv_v2<<endl;
@@ -3393,7 +3394,7 @@ std::cout<<"bugsearch6.8"<<std::endl;
     }     
      
   }
-std::cout<<"bugsearch7"<<std::endl;
+//std::cout<<"bugsearch7"<<std::endl;
 
   
   ////FILL ABCDCHSSoftDrop VARIABLES
@@ -3810,7 +3811,7 @@ std::cout<<"bugsearch7"<<std::endl;
   
   
   
-  std::cout<<"furtherdebugging1"<<std::endl;
+  //std::cout<<"furtherdebugging1"<<std::endl;
  
   ////FILL ABCDCHSPruning VARIABLES
   vars.FillVar("N_Zprime_ABCDCHSPruning",ZprimesABCDCHSPruning.size());
@@ -3963,7 +3964,7 @@ std::cout<<"bugsearch7"<<std::endl;
   
 
      
-  std::cout<<"furtherdebugging1"<<std::endl;
+  //std::cout<<"furtherdebugging1"<<std::endl;
      
 //      std::cout<<"debucg1"<<endl;
      std::vector<double> ABCDCHSPruning_subjetPts;
@@ -4039,7 +4040,7 @@ std::cout<<"bugsearch7"<<std::endl;
                 vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr1down",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVCErr1down, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
                 vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr2up",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVCErr2up, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);
                 vars.FillVars("Topsubjets_ABCDCHSPruning_WeightCSVCErr2down",i, csvReweighter->getCSVWeight(ABCDCHSPruning_subjetPts,ABCDCHSPruning_subjetEtas,ABCDCHSPruning_subjetCSVs,ABCDCHSPruning_subjetFlavors,Systematics::CSVCErr2down, subjet_ABCDCHSPruning_csvWgtHF, subjet_ABCDCHSPruning_csvWgtLF, subjet_ABCDCHSPruning_csvWgtCF)/subjet_ABCDCHSPruning_csvweight);  
-      std::cout<<"debug4"<<endl;
+      //std::cout<<"debug4"<<endl;
             }
     }     
      
@@ -4088,7 +4089,7 @@ std::cout<<"bugsearch7"<<std::endl;
      vars.FillVars("Bottoms_ABCDPUPPISoftDrop_WeightCSVnominal",i,ABCDPUPPISoftDrop_csvweight);    
     
      if(doSystematics && input.systematic == Systematics::NA) { // only do these for the nominal samples
-      std::cout<<"debug1   "<<ABCDPUPPISoftDrop_jetPts.size()<<endl;
+      //std::cout<<"debug1   "<<ABCDPUPPISoftDrop_jetPts.size()<<endl;
      
      
          
@@ -4283,7 +4284,7 @@ std::cout<<"bugsearch7"<<std::endl;
    
  }// end of HT if 1190
  
- std::cout<<"last"<<std::endl;
+ //std::cout<<"last"<<std::endl;
  vars.FillVar("N_electrons",input.selectedElectrons.size());
  vars.FillVar("N_muons",input.selectedMuons.size());
  vars.FillVar("N_electronsMidloose",input.selectedElectronsDL.size());
