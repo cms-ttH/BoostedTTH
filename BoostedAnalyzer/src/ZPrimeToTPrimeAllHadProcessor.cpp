@@ -2989,9 +2989,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 /// CHSSoftDrop          
     if(input.selectedJetsAK8CHSSoftDrop.size()>0){
         for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8CHSSoftDrop.begin(); itJet != input.selectedJetsAK8CHSSoftDrop.end(); ++itJet){
-            if (itJet->pt()>200 || abs(itJet->eta())<2.4){
+            if (itJet->pt()>150 || abs(itJet->eta())<2.4){
                 CHSSoftDrop_W_candidates.push_back(*itJet);
-                if (itJet->pt()>400){
+                if (itJet->pt()>150){
                     CHSSoftDrop_top_candidates.push_back(*itJet);
                 }                
             }
@@ -3002,9 +3002,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 /// CHSPruning         
     if(input.selectedJetsAK8CHSPruning.size()>0){
         for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8CHSPruning.begin(); itJet != input.selectedJetsAK8CHSPruning.end(); ++itJet){
-            if (itJet->pt()>200 || abs(itJet->eta())<2.4){
+            if (itJet->pt()>150 || abs(itJet->eta())<2.4){
                 CHSPruning_W_candidates.push_back(*itJet);
-                if (itJet->pt()>400){
+                if (itJet->pt()>150){
                     CHSPruning_top_candidates.push_back(*itJet);
                 }                
             }
@@ -3015,9 +3015,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 /// PUPPISoftDrop          
     if(input.selectedJetsAK8PUPPISoftDrop.size()>0){
         for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8PUPPISoftDrop.begin(); itJet != input.selectedJetsAK8PUPPISoftDrop.end(); ++itJet){
-            if (itJet->pt()>200 || abs(itJet->eta())<2.4){
+            if (itJet->pt()>150 || abs(itJet->eta())<2.4){
                 PUPPISoftDrop_W_candidates.push_back(*itJet);
-                if (itJet->pt()>400){
+                if (itJet->pt()>150){
                     PUPPISoftDrop_top_candidates.push_back(*itJet);
                 }                
             }
@@ -3029,7 +3029,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 /// AK4 bottoms          
     if(input.selectedJets.size()>0){
         for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
-            if (itJet->pt()>100 || abs(itJet->eta())<2.4){
+            if (itJet->pt()>150 || abs(itJet->eta())<2.4){
                 AK4CHS_b_candidates.push_back(*itJet);             
             }
         }
@@ -3037,7 +3037,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 /// AK4 bottoms          
     if(input.selectedJetsAK4PUPPI.size()>0){
         for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK4PUPPI.begin(); itJet != input.selectedJetsAK4PUPPI.end(); ++itJet){
-            if (itJet->pt()>100 || abs(itJet->eta())<2.4){
+            if (itJet->pt()>150 || abs(itJet->eta())<2.4){
                 AK4PUPPI_b_candidates.push_back(*itJet);             
             }
         }
