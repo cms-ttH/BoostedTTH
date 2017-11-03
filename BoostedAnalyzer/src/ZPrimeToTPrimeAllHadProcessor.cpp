@@ -3029,7 +3029,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 /// AK4 bottoms          
     if(input.selectedJets.size()>0){
         for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
-            if (itJet->pt()>150 || abs(itJet->eta())<2.4){
+            if (itJet->pt()>75 || abs(itJet->eta())<2.4){
                 AK4CHS_b_candidates.push_back(*itJet);             
             }
         }
@@ -3037,7 +3037,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 /// AK4 bottoms          
     if(input.selectedJetsAK4PUPPI.size()>0){
         for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK4PUPPI.begin(); itJet != input.selectedJetsAK4PUPPI.end(); ++itJet){
-            if (itJet->pt()>150 || abs(itJet->eta())<2.4){
+            if (itJet->pt()>75 || abs(itJet->eta())<2.4){
                 AK4PUPPI_b_candidates.push_back(*itJet);             
             }
         }
