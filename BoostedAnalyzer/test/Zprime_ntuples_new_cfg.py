@@ -62,7 +62,8 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 if not options.inputFiles:
     #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mschrode/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Skim-V1_3j20_1l20/170217_171402/0000/Skim_1.root']
     #options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1500Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/70000/469FD823-443D-E611-AF27-D4AE526EAB7F.root']
-    options.inputFiles=['file:/nfs/dust/cms/user/skudella/E22941D1-F526-E611-9437-B499BAAC078E.root']
+    #options.inputFiles=['file:/nfs/dust/cms/user/skudella/E22941D1-F526-E611-9437-B499BAAC078E.root']
+    options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1200Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/80000/7E1277DB-513D-E611-9F1C-549F3525DDFC.root']
 # checks for correct values and consistency
 
 if options.LeptonChannel not in ["el","mu","both","veto"]:
@@ -179,7 +180,7 @@ jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC=runonMC, PUMethod='CHS'
 #jetToolbox( process, 'ak12', 'ak12JetSubs', 'out', runOnMC=runonMC, PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 80', JETCorrPayload = 'AK8PFchs', JETCorrLevels = ['L2Relative', 'L3Absolute'])
 #jetToolbox( process, 'ak15', 'ak15JetSubs', 'out', runOnMC=runonMC, PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 80', JETCorrPayload = 'AK8PFchs', JETCorrLevels = ['L2Relative', 'L3Absolute'])
 #jetToolbox( process, 'ak4', 'ak4JetSubs', 'out', runOnMC=runonMC, PUMethod='PUPPI', miniAOD=True, Cut='pt > 75', JETCorrPayload = 'AK4PFchs', JETCorrLevels = ['L1FastJet','L2Relative', 'L3Absolute'])
-jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC=runonMC, PUMethod='PUPPI',miniAOD=True,  addSoftDrop=True, addPruning=True, addSoftDropSubjets=True, addPrunedSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 150', JETCorrPayload = 'AK8PFPUPPI', subJETCorrPayload='AK4PFPUPPI', JETCorrLevels = ['L1FastJet','L2Relative', 'L3Absolute'], subJETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute']  )
+jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC=runonMC, PUMethod='Puppi',miniAOD=True,  addSoftDrop=True, addPruning=True, addSoftDropSubjets=True, addPrunedSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 150', JETCorrPayload = 'AK8PFPuppi', subJETCorrPayload='AK4PFPuppi', JETCorrLevels = ['L1FastJet','L2Relative', 'L3Absolute'], subJETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute']  )
 
 
 
@@ -188,9 +189,9 @@ process.load('CommonTools/PileupAlgos/Puppi_cff')
 jetCollectionAK4PUPPI             = cms.InputTag('slimmedJetsPuppi')
 #jetCollectionAK4PUPPI             = cms.InputTag("packedPatJetsAK4PF")
 jetCollectionAK8CHSSoftDrop       = cms.InputTag("packedPatJetsAK8PFCHSSoftDrop")
-jetCollectionAK8CHSPruning        = cms.InputTag("packedPatJetsAK8PFPruned")
-jetCollectionAK8PUPPISoftDrop     = cms.InputTag("packedPatJetsAK8PFSoftDrop")
-jetCollectionAK8PUPPIPruning      = cms.InputTag("packedPatJetsAK8PFPruned")
+jetCollectionAK8CHSPruning        = cms.InputTag("packedPatJetsAK8PFCHSPruned")
+jetCollectionAK8PUPPISoftDrop     = cms.InputTag("packedPatJetsAK8PFPuppiSoftDrop")
+jetCollectionAK8PUPPIPruning      = cms.InputTag("packedPatJetsAK8PFPuppiPruned")
 
 #packedPatJetsAK8PFSoftDroppackedPatJetsAK8PFPruned
 

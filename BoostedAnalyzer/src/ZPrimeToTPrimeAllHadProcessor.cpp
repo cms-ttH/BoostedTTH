@@ -3043,7 +3043,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         }
     }           
     
-//std::cout<<"bugsearch2"<<std::endl;
+// std::cout<<"bugsearch2"<<std::endl;
 
 /////ALL COMBINATIONS FOR ABCDCHSSoftDrop-METHODE
   if(CHSSoftDrop_top_candidates.size()>0 && CHSSoftDrop_W_candidates.size()>1 && AK4CHS_b_candidates.size()>0){
@@ -3092,7 +3092,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     }
   }
 
-//std::cout<<"bugsearch3"<<std::endl;
+// std::cout<<"bugsearch3"<<std::endl;
 
 /////ALL COMBINATIONS FOR ABCDCHSPruning-METHODE
   if(CHSPruning_top_candidates.size()>0 && CHSPruning_W_candidates.size()>1 && AK4CHS_b_candidates.size()>0){
@@ -3101,7 +3101,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
 //                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
             }else{
-                if(itWJet->userFloat("NjettinessAK8:tau1")>0 && itWJet->userFloat("NjettinessAK8:tau2")>0 && itWJet->userFloat("NjettinessAK8:tau3")>0 && ittopJet->userFloat("NjettinessAK8:tau1")>0 && ittopJet->userFloat("NjettinessAK8:tau2")>0 && ittopJet->userFloat("NjettinessAK8:tau3")>0){
+                if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau3")>0){
                     for(std::vector<pat::Jet>::const_iterator itBJet = AK4CHS_b_candidates.begin() ; itBJet != AK4CHS_b_candidates.end(); ++itBJet){
                         if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.2 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
                                 ZprimesABCDCHSPruning.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
@@ -3118,7 +3118,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     }
   }
 
-//std::cout<<"bugsearch3.5"<<std::endl;
+// std::cout<<"bugsearch3.5"<<std::endl;
 /////ALL COMBINATIONS FOR ABCDPUPPISoftDrop-METHODE
   if(PUPPISoftDrop_top_candidates.size()>0 && PUPPISoftDrop_W_candidates.size()>1 && AK4PUPPI_b_candidates.size()>0){
     for(std::vector<pat::Jet>::iterator ittopJet = PUPPISoftDrop_top_candidates.begin() ; ittopJet != PUPPISoftDrop_top_candidates.end(); ++ittopJet){
@@ -3126,7 +3126,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
 //                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
             }else{
-                if(itWJet->userFloat("NjettinessAK8:tau1")>0 && itWJet->userFloat("NjettinessAK8:tau2")>0 && itWJet->userFloat("NjettinessAK8:tau3")>0 && ittopJet->userFloat("NjettinessAK8:tau1")>0 && ittopJet->userFloat("NjettinessAK8:tau2")>0 && ittopJet->userFloat("NjettinessAK8:tau3")>0){
+                if(itWJet->userFloat("NjettinessAK8Puppi:tau1")>0 && itWJet->userFloat("NjettinessAK8Puppi:tau2")>0 && itWJet->userFloat("NjettinessAK8Puppi:tau3")>0 && ittopJet->userFloat("NjettinessAK8Puppi:tau1")>0 && ittopJet->userFloat("NjettinessAK8Puppi:tau2")>0 && ittopJet->userFloat("NjettinessAK8Puppi:tau3")>0){
                     for(std::vector<pat::Jet>::const_iterator itBJet = AK4PUPPI_b_candidates.begin() ; itBJet != AK4PUPPI_b_candidates.end(); ++itBJet){
                         if(BoostedUtils::DeltaR(itWJet->p4(),itBJet->p4())>1.2 && BoostedUtils::DeltaR(itBJet->p4(),ittopJet->p4())>1.2 && MiniAODHelper::GetJetCSV(*itBJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags")>=0){
                                 ZprimesABCDPUPPISoftDrop.push_back(itBJet->p4()+ittopJet->p4()+itWJet->p4());
@@ -3142,7 +3142,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
         }
     }
   }
-//std::cout<<"bugsearch4"<<std::endl;
+// std::cout<<"bugsearch4"<<std::endl;
         //std::cout<<"check GenWs7 "<<GenWs.size()<<endl;
   const CSVHelper *csvReweighter=input.csvReweighter;
   
@@ -3918,14 +3918,14 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Ws_ABCDCHSPruning_Pt",i,WsABCDCHSPruning[i].pt());
      vars.FillVars("Ws_ABCDCHSPruning_Eta",i,WsABCDCHSPruning[i].eta());
      vars.FillVars("Ws_ABCDCHSPruning_Phi",i,WsABCDCHSPruning[i].phi());
-     vars.FillVars("Ws_ABCDCHSPruning_MSD",i,WsABCDCHSPruning[i].userFloat("ak8PFJetsPrunedMass"));
-     vars.FillVars("Ws_ABCDCHSPruning_t21",i,WsABCDCHSPruning[i].userFloat("NjettinessAK8:tau2")/WsABCDCHSPruning[i].userFloat("NjettinessAK8:tau1"));
+     vars.FillVars("Ws_ABCDCHSPruning_MSD",i,WsABCDCHSPruning[i].userFloat("ak8PFJetsCHSPrunedMass"));
+     vars.FillVars("Ws_ABCDCHSPruning_t21",i,WsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau1"));
      
      vars.FillVars("Tops_ABCDCHSPruning_Pt",i,TopsABCDCHSPruning[i].pt());
      vars.FillVars("Tops_ABCDCHSPruning_Eta",i,TopsABCDCHSPruning[i].eta());
      vars.FillVars("Tops_ABCDCHSPruning_Phi",i,TopsABCDCHSPruning[i].phi());
-     vars.FillVars("Tops_ABCDCHSPruning_MSD",i,TopsABCDCHSPruning[i].userFloat("ak8PFJetsPrunedMass"));
-     vars.FillVars("Tops_ABCDCHSPruning_t32",i,TopsABCDCHSPruning[i].userFloat("NjettinessAK8:tau3")/TopsABCDCHSPruning[i].userFloat("NjettinessAK8:tau2"));
+     vars.FillVars("Tops_ABCDCHSPruning_MSD",i,TopsABCDCHSPruning[i].userFloat("ak8PFJetsCHSPrunedMass"));
+     vars.FillVars("Tops_ABCDCHSPruning_t32",i,TopsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau2"));
 
      int realW_CHSPruning=0;
      int nmatchedaughters_topCHSPruning=0;
@@ -4153,14 +4153,14 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Ws_ABCDPUPPISoftDrop_Pt",i,WsABCDPUPPISoftDrop[i].pt());
      vars.FillVars("Ws_ABCDPUPPISoftDrop_Eta",i,WsABCDPUPPISoftDrop[i].eta());
      vars.FillVars("Ws_ABCDPUPPISoftDrop_Phi",i,WsABCDPUPPISoftDrop[i].phi());
-     vars.FillVars("Ws_ABCDPUPPISoftDrop_MSD",i,WsABCDPUPPISoftDrop[i].userFloat("ak8PFJetsPrunedMass"));
-     vars.FillVars("Ws_ABCDPUPPISoftDrop_t21",i,WsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8:tau2")/WsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8:tau1"));
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_MSD",i,WsABCDPUPPISoftDrop[i].userFloat("ak8PFJetsPuppiSoftDropMass"));
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_t21",i,WsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8Puppi:tau2")/WsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8Puppi:tau1"));
      
      vars.FillVars("Tops_ABCDPUPPISoftDrop_Pt",i,TopsABCDPUPPISoftDrop[i].pt());
      vars.FillVars("Tops_ABCDPUPPISoftDrop_Eta",i,TopsABCDPUPPISoftDrop[i].eta());
      vars.FillVars("Tops_ABCDPUPPISoftDrop_Phi",i,TopsABCDPUPPISoftDrop[i].phi());
-     vars.FillVars("Tops_ABCDPUPPISoftDrop_MSD",i,TopsABCDPUPPISoftDrop[i].userFloat("ak8PFJetsPrunedMass"));
-     vars.FillVars("Tops_ABCDPUPPISoftDrop_t32",i,TopsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8:tau3")/TopsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8:tau2"));
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_MSD",i,TopsABCDPUPPISoftDrop[i].userFloat("ak8PFJetsPuppiSoftDropMass"));
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_t32",i,TopsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8Puppi:tau3")/TopsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8Puppi:tau2"));
 
      int realW_PUPPISoftDrop=0;
     int nmatchedaughters_topPUPPISoftDrop=0;
