@@ -400,9 +400,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     jet_tag_pos = find (selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
     
     pointerToMEMClassifier = new MEMClassifier();
-    pointerToCommonBDT5Classifier = new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V1/");
+    pointerToCommonBDT5Classifier = new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/");
     DNNClassifierBase::pyInitialize();
-    pointerToDnnSLClassifier = new DNNClassifier_SL("v5a");
+    pointerToDnnSLClassifier = new DNNClassifier_SL("v6a");
     
     // initialize synchronizer
     if(dumpSyncExe){

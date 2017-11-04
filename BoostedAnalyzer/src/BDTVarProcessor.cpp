@@ -4,7 +4,7 @@ using namespace std;
 BDTVarProcessor::BDTVarProcessor():
 //     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
 //     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
-    commonBDT5(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V1/")),
+    commonBDT5(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/")),
     recoLikelihoodVariables(new RecoLikelihoodVariables()) {needToDeleteBDTClassifier=true;}
 BDTVarProcessor::~BDTVarProcessor(){
   if(needToDeleteBDTClassifier){
@@ -79,7 +79,7 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
       loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
   }
 
-  float bdtoutput_common5=commonBDT5->GetBDTOutput(lepvecs, jetvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
+  float bdtoutput_common5=commonBDT5->GetBDTOutput(lepvecs, jetvecs, jetcsvs,metP4);
   vars.FillVar("BDT_common5_output",bdtoutput_common5);
   if(commonBDT5->GetCategoryOfLastEvaluation()!="none"){
       map<string,float> bdtinputs_common5=commonBDT5->GetVariablesOfLastEvaluation();
