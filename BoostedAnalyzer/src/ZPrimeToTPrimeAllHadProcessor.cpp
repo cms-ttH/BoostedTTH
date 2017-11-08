@@ -3049,7 +3049,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   if(CHSSoftDrop_top_candidates.size()>0 && CHSSoftDrop_W_candidates.size()>1 && AK4CHS_b_candidates.size()>0){
     for(std::vector<pat::Jet>::iterator ittopJet = CHSSoftDrop_top_candidates.begin() ; ittopJet != CHSSoftDrop_top_candidates.end(); ++ittopJet){
         for(std::vector<pat::Jet>::iterator itWJet = CHSSoftDrop_W_candidates.begin() ; itWJet != CHSSoftDrop_W_candidates.end(); ++itWJet){
-            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
+            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.8){
 //                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
             }else{
                 if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau3")>0){
@@ -3095,10 +3095,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 // std::cout<<"bugsearch3"<<std::endl;
 
 /////ALL COMBINATIONS FOR ABCDCHSPruning-METHODE
-  if(CHSPruning_top_candidates.size()>0 && CHSPruning_W_candidates.size()>1 && AK4CHS_b_candidates.size()>0){
-    for(std::vector<pat::Jet>::iterator ittopJet = CHSPruning_top_candidates.begin() ; ittopJet != CHSPruning_top_candidates.end(); ++ittopJet){
+  if(CHSSoftDrop_top_candidates.size()>0 && CHSPruning_W_candidates.size()>1 && AK4CHS_b_candidates.size()>0){
+    for(std::vector<pat::Jet>::iterator ittopJet = CHSSoftDrop_top_candidates.begin() ; ittopJet != CHSSoftDrop_top_candidates.end(); ++ittopJet){
         for(std::vector<pat::Jet>::iterator itWJet = CHSPruning_W_candidates.begin() ; itWJet != CHSPruning_W_candidates.end(); ++itWJet){
-            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
+            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.8){
 //                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
             }else{
                 if(itWJet->userFloat("NjettinessAK8CHS:tau1")>0 && itWJet->userFloat("NjettinessAK8CHS:tau2")>0 && itWJet->userFloat("NjettinessAK8CHS:tau3")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau1")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau2")>0 && ittopJet->userFloat("NjettinessAK8CHS:tau3")>0){
@@ -3123,7 +3123,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   if(PUPPISoftDrop_top_candidates.size()>0 && PUPPISoftDrop_W_candidates.size()>1 && AK4PUPPI_b_candidates.size()>0){
     for(std::vector<pat::Jet>::iterator ittopJet = PUPPISoftDrop_top_candidates.begin() ; ittopJet != PUPPISoftDrop_top_candidates.end(); ++ittopJet){
         for(std::vector<pat::Jet>::iterator itWJet = PUPPISoftDrop_W_candidates.begin() ; itWJet != PUPPISoftDrop_W_candidates.end(); ++itWJet){
-            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.1){
+            if(BoostedUtils::DeltaR(itWJet->p4(),ittopJet->p4())<0.8){
 //                 std::cout<<"ah ah ah, W- and top-jets are the same"<<endl;
             }else{
                 if(itWJet->userFloat("NjettinessAK8Puppi:tau1")>0 && itWJet->userFloat("NjettinessAK8Puppi:tau2")>0 && itWJet->userFloat("NjettinessAK8Puppi:tau3")>0 && ittopJet->userFloat("NjettinessAK8Puppi:tau1")>0 && ittopJet->userFloat("NjettinessAK8Puppi:tau2")>0 && ittopJet->userFloat("NjettinessAK8Puppi:tau3")>0){
@@ -3924,7 +3924,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Tops_ABCDCHSPruning_Pt",i,TopsABCDCHSPruning[i].pt());
      vars.FillVars("Tops_ABCDCHSPruning_Eta",i,TopsABCDCHSPruning[i].eta());
      vars.FillVars("Tops_ABCDCHSPruning_Phi",i,TopsABCDCHSPruning[i].phi());
-     vars.FillVars("Tops_ABCDCHSPruning_MSD",i,TopsABCDCHSPruning[i].userFloat("ak8PFJetsCHSPrunedMass"));
+     vars.FillVars("Tops_ABCDCHSPruning_MSD",i,TopsABCDCHSPruning[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCDCHSPruning_t32",i,TopsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau2"));
 
      int realW_CHSPruning=0;
@@ -3977,7 +3977,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
      
      double max_subjet_csv_v2=-10;
-     auto const & names = TopsABCDCHSPruning[i].subjets("Pruned");
+     auto const & names = TopsABCDCHSPruning[i].subjets("SoftDrop");
      for( auto const & itsubJet : names ){
         if (itsubJet->pt()<20.0 || abs(itsubJet->eta())>2.4) continue;
         if(!input.isData){
