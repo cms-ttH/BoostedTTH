@@ -144,11 +144,11 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillVar( "N_Jets",input.selectedJets.size());
   vars.FillVar( "N_LooseJets",input.selectedJetsLoose.size());
   vars.FillVar( "N_TightLeptons",input.selectedElectrons.size()+ input.selectedMuons.size());  
-  vars.FillVar( "N_LooseLeptons",input.selectedElectronsLoose.size()+ input.selectedMuonsLoose.size());  
+  vars.FillVar( "N_LooseLeptons",input.selectedElectrons.size()+ input.selectedMuons.size());  
   vars.FillVar( "N_TightElectrons",input.selectedElectrons.size());  
-  vars.FillVar( "N_LooseElectrons",input.selectedElectronsLoose.size());  
+  vars.FillVar( "N_LooseElectrons",input.selectedElectrons.size());  
   vars.FillVar( "N_TightMuons",input.selectedMuons.size());  
-  vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());  
+  vars.FillVar( "N_LooseMuons",input.selectedMuons.size());  
   
   // Fill Jet Variables
   // All Jets
@@ -215,7 +215,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
 //   }
   
   // Fill Lepton Variables
-  std::vector<math::XYZTLorentzVector> looseLeptonVecs = BoostedUtils::GetLepVecs(input.selectedElectronsLoose,input.selectedMuonsLoose);
+  std::vector<math::XYZTLorentzVector> looseLeptonVecs = BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons);
   for(std::vector<math::XYZTLorentzVector>::iterator itLep = looseLeptonVecs.begin() ; itLep != looseLeptonVecs.end(); ++itLep){
     int iLep = itLep - looseLeptonVecs.begin();
     vars.FillVars( "LooseLepton_E",iLep,itLep->E() );
@@ -225,8 +225,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "LooseLepton_Phi",iLep,itLep->Phi() );
   }
    
-  for(std::vector<pat::Electron>::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle){
-    int iEle = itEle - input.selectedElectronsLoose.begin();
+  for(std::vector<pat::Electron>::const_iterator itEle = input.selectedElectrons.begin(); itEle != input.selectedElectrons.end(); ++itEle){
+    int iEle = itEle - input.selectedElectrons.begin();
     vars.FillVars( "Electron_E",iEle,itEle->energy() );
     vars.FillVars( "Electron_M",iEle,itEle->mass() );
     vars.FillVars( "Electron_Pt",iEle,itEle->pt() );
@@ -241,8 +241,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     }
     vars.FillVars("Electron_Eta_Supercluster",iEle,itEle->superCluster()->eta());
   }
-  for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
-    int iMu = itMu - input.selectedMuonsLoose.begin();
+  for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuons.begin(); itMu != input.selectedMuons.end(); ++itMu){
+    int iMu = itMu - input.selectedMuons.begin();
     vars.FillVars( "Muon_E",iMu,itMu->energy() );
     vars.FillVars( "Muon_M",iMu,itMu->mass() );
     vars.FillVars( "Muon_Pt",iMu,itMu->pt() );

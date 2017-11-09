@@ -67,7 +67,11 @@ private:
     /** muons data access token (for jet cleaning)**/
     edm::EDGetTokenT< pat::MuonCollection >     muonsToken;  
     /** electrons data access token (for jet cleaning)**/
-    edm::EDGetTokenT< pat::ElectronCollection >electronsToken;
+    edm::EDGetTokenT< pat::ElectronCollection > electronsToken;
+
+    edm::EDGetTokenT< pat::MuonCollection >     iso_inv_muonsToken;  
+    edm::EDGetTokenT< pat::ElectronCollection > iso_inv_electronsToken;
+
     /** rho data access token (for jet cleaning)**/
     edm::EDGetTokenT< double >rhoToken;
     
@@ -110,6 +114,8 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     genjetsToken = consumes< reco::GenJetCollection >(iConfig.getParameter<edm::InputTag>("miniAODGenJets"));
     electronsToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("electrons"));
     muonsToken  = consumes< pat::MuonCollection >(iConfig.getParameter<edm::InputTag>("muons"));
+    iso_inv_electronsToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("iso_inv_electrons"));
+    iso_inv_muonsToken  = consumes< pat::MuonCollection >(iConfig.getParameter<edm::InputTag>("iso_inv_muons"));
     rhoToken  = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
     ptMins = iConfig.getParameter< std::vector<double> >("ptMins");
     etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");    
@@ -183,6 +189,12 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    edm::Handle< pat::MuonCollection > h_inputMuons;
    iEvent.getByToken( muonsToken,h_inputMuons );
+   
+   edm::Handle< pat::ElectronCollection > h_inputElectrons_iso_inv;
+   iEvent.getByToken( iso_inv_electronsToken,h_inputElectrons_iso_inv );
+
+   edm::Handle< pat::MuonCollection > h_inputMuons_iso_inv;
+   iEvent.getByToken( iso_inv_muonsToken,h_inputMuons_iso_inv );
 
    
    // selected jets with jet ID cuts ( do this before jet energy correction !!! )
@@ -198,7 +210,7 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
        std::auto_ptr<pat::JetCollection>rawJets_(new pat::JetCollection(rawJets));
        iEvent.put(rawJets_, "rawJets");
        // Clean muons and electrons from jets
-       std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);
+       std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(helper.GetDeltaRCleanedJets(rawJets,*h_inputMuons,*h_inputElectrons,leptonJetDr),*h_inputMuons_iso_inv,*h_inputElectrons_iso_inv,leptonJetDr);
        // Apply jet corrections
        //   Get genjets for new JER recommendation ( JER is done in extra producer SmearedJetProducer, the manual JER application is therefore disabled doJER=false)
        for(uint i=0; i<systematics.size(); i++){
@@ -210,7 +222,7 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    // if no correction is to be applied, still remove jets close to a lepton
    else{
        for(uint i=0; i<systematics.size(); i++){
-	   unsortedJets.push_back(helper.GetDeltaRCleanedJets(idJets,*h_inputMuons,*h_inputElectrons,leptonJetDr));
+	   unsortedJets.push_back(helper.GetDeltaRCleanedJets(helper.GetDeltaRCleanedJets(idJets,*h_inputMuons,*h_inputElectrons,leptonJetDr),*h_inputMuons_iso_inv,*h_inputElectrons_iso_inv,leptonJetDr));
        }
    }
    // loop over all jetcollections and each systematic and apply pt,eta as well as pujetid cut on them
