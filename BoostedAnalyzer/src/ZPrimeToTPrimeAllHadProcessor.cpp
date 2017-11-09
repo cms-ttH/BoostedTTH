@@ -180,13 +180,44 @@ void ZPrimeToTPrimeAllHadProcessor::InitBasicRecoVars(VariableContainer& vars){
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_Phi",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_E",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_M",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    
+    vars.InitVar("N_packedPatJetsAK8PFCHSPruning","I");
+    vars.InitVars("packedPatJetsAK8PFCHSPruning_Pt",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+    vars.InitVars("packedPatJetsAK8PFCHSPruning_Eta",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+    vars.InitVars("packedPatJetsAK8PFCHSPruning_Phi",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+    vars.InitVars("packedPatJetsAK8PFCHSPruning_E",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+    vars.InitVars("packedPatJetsAK8PFCHSPruning_M",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+    
+    vars.InitVar("N_packedPatJetsAK8PFPUPPISoftDrop","I");
+    vars.InitVars("packedPatJetsAK8PFPUPPISoftDrop_Pt",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
+    vars.InitVars("packedPatJetsAK8PFPUPPISoftDrop_Eta",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
+    vars.InitVars("packedPatJetsAK8PFPUPPISoftDrop_Phi",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
+    vars.InitVars("packedPatJetsAK8PFPUPPISoftDrop_E",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
+    vars.InitVars("packedPatJetsAK8PFPUPPISoftDrop_M",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
+    
+
     vars.InitVars("NjettinessAK8CHS_tau1",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("NjettinessAK8CHS_tau2",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
     vars.InitVars("NjettinessAK8CHS_tau3",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
     
-    vars.InitVars("softDropMassAK8CHS",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("cmsTopTagPFJetsCHSMassAK8",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
-    vars.InitVars("packedPatJetsAK8PFCHSSoftDrop_subjetCSVv2",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("AK8CHSSoftDrop_Njettinesstau1",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("AK8CHSSoftDrop_Njettinesstau2",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("AK8CHSSoftDrop_Njettinesstau3",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("AK8CHSSoftDrop_M",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    vars.InitVars("AK8CHSSoftDrop_maxsubjetCSV",-9.0,"N_packedPatJetsAK8PFCHSSoftDrop");
+    
+    vars.InitVars("AK8CHSPruning_Njettinesstau1",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+    vars.InitVars("AK8CHSPruning_Njettinesstau2",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+    vars.InitVars("AK8CHSPruning_Njettinesstau3",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+    vars.InitVars("AK8CHSPruning_M",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+    vars.InitVars("AK8CHSPruning_maxsubjetCSV",-9.0,"N_packedPatJetsAK8PFCHSPruning");
+
+    
+    vars.InitVars("AK8PUPPISoftDrop_Njettinesstau1",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
+    vars.InitVars("AK8PUPPISoftDrop_Njettinesstau2",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
+    vars.InitVars("AK8PUPPISoftDrop_Njettinesstau3",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
+    vars.InitVars("AK8PUPPISoftDrop_M",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
+    vars.InitVars("AK8PUPPISoftDrop_maxsubjetCSV",-9.0,"N_packedPatJetsAK8PFPUPPISoftDrop");
 
 //    vars.InitVar("N_selectedPatJetsAK8PFCHSSoftDropPacked","I");
 //    vars.InitVar("N_packedPatJetsAK8PFCHSSoftDrop","I");
@@ -2023,7 +2054,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 ///General AK8-Jet        
         for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8CHSSoftDrop.begin(); itJet != input.selectedJetsAK8CHSSoftDrop.end(); ++itJet){
             int iJet = itJet - input.selectedJetsAK8CHSSoftDrop.begin();
-            if (itJet->pt()<200 || abs(itJet->eta())>2.4){
+            if (itJet->pt()<150 || abs(itJet->eta())>2.4){
                 continue;
             }
             vars.FillVars("packedPatJetsAK8PFCHSSoftDrop_E",iJet,itJet->energy());
@@ -2032,11 +2063,10 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             vars.FillVars("packedPatJetsAK8PFCHSSoftDrop_Phi",iJet,itJet->phi());
             vars.FillVars("packedPatJetsAK8PFCHSSoftDrop_Eta",iJet,itJet->eta());
 
-            vars.FillVars("softDropMassAK8CHS",iJet, itJet->userFloat("ak8PFJetsCHSSoftDropMass"));
-
-            vars.FillVars("NjettinessAK8CHS_tau1",iJet,itJet->userFloat("NjettinessAK8CHS:tau1"));
-            vars.FillVars("NjettinessAK8CHS_tau2",iJet,itJet->userFloat("NjettinessAK8CHS:tau2"));
-            vars.FillVars("NjettinessAK8CHS_tau3",iJet,itJet->userFloat("NjettinessAK8CHS:tau3"));
+            vars.FillVars("AK8CHSSoftDrop_Njettinesstau1",iJet,itJet->userFloat("NjettinessAK8CHS:tau1"));
+            vars.FillVars("AK8CHSSoftDrop_Njettinesstau2",iJet,itJet->userFloat("NjettinessAK8CHS:tau2"));
+            vars.FillVars("AK8CHSSoftDrop_Njettinesstau3",iJet,itJet->userFloat("NjettinessAK8CHS:tau3"));
+            vars.FillVars("AK8CHSSoftDrop_M",iJet, itJet->userFloat("ak8PFJetsCHSSoftDropMass"));
 
 
             double max_subjet_csv_v2=-10;
@@ -2045,12 +2075,74 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 
                 if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
                     max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-                    vars.FillVars("packedPatJetsAK8PFCHSSoftDrop_subjetCSVv2",iJet,max_subjet_csv_v2);
+                    vars.FillVars("AK8CHSSoftDrop_maxsubjetCSV",iJet,max_subjet_csv_v2);
                 }
             }
         }
     }
+   if(input.selectedJetsAK8CHSPruning.size()>0){
+            
+///General AK8-Jet        
+        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8CHSPruning.begin(); itJet != input.selectedJetsAK8CHSPruning.end(); ++itJet){
+            int iJet = itJet - input.selectedJetsAK8CHSPruning.begin();
+            if (itJet->pt()<150 || abs(itJet->eta())>2.4){
+                continue;
+            }
+            vars.FillVars("packedPatJetsAK8PFCHSPruning_E",iJet,itJet->energy());
+            vars.FillVars("packedPatJetsAK8PFCHSPruning_M",iJet,itJet->mass());
+            vars.FillVars("packedPatJetsAK8PFCHSPruning_Pt",iJet,itJet->pt());
+            vars.FillVars("packedPatJetsAK8PFCHSPruning_Phi",iJet,itJet->phi());
+            vars.FillVars("packedPatJetsAK8PFCHSPruning_Eta",iJet,itJet->eta());
 
+
+            vars.FillVars("AK8CHSPruning_Njettinesstau1",iJet,itJet->userFloat("NjettinessAK8CHS:tau1"));
+            vars.FillVars("AK8CHSPruning_Njettinesstau2",iJet,itJet->userFloat("NjettinessAK8CHS:tau2"));
+            vars.FillVars("AK8CHSPruning_Njettinesstau3",iJet,itJet->userFloat("NjettinessAK8CHS:tau3"));
+            vars.FillVars("AK8CHSPruning_M",iJet, itJet->userFloat("ak8PFJetsCHSPrunedMass"));
+
+
+            double max_subjet_csv_v2=-10;
+            auto const & names = itJet->subjets("Pruned");
+            for( auto const & itsubJet : names ){
+
+                if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+                    max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+                    vars.FillVars("AK8CHSPruning_maxsubjetCSV",iJet,max_subjet_csv_v2);
+                }
+            }
+        }
+    }
+   if(input.selectedJetsAK8PUPPISoftDrop.size()>0){
+            
+///General AK8-Jet        
+        for(std::vector<pat::Jet>::const_iterator itJet=input.selectedJetsAK8PUPPISoftDrop.begin(); itJet != input.selectedJetsAK8PUPPISoftDrop.end(); ++itJet){
+            int iJet = itJet - input.selectedJetsAK8PUPPISoftDrop.begin();
+            if (itJet->pt()<150 || abs(itJet->eta())>2.4){
+                continue;
+            }
+            vars.FillVars("packedPatJetsAK8PFPUPPISoftDrop_E",iJet,itJet->energy());
+            vars.FillVars("packedPatJetsAK8PFPUPPISoftDrop_M",iJet,itJet->mass());
+            vars.FillVars("packedPatJetsAK8PFPUPPISoftDrop_Pt",iJet,itJet->pt());
+            vars.FillVars("packedPatJetsAK8PFPUPPISoftDrop_Phi",iJet,itJet->phi());
+            vars.FillVars("packedPatJetsAK8PFPUPPISoftDrop_Eta",iJet,itJet->eta());
+
+            vars.FillVars("AK8PUPPISoftDrop_Njettinesstau1",iJet,itJet->userFloat("NjettinessAK8Puppi:tau1"));
+            vars.FillVars("AK8PUPPISoftDrop_Njettinesstau2",iJet,itJet->userFloat("NjettinessAK8Puppi:tau2"));
+            vars.FillVars("AK8PUPPISoftDrop_Njettinesstau3",iJet,itJet->userFloat("NjettinessAK8Puppi:tau3"));
+            vars.FillVars("AK8PUPPISoftDrop_M",iJet, itJet->userFloat("ak8PFJetsPuppiSoftDropMass"));
+
+
+            double max_subjet_csv_v2=-10;
+            auto const & names = itJet->subjets("SoftDrop");
+            for( auto const & itsubJet : names ){
+
+                if (itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>max_subjet_csv_v2){
+                    max_subjet_csv_v2=itsubJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+                    vars.FillVars("AK8PUPPISoftDrop_maxsubjetCSV",iJet,max_subjet_csv_v2);
+                }
+            }
+        }
+    }
     //std::cout<<"there10"<<endl;
 
 ///////Object Identification///////
