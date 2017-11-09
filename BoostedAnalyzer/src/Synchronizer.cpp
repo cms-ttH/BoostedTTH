@@ -522,6 +522,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         std::vector<double> jetcsvs;
         std::vector<double> jetcsvs_dnn;
         std::vector<double> loose_jetcsvs;
+        std::vector<double> add_features;
         for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
             jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
             jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
@@ -529,8 +530,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
             loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
         }
-        bdt_output=bdtclassifier->GetBDTOutput(lepvecs, jetvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
-        DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs[0],metP4);
+        bdt_output=bdtclassifier->GetBDTOutput(lepvecs, jetvecs, jetcsvs,metP4);
+        DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs[0],metP4,add_features);
         dnn_ttbb_output = dnn_output.ttbb();
         dnn_ttH_output = dnn_output.ttH();
     }
@@ -553,13 +554,14 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
         std::vector<double> jetcsvs;
         std::vector<double> jetcsvs_dnn;
+        std::vector<double> add_features;
         TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
         for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
             jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
             jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
         }
         bdt_output=dlbdtclassifier->GetBDTOutput(lepvecs,lepcharges,jetvecs,jetcsvs,metP4);
-        DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs,metP4);
+        DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs,metP4,add_features);
         dnn_ttbb_output = dnn_output.ttbb();
         dnn_ttH_output = dnn_output.ttH();
     }
