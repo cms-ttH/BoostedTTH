@@ -47,24 +47,26 @@ if options.globalTag is "NONE":
 	# These GT contain the latest 2015-data derived JEC:
 	# https://hypernews.cern.ch/HyperNews/CMS/get/JetMET/1630.html
 	if options.isData:
-		options.globalTag = "80X_dataRun2_Prompt_ICHEP16JEC_v0"
+		#options.globalTag = "80X_dataRun2_Prompt_ICHEP16JEC_v0"
+		options.globalTag = "80X_dataRun2_2016SeptRepro_v7"
 	else:
-		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
+		#options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
+             	options.globalTag = "80X_mcRun2_asymptotic_2016_TrancheIV_v8"
 
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     #options.maxEvents = 10000 # reset for testing
-    #options.maxEvents = 999999999 # reset for testing
+    options.maxEvents = 999999999 # reset for testing
     #options.maxEvents = 10 # reset for testing
-    options.maxEvents = 1000 # reset for testing
+    #options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:
     #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mschrode/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Skim-V1_3j20_1l20/170217_171402/0000/Skim_1.root']
     #options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1500Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/70000/469FD823-443D-E611-AF27-D4AE526EAB7F.root']
     #options.inputFiles=['file:/nfs/dust/cms/user/skudella/E22941D1-F526-E611-9437-B499BAAC078E.root']
-    options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1200Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/80000/7E1277DB-513D-E611-9F1C-549F3525DDFC.root']
-    #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/data/Run2016C/JetHT/MINIAOD/03Feb2017-v1/110000/000EC584-5BEB-E611-90BB-008CFA111230.root']
+    #options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1200Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/80000/7E1277DB-513D-E611-9F1C-549F3525DDFC.root']
+    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/data/Run2016C/JetHT/MINIAOD/03Feb2017-v1/110000/000EC584-5BEB-E611-90BB-008CFA111230.root']
 
 # checks for correct values and consistency
 
