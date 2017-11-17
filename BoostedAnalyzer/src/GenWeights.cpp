@@ -187,6 +187,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             name_string = line;
             // some names have .lhgrid string in their name->remove
             name_string.ReplaceAll(".lhgrid","");
+            name_string.ReplaceAll("centralscalevariation","scale_variation");
             //cout << "blablabla " << split << "       " << pdf_string << endl;
             continue;
         }
