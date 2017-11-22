@@ -407,8 +407,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // initialize synchronizer
     if(dumpSyncExe){
         pointerToDLBDTClassifier = new DLBDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/dlbdtweights_v5/");
-        pointerToDnnDLClassifier = new DNNClassifier_DL("v2a");
-	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,pointerToCommonBDT5Classifier,pointerToDLBDTClassifier,pointerToDnnSLClassifier,pointerToDnnDLClassifier,dumpExtended);
+        pointerToDnnDLClassifier = new DNNClassifier_DL("v3a");
+	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,pointerToCommonBDT5Classifier,pointerToDLBDTClassifier,pointerToDnnSLClassifier,pointerToDnnDLClassifier,pointerToMEMClassifier,dumpExtended);
     }
 
     // INITIALIZE TREEWRITERs
