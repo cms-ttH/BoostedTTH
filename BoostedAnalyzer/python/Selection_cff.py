@@ -88,9 +88,9 @@ checkBasicDataTriggers= cms.PSet(
                                  "HLT_PFHT650_v*",
                                  "HLT_Mu50_v*",
                                  "HLT_TkMu50_v*",
-                                 "HLT_Ele115 CaloIdVT GsfTrkIdT v*",
-                                 "HLT Ele45 CaloIdVT GsfTrkIdT PFJet200 PFJet50 v*",
-                                 "HLT Ele105 CaloIdVT GsfTrkIdT v*",
+                                 "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
+                                 "HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50_v*",
+                                 "HLT_Ele105_CaloIdVT_GsfTrkIdT_v*",
                                  #"HLT_Ele23_WPLoose_Gsf_v*",
                                  #"HLT_IsoMu20_v*",
                                  #"HLT_Ele27_eta2p1_WPLoose_Gsf_v*"
@@ -117,9 +117,9 @@ checkBasicMCTriggers= cms.PSet(
                                  "HLT_PFHT650_v*",
                                  "HLT_Mu50_v*",
                                  "HLT_TkMu50_v*",
-                                 "HLT_Ele115 CaloIdVT GsfTrkIdT v*",
-                                 "HLT Ele45 CaloIdVT GsfTrkIdT PFJet200 PFJet50 v*",
-                                 "HLT Ele105 CaloIdVT GsfTrkIdT v*",
+                                 "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
+                                 "HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50_v*",
+                                 "HLT_Ele105_CaloIdVT_GsfTrkIdT_v*",
                                  )
 )
 
