@@ -117,6 +117,7 @@
 #include "TTH/CommonClassifier/interface/DNNClassifier.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenDarkMatterEvent.hpp"
 
 
 //
@@ -755,6 +756,15 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
     else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
     
+    // create GenDarkMatterEvent object
+    GenDarkMatterEvent genDarkMatterEvent;
+    // create empty packedGenParticle dummy since this collection is not yet needed, but maybe later
+    std::vector<pat::PackedGenParticle> packedGenParticles_dummy;
+    // initialze the GenDarkMatterEvent object with the collections of genparticles
+    genDarkMatterEvent.Initialize(*h_genParticles,packedGenParticles_dummy);
+    // fill the event
+    genDarkMatterEvent.Fill();
+    //cout << "DarkMatterEvent MET: " << genDarkMatterEvent.ReturnNaiveMET() << endl;
     
     // nominal weight and weights for reweighting
     std::vector<map<string,float> >weightsVector;
@@ -779,6 +789,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  selectedBoostedJets[isys],
                                           selectedAk4Cluster,
 					  genTopEvt,
+                                          genDarkMatterEvent,
 					  *h_genJets,
 					  sampleType,
 					  higgsdecay,

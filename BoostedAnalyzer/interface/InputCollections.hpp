@@ -17,6 +17,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/FilterInfo.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenDarkMatterEvent.hpp"
 
 
 enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg,thq};
@@ -49,6 +50,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
                     const GenTopEvent&                            genTopEvt_,
+                    const GenDarkMatterEvent&                     genDarkMatterEvt_,
                     const std::vector<reco::GenJet>&              genJets_,
                     const SampleType                              sampleType_,
                     const HiggsDecay::HiggsDecay                  higgsDecay_,
@@ -76,6 +78,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedBoostedJets(selectedBoostedJets_),
                     selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(genTopEvt_),
+                    genDarkMatterEvt(genDarkMatterEvt_),
                     genJets(genJets_),
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
@@ -114,6 +117,7 @@ InputCollections(   const InputCollections&                       input,
                     selectedBoostedJets(selectedBoostedJets_),
                     selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(input.genTopEvt),
+                    genDarkMatterEvt(input.genDarkMatterEvt),
                     genJets(input.genJets),
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
@@ -141,6 +145,7 @@ InputCollections(   const InputCollections&                       input,
   const boosted::BoostedJetCollection&          selectedBoostedJets;
   const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
   const GenTopEvent&                            genTopEvt;
+  const GenDarkMatterEvent&                     genDarkMatterEvt;
   const std::vector<reco::GenJet>&              genJets;
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
