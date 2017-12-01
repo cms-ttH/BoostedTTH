@@ -45,7 +45,7 @@ void GenDarkMatterEvent::Fill()
         return;
     }
     
-    // find the lightest neutralinos in the event and the mediator
+    // find the lightest neutralinos in the event, the mediator, and neutrinos
     for(size_t i=0;i<prunedGenParticles.size();i++){
         reco::GenParticle genparticle = prunedGenParticles[i];
         if(genparticle.pdgId()==1000022 and genparticle.isLastCopy() and genparticle.status()==1){
@@ -61,6 +61,7 @@ void GenDarkMatterEvent::Fill()
     isFilled = true;
 }
 
+// return the lightest neutralinos in a vector
 std::vector<reco::GenParticle> GenDarkMatterEvent::ReturnNeutralinos()
 {
     if(not isFilled){
@@ -69,6 +70,7 @@ std::vector<reco::GenParticle> GenDarkMatterEvent::ReturnNeutralinos()
     return Neutralinos;
 }
 
+// return the mediator particle
 reco::GenParticle GenDarkMatterEvent::ReturnMediator()
 {
     if(not isFilled){
@@ -77,21 +79,25 @@ reco::GenParticle GenDarkMatterEvent::ReturnMediator()
     return Mediator;
 }
 
+// return if the GenDarkMatterEvent has been filled
 bool GenDarkMatterEvent::IsFilled()
 {
     return isFilled;
 }
 
+// return if the event has at least one lightest neutralino (PDGID 1000022)
 bool GenDarkMatterEvent::HasDarkMatter()
 {
     return hasDarkMatter;
 }
 
+//return the mass of the mediator particle
 double GenDarkMatterEvent::ReturnMediatorMass()
 {
     return Mediator.mass();
 }
 
+// return the masses of the neutralinos in a vector
 std::vector<double> GenDarkMatterEvent::ReturnNeutralinoMasses()
 {
     std::vector<double> masses;
@@ -101,12 +107,14 @@ std::vector<double> GenDarkMatterEvent::ReturnNeutralinoMasses()
     return masses;
 }
 
+// return the 4-vector of the mediator particle
 TLorentzVector GenDarkMatterEvent::ReturnMediator4Vector()
 {
     math::XYZTLorentzVector vec4 = Mediator.p4();
     return BoostedUtils::GetTLorentzVector(vec4);
 }
 
+// return the 4-vectors of the neutralinos in a vector
 std::vector<TLorentzVector> GenDarkMatterEvent::ReturnNeutralino4Vectors()
 {
     std::vector<math::XYZTLorentzVector> vecs4;
@@ -116,6 +124,8 @@ std::vector<TLorentzVector> GenDarkMatterEvent::ReturnNeutralino4Vectors()
     return BoostedUtils::GetTLorentzVectors(vecs4);
 }
 
+// returns a naively calculated MET
+// naively MET should be the pt of the sum of neutralinos and neutrinos 4-vectors
 double GenDarkMatterEvent::ReturnNaiveMET()
 {
     math::XYZTLorentzVector vec4_invisibles;
