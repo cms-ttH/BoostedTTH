@@ -74,6 +74,7 @@ private:
     /** MiniAODHelper, used for jet correction and selection **/
     MiniAODHelper helper;
     /** min pt of jet collections **/
+    
     std::vector<double> ptMins;
     /** max eta of jet collections **/
     std::vector<double> etaMaxs;
@@ -91,6 +92,8 @@ private:
     bool doJER;
     bool isData;
     std::string corrLable;
+    std::string pathToJECCorrTextFile;
+    std::string jetTypeLabel;
 };
 
 //
@@ -121,7 +124,9 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     PUJetIDMins = iConfig.getParameter<std::vector<std::string>> ("PUJetIDMins");
     JetID = iConfig.getParameter<std::string> ("JetID");
     corrLable=iConfig.getParameter<std::string> ("corrLable");
-
+    pathToJECCorrTextFile=iConfig.getParameter<std::string> ("pathToJECCorrTextFile");
+    jetTypeLabel=iConfig.getParameter<std::string> ("jetTypeLabel");
+    
     assert(ptMins.size()==etaMaxs.size());
     assert(ptMins.size()==collectionNames.size());
 
@@ -138,7 +143,8 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
       }
     }
     helper.SetUp(era, sampleID, iAnalysisType, isData);
-
+    helper.SetJECUncertaintyTxtFileName(pathToJECCorrTextFile);
+    helper.SetJetTypeLabelForJECUncertainty(jetTypeLabel);
     produces<pat::JetCollection>("rawJets");
 
     for(uint i=0; i<collectionNames.size();i++){

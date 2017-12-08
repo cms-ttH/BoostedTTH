@@ -176,11 +176,12 @@ print "runonMC  ", runonMC
 #JETTOOLBOX
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 
+#jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC=runonMC, PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addPruning=True, addSoftDropSubjets=True, addPrunedSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 150', JETCorrPayload = 'AK8PFchs', subJETCorrPayload='AK4PFchs', JETCorrLevels = ['L1FastJet','L2Relative', 'L3Absolute'], subJETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute']  )
+#jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC=runonMC, PUMethod='Puppi',miniAOD=True,  addSoftDrop=True, addPruning=True, addSoftDropSubjets=True, addPrunedSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 150', JETCorrPayload = 'AK8PFPuppi', subJETCorrPayload='AK4PFPuppi', JETCorrLevels = ['L1FastJet','L2Relative', 'L3Absolute'], subJETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute']  )
+
 jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC=runonMC, PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addPruning=True, addSoftDropSubjets=True, addPrunedSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 150', JETCorrPayload = 'AK8PFchs', subJETCorrPayload='AK4PFchs', JETCorrLevels = ['L1FastJet','L2Relative', 'L3Absolute'], subJETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute']  )
-#jetToolbox( process, 'ak12', 'ak12JetSubs', 'out', runOnMC=runonMC, PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 80', JETCorrPayload = 'AK8PFchs', JETCorrLevels = ['L2Relative', 'L3Absolute'])
-#jetToolbox( process, 'ak15', 'ak15JetSubs', 'out', runOnMC=runonMC, PUMethod='CHS', miniAOD=True,  addSoftDrop=True, addSoftDropSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 80', JETCorrPayload = 'AK8PFchs', JETCorrLevels = ['L2Relative', 'L3Absolute'])
-#jetToolbox( process, 'ak4', 'ak4JetSubs', 'out', runOnMC=runonMC, PUMethod='PUPPI', miniAOD=True, Cut='pt > 75', JETCorrPayload = 'AK4PFchs', JETCorrLevels = ['L1FastJet','L2Relative', 'L3Absolute'])
 jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC=runonMC, PUMethod='Puppi',miniAOD=True,  addSoftDrop=True, addPruning=True, addSoftDropSubjets=True, addPrunedSubjets=True, addNsub=True,  addNsubSubjets=True,  addCMSTopTagger=True, Cut='pt > 150', JETCorrPayload = 'AK8PFPuppi', subJETCorrPayload='AK4PFPuppi', JETCorrLevels = ['L1FastJet','L2Relative', 'L3Absolute'], subJETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute']  )
+
 
 
 
@@ -318,7 +319,7 @@ if options.isData:
         cms.PSet(
             connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
             record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV4_DATA_AK4PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV4_DATA_AK8PFchs'),
             label  = cms.untracked.string('AK8PFchs')
             )
         )
@@ -358,7 +359,7 @@ if options.isData:
 
 
 
-
+################################################################# ELECTRONS ######################################################################
 
 ###### electron energy regression #######
 
@@ -686,6 +687,7 @@ process.CorrectedJetProducerAK4=process.SelectedJetProducer.clone(jets=jetCollec
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak4PFchsL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK4PFchs.txt"
                                                                )
 process.CorrectedJetProducerAK4PUPPI=process.SelectedJetProducer.clone(jets=jetCollectionAK4PUPPI, 
                                                                ptMins=[-1.],
@@ -696,6 +698,7 @@ process.CorrectedJetProducerAK4PUPPI=process.SelectedJetProducer.clone(jets=jetC
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak4PFPuppiL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK4PFpuppi.txt"
                                                                )
 # correction of  JETTOOLBOX jets -- one producer creates a jet collection for nominal JES and every JES systematic
 process.CorrectedJetProducerAK8CHSSoftDrop=process.SelectedJetProducer.clone(jets=jetCollectionAK8CHSSoftDrop, 
@@ -707,6 +710,7 @@ process.CorrectedJetProducerAK8CHSSoftDrop=process.SelectedJetProducer.clone(jet
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak8PFchsL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK8PFchs.txt"
                                                                )
 process.CorrectedJetProducerAK8CHSPruning=process.SelectedJetProducer.clone(jets=jetCollectionAK8CHSPruning, 
                                                                ptMins=[-1.],
@@ -717,6 +721,7 @@ process.CorrectedJetProducerAK8CHSPruning=process.SelectedJetProducer.clone(jets
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak8PFchsL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK8PFchs.txt"
                                                                )
 process.CorrectedJetProducerAK8PUPPISoftDrop=process.SelectedJetProducer.clone(jets=jetCollectionAK8PUPPISoftDrop, 
                                                                ptMins=[-1.],
@@ -727,6 +732,7 @@ process.CorrectedJetProducerAK8PUPPISoftDrop=process.SelectedJetProducer.clone(j
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak8PFPuppiL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK8PFpuppi.txt"
                                                                )
 process.CorrectedJetProducerAK8PUPPIPruning=process.SelectedJetProducer.clone(jets=jetCollectionAK8PUPPIPruning, 
                                                                ptMins=[-1.],
@@ -737,6 +743,7 @@ process.CorrectedJetProducerAK8PUPPIPruning=process.SelectedJetProducer.clone(je
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak8PFPuppiL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK8PFpuppi.txt"
                                                                )
 
 ## correction of  JETTOOLBOX jets -- one producer creates a jet collection for nominal JES and every JES systematic

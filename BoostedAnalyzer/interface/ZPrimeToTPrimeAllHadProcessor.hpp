@@ -14,6 +14,7 @@
 #include "MiniAOD/MiniAODHelper/interface/TTM_SDM.h"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
+#include "JetMETCorrections/Objects/interface/JetCorrector.h"
 
 #include "TH1F.h"
 /*class TreeProcessor{

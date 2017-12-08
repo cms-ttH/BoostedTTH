@@ -63,10 +63,10 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 
 if not options.inputFiles:
     #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/user/mschrode/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Skim-V1_3j20_1l20/170217_171402/0000/Skim_1.root']
-    #options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1500Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/70000/469FD823-443D-E611-AF27-D4AE526EAB7F.root']
+    options.inputFiles=['/store/mc/RunIISummer16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1500Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/6C6FCB9A-2DB7-E611-8D1D-001E67A3FD26.root']
     #options.inputFiles=['file:/nfs/dust/cms/user/skudella/E22941D1-F526-E611-9437-B499BAAC078E.root']
     #options.inputFiles=['/store/mc/RunIISpring16MiniAODv2/ZprimeToTprimeT_TprimeToWB_MZp-2500Nar_MTp-1200Nar_LH_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/80000/7E1277DB-513D-E611-9F1C-549F3525DDFC.root']
-    options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/data/Run2016C/JetHT/MINIAOD/03Feb2017-v1/110000/000EC584-5BEB-E611-90BB-008CFA111230.root']
+    #options.inputFiles=['file:/pnfs/desy.de/cms/tier2/store/data/Run2016C/JetHT/MINIAOD/03Feb2017-v1/110000/000EC584-5BEB-E611-90BB-008CFA111230.root']
 
 # checks for correct values and consistency
 
@@ -303,6 +303,27 @@ if options.isData:
 
 
 
+#########we need this for W-tagging
+process.ak8PFchsL2L3 = cms.ESProducer("JetCorrectionESChain",
+  correctors = cms.vstring(
+    'ak8PFchsL2Relative',
+    'ak8PFchsL3Absolute')
+)
+  
+if options.isData:
+  process.ak8PFchsL2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
+
+#########we need this for t-tagging
+process.ak8PFPuppiL2L3 = cms.ESProducer("JetCorrectionESChain",
+  correctors = cms.vstring(
+    'ak8PFPuppiL2Relative',
+    'ak8PFPuppiL3Absolute')
+)
+  
+if options.isData:
+  process.ak8PFPuppiL2L3.correctors.append('ak8PFPuppiResidual') # add residual JEC for data
+
+
 
 
 
@@ -343,23 +364,6 @@ if options.isData:
             label  = cms.untracked.string('AK8PFPuppi')
             )
         )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -664,15 +668,6 @@ for syst in systs:
 for syst in systs:
     setattr(process,'SelectedJetProducerAK8PUPPIPruning'+syst,process.SelectedJetProducerAK8PUPPIPruning.clone(jets='patSmearedJetsAK8PUPPIPruning'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK8PUPPIPruning.collectionNames)]))
 
-## selection of the systematically shifted jets
-#for syst in systs:
-    #setattr(process,'SelectedJetProducerAK12'+syst,process.SelectedJetProducerAK12.clone(jets='patSmearedJetsAK12'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK12.collectionNames)]))
-
-## selection of the systematically shifted jets
-#for syst in systs:
-    #setattr(process,'SelectedJetProducerAK15'+syst,process.SelectedJetProducerAK15.clone(jets='patSmearedJetsAK15'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK15.collectionNames)]))
-
-
 
 
 
@@ -690,6 +685,8 @@ process.CorrectedJetProducerAK4=process.SelectedJetProducer.clone(jets=jetCollec
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak4PFchsL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK4PFchs.txt",
+                                                               jetTypeLabel="AK4PFchs",
                                                                )
 process.CorrectedJetProducerAK4PUPPI=process.SelectedJetProducer.clone(jets=jetCollectionAK4PUPPI, 
                                                                ptMins=[-1.],
@@ -700,6 +697,8 @@ process.CorrectedJetProducerAK4PUPPI=process.SelectedJetProducer.clone(jets=jetC
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak4PFPuppiL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK4PFPuppi.txt",
+                                                               jetTypeLabel="AK4PFpuppi",
                                                                )
 # correction of  JETTOOLBOX jets -- one producer creates a jet collection for nominal JES and every JES systematic
 process.CorrectedJetProducerAK8CHSSoftDrop=process.SelectedJetProducer.clone(jets=jetCollectionAK8CHSSoftDrop, 
@@ -711,6 +710,8 @@ process.CorrectedJetProducerAK8CHSSoftDrop=process.SelectedJetProducer.clone(jet
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak8PFchsL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK8PFchs.txt",
+                                                               jetTypeLabel="AK8PFchs",
                                                                )
 process.CorrectedJetProducerAK8CHSPruning=process.SelectedJetProducer.clone(jets=jetCollectionAK8CHSPruning, 
                                                                ptMins=[-1.],
@@ -721,6 +722,8 @@ process.CorrectedJetProducerAK8CHSPruning=process.SelectedJetProducer.clone(jets
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak8PFchsL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK8PFchs.txt",
+                                                               jetTypeLabel="AK8PFchs",
                                                                )
 process.CorrectedJetProducerAK8PUPPISoftDrop=process.SelectedJetProducer.clone(jets=jetCollectionAK8PUPPISoftDrop, 
                                                                ptMins=[-1.],
@@ -731,6 +734,8 @@ process.CorrectedJetProducerAK8PUPPISoftDrop=process.SelectedJetProducer.clone(j
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak8PFPuppiL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK8PFPuppi.txt",
+                                                               jetTypeLabel="AK8PFpuppi",
                                                                )
 process.CorrectedJetProducerAK8PUPPIPruning=process.SelectedJetProducer.clone(jets=jetCollectionAK8PUPPIPruning, 
                                                                ptMins=[-1.],
@@ -741,6 +746,8 @@ process.CorrectedJetProducerAK8PUPPIPruning=process.SelectedJetProducer.clone(je
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak8PFPuppiL1L2L3",
+                                                               pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK8PFPuppi.txt",
+                                                               jetTypeLabel="AK8PFpuppi",
                                                                )
 
 ## correction of  JETTOOLBOX jets -- one producer creates a jet collection for nominal JES and every JES systematic

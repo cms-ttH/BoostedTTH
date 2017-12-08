@@ -831,6 +831,8 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2up",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    vars.InitVars("Bottoms_ABCDCHSSoftDrop_WeightCSVCErr2down",-9.0,"N_Zprime_ABCDCHSSoftDrop");
 
+   vars.InitVars("Ws_ABCDCHSSoftDrop_corrL1L2L3",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Ws_ABCDCHSSoftDrop_corrL2L3",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    vars.InitVars("Ws_ABCDCHSSoftDrop_Pt",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    vars.InitVars("Ws_ABCDCHSSoftDrop_real",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    vars.InitVars("Ws_ABCDCHSSoftDrop_matcheddecays",-9.0,"N_Zprime_ABCDCHSSoftDrop");
@@ -838,6 +840,8 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Ws_ABCDCHSSoftDrop_Phi",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    vars.InitVars("Ws_ABCDCHSSoftDrop_MSD",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    vars.InitVars("Ws_ABCDCHSSoftDrop_t21",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_corrL1L2L3",-9.0,"N_Zprime_ABCDCHSSoftDrop");
+   vars.InitVars("Tops_ABCDCHSSoftDrop_corrL2L3",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    vars.InitVars("Tops_ABCDCHSSoftDrop_Pt",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    vars.InitVars("Tops_ABCDCHSSoftDrop_real",-9.0,"N_Zprime_ABCDCHSSoftDrop");
    vars.InitVars("Tops_ABCDCHSSoftDrop_matcheddecays",-9.0,"N_Zprime_ABCDCHSSoftDrop");
@@ -1026,6 +1030,8 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
 
    vars.InitVars("Ws_ABCDCHSPruning_matcheddecays",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Ws_ABCDCHSPruning_real",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_corrL1L2L3",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_corrL2L3",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Ws_ABCDCHSPruning_Pt",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Ws_ABCDCHSPruning_Eta",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Ws_ABCDCHSPruning_Phi",-9.0,"N_Zprime_ABCDCHSPruning");
@@ -1033,6 +1039,8 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Ws_ABCDCHSPruning_t21",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Tops_ABCDCHSPruning_matcheddecays",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Tops_ABCDCHSPruning_real",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_corrL1L2L3",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Tops_ABCDCHSPruning_corrL2L3",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Tops_ABCDCHSPruning_Pt",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Tops_ABCDCHSPruning_Eta",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Tops_ABCDCHSPruning_Phi",-9.0,"N_Zprime_ABCDCHSPruning");
@@ -1089,6 +1097,8 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
 
    vars.InitVars("Ws_ABCDPUPPISoftDrop_matcheddecays",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    vars.InitVars("Ws_ABCDPUPPISoftDrop_real",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Ws_ABCDPUPPISoftDrop_corrL1L2L3",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Ws_ABCDPUPPISoftDrop_corrL2L3",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    vars.InitVars("Ws_ABCDPUPPISoftDrop_Pt",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    vars.InitVars("Ws_ABCDPUPPISoftDrop_Eta",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    vars.InitVars("Ws_ABCDPUPPISoftDrop_Phi",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
@@ -1096,6 +1106,8 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Ws_ABCDPUPPISoftDrop_t21",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    vars.InitVars("Tops_ABCDPUPPISoftDrop_matcheddecays",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    vars.InitVars("Tops_ABCDPUPPISoftDrop_real",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_corrL1L2L3",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
+   vars.InitVars("Tops_ABCDPUPPISoftDrop_corrL2L3",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    vars.InitVars("Tops_ABCDPUPPISoftDrop_Pt",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    vars.InitVars("Tops_ABCDPUPPISoftDrop_Eta",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
    vars.InitVars("Tops_ABCDPUPPISoftDrop_Phi",-9.0,"N_Zprime_ABCDPUPPISoftDrop");
@@ -3241,6 +3253,14 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   ////FILL ABCDCHSSoftDrop VARIABLES
   vars.FillVar("N_Zprime_ABCDCHSSoftDrop",ZprimesABCDCHSSoftDrop.size());
 
+  
+//Define Correctors
+  const JetCorrector* corrector_AK8CHS_L1L2L3 = JetCorrector::getJetCorrector("ak8PFchsL1L2L3", input.iSetup );
+  const JetCorrector* corrector_AK8CHS_L2L3 = JetCorrector::getJetCorrector("ak8PFchsL2L3", input.iSetup );
+  const JetCorrector* corrector_AK8Puppi_L1L2L3 = JetCorrector::getJetCorrector("ak8PFPuppiL1L2L3", input.iSetup );
+  const JetCorrector* corrector_AK8Puppi_L2L3 = JetCorrector::getJetCorrector("ak8PFPuppiL2L3", input.iSetup );
+  
+  
   for (uint i=0; i<ZprimesABCDCHSSoftDrop.size(); i++){
   //for(math::XYZTLorentzVector::const_iterator ittopJet = AK8_top_candidates.begin() ; ittopJet != AK8_top_candidates.end(); ++ittopJet){
      //int i = 
@@ -3339,13 +3359,28 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     }
 //      std::cout<<"debug2   "<<jetPts.size()<<endl;
      
-     
+
+     float corr_AK8CHS_L1L2L3=1.0;
+     float corr_AK8CHS_L2L3=1.0;
+     pat::Jet WsABCDCHSSoftDrop_temp_AK8CHSSoftDropL1L2L3 = WsABCDCHSSoftDrop[i];
+     pat::Jet WsABCDCHSSoftDrop_temp_AK8CHSSoftDropL2L3 = WsABCDCHSSoftDrop[i];
+     corr_AK8CHS_L1L2L3=corrector_AK8CHS_L1L2L3->correction(WsABCDCHSSoftDrop_temp_AK8CHSSoftDropL1L2L3, input.iEvent, input.iSetup);
+     corr_AK8CHS_L2L3=corrector_AK8CHS_L2L3->correction(WsABCDCHSSoftDrop_temp_AK8CHSSoftDropL2L3, input.iEvent, input.iSetup);
+     vars.FillVars("Ws_ABCDCHSSoftDrop_corrL1L2L3",i,corr_AK8CHS_L1L2L3);
+     vars.FillVars("Ws_ABCDCHSSoftDrop_corrL2L3",i,corr_AK8CHS_L2L3);
+
      vars.FillVars("Ws_ABCDCHSSoftDrop_Pt",i,WsABCDCHSSoftDrop[i].pt());
      vars.FillVars("Ws_ABCDCHSSoftDrop_Eta",i,WsABCDCHSSoftDrop[i].eta());
      vars.FillVars("Ws_ABCDCHSSoftDrop_Phi",i,WsABCDCHSSoftDrop[i].phi());
      vars.FillVars("Ws_ABCDCHSSoftDrop_MSD",i,WsABCDCHSSoftDrop[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Ws_ABCDCHSSoftDrop_t21",i,WsABCDCHSSoftDrop[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDCHSSoftDrop[i].userFloat("NjettinessAK8CHS:tau1"));
-    
+
+     pat::Jet TopsABCDCHSSoftDrop_temp_AK8CHSSoftDropL1L2L3 = TopsABCDCHSSoftDrop[i];
+     pat::Jet TopsABCDCHSSoftDrop_temp_AK8CHSSoftDropL2L3 = TopsABCDCHSSoftDrop[i];
+     corr_AK8CHS_L1L2L3=corrector_AK8CHS_L1L2L3->correction(TopsABCDCHSSoftDrop_temp_AK8CHSSoftDropL1L2L3, input.iEvent, input.iSetup);
+     corr_AK8CHS_L2L3=corrector_AK8CHS_L2L3->correction(TopsABCDCHSSoftDrop_temp_AK8CHSSoftDropL2L3, input.iEvent, input.iSetup);
+     vars.FillVars("Tops_ABCDCHSSoftDrop_corrL1L2L3",i,corr_AK8CHS_L1L2L3);
+     vars.FillVars("Tops_ABCDCHSSoftDrop_corrL2L3",i,corr_AK8CHS_L2L3);
      
      vars.FillVars("Tops_ABCDCHSSoftDrop_Pt",i,TopsABCDCHSSoftDrop[i].pt());
      vars.FillVars("Tops_ABCDCHSSoftDrop_Eta",i,TopsABCDCHSSoftDrop[i].eta());
@@ -4006,19 +4041,35 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     }
 //      std::cout<<"debug2   "<<jetPts.size()<<endl;
      
+
+     float corr_AK8CHS_L1L2L3=1.0;
+     float corr_AK8CHS_L2L3=1.0;
+     pat::Jet WsABCDCHSPruning_temp_AK8CHSPruningL1L2L3 = WsABCDCHSPruning[i];
+     pat::Jet WsABCDCHSPruning_temp_AK8CHSPruningL2L3 = WsABCDCHSPruning[i];
+     corr_AK8CHS_L1L2L3=corrector_AK8CHS_L1L2L3->correction(WsABCDCHSPruning_temp_AK8CHSPruningL1L2L3, input.iEvent, input.iSetup);
+     corr_AK8CHS_L2L3=corrector_AK8CHS_L2L3->correction(WsABCDCHSPruning_temp_AK8CHSPruningL2L3, input.iEvent, input.iSetup);
      
      vars.FillVars("Ws_ABCDCHSPruning_Pt",i,WsABCDCHSPruning[i].pt());
      vars.FillVars("Ws_ABCDCHSPruning_Eta",i,WsABCDCHSPruning[i].eta());
      vars.FillVars("Ws_ABCDCHSPruning_Phi",i,WsABCDCHSPruning[i].phi());
      vars.FillVars("Ws_ABCDCHSPruning_MSD",i,WsABCDCHSPruning[i].userFloat("ak8PFJetsCHSPrunedMass"));
      vars.FillVars("Ws_ABCDCHSPruning_t21",i,WsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau1"));
+     vars.FillVars("Ws_ABCDCHSPruning_corrL1L2L3",i,corr_AK8CHS_L1L2L3);
+     vars.FillVars("Ws_ABCDCHSPruning_corrL2L3",i,corr_AK8CHS_L2L3);
+
+     pat::Jet TopsABCDCHSPruning_temp_AK8CHSPruningL1L2L3 = TopsABCDCHSPruning[i];
+     pat::Jet TopsABCDCHSPruning_temp_AK8CHSPruningL2L3 = TopsABCDCHSPruning[i];
+     corr_AK8CHS_L1L2L3=corrector_AK8CHS_L1L2L3->correction(TopsABCDCHSPruning_temp_AK8CHSPruningL1L2L3, input.iEvent, input.iSetup);
+     corr_AK8CHS_L2L3=corrector_AK8CHS_L2L3->correction(TopsABCDCHSPruning_temp_AK8CHSPruningL2L3, input.iEvent, input.iSetup);
      
      vars.FillVars("Tops_ABCDCHSPruning_Pt",i,TopsABCDCHSPruning[i].pt());
      vars.FillVars("Tops_ABCDCHSPruning_Eta",i,TopsABCDCHSPruning[i].eta());
      vars.FillVars("Tops_ABCDCHSPruning_Phi",i,TopsABCDCHSPruning[i].phi());
      vars.FillVars("Tops_ABCDCHSPruning_MSD",i,TopsABCDCHSPruning[i].userFloat("ak8PFJetsCHSSoftDropMass"));
      vars.FillVars("Tops_ABCDCHSPruning_t32",i,TopsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau3")/TopsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau2"));
-
+     vars.FillVars("Tops_ABCDCHSPruning_corrL1L2L3",i,corr_AK8CHS_L1L2L3);
+     vars.FillVars("Tops_ABCDCHSPruning_corrL2L3",i,corr_AK8CHS_L2L3);
+     
      int realW_CHSPruning=0;
      int nmatchedaughters_topCHSPruning=0;
      if(input.zprimetotprimeallhad.IsFilled() && !input.isData && GenWs.size()>0){
@@ -4241,12 +4292,29 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     }
 //      std::cout<<"debug2   "<<jetPts.size()<<endl;
      
+
+     float corr_AK8PUPPI_L1L2L3=1.0;
+     float corr_AK8PUPPI_L2L3=1.0;
+     pat::Jet WsABCDPUPPISoftDrop_temp_AK8PUPPISoftDropL1L2L3 = WsABCDPUPPISoftDrop[i];
+     pat::Jet WsABCDPUPPISoftDrop_temp_AK8PUPPISoftDropL2L3 = WsABCDPUPPISoftDrop[i];
+     corr_AK8PUPPI_L1L2L3=corrector_AK8Puppi_L1L2L3->correction(WsABCDPUPPISoftDrop_temp_AK8PUPPISoftDropL1L2L3, input.iEvent, input.iSetup);
+     corr_AK8PUPPI_L2L3=corrector_AK8Puppi_L2L3->correction(WsABCDPUPPISoftDrop_temp_AK8PUPPISoftDropL2L3, input.iEvent, input.iSetup);
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_corrL1L2L3",i,corr_AK8PUPPI_L1L2L3);
+     vars.FillVars("Ws_ABCDPUPPISoftDrop_corrL2L3",i,corr_AK8PUPPI_L2L3);
+
      
      vars.FillVars("Ws_ABCDPUPPISoftDrop_Pt",i,WsABCDPUPPISoftDrop[i].pt());
      vars.FillVars("Ws_ABCDPUPPISoftDrop_Eta",i,WsABCDPUPPISoftDrop[i].eta());
      vars.FillVars("Ws_ABCDPUPPISoftDrop_Phi",i,WsABCDPUPPISoftDrop[i].phi());
      vars.FillVars("Ws_ABCDPUPPISoftDrop_MSD",i,WsABCDPUPPISoftDrop[i].userFloat("ak8PFJetsPuppiSoftDropMass"));
      vars.FillVars("Ws_ABCDPUPPISoftDrop_t21",i,WsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8Puppi:tau2")/WsABCDPUPPISoftDrop[i].userFloat("NjettinessAK8Puppi:tau1"));
+     
+     pat::Jet TopsABCDPUPPISoftDrop_temp_AK8PUPPISoftDropL1L2L3 = TopsABCDPUPPISoftDrop[i];
+     pat::Jet TopsABCDPUPPISoftDrop_temp_AK8PUPPISoftDropL2L3 = TopsABCDPUPPISoftDrop[i];
+     corr_AK8PUPPI_L1L2L3=corrector_AK8Puppi_L1L2L3->correction(TopsABCDPUPPISoftDrop_temp_AK8PUPPISoftDropL1L2L3, input.iEvent, input.iSetup);
+     corr_AK8PUPPI_L2L3=corrector_AK8Puppi_L2L3->correction(TopsABCDPUPPISoftDrop_temp_AK8PUPPISoftDropL2L3, input.iEvent, input.iSetup);
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_corrL1L2L3",i,corr_AK8PUPPI_L1L2L3);
+     vars.FillVars("Tops_ABCDPUPPISoftDrop_corrL2L3",i,corr_AK8PUPPI_L2L3);
      
      vars.FillVars("Tops_ABCDPUPPISoftDrop_Pt",i,TopsABCDPUPPISoftDrop[i].pt());
      vars.FillVars("Tops_ABCDPUPPISoftDrop_Eta",i,TopsABCDPUPPISoftDrop[i].eta());

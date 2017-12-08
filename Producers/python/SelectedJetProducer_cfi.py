@@ -18,5 +18,7 @@ SelectedJetProducer = cms.EDProducer(
     systematics = cms.vstring(""),
     JetID = cms.string("none"),
     corrLable=cms.string("ak4PFchsL1L2L3"),
+    pathToJECCorrTextFile=cms.string("src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK4PFchs.txt"),
+    jetTypeLabel=cms.string("AK4PFchs"),
     )
 
