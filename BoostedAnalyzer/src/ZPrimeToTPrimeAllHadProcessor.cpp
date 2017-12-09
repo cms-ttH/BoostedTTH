@@ -1508,14 +1508,14 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
     math::XYZTLorentzVector Zprime_W_anti_bottom_anti;
     math::XYZTLorentzVector Zprime_withtopbtag_W_anti_bottom_anti;
     
-    bool top_candidatefound=false;
-    bool top_anti_candidatefound=false;
-    bool top_withbtag_candidatefound=false;
-    bool top_withbtag_anti_candidatefound=false;
-    bool W_candidatefound=false;
-    bool W_anti_candidatefound=false;
-    bool bottom_candidatefound=false;
-    bool bottom_anti_candidatefound=false;
+//     bool top_candidatefound=false;
+//     bool top_anti_candidatefound=false;
+//     bool top_withbtag_candidatefound=false;
+//     bool top_withbtag_anti_candidatefound=false;
+//     bool W_candidatefound=false;
+//     bool W_anti_candidatefound=false;
+//     bool bottom_candidatefound=false;
+//     bool bottom_anti_candidatefound=false;
     
 /*    
     bool no_bottom_candidatesfound=false;
@@ -2191,22 +2191,22 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                     if(!(ZPrimeToTPrimeAllHadProcessor::Top_subbtag(*itJet,"M"))){
                         if(ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"M")){
                             tops.push_back(*itJet);
-                            top_candidatefound=true;
+//                             /*top_candidatefound*/=true;
 //                             std::cout<<"top with no subbtag found"<<endl;
                         }else{
                             tops_anti.push_back(*itJet);
-                            top_anti_candidatefound=true;
+//                             top_anti_candidatefound=true;
 //                             std::cout<<"top anti with no subbtag found"<<endl;
                         }
 
                     }else{
                         if(ZPrimeToTPrimeAllHadProcessor::Toptag(*itJet,"M")){
                             tops_withbtag.push_back(*itJet);
-                            top_withbtag_candidatefound=true;
+//                             top_withbtag_candidatefound=true;
 //                             std::cout<<"top withsubbtag found"<<endl;
                         }else{
                             tops_withbtag_anti.push_back(*itJet);
-                            top_withbtag_anti_candidatefound=true;
+//                             top_withbtag_anti_candidatefound=true;
 //                             std::cout<<"top anti withsubbtag found"<<endl;
                         }
                     }
@@ -2216,20 +2216,20 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
 //W candidates
                 if (ZPrimeToTPrimeAllHadProcessor::Wtag(*itJet, "M")){
                     Ws.push_back(*itJet);
-                    W_candidatefound=true;
+//                     W_candidatefound=true;
                 }
                 else {
                     Ws_anti.push_back(*itJet);
-                    W_anti_candidatefound=true;
+//                     W_anti_candidatefound=true;
                 }
                 
 //Z candidates
                 if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")/itJet->userFloat("NjettinessAK8CHS:tau1")<0.6 && 80<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<110){
                     Zs.push_back(*itJet);
-                    Z_candidatefound=true;
+//                     Z_candidatefound=true;
                 } else {
                     Zs_anti.push_back(*itJet);
-                    Z_anti_candidatefound=true;
+//                     Z_anti_candidatefound=true;
                 }
 //H candidates
                 if(itJet->userFloat("NjettinessAK8CHS:tau3")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")>0 && itJet->userFloat("NjettinessAK8CHS:tau1")>0 && itJet->userFloat("NjettinessAK8CHS:tau2")/itJet->userFloat("NjettinessAK8CHS:tau1")<0.6 && 90<itJet->userFloat("ak8PFJetsCHSSoftDropMass") && itJet->userFloat("ak8PFJetsCHSSoftDropMass")<160){
@@ -2248,17 +2248,19 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
                     }   
                     if (max_subjet_csv_v2>0.8){
                         Higgs_with1btag.push_back(*itJet);
-                        Higgs_with1btag_candidatefound=true;
+//                         Higgs_with1btag_candidatefound=true;
                     } else {
                         Higgs_with1btag_anti.push_back(*itJet);
-                        Higgs_with1btag_anti_candidatefound=true;
+//                         Higgs_with1btag_anti_candidatefound=true;
                     }
                     if (min_subjet_csv_v2>0.8){
                         Higgs_with2btag.push_back(*itJet);
-                        Higgs_with2btag_candidatefound=true;
+//                         Higgs_with2btag_candidatefound=true;
                     } else {
                         Higgs_with2btag_anti.push_back(*itJet);
-                        Higgs_with2btag_anti_candidatefound=true;                    }
+//                         Higgs_with2btag_anti_candidatefound=true;    
+                        
+                    }
                     
                 } else {
                     Higgs_with1btag_anti.push_back(*itJet);
@@ -2284,12 +2286,12 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
             
             if (ZPrimeToTPrimeAllHadProcessor::Bottomtag(*itJet,"M")){
                 bottoms.push_back(*itJet);
-                bottom_candidatefound=true; 
+//                 bottom_candidatefound=true; 
                 //separated_bottom_candidatefound=true;
             }
             else{
                 bottoms_anti.push_back(*itJet);
-                bottom_anti_candidatefound=true;
+//                 bottom_anti_candidatefound=true;
                 //separated_bottom_anti_candidatefound=true;
             }
         
@@ -2443,55 +2445,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
   if(Z_candidatefound && Z_anti_candidatefound && Higgs_candidatefound && Higgs_with1btag_candidatefound && Higgs_with2btag_candidatefound && Higgs_anti_candidatefound && Higgs_with1btag_anti_candidatefound && Higgs_with2btag_anti_candidatefound){std::cout<<"this event makes no sense"<<endl;}
 //     std::cout<<"heredetail1"<<endl;
     
-    
-    
-    
-///TPrime reconstruction Wtb-channel
-/* 
-  if ((top_candidatefound || top_withbtag_candidatefound || top_anti_candidatefound || top_withbtag_anti_candidatefound) && (W_candidatefound || W_anti_candidatefound) && (bottom_candidatefound ||bottom_anti_candidatefound)){
-      if (W_candidatefound && bottom_candidatefound){  
-        
-        Tprime=bottoms[0].p4()+Ws[0].p4();
-        if (Tprime.mass()>500){
-            Tprime_candidatefound=true;
-            vars.FillVar("Tprime_M",Tprime.mass());
-            vars.FillVar("Tprime_pt",Tprime.pt());
-        }      
-      }
-      
-      if (W_candidatefound && bottom_anti_candidatefound){
-        Tprime_bottom_anti=bottoms_anti[0].p4()+Ws[0].p4();
-        if (Tprime_bottom_anti.mass()>500){
-            Tprime_bottom_anti_candidatefound=true;
-            vars.FillVar("Tprime_bottom_anti_M",Tprime_bottom_anti.mass());
-            vars.FillVar("Tprime_bottom_anti_pt",Tprime_bottom_anti.pt());
-        }      
-      }
-      if (W_candidatefound && no_bottom_candidatesfound){
-        Tprime_no_bottom=no_bottoms[0].p4()+Ws[0].p4();
-        if (Tprime_no_bottom.mass()>500){
-            Tprime_no_bottom_candidatefound=true;
-            vars.FillVar("Tprime_no_bottom_M",Tprime_no_bottom.mass());
-            vars.FillVar("Tprime_no_bottom_pt",Tprime_no_bottom.pt());
-        }      
-      }      if (W_anti_candidatefound && bottom_candidatefound){
-        Tprime_W_anti=bottoms[0].p4()+Ws_anti[0].p4();
-        if (Tprime_W_anti.mass()>500){
-            Tprime_W_anti_candidatefound=true;
-            vars.FillVar("Tprime_W_anti_M",Tprime_W_anti.mass());
-            vars.FillVar("Tprime_W_anti_pt",Tprime_W_anti.pt());
-        }      
-      }
-      if (W_anti_candidatefound && bottom_anti_candidatefound){
-        Tprime_W_anti_bottom_anti=bottoms_anti[0].p4()+Ws_anti[0].p4();
-        if (Tprime_W_anti_bottom_anti.mass()>500){
-            Tprime_W_anti_bottom_anti_candidatefound=true;
-            vars.FillVar("Tprime_W_anti_bottom_anti_M",Tprime_W_anti_bottom_anti.mass());
-            vars.FillVar("Tprime_W_anti_bottom_anti_pt",Tprime_W_anti_bottom_anti.pt());
-        }      
-      } 
-  }
-*/
+    /*
   
   if ((top_candidatefound || top_withbtag_candidatefound || top_anti_candidatefound || top_withbtag_anti_candidatefound) && (W_candidatefound || W_anti_candidatefound) && (bottom_candidatefound ||bottom_anti_candidatefound)){
       if(W_candidatefound){
@@ -2532,7 +2486,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
          }          
      }
   }
- 
+ */
 
 
 
