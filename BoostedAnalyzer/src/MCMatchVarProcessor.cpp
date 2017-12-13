@@ -56,8 +56,8 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopLep_Nu_Phi",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_W_E",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_B_E",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Q1_E",-9.,"N_GenTopLep" );
-  vars.InitVars( "GenTopLep_Q2_E",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_Lep_E",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_Nu_E",-9.,"N_GenTopLep" );
   
   vars.InitVar( "GenHiggs_Pt",-9. );
   vars.InitVar( "GenHiggs_Eta",-9. );
