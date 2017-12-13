@@ -399,10 +399,10 @@ bool dfirst=true;
     
     for(uint i=0;i<blep_genjet.size();i++){
       if(blep_genjet[i].pt()>1){
-	      vars.FillVars( "GenTopLep_B_GenJet_Phi",i,blep_genjet[i].phi());
 	      vars.FillVars( "GenTopLep_B_GenJet_Pt",i,blep_genjet[i].pt() );
 	      vars.FillVars( "GenTopLep_B_GenJet_Eta",i,blep_genjet[i].eta());
-	      vars.FillVars( "GenTopLep_B_GenJet_Eta",i,blep_genjet[i].energy());
+	      vars.FillVars( "GenTopLep_B_GenJet_Phi",i,blep_genjet[i].phi());
+	      vars.FillVars( "GenTopLep_B_GenJet_E",i,blep_genjet[i].energy());
       }
       if(blep_hadron[i].pt()>1){
 	      vars.FillVars( "GenTopLep_B_Hadron_Pt",i,blep_hadron[i].pt() );
