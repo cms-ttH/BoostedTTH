@@ -118,6 +118,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenDarkMatterEvent.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/DarkMatterProcessor.hpp"
 
 
 //
@@ -531,6 +532,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"SlimmedNtuples")!=processorNames.end()) {
 	  treewriter->AddTreeProcessor(new SlimmedNtuples(),"SlimmedNtuples");
 	}
+	if(std::find(processorNames.begin(),processorNames.end(),"DarkMatterProcessor")!=processorNames.end()) {
+		treewriter->AddTreeProcessor(new DarkMatterProcessor(),"DarkMatterProcessor");
+        }
     }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample

@@ -25,13 +25,13 @@ void GenDarkMatterEvent::Initialize(std::vector<reco::GenParticle> prunedGenPart
 }
 
 // return the prunedGenParticles collection
-std::vector<reco::GenParticle> GenDarkMatterEvent::ReturnPrunedGenParticles()
+std::vector<reco::GenParticle> GenDarkMatterEvent::ReturnPrunedGenParticles() const
 {
     return prunedGenParticles;
 }
 
 // return the packedGenParticles collection
-std::vector<pat::PackedGenParticle> GenDarkMatterEvent::ReturnPackedGenParticles()
+std::vector<pat::PackedGenParticle> GenDarkMatterEvent::ReturnPackedGenParticles() const
 {
     return packedGenParticles;
 }
@@ -62,7 +62,7 @@ void GenDarkMatterEvent::Fill()
 }
 
 // return the lightest neutralinos in a vector
-std::vector<reco::GenParticle> GenDarkMatterEvent::ReturnNeutralinos()
+std::vector<reco::GenParticle> GenDarkMatterEvent::ReturnNeutralinos() const
 {
     if(not isFilled){
         std::cerr << "Attention: Neutralinos are not filled!";
@@ -71,7 +71,7 @@ std::vector<reco::GenParticle> GenDarkMatterEvent::ReturnNeutralinos()
 }
 
 // return the mediator particle
-reco::GenParticle GenDarkMatterEvent::ReturnMediator()
+reco::GenParticle GenDarkMatterEvent::ReturnMediator() const
 {
     if(not isFilled){
         std::cerr << "Attention: Mediator is not filled!";
@@ -80,25 +80,25 @@ reco::GenParticle GenDarkMatterEvent::ReturnMediator()
 }
 
 // return if the GenDarkMatterEvent has been filled
-bool GenDarkMatterEvent::IsFilled()
+bool GenDarkMatterEvent::IsFilled() const
 {
     return isFilled;
 }
 
 // return if the event has at least one lightest neutralino (PDGID 1000022)
-bool GenDarkMatterEvent::HasDarkMatter()
+bool GenDarkMatterEvent::HasDarkMatter() const
 {
     return hasDarkMatter;
 }
 
 //return the mass of the mediator particle
-double GenDarkMatterEvent::ReturnMediatorMass()
+double GenDarkMatterEvent::ReturnMediatorMass() const
 {
     return Mediator.mass();
 }
 
 // return the masses of the neutralinos in a vector
-std::vector<double> GenDarkMatterEvent::ReturnNeutralinoMasses()
+std::vector<double> GenDarkMatterEvent::ReturnNeutralinoMasses() const
 {
     std::vector<double> masses;
     for(size_t i=0;i<Neutralinos.size();i++){
@@ -108,14 +108,14 @@ std::vector<double> GenDarkMatterEvent::ReturnNeutralinoMasses()
 }
 
 // return the 4-vector of the mediator particle
-TLorentzVector GenDarkMatterEvent::ReturnMediator4Vector()
+TLorentzVector GenDarkMatterEvent::ReturnMediator4Vector() const
 {
     math::XYZTLorentzVector vec4 = Mediator.p4();
     return BoostedUtils::GetTLorentzVector(vec4);
 }
 
 // return the 4-vectors of the neutralinos in a vector
-std::vector<TLorentzVector> GenDarkMatterEvent::ReturnNeutralino4Vectors()
+std::vector<TLorentzVector> GenDarkMatterEvent::ReturnNeutralino4Vectors() const
 {
     std::vector<math::XYZTLorentzVector> vecs4;
     for(size_t i=0;i<Neutralinos.size();i++){
@@ -126,7 +126,7 @@ std::vector<TLorentzVector> GenDarkMatterEvent::ReturnNeutralino4Vectors()
 
 // returns a naively calculated MET
 // naively MET should be the pt of the sum of neutralinos and neutrinos 4-vectors
-double GenDarkMatterEvent::ReturnNaiveMET()
+double GenDarkMatterEvent::ReturnNaiveMET() const
 {
     math::XYZTLorentzVector vec4_invisibles;
     for(size_t i=0;i<Neutralinos.size();i++){

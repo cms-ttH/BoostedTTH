@@ -15,21 +15,21 @@ class GenDarkMatterEvent{
         void Initialize(std::vector<reco::GenParticle> prunedGenParticles_, std::vector<pat::PackedGenParticle> packedGenParticles_);
         void Fill();
         
-        std::vector<reco::GenParticle> ReturnPrunedGenParticles();
-        std::vector<pat::PackedGenParticle> ReturnPackedGenParticles();
+        std::vector<reco::GenParticle> ReturnPrunedGenParticles() const;
+        std::vector<pat::PackedGenParticle> ReturnPackedGenParticles() const;
         
-        reco::GenParticle ReturnMediator();
-        std::vector<reco::GenParticle> ReturnNeutralinos();
+        reco::GenParticle ReturnMediator() const;
+        std::vector<reco::GenParticle> ReturnNeutralinos() const;
         
-        bool HasDarkMatter();
-        bool IsFilled();
+        bool HasDarkMatter() const;
+        bool IsFilled() const;
         
-        double ReturnMediatorMass();
-        TLorentzVector ReturnMediator4Vector();
-        std::vector<double> ReturnNeutralinoMasses();
-        std::vector<TLorentzVector> ReturnNeutralino4Vectors();
+        double ReturnMediatorMass() const;
+        TLorentzVector ReturnMediator4Vector() const;
+        std::vector<double> ReturnNeutralinoMasses() const;
+        std::vector<TLorentzVector> ReturnNeutralino4Vectors() const;
         
-        double ReturnNaiveMET();
+        double ReturnNaiveMET() const;
   
     private:
         bool hasDarkMatter = false;
