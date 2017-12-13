@@ -15,6 +15,9 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   
   vars.InitVar( "NaiveMET" );
   
+  vars.InitVar( "N_Neutralinos","I" );
+  vars.InitVar( "N_Neutrinos","I" );
+  
   vars.InitVar( "Mediator_Mass" );
   vars.InitVar( "Mediator_Pt" );
   vars.InitVar( "Mediator_Phi" );
@@ -61,6 +64,15 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "delta_R_N1_N2" );
   vars.InitVar( "delta_R_Med_N1" );
   vars.InitVar( "delta_R_Med_N2" );
+  
+  vars.InitVars( "Neutrino_Mass","N_Neutrinos" );
+  vars.InitVars( "Neutrino_Pt","N_Neutrinos" );
+  vars.InitVars( "Neutrino_Phi","N_Neutrinos" );
+  vars.InitVars( "Neutrino_Eta","N_Neutrinos" );
+  vars.InitVars( "Neutrino_Energy","N_Neutrinos" );
+  vars.InitVars( "Neutrino_Px","N_Neutrinos" );
+  vars.InitVars( "Neutrino_Py","N_Neutrinos" );
+  vars.InitVars( "Neutrino_Pz","N_Neutrinos" );
 
   initialized=true;
 }
@@ -81,6 +93,10 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   
   TLorentzVector Mediator_p4 = DM_Evt.ReturnMediator4Vector();
   std::vector<TLorentzVector> Neutralinos_p4 = DM_Evt.ReturnNeutralino4Vectors();
+  std::vector<TLorentzVector> Neutrinos_p4 = DM_Evt.ReturnNeutrino4Vectors();
+  
+  vars.FillVar( "N_Neutralinos",Neutralinos_p4.size() );
+  vars.FillVar( "N_Neutrinos",Neutrinos_p4.size() );
   
   vars.FillVar( "NaiveMET",DM_Evt.ReturnNaiveMET());
   
@@ -130,6 +146,18 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   vars.FillVar( "delta_R_N1_N2",Neutralinos_p4[0].DeltaR(Neutralinos_p4[1]));
   vars.FillVar( "delta_R_Med_N1",Mediator_p4.DeltaR(Neutralinos_p4[0]));
   vars.FillVar( "delta_R_Med_N2",Mediator_p4.DeltaR(Neutralinos_p4[1]));
+  
+  for(std::vector<TLorentzVector>::const_iterator itNeutrino = Neutrinos_p4.begin() ; itNeutrino != Neutrinos_p4.end(); ++itNeutrino){
+    int iNeutrino = itNeutrino - Neutrinos_p4.begin();
+    vars.FillVars( "Neutrino_Mass",iNeutrino,itNeutrino->M() );
+    vars.FillVars( "Neutrino_Pt",iNeutrino,itNeutrino->Pt() );
+    vars.FillVars( "Neutrino_Phi",iNeutrino,itNeutrino->Phi() );
+    vars.FillVars( "Neutrino_Eta",iNeutrino,itNeutrino->Eta() );
+    vars.FillVars( "Neutrino_Energy",iNeutrino,itNeutrino->E() );
+    vars.FillVars( "Neutrino_Px",iNeutrino,itNeutrino->Px() );
+    vars.FillVars( "Neutrino_Py",iNeutrino,itNeutrino->Py() );
+    vars.FillVars( "Neutrino_Pz",iNeutrino,itNeutrino->Pz() );
+  }
   
   }
 }

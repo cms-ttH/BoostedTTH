@@ -20,6 +20,7 @@ class GenDarkMatterEvent{
         
         reco::GenParticle ReturnMediator() const;
         std::vector<reco::GenParticle> ReturnNeutralinos() const;
+        std::vector<reco::GenParticle> ReturnNeutrinos() const;
         
         bool HasDarkMatter() const;
         bool IsFilled() const;
@@ -28,6 +29,7 @@ class GenDarkMatterEvent{
         TLorentzVector ReturnMediator4Vector() const;
         std::vector<double> ReturnNeutralinoMasses() const;
         std::vector<TLorentzVector> ReturnNeutralino4Vectors() const;
+        std::vector<TLorentzVector> ReturnNeutrino4Vectors() const;
         
         double ReturnNaiveMET() const;
   

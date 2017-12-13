@@ -79,6 +79,15 @@ reco::GenParticle GenDarkMatterEvent::ReturnMediator() const
     return Mediator;
 }
 
+// return the neutrinos in a vector
+std::vector<reco::GenParticle> GenDarkMatterEvent::ReturnNeutrinos() const
+{
+    if(not isFilled){
+        std::cerr << "Attention: Neutrinos are not filled!";
+    }
+    return Neutrinos;
+}
+
 // return if the GenDarkMatterEvent has been filled
 bool GenDarkMatterEvent::IsFilled() const
 {
@@ -120,6 +129,16 @@ std::vector<TLorentzVector> GenDarkMatterEvent::ReturnNeutralino4Vectors() const
     std::vector<math::XYZTLorentzVector> vecs4;
     for(size_t i=0;i<Neutralinos.size();i++){
         vecs4.push_back(Neutralinos[i].p4());
+    }
+    return BoostedUtils::GetTLorentzVectors(vecs4);
+}
+
+// return the 4-vectors of the neutrinos in a vector
+std::vector<TLorentzVector> GenDarkMatterEvent::ReturnNeutrino4Vectors() const
+{
+    std::vector<math::XYZTLorentzVector> vecs4;
+    for(size_t i=0;i<Neutrinos.size();i++){
+        vecs4.push_back(Neutrinos[i].p4());
     }
     return BoostedUtils::GetTLorentzVectors(vecs4);
 }
