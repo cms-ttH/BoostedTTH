@@ -41,6 +41,7 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopLep_Pt",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_Eta",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_Phi",-9.,"N_GenTopLep" );
+  vars.InitVars( "GenTopLep_E",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_W_Pt",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_B_Pt",-9.,"N_GenTopLep" );
   vars.InitVars( "GenTopLep_Lep_Pt",-9.,"N_GenTopLep" );
