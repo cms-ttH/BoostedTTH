@@ -119,7 +119,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenDarkMatterEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DarkMatterProcessor.hpp"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/MonoJetGenSelectionProcessor.hpp"
 
 //
 // class declaration
@@ -534,6 +534,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"DarkMatterProcessor")!=processorNames.end()) {
 		treewriter->AddTreeProcessor(new DarkMatterProcessor(),"DarkMatterProcessor");
+        }
+        if(std::find(processorNames.begin(),processorNames.end(),"MonoJetGenSelectionProcessor")!=processorNames.end()) {
+		treewriter->AddTreeProcessor(new MonoJetGenSelectionProcessor(),"MonoJetGenSelectionProcessor");
         }
     }
 
