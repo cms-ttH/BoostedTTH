@@ -209,10 +209,12 @@ process.SelectedJetProducer.JetID="loose"
 
 # GenCollectionProducer
 process.load("BoostedTTH.GenCollectionProducer.GenCollectionProducer_cfi")
-process.GenCollectionProducer.collection_name=["Electrons,Muons,Taus,Jets"]
-process.GenCollectionProducer.collection_type=["Electron,Muon,Tau,Jet"]
-process.GenCollectionProducer.pt_min=[10.,10.,10.,10.]
-process.GenCollectionProducer.eta_max=[2.4,2.4,2.4,2.4]
+process.GenCollectionProducer.collection_name=["CustomGenElectrons","CustomGenMuons","CustomGenTaus","CustomGenJets","CustomGenJetsLoose"]
+process.GenCollectionProducer.collection_type=["Electron","Muon","Tau","Jet","Jet"]
+process.GenCollectionProducer.pt_min=[10.,10.,18.,30.,20.]
+process.GenCollectionProducer.eta_max=[2.5,2.4,2.3,2.5,2.4]
+
+#process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
 # load and run the boosted analyzer
 if options.isData:
@@ -289,5 +291,5 @@ process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer*process
 if not options.isData:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
 
-
+#process.p *= process.content
 process.p *= process.BoostedAnalyzer

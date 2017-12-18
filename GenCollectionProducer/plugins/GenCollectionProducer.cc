@@ -117,10 +117,10 @@ GenCollectionProducer::GenCollectionProducer(const edm::ParameterSet& iConfig)
     // register the objects which will later be put into the edm::event instance
     for(size_t i=0;i<collection_name.size();i++){
         if(collection_type.at(i)=="Jet"){
-            produces<std::vector<reco::GenJet>>("CustomGen"+collection_name.at(i));
+            produces<std::vector<reco::GenJet>>(collection_name.at(i));
         }
         else {
-            produces<std::vector<reco::GenParticle>>("CustomGen"+collection_name.at(i));
+            produces<std::vector<reco::GenParticle>>(collection_name.at(i));
         }
     }
 }
@@ -172,12 +172,12 @@ GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
         if(collection_type.at(i)=="Jet"){
             std::vector<reco::GenJet> collection = ApplyPtEtaCuts(*GenJets,pt_min.at(i),eta_max.at(i));
             std::unique_ptr<std::vector<reco::GenJet>> pOut(new std::vector<reco::GenJet>(collection));
-            iEvent.put(std::move(pOut),"CustomGen"+collection_name.at(i));
+            iEvent.put(std::move(pOut),collection_name.at(i));
         }
         else {
             std::vector<reco::GenParticle> collection = ApplyPtEtaCuts(*GenParticles,collection_type.at(i),pt_min.at(i),eta_max.at(i));
             std::unique_ptr<std::vector<reco::GenParticle>> pOut(new std::vector<reco::GenParticle>(collection));
-            iEvent.put(std::move(pOut),"CustomGen"+collection_name.at(i));
+            iEvent.put(std::move(pOut),collection_name.at(i));
         }
     }
         
