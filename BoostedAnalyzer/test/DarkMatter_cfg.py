@@ -207,6 +207,13 @@ process.SelectedJetProducer.systematics=[""]
 process.SelectedJetProducer.PUJetIDMins=["none","none"]
 process.SelectedJetProducer.JetID="loose"
 
+# GenCollectionProducer
+process.load("BoostedTTH.GenCollectionProducer.GenCollectionProducer_cfi")
+process.GenCollectionProducer.collection_name=["Electrons,Muons,Taus,Jets"]
+process.GenCollectionProducer.collection_type=["Electron,Muon,Tau,Jet"]
+process.GenCollectionProducer.pt_min=[10.,10.,10.,10.]
+process.GenCollectionProducer.eta_max=[2.4,2.4,2.4,2.4]
+
 # load and run the boosted analyzer
 if options.isData:
     process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
@@ -277,7 +284,7 @@ else:
   ##### DEFINE PATH ##########
 process.p = cms.Path()
 
-process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedTauProducer*process.SelectedJetProducer
+process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedTauProducer*process.SelectedJetProducer*process.GenCollectionProducer
 
 if not options.isData:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
