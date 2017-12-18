@@ -262,14 +262,16 @@ if options.isData:
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
-  #"WeightProcessor",
+  "WeightProcessor",
   #"essentialMCMatchVarProcessor",
-  "essentialBasicVarProcessor",
+  #"essentialBasicVarProcessor",
   #"essentialMVAVarProcessor",
   #"BDTVarProcessor",
   #"TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"TTBBStudienProcessor"
+  "DarkMatterProcessor",
+  #"MonoJetGenSelectionProcessor"
   )
   
   ##### DEFINE PATH ##########
