@@ -21,6 +21,8 @@ void MonoJetGenSelectionProcessor::Process(const InputCollections& input,Variabl
   
   vars.FillVar("GenMETSelection",GenMETSelection(input));
   vars.FillVar("GenMonoJetSelection",GenMonoJetSelection(input));
+  vars.FillVar("GenLeptonVetoSelection",GenLeptonVetoSelection(input));
+  vars.FillVar("GenBTagVetoSelection",GenBTagVetoSelection(input));
 }
 
 int MonoJetGenSelectionProcessor::GenVertexSelection(const InputCollections& input){
@@ -41,17 +43,17 @@ int MonoJetGenSelectionProcessor::GenMETSelection(const InputCollections& input)
 
 int MonoJetGenSelectionProcessor::GenMonoJetSelection(const InputCollections& input){
 
-  if(input.genJets.size()<1) return 0;
+  if(input.customGenJets.size()<1) return 0;
   
   bool dPhi_jet_met_criterium = true;
   
-  // genjets are already ordered with respect to pt
-  bool leading_jet_criterium = input.genJets.at(0).pt()>pt_min && abs(input.genJets.at(0).eta())<eta_max && charged_hadron_fraction_min<input.genJets.at(0).emEnergy()/input.genJets.at(0).energy() && neutral_hadron_fraction_max>input.genJets.at(0).hadEnergy()/input.genJets.at(0).energy();
+  // customGenJets are already ordered with respect to pt
+  bool leading_jet_criterium = input.customGenJets.at(0).pt()>pt_min && abs(input.customGenJets.at(0).eta())<eta_max && charged_hadron_fraction_min<input.customGenJets.at(0).emEnergy()/input.customGenJets.at(0).energy() && neutral_hadron_fraction_max>input.customGenJets.at(0).hadEnergy()/input.customGenJets.at(0).energy();
   
   if(!leading_jet_criterium) return 0;
   
-  for(size_t i=0;i<input.genJets.size()&&i<4;i++) {
-      dPhi_jet_met_criterium = abs(input.genJets.at(i).phi()-input.correctedMET.genMET()->phi())>0.5;
+  for(size_t i=0;i<input.customGenJets.size()&&i<4;i++) {
+      dPhi_jet_met_criterium = abs(input.customGenJets.at(i).phi()-input.correctedMET.genMET()->phi())>0.5;
       if(!dPhi_jet_met_criterium) return 0;
   }
   
@@ -60,11 +62,20 @@ int MonoJetGenSelectionProcessor::GenMonoJetSelection(const InputCollections& in
 
 int MonoJetGenSelectionProcessor::GenLeptonVetoSelection(const InputCollections& input){
 
-    return 0;
+    if(input.customGenElectrons.size()>0 || input.customGenMuons.size()>0 || input.customGenTaus.size()>0) {
+        return 0;
+    }
+    else{
+        return 1;    
+    }
 }
 
 int MonoJetGenSelectionProcessor::GenBTagVetoSelection(const InputCollections& input){
 
-    return 0;
+    for(auto& jet : input.customGenJetsLoose){
+        if(BoostedUtils::PassesCSV(jet, 'M')) return 0;
+    }
+
+    return 1;    
 }
 

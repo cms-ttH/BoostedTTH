@@ -85,7 +85,7 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/BoostedMCMatchVarProcessor.hpp"
+//#include "BoostedTTH/BoostedAnalyzer/interface/BoostedMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AdditionalJetProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BasicVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialBasicVarProcessor.hpp"
@@ -95,8 +95,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DNNVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMCMatchVarProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/BoostedAk4VarProcessor.hpp"
+//#include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
+//#include "BoostedTTH/BoostedAnalyzer/interface/BoostedAk4VarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttHVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
@@ -259,6 +259,12 @@ private:
     // LHERunInfo data access token
     edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoToken;
     
+    edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenElectrons;
+    edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenMuons;
+    edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenTaus;
+    edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJets;
+    edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsLoose;
+    
     //mem classifier for MVAVarProcessor
     MEMClassifier* pointerToMEMClassifier; 
     BDTClassifier* pointerToCommonBDT5Classifier;
@@ -340,6 +346,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     genJetsToken            = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets"));
     conversionCollectionToken    = consumes< reco::ConversionCollection > (iConfig.getParameter<edm::InputTag>("conversionCollection"));
     LHERunInfoToken = consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer"));
+    
+    customGenElectrons = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenElectrons"));
+    customGenMuons = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenMuons"));
+    customGenTaus = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenTaus"));
+    customGenJets = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("customGenJets"));
+    customGenJetsLoose = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("customGenJetsLoose"));
     
     // initialize helper classes
     helper.SetUp("2015_74x", isData ? -1 : 1, analysisType::LJ, isData);
@@ -466,27 +478,27 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
 	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedAk4VarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BoostedAk4VarProcessor(),"BoostedAk4VarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
-      treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) {
-      treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
-  }
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) {
-      treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
-	}
-  if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsVarProcessor")!=processorNames.end()) {
-      treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4Higgs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4Higgs_",doBoostedMEM),"BoostedTopAk4HiggsVarProcessor");
-  }
-  if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsFromAk4CVarProcessor")!=processorNames.end()) {
-      treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
-  }
+        //if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
+            //treewriter->AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
+        //}
+        //if(std::find(processorNames.begin(),processorNames.end(),"BoostedAk4VarProcessor")!=processorNames.end()) {
+            //treewriter->AddTreeProcessor(new BoostedAk4VarProcessor(),"BoostedAk4VarProcessor");
+        //}
+        //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
+        //treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+        //}
+        //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) {
+        //treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+        //}
+        //if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) {
+        //treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+        //}
+        //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsVarProcessor")!=processorNames.end()) {
+        //treewriter->AddTreeProcessor(new //ttHVarProcessor(BoostedRecoType::BoostedTopAk4Higgs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4Higgs_",doBoostedMEM),"BoostedTopAk4HiggsVarProcessor");
+        //}
+        //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsFromAk4CVarProcessor")!=processorNames.end()) {
+        //treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
+        //}
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier),"BDTVarProcessor");
 	}
@@ -499,9 +511,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"essentialMCMatchVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new essentialMCMatchVarProcessor(),"essentialMCMatchVarProcessor");
 	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
-	}
+	//if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) {
+	    //treewriter->AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
+	//}
 	if(std::find(processorNames.begin(),processorNames.end(),"AdditionalJetProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new AdditionalJetProcessor(),"AdditionalJetProcessor");
 	}
@@ -664,6 +676,17 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	iEvent.getByToken( genParticlesToken,h_genParticles );
 	iEvent.getByToken( genJetsToken,h_genJets );
     }
+    
+    edm::Handle< std::vector<reco::GenParticle> > CustomGenElectrons;
+    edm::Handle< std::vector<reco::GenParticle> > CustomGenMuons;
+    edm::Handle< std::vector<reco::GenParticle> > CustomGenTaus;
+    edm::Handle< std::vector<reco::GenJet> > CustomGenJets;
+    edm::Handle< std::vector<reco::GenJet> > CustomGenJetsLoose;
+    iEvent.getByToken( customGenElectrons,CustomGenElectrons );
+    iEvent.getByToken( customGenMuons,CustomGenMuons );
+    iEvent.getByToken( customGenTaus,CustomGenTaus );
+    iEvent.getByToken( customGenJets,CustomGenJets );
+    iEvent.getByToken( customGenJetsLoose,CustomGenJetsLoose );
 
     // selected vertices and set vertex for MiniAODhelper
     // TODO: vertex selection in external producer
@@ -691,6 +714,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     /**** GET BOOSTEDJETS ****/
     //TODO: also in external producer?
+    
     const JetCorrector* ak4corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
     helper.SetJetCorrector(ak4corrector);
 
@@ -803,7 +827,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  weights,
 					  iEvent,
 					  iSetup,
-                                          jetSystematics[isys]
+                                          jetSystematics[isys],
+                                          *CustomGenJets,
+                                          *CustomGenJetsLoose,
+                                          *CustomGenElectrons,
+                                          *CustomGenMuons,
+                                          *CustomGenTaus
 					  ));
 
     }

@@ -57,7 +57,13 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::map<std::string,float>&            weights_,
 		    const edm::Event&                             iEvent_,
 		    const edm::EventSetup&                        iSetup_,
-                    const Systematics::Type&                      systematic_
+                    const Systematics::Type&                      systematic_,
+                    const std::vector<reco::GenJet>&              customGenJets_,
+                    const std::vector<reco::GenJet>&              customGenJetsLoose_,
+                    const std::vector<reco::GenParticle>&         customGenElectrons_,
+                    const std::vector<reco::GenParticle>&         customGenMuons_,
+                    const std::vector<reco::GenParticle>&         customGenTaus_
+                    
 		      /**** bjetness code ****/
 
 		            ):
@@ -85,7 +91,12 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     weights(weights_),
 		    iEvent(iEvent_),
 		    iSetup(iSetup_),
-		    systematic(systematic_)
+		    systematic(systematic_),
+		    customGenJets(customGenJets_),
+		    customGenJetsLoose(customGenJetsLoose_),
+		    customGenElectrons(customGenElectrons_),
+		    customGenMuons(customGenMuons_),
+		    customGenTaus(customGenTaus_)
                     {}
 
 /**
@@ -124,8 +135,12 @@ InputCollections(   const InputCollections&                       input,
                     weights(weights_),
 		    iEvent(input.iEvent),
 		    iSetup(input.iSetup),
-		    systematic(input.systematic)
-
+		    systematic(input.systematic),
+		    customGenJets(input.customGenJets),
+		    customGenJetsLoose(input.customGenJetsLoose),
+		    customGenElectrons(input.customGenElectrons),
+		    customGenMuons(input.customGenMuons),
+		    customGenTaus(input.customGenTaus)
                     {}
 
   const EventInfo&                              eventInfo;
@@ -153,6 +168,11 @@ InputCollections(   const InputCollections&                       input,
   const edm::Event &                            iEvent;
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;
+  const std::vector<reco::GenJet>&              customGenJets;
+  const std::vector<reco::GenJet>&              customGenJetsLoose;
+  const std::vector<reco::GenParticle>&         customGenElectrons;
+  const std::vector<reco::GenParticle>&         customGenMuons;
+  const std::vector<reco::GenParticle>&         customGenTaus;
 
 };
 

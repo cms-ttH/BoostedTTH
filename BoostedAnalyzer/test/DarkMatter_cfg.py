@@ -280,7 +280,7 @@ else:
   #"ReconstructionMEvarProcessor",
   #"TTBBStudienProcessor"
   "DarkMatterProcessor",
-  #"MonoJetGenSelectionProcessor"
+  "MonoJetGenSelectionProcessor"
   )
   
   ##### DEFINE PATH ##########

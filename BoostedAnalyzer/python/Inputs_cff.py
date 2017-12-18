@@ -29,4 +29,9 @@ Inputs_tth_sl= cms.PSet(
     conversionCollection= cms.InputTag("reducedEgamma:reducedConversions"),
     electronMVAvalues = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
     electronMVAcategories = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Categories"),
+    customGenElectrons = cms.InputTag("GenCollectionProducer:CustomGenElectrons"),
+    customGenMuons = cms.InputTag("GenCollectionProducer:CustomGenMuons"),
+    customGenTaus = cms.InputTag("GenCollectionProducer:CustomGenTaus"),
+    customGenJets = cms.InputTag("GenCollectionProducer:CustomGenJets"),
+    customGenJetsLoose = cms.InputTag("GenCollectionProducer:CustomGenJetsLoose")
 )
