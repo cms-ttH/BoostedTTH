@@ -283,14 +283,14 @@ process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedT"]*3
+process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedT","electron80XCutBasedT","electron80XCutBasedT_IsoInverted"]
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
 
 process.SelectedMuonProducer.leptons=muonCollection
 process.SelectedMuonProducer.ptMins=[15.,25.,26.]
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.1]
-process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
+process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight_IsoInverted"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
 process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
@@ -526,7 +526,7 @@ if options.isData:
 process.BoostedAnalyzer.selectionNames = [
 "FilterSelection",
 "VertexSelection",
-"LeptonSelection",
+"LeptonSelection_QCDControlregion",
 "JetTagSelection"
 ]
 if options.additionalSelection!="NONE":

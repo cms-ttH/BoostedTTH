@@ -37,6 +37,8 @@ void DNNVarProcessor::Process(const InputCollections& input,VariableContainer& v
     if(!initialized) cerr << "tree processor not initialized" << endl;
     if(input.selectedMuons.size()+input.selectedElectrons.size()!=1) return;
     
+    std::vector<double> add_features;
+    
     dnn_output.reset();
     
     std::vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
@@ -46,7 +48,7 @@ void DNNVarProcessor::Process(const InputCollections& input,VariableContainer& v
     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
         jetcsvs.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
     }
-    dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs,lepvecs[0],metP4);
+    dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs,lepvecs[0],metP4,add_features);
     
     vars.FillVar("DNN_RWTH_ttH",dnn_output.ttH());
     vars.FillVar("DNN_RWTH_ttbb",dnn_output.ttbb());

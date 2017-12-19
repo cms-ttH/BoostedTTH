@@ -26,6 +26,7 @@
 #include "TTH/CommonClassifier/interface/BDTClassifier.h"
 #include "TTH/CommonClassifier/interface/DLBDTClassifier.h"
 #include "TTH/CommonClassifier/interface/DNNClassifier.h"
+#include "TTH/CommonClassifier/interface/MEMClassifier.h"
 
 
 class Synchronizer{
@@ -34,7 +35,7 @@ public:
     Synchronizer(const edm::ParameterSet& iConfig,edm::ConsumesCollector && iC);
     ~Synchronizer ();
     void DumpSyncExe(const std::vector<InputCollections>& inputs, bool dumpExtended, std::vector<int> dumpAlwaysEvents);
-    void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,BDTClassifier* bdtclassifier_,DLBDTClassifier* dlbdtclassifier_,DNNClassifier_SL* sldnnclassifier_,DNNClassifier_DL* dldnnclassifier_,bool dumpExtended);
+    void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,BDTClassifier* bdtclassifier_,DLBDTClassifier* dlbdtclassifier_,DNNClassifier_SL* sldnnclassifier_,DNNClassifier_DL* dldnnclassifier_,MEMClassifier* memclassifier_,bool dumpExtended);
     void DumpSyncExeHeader(std::ostream &out, bool dumpExtended=false);
 
 
@@ -55,6 +56,7 @@ private:
     DLBDTClassifier* dlbdtclassifier;
     DNNClassifier_SL* sldnnclassifier;
     DNNClassifier_DL* dldnnclassifier;
+    MEMClassifier* memclassifier;
 
     bool initializedCutflowsWithSelections;
     std::string dataset;

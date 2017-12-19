@@ -522,6 +522,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         std::vector<double> jetcsvs;
         std::vector<double> jetcsvs_dnn;
         std::vector<double> loose_jetcsvs;
+        std::vector<double> add_features;
+        std::vector<unsigned int> out_best_perm;
         for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
             jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
             jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
@@ -529,8 +531,19 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
             loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
         }
-        bdt_output=bdtclassifier->GetBDTOutput(lepvecs, jetvecs, jetcsvs,loose_jetvecs,loose_jetcsvs,metP4);
-        DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs[0],metP4);
+        double out_P_4b=-1;
+        double out_P_2b=-1;
+        double eth_blr=-1;
+        double eth_blr_trans=-1;
+        if(jetvecs.size()>3){
+            eth_blr=memclassifier->GetBTagLikelihoodRatio(jetvecs,jetcsvs,out_best_perm,out_P_4b,out_P_2b);
+        }
+        eth_blr_trans=log(eth_blr/(1-eth_blr));
+        add_features.push_back(eth_blr);
+        add_features.push_back(eth_blr_trans);
+        add_features.push_back(0.);
+        bdt_output=bdtclassifier->GetBDTOutput(lepvecs, jetvecs, jetcsvs,metP4);
+        DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs[0],metP4,add_features);
         dnn_ttbb_output = dnn_output.ttbb();
         dnn_ttH_output = dnn_output.ttH();
     }
@@ -553,13 +566,26 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
         std::vector<double> jetcsvs;
         std::vector<double> jetcsvs_dnn;
+        std::vector<double> add_features;
+        std::vector<unsigned int> out_best_perm;
         TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
         for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
             jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
             jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
         }
+        double out_P_4b=-1;
+        double out_P_2b=-1;
+        double eth_blr=-1;
+        double eth_blr_trans=-1;
+        if(jetvecs.size()>3){
+            eth_blr=memclassifier->GetBTagLikelihoodRatio(jetvecs,jetcsvs,out_best_perm,out_P_4b,out_P_2b);
+        }
+        eth_blr_trans=log(eth_blr/(1-eth_blr));
+        add_features.push_back(eth_blr);
+        add_features.push_back(eth_blr_trans);
+        add_features.push_back(0.);
         bdt_output=dlbdtclassifier->GetBDTOutput(lepvecs,lepcharges,jetvecs,jetcsvs,metP4);
-        DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs,metP4);
+        DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs,metP4,add_features);
         dnn_ttbb_output = dnn_output.ttbb();
         dnn_ttH_output = dnn_output.ttH();
     }
@@ -632,7 +658,7 @@ void Synchronizer::DumpSyncExe(const std::vector< InputCollections>& inputs, boo
 
 
 
-void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,BDTClassifier* bdtclassifier_,DLBDTClassifier* dlbdtclassifier_,DNNClassifier_SL* sldnnclassifier_,DNNClassifier_DL* dldnnclassifier_,bool dumpExtended){
+void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,BDTClassifier* bdtclassifier_,DLBDTClassifier* dlbdtclassifier_,DNNClassifier_SL* sldnnclassifier_,DNNClassifier_DL* dldnnclassifier_,MEMClassifier* memclassifier_,bool dumpExtended){
     systematics=jetSystematics;
     helper=helper_;
     leptonsfhelper=leptonsfhelper_;
@@ -640,6 +666,7 @@ void Synchronizer::Init(std::string filename, const std::vector<std::string>& je
     dlbdtclassifier=dlbdtclassifier_;
     sldnnclassifier=sldnnclassifier_;
     dldnnclassifier=dldnnclassifier_;
+    memclassifier=memclassifier_;
     for(const auto & s : systematics){
 	cutflowsSL.push_back(Cutflow());
 	cutflowsSL.back().Init();
