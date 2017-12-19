@@ -289,6 +289,7 @@ process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[10.,10.,40.]
 process.SelectedElectronProducer.etaMaxs=[2.5,2.5,2.5]
 process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedV","electron80XCutBasedT","electron80XCutBasedT"]
+#process.SelectedElectronProducer.leptonIDs=["none","none","none"]
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
 
@@ -296,6 +297,7 @@ process.SelectedMuonProducer.leptons=muonCollection
 process.SelectedMuonProducer.ptMins=[10.,10.,20.]
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.4]
 process.SelectedMuonProducer.leptonIDs=["loose","tight","tight"]
+#process.SelectedMuonProducer.leptonIDs=["none","none","none"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
 process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
@@ -307,6 +309,7 @@ process.SelectedTauProducer.leptons=tauCollection
 process.SelectedTauProducer.ptMins=[18.,18.,18.]
 process.SelectedTauProducer.etaMaxs=[2.3,2.3,2.3]
 process.SelectedTauProducer.leptonIDs=["tauLoose","tauMedium","tauTight"]
+#process.SelectedTauProducer.leptonIDs=["none","none","none"]
 process.SelectedTauProducer.collectionNames=["selectedTausLoose","selectedTausDL","selectedTaus"]
 process.SelectedTauProducer.isData=options.isData
 
