@@ -575,7 +575,7 @@ else:
   #"essentialBasicVarProcessor",
   #"essentialMVAVarProcessor",
   #"BDTVarProcessor",
-  #"TriggerVarProcessor",
+  "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"TTBBStudienProcessor"
   "DarkMatterProcessor",
