@@ -1,5 +1,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/MonoJetGenSelectionProcessor.hpp"
 
+// processor to write info to ntuple whether the event does fulfill all selection on GEN level
+
+
 using namespace std;
 
 MonoJetGenSelectionProcessor::MonoJetGenSelectionProcessor(){}
@@ -25,11 +28,13 @@ void MonoJetGenSelectionProcessor::Process(const InputCollections& input,Variabl
   vars.FillVar("GenBTagVetoSelection",GenBTagVetoSelection(input));
 }
 
+// needs to done correctly, is there a GenVertex Collection??
 int MonoJetGenSelectionProcessor::GenVertexSelection(const InputCollections& input){
 
-    return 0;
+    return 1;
 }
 
+// check if the MET Selection is fulfilled on GEN level
 int MonoJetGenSelectionProcessor::GenMETSelection(const InputCollections& input){
 
     if(input.correctedMET.genMET()!=0){
@@ -41,6 +46,7 @@ int MonoJetGenSelectionProcessor::GenMETSelection(const InputCollections& input)
     return 0;
 }
 
+// check if the MonoJetSelection is fullfilled on GEN level
 int MonoJetGenSelectionProcessor::GenMonoJetSelection(const InputCollections& input){
 
   if(input.customGenJets.size()<1) return 0;
@@ -60,6 +66,7 @@ int MonoJetGenSelectionProcessor::GenMonoJetSelection(const InputCollections& in
   return 1;
 }
 
+// check if the LeptonVetoSelection is fulfilled on GEN level
 int MonoJetGenSelectionProcessor::GenLeptonVetoSelection(const InputCollections& input){
 
     if(input.customGenElectrons.size()>0 || input.customGenMuons.size()>0 || input.customGenTaus.size()>0) {
@@ -70,6 +77,7 @@ int MonoJetGenSelectionProcessor::GenLeptonVetoSelection(const InputCollections&
     }
 }
 
+// check if the BTagVetoSelection is fulfilled on GEN level
 int MonoJetGenSelectionProcessor::GenBTagVetoSelection(const InputCollections& input){
 
     for(auto& jet : input.customGenJetsLoose){
