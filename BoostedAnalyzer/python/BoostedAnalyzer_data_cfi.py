@@ -5,9 +5,9 @@ from BoostedTTH.BoostedAnalyzer.Inputs_cff import *
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
     Inputs_tth_sl, # defined in Inputs_cff
-    LeptonSelectionData, # defined in Selection_cff
-    DiLeptonSelectionData, # defined in Selection_cff
-    JetTagSelection, # defined in Selection_cff
+    #LeptonSelectionData, # defined in Selection_cff
+    #DiLeptonSelectionData, # defined in Selection_cff
+    #JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
     checkBasicDataTriggers, # defined in Selection_cff
     filtersMC, # defined in Selection_cff
@@ -41,8 +41,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     minJetsForMEM = cms.int32(4),
     minTagsForMEM = cms.int32(3),
 
-    selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor"),
+    selectionNames = cms.vstring("VertexSelection","METSelection","MonoJetSelection","LeptonVetoSelection","BTagVetoSelection"),
+    processorNames = cms.vstring("WeightProcessor","TriggerVarProcessor","DarkMatterProcessor","MonoJetGenSelectionProcessor"),
 
     outfileName = cms.string("BoostedTTH"),
 )
