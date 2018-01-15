@@ -142,7 +142,7 @@ private:
     virtual void endRun(edm::Run const& iRun, edm::EventSetup const& iSetup) override;
     virtual void beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup) override;
     float GetTopPtWeight(const float& toppt1, const float& toppt2);
-    map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype=Systematics::NA);
+    map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype=Systematics::NA);
     std::string outfileName(const std::string& basename,const Systematics::Type& sysType);
     std::string systName(const Systematics::Type& sysType);
 
@@ -804,7 +804,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // inputs
     vector<InputCollections> inputs;
     for(uint isys=0; isys<jetSystematics.size(); isys++){
-        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
+        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*(hs_selectedJetsLoose[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
 					  filterInfo,
@@ -886,7 +886,7 @@ float BoostedAnalyzer::GetTopPtWeight(const float& toppt1,const float& toppt2){
     return sqrt(sf1*sf2);
 }
 
-map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype){
+map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype){
     map<string,float> weights;
 
     if(isData){
@@ -908,10 +908,10 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     }
 
     //dummy variables for the getCSVWeight function, might be useful for checks
-    //double csvWgtHF, csvWgtLF, csvWgtCF;
+    double csvWgtHF, csvWgtLF, csvWgtCF;
 
     float xsweight = eventWeight;
-    //float csvweight = 1.;
+    float csvweight = 1.;
     float puweight = 1.;
     float topptweight = genTopEvt.IsTTbar()? GetTopPtWeight(genTopEvt.GetHardTop().pt(),genTopEvt.GetHardTopBar().pt()) : 1.;
     //float topptweightUp = 1.0 + 2.0*(topptweight-1.0);
@@ -921,7 +921,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     std::vector<double> jetEtas;
     std::vector<double> jetCSVs;
     std::vector<int> jetFlavors;
-    for(std::vector<pat::Jet>::const_iterator itJet = selectedJets.begin(); itJet != selectedJets.end(); ++itJet){
+    for(std::vector<pat::Jet>::const_iterator itJet = selectedJetsLoose.begin(); itJet != selectedJetsLoose.end(); ++itJet){
 	jetPts.push_back(itJet->pt());
 	jetEtas.push_back(itJet->eta());
 	jetCSVs.push_back(helper.GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
@@ -929,7 +929,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     }
     
     // calculate the csv weight for the desired systematic
-    //csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,systype, csvWgtHF, csvWgtLF, csvWgtCF);
+    csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,systype, csvWgtHF, csvWgtLF, csvWgtCF);
     
     // compute PU weights, and set nominal weight
     puWeights.compute(eventInfo);
@@ -939,7 +939,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     weights["Weight_GenValue"] = weight_GenValue;
     weights["Weight"] = weight;
     weights["Weight_XS"] = xsweight;
-    //weights["Weight_CSV"] = csvweight;
+    weights["Weight_CSV"] = csvweight;
     weights["Weight_PU"] = puweight;
     weights["Weight_TopPt"] = topptweight;
     /*
