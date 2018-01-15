@@ -209,11 +209,12 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	      throw std::exception();
 	  }
       }
-      if(leptonType == Tau) {
+      if(leptonType_ == Tau) {
           if     ( leptonIDs[i] == "nonIso") tauIDs_[i] = tauID::tauNonIso;
 	  else if( leptonIDs[i] == "loose" ) tauIDs_[i] = tauID::tauLoose;
 	  else if( leptonIDs[i] == "medium") tauIDs_[i] = tauID::tauMedium;
 	  else if( leptonIDs[i] == "tight" ) tauIDs_[i] = tauID::tauTight;
+          else if( leptonIDs[i] == "MVAveryloose" ) tauIDs_[i] = tauID::tauMVAVeryLoose;
           else if( leptonIDs[i] == "none"  ) tauIDs_[i] = tauID::none;
           else {
 	      std::cerr << "\n\nERROR: No matching tau ID type found for: " << leptonIDs[i] << std::endl;
