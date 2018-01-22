@@ -315,7 +315,7 @@ process.SelectedTauProducer.isData=options.isData
 
 # photon selection
 process.load('BoostedTTH.Producers.SelectedPhotonProducer_cfi')
-process.SelectedPhotonProducer.photons = photonCollection
+process.SelectedPhotonProducer.photons = cms.InputTag("slimmedPhotons")
 process.SelectedPhotonProducer.ptMins = [15.]
 process.SelectedPhotonProducer.etaMaxs = [2.5]
 process.SelectedPhotonProducer.collectionNames = ["selectedPhotonsLoose"]
@@ -560,7 +560,8 @@ process.BoostedAnalyzer.selectionNames = [
 "METSelection",
 "MonoJetSelection",
 "LeptonVetoSelection",
-"BTagVetoSelection"
+"BTagVetoSelection",
+"PhotonVetoSelection"
 ]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)

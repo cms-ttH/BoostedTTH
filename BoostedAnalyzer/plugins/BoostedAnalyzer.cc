@@ -83,6 +83,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/MonoJetSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonVetoSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BTagVetoSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/PhotonVetoSelection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -241,6 +242,8 @@ private:
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsLooseToken;
     /** tau token **/
     edm::EDGetTokenT< pat::TauCollection > selectedTausToken;
+    /** loose photons token **/
+    edm::EDGetTokenT< pat::PhotonCollection > selectedPhotonsLooseToken;
     /** loose jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsTokens;
     /** tight jets data access token **/
@@ -331,6 +334,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     selectedElectronsDLToken     = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL"));
     selectedElectronsLooseToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose"));
     selectedTausToken       = consumes< pat::TauCollection >(iConfig.getParameter<edm::InputTag>("selectedTaus"));
+    selectedPhotonsLooseToken       = consumes< pat::PhotonCollection >(iConfig.getParameter<edm::InputTag>("selectedPhotonsLoose"));
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJets")){
 	     selectedJetsTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
@@ -412,6 +416,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
         else if(*itSel == "MonoJetSelection") selections.push_back(new MonoJetSelection(iConfig));
         else if(*itSel == "LeptonVetoSelection") selections.push_back(new LeptonVetoSelection());
         else if(*itSel == "BTagVetoSelection") selections.push_back(new BTagVetoSelection());
+        else if(*itSel == "PhotonVetoSelection") selections.push_back(new PhotonVetoSelection());
 	else cout << "No matching selection found for: " << *itSel << endl;
 	// connect added selection to cutflow
 	for (auto &c : cutflows){
@@ -634,8 +639,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( selectedElectronsDLToken,h_selectedElectronsDL );
     iEvent.getByToken( selectedElectronsLooseToken,h_selectedElectronsLoose );
     
+    // TAUS
     edm::Handle< pat::TauCollection > h_selectedTaus;
     iEvent.getByToken( selectedTausToken,h_selectedTaus );
+    
+    // PHOTONS
+    edm::Handle< pat::PhotonCollection > h_selectedPhotonsLoose;
+    iEvent.getByToken( selectedPhotonsLooseToken,h_selectedPhotonsLoose );
     
     // JETs
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJets;
@@ -816,6 +826,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectronsDL,
 					  *h_selectedElectronsLoose,
                                           *h_selectedTaus,
+                                          *h_selectedPhotonsLoose,
 					  *(hs_selectedJets[isys]),
 					  *(hs_selectedJetsLoose[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
