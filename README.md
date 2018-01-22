@@ -18,25 +18,25 @@ Follow These Steps:
     export JENKINSCMSSWSRCDIR="$( pwd )"
     eval `scramv1 runtime -sh` 
     
-    #git cms-merge-topic riga:deterministicSeeds
+    git cms-merge-topic riga:deterministicSeeds
     
     # updated MET tools
     # this topic is branched from the official cms-met:METRecipe_8020 but fixes the badGlobalMuonTagger
     # so that it works like any other MET filter module
-    #git cms-merge-topic riga:badGlobalMuonTagger_fix
-    #git cms-merge-topic cms-met:METRecipe_80X_part2
-    #git clone https://github.com/cms-met/MetTools.git
+    git cms-merge-topic riga:badGlobalMuonTagger_fix
+    git cms-merge-topic cms-met:METRecipe_80X_part2
+    git clone https://github.com/cms-met/MetTools.git
     
     # update PUJetId values
-    #git remote add ahinzmann https://github.com/ahinzmann/cmssw.git
-    #git fetch ahinzmann PUidMiniAODfix80
-    #git cherry-pick ca33756e1747aec27d13971bcfd0874b16724e7f
+    git remote add ahinzmann https://github.com/ahinzmann/cmssw.git
+    git fetch ahinzmann PUidMiniAODfix80
+    git cherry-pick ca33756e1747aec27d13971bcfd0874b16724e7f
 
     # EGMSmearer and data
-    #git cms-merge-topic riga:deterministicEGMSmearer_v2
-    #cd EgammaAnalysis/ElectronTools/data
-    #git clone https://github.com/ECALELFS/ScalesSmearings.git -b Moriond17_gainSwitch_unc
-    #cd $JENKINSCMSSWSRCDIR
+    git cms-merge-topic riga:deterministicEGMSmearer_v2
+    cd EgammaAnalysis/ElectronTools/data
+    git clone https://github.com/ECALELFS/ScalesSmearings.git -b Moriond17_gainSwitch_unc
+    cd $JENKINSCMSSWSRCDIR
     
     git cms-merge-topic michaelwassmer:CMSSW_8_0_26_patch2_changed_SmearedJetProducer -s recursive -X theirs
 
@@ -66,7 +66,7 @@ Follow These Steps:
     
     # install miniaod and boostedtth
     cd $JENKINSCMSSWSRCDIR
-    git clone  -b 'CMSSW_8_0_26_patch2_DarkMatter' https://github.com/cms-ttH/MiniAOD.git
+    git clone --depth 1 -b CMSSW_8_0_26_patch2_DarkMatter https://github.com/cms-ttH/MiniAOD.git
     git clone --depth 1 -b CMSSW_8_0_26_patch2_DarkMatter https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
