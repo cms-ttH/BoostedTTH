@@ -159,7 +159,7 @@ private:
     // reweight the number of primary vertices distribution
     PUWeights puWeights;
     /** writes flat trees  */
-    std::vector<TreeWriter*> treewriters;
+    std::vector<TreeWriter> treewriters;
     /** stores cutflows*/
     std::vector<Cutflow> cutflows;
     /** selections that are applied before writing the tree*/
@@ -380,7 +380,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     puWeights.init(iConfig);
 
     // initialize cutflows
-    for (uint i=0; i<jetSystematics.size();i++){
+    for (size_t i=0; i<jetSystematics.size();i++){
         cutflows.push_back(Cutflow());
         cutflows.back().Init();
     }
@@ -388,36 +388,36 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // initialize selections
     // add requested selections
-    for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
-	cout << "Initializing " << *itSel << endl;
-	if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
-	else if(*itSel == "FilterSelection") selections.push_back(new FilterSelection(iConfig));
-	else if(*itSel == "EvenSelection") selections.push_back(new EvenOddSelection(true));
-	else if(*itSel == "OddSelection") selections.push_back(new EvenOddSelection(false));
-	else if(*itSel == "GenTopFHSelection") selections.push_back(new GenTopFHSelection());
-	else if(*itSel == "GenTopSLSelection") selections.push_back(new GenTopSLSelection());
-	else if(*itSel == "GenTopDLSelection") selections.push_back(new GenTopDLSelection());
-	else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
-        else if(*itSel == "LeptonSelection_QCDControlregion") selections.push_back(new LeptonSelection_QCDControlregion(iConfig));
-	else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
-	else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
-	else if(*itSel == "DiLeptonJetTagSelection") selections.push_back(new DiLeptonJetTagSelection(iConfig));
-	else if(*itSel == "DiLeptonSelection") selections.push_back(new DiLeptonSelection(iConfig));
-	else if(*itSel == "MinDiLeptonMassSelection") selections.push_back(new DiLeptonMassSelection(20.,9999.));
-	else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true,false));
-	else if(*itSel == "ZWindowSelection") selections.push_back(new DiLeptonMassSelection(76.,106,false));
-	else if(*itSel == "METSelection") selections.push_back(new METSelection(iConfig));
-	else if(*itSel == "DiLeptonMETSelection") selections.push_back(new DiLeptonMETSelection(iConfig));
-	else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
-	else if(*itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));
-	else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
-	else if(*itSel == "BoostedTopSelection") selections.push_back(new BoostedSelection(1,0));
-	else if(*itSel == "BoostedSelection") selections.push_back(new BoostedSelection(0,1));
-        else if(*itSel == "MonoJetSelection") selections.push_back(new MonoJetSelection(iConfig));
-        else if(*itSel == "LeptonVetoSelection") selections.push_back(new LeptonVetoSelection());
-        else if(*itSel == "BTagVetoSelection") selections.push_back(new BTagVetoSelection());
-        else if(*itSel == "PhotonVetoSelection") selections.push_back(new PhotonVetoSelection());
-	else cout << "No matching selection found for: " << *itSel << endl;
+    for(const auto& itSel : selectionNames) {
+	cout << "Initializing " << itSel << endl;
+	if(itSel == "VertexSelection") selections.push_back(new VertexSelection());
+	else if(itSel == "FilterSelection") selections.push_back(new FilterSelection(iConfig));
+	else if(itSel == "EvenSelection") selections.push_back(new EvenOddSelection(true));
+	else if(itSel == "OddSelection") selections.push_back(new EvenOddSelection(false));
+	else if(itSel == "GenTopFHSelection") selections.push_back(new GenTopFHSelection());
+	else if(itSel == "GenTopSLSelection") selections.push_back(new GenTopSLSelection());
+	else if(itSel == "GenTopDLSelection") selections.push_back(new GenTopDLSelection());
+	else if(itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
+        else if(itSel == "LeptonSelection_QCDControlregion") selections.push_back(new LeptonSelection_QCDControlregion(iConfig));
+	else if(itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
+	else if(itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
+	else if(itSel == "DiLeptonJetTagSelection") selections.push_back(new DiLeptonJetTagSelection(iConfig));
+	else if(itSel == "DiLeptonSelection") selections.push_back(new DiLeptonSelection(iConfig));
+	else if(itSel == "MinDiLeptonMassSelection") selections.push_back(new DiLeptonMassSelection(20.,9999.));
+	else if(itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true,false));
+	else if(itSel == "ZWindowSelection") selections.push_back(new DiLeptonMassSelection(76.,106,false));
+	else if(itSel == "METSelection") selections.push_back(new METSelection(iConfig));
+	else if(itSel == "DiLeptonMETSelection") selections.push_back(new DiLeptonMETSelection(iConfig));
+	else if(itSel == "HbbSelection") selections.push_back(new HbbSelection());
+	else if(itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));
+	else if(itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
+	else if(itSel == "BoostedTopSelection") selections.push_back(new BoostedSelection(1,0));
+	else if(itSel == "BoostedSelection") selections.push_back(new BoostedSelection(0,1));
+        else if(itSel == "MonoJetSelection") selections.push_back(new MonoJetSelection(iConfig));
+        else if(itSel == "LeptonVetoSelection") selections.push_back(new LeptonVetoSelection());
+        else if(itSel == "BTagVetoSelection") selections.push_back(new BTagVetoSelection());
+        else if(itSel == "PhotonVetoSelection") selections.push_back(new PhotonVetoSelection());
+	else cout << "No matching selection found for: " << itSel << endl;
 	// connect added selection to cutflow
 	for (auto &c : cutflows){
 	    selections.back()->InitCutflow(c);
@@ -441,121 +441,121 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // INITIALIZE TREEWRITERs
     if(!ProduceMemNtuples) {
-        for (uint i=0; i<jetSystematics.size();i++){
+        for (size_t i=0; i<jetSystematics.size();i++){
             cout << "creating tree writer " << outfileNames[i] << endl;
-            treewriters.push_back(new TreeWriter());
-            treewriters.back()->Init(outfileNames[i]);
+            treewriters.emplace_back();
+            treewriters.back().Init(outfileNames[i]);
         }
     }
     else {
         cout << "creating tree writer " << "slimmed_ntuples" << endl;
-        treewriters.push_back(new TreeWriter());
-        treewriters.back()->Init(outfileNameBase+"_slimmed_ntuples");
+        treewriters.emplace_back(TreeWriter());
+        treewriters.back().Init(outfileNameBase+"_slimmed_ntuples");
     }
     // add processors to first tree writer
     cout << "using processors:" << endl;
-    for(vector<string>::const_iterator itPro = processorNames.begin();itPro != processorNames.end();++itPro) {
-	     cout << *itPro << endl;
+    for(const auto& itPro : processorNames) {
+	     cout << itPro << endl;
     }
     // add processors that have been requested in the config
-    for(auto treewriter : treewriters){
+    for(auto& treewriter : treewriters){
 	     if(std::find(processorNames.begin(),processorNames.end(),"WeightProcessor")!=processorNames.end()) {
-		treewriter->AddTreeProcessor(new WeightProcessor(),"WeightProcessor");
+		treewriter.AddTreeProcessor(new WeightProcessor(),"WeightProcessor");
 	     }
 	     if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")!=processorNames.end()) {
-		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
+		treewriter.AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
 	     }
 	     if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")!=processorNames.end()) {
-		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
+		treewriter.AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
 	     }
 	if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
 	    if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
 		cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl;
-		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
+		treewriter.AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
 	    }
-	    treewriter->AddTreeProcessor(new MVAVarProcessor(pointerToMEMClassifier),"MVAVarProcessor");
+	    treewriter.AddTreeProcessor(new MVAVarProcessor(pointerToMEMClassifier),"MVAVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
 	    if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {
 		cout << "adding essentialBasicVarProcessor, needed for essentialMVAVarProcessor" << endl;
-		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
+		treewriter.AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
 	    }
-	    treewriter->AddTreeProcessor(new essentialMVAVarProcessor(pointerToMEMClassifier),"essentialMVAVarProcessor");
+	    treewriter.AddTreeProcessor(new essentialMVAVarProcessor(pointerToMEMClassifier),"essentialMVAVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
+	    treewriter.AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
 	}
         //if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
-            //treewriter->AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
+            //treewriter.AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
         //}
         //if(std::find(processorNames.begin(),processorNames.end(),"BoostedAk4VarProcessor")!=processorNames.end()) {
-            //treewriter->AddTreeProcessor(new BoostedAk4VarProcessor(),"BoostedAk4VarProcessor");
+            //treewriter.AddTreeProcessor(new BoostedAk4VarProcessor(),"BoostedAk4VarProcessor");
         //}
         //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
-        //treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+        //treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
         //}
         //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) {
-        //treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+        //treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
         //}
         //if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) {
-        //treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+        //treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
         //}
         //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsVarProcessor")!=processorNames.end()) {
-        //treewriter->AddTreeProcessor(new //ttHVarProcessor(BoostedRecoType::BoostedTopAk4Higgs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4Higgs_",doBoostedMEM),"BoostedTopAk4HiggsVarProcessor");
+        //treewriter.AddTreeProcessor(new //ttHVarProcessor(BoostedRecoType::BoostedTopAk4Higgs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4Higgs_",doBoostedMEM),"BoostedTopAk4HiggsVarProcessor");
         //}
         //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsFromAk4CVarProcessor")!=processorNames.end()) {
-        //treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
+        //treewriter.AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
         //}
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier),"BDTVarProcessor");
+	    treewriter.AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier),"BDTVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"DNNVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new DNNVarProcessor(pointerToDnnSLClassifier),"DNNVarProcessor");
+	    treewriter.AddTreeProcessor(new DNNVarProcessor(pointerToDnnSLClassifier),"DNNVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
+	    treewriter.AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"essentialMCMatchVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new essentialMCMatchVarProcessor(),"essentialMCMatchVarProcessor");
+	    treewriter.AddTreeProcessor(new essentialMCMatchVarProcessor(),"essentialMCMatchVarProcessor");
 	}
 	//if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) {
-	    //treewriter->AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
+	    //treewriter.AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
 	//}
 	if(std::find(processorNames.begin(),processorNames.end(),"AdditionalJetProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new AdditionalJetProcessor(),"AdditionalJetProcessor");
+	    treewriter.AddTreeProcessor(new AdditionalJetProcessor(),"AdditionalJetProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"DiLeptonVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new DiLeptonVarProcessor(),"DiLeptonVarProcessor");
+	    treewriter.AddTreeProcessor(new DiLeptonVarProcessor(),"DiLeptonVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"TriggerVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new TriggerVarProcessor(relevantTriggers),"TriggerVarProcessor");
+	    treewriter.AddTreeProcessor(new TriggerVarProcessor(relevantTriggers),"TriggerVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"TTbarReconstructionVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new TTbarReconstructionVarProcessor(),"TTbarReconstructionVarProcessor");
+	    treewriter.AddTreeProcessor(new TTbarReconstructionVarProcessor(),"TTbarReconstructionVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"ReconstructionMEvarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new ReconstructionMEvarProcessor(),"ReconstructionMEvarProcessor");
+	    treewriter.AddTreeProcessor(new ReconstructionMEvarProcessor(),"ReconstructionMEvarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
+	    treewriter.AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"SpinCorrelationProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
+	    treewriter.AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"GenJetOrderedJetCollectionProcessor")!=processorNames.end()) {
-	  treewriter->AddTreeProcessor(new GenJetOrderedJetCollectionProcessor,"GenJetOrderedJetCollectionProcessor");
+	  treewriter.AddTreeProcessor(new GenJetOrderedJetCollectionProcessor,"GenJetOrderedJetCollectionProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"TTBBStudienProcessor")!=processorNames.end()) {
-	  treewriter->AddTreeProcessor(new TTBBStudienProcessor,"TTBBStudienProcessor");
+	  treewriter.AddTreeProcessor(new TTBBStudienProcessor,"TTBBStudienProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"SlimmedNtuples")!=processorNames.end()) {
-	  treewriter->AddTreeProcessor(new SlimmedNtuples(),"SlimmedNtuples");
+	  treewriter.AddTreeProcessor(new SlimmedNtuples(),"SlimmedNtuples");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"DarkMatterProcessor")!=processorNames.end()) {
-		treewriter->AddTreeProcessor(new DarkMatterProcessor(),"DarkMatterProcessor");
+		treewriter.AddTreeProcessor(new DarkMatterProcessor(),"DarkMatterProcessor");
         }
         if(std::find(processorNames.begin(),processorNames.end(),"MonoJetGenSelectionProcessor")!=processorNames.end()) {
-		treewriter->AddTreeProcessor(new MonoJetGenSelectionProcessor(),"MonoJetGenSelectionProcessor");
+		treewriter.AddTreeProcessor(new MonoJetGenSelectionProcessor(),"MonoJetGenSelectionProcessor");
         }
     }
 
@@ -707,13 +707,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     bool firstVertexIsGood=false;
     bool isFirst=true;
     if( h_primaryVertices.isValid() ){
-	for( reco::VertexCollection::const_iterator itvtx = vtxs.begin(); itvtx!=vtxs.end(); ++itvtx ){
-	    bool isGood = ( !(itvtx->isFake()) &&
-			    (itvtx->ndof() >= 4.0) &&
-			    (abs(itvtx->z()) <= 24.0) &&
-			    (abs(itvtx->position().Rho()) <= 2.0)
+	for(const auto& itvtx : vtxs){
+	    bool isGood = ( !(itvtx.isFake()) &&
+			    (itvtx.ndof() >= 4.0) &&
+			    (abs(itvtx.z()) <= 24.0) &&
+			    (abs(itvtx.position().Rho()) <= 2.0)
 			    );
-	    if( isGood ) selectedPVs.push_back(*itvtx);
+	    if( isGood ) selectedPVs.push_back(itvtx);
 	    if( isFirst ) firstVertexIsGood=isGood;
 	    isFirst=false;
 	}
@@ -739,13 +739,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	boosted::BoostedJetCollection const &boostedjets_unsorted = *h_boostedjet;
     	boosted::BoostedJetCollection boostedjets = BoostedUtils::GetSortedByPt(boostedjets_unsorted);
     	boosted::BoostedJetCollection idBoostedJets = helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999., jetID::jetLoose, "A");
-    	for(auto syst : jetSystematics){
+    	for(const auto& syst : jetSystematics){
     	    boosted::BoostedJetCollection correctedBoostedJets = helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, h_genJets, syst, true, true);
     	    selectedBoostedJets.push_back(helper.GetSelectedBoostedJets(correctedBoostedJets, 200., 2.0, 20., 2.4, jetID::none, "A"));
     	}
     }
     else{
-    	for(uint i =0; i<jetSystematics.size();i++){
+    	for(size_t i =0; i<jetSystematics.size();i++){
     	    selectedBoostedJets.push_back(boosted::BoostedJetCollection());
     	}
     }
@@ -768,14 +768,14 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     HiggsDecay::HiggsDecay higgsdecay=HiggsDecay::NA;
     if(!isData){
 	std::vector<reco::GenParticle> const &genParticles = *h_genParticles;
-	for(size_t i=0; i<genParticles.size();i++){
-	    if(genParticles[i].pdgId()==6) foundT=true;
-	    if(genParticles[i].pdgId()==-6) foundTbar=true;
-	    if(genParticles[i].pdgId()==25){
+	for(const auto& genParticle : genParticles){
+	    if(genParticle.pdgId()==6) foundT=true;
+	    if(genParticle.pdgId()==-6) foundTbar=true;
+	    if(genParticle.pdgId()==25){
 		foundHiggs=true;
 		if(higgsdecay==HiggsDecay::NA)higgsdecay=HiggsDecay::nonbb;
-		for(uint j=0;j<genParticles[i].numberOfDaughters();j++){
-		    if (abs(genParticles[i].daughter(j)->pdgId())==5){
+		for(size_t j=0;j<genParticle.numberOfDaughters();j++){
+		    if (abs(genParticle.daughter(j)->pdgId())==5){
 			higgsdecay=HiggsDecay::bb;
 		    }
 		}
@@ -813,7 +813,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     std::vector<map<string,float> >weightsVector;
     // inputs
     vector<InputCollections> inputs;
-    for(uint isys=0; isys<jetSystematics.size(); isys++){
+    for(size_t isys=0; isys<jetSystematics.size(); isys++){
         auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*(hs_selectedJetsLoose[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
@@ -863,7 +863,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     bool next_event = false;
     // DO SELECTION
     // loop over jet systematics
-    for(uint i_sys=0; i_sys<jetSystematics.size(); i_sys++){
+    for(size_t i_sys=0; i_sys<jetSystematics.size(); i_sys++){
     	// all events survive step 0
         cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight"));
         // start with selection=true and change this if one selection fails
@@ -883,10 +883,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	at_least_one_selected = at_least_one_selected || selected;
         if(ProduceMemNtuples&&at_least_one_selected) break;
         // if normal ntuples are supposed to be written and the selections are fulfilled for the jet collection, then write
-    	if(!ProduceMemNtuples&&selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
+    	if(!ProduceMemNtuples&&selected) treewriters[i_sys].Process(inputs[i_sys], false);    // second parameter: verbose
     }
     // write the mem ntuples if the mem ntuples flag is set and at least one jet collection fulfills the selection criteria
-    if(ProduceMemNtuples&&at_least_one_selected) treewriters.back()->Process(inputs, false);
+    if(ProduceMemNtuples&&at_least_one_selected) treewriters.back().Process(inputs, false);
     
 
 }
@@ -932,11 +932,11 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     std::vector<double> jetEtas;
     std::vector<double> jetCSVs;
     std::vector<int> jetFlavors;
-    for(std::vector<pat::Jet>::const_iterator itJet = selectedJetsLoose.begin(); itJet != selectedJetsLoose.end(); ++itJet){
-	jetPts.push_back(itJet->pt());
-	jetEtas.push_back(itJet->eta());
-	jetCSVs.push_back(helper.GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-	jetFlavors.push_back(itJet->hadronFlavour());
+    for(const auto& itJet : selectedJetsLoose){
+	jetPts.push_back(itJet.pt());
+	jetEtas.push_back(itJet.eta());
+	jetCSVs.push_back(helper.GetJetCSV(itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+	jetFlavors.push_back(itJet.hadronFlavour());
     }
     
     // calculate the csv weight for the desired systematic
@@ -1029,18 +1029,18 @@ void BoostedAnalyzer::beginJob()
 // ------------ method called once each job just after ending the event loop  ------------
 void BoostedAnalyzer::endJob()
 {
-    for (uint i=0; i<outfileNames.size();i++){
+    for (size_t i=0; i<outfileNames.size();i++){
 	std::ofstream fout(outfileNames[i]+"_Cutflow.txt");
 	cutflows[i].Print(fout);
 	fout.close();
-        if(!ProduceMemNtuples) {
-            delete treewriters[i];
-        }
+        //if(!ProduceMemNtuples) {
+            //delete treewriters[i];
+        //}
     }
-    if(ProduceMemNtuples) {
-        delete treewriters.back();
-    }
-    for(uint i=0; i<selections.size();i++) {
+    //if(ProduceMemNtuples) {
+        //delete treewriters.back();
+    //}
+    for(size_t i=0; i<selections.size();i++) {
         delete selections[i];
     }
 }

@@ -27,6 +27,9 @@ TreeWriter::~TreeWriter(){
   if(tree!=0){
     cout << "Tree Written to " << outFile->GetPath() << endl;
   }
+  for(auto& processor : processors){
+    delete processor;
+  }
 }
 
 void TreeWriter::Init( std::string fileName){
