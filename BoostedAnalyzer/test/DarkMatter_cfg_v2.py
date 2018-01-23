@@ -568,11 +568,12 @@ if options.additionalSelection!="NONE":
 
 if options.isData:
   process.BoostedAnalyzer.processorNames=cms.vstring(
-  #"WeightProcessor",
+  "WeightProcessor",
   #"essentialBasicVarProcessor",
   #"essentialMVAVarProcessor",
   #"BDTVarProcessor",
-  #"TriggerVarProcessor",
+  "TriggerVarProcessor",
+  "DarkMatterProcessor"
   #"ReconstructionMEvarProcessor",
   #"TTBBStudienProcessor"
   )
@@ -638,8 +639,6 @@ if options.isData:
 
 process.p *= process.CorrectedMETproducer
 
-#if not options.isData and not options.isBoostedMiniAOD:
-    #process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
 
 if printContent:
     process.p *= process.content
