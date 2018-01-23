@@ -20,6 +20,9 @@ Follow These Steps:
     
     git cms-merge-topic riga:deterministicSeeds
     
+    # provide cut-based photon IDs
+    git cms-merge-topic ikrav:egm_id_80X_v3_photons
+    
     # updated MET tools
     # this topic is branched from the official cms-met:METRecipe_8020 but fixes the badGlobalMuonTagger
     # so that it works like any other MET filter module
