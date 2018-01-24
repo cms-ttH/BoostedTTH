@@ -16,7 +16,6 @@
 <use name="CondFormats/JetMETObjects"/>
 <use name="MiniAOD/MiniAODHelper"/>
 <use name="BoostedTTH/MatrixElements"/>
-<use name="TTH/CommonClassifier"/>
 <export>
   <lib   name="1"/>
 </export>
