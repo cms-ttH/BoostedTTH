@@ -441,6 +441,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     }
     */
     // INITIALIZE TREEWRITERs
+    treewriters.reserve(jetSystematics.size());
     if(!ProduceMemNtuples) {
         for (size_t i=0; i<jetSystematics.size();i++){
             cout << "creating tree writer " << outfileNames[i] << endl;
@@ -814,6 +815,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     std::vector<map<string,float> >weightsVector;
     // inputs
     vector<InputCollections> inputs;
+    inputs.reserve(jetSystematics.size());
     for(size_t isys=0; isys<jetSystematics.size(); isys++){
         auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*(hs_selectedJetsLoose[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
 	inputs.emplace_back(eventInfo,
