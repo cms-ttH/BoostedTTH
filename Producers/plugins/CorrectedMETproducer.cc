@@ -1,5 +1,6 @@
 #include <memory>
 #include <vector>
+#include <utility>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/stream/EDProducer.h"
@@ -125,8 +126,8 @@ CorrectedMETproducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    edm::Handle< pat::METCollection > h_inputMETs;
    iEvent.getByToken( metsToken,h_inputMETs );
 
-   std::auto_ptr<pat::METCollection> correctedMETs( new pat::METCollection(helper.CorrectMET(*h_oldJets,*h_newJets,*h_oldElectrons,*h_newElectrons,*h_oldMuons,*h_newMuons,*h_inputMETs)) );
-   iEvent.put(correctedMETs,collectionName);
+   std::unique_ptr<pat::METCollection> correctedMETs = std::make_unique<pat::METCollection>(helper.CorrectMET(*h_oldJets,*h_newJets,*h_oldElectrons,*h_newElectrons,*h_oldMuons,*h_newMuons,*h_inputMETs));
+   iEvent.put(std::move(correctedMETs),collectionName);
    
    
 }

@@ -20,7 +20,7 @@
 // system include files
 #include <memory>
 #include <vector>
-
+#include <utility>
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/stream/EDProducer.h"
@@ -195,8 +195,8 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
        // Get raw jets
        std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets);
-       std::auto_ptr<pat::JetCollection>rawJets_(new pat::JetCollection(rawJets));
-       iEvent.put(rawJets_, "rawJets");
+       std::unique_ptr<pat::JetCollection>rawJets_ = std::make_unique<pat::JetCollection>(rawJets);
+       iEvent.put(std::move(rawJets_), "rawJets");
        // Clean muons and electrons from jets
        std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets,*h_inputMuons,*h_inputElectrons,leptonJetDr);
        // Apply jet corrections
@@ -219,9 +219,9 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   //Get jet Collection which pass selections
 	   std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], jetID::none, '-',PUJetID::get(PUJetIDMins[i]) );
 	   // sort the selected jets with respect to pt
-	   std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
+	   std::unique_ptr<pat::JetCollection> selectedJets = std::make_unique<pat::JetCollection>(helper.GetSortedByPt(selectedJets_unsorted));
 
-	   iEvent.put(selectedJets,systName(collectionNames[i],systematics[j]));
+	   iEvent.put(std::move(selectedJets),systName(collectionNames[i],systematics[j]));
        }
    }
    

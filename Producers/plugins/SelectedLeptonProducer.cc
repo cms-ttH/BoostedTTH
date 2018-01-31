@@ -256,12 +256,12 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	// produce the different electron collections
 	for(uint i=0; i<ptMins_.size();i++){
 	    // select electron collection
-	    std::auto_ptr<pat::ElectronCollection> selectedLeptons( new pat::ElectronCollection(helper_.GetSortedByPt(helper_.GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i]))) );
+	    std::unique_ptr<pat::ElectronCollection> selectedLeptons = std::make_unique<pat::ElectronCollection>( helper_.GetSortedByPt(helper_.GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])));
 	    for (auto & lep : *selectedLeptons){
 		// TODO conesize and corr type should not be hardcoded
 		helper_.AddElectronRelIso(lep,coneSize::R03, corrType::rhoEA,effAreaType::spring16,"relIso");
 	    }
-	    iEvent.put(selectedLeptons,collectionNames_[i]);
+	    iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
 	}
     }
 
@@ -309,11 +309,11 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	// produce the different muon collections
 	for(uint i=0; i<ptMins_.size();i++){
 	    // select muon collection
-	    std::auto_ptr<pat::MuonCollection> selectedLeptons( new pat::MuonCollection(helper_.GetSortedByPt(helper_.GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i]))) );
+	    std::unique_ptr<pat::MuonCollection> selectedLeptons = std::make_unique<pat::MuonCollection>(helper_.GetSortedByPt(helper_.GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i]))) ;
 	    for (auto & lep : *selectedLeptons){
 		helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
 	    }
-	    iEvent.put(selectedLeptons,collectionNames_[i]);
+	    iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
 	}
     }
 }
