@@ -8,8 +8,8 @@ CMSSW tools for analyzing TTH events with boosted objects
 Follow These Steps:
 
     # setup environment
-    export SCRAM_ARCH="slc6_amd64_gcc530"
-    export CMSSW_VERSION="CMSSW_9_2_15"
+    export SCRAM_ARCH="slc6_amd64_gcc630"
+    export CMSSW_VERSION="CMSSW_9_4_3"
     
   
     # create new CMSSW environment

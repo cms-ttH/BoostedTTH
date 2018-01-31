@@ -452,8 +452,8 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
     enabled = cms.bool(True),  # If False, no smearing is performed
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
-#    algopt = cms.string('AK4PFchs_pt'),
-#    algo = cms.string('AK4PFchs'),
+    algopt = cms.string('AK4PFchs_pt'),
+    algo = cms.string('AK4PFchs'),
     genJets = cms.InputTag("slimmedGenJets"),
     dRMax = cms.double(0.2),  # = cone size (0.4) / 2
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
@@ -589,7 +589,8 @@ if options.deterministicSeeds:
     #process.p *= process.egmGsfElectronIDSequence
 #if options.calcBJetness:
     #process.p *= process.BJetness
-#process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
+#process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons
+process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
 #if options.updatePUJetId:
 	#process.p*=process.pileupJetIdUpdated*process.updatedPatJets
 process.p*=process.CorrectedJetProducer
