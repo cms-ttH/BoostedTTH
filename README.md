@@ -66,8 +66,8 @@ Follow These Steps:
     
     # install miniaod and boostedtth
     cd $CMSSWSRCDIR
-    git clone --depth 1 -b CMSSW_9_2_15 https://github.com/cms-ttH/MiniAOD.git
-    git clone --depth 1 -b CMSSW_9_2_15 https://github.com/cms-ttH/BoostedTTH.git
+    git clone --depth 1 -b CMSSW_9_4_3 https://github.com/cms-ttH/MiniAOD.git
+    git clone --depth 1 -b CMSSW_9_4_3 https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
     #cd $CMSSWSRCDIR/BoostedTTH/BoostedAnalyzer/data
