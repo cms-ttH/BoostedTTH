@@ -357,7 +357,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     puWeights.init(iConfig);
 
     // initialize cutflows
-    for (uint i=0; i<jetSystematics.size();i++){
+    for (size_t i=0; i<jetSystematics.size();i++){
         cutflows.push_back(Cutflow());
         cutflows.back().Init();
     }
@@ -414,7 +414,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // INITIALIZE TREEWRITERs
     if(!ProduceMemNtuples) {
-        for (uint i=0; i<jetSystematics.size();i++){
+        for (size_t i=0; i<jetSystematics.size();i++){
             cout << "creating tree writer " << outfileNames[i] << endl;
             treewriters.push_back(new TreeWriter());
             treewriters.back()->Init(outfileNames[i]);
@@ -692,7 +692,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	}
     }
     else{
-    	for(uint i =0; i<jetSystematics.size();i++){
+    	for(size_t i =0; i<jetSystematics.size();i++){
     	    selectedBoostedJets.push_back(boosted::BoostedJetCollection());
     	}
     }
@@ -721,7 +721,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	    if(genParticles[i].pdgId()==25){
 		foundHiggs=true;
 		if(higgsdecay==HiggsDecay::NA)higgsdecay=HiggsDecay::nonbb;
-		for(uint j=0;j<genParticles[i].numberOfDaughters();j++){
+		for(size_t j=0;j<genParticles[i].numberOfDaughters();j++){
 		    if (abs(genParticles[i].daughter(j)->pdgId())==5){
 			higgsdecay=HiggsDecay::bb;
 		    }
@@ -751,7 +751,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     std::vector<map<string,float> >weightsVector;
     // inputs
     vector<InputCollections> inputs;
-    for(uint isys=0; isys<jetSystematics.size(); isys++){
+    for(size_t isys=0; isys<jetSystematics.size(); isys++){
         auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
@@ -793,7 +793,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     bool next_event = false;
     // DO SELECTION
     // loop over jet systematics
-    for(uint i_sys=0; i_sys<jetSystematics.size(); i_sys++){
+    for(size_t i_sys=0; i_sys<jetSystematics.size(); i_sys++){
     	// all events survive step 0
         cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight"));
         // start with selection=true and change this if one selection fails
@@ -804,7 +804,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	    if(!selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])){
     		    selected=false;
                     // if the vertex,filter or lepton selection is not fulfilled, set the flag to skip the other jec variations
-                    if(!selected && i_sel!=jet_tag_pos) next_event=true;
+                    if(!selected && i_sel!=jet_tag_pos && jet_tag_pos!=selections.size()) next_event=true;
     	    }
     	}
     	// if the vertex,filter or lepton selection is not fulfilled, skip the other jec variations
@@ -958,7 +958,7 @@ void BoostedAnalyzer::beginJob()
 // ------------ method called once each job just after ending the event loop  ------------
 void BoostedAnalyzer::endJob()
 {
-    for (uint i=0; i<outfileNames.size();i++){
+    for (size_t i=0; i<outfileNames.size();i++){
 	std::ofstream fout(outfileNames[i]+"_Cutflow.txt");
 	cutflows[i].Print(fout);
 	fout.close();
@@ -969,7 +969,7 @@ void BoostedAnalyzer::endJob()
     if(ProduceMemNtuples) {
         delete treewriters.back();
     }
-    for(uint i=0; i<selections.size();i++) {
+    for(size_t i=0; i<selections.size();i++) {
         delete selections[i];
     }
 }
