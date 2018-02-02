@@ -115,7 +115,7 @@
 #include "TTH/CommonClassifier/interface/DNNClassifier.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/monoVProcessor.hpp"
 
 //
 // class declaration
@@ -238,6 +238,8 @@ private:
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsTokens;
     /** tight jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsLooseTokens;
+    /** AK8Jet jets data access token **/
+    edm::EDGetTokenT< std::vector<pat::Jet> > AK8Jet_Token;
     /** mets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::MET> > > correctedMETsTokens;
     /** boosted jets data access token **/
@@ -326,6 +328,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
 	     correctedMETsTokens.push_back(consumes< std::vector<pat::MET> >(tag));
     }
+    AK8Jet_Token      = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("AK8Jet"));
     boostedJetsToken        = consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets"));
     genInfoToken            = consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo"));
     lheInfoToken            = consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo"));
@@ -523,7 +526,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	if(std::find(processorNames.begin(),processorNames.end(),"SlimmedNtuples")!=processorNames.end()) {
 	  treewriter->AddTreeProcessor(new SlimmedNtuples(),"SlimmedNtuples");
 	}
+        if (std::find(processorNames.begin(), processorNames.end(), "monoVProcessor") != processorNames.end()) {
+          treewriter->AddTreeProcessor(new monoVProcessor(), "monoVProcessor");
+        }
     }
+    
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
     /*
@@ -619,6 +626,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	hs_selectedJetsLoose.push_back(h_selectedJetsLoose);
     }
     
+    //AK8PFCHSSoftDropPackedJets
+    edm::Handle< pat::JetCollection > h_AK8Jets;
+    iEvent.getByToken( AK8Jet_Token, h_AK8Jets );
     // MET
     std::vector<edm::Handle< pat::METCollection > > hs_correctedMETs;
     for(auto & correctedMETsToken : correctedMETsTokens){
@@ -764,6 +774,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectronsLoose,
 					  *(hs_selectedJets[isys]),
 					  *(hs_selectedJetsLoose[isys]),
+                                          *h_AK8Jets,
 					  (*(hs_correctedMETs[isys]))[0],
 					  selectedBoostedJets[isys],
                                           selectedAk4Cluster,

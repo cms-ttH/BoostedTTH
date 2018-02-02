@@ -35,7 +35,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     isreHLT = cms.bool(False),
 
-    useFatJets = cms.bool(True),
+    useFatJets = cms.bool(False),
+    #useAK8Jets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),
 

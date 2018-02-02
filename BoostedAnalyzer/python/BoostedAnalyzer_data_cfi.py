@@ -27,6 +27,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     generatorName = cms.string("notSpecified"),
 
     useFatJets = cms.bool(False),
+    #useAK8Jets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(False),
 
