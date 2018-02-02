@@ -42,7 +42,7 @@ class TreeWriter{
     /**
        Returns references to all used Processors (in case you want to use them in a different TreeWriter)
     */
-    std::vector<TreeProcessor*> GetTreeProcessors() const;
+    const std::vector<std::unique_ptr<TreeProcessor>>& GetTreeProcessors() const;
 
     /**
        Returns names of all used Processors (in case you want to use them in a different TreeWriter)
@@ -57,7 +57,7 @@ class TreeWriter{
     bool initialized;
     bool firstEvent;
     VariableContainer vars;
-    std::vector<TreeProcessor*> processors;
+    std::vector<std::unique_ptr<TreeProcessor>> processors;
     std::vector<TStopwatch> stopwatches;
     std::vector<std::string> processorNames;
 
