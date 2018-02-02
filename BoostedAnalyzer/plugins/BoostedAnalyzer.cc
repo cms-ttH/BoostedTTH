@@ -874,7 +874,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	    if(!selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])){
     		    selected=false;
                     // if the vertex,filter or lepton selection is not fulfilled, set the flag to skip the other jec variations
-                    if(!selected && i_sel!=jet_tag_pos) next_event=true;
+                    if(!selected && i_sel!=jet_tag_pos && jet_tag_pos!=selections.size()) next_event=true;
     	    }
     	}
     	// if the vertex,filter or lepton selection is not fulfilled, skip the other jec variations
