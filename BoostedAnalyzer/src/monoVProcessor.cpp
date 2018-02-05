@@ -40,6 +40,7 @@ void monoVProcessor::Init(const InputCollections& input, VariableContainer& vars
 
 void monoVProcessor::Process(const InputCollections& input, VariableContainer& vars) {
   if (!initialized) cerr << "tree processor not initialized" << endl;
+  std::cout<<"processing ak8 jets in monoVProcessor"<<std::endl;
   vars.FillVar( "N_Jets_Ak8", input.AK8Jets.size());
 
   for (std::vector<pat::Jet>::const_iterator itJet = input.AK8Jets.begin() ; itJet != input.AK8Jets.end(); ++itJet) {
@@ -105,7 +106,7 @@ void monoVProcessor::Process(const InputCollections& input, VariableContainer& v
 
   }
 
-
+  if(input.AK8Jets.size()>=1){
   pat::Jet *leadingJet = new pat::Jet;
   leadingJet = input.AK8Jets.at(0).clone();
 
@@ -152,7 +153,7 @@ void monoVProcessor::Process(const InputCollections& input, VariableContainer& v
   vars.FillVar( "monoVtagged_PuppiSoftDrop", monoVtagged_PuppiSoftDrop);
 
   delete leadingJet;
-
+  }
 
 
 }
