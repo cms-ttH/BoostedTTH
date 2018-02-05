@@ -51,7 +51,7 @@ void GenDarkMatterEvent::Fill()
         if(genparticle.pdgId()==1000022 and genparticle.isLastCopy() and genparticle.status()==1){
             Neutralinos.push_back(genparticle);
         }
-        if(genparticle.pdgId()==23 and genparticle.isLastCopy()) {
+        if((genparticle.pdgId()==23 || genparticle.pdgId()==25) and genparticle.isLastCopy()) {
             Mediator = genparticle;
         }
         if((abs(genparticle.pdgId())==12 or abs(genparticle.pdgId())==14 or abs(genparticle.pdgId())==16) and genparticle.isLastCopy() and genparticle.status()==1){

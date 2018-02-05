@@ -50,7 +50,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     minJetsForMEM = cms.int32(4),
     minTagsForMEM = cms.int32(3),
 
-    selectionNames = cms.vstring("VertexSelection","METSelection","MonoJetSelection","LeptonVetoSelection","BTagVetoSelection"),
+    selectionNames = cms.vstring("FilterSelection","VertexSelection","METSelection","MonoJetSelection","LeptonVetoSelection","BTagVetoSelection","PhotonVetoSelection"),
     processorNames = cms.vstring("WeightProcessor","TriggerVarProcessor","DarkMatterProcessor","MonoJetGenSelectionProcessor"),
 
     outfileName = cms.string("BoostedTTH"),

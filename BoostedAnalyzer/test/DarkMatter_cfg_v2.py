@@ -622,7 +622,9 @@ process.p *= process.BadPFMuonFilter*process.BadChargedCandidateFilter*process.b
 if eleMVAid:
     process.p *= process.egmGsfElectronIDSequence
 process.p *= process.egmPhotonIDSequence*process.SelectedPhotonProducer
-process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedTauProducer*process.GenCollectionProducer
+process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons*process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedTauProducer
+if not options.isData:
+    process.p*=process.GenCollectionProducer
 if options.updatePUJetId:
 	process.p*=process.pileupJetIdUpdated*process.updatedPatJets
 process.p*=process.CorrectedJetProducer

@@ -694,12 +694,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle< std::vector<reco::GenParticle> > CustomGenTaus;
     edm::Handle< std::vector<reco::GenJet> > CustomGenJets;
     edm::Handle< std::vector<reco::GenJet> > CustomGenJetsLoose;
-    iEvent.getByToken( customGenElectrons,CustomGenElectrons );
-    iEvent.getByToken( customGenMuons,CustomGenMuons );
-    iEvent.getByToken( customGenTaus,CustomGenTaus );
-    iEvent.getByToken( customGenJets,CustomGenJets );
-    iEvent.getByToken( customGenJetsLoose,CustomGenJetsLoose );
-
+    if(!isData){
+    	iEvent.getByToken( customGenElectrons,CustomGenElectrons );
+    	iEvent.getByToken( customGenMuons,CustomGenMuons );
+    	iEvent.getByToken( customGenTaus,CustomGenTaus );
+    	iEvent.getByToken( customGenJets,CustomGenJets );
+    	iEvent.getByToken( customGenJetsLoose,CustomGenJetsLoose );
+    }
     // selected vertices and set vertex for MiniAODhelper
     // TODO: vertex selection in external producer
     reco::VertexCollection const &vtxs = *h_primaryVertices;
@@ -804,10 +805,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // create empty packedGenParticle dummy since this collection is not yet needed, but maybe later
     std::vector<pat::PackedGenParticle> packedGenParticles_dummy;
     // initialze the GenDarkMatterEvent object with the collections of genparticles
-    genDarkMatterEvent.Initialize(*h_genParticles,packedGenParticles_dummy);
-    // fill the event
-    genDarkMatterEvent.Fill();
-    //cout << "DarkMatterEvent MET: " << genDarkMatterEvent.ReturnNaiveMET() << endl;
+    if(!isData){
+    	genDarkMatterEvent.Initialize(*h_genParticles,packedGenParticles_dummy);
+    	// fill the event
+    	genDarkMatterEvent.Fill();
+    	//cout << "DarkMatterEvent MET: " << genDarkMatterEvent.ReturnNaiveMET() << endl;
+    }
     
     // nominal weight and weights for reweighting
     std::vector<map<string,float> >weightsVector;
