@@ -897,7 +897,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     puWeights.compute(eventInfo);
     puweight = puWeights.nominalWeight();
 
-    weight *= weight_GenValue*xsweight*csvweight*puweight;
+    weight *= weight_GenValue*xsweight*csvweight;
     weights["Weight_GenValue"] = weight_GenValue;
     weights["Weight"]          = weight;
     weights["Weight_XS"]       = xsweight;
