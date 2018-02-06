@@ -44,12 +44,13 @@ void TreeWriter::Init( std::string fileName){
 
 
 void TreeWriter::AddTreeProcessor(TreeProcessor* processor,string name){
-  processors.push_back(processor);
+  std::unique_ptr<TreeProcessor> treeprocessor(processor);
+  processors.push_back(std::move(treeprocessor));
   processorNames.push_back(name);
   stopwatches.push_back(TStopwatch());
 }
 
-std::vector<TreeProcessor*> TreeWriter::GetTreeProcessors() const{
+const std::vector<std::unique_ptr<TreeProcessor>>& TreeWriter::GetTreeProcessors() const{
   return processors;
 }
 
