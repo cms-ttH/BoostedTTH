@@ -47,6 +47,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Photon>&               selectedPhotonsLoose_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
+                    const std::vector<pat::Jet>&                  AK8Jets_,
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
@@ -82,6 +83,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedPhotonsLoose(selectedPhotonsLoose_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
+                    AK8Jets(AK8Jets_),
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
                     selectedAk4Cluster(selectedAk4Cluster_),
@@ -127,6 +129,7 @@ InputCollections(   const InputCollections&                       input,
                     selectedPhotonsLoose(input.selectedPhotonsLoose),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
+                    AK8Jets(input.AK8Jets), 
                     correctedMET(correctedMET_),
                     selectedBoostedJets(selectedBoostedJets_),
                     selectedAk4Cluster(selectedAk4Cluster_),
@@ -160,6 +163,7 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Photon>&               selectedPhotonsLoose;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
+  const std::vector<pat::Jet>&                  AK8Jets;
   const pat::MET&                               correctedMET;
   const boosted::BoostedJetCollection&          selectedBoostedJets;
   const boosted::Ak4ClusterCollection&          selectedAk4Cluster;

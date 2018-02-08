@@ -595,7 +595,7 @@ else:
   "MonoJetGenSelectionProcessor"
   )
 
-printContent=True
+printContent=False
 if printContent:
     process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
