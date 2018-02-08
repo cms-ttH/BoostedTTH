@@ -32,6 +32,10 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_Phi","N_Jets" );
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVBFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVCFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVUDSGFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVBBFlavour","N_Jets" );
   vars.InitVars( "Jet_CSV_DNN","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
@@ -119,7 +123,11 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillIntVar("Evt_Lumi",lumi_section);
 
 
-  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";  
+  const char* btaggerdeepcsvbflavour="pfDeepCSVJetTags:probb";
+  const char* btaggerdeepcsvcflavour="pfDeepCSVJetTags:probc";
+  const char* btaggerdeepcsvudsgflavour="pfDeepCSVJetTags:probudsg";
+  const char* btaggerdeepcsvbbflavour="pfDeepCSVJetTags:probbb";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
@@ -160,6 +168,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "Jet_DeepCSVBFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbflavour) );
+    vars.FillVars( "Jet_DeepCSVCFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvcflavour) );
+    vars.FillVars( "Jet_DeepCSVUDSGFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvudsgflavour) );
+    vars.FillVars( "Jet_DeepCSVBBFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbbflavour) );
     vars.FillVars( "Jet_CSV_DNN",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );

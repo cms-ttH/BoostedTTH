@@ -539,22 +539,22 @@ if options.isData:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
   "essentialBasicVarProcessor",
-  "essentialMVAVarProcessor",
-  "BDTVarProcessor",
-  "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
-  "TTBBStudienProcessor"
+  #"essentialMVAVarProcessor",
+  #"BDTVarProcessor",
+  #"TriggerVarProcessor",
+  #"ReconstructionMEvarProcessor",
+  #"TTBBStudienProcessor"
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-  "essentialMCMatchVarProcessor",
+  #"essentialMCMatchVarProcessor",
   "essentialBasicVarProcessor",
-  "essentialMVAVarProcessor",
-  "BDTVarProcessor",
-  "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
-  "TTBBStudienProcessor"
+  #"essentialMVAVarProcessor",
+  #"BDTVarProcessor",
+  #"TriggerVarProcessor",
+  #"ReconstructionMEvarProcessor",
+  #"TTBBStudienProcessor"
   )
 
 printContent=False
