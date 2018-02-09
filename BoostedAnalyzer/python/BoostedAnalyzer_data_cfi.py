@@ -12,6 +12,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     checkBasicDataTriggers, # defined in Selection_cff
     filtersData, # defined in Selection_cff
     MonoJetSelection,
+    monoVselection,
 
     era = cms.string("2016_80X"), # has little effect so far, might become important for MiniAODhelper
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
@@ -42,7 +43,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     minJetsForMEM = cms.int32(4),
     minTagsForMEM = cms.int32(3),
 
-    selectionNames = cms.vstring("FilterSelection","VertexSelection","METSelection","MonoJetSelection","LeptonVetoSelection","BTagVetoSelection","PhotonVetoSelection"),
+    selectionNames = cms.vstring("FilterSelection","VertexSelection","METSelection","MonoJetSelection","LeptonVetoSelection","BTagVetoSelection","PhotonVetoSelection","monoVselection"),
     processorNames = cms.vstring("WeightProcessor","TriggerVarProcessor","DarkMatterProcessor"),
 
     outfileName = cms.string("BoostedTTH"),

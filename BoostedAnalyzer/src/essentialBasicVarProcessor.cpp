@@ -87,10 +87,10 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Electron_Pt_BeforeRun2Calibration","N_LooseElectrons" );
   vars.InitVars( "Electron_Eta_Supercluster","N_LooseElectrons" );
   
-  vars.InitVar( "Evt_Pt_MET" );
-  vars.InitVar( "Evt_Phi_MET" );
-  vars.InitVar( "Evt_Pt_GenMET" );
-  vars.InitVar( "Evt_Phi_GenMET" );
+  //vars.InitVar( "Evt_Pt_MET" );
+  //vars.InitVar( "Evt_Phi_MET" );
+  //vars.InitVar( "Evt_Pt_GenMET" );
+  //vars.InitVar( "Evt_Phi_GenMET" );
 
   vars.InitVar("Evt_M3");
 //   vars.InitVar("Evt_M3_OneJetTagged");
@@ -257,12 +257,12 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     }
   }
   
-  vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );
-  vars.FillVar( "Evt_Phi_MET",input.correctedMET.corPhi(pat::MET::Type1XY) );
-  if(input.correctedMET.genMET()!=0){
-      vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
-      vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
-  }
+  //vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );
+  //vars.FillVar( "Evt_Phi_MET",input.correctedMET.corPhi(pat::MET::Type1XY) );
+  //if(input.correctedMET.genMET()!=0){
+      //vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
+      //vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
+  //}
   
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
   math::XYZTLorentzVector metvec = input.correctedMET.corP4(pat::MET::Type1XY);

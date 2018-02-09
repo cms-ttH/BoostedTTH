@@ -84,6 +84,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonVetoSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BTagVetoSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/PhotonVetoSelection.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/monoVselection.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -420,6 +421,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
         else if(*itSel == "LeptonVetoSelection") selections.push_back(new LeptonVetoSelection());
         else if(*itSel == "BTagVetoSelection") selections.push_back(new BTagVetoSelection());
         else if(*itSel == "PhotonVetoSelection") selections.push_back(new PhotonVetoSelection());
+        else if (*itSel == "monoVselection") selections.push_back(new monoVselection(iConfig));
 	else cout << "No matching selection found for: " << *itSel << endl;
 	// connect added selection to cutflow
 	for (auto &c : cutflows){

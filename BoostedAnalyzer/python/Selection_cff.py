@@ -119,3 +119,16 @@ MonoJetSelection = cms.PSet(
     MonoJet_Chf=cms.double(0.1),
     MonoJet_Nhf=cms.double(0.8)
 )
+
+monoVselection = cms.PSet(
+    minpt=cms.double(250),
+    maxeta=cms.double(2.4),
+
+    minPrunedMass=cms.double(65),
+    maxPrunedMass=cms.double(105),
+    maxtau21_chsPrun=cms.double(0.6),
+
+    minSoftDropMass=cms.double(65),
+    maxSoftDropMass=cms.double(105),
+    maxtau21_Puppi=cms.double(0.4),
+)

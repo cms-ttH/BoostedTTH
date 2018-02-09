@@ -565,7 +565,8 @@ process.BoostedAnalyzer.selectionNames = [
 "MonoJetSelection",
 "LeptonVetoSelection",
 "BTagVetoSelection",
-"PhotonVetoSelection"
+"PhotonVetoSelection",
+"monoVselection"
 ]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
@@ -573,7 +574,7 @@ if options.additionalSelection!="NONE":
 if options.isData:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-  #"essentialBasicVarProcessor",
+  "essentialBasicVarProcessor",
   #"essentialMVAVarProcessor",
   #"BDTVarProcessor",
   "TriggerVarProcessor",
@@ -585,7 +586,7 @@ else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
   #"essentialMCMatchVarProcessor",
-  #"essentialBasicVarProcessor",
+  "essentialBasicVarProcessor",
   #"essentialMVAVarProcessor",
   #"BDTVarProcessor",
   "TriggerVarProcessor",
