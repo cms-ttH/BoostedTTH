@@ -40,8 +40,8 @@ std::vector<pat::PackedGenParticle> GenDarkMatterEvent::ReturnPackedGenParticles
 void GenDarkMatterEvent::Fill() 
 {
     if(not hasDarkMatter) {
-        std::cout << "The Generator Event does not have a Dark Matter particle with PDGID 1000022 (lightest neutralino)." << std::endl;
-        std::cout << "Therefore, the GenDarkMatterEvent cannot be filled." << std::endl;
+        //std::cout << "The Generator Event does not have a Dark Matter particle with PDGID 1000022 (lightest neutralino)." << std::endl;
+        //std::cout << "Therefore, the GenDarkMatterEvent cannot be filled." << std::endl;
         return;
     }
     

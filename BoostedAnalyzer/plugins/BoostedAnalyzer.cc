@@ -959,14 +959,14 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     puWeights.compute(eventInfo);
     puweight = puWeights.nominalWeight();
 
-    weight *= xsweight;//*puweight;
+    weight *= xsweight*puweight*csvweight;
     weights["Weight_GenValue"] = weight_GenValue;
     weights["Weight"] = weight;
     weights["Weight_XS"] = xsweight;
     weights["Weight_CSV"] = csvweight;
     weights["Weight_PU"] = puweight;
     weights["Weight_TopPt"] = topptweight;
-    /*
+    
     bool doSystematics=true;
 //     if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
      if(doSystematics && systype == Systematics::NA) { // only do these for the nominal samples
@@ -987,10 +987,10 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	weights["Weight_CSVCErr1down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_CSVCErr2up"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_CSVCErr2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
- 	weights["Weight_TopPtup"] = topptweightUp;
- 	weights["Weight_TopPtdown"] = topptweightDown;
+ 	//weights["Weight_TopPtup"] = topptweightUp;
+ 	//weights["Weight_TopPtdown"] = topptweightDown;
   }
-    */
+    
     //Add Lepton Scalefactors to weight map
     /*
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
