@@ -21,7 +21,8 @@ void METSelection::InitCutflow(Cutflow& cutflow){
 bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     if(!initialized) cerr << "METSelection not initialized" << endl;
     double met=input.correctedMET.corPt(pat::MET::Type1XY);
-    if(met>minMET&&met<maxMET){
+    double calomet = input.correctedMET.caloMETPt();
+    if((met>minMET&&met<maxMET)&&(abs(calomet-met)/calomet<0.5)){
 	cutflow.EventSurvivedStep(selectionName ,input.weights.at("Weight"));
 	return true;
     }
