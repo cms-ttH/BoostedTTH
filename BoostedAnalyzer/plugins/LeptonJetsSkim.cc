@@ -32,7 +32,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
-
 #include "DataFormats/PatCandidates/interface/Lepton.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
@@ -145,10 +144,17 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	
 	edm::Handle<pat::JetCollection> hJets;
 	iEvent.getByToken(EDMJetsToken,hJets);	    
-	pat::JetCollection selectedJets =  helper_.GetSelectedJets(*hJets,jetPtMin_,jetEtaMax_,jetID::jetLoose,'-');
+	pat::JetCollection selectedJets =  *hJets;
 	// TODO: correct jets (maybe even with JESUP) to make sure the jetcuts are loose enough
 
-	if( (selectedMuons.size()+selectedElectrons.size())>=1 && int(selectedJets.size())>minJets_){
+	bool pass = false;
+	math::XYZTLorentzVector hadr_recoil(0.,0.,0.,0.);
+	for(const auto& jet : selectedJets){
+	    hadr_recoil+=jet.p4();
+	}
+	pass = selectedJets[0].pt()>65. && hadr_recoil.pt()>150.;
+
+	if(pass){
 	    return true;
 	}
 	
