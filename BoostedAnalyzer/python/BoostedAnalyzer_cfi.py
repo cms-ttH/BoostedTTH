@@ -36,6 +36,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     isreHLT = cms.bool(False),
 
     useFatJets = cms.bool(True),
+    #useAK8Jets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),
 
@@ -50,7 +51,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     minTagsForMEM = cms.int32(3),
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","AK8JetProcessor"),
 
     outfileName = cms.string("BoostedTTH"),
 )

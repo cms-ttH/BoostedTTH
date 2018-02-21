@@ -33,6 +33,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Jet_Phi","N_Jets" );
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
+  vars.InitVars( "Jet_DeepCSV","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
@@ -115,6 +116,8 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
 
 
   const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+  const char* btaggerdeepcsvbflavour="pfDeepCSVJetTags:probb";
+  const char* btaggerdeepcsvbbflavour="pfDeepCSVJetTags:probbb";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
@@ -157,6 +160,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "Jet_DeepCSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbflavour)+MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbbflavour) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
