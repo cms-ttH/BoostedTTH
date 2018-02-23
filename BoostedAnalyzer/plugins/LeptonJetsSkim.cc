@@ -146,7 +146,7 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.getByToken(EDMJetsToken,hJets);	    
 	pat::JetCollection selectedJets =  *hJets;
 	// TODO: correct jets (maybe even with JESUP) to make sure the jetcuts are loose enough
-
+	if(!(selectedJets.size()>0)) return false;
 	bool pass = false;
 	math::XYZTLorentzVector hadr_recoil(0.,0.,0.,0.);
 	for(const auto& jet : selectedJets){
