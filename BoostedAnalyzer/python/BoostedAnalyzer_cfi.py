@@ -6,7 +6,7 @@ from BoostedTTH.BoostedAnalyzer.Weights_cff import *
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
     Inputs_tth_sl, # defined in Inputs_cff
-    LeptonSelectionMC, # defined in Selection_cff
+    LeptonSelectionNoTrigger, # defined in Selection_cff
     DiLeptonSelectionMC, # defined in Selection_cff
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
