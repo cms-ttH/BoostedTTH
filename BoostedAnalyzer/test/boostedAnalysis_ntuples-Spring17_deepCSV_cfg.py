@@ -127,12 +127,11 @@ if options.isData:
   jetCorrectionsForBTagging=cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'])
 updateJetCollection(
   process,
-  labelName = 'updateBtags',
+  labelName = '',
   postfix='',
   jetSource = cms.InputTag('slimmedJets'),
   jetCorrections = ('AK4PFchs', jetCorrectionsForBTagging, 'None'),  
-  btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags','deepFlavourJetTags:prob','deepFlavourJetTags:probc','deepFlavourJetTags:probudsg','deepFlavourJetTags:probbb'],
-  runIVF=True,
+  btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags','deepFlavourJetTags:probb','deepFlavourJetTags:probc','deepFlavourJetTags:probudsg','deepFlavourJetTags:probbb','deepFlavourJetTags:probcc'],
   btagPrefix = '' # optional, in case interested in accessing both the old and new discriminator values
 )
 
@@ -579,7 +578,7 @@ else:
   "TriggerVarProcessor",
   )
 
-printContent=False
+printContent=True
 if printContent:
     process.content = cms.EDAnalyzer("EventContentAnalyzer")
 

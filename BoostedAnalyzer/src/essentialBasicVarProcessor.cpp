@@ -36,6 +36,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_DeepCSVCFlavour","N_Jets" );
   vars.InitVars( "Jet_DeepCSVUDSGFlavour","N_Jets" );
   vars.InitVars( "Jet_DeepCSVBBFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVCCFlavour","N_Jets" );
   vars.InitVars( "Jet_CSV_DNN","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
@@ -128,6 +129,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   const char* btaggerdeepcsvcflavour="deepFlavourJetTags:probc";
   const char* btaggerdeepcsvudsgflavour="deepFlavourJetTags:probudsg";
   const char* btaggerdeepcsvbbflavour="deepFlavourJetTags:probbb";
+  const char* btaggerdeepcsvccflavour="deepFlavourJetTags:probcc";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
@@ -172,6 +174,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_DeepCSVCFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvcflavour) );
     vars.FillVars( "Jet_DeepCSVUDSGFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvudsgflavour) );
     vars.FillVars( "Jet_DeepCSVBBFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbbflavour) );
+    vars.FillVars( "Jet_DeepCSVCCFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvccflavour) );	
     vars.FillVars( "Jet_CSV_DNN",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
