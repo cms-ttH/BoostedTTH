@@ -117,6 +117,35 @@ tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
 METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
 jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
 
+
+#### DeepCSV update of jet collection ??? ###########
+
+
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+jetCorrectionsForBTagging=cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
+if options.isData:
+  jetCorrectionsForBTagging=cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'])
+updateJetCollection(
+  process,
+  labelName = 'updateBtags',
+  postfix='',
+  jetSource = cms.InputTag('slimmedJets'),
+  jetCorrections = ('AK4PFchs', jetCorrectionsForBTagging, 'None'),  
+  btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags','deepFlavourJetTags:prob','deepFlavourJetTags:probc','deepFlavourJetTags:probudsg','deepFlavourJetTags:probbb'],
+  runIVF=True,
+  btagPrefix = '' # optional, in case interested in accessing both the old and new discriminator values
+)
+
+
+
+
+
+
+
+
+
+
+
 ###### deterministic seed producer ######
 
 if options.deterministicSeeds:

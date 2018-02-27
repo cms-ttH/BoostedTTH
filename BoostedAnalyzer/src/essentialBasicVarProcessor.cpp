@@ -124,10 +124,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
 
 
   const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
-  const char* btaggerdeepcsvbflavour="pfDeepCSVJetTags:probb";
-  const char* btaggerdeepcsvcflavour="pfDeepCSVJetTags:probc";
-  const char* btaggerdeepcsvudsgflavour="pfDeepCSVJetTags:probudsg";
-  const char* btaggerdeepcsvbbflavour="pfDeepCSVJetTags:probbb";
+  const char* btaggerdeepcsvbflavour="deepFlavourJetTags:probb";
+  const char* btaggerdeepcsvcflavour="deepFlavourJetTags:probc";
+  const char* btaggerdeepcsvudsgflavour="deepFlavourJetTags:probudsg";
+  const char* btaggerdeepcsvbbflavour="deepFlavourJetTags:probbb";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
