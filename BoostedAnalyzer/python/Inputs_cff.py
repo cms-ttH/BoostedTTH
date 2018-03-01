@@ -34,6 +34,7 @@ Inputs_tth_sl= cms.PSet(
     customGenElectrons = cms.InputTag("GenCollectionProducer:CustomGenElectrons"),
     customGenMuons = cms.InputTag("GenCollectionProducer:CustomGenMuons"),
     customGenTaus = cms.InputTag("GenCollectionProducer:CustomGenTaus"),
+    customGenPhotons = cms.InputTag("GenCollectionProducer:CustomGenPhotons"),
     customGenJets = cms.InputTag("GenCollectionProducer:CustomGenJets"),
     customGenJetsLoose = cms.InputTag("GenCollectionProducer:CustomGenJetsLoose")
 )

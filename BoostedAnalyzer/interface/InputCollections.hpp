@@ -64,7 +64,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<reco::GenJet>&              customGenJetsLoose_,
                     const std::vector<reco::GenParticle>&         customGenElectrons_,
                     const std::vector<reco::GenParticle>&         customGenMuons_,
-                    const std::vector<reco::GenParticle>&         customGenTaus_
+                    const std::vector<reco::GenParticle>&         customGenTaus_,
+                    const std::vector<reco::GenParticle>&         customGenPhotons_
                     
 		      /**** bjetness code ****/
 
@@ -100,7 +101,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
 		    customGenJetsLoose(customGenJetsLoose_),
 		    customGenElectrons(customGenElectrons_),
 		    customGenMuons(customGenMuons_),
-		    customGenTaus(customGenTaus_)
+		    customGenTaus(customGenTaus_),
+		    customGenPhotons(customGenPhotons_)
                     {}
 
 /**
@@ -146,7 +148,8 @@ InputCollections(   const InputCollections&                       input,
 		    customGenJetsLoose(input.customGenJetsLoose),
 		    customGenElectrons(input.customGenElectrons),
 		    customGenMuons(input.customGenMuons),
-		    customGenTaus(input.customGenTaus)
+		    customGenTaus(input.customGenTaus),
+		    customGenPhotons(input.customGenPhotons)
                     {}
 
   const EventInfo&                              eventInfo;
@@ -181,6 +184,7 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<reco::GenParticle>&         customGenElectrons;
   const std::vector<reco::GenParticle>&         customGenMuons;
   const std::vector<reco::GenParticle>&         customGenTaus;
+  const std::vector<reco::GenParticle>&         customGenPhotons;
 
 };
 

@@ -18,6 +18,7 @@ public:
   int GenMonoJetSelection(const InputCollections& input);
   int GenLeptonVetoSelection(const InputCollections& input);
   int GenBTagVetoSelection(const InputCollections& input);
+  int GenPhotonVetoSelection(const InputCollections& input);
 private:
   const float minMET = 250;
   const float maxMET = 100000;

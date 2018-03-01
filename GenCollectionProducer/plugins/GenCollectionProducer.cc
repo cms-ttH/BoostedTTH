@@ -103,7 +103,7 @@ GenCollectionProducer::GenCollectionProducer(const edm::ParameterSet& iConfig)
     pdgids["Electron"]=11;
     pdgids["Muon"]=13;
     pdgids["Tau"]=15;
-    
+    pdgids["Photon"]=22;
     // register data access
     GenJetsToken  = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets"));
     GenParticlesToken = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles"));

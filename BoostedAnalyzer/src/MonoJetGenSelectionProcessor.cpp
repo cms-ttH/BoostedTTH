@@ -16,6 +16,7 @@ void MonoJetGenSelectionProcessor::Init(const InputCollections& input,VariableCo
   vars.InitVar("GenMonoJetSelection",0,"I");
   vars.InitVar("GenLeptonVetoSelection",0,"I");
   vars.InitVar("GenBTagVetoSelection",0,"I");
+  vars.InitVar("GenPhotonVetoSelection",0,"I");
   initialized=true;
 }
 
@@ -26,6 +27,7 @@ void MonoJetGenSelectionProcessor::Process(const InputCollections& input,Variabl
   vars.FillVar("GenMonoJetSelection",GenMonoJetSelection(input));
   vars.FillVar("GenLeptonVetoSelection",GenLeptonVetoSelection(input));
   vars.FillVar("GenBTagVetoSelection",GenBTagVetoSelection(input));
+  vars.FillVar("GenPhotonVetoSelection",GenPhotonVetoSelection(input));
 }
 
 // needs to done correctly, is there a GenVertex Collection??
@@ -85,5 +87,16 @@ int MonoJetGenSelectionProcessor::GenBTagVetoSelection(const InputCollections& i
     }
 
     return 1;    
+}
+
+int MonoJetGenSelectionProcessor::GenPhotonVetoSelection(const InputCollections& input){
+    
+    if(input.customGenPhotons.size()>0) {
+        return 0;
+    }
+    else{
+        return 1;    
+    }
+    
 }
 

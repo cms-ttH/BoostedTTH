@@ -269,6 +269,7 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenElectrons;
     edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenMuons;
     edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenTaus;
+    edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenPhotons;
     edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJets;
     edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsLoose;
     
@@ -359,6 +360,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     customGenElectrons = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenElectrons"));
     customGenMuons = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenMuons"));
     customGenTaus = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenTaus"));
+    customGenPhotons = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenPhotons"));
     customGenJets = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("customGenJets"));
     customGenJetsLoose = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("customGenJetsLoose"));
     
@@ -701,12 +703,14 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle< std::vector<reco::GenParticle> > CustomGenElectrons;
     edm::Handle< std::vector<reco::GenParticle> > CustomGenMuons;
     edm::Handle< std::vector<reco::GenParticle> > CustomGenTaus;
+    edm::Handle< std::vector<reco::GenParticle> > CustomGenPhotons;
     edm::Handle< std::vector<reco::GenJet> > CustomGenJets;
     edm::Handle< std::vector<reco::GenJet> > CustomGenJetsLoose;
     if(!isData){
     	iEvent.getByToken( customGenElectrons,CustomGenElectrons );
     	iEvent.getByToken( customGenMuons,CustomGenMuons );
     	iEvent.getByToken( customGenTaus,CustomGenTaus );
+        iEvent.getByToken( customGenPhotons,CustomGenPhotons );
     	iEvent.getByToken( customGenJets,CustomGenJets );
     	iEvent.getByToken( customGenJetsLoose,CustomGenJetsLoose );
     }
@@ -859,7 +863,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                                           *CustomGenJetsLoose,
                                           *CustomGenElectrons,
                                           *CustomGenMuons,
-                                          *CustomGenTaus
+                                          *CustomGenTaus,
+                                          *CustomGenPhotons
 					  ));
 
     }
