@@ -879,7 +879,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // loop over jet systematics
     for(uint i_sys=0; i_sys<jetSystematics.size(); i_sys++){
     	// all events survive step 0
-        cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight"));
+        cutflows[i_sys].EventSurvivedStep("all",inputs[i_sys].weights.at("Weight_XS"));
         // start with selection=true and change this if one selection fails
     	bool selected=true;
     	// for every systematic: loop over selections
