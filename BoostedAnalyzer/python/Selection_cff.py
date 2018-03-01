@@ -42,10 +42,10 @@ import FWCore.ParameterSet.Config as cms
 #)
     
 MonoJetTriggers = cms.PSet(
-    METTriggers = cms.vstring("HLT_PFMET170_*","HLT_PFMETNoMu90_PFMHTNoMu90_IDTight","HLT_PFMETNoMu100_PFMHTNoMu100_IDTight","HLT_PFMETNoMu110_PFMHTNoMu110_IDTight","HLT_PFMETNoMu120_PFMHTNoMu120_IDTight"),
-    electronTriggers = cms.vstring("HLT_Ele27_WPTight","HLT_Ele105_CaloIdVT_GsfTrkIdT"),
-    photonTriggers = cms.vstring("HLT_Photon165_HE10","HLT_Photon175"),
-    HTTriggers = cms.vstring("HLT_EcalHT800")
+    METTriggers = cms.vstring("HLT_PFMET170_*","HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_*","HLT_PFMETNoMu100_PFMHTNoMu100_IDTight_*","HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_*","HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_*"),
+    electronTriggers = cms.vstring("HLT_Ele27_WPTight_*","HLT_Ele105_CaloIdVT_GsfTrkIdT_*"),
+    photonTriggers = cms.vstring("HLT_Photon165_HE10_*","HLT_Photon175_*"),
+    HTTriggers = cms.vstring("HLT_EcalHT800_*")
     )
 
 METSelection = cms.PSet(
