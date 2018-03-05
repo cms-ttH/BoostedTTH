@@ -511,7 +511,6 @@ if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
 process.BoostedAnalyzer.selectionNames = [
-"FilterSelection",
 "VertexSelection",
 "LeptonSelection",
 "JetTagSelection"
@@ -523,8 +522,8 @@ if options.isData:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
   "AdditionalJetProcessor",
-  "essentialBasicVarProcessor",
-  "essentialMVAVarProcessor",
+  "BasicVarProcessor",
+  #"essentialMVAVarProcessor",
   "BDTVarProcessor",
   "TriggerVarProcessor"
   #"ReconstructionMEvarProcessor",
@@ -535,8 +534,8 @@ else:
   "WeightProcessor",
   "MCMatchVarProcessor",
   "AdditionalJetProcessor",
-  "essentialBasicVarProcessor",
-  "essentialMVAVarProcessor",
+  "BasicVarProcessor",
+  #"essentialMVAVarProcessor",
   "BDTVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",

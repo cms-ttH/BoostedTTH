@@ -21,11 +21,24 @@ void AK8JetProcessor::Init(const InputCollections& input,VariableContainer& vars
   vars.InitVars( "AK8Jet_Charge","N_AK8Jets" );
   vars.InitVars( "AK8Jet_GenJet_Pt","N_AK8Jets" );
   vars.InitVars( "AK8Jet_GenJet_Eta","N_AK8Jets" );
-  vars.InitVars( "AK8Jet_PrunedMass", "N_AK8Jets" );
-  
+  vars.InitVars( "AK8Jet_Pruned_Mass", "N_AK8Jets" );
+  vars.InitVars( "AK8Jet_Puppi_Softdrop_Mass", "N_AK8Jets" );
   vars.InitVars( "AK8Jet_Tau1","N_AK8Jets" );
   vars.InitVars( "AK8Jet_Tau2","N_AK8Jets" );
   vars.InitVars( "AK8Jet_Tau3","N_AK8Jets" );
+  
+  vars.InitVars( "AK8Subjet1_E", "N_AK8Jets" );
+  vars.InitVars( "AK8Subjet1_Pt", "N_AK8Jets" );
+  vars.InitVars( "AK8Subjet1_Phi","N_AK8Jets" );
+  vars.InitVars( "AK8Subjet1_Eta","N_AK8Jets" );
+  vars.InitVars( "AK8Subjet1_DeepCSV","N_AK8Jets" );
+  
+  vars.InitVars( "AK8Subjet2_E", "N_AK8Jets" );
+  vars.InitVars( "AK8Subjet2_Pt", "N_AK8Jets" );
+  vars.InitVars( "AK8Subjet2_Phi", "N_AK8Jets" );
+  vars.InitVars( "AK8Subjet2_Eta", "N_AK8Jets" );
+  vars.InitVars( "AK8Subjet2_DeepCSV", "N_AK8Jets" );
+  
   
   vars.InitVars( "AK8Jet_Dr_GenTopHad",-9.,"N_AK8Jets" );
   vars.InitVars( "AK8Jet_Dr_GenTopLep",-9.,"N_AK8Jets" );
@@ -43,13 +56,16 @@ void AK8JetProcessor::Init(const InputCollections& input,VariableContainer& vars
 
 void AK8JetProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
+  
+  const char* btaggerdeepcsvbflavour="pfDeepCSVJetTags:probb";
+  const char* btaggerdeepcsvbbflavour="pfDeepCSVJetTags:probbb";
 
   // Fill Multiplicity Variables
   vars.FillVar( "N_AK8Jets",input.AK8Jets.size());
 
   // Fill Jet Variables
   // All Jets
-  for(std::vector<pat::Jet>::const_iterator itJet = input.AK8Jets.begin() ; itJet != input.AK8Jets.end(); ++itJet){
+  for(std::vector<pat::Jet>::const_iterator itJet = input.AK8Jets.begin() ; itJet != input.AK8Jets.end(); ++itJet) {
     int iJet = itJet - input.AK8Jets.begin();
     vars.FillVars( "AK8Jet_E",iJet,itJet->energy() );
     vars.FillVars( "AK8Jet_M",iJet,itJet->mass() );
@@ -68,18 +84,46 @@ void AK8JetProcessor::Process(const InputCollections& input,VariableContainer& v
       vars.FillVars( "AK8Jet_GenJet_Pt",iJet,-9.0);
       vars.FillVars( "AK8Jet_GenJet_Eta",iJet,-9.0);
     }
-    vars.FillVars( "AK8Jet_PrunedMass", iJet, itJet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSPrunedMass"));
-    if ( itJet->hasUserFloat("NjettinessAK8:tau1") ) {
-      tau1 = itJet->userFloat("NjettinessAK8:tau1");
+    vars.FillVars( "AK8Jet_Pruned_Mass", iJet, itJet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSPrunedMass"));
+    vars.FillVars( "AK8Jet_Puppi_Softdrop_Mass", iJet, itJet->userFloat("ak8PFJetsPuppiSoftDropMass"));
+    if ( itJet->hasUserFloat("NjettinessAK8Puppi:tau1") ) {
+      tau1 = itJet->userFloat("NjettinessAK8Puppi:tau1");
       vars.FillVars( "AK8Jet_Tau1", iJet, tau1 );
     }
-    if ( itJet->hasUserFloat("NjettinessAK8:tau2") ) {
-      tau2 = itJet->userFloat("NjettinessAK8:tau2");
+    if ( itJet->hasUserFloat("NjettinessAK8Puppi:tau2") ) {
+      tau2 = itJet->userFloat("NjettinessAK8Puppi:tau2");
       vars.FillVars( "AK8Jet_Tau2", iJet, tau2 );
     }
-    if ( itJet->hasUserFloat("NjettinessAK8:tau3") ) {
-      tau3 = itJet->userFloat("NjettinessAK8:tau3");
+    if ( itJet->hasUserFloat("NjettinessAK8Puppi:tau3") ) {
+      tau3 = itJet->userFloat("NjettinessAK8Puppi:tau3");
       vars.FillVars( "AK8Jet_Tau3", iJet, tau3 );
+    }
+
+    /*
+    std::vector< edm::Ptr<reco::Candidate>> allconstituents;
+    for (auto const & constituent : itJet->daughterPtrVector()) {
+        allconstituents.push_back(constituent);
+    }
+    */
+    
+    int i=0;
+    auto sdSubjetsPuppi = itJet->subjets("SoftDropPuppi");
+    for ( auto const & it : sdSubjetsPuppi ) {
+      i++;
+      if (i==1) {
+        vars.FillVars( "AK8Subjet1_E", iJet, it->correctedP4(0).e());
+        vars.FillVars( "AK8Subjet1_Pt", iJet, it->correctedP4(0).pt());
+        vars.FillVars( "AK8Subjet1_Phi", iJet, it->correctedP4(0).phi());
+        vars.FillVars( "AK8Subjet1_Eta", iJet, it->correctedP4(0).eta());
+        vars.FillVars( "AK8Subjet1_DeepCSV", iJet, MiniAODHelper::GetJetCSV(*it,btaggerdeepcsvbflavour)+MiniAODHelper::GetJetCSV(*it,btaggerdeepcsvbbflavour) );
+      }
+      if (i==2) {
+        vars.FillVars( "AK8Subjet2_E", iJet, it->correctedP4(0).e());
+        vars.FillVars( "AK8Subjet2_Pt", iJet, it->correctedP4(0).pt());
+        vars.FillVars( "AK8Subjet2_Phi", iJet, it->correctedP4(0).phi());
+        vars.FillVars( "AK8Subjet2_Eta", iJet, it->correctedP4(0).eta());
+        vars.FillVars( "AK8Subjet2_DeepCSV", iJet, MiniAODHelper::GetJetCSV(*it,btaggerdeepcsvbflavour)+MiniAODHelper::GetJetCSV(*it,btaggerdeepcsvbbflavour) );
+      }
     }
   }
   

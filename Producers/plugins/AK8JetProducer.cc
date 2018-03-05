@@ -55,7 +55,7 @@ private:
 
   // ----------member data ---------------------------
   /** input jets data access token **/
-  edm::EDGetTokenT< pat::JetCollection > AK8PFCHSSoftDrop_Token;
+  edm::EDGetTokenT< pat::JetCollection > AK8PFPuppiSoftDrop_Token;
 
 
   /** MiniAODHelper, used for jet correction and selection **/
@@ -93,7 +93,7 @@ private:
 //
 AK8JetProducer::AK8JetProducer(const edm::ParameterSet& iConfig)
 {
-  AK8PFCHSSoftDrop_Token  = consumes< pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
+  AK8PFPuppiSoftDrop_Token  = consumes< pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
 
   ptMins = iConfig.getParameter< std::vector<double> >("ptMins");
   etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");
@@ -115,7 +115,7 @@ AK8JetProducer::AK8JetProducer(const edm::ParameterSet& iConfig)
 
   helper.SetUp(era, sampleID, iAnalysisType, isData);
 
-  produces<pat::JetCollection>("rawAK8PFCHSSoftDropJets");
+  produces<pat::JetCollection>("rawAK8PFPuppiSoftDropJets");
   for (uint i = 0; i < collectionNames.size(); i++) {
     // for (uint j = 0; j < systematics.size(); j++) {
       // produces<pat::JetCollection>(systName(collectionNames[i], systematics[j]));
@@ -150,13 +150,13 @@ AK8JetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   helper.UpdateJetCorrectorUncertainties(iSetup);
   helper.SetAK8JetCorrectorUncertainty(iSetup);
 
-  edm::Handle< pat::JetCollection > h_inputJets_AK8PFCHSSoftDrop;
-  iEvent.getByToken( AK8PFCHSSoftDrop_Token, h_inputJets_AK8PFCHSSoftDrop );
+  edm::Handle< pat::JetCollection > h_inputJets_AK8PFPuppiSoftDrop;
+  iEvent.getByToken( AK8PFPuppiSoftDrop_Token, h_inputJets_AK8PFPuppiSoftDrop );
 
-  const std::vector<pat::Jet> idJets_AK8PFCHSSoftDropJets = helper.GetSelectedJets(*h_inputJets_AK8PFCHSSoftDrop, 0., 9999., MiniAODHelper::getjetID(JetID) , '-' );
-  std::vector<pat::Jet> rawK8PFCHSSoftDropJets = helper.GetUncorrectedJets(idJets_AK8PFCHSSoftDropJets);
-  std::unique_ptr<pat::JetCollection>rawK8PFCHSSoftDropJets_ = std::make_unique<pat::JetCollection>(rawK8PFCHSSoftDropJets);
-  iEvent.put(std::move(rawK8PFCHSSoftDropJets_), collectionNames[0]);
+  const std::vector<pat::Jet> idJets_AK8PFPuppiSoftDropJets = helper.GetSelectedJets(*h_inputJets_AK8PFPuppiSoftDrop, 0., 9999., MiniAODHelper::getjetID(JetID) , '-' );
+  std::vector<pat::Jet> rawAK8PFPuppiSoftDropJets = helper.GetUncorrectedJets(idJets_AK8PFPuppiSoftDropJets);
+  std::unique_ptr<pat::JetCollection>rawAK8PFPuppiSoftDropJets_ = std::make_unique<pat::JetCollection>(rawAK8PFPuppiSoftDropJets);
+  iEvent.put(std::move(rawAK8PFPuppiSoftDropJets_), collectionNames[0]);
 }
 
 std::string AK8JetProducer::systName(std::string name, Systematics::Type sysType) {

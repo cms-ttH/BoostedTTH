@@ -648,9 +648,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	hs_selectedJetsLoose.push_back(h_selectedJetsLoose);
     }
     
-    //AK8PFCHSSoftDropPackedJets
+    //AK8PFPuppiSoftDropPackedJets
     edm::Handle< pat::JetCollection > h_AK8Jets;
     iEvent.getByToken( AK8Jet_Token, h_AK8Jets );
+
     
     // MET
     std::vector<edm::Handle< pat::METCollection > > hs_correctedMETs;

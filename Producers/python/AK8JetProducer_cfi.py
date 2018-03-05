@@ -6,6 +6,7 @@ AK8JetProducer = cms.EDProducer(
     applyCorrection = cms.bool(True),
     doJER = cms.bool(False),
     jets = cms.InputTag("slimmedJetsAK8"),
+    subjets = cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked"),
     # jets = cms.InputTag("slimmedJetsAK8PFCHSSoftDropPacked"),
 
     miniAODGenJets = cms.InputTag("slimmedGenJets"),
