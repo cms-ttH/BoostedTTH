@@ -5,15 +5,20 @@ BDTVarProcessor::BDTVarProcessor():
 //     bdtohio2(BDTOhio_v2(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/ohio_weights_run2_v2/")),
 //     bdt3(BDT_v3(BoostedUtils::GetAnalyzerPath()+"/data/bdtweights/weights_v3/")),
     commonBDT5(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/")),
-    recoLikelihoodVariables(new RecoLikelihoodVariables()) {needToDeleteBDTClassifier=true;}
+    commonBDTDeepCSV(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/")),
+    recoLikelihoodVariables(new RecoLikelihoodVariables())
+    {needToDeleteBDTClassifier=true;}
+//     recoLikelihoodVariables(new RecoLikelihoodVariables()) {needToDeleteBDTClassifier=true;}
 BDTVarProcessor::~BDTVarProcessor(){
   if(needToDeleteBDTClassifier){
     delete commonBDT5;
+    delete commonBDTDeepCSV;
   }
   delete recoLikelihoodVariables;
 }
 
-BDTVarProcessor::BDTVarProcessor(BDTClassifier* bdt_):commonBDT5(bdt_), recoLikelihoodVariables(new RecoLikelihoodVariables()){needToDeleteBDTClassifier=false;}
+BDTVarProcessor::BDTVarProcessor(BDTClassifier* bdt_, BDTClassifier* bdtdeepcsv_):commonBDT5(bdt_), commonBDTDeepCSV(bdtdeepcsv_),recoLikelihoodVariables(new RecoLikelihoodVariables()){needToDeleteBDTClassifier=false;}
+//BDTVarProcessor::BDTVarProcessor(BDTClassifier* bdt_):commonBDT6(bdt_), recoLikelihoodVariables(new RecoLikelihoodVariables()){needToDeleteBDTClassifier=false;}
 
 
 
@@ -21,7 +26,7 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 //   vars.InitVar("BDTOhio_v2_output");
 //   vars.InitVar("BDT_v3_output");
   vars.InitVar("BDT_common5_output");
-
+  vars.InitVar("BDT_commonDeepCSV_output");
 //   map<string,float> bdtinputs2=bdtohio2.GetVariablesOfLastEvaluation();
 //   for(auto it=bdtinputs2.begin(); it!=bdtinputs2.end(); it++){
 //     vars.InitVar("BDTOhio_v2_input_"+it->first);
@@ -36,7 +41,10 @@ void BDTVarProcessor::Init(const InputCollections& input,VariableContainer& vars
   for(auto it=bdtinputs_common5.begin(); it!=bdtinputs_common5.end(); it++){
     vars.InitVar("BDT_common5_input_"+it->first);
   }
-
+  map<string,float> bdtinputs_commonDeepCSV=commonBDTDeepCSV->GetVariablesOfLastEvaluation();
+  for(auto it=bdtinputs_commonDeepCSV.begin(); it!=bdtinputs_commonDeepCSV.end(); it++){
+    vars.InitVar("BDT_commonDeepCSV_input_"+it->first);
+  }
 //   map<TString,double> DNN_inputs = recoLikelihoodVariables->GetRecoLikelihoodVariables();
 //   for(auto it=DNN_inputs.begin(); it!=DNN_inputs.end(); it++){
 //     vars.InitVar("DNN_input_"+it->first);
@@ -72,12 +80,22 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
   TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
   vector<double> jetcsvs;
   vector<double> loose_jetcsvs;
+  vector<double> jetdeepcsvs;
+  vector<double> loose_jetdeepcsvs;
+  
   for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
       jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
   }
   for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
       loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
   }
+  for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
+      jetdeepcsvs.push_back(MiniAODHelper::GetJetCSV(*j,"pfDeepCSVJetTags:probb")+MiniAODHelper::GetJetCSV(*j,"pfDeepCSVJetTags:probbb"));
+  }
+  for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
+      loose_jetdeepcsvs.push_back(MiniAODHelper::GetJetCSV(*j,"pfDeepCSVJetTags:probb")+MiniAODHelper::GetJetCSV(*j,"pfDeepCSVJetTags:probbb"));
+  }
+
 
   float bdtoutput_common5=commonBDT5->GetBDTOutput(lepvecs, jetvecs, jetcsvs,metP4);
   vars.FillVar("BDT_common5_output",bdtoutput_common5);
@@ -85,6 +103,14 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
       map<string,float> bdtinputs_common5=commonBDT5->GetVariablesOfLastEvaluation();
       for(auto it=bdtinputs_common5.begin(); it!=bdtinputs_common5.end(); it++){
 	  vars.FillVar("BDT_common5_input_"+it->first,it->second);
+      }
+  }
+  float bdtoutput_commonDeepCSV=commonBDTDeepCSV->GetBDTOutput(lepvecs, jetvecs, jetdeepcsvs,metP4);
+  vars.FillVar("BDT_commonDeepCSV_output",bdtoutput_commonDeepCSV);
+  if(commonBDTDeepCSV->GetCategoryOfLastEvaluation()!="none"){
+      map<string,float> bdtinputs_commonDeepCSV=commonBDTDeepCSV->GetVariablesOfLastEvaluation();
+      for(auto it=bdtinputs_commonDeepCSV.begin(); it!=bdtinputs_commonDeepCSV.end(); it++){
+	  vars.FillVar("BDT_commonDeepCSV_input_"+it->first,it->second);
       }
   }
 
