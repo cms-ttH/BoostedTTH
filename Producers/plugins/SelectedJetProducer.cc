@@ -186,7 +186,11 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    
    // selected jets with jet ID cuts ( do this before jet energy correction !!! )
-   const std::vector<pat::Jet> idJets = helper.GetSelectedJets(*h_inputJets, 0., 9999., MiniAODHelper::getjetID(JetID) , '-' );
+   std::vector<pat::Jet> idJets = helper.GetSelectedJets(*h_inputJets, 0., 9999., MiniAODHelper::getjetID(JetID) , '-' );
+   for(auto& jet : idJets){
+        jet.addUserFloat("neutralHadronEnergyFraction",jet.neutralHadronEnergyFraction());
+        jet.addUserFloat("chargedHadronEnergyFraction",jet.chargedHadronEnergyFraction());
+   }
    std::vector<std::vector<pat::Jet> > unsortedJets;
    if(applyCorrection){
        // initialize jetcorrector

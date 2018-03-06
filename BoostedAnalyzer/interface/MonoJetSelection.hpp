@@ -14,7 +14,7 @@ class MonoJetSelection: public Selection{
     ~MonoJetSelection();
     void InitCutflow(Cutflow& cutflow);
     bool IsSelected(const InputCollections& input,Cutflow& cutflow);
-
+    double DeltaPhi(const double& phi1, const double& phi2);
 
   private:
 
