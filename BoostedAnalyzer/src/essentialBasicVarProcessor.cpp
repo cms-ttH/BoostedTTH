@@ -24,6 +24,9 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVar( "N_BTagsM" ,"I");
   vars.InitVar( "N_BTagsT","I" );
   vars.InitVar( "N_BTagsL" ,"I");
+  vars.InitVar( "N_BTagsDeepCSVM" ,"I");
+  vars.InitVar( "N_BTagsDeepCSVT","I" );
+  vars.InitVar( "N_BTagsDeepCSVL" ,"I");
   vars.InitVar( "N_PrimaryVertices","I" );
   
   vars.InitVars( "Jet_E","N_Jets" );
@@ -146,6 +149,26 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       selectedTaggedJetsT.push_back(*itJet);
     }
   }
+  
+  std::vector<pat::Jet> selectedTaggedJetsDeepCSV;
+  std::vector<pat::Jet> selectedTaggedJetsTDeepCSV;
+  std::vector<pat::Jet> selectedTaggedJetsLDeepCSV;
+  std::vector<pat::Jet> selectedUntaggedJetsDeepCSV;
+  for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
+    if(BoostedUtils::PassesDeepCSV(*itJet, 'M')){
+      selectedTaggedJetsDeepCSV.push_back(*itJet);
+    }
+    else{
+      selectedUntaggedJetsDeepCSV.push_back(*itJet);
+    }
+    if(BoostedUtils::PassesDeepCSV(*itJet, 'L')){
+      selectedTaggedJetsLDeepCSV.push_back(*itJet);
+    }
+    if(BoostedUtils::PassesDeepCSV(*itJet, 'T')){
+      selectedTaggedJetsTDeepCSV.push_back(*itJet);
+    }
+  }
+  
   
   // Fill Multiplicity Variables
   vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
@@ -365,6 +388,11 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );  
   vars.FillVar( "N_BTagsL",selectedTaggedJetsL.size() );  
   vars.FillVar( "N_BTagsT",selectedTaggedJetsT.size() );
+  
+  // Fill Number of b Tags
+  vars.FillVar( "N_BTagsDeepCSVM",selectedTaggedJetsDeepCSV.size() );  
+  vars.FillVar( "N_BTagsDeepCSVL",selectedTaggedJetsLDeepCSV.size() );  
+  vars.FillVar( "N_BTagsDeepCSVT",selectedTaggedJetsTDeepCSV.size() );
   
   // Fill CSV Variables
   // All Jets
