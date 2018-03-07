@@ -93,6 +93,7 @@ filtersData= cms.PSet(
                         "Flag_HBHENoiseIsoFilter",
                         "Flag_EcalDeadCellTriggerPrimitiveFilter",
                         "Flag_eeBadScFilter",
+                        "Flag_noBadMuons",
                         "BadPFMuonFilter",
                         "BadChargedCandidateFilter",
                         "badGlobalMuonTaggerMAOD",

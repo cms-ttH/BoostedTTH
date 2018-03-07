@@ -48,7 +48,7 @@ std::map<std::string, bool> FilterInfo::GetFilters() const{
 
 FilterInfoProducer::FilterInfoProducer(const edm::ParameterSet& iConfig,
 				       edm::ConsumesCollector && iC){
-    filterBitsToken = iC.consumes< edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("filterBits"));
+    filterBitsToken = iC.consumes< edm::TriggerResults>(edm::InputTag("TriggerResults::PAT"));
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("additionalFilters")){
 	additionalFiltersNames.push_back(tag.label());
 	additionalFiltersTokens.push_back(iC.consumes< bool >(tag));
@@ -72,6 +72,7 @@ FilterInfo FilterInfoProducer::Produce(const edm::Event& iEvent) const{
 	const edm::TriggerNames &names = iEvent.triggerNames(*h_filterBits);
 	for (unsigned int i = 0; i < h_filterBits->size(); ++i) {   
 	    string name=names.triggerName(i);
+            //std::cout << name << "   " << h_filterBits->accept(i) << std::endl;
 	    filters[name]=h_filterBits->accept(i);
 	}
     }
