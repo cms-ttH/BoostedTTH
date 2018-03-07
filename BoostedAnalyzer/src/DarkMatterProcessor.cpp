@@ -12,7 +12,8 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "Evt_Phi_MET" );
   vars.InitVar( "Evt_Pt_GenMET" );
   vars.InitVar( "Evt_Phi_GenMET" );
-  
+  vars.InitVar( "CaloMET" );
+  vars.InitVar( "CaloMET_PFMET_ratio" );
   vars.InitVar( "NaiveMET" );
   
   vars.InitVar( "N_Neutralinos","I" );
@@ -74,6 +75,8 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   
   vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );
   vars.FillVar( "Evt_Phi_MET",input.correctedMET.corPhi(pat::MET::Type1XY) );
+  vars.FillVar( "CaloMET",input.correctedMET.caloMETPt() );
+  vars.FillVar( "CaloMET_PFMET_ratio",fabs(input.correctedMET.corPt(pat::MET::Type1XY)-input.correctedMET.caloMETPt())/input.correctedMET.corPt(pat::MET::Type1XY) );
   if(input.correctedMET.genMET()!=0){
       vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
