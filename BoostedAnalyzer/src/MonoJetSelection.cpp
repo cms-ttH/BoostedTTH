@@ -8,7 +8,7 @@ MonoJetSelection::~MonoJetSelection (){}
 
 double MonoJetSelection::DeltaPhi(const double& phi1, const double& phi2){
     
-    double dPhi = abs(phi1-phi2);
+    double dPhi = fabs(phi1-phi2);
     if(dPhi>ROOT::Math::Pi()) dPhi = 2*ROOT::Math::Pi()-dPhi;
     return dPhi;
     
@@ -30,9 +30,16 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
   
   bool dPhi_jet_met_criterium = true;
   
-  bool leading_jet_criterium = input.selectedJets.at(0).pt()>pt_min && abs(input.selectedJets.at(0).eta())<eta_max && charged_hadron_fraction_min<input.selectedJets.at(0).userFloat("chargedHadronEnergyFraction") && neutral_hadron_fraction_max>input.selectedJets.at(0).userFloat("neutralHadronEnergyFraction");
+  bool leading_jet_criterium = input.selectedJets.at(0).pt()>pt_min && fabs(input.selectedJets.at(0).eta())<eta_max && charged_hadron_fraction_min<input.selectedJets.at(0).userFloat("chargedHadronEnergyFraction") && neutral_hadron_fraction_max>input.selectedJets.at(0).userFloat("neutralHadronEnergyFraction");
   
   if(!leading_jet_criterium) return false;
+  
+  bool jet_cleaning_criterium = true;
+  
+  for(size_t i=0;i<input.selectedJets.size();i++) {
+      jet_cleaning_criterium = charged_hadron_fraction_min<input.selectedJets.at(i).userFloat("chargedHadronEnergyFraction") && neutral_hadron_fraction_max>input.selectedJets.at(i).userFloat("neutralHadronEnergyFraction");
+      if(!jet_cleaning_criterium) return false;
+  }
   
   for(size_t i=0;i<input.selectedJets.size()&&i<4;i++) {
       dPhi_jet_met_criterium = DeltaPhi(input.selectedJets.at(i).phi(),input.correctedMET.corPhi(pat::MET::Type1XY))>0.5;
