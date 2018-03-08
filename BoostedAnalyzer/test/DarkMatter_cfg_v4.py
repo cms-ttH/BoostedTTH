@@ -46,7 +46,7 @@ if not options.inputFiles:
         options.globalTag="80X_dataRun2_2016SeptRepro_v7"
         options.dataEra="2016B"
     else:
-        options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/DMV_NNPDF30_Axial_Mphi-1000_Mchi-1_gSM-0p25_gDM-1p0_v2_13TeV-powheg/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/70000/5AA7E144-8CB8-E611-A77C-0CC47AD99050.root']
+        options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/DYJetsToNuNu_PtZ-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/KIT_MonoJet_skims/180217_120902/0000/Skim_1.root']
 
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
@@ -403,9 +403,11 @@ if options.recorrectMET:
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.BadPFMuonFilter.muons = muonCollection
 process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadPFMuonFilter.taggingMode   = cms.bool(True)
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = muonCollection
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 process.load("RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff")
 process.badGlobalMuonTaggerMAOD.muons         = muonCollection
 process.badGlobalMuonTaggerMAOD.taggingMode   = cms.bool(True)
