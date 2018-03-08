@@ -6,14 +6,13 @@ from BoostedTTH.BoostedAnalyzer.Weights_cff import *
 BoostedAnalyzer = cms.EDAnalyzer(
     'BoostedAnalyzer',
     Inputs_tth_sl, # defined in Inputs_cff
-    LeptonSelectionMC, # defined in Selection_cff
+    LeptonSelectionNoTrigger, # defined in Selection_cff
     DiLeptonSelectionMC, # defined in Selection_cff
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
     filtersMC, # defined in Selection_cff
     
-
     # weight of one event: calculated as
     # cross section * lumi / (number of generated events with positive weight  -  number of generated events with negative weight )
     # so that the sum of weights corresponds to the number of events for the given lumi
@@ -36,6 +35,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     isreHLT = cms.bool(False),
 
     useFatJets = cms.bool(True),
+    #useAK8Jets = cms.bool(False),
     useForwardJets = cms.bool(False),
     useGenHadronMatch = cms.bool(True),
 
@@ -50,7 +50,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     minTagsForMEM = cms.int32(3),
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor","AK8JetProcessor"),
 
     outfileName = cms.string("BoostedTTH"),
 )
