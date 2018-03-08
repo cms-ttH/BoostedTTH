@@ -16,6 +16,8 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "CaloMET_PFMET_ratio" );
   vars.InitVar( "NaiveMET" );
   
+  vars.InitVars( "DeltaPhi_Jet_MET","N_Jets");
+  
   vars.InitVar( "N_Neutralinos","I" );
   vars.InitVar( "N_Neutrinos","I" );
   
@@ -80,6 +82,9 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   if(input.correctedMET.genMET()!=0){
       vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
+  }
+  for(size_t i=0;i<input.selectedJets.size();i++){
+    vars.FillVars ( "DeltaPhi_Jet_MET",i,fabs(TVector2::Phi_mpi_pi(input.correctedMET.corPhi(pat::MET::Type1XY)-input.selectedJets.at(i).phi())));
   }
   
   if(input.genDarkMatterEvt.IsFilled()){
