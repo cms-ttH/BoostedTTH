@@ -39,6 +39,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_DeepCSVCFlavour","N_Jets" );
   vars.InitVars( "Jet_DeepCSVUDSGFlavour","N_Jets" );
   vars.InitVars( "Jet_DeepCSVBBFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSV","N_Jets" );
   vars.InitVars( "Jet_CSV_DNN","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
@@ -170,6 +171,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   }
   
   
+  
   // Fill Multiplicity Variables
   vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
   vars.FillVar( "N_Jets",input.selectedJets.size());
@@ -196,6 +198,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_DeepCSVUDSGFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvudsgflavour) );
     vars.FillVars( "Jet_DeepCSVBBFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbbflavour) );
     vars.FillVars( "Jet_CSV_DNN",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,btagger) );
+    vars.FillVars( "Jet_DeepCSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbflavour)+MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbbflavour) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
