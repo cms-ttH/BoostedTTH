@@ -250,9 +250,9 @@ boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCol
 
 bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
 
-  float CSVLwp = 0.5426;
-  float CSVMwp = 0.8484;
-  float CSVTwp = 0.9535;
+  float CSVLwp = 0.5803;
+  float CSVMwp = 0.8838;
+  float CSVTwp = 0.9693;
 
 
   float csvValue = MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
@@ -267,6 +267,24 @@ bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   return false;
 }
 
+bool BoostedUtils::PassesDeepCSV(const pat::Jet& jet, const char workingPoint){
+
+  float DeepCSVLwp =  0.1522;
+  float DeepCSVMwp =  0.4941;
+  float DeepCSVTwp =  0.8001;
+
+
+  float DeepcsvValue = MiniAODHelper::GetJetCSV(jet,"pfDeepCSVJetTags:probb")+MiniAODHelper::GetJetCSV(jet,"pfDeepCSVJetTags:probbb");
+
+  switch(workingPoint){
+    case 'L': if(DeepcsvValue > DeepCSVLwp){ return true; } break;
+    case 'M': if(DeepcsvValue > DeepCSVMwp){ return true; } break;
+    case 'T': if(DeepcsvValue > DeepCSVTwp){ return true; } break;
+    case '-': return true; break;
+  }
+
+  return false;
+}
 
 float BoostedUtils::GetClosestJetIDs(int& idJet1, int& idJet2, const std::vector<pat::Jet>& jets){
 

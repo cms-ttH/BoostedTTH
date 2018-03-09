@@ -172,6 +172,8 @@ private:
     std::unique_ptr<MEMClassifier> pointerToMEMClassifier = nullptr;
     //bdt classifier for sl channel
     std::unique_ptr<BDTClassifier> pointerToCommonBDT5Classifier = nullptr;
+    //bdt classifier for sl channel with DeepCSV
+    std::unique_ptr<BDTClassifier> pointerToCommonBDTDeepCSVClassifier = nullptr;
     //bdt classifier for dl channel
     std::unique_ptr<DLBDTClassifier> pointerToDLBDTClassifier = nullptr;
     //dnn classifier for sl channel
@@ -424,7 +426,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     jet_tag_pos = find (selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
     
     pointerToMEMClassifier.reset(new MEMClassifier());
-    pointerToCommonBDT5Classifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/"));
+    pointerToCommonBDT5Classifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/",0.8838));
+    //set bdt cut to current value
+    //pointerToCommonBDT5Classifier.get()->btagMcut=double(0.8838);
+    pointerToCommonBDTDeepCSVClassifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/",0.4941));
+    //pointerToCommonBDTDeepCSVClassifier.get()->btagMcut=double(0.4941);
     DNNClassifierBase::pyInitialize();
     pointerToDnnSLClassifier.reset(new DNNClassifier_SL("v6a"));
     
@@ -505,7 +511,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
             treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
         }
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier.get()),"BDTVarProcessor");
+	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier.get(), pointerToCommonBDTDeepCSVClassifier.get()),"BDTVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"DNNVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new DNNVarProcessor(pointerToDnnSLClassifier.get()),"DNNVarProcessor");

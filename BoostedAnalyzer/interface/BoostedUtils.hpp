@@ -62,6 +62,7 @@ class BoostedUtils{
     static boosted::BoostedJetCollection GetSortedByPt(boosted::BoostedJetCollection const &boostedjets);
 
     static bool PassesCSV(const pat::Jet& jet, const char workingPoint='M');
+    static bool PassesDeepCSV(const pat::Jet& jet, const char workingPoint='M');
 
     static float GetClosestJetIDs(int& idJet1, int& idJet2, const std::vector<pat::Jet>& jets);
     static float GetClosestLepJetID(int& idJet, const math::XYZTLorentzVector& lepVec, const std::vector<pat::Jet>& jets);

@@ -24,6 +24,9 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVar( "N_BTagsM" ,"I");
   vars.InitVar( "N_BTagsT","I" );
   vars.InitVar( "N_BTagsL" ,"I");
+  vars.InitVar( "N_BTagsDeepCSVM" ,"I");
+  vars.InitVar( "N_BTagsDeepCSVT","I" );
+  vars.InitVar( "N_BTagsDeepCSVL" ,"I");
   vars.InitVar( "N_PrimaryVertices","I" );
   
   vars.InitVars( "Jet_E","N_Jets" );
@@ -32,6 +35,10 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_Phi","N_Jets" );
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVBFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVCFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVUDSGFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVBBFlavour","N_Jets" );
   vars.InitVars( "Jet_CSV_DNN","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
@@ -119,7 +126,11 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillIntVar("Evt_Lumi",lumi_section);
 
 
-  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";  
+  const char* btaggerdeepcsvbflavour="pfDeepCSVJetTags:probb";
+  const char* btaggerdeepcsvcflavour="pfDeepCSVJetTags:probc";
+  const char* btaggerdeepcsvudsgflavour="pfDeepCSVJetTags:probudsg";
+  const char* btaggerdeepcsvbbflavour="pfDeepCSVJetTags:probbb";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
@@ -138,6 +149,26 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       selectedTaggedJetsT.push_back(*itJet);
     }
   }
+  
+  std::vector<pat::Jet> selectedTaggedJetsDeepCSV;
+  std::vector<pat::Jet> selectedTaggedJetsTDeepCSV;
+  std::vector<pat::Jet> selectedTaggedJetsLDeepCSV;
+  std::vector<pat::Jet> selectedUntaggedJetsDeepCSV;
+  for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
+    if(BoostedUtils::PassesDeepCSV(*itJet, 'M')){
+      selectedTaggedJetsDeepCSV.push_back(*itJet);
+    }
+    else{
+      selectedUntaggedJetsDeepCSV.push_back(*itJet);
+    }
+    if(BoostedUtils::PassesDeepCSV(*itJet, 'L')){
+      selectedTaggedJetsLDeepCSV.push_back(*itJet);
+    }
+    if(BoostedUtils::PassesDeepCSV(*itJet, 'T')){
+      selectedTaggedJetsTDeepCSV.push_back(*itJet);
+    }
+  }
+  
   
   // Fill Multiplicity Variables
   vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
@@ -160,6 +191,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "Jet_DeepCSVBFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbflavour) );
+    vars.FillVars( "Jet_DeepCSVCFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvcflavour) );
+    vars.FillVars( "Jet_DeepCSVUDSGFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvudsgflavour) );
+    vars.FillVars( "Jet_DeepCSVBBFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbbflavour) );
     vars.FillVars( "Jet_CSV_DNN",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
@@ -353,6 +388,11 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );  
   vars.FillVar( "N_BTagsL",selectedTaggedJetsL.size() );  
   vars.FillVar( "N_BTagsT",selectedTaggedJetsT.size() );
+  
+  // Fill Number of b Tags
+  vars.FillVar( "N_BTagsDeepCSVM",selectedTaggedJetsDeepCSV.size() );  
+  vars.FillVar( "N_BTagsDeepCSVL",selectedTaggedJetsLDeepCSV.size() );  
+  vars.FillVar( "N_BTagsDeepCSVT",selectedTaggedJetsTDeepCSV.size() );
   
   // Fill CSV Variables
   // All Jets

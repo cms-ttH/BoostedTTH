@@ -527,7 +527,7 @@ if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
 process.BoostedAnalyzer.selectionNames = [
-"FilterSelection",
+#"FilterSelection",
 "VertexSelection",
 "LeptonSelection",
 "JetTagSelection"
@@ -541,9 +541,9 @@ if options.isData:
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
   "BDTVarProcessor",
-  "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
-  "TTBBStudienProcessor"
+  #"TriggerVarProcessor",
+  #"ReconstructionMEvarProcessor",
+  #"TTBBStudienProcessor"
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
@@ -552,9 +552,9 @@ else:
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
   "BDTVarProcessor",
-  "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
-  "TTBBStudienProcessor"
+  #"TriggerVarProcessor",
+  #"ReconstructionMEvarProcessor",
+  #"TTBBStudienProcessor"
   )
 
 printContent=False
