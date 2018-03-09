@@ -55,7 +55,7 @@ Follow These Steps:
     # install common classifier
     mkdir TTH
     cd TTH
-    git clone --depth 1 https://gitlab.cern.ch/ttH/CommonClassifier.git
+    git clone -b kit_CMSSW943 https://gitlab.cern.ch/ttH/CommonClassifier.git
     source CommonClassifier/setup/install_mem.sh
     # use recent version of LHAPDF header
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
