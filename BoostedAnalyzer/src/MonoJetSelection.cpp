@@ -41,7 +41,7 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
       if(!jet_cleaning_criterium) return false;
   }
   
-  for(size_t i=0;i<input.selectedJets.size()&&i<4;i++) {
+  for(size_t i=0;i<input.selectedJets.size();i++) {
       dPhi_jet_met_criterium = DeltaPhi(input.selectedJets.at(i).phi(),input.correctedMET.corPhi(pat::MET::Type1XY))>0.5;
       if(!dPhi_jet_met_criterium) return false;
   }

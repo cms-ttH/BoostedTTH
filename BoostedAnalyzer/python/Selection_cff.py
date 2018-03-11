@@ -97,7 +97,8 @@ filtersData= cms.PSet(
                         "BadPFMuonFilter",
                         "BadChargedCandidateFilter",
                         "badGlobalMuonTaggerMAOD",
-                        "cloneGlobalMuonTaggerMAOD"
+                        "cloneGlobalMuonTaggerMAOD",
+                        #"Flag_METFilters"
                         )
 )
 
@@ -110,7 +111,8 @@ filtersMC= cms.PSet(
                         "BadPFMuonFilter",
                         "BadChargedCandidateFilter",
                         "badGlobalMuonTaggerMAOD",
-                        "cloneGlobalMuonTaggerMAOD"
+                        "cloneGlobalMuonTaggerMAOD",
+                        #"Flag_METFilters"
                         )
 )
     
