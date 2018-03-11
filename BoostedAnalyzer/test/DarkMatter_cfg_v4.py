@@ -446,7 +446,7 @@ process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 # selection of the nominal jets
 process.SelectedJetProducer.jets='patSmearedJets'
 process.SelectedJetProducer.applyCorrection=False
-process.SelectedJetProducer.ptMins=[20,30]
+process.SelectedJetProducer.ptMins=[20,20]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
