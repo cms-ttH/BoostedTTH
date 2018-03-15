@@ -75,8 +75,19 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
 void DarkMatterProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
   
-  vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );
-  vars.FillVar( "Evt_Phi_MET",input.correctedMET.corPhi(pat::MET::Type1XY) );
+  
+  if(input.systematic==Systematics::JESup) {
+      vars.FillVar( "Evt_Pt_MET",input.correctedMET.shiftedPt(pat::MET::JetEnUp,pat::MET::Type1XY) );
+      vars.FillVar( "Evt_Phi_MET",input.correctedMET.shiftedPhi(pat::MET::JetEnUp,pat::MET::Type1XY) );
+  }
+  else if(input.systematic==Systematics::JESdown) {
+      vars.FillVar( "Evt_Pt_MET",input.correctedMET.shiftedPt(pat::MET::JetEnDown,pat::MET::Type1XY) );
+      vars.FillVar( "Evt_Phi_MET",input.correctedMET.shiftedPhi(pat::MET::JetEnDown,pat::MET::Type1XY) );
+  }
+  else {
+      vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );
+      vars.FillVar( "Evt_Phi_MET",input.correctedMET.corPhi(pat::MET::Type1XY) );
+  }
   vars.FillVar( "CaloMET",input.correctedMET.caloMETPt() );
   vars.FillVar( "CaloMET_PFMET_ratio",fabs(input.correctedMET.corPt(pat::MET::Type1XY)-input.correctedMET.caloMETPt())/input.correctedMET.corPt(pat::MET::Type1XY) );
   if(input.correctedMET.genMET()!=0){
