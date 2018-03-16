@@ -189,7 +189,7 @@ Ak8JetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // Get raw jets
     std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets_AK8PFCHSSoftDropJets);
     std::auto_ptr<pat::JetCollection>rawJets_(new pat::JetCollection(rawJets));
-    iEvent.put(rawJets_, "rawJets");
+    iEvent.put(rawJets_, "rawK8PFCHSSoftDropJets");
     // Clean muons and electrons from jets
     std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets, *h_inputMuons, *h_inputElectrons, leptonJetDr);
     // Apply jet corrections
