@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 Ak8JetProducer = cms.EDProducer(
     "Ak8JetProducer",
     isData       = cms.bool(False),
-    applyCorrection = cms.bool(False),
+    applyCorrection = cms.bool(True),
     doJER = cms.bool(False),
     jets = cms.InputTag("slimmedJetsAK8"),
     miniAODGenJets = cms.InputTag("slimmedGenJetsAK8"),
