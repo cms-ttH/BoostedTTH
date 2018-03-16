@@ -10,6 +10,8 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   
   vars.InitVar( "Evt_Pt_MET" );
   vars.InitVar( "Evt_Phi_MET" );
+  vars.InitVar( "Evt_Pt_MET_UnclEnUp");
+  vars.InitVar( "Evt_Pt_MET_UnclEnDown");
   vars.InitVar( "Evt_Pt_GenMET" );
   vars.InitVar( "Evt_Phi_GenMET" );
   vars.InitVar( "CaloMET" );
@@ -84,10 +86,20 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
       vars.FillVar( "Evt_Pt_MET",input.correctedMET.shiftedPt(pat::MET::JetEnDown,pat::MET::Type1XY) );
       vars.FillVar( "Evt_Phi_MET",input.correctedMET.shiftedPhi(pat::MET::JetEnDown,pat::MET::Type1XY) );
   }
+  else if(input.systematic==Systematics::JERup) {
+      vars.FillVar( "Evt_Pt_MET",input.correctedMET.shiftedPt(pat::MET::JetResUp,pat::MET::Type1XY) );
+      vars.FillVar( "Evt_Phi_MET",input.correctedMET.shiftedPhi(pat::MET::JetResUp,pat::MET::Type1XY) );
+  }
+  else if(input.systematic==Systematics::JERdown) {
+      vars.FillVar( "Evt_Pt_MET",input.correctedMET.shiftedPt(pat::MET::JetResDown,pat::MET::Type1XY) );
+      vars.FillVar( "Evt_Phi_MET",input.correctedMET.shiftedPhi(pat::MET::JetResDown,pat::MET::Type1XY) );
+  }
   else {
       vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );
       vars.FillVar( "Evt_Phi_MET",input.correctedMET.corPhi(pat::MET::Type1XY) );
   }
+  vars.FillVar( "Evt_Pt_MET_UnclEnUp",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnUp,pat::MET::Type1XY));
+  vars.FillVar( "Evt_Pt_MET_UnclEnDown",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnDown,pat::MET::Type1XY));
   vars.FillVar( "CaloMET",input.correctedMET.caloMETPt() );
   vars.FillVar( "CaloMET_PFMET_ratio",fabs(input.correctedMET.corPt(pat::MET::Type1XY)-input.correctedMET.caloMETPt())/input.correctedMET.corPt(pat::MET::Type1XY) );
   if(input.correctedMET.genMET()!=0){
