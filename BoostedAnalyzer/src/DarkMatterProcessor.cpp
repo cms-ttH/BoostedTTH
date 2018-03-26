@@ -17,8 +17,12 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "CaloMET" );
   vars.InitVar( "CaloMET_PFMET_ratio" );
   vars.InitVar( "NaiveMET" );
+  vars.InitVar( "Hadr_Recoil_Pt" );
+  vars.InitVar( "Hadr_Recoil_Phi" );
+  vars.InitVar( "CaloMET_Hadr_Recoil_ratio" );
   
   vars.InitVars( "DeltaPhi_Jet_MET","N_Jets");
+  vars.InitVars( "DeltaPhi_Jet_Hadr_Recoil","N_Jets");
   
   vars.InitVar( "N_Neutralinos","I" );
   vars.InitVar( "N_Neutrinos","I" );
@@ -76,39 +80,64 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
 
 void DarkMatterProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
-  
-  
-  if(input.systematic==Systematics::JESup) {
-      vars.FillVar( "Evt_Pt_MET",input.correctedMET.shiftedPt(pat::MET::JetEnUp,pat::MET::Type1XY) );
-      vars.FillVar( "Evt_Phi_MET",input.correctedMET.shiftedPhi(pat::MET::JetEnUp,pat::MET::Type1XY) );
-  }
-  else if(input.systematic==Systematics::JESdown) {
-      vars.FillVar( "Evt_Pt_MET",input.correctedMET.shiftedPt(pat::MET::JetEnDown,pat::MET::Type1XY) );
-      vars.FillVar( "Evt_Phi_MET",input.correctedMET.shiftedPhi(pat::MET::JetEnDown,pat::MET::Type1XY) );
-  }
-  else if(input.systematic==Systematics::JERup) {
-      vars.FillVar( "Evt_Pt_MET",input.correctedMET.shiftedPt(pat::MET::JetResUp,pat::MET::Type1XY) );
-      vars.FillVar( "Evt_Phi_MET",input.correctedMET.shiftedPhi(pat::MET::JetResUp,pat::MET::Type1XY) );
-  }
-  else if(input.systematic==Systematics::JERdown) {
-      vars.FillVar( "Evt_Pt_MET",input.correctedMET.shiftedPt(pat::MET::JetResDown,pat::MET::Type1XY) );
-      vars.FillVar( "Evt_Phi_MET",input.correctedMET.shiftedPhi(pat::MET::JetResDown,pat::MET::Type1XY) );
-  }
-  else {
-      vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );
-      vars.FillVar( "Evt_Phi_MET",input.correctedMET.corPhi(pat::MET::Type1XY) );
-  }
-  vars.FillVar( "Evt_Pt_MET_UnclEnUp",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnUp,pat::MET::Type1XY));
-  vars.FillVar( "Evt_Pt_MET_UnclEnDown",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnDown,pat::MET::Type1XY));
-  vars.FillVar( "CaloMET",input.correctedMET.caloMETPt() );
-  vars.FillVar( "CaloMET_PFMET_ratio",fabs(input.correctedMET.corPt(pat::MET::Type1XY)-input.correctedMET.caloMETPt())/input.correctedMET.corPt(pat::MET::Type1XY) );
+
+  // GenMET
   if(input.correctedMET.genMET()!=0){
       vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
   }
-  for(size_t i=0;i<input.selectedJets.size();i++){
-    vars.FillVars ( "DeltaPhi_Jet_MET",i,fabs(TVector2::Phi_mpi_pi(input.correctedMET.corPhi(pat::MET::Type1XY)-input.selectedJets.at(i).phi())));
+  
+  math::XYZTLorentzVector met_p4(0.,0.,0.,0.);
+  math::XYZTLorentzVector hadr_recoil_p4(0.,0.,0.,0.);
+  
+  // reco MET
+  if(input.systematic==Systematics::JESup) {
+      met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnUp,pat::MET::Type1XY);
   }
+  else if(input.systematic==Systematics::JESdown) {
+      met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnDown,pat::MET::Type1XY);
+  }
+  else if(input.systematic==Systematics::JERup) {
+      met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResUp,pat::MET::Type1XY);
+  }
+  else if(input.systematic==Systematics::JERdown) {
+      met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResDown,pat::MET::Type1XY);
+  }
+  else {
+      met_p4 = input.correctedMET.corP4(pat::MET::Type1XY);
+  }
+  
+  vars.FillVar( "Evt_Pt_MET",met_p4.pt() );
+  vars.FillVar( "Evt_Phi_MET",met_p4.phi() );
+  vars.FillVar( "Evt_Pt_MET_UnclEnUp",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnUp,pat::MET::Type1XY));
+  vars.FillVar( "Evt_Pt_MET_UnclEnDown",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnDown,pat::MET::Type1XY));
+  vars.FillVar( "CaloMET",input.correctedMET.caloMETPt() );
+  vars.FillVar( "CaloMET_PFMET_ratio",fabs(met_p4.pt()-input.correctedMET.caloMETPt())/met_p4.pt() );
+  
+  for(size_t i=0;i<input.selectedJets.size();i++){
+    vars.FillVars ( "DeltaPhi_Jet_MET",i,fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(i).phi())));
+  }
+  
+  // hadronic recoil
+  hadr_recoil_p4 = met_p4;
+  for(const auto& el : input.selectedElectrons){
+      hadr_recoil_p4 += el.p4();
+  }
+  for(const auto& mu : input.selectedMuons){
+      hadr_recoil_p4 += mu.p4();
+  }
+  for(const auto& ph : input.selectedPhotonsLoose){
+      hadr_recoil_p4 += ph.p4();
+  }
+  
+  vars.FillVar( "Hadr_Recoil_Pt",hadr_recoil_p4.pt() );
+  vars.FillVar( "Hadr_Recoil_Phi",hadr_recoil_p4.phi() );
+  vars.FillVar( "CaloMET_Hadr_Recoil_ratio",fabs(hadr_recoil_p4.pt()-input.correctedMET.caloMETPt())/hadr_recoil_p4.pt() );
+  
+  for(size_t i=0;i<input.selectedJets.size();i++){
+    vars.FillVars ( "DeltaPhi_Jet_Hadr_Recoil",i,fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi()-input.selectedJets.at(i).phi())));
+  }
+  
   
   if(input.genDarkMatterEvt.IsFilled()){
   
