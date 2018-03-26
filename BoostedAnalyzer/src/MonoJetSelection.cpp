@@ -34,14 +34,14 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
   
   if(!leading_jet_criterium) return false;
   
-  bool jet_cleaning_criterium = true;
+  /*bool jet_cleaning_criterium = true;
   
   for(size_t i=0;i<input.selectedJets.size();i++) {
       jet_cleaning_criterium = charged_hadron_fraction_min<input.selectedJets.at(i).userFloat("chargedHadronEnergyFraction") && neutral_hadron_fraction_max>input.selectedJets.at(i).userFloat("neutralHadronEnergyFraction");
       if(!jet_cleaning_criterium) return false;
-  }
+  }*/
   
-  for(size_t i=0;i<input.selectedJets.size();i++) {
+  for(size_t i=0;i<input.selectedJets.size()&&i<4;i++) {
       dPhi_jet_met_criterium = DeltaPhi(input.selectedJets.at(i).phi(),input.correctedMET.corPhi(pat::MET::Type1XY))>0.5;
       if(!dPhi_jet_met_criterium) return false;
   }

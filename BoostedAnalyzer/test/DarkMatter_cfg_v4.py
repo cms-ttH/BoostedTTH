@@ -355,7 +355,8 @@ if options.recorrectMET:
 
     # overwrite output collections
     METCollection = cms.InputTag("slimmedMETs", "", process.name_())
-
+    
+"""
     # also add MET corrections due to e/g corrections, such as the slew rate fix in reMiniAOD
     if options.isData:
         from PhysicsTools.PatUtils.tools.corMETFromMuonAndEG import corMETFromMuonAndEG
@@ -397,7 +398,7 @@ if options.recorrectMET:
 
         # overwrite output collections
         METCollection = cms.InputTag("slimmedMETsMuEGClean", "", process.name_())
-
+"""
 
 ### additional MET filters ###
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
@@ -446,7 +447,7 @@ process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 # selection of the nominal jets
 process.SelectedJetProducer.jets='patSmearedJets'
 process.SelectedJetProducer.applyCorrection=False
-process.SelectedJetProducer.ptMins=[20,20]
+process.SelectedJetProducer.ptMins=[20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
@@ -643,8 +644,8 @@ for s in [""]+systs:
 #if options.recorrectMET:
     
 process.p *= process.fullPatMetSequence
-if options.isData:
-	process.p *= process.egcorrMET
+#if options.isData:
+	#process.p *= process.egcorrMET
 
 process.p *= process.CorrectedMETproducer
 
