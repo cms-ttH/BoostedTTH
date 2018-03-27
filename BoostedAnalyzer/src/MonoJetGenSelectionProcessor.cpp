@@ -61,7 +61,7 @@ int MonoJetGenSelectionProcessor::GenMonoJetSelection(const InputCollections& in
   if(!leading_jet_criterium) return 0;
   
   for(size_t i=0;i<input.customGenJets.size()&&i<4;i++) {
-      dPhi_jet_met_criterium = abs(input.customGenJets.at(i).phi()-input.correctedMET.genMET()->phi())>0.5;
+      dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(input.customGenJets.at(i).phi()-input.correctedMET.genMET()->phi()))>0.5;
       if(!dPhi_jet_met_criterium) return 0;
   }
   
