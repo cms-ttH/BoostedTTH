@@ -160,11 +160,11 @@ private:
     // reweight the number of primary vertices distribution
     PUWeights puWeights;
     /** writes flat trees  */
-    std::vector<TreeWriter*> treewriters;
+    std::vector<std::unique_ptr<TreeWriter>> treewriters;
     /** stores cutflows*/
     std::vector<Cutflow> cutflows;
     /** selections that are applied before writing the tree*/
-    vector<Selection*> selections;
+    std::vector<std::unique_ptr<Selection>> selections;
     /** triggers that are checked (independtend of the ones used for selected)*/
     vector<std::string> relevantTriggers;
     /** base name for outfiles (incl path)**/
@@ -274,13 +274,13 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsLoose;
     
     //mem classifier for MVAVarProcessor
-    MEMClassifier* pointerToMEMClassifier; 
-    BDTClassifier* pointerToCommonBDT5Classifier;
-    DLBDTClassifier* pointerToDLBDTClassifier;
-    DNNClassifier_SL* pointerToDnnSLClassifier;
-    DNNClassifier_DL* pointerToDnnDLClassifier;
+    std::unique_ptr<MEMClassifier> pointerToMEMClassifier = nullptr;
+    std::unique_ptr<BDTClassifier> pointerToCommonBDT5Classifier = nullptr;
+    std::unique_ptr<DLBDTClassifier> pointerToDLBDTClassifier = nullptr;
+    std::unique_ptr<DNNClassifier_SL> pointerToDnnSLClassifier = nullptr;
+    std::unique_ptr<DNNClassifier_DL> pointerToDnnDLClassifier = nullptr;
     
-    ResourceMonitor* ResMon;
+    std::unique_ptr<ResourceMonitor> ResMon = nullptr;
 };
 
 //
@@ -296,7 +296,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 {
   
   //set up resource monitor
-  ResMon= new ResourceMonitor();
+  ResMon.reset(new ResourceMonitor());
     //
     // get all configurations from the python config
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
@@ -394,37 +394,42 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 
     // initialize selections
     // add requested selections
-    for(vector<string>::const_iterator itSel = selectionNames.begin();itSel != selectionNames.end();itSel++) {
-	cout << "Initializing " << *itSel << endl;
-	if(*itSel == "VertexSelection") selections.push_back(new VertexSelection());
-	else if(*itSel == "FilterSelection") selections.push_back(new FilterSelection(iConfig));
-	else if(*itSel == "EvenSelection") selections.push_back(new EvenOddSelection(true));
-	else if(*itSel == "OddSelection") selections.push_back(new EvenOddSelection(false));
-	else if(*itSel == "GenTopFHSelection") selections.push_back(new GenTopFHSelection());
-	else if(*itSel == "GenTopSLSelection") selections.push_back(new GenTopSLSelection());
-	else if(*itSel == "GenTopDLSelection") selections.push_back(new GenTopDLSelection());
-	else if(*itSel == "LeptonSelection") selections.push_back(new LeptonSelection(iConfig));
-        else if(*itSel == "LeptonSelection_QCDControlregion") selections.push_back(new LeptonSelection_QCDControlregion(iConfig));
-	else if(*itSel == "LooseLeptonSelection") selections.push_back(new LooseLeptonSelection(iConfig));
-	else if(*itSel == "JetTagSelection") selections.push_back(new JetTagSelection(iConfig));
-	else if(*itSel == "DiLeptonJetTagSelection") selections.push_back(new DiLeptonJetTagSelection(iConfig));
-	else if(*itSel == "DiLeptonSelection") selections.push_back(new DiLeptonSelection(iConfig));
-	else if(*itSel == "MinDiLeptonMassSelection") selections.push_back(new DiLeptonMassSelection(20.,9999.));
-	else if(*itSel == "ZVetoSelection") selections.push_back(new DiLeptonMassSelection(76.,106,true,false));
-	else if(*itSel == "ZWindowSelection") selections.push_back(new DiLeptonMassSelection(76.,106,false));
-	else if(*itSel == "METSelection") selections.push_back(new METSelection(iConfig));
-	else if(*itSel == "DiLeptonMETSelection") selections.push_back(new DiLeptonMETSelection(iConfig));
-	else if(*itSel == "HbbSelection") selections.push_back(new HbbSelection());
-	else if(*itSel == "4JetSelection") selections.push_back(new JetTagSelection(4,-1));
-	else if(*itSel == "2TagSelection") selections.push_back(new JetTagSelection(-1,2));
-	else if(*itSel == "BoostedTopSelection") selections.push_back(new BoostedSelection(1,0));
-	else if(*itSel == "BoostedSelection") selections.push_back(new BoostedSelection(0,1));
-        else if(*itSel == "MonoJetSelection") selections.push_back(new MonoJetSelection(iConfig));
-        else if(*itSel == "LeptonVetoSelection") selections.push_back(new LeptonVetoSelection());
-        else if(*itSel == "BTagVetoSelection") selections.push_back(new BTagVetoSelection());
-        else if(*itSel == "PhotonVetoSelection") selections.push_back(new PhotonVetoSelection());
-        else if (*itSel == "monoVselection") selections.push_back(new monoVselection(iConfig));
-	else cout << "No matching selection found for: " << *itSel << endl;
+    for(const auto& itSel : selectionNames) {
+	cout << "Initializing " << itSel << endl;
+        std::unique_ptr<Selection> selection = nullptr;
+	if(itSel == "VertexSelection") selection.reset(new VertexSelection());
+	else if(itSel == "FilterSelection") selection.reset(new FilterSelection(iConfig));
+	else if(itSel == "EvenSelection") selection.reset(new EvenOddSelection(true));
+	else if(itSel == "OddSelection") selection.reset(new EvenOddSelection(false));
+	else if(itSel == "GenTopFHSelection") selection.reset(new GenTopFHSelection());
+	else if(itSel == "GenTopSLSelection") selection.reset(new GenTopSLSelection());
+	else if(itSel == "GenTopDLSelection") selection.reset(new GenTopDLSelection());
+	else if(itSel == "LeptonSelection") selection.reset(new LeptonSelection(iConfig));
+        else if(itSel == "LeptonSelection_QCDControlregion") selection.reset(new LeptonSelection_QCDControlregion(iConfig));
+	else if(itSel == "LooseLeptonSelection") selection.reset(new LooseLeptonSelection(iConfig));
+	else if(itSel == "JetTagSelection") selection.reset(new JetTagSelection(iConfig));
+	else if(itSel == "DiLeptonJetTagSelection") selection.reset(new DiLeptonJetTagSelection(iConfig));
+	else if(itSel == "DiLeptonSelection") selection.reset(new DiLeptonSelection(iConfig));
+	else if(itSel == "MinDiLeptonMassSelection") selection.reset(new DiLeptonMassSelection(20.,9999.));
+	else if(itSel == "ZVetoSelection") selection.reset(new DiLeptonMassSelection(76.,106,true,false));
+	else if(itSel == "ZWindowSelection") selection.reset(new DiLeptonMassSelection(76.,106,false));
+	else if(itSel == "METSelection") selection.reset(new METSelection(iConfig));
+	else if(itSel == "DiLeptonMETSelection") selection.reset(new DiLeptonMETSelection(iConfig));
+	else if(itSel == "HbbSelection") selection.reset(new HbbSelection());
+	else if(itSel == "4JetSelection") selection.reset(new JetTagSelection(4,-1));
+	else if(itSel == "2TagSelection") selection.reset(new JetTagSelection(-1,2));
+	else if(itSel == "BoostedTopSelection") selection.reset(new BoostedSelection(1,0));
+	else if(itSel == "BoostedSelection") selection.reset(new BoostedSelection(0,1));
+        else if(itSel == "MonoJetSelection") selection.reset(new MonoJetSelection(iConfig));
+        else if(itSel == "LeptonVetoSelection") selection.reset(new LeptonVetoSelection());
+        else if(itSel == "BTagVetoSelection") selection.reset(new BTagVetoSelection());
+        else if(itSel == "PhotonVetoSelection") selection.reset(new PhotonVetoSelection());
+        else if (itSel == "monoVselection") selection.reset(new monoVselection(iConfig));
+	else {
+            cout << "No matching selection found for: " << itSel << endl;
+            continue;
+        }
+        selections.push_back(std::move(selection));
 	// connect added selection to cutflow
 	for (auto &c : cutflows){
 	    selections.back()->InitCutflow(c);
@@ -434,38 +439,40 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     // find the position of the JetTagSelection to check later if the failed selection is the JetTagSelection or not
     jet_tag_pos = find (selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
     
-    pointerToMEMClassifier = new MEMClassifier();
-    pointerToCommonBDT5Classifier = new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/");
+    pointerToMEMClassifier.reset(new MEMClassifier());
+    pointerToCommonBDT5Classifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/"));
     DNNClassifierBase::pyInitialize();
-    pointerToDnnSLClassifier = new DNNClassifier_SL("v6a");
+    pointerToDnnSLClassifier.reset(new DNNClassifier_SL("v6a"));
     
     // initialize synchronizer
     if(dumpSyncExe){
-        pointerToDLBDTClassifier = new DLBDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/dlbdtweights_v5/");
-        pointerToDnnDLClassifier = new DNNClassifier_DL("v3a");
-	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,pointerToCommonBDT5Classifier,pointerToDLBDTClassifier,pointerToDnnSLClassifier,pointerToDnnDLClassifier,pointerToMEMClassifier,dumpExtended);
+        pointerToDLBDTClassifier.reset(new DLBDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/dlbdtweights_v5/"));
+        pointerToDnnDLClassifier.reset(new DNNClassifier_DL("v3a"));
+        synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,pointerToCommonBDT5Classifier.get(),pointerToDLBDTClassifier.get(),pointerToDnnSLClassifier.get(),pointerToDnnDLClassifier.get(),pointerToMEMClassifier.get(),dumpExtended);
     }
 
     // INITIALIZE TREEWRITERs
     if(!ProduceMemNtuples) {
         for (size_t i=0; i<jetSystematics.size();i++){
             cout << "creating tree writer " << outfileNames[i] << endl;
-            treewriters.push_back(new TreeWriter());
+            std::unique_ptr<TreeWriter> treewriter(new TreeWriter());
+            treewriters.push_back(std::move(treewriter));
             treewriters.back()->Init(outfileNames[i]);
         }
     }
     else {
         cout << "creating tree writer " << "slimmed_ntuples" << endl;
-        treewriters.push_back(new TreeWriter());
+        std::unique_ptr<TreeWriter> treewriter(new TreeWriter());
+        treewriters.push_back(std::move(treewriter));
         treewriters.back()->Init(outfileNameBase+"_slimmed_ntuples");
     }
     // add processors to first tree writer
     cout << "using processors:" << endl;
-    for(vector<string>::const_iterator itPro = processorNames.begin();itPro != processorNames.end();++itPro) {
-	     cout << *itPro << endl;
+    for(const auto& itPro : processorNames) {
+	     cout << itPro << endl;
     }
     // add processors that have been requested in the config
-    for(auto treewriter : treewriters){
+    for(auto& treewriter : treewriters){
 	     if(std::find(processorNames.begin(),processorNames.end(),"WeightProcessor")!=processorNames.end()) {
 		treewriter->AddTreeProcessor(new WeightProcessor(),"WeightProcessor");
 	     }
@@ -480,14 +487,14 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 		cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl;
 		treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
 	    }
-	    treewriter->AddTreeProcessor(new MVAVarProcessor(pointerToMEMClassifier),"MVAVarProcessor");
+	    treewriter->AddTreeProcessor(new MVAVarProcessor(pointerToMEMClassifier.get()),"MVAVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
 	    if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {
 		cout << "adding essentialBasicVarProcessor, needed for essentialMVAVarProcessor" << endl;
 		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
 	    }
-	    treewriter->AddTreeProcessor(new essentialMVAVarProcessor(pointerToMEMClassifier),"essentialMVAVarProcessor");
+	    treewriter->AddTreeProcessor(new essentialMVAVarProcessor(pointerToMEMClassifier.get()),"essentialMVAVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
@@ -514,10 +521,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
         //treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
         //}
 	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier),"BDTVarProcessor");
+	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier.get()),"BDTVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"DNNVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new DNNVarProcessor(pointerToDnnSLClassifier),"DNNVarProcessor");
+	    treewriter->AddTreeProcessor(new DNNVarProcessor(pointerToDnnSLClassifier.get()),"DNNVarProcessor");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
 	    treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
@@ -587,15 +594,15 @@ BoostedAnalyzer::~BoostedAnalyzer()
 {
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
-  delete pointerToMEMClassifier;
-  delete pointerToCommonBDT5Classifier;
-  delete pointerToDnnSLClassifier;
-  if(dumpSyncExe) {
-      delete pointerToDLBDTClassifier;
-      delete pointerToDnnDLClassifier;
-  }
+  //delete pointerToMEMClassifier;
+  //delete pointerToCommonBDT5Classifier;
+  //delete pointerToDnnSLClassifier;
+  //if(dumpSyncExe) {
+      //delete pointerToDLBDTClassifier;
+      //delete pointerToDnnDLClassifier;
+  //}
   DNNClassifierBase::pyFinalize();
-  delete ResMon;
+  //delete ResMon;
 }
 
 
@@ -721,13 +728,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     bool firstVertexIsGood=false;
     bool isFirst=true;
     if( h_primaryVertices.isValid() ){
-	for( reco::VertexCollection::const_iterator itvtx = vtxs.begin(); itvtx!=vtxs.end(); ++itvtx ){
-	    bool isGood = ( !(itvtx->isFake()) &&
-			    (itvtx->ndof() >= 4.0) &&
-			    (abs(itvtx->z()) <= 24.0) &&
-			    (abs(itvtx->position().Rho()) <= 2.0)
+	for( const auto& itvtx : vtxs ){
+	    bool isGood = ( !(itvtx.isFake()) &&
+			    (itvtx.ndof() >= 4.0) &&
+			    (abs(itvtx.z()) <= 24.0) &&
+			    (abs(itvtx.position().Rho()) <= 2.0)
 			    );
-	    if( isGood ) selectedPVs.push_back(*itvtx);
+	    if( isGood ) selectedPVs.push_back(itvtx);
 	    if( isFirst ) firstVertexIsGood=isGood;
 	    isFirst=false;
 	}
@@ -829,7 +836,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // nominal weight and weights for reweighting
     std::vector<map<string,float> >weightsVector;
     // inputs
-    vector<InputCollections> inputs;
+    std::vector<InputCollections> inputs;
     for(size_t isys=0; isys<jetSystematics.size(); isys++){
         auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*(hs_selectedJetsLoose[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
@@ -951,11 +958,11 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     std::vector<double> jetEtas;
     std::vector<double> jetCSVs;
     std::vector<int> jetFlavors;
-    for(std::vector<pat::Jet>::const_iterator itJet = selectedJetsLoose.begin(); itJet != selectedJetsLoose.end(); ++itJet){
-	jetPts.push_back(itJet->pt());
-	jetEtas.push_back(itJet->eta());
-	jetCSVs.push_back(helper.GetJetCSV(*itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-	jetFlavors.push_back(itJet->hadronFlavour());
+    for(const auto& itJet : selectedJetsLoose){
+	jetPts.push_back(itJet.pt());
+	jetEtas.push_back(itJet.eta());
+	jetCSVs.push_back(helper.GetJetCSV(itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+	jetFlavors.push_back(itJet.hadronFlavour());
     }
     
     // calculate the csv weight for the desired systematic
@@ -1052,16 +1059,16 @@ void BoostedAnalyzer::endJob()
 	std::ofstream fout(outfileNames[i]+"_Cutflow.txt");
 	cutflows[i].Print(fout);
 	fout.close();
-        if(!ProduceMemNtuples) {
-            delete treewriters[i];
-        }
+        //if(!ProduceMemNtuples) {
+            //delete treewriters[i];
+        //}
     }
-    if(ProduceMemNtuples) {
-        delete treewriters.back();
-    }
-    for(size_t i=0; i<selections.size();i++) {
-        delete selections[i];
-    }
+    //if(ProduceMemNtuples) {
+        //delete treewriters.back();
+    //}
+    //for(size_t i=0; i<selections.size();i++) {
+        //delete selections[i];
+    //}
 }
 
 // ------------ method called when starting to processes a run ------------

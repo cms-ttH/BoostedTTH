@@ -7,7 +7,7 @@ essentialMVAVarProcessor::essentialMVAVarProcessor(){
 }
 
 essentialMVAVarProcessor::~essentialMVAVarProcessor(){
-    delete mem;
+    //delete mem;
 }
 
 
