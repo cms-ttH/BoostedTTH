@@ -42,7 +42,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 
 if not options.inputFiles:
     if options.isData:
-        options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2016B/MET/MINIAOD/03Feb2017_ver2-v2/100000/028C28AD-47EE-E611-861A-0025905A48EC.root']
+        options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_MonoJet_skims-Run2016B/180219_141209/0000/Skim_68.root']
         options.globalTag="80X_dataRun2_2016SeptRepro_v7"
         options.dataEra="2016B"
     else:
