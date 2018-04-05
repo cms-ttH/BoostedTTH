@@ -38,6 +38,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_Charge","N_Jets" );
   vars.InitVars( "Jet_PileUpID","N_Jets" );
   vars.InitVars( "Jet_PileUpMVA","N_Jets" );
+  vars.InitVars( "Jet_Nhf","N_Jets"  );
+  vars.InitVars( "Jet_Chf","N_Jets"  );
 
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
@@ -169,6 +171,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     }
     if(itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant")) {
         vars.FillVars( "Jet_PileUpMVA",iJet,itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
+    }
+    if(itJet->hasUserFloat("neutralHadronEnergyFraction")&&itJet->hasUserFloat("chargedHadronEnergyFraction")){
+    	vars.FillVars( "Jet_Nhf",iJet,itJet->userFloat("neutralHadronEnergyFraction") );
+    	vars.FillVars( "Jet_Chf",iJet,itJet->userFloat("chargedHadronEnergyFraction") );
     }
     if(itJet->genJet()!=NULL){
       vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
