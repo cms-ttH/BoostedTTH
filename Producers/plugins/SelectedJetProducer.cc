@@ -104,7 +104,7 @@ private:
 //
 // constructors and destructor
 //
-SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
+SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig) : helper("AK4PFchs")
 {
     jetsToken  = consumes< pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
     genjetsToken = consumes< reco::GenJetCollection >(iConfig.getParameter<edm::InputTag>("miniAODGenJets"));
