@@ -11,7 +11,10 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 10000 # reset for testing
 
 if not options.inputFiles:
-    options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/0081D8CE-41F2-E711-A8FD-FA163E3BE999.root']
+    if not options.isData:
+        options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/0081D8CE-41F2-E711-A8FD-FA163E3BE999.root']
+    else:
+        options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2017B/SingleElectron/MINIAOD/17Nov2017-v1/40000/064D4B85-E9DB-E711-8B34-02163E019D0E.root']
 
 process = cms.Process("p")
 #set some defaults
