@@ -99,7 +99,7 @@ private:
 //
 // constructors and destructor
 //
-Ak8JetProducer::Ak8JetProducer(const edm::ParameterSet& iConfig)
+Ak8JetProducer::Ak8JetProducer(const edm::ParameterSet& iConfig) : helper("AK8PFchs")
 {
   AK8PFCHSSoftDrop_Token  = consumes< pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
   genjetsToken = consumes< reco::GenJetCollection >(iConfig.getParameter<edm::InputTag>("miniAODGenJets"));
@@ -162,6 +162,8 @@ void
 Ak8JetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
+
+  helper.UpdateJetCorrectorUncertainties(iSetup);
 
   edm::Handle<double> h_rho;
   iEvent.getByToken(rhoToken, h_rho);
