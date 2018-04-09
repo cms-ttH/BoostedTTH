@@ -14,7 +14,7 @@ Ak8JetProducer = cms.EDProducer(
     etaMaxs  = cms.vdouble(2.4),
     PUJetIDMins = cms.vstring("none"),
     leptonJetDr = cms.double(0.4),
-    collectionNames  = cms.vstring("AK8Jet"),
+    collectionNames  = cms.vstring("AK8Jets"),
     systematics = cms.vstring(""),
     JetID = cms.string("none"),
     )

@@ -496,6 +496,8 @@ for s in systsJES:
 ###############################################
 
 process.load("BoostedTTH.Producers.Ak8JetProducer_cfi")
+process.Ak8JetProducer.systematics=[""]+systsJES
+#process,Ak8JetProducer.collectionNames=["AK8Jet"]
 
 ###############################################
 
