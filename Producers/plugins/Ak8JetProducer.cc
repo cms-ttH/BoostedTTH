@@ -58,8 +58,14 @@ private:
   // ----------member data ---------------------------
   /** input jets data access token **/
   edm::EDGetTokenT< pat::JetCollection > AK8PFCHSSoftDrop_Token;
-
-
+  /** genjets data access token (for getcorrected jets) **/
+  edm::EDGetTokenT< reco::GenJetCollection> genjetsToken;
+  /** muons data access token (for jet cleaning)**/
+  edm::EDGetTokenT< pat::MuonCollection >     muonsToken;
+  /** electrons data access token (for jet cleaning)**/
+  edm::EDGetTokenT< pat::ElectronCollection >electronsToken;
+  /** rho data access token (for jet cleaning)**/
+  edm::EDGetTokenT< double >rhoToken;
   /** MiniAODHelper, used for jet correction and selection **/
   MiniAODHelper helper;
   /** min pt of jet collections **/
@@ -67,17 +73,17 @@ private:
   /** max eta of jet collections **/
   std::vector<double> etaMaxs;
   /** min dir to lepton for jets **/
-  //double leptonJetDr;
+  double leptonJetDr;
   /** names of output jet collections **/
   std::vector<std::string> collectionNames;
   /** pileupjetid for collections **/
   std::vector<std::string> PUJetIDMins;
   std::string JetID;
   /** systematics used **/
-  //std::vector<Systematics::Type> systematics;
+  std::vector<Systematics::Type> systematics;
   /** apply jet energy correciton? **/
-  //bool applyCorrection;
-  //bool doJER;
+  bool applyCorrection;
+  bool doJER;
   bool isData;
 };
 
@@ -96,12 +102,15 @@ private:
 Ak8JetProducer::Ak8JetProducer(const edm::ParameterSet& iConfig)
 {
   AK8PFCHSSoftDrop_Token  = consumes< pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
-
+  genjetsToken = consumes< reco::GenJetCollection >(iConfig.getParameter<edm::InputTag>("miniAODGenJets"));
+  electronsToken  = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("electrons"));
+  muonsToken  = consumes< pat::MuonCollection >(iConfig.getParameter<edm::InputTag>("muons"));
+  rhoToken  = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
   ptMins = iConfig.getParameter< std::vector<double> >("ptMins");
   etaMaxs = iConfig.getParameter< std::vector<double> >("etaMaxs");
-  //leptonJetDr = iConfig.getParameter< double >("leptonJetDr");
-  //applyCorrection = iConfig.getParameter<bool>("applyCorrection");
-  //doJER = iConfig.getParameter<bool>("doJER");
+  leptonJetDr = iConfig.getParameter< double >("leptonJetDr");
+  applyCorrection = iConfig.getParameter<bool>("applyCorrection");
+  doJER = iConfig.getParameter<bool>("doJER");
   collectionNames = iConfig.getParameter< std::vector<std::string> >("collectionNames");
   PUJetIDMins = iConfig.getParameter<std::vector<std::string>> ("PUJetIDMins");
   JetID = iConfig.getParameter<std::string> ("JetID");
@@ -113,17 +122,22 @@ Ak8JetProducer::Ak8JetProducer(const edm::ParameterSet& iConfig)
   analysisType::analysisType iAnalysisType = analysisType::LJ;
   const int sampleID = isData ? -1 : 1;
   const std::string era = "2015_74x";
-  //const std::vector<std::string> s_systematics = iConfig.getParameter< std::vector<std::string> >("systematics");
+  const std::vector<std::string> s_systematics = iConfig.getParameter< std::vector<std::string> >("systematics");
+  for (uint i = 0; i < s_systematics.size(); i++) {
+    try {
+      systematics.push_back(Systematics::get(s_systematics[i]));
+    } catch (cms::Exception& e) {
+      throw cms::Exception("InvalidUncertaintyName") << "SelectedJetProducer: systematic name " << s_systematics[i] << " not recognized" << std::endl;
+    }
+  }
 
   helper.SetUp(era, sampleID, iAnalysisType, isData);
 
   produces<pat::JetCollection>("rawK8PFCHSSoftDropJets");
   for (uint i = 0; i < collectionNames.size(); i++) {
-    // for (uint j = 0; j < systematics.size(); j++) {
-    // produces<pat::JetCollection>(systName(collectionNames[i], systematics[j]));
-    produces<pat::JetCollection>(collectionNames[i]);
-
-    // }
+    for (uint j = 0; j < systematics.size(); j++) {
+      produces<pat::JetCollection>(systName(collectionNames[i], systematics[j]));
+    }
   }
 
 
@@ -149,19 +163,56 @@ Ak8JetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
 
-  //helper.UpdateJetCorrectorUncertainties(iSetup);
-  //helper.SetAK8JetCorrectorUncertainty(iSetup);
+  edm::Handle<double> h_rho;
+  iEvent.getByToken(rhoToken, h_rho);
+  helper.SetRho(*h_rho);
 
   edm::Handle< pat::JetCollection > h_inputJets_AK8PFCHSSoftDrop;
   iEvent.getByToken( AK8PFCHSSoftDrop_Token, h_inputJets_AK8PFCHSSoftDrop );
+  edm::Handle< reco::GenJetCollection > h_genJets;
+  if (!isData) {iEvent.getByToken( genjetsToken, h_genJets );}
+
+  edm::Handle< pat::ElectronCollection > h_inputElectrons;
+  iEvent.getByToken( electronsToken, h_inputElectrons );
+
+  edm::Handle< pat::MuonCollection > h_inputMuons;
+  iEvent.getByToken( muonsToken, h_inputMuons );
+
+  const std::vector<pat::Jet> idJets_AK8PFCHSSoftDropJets = helper.GetSelectedJets(*h_inputJets_AK8PFCHSSoftDrop,  0., 9999., MiniAODHelper::getjetID(JetID) , '-' );
+
+  std::vector<std::vector<pat::Jet> > unsortedJets;
+  if (applyCorrection) {
+    // initialize jetcorrector
+    const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak8PFchsL1L2L3", iSetup );
+    helper.SetJetCorrector(corrector);
+
+    // Get raw jets
+    std::vector<pat::Jet> rawJets = helper.GetUncorrectedJets(idJets_AK8PFCHSSoftDropJets);
+    std::auto_ptr<pat::JetCollection>rawJets_(new pat::JetCollection(rawJets));
+    iEvent.put(rawJets_, "rawK8PFCHSSoftDropJets");
+    // Clean muons and electrons from jets
+    std::vector<pat::Jet> cleanJets = helper.GetDeltaRCleanedJets(rawJets, *h_inputMuons, *h_inputElectrons, leptonJetDr);
+    // Apply jet corrections
+    //   Get genjets for new JER recommendation ( JER is done in extra producer SmearedJetProducer, the manual JER application is therefore disabled doJER=false)
+    for (uint i = 0; i < systematics.size(); i++) {
+      unsortedJets.push_back(helper.GetCorrectedJets(cleanJets, iEvent, iSetup, h_genJets, systematics[i], true, doJER));
+    }
+  }
+  // if no correction is to be applied, still remove jets close to a lepton
+  else {
+    for (uint i = 0; i < systematics.size(); i++) {
+      unsortedJets.push_back(helper.GetDeltaRCleanedJets(idJets_AK8PFCHSSoftDropJets, *h_inputMuons, *h_inputElectrons, leptonJetDr));
+    }
+  }
 
   for (uint i = 0; i < ptMins.size(); i++ ) {
-    // for (uint j = 0; j < systematics.size(); j++) {
-      const std::vector<pat::Jet> idJets_AK8PFCHSSoftDropJets = helper.GetSelectedJets(*h_inputJets_AK8PFCHSSoftDrop, ptMins[i], etaMaxs[i], MiniAODHelper::getjetID(JetID) , '-' );
-      std::vector<pat::Jet> rawK8PFCHSSoftDropJets = helper.GetUncorrectedJets(idJets_AK8PFCHSSoftDropJets);
-      std::auto_ptr<pat::JetCollection>rawK8PFCHSSoftDropJets_(new pat::JetCollection(rawK8PFCHSSoftDropJets));
-      iEvent.put(rawK8PFCHSSoftDropJets_, collectionNames[0]);
-    // }
+    for (uint j = 0; j < systematics.size(); j++) {
+      //Get jet Collection which pass selections
+      std::vector<pat::Jet> selectedJets_unsorted = helper.GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], jetID::none, '-', PUJetID::get(PUJetIDMins[i]) );
+      // sort the selected jets with respect to pt
+      std::auto_ptr<pat::JetCollection> selectedJets(new pat::JetCollection(helper.GetSortedByPt(selectedJets_unsorted)));
+      iEvent.put(selectedJets, systName(collectionNames[i], systematics[j]));
+    }
   }
 
 
