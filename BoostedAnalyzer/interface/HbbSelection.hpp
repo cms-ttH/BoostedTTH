@@ -5,18 +5,16 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 
-class HbbSelection: public Selection{
-  
-  public:
-    
-    HbbSelection();
-    ~HbbSelection();
-    void InitCutflow(Cutflow& cutflow);
-    bool IsSelected(const InputCollections& input,Cutflow& cutflow);
+class HbbSelection : public Selection
+{
 
+public:
+  HbbSelection();
+  ~HbbSelection();
+  void InitCutflow(Cutflow& cutflow);
+  bool IsSelected(const InputCollections& input, Cutflow& cutflow);
 
-  private:
-
+private:
 };
 
 #endif

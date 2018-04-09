@@ -5,29 +5,29 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 
-class JetTagSelection: public Selection{
-  
-  public:
-  
-    JetTagSelection(const edm::ParameterSet& iConfig);
-    JetTagSelection(std::vector<int> minjets,std::vector<int> mintags);
-    JetTagSelection(int minjets,int mintags);
-    JetTagSelection(std::vector<int> minjets,std::vector<int> maxjets, std::vector<int> mintags, std::vector<int> maxtags);
-    ~JetTagSelection();
-    void InitCutflow(Cutflow& cutflow);
-    bool IsSelected(const InputCollections& input,Cutflow& cutflow);
+class JetTagSelection : public Selection
+{
 
+public:
+  JetTagSelection(const edm::ParameterSet& iConfig);
+  JetTagSelection(std::vector<int> minjets, std::vector<int> mintags);
+  JetTagSelection(int minjets, int mintags);
+  JetTagSelection(std::vector<int> minjets,
+                  std::vector<int> maxjets,
+                  std::vector<int> mintags,
+                  std::vector<int> maxtags);
+  ~JetTagSelection();
+  void InitCutflow(Cutflow& cutflow);
+  bool IsSelected(const InputCollections& input, Cutflow& cutflow);
 
-  private:
+private:
+  std::string selName;
+  size_t selSize;
 
-    std::string selName;
-    size_t selSize;
-
-    std::vector<int> minJets;
-    std::vector<int> maxJets;
-    std::vector<int> minTags;
-    std::vector<int> maxTags;
-
+  std::vector<int> minJets;
+  std::vector<int> maxJets;
+  std::vector<int> minTags;
+  std::vector<int> maxTags;
 };
 
 #endif

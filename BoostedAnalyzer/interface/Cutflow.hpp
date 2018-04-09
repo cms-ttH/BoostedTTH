@@ -1,17 +1,17 @@
 #ifndef CUTFLOW_HPP
 #define CUTFLOW_HPP
 
-#include <vector>
-#include <map>
-#include <string>
+#include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
+#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <algorithm>
-#include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
+#include <map>
+#include <string>
+#include <vector>
 
-class Cutflow{
+class Cutflow
+{
 public:
-
   Cutflow();
   ~Cutflow();
   void AddStep(std::string name);
@@ -25,8 +25,6 @@ private:
   std::vector<int> eventsAfterSelectionSteps;
   std::vector<float> yieldsAfterSelectionSteps;
   std::vector<std::string> selectionStepNames;
-  
-
 };
 
 #endif

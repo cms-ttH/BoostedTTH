@@ -3,23 +3,22 @@
 
 #include <vector>
 
-#include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 
+class TriggerVarProcessor : public TreeProcessor
+{
 
-class TriggerVarProcessor: public TreeProcessor{
-  
-  public:
-  
-    TriggerVarProcessor(std::vector<std::string> relevantTriggers);
-    ~TriggerVarProcessor();
-    
-    void Init(const InputCollections& input,VariableContainer& var);
-    void Process(const InputCollections& input,VariableContainer& var);
+public:
+  TriggerVarProcessor(std::vector<std::string> relevantTriggers);
+  ~TriggerVarProcessor();
 
-  private:
-    const std::vector<std::string> relevantTriggers;
-    std::string replaceAsterix(std::string triggername);
+  void Init(const InputCollections& input, VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
+
+private:
+  const std::vector<std::string> relevantTriggers;
+  std::string replaceAsterix(std::string triggername);
 };
 
 #endif
