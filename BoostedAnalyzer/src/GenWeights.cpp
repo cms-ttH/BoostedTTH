@@ -74,7 +74,7 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
 
         }
 //             std::string weight_name = lhe_weights.at(weight_id);
-        cout << weight_id << "   " << weight_name << endl;
+//         cout << weight_id << "   " << weight_name << endl;
         weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
     }
     weights["Weight_LHECentral"]=LHE_central_weight;
