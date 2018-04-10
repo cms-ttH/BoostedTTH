@@ -250,7 +250,7 @@ private:
     /** tight jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsLooseTokens;
     /** AK8Jet jets data access token **/
-    edm::EDGetTokenT< std::vector<pat::Jet> > AK8Jets_Token;
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > AK8Jets_Tokens;
     /** mets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::MET> > > correctedMETsTokens;
     /** boosted jets data access token **/
@@ -345,10 +345,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsLoose")){
 	     selectedJetsLooseTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("AK8Jets")){
+	     AK8Jets_Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    }
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
 	     correctedMETsTokens.push_back(consumes< std::vector<pat::MET> >(tag));
     }
-    AK8Jets_Token = consumes< std::vector<pat::Jet> >(iConfig.getParameter<edm::InputTag>("AK8Jets"));
     boostedJetsToken        = consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets"));
     genInfoToken            = consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo"));
     lheInfoToken            = consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo"));
@@ -676,8 +678,12 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
     
     //AK8PFCHSSoftDropPackedJets
-    edm::Handle< pat::JetCollection > h_AK8Jets;
-    iEvent.getByToken( AK8Jets_Token, h_AK8Jets );
+    std::vector<edm::Handle< pat::JetCollection > > hs_AK8Jets;
+    for(auto & AK8JetsToken : AK8Jets_Tokens){
+    	edm::Handle< pat::JetCollection > h_AK8Jets;
+    	iEvent.getByToken( AK8JetsToken,h_AK8Jets );
+    	hs_AK8Jets.push_back(h_AK8Jets);
+    }
     
     // MET
     std::vector<edm::Handle< pat::METCollection > > hs_correctedMETs;
@@ -853,7 +859,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                                           *h_selectedPhotonsLoose,
 					  *(hs_selectedJets[isys]),
 					  *(hs_selectedJetsLoose[isys]),
-                                          *h_AK8Jets,
+                                          *(hs_AK8Jets[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
 					  selectedBoostedJets[isys],
                                           selectedAk4Cluster,
