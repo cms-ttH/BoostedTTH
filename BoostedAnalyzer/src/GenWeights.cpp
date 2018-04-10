@@ -17,14 +17,53 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
         return;
     }
     // number of generator weights which are stored in the LHEEventProduct
-    const uint weightnumber = lhe_weights.size();
+    const uint weightnumber = LHEEvent.weights().size();
     // central lhe weight which is stored
     const double LHE_central_weight = LHEEvent.originalXWGTUP();
     //loop over every generator weight available and add the weight with its corresponding name to the weights map. the name is derived with the generator id and the lhe_weights map which maps the weight id to the corresponding name
     for (uint i = 0;i < weightnumber; i++) {
         std::string weight_id = LHEEvent.weights()[i].id;
-        if(!lhe_weights.count(weight_id)) continue;
-        std::string weight_name = lhe_weights.at(weight_id);
+        if(!lhe_weights.count(weight_id) && i>8) continue;
+        std::string weight_name;
+        if(!lhe_weights.count(weight_id)){
+            if (i==0){
+            weight_name="scale_variation_muR1p0_muF1p0";
+            }
+            else if(i==1){
+            weight_name="scale_variation_muR1p0_muF2p0";
+            }
+            else if(i==2){
+            weight_name="scale_variation_muR1p0_muF2p0";
+            }
+            else if(i==3){
+            weight_name="scale_variation_muR2p0_muF1p0";
+            }
+            else if(i==4){
+            weight_name="scale_variation_muR2p0_muF2p0";
+            }
+            else if(i==5){
+            weight_name="scale_variation_muR2p0_muF0p5";
+            }
+            else if(i==6){
+            weight_name="scale_variation_muR0p5_muF1p0";
+            }
+            else if(i==7){
+            weight_name="scale_variation_muR0p5_muF2p0";
+            }
+            else if(i==8){
+            weight_name="scale_variation_muR0p5_muF0p5";
+            }
+            
+            else{
+                continue;
+            }
+            
+            
+        }
+        else{
+            std::string weight_name = lhe_weights.at(weight_id);
+        }
+        
         //cout << weight_id << "   " << weight_name << endl;
         weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
     }
@@ -41,8 +80,20 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
   // get the nominal pdf and the nominal gen weight
   const gen::PdfInfo* pdfInfos = genInfos.pdf();
   const double gen_weight = genInfos.weight();
-  const double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
+  double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
   
+  if (pdfNominal==0){
+//     LHAPDF::PDFSet PDFSet = initializedPDFSets[2];
+    std::vector<LHAPDF::PDF*> PDFs = initializedPDFs[2];
+    double xpdf1 = PDFs[0]->xfxQ(pdfInfos->id.first, pdfInfos->x.first, pdfInfos->scalePDF);
+    double xpdf2 = PDFs[0]->xfxQ(pdfInfos->id.second, pdfInfos->x.second, pdfInfos->scalePDF);
+//     std::cout<<"xpdf1 "<<xpdf1<<" id "<<pdfInfos->id.first<<" x "<<pdfInfos->x.first<<" scale "<<pdfInfos->scalePDF<<std::endl;
+//     std::cout<<"xpdf2 "<<xpdf2<<" id "<<pdfInfos->id.second<<" x "<<pdfInfos->x.second<<" scale "<<pdfInfos->scalePDF<<std::endl;
+//     pdfs.push_back(xpdf1 * xpdf2);    
+    pdfNominal=xpdf1 * xpdf2;
+  }
+  
+//   std::cout<<"pdfNominal "<<pdfNominal<<std::endl;
   weights["Weight_GEN_nom"]=gen_weight;
 
   //Loop over all initialized PDFSets and calculate the weight for a pdf variation
@@ -55,6 +106,8 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
     for (size_t j = 0; j < PDFs.size(); ++j) {
       double xpdf1 = PDFs[j]->xfxQ(pdfInfos->id.first, pdfInfos->x.first, pdfInfos->scalePDF);
       double xpdf2 = PDFs[j]->xfxQ(pdfInfos->id.second, pdfInfos->x.second, pdfInfos->scalePDF);
+//       std::cout<<"xpdf1 "<<xpdf1<<" id "<<pdfInfos->id.first<<" x "<<pdfInfos->x.first<<" scale "<<pdfInfos->scalePDF<<std::endl;
+//       std::cout<<"xpdf2 "<<xpdf2<<" id "<<pdfInfos->id.second<<" x "<<pdfInfos->x.second<<" scale "<<pdfInfos->scalePDF<<std::endl;
       pdfs.push_back(xpdf1 * xpdf2);
       if (std::isfinite(1./pdfNominal)) {
             weights["Weight_LHA_"+initializedPDFNames[p]+std::to_string(PDFs[j]->lhapdfID())] =  pdfs[j] / pdfNominal;
@@ -134,6 +187,8 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
     int split=0;
     for (auto iter=myLHERunInfoProduct.begin(); iter!=myLHERunInfoProduct.end(); iter++) {
         TString line = *iter;
+        
+        std::cout<<"michaels suggestion: "<<line<<std::endl;
         // first remove some characters which complicate everything
         line.ToLower();
         line.ReplaceAll("\n","");
@@ -187,6 +242,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             name_string = line;
             // some names have .lhgrid string in their name->remove
             name_string.ReplaceAll(".lhgrid","");
+            name_string.ReplaceAll("centralscalevariation","scale_variation");
             //cout << "blablabla " << split << "       " << pdf_string << endl;
             continue;
         }
