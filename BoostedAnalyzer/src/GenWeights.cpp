@@ -17,41 +17,50 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
         return;
     }
     // number of generator weights which are stored in the LHEEventProduct
+    
+    /*
+            for(auto it:lhe_weights){
+                    std::cout<<"ti2 "<<it.first<<"   "<<it.second<<std::endl;
+            }  */  
     const uint weightnumber = LHEEvent.weights().size();
     // central lhe weight which is stored
     const double LHE_central_weight = LHEEvent.originalXWGTUP();
     //loop over every generator weight available and add the weight with its corresponding name to the weights map. the name is derived with the generator id and the lhe_weights map which maps the weight id to the corresponding name
     for (uint i = 0;i < weightnumber; i++) {
         std::string weight_id = LHEEvent.weights()[i].id;
-        if(!lhe_weights.count(weight_id) && i>8) continue;
-        std::string weight_name;
+//         std::cout<<"sssagge"<<LHEEvent.weights()[i].id<<std::endl;
+//         if(!lhe_weights.count(weight_id)) continue;
+        
+        
+        if(!lhe_weights.count(weight_id) && i>9) continue;
+        std::string weight_name="fuckyou";
         if(!lhe_weights.count(weight_id)){
-            if (i==0){
-            weight_name="scale_variation_muR1p0_muF1p0";
-            }
-            else if(i==1){
-            weight_name="scale_variation_muR1p0_muF2p0";
+            if (i==1){
+            weight_name="Weight_scale_variation_muR1p0_muF1p0";
             }
             else if(i==2){
-            weight_name="scale_variation_muR1p0_muF2p0";
+            weight_name="Weight_scale_variation_muR1p0_muF2p0";
             }
             else if(i==3){
-            weight_name="scale_variation_muR2p0_muF1p0";
+            weight_name="Weight_scale_variation_muR1p0_muF2p0";
             }
             else if(i==4){
-            weight_name="scale_variation_muR2p0_muF2p0";
+            weight_name="Weight_scale_variation_muR2p0_muF1p0";
             }
             else if(i==5){
-            weight_name="scale_variation_muR2p0_muF0p5";
+            weight_name="Weight_scale_variation_muR2p0_muF2p0";
             }
             else if(i==6){
-            weight_name="scale_variation_muR0p5_muF1p0";
+            weight_name="Weight_scale_variation_muR2p0_muF0p5";
             }
             else if(i==7){
-            weight_name="scale_variation_muR0p5_muF2p0";
+            weight_name="Weight_scale_variation_muR0p5_muF1p0";
             }
             else if(i==8){
-            weight_name="scale_variation_muR0p5_muF0p5";
+            weight_name="Weight_scale_variation_muR0p5_muF2p0";
+            }
+            else if(i==9){
+            weight_name="Weight_scale_variation_muR0p5_muF0p5";
             }
             
             else{
@@ -61,10 +70,11 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
             
         }
         else{
-            std::string weight_name = lhe_weights.at(weight_id);
+            weight_name = lhe_weights.at(weight_id);
+
         }
-        
-        //cout << weight_id << "   " << weight_name << endl;
+//             std::string weight_name = lhe_weights.at(weight_id);
+        cout << weight_id << "   " << weight_name << endl;
         weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
     }
     weights["Weight_LHECentral"]=LHE_central_weight;
@@ -82,6 +92,7 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
   const double gen_weight = genInfos.weight();
   double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
   
+  std::cout<<"pdfNominal "<<pdfNominal<<std::endl;
   if (pdfNominal==0){
 //     LHAPDF::PDFSet PDFSet = initializedPDFSets[2];
     std::vector<LHAPDF::PDF*> PDFs = initializedPDFs[2];
@@ -188,7 +199,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
     for (auto iter=myLHERunInfoProduct.begin(); iter!=myLHERunInfoProduct.end(); iter++) {
         TString line = *iter;
         
-        std::cout<<"michaels suggestion: "<<line<<std::endl;
+//         std::cout<<"michaels suggestion: "<<line<<std::endl;
         // first remove some characters which complicate everything
         line.ToLower();
         line.ReplaceAll("\n","");

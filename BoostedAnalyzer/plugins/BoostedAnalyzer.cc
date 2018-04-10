@@ -1032,7 +1032,9 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	//DANGERZONE
     genweights.GetLHAPDFWeight(weights, genInfo );
 	//DANGERZONE
-
+//     for (auto it:weights){
+//         std::cout<<"it "<<it.first<<"  "<<itsecond<<std::endl;
+//     }
     return weights;
 }
 std::string BoostedAnalyzer::systName(const Systematics::Type& sysType){
