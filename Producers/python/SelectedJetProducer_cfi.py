@@ -17,5 +17,6 @@ SelectedJetProducer = cms.EDProducer(
     collectionNames  = cms.vstring("selectedJets","selectedJetsLoose"),
     systematics = cms.vstring(""),
     JetID = cms.string("none"),
+    JetType = cms.string("AK4PFchs")
     )
 
