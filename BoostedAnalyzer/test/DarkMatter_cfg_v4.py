@@ -484,14 +484,31 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
     resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
     scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
 )
+process.patSmearedJetsAK8 = cms.EDProducer("SmearedPATJetProducer",
+    src = cms.InputTag("Ak8JetProducer:AK8Jets"),
+    enabled = cms.bool(True),  # If False, no smearing is performed
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
+#    algopt = cms.string('AK4PFchs_pt'),
+#    algo = cms.string('AK4PFchs'),
+    genJets = cms.InputTag("slimmedGenJetsAK8"),
+    dRMax = cms.double(0.4),  # = cone size (0.8) / 2
+    dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
+    variation = cms.int32(0),  # systematic +1 0 -1 sigma
+    debug = cms.untracked.bool(False),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFchs.txt"),
+)
 # up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
 for s in systsJER:
     v=0
     if s=='JERup': v=+1
     elif s=='JERdown': v=-1
     setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=v,src=cms.InputTag("CorrectedJetProducer:correctedJets")))
+    setattr(process,'patSmearedJetsAK8'+s,process.patSmearedJetsAK8.clone(variation=v,src=cms.InputTag("Ak8JetProducer:AK8Jets")))
 for s in systsJES:
     setattr(process,'patSmearedJets'+s,process.patSmearedJets.clone(variation=0,src=cms.InputTag("CorrectedJetProducer:correctedJets"+s)))
+    setattr(process,'patSmearedJetsAK8'+s,process.patSmearedJetsAK8.clone(variation=0,src=cms.InputTag("Ak8JetProducer:AK8Jets"+s)))
 
 ###############################################
 
@@ -540,7 +557,7 @@ if writeNominal:
     variations.insert(0,"") # also store nominal case
 process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer"+s+":selectedJets"+s) for s in variations]
 process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer"+s+":selectedJetsLoose"+s) for s in variations]
-process.BoostedAnalyzer.AK8Jets=[cms.InputTag("Ak8JetProducer"+":AK8Jets"+s) for s in variations]
+process.BoostedAnalyzer.AK8Jets=[cms.InputTag("Ak8JetProducer"+":AK8Jets"+s) if not "JER" in s else cms.InputTag("Ak8JetProducer"+":AK8Jets") for s in variations]
 process.BoostedAnalyzer.correctedMETs=[cms.InputTag("CorrectedMETproducer:correctedMET")]*(len(variations))
 
 if options.isBoostedMiniAOD:
@@ -644,6 +661,8 @@ for s in [""]+systs:
     process.p *= getattr(process,'patSmearedJets'+s)
     process.p *= getattr(process,'SelectedJetProducer'+s)
 
+process.p *= process.Ak8JetProducer
+
 #if options.recorrectMET:
     
 process.p *= process.fullPatMetSequence
@@ -652,7 +671,6 @@ process.p *= process.fullPatMetSequence
 
 process.p *= process.CorrectedMETproducer
 
-process.p *= process.Ak8JetProducer
 if printContent:
     process.p *= process.content
 
