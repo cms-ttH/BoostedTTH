@@ -69,7 +69,7 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
     }
 
     for(size_t i=0;i<input.selectedJets.size()&&i<4;i++) {
-        dPhi_jet_met_criterium = DeltaPhi(input.selectedJets.at(i).phi(),met_p4.phi())>0.5;
+        dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(i).phi()))>0.5;
         if(!dPhi_jet_met_criterium) return false;
     }
 
