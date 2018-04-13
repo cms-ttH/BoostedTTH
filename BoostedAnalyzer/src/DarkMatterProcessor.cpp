@@ -112,7 +112,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   vars.FillVar( "Evt_Pt_MET_UnclEnUp",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnUp,pat::MET::Type1XY));
   vars.FillVar( "Evt_Pt_MET_UnclEnDown",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnDown,pat::MET::Type1XY));
   vars.FillVar( "CaloMET",input.correctedMET.caloMETPt() );
-  vars.FillVar( "CaloMET_PFMET_ratio",fabs(met_p4.pt()-input.correctedMET.caloMETPt())/met_p4.pt() );
+  vars.FillVar( "CaloMET_PFMET_ratio",fabs(met_p4.pt()-input.correctedMET.caloMETPt())/input.correctedMET.caloMETPt() );
   
   for(size_t i=0;i<input.selectedJets.size();i++){
     vars.FillVars ( "DeltaPhi_Jet_MET",i,fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(i).phi())));

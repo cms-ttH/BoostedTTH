@@ -51,7 +51,7 @@ bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     double hadr_recoil = hadr_recoil_p4.pt();
     //double uncormet = input.correctedMET.uncorPt();
     double calomet = input.correctedMET.caloMETPt();
-    if((met>minMET&&met<maxMET)&&(fabs(calomet-met)/met<0.5)){
+    if((met>minMET&&met<maxMET)&&(fabs(calomet-met)/calomet<0.5)){
 	cutflow.EventSurvivedStep(selectionName ,input.weights.at("Weight"));
 	return true;
     }
