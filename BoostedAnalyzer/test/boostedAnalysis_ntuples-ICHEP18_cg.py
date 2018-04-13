@@ -442,7 +442,7 @@ process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets=jetCollectio
                                                                collectionNames=["correctedJets"],
                                                                applyCorrection=True,
                                                                systematics=[""]+systsJES,
-                                                               JetID="loose",
+                                                               JetID="tight",
                                                                PUJetIDMins=["none"])
 
 # smearing of corrected jets -- producers that create the nominal and up/down JER correction
