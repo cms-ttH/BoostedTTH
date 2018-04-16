@@ -3,7 +3,7 @@ import os
 import shutil
 from subprocess import call
 
-csvfile=open('samples_pre.csv','r') 
+csvfile=open('ttH.csv','r') 
 reader = csv.DictReader(csvfile, delimiter=',')
 
 def repl(old,new,filename):
@@ -73,7 +73,7 @@ for row in reader:
             shutil.copy(src,out)
             repl('THEREQUESTNAME',row['name']+"_"+str(i)+"_"+str(l),out)
             repl('THEINPUTDATASET',dataset,out)
-            #repl('DATAERA',row['run'],out)
+            repl('DATAERA',row['run'],out)
             #repl('GLOBALTAG',row['globalTag'],out)
             #repl('GENERATORNAME',row['generator'],out)
             #repl('WEIGHT',row['weight'],out)

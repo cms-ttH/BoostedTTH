@@ -1,6 +1,7 @@
 name,dataset,nGen,Npos-Nneg/Ntotal,XS,weight,boosted_dataset,globalTag,IsData,generator,additionalSelection,run
 ,,,,,,,,,,
 ttHTobb_M125_TuneCUETP8M2_13TeV-powheg-pythia8_0,/ttHTobb_M125_TuneCUETP8M2_13TeV-powheg-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM,3962794,1,0.2953,7.45181303898e-05,,94X_mc2017_realistic_v12,FALSE,POWHEG,NONE,
+ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8_1,/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM,8000000,0.979062139616,0.2953,3.77018970568e-05,,94X_mc2017_realistic_v12,FALSE,POWHEG,NONE,
 ,,,,,,,,,,
 ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythia8_0,/ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM,7030959,1,0.2118,3.0123913395e-05,,94X_mc2017_realistic_v12,FALSE,POWHEG,NONE,
 ttHToNonbb_M125_TuneCUETP8M2_13TeV-powheg-pythia8_1,/ttHToNonbb_M125_TuneCUETP8M2_13TeV-powheg-pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM,3999999,1,0.2118,5.29500132375e-05,,94X_mc2017_realistic_v12,FALSE,POWHEG,NONE,
