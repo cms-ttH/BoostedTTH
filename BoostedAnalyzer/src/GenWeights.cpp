@@ -92,7 +92,7 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
   const double gen_weight = genInfos.weight();
   double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
   
-  std::cout<<"pdfNominal "<<pdfNominal<<std::endl;
+//   std::cout<<"pdfNominal "<<pdfNominal<<std::endl;
   if (pdfNominal==0){
 //     LHAPDF::PDFSet PDFSet = initializedPDFSets[2];
     std::vector<LHAPDF::PDF*> PDFs = initializedPDFs[2];
