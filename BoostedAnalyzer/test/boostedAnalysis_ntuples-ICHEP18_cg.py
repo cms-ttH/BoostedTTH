@@ -113,12 +113,20 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
 
 ### some standard collections ####
-electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
-photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
-muonCollection	   = cms.InputTag("slimmedMuons", "", "PAT")
-tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
-METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
-jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
+if not options.isData:
+    electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
+    photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
+    muonCollection	   = cms.InputTag("slimmedMuons", "", "PAT")
+    tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
+    METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
+    jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
+else:
+    electronCollection = cms.InputTag("slimmedElectrons", "", "RECO")
+    photonCollection   = cms.InputTag("slimmedPhotons", "", "RECO")
+    muonCollection	   = cms.InputTag("slimmedMuons", "", "RECO")
+    tauCollection      = cms.InputTag("slimmedTaus", "", "RECO")
+    METCollection      = cms.InputTag("slimmedMETs", "", "RECO")
+    jetCollection      = cms.InputTag("slimmedJets", "", "RECO")
 
 ###### deterministic seed producer ######
 
@@ -205,7 +213,7 @@ if options.isData:
         )
 """
 ###### electron energy regression #######
-""""
+"""
 if options.electronRegression:
     if options.electronRegression == "GT":
         from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
