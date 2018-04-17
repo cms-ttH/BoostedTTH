@@ -45,10 +45,10 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
 
   //AK8 Jets
-  vars.InitVar( "N_AK8Jets","I" );
-  vars.InitVars( "AK8Jet_Pt","N_AK8Jets" );
-  vars.InitVars( "AK8Jet_Phi","N_AK8Jets" );
-  vars.InitVars( "AK8Jet_Eta","N_AK8Jets" );
+  vars.InitVar( "N_JetsAK8","I" );
+  vars.InitVars( "Jet_PtAK8","N_JetsAK8" );
+  vars.InitVars( "Jet_PhiAK8","N_JetsAK8" );
+  vars.InitVars( "Jet_EtaAK8","N_JetsAK8" );
 
 
 //   vars.InitVars( "LooseJet_E","N_LooseJets" );
@@ -151,7 +151,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   // Fill Multiplicity Variables
   vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
   vars.FillVar( "N_Jets",input.selectedJets.size());
-  vars.FillVar( "N_AK8Jets",input.AK8Jets.size());
+  vars.FillVar( "N_JetsAK8",input.AK8Jets.size());
   vars.FillVar( "N_LooseJets",input.selectedJetsLoose.size());
   vars.FillVar( "N_TightLeptons",input.selectedElectrons.size()+ input.selectedMuons.size());  
   vars.FillVar( "N_LooseLeptons",input.selectedElectronsLoose.size()+ input.selectedMuonsLoose.size());  
@@ -196,9 +196,9 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   //Ak8 Jets
   for(std::vector<pat::Jet>::const_iterator itJet = input.AK8Jets.begin() ; itJet != input.AK8Jets.end(); ++itJet){
     int iJet = itJet - input.AK8Jets.begin();
-    vars.FillVars( "AK8Jet_Pt",iJet,itJet->pt() );
-    vars.FillVars( "AK8Jet_Eta",iJet,itJet->eta() );
-    vars.FillVars( "AK8Jet_Phi",iJet,itJet->phi() );
+    vars.FillVars( "Jet_PtAK8",iJet,itJet->pt() );
+    vars.FillVars( "Jet_EtaAK8",iJet,itJet->eta() );
+    vars.FillVars( "Jet_PhiAK8",iJet,itJet->phi() );
   }
   // Loose Jets
 //   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){
