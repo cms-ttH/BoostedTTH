@@ -27,9 +27,12 @@ bool monoVselection::IsSelected(const InputCollections& input, Cutflow& cutflow)
 
     float leadingJet_tau21 = leadingJet_tau2 / leadingJet_tau1;
 
+    float leadingJet_Nhf = leadingJet.userFloat("neutralHadronEnergyFraction");
+    float leadingJet_Chf = leadingJet.userFloat("chargedHadronEnergyFraction");
+
     monoVtagged_ChsPrun = false;
 
-    if (leadingJet_Pt > minpt && abs(leadingJet_eta) < maxeta && leadingJet_PrunedMass > minPrunedMass && leadingJet_PrunedMass < maxPrunedMass && leadingJet_tau21 < maxtau21_chsPrun ) {
+    if (leadingJet_Pt > minpt && abs(leadingJet_eta) < maxeta && leadingJet_PrunedMass > minPrunedMass && leadingJet_PrunedMass < maxPrunedMass && leadingJet_tau21 < maxtau21_chsPrun && leadingJet_Nhf<0.8 && leadingJet_Chf>0.1) {
       monoVtagged_ChsPrun = true;
     }
 

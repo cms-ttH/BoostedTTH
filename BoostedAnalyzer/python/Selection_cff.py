@@ -118,7 +118,7 @@ filtersMC= cms.PSet(
     
 MonoJetSelection = cms.PSet(
     MonoJet_Pt=cms.double(100),
-    MonoJet_Eta=cms.double(2.5),
+    MonoJet_Eta=cms.double(2.4),
     MonoJet_Chf=cms.double(0.1),
     MonoJet_Nhf=cms.double(0.8)
 )

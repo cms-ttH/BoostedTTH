@@ -290,7 +290,7 @@ for idmod in my_id_modules:
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[10.,10.,40.]
-process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.4]
+process.SelectedElectronProducer.etaMaxs=[2.5,2.5,2.5]
 process.SelectedElectronProducer.leptonIDs=["electron80XCutBasedV","electron80XCutBasedT","electron80XCutBasedT"]
 #process.SelectedElectronProducer.leptonIDs=["none","none","none"]
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
