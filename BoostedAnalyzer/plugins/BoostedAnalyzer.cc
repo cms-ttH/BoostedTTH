@@ -209,6 +209,8 @@ private:
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsTokens;
     /** tight jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsLooseTokens;
+    /** AK8Jet jets data access token **/
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > AK8Jets_Tokens;
     /** mets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::MET> > > correctedMETsTokens;
     /** boosted jets data access token **/
@@ -337,6 +339,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     }
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsLoose")){
 	     selectedJetsLooseTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    }
+    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("AK8Jets")){
+        AK8Jets_Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
 	     correctedMETsTokens.push_back(consumes< std::vector<pat::MET> >(tag));
@@ -640,6 +645,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	iEvent.getByToken( selectedJetsLooseToken,h_selectedJetsLoose );
 	hs_selectedJetsLoose.push_back(h_selectedJetsLoose);
     }
+
+    std::vector<edm::Handle< pat::JetCollection > > hs_AK8Jets;
+    for(auto & AK8JetsToken : AK8Jets_Tokens){
+        edm::Handle< pat::JetCollection > h_AK8Jets;
+        iEvent.getByToken( AK8JetsToken,h_AK8Jets );
+        hs_AK8Jets.push_back(h_AK8Jets);
+    }
     
     // MET
     std::vector<edm::Handle< pat::METCollection > > hs_correctedMETs;
@@ -786,6 +798,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectronsLoose,
 					  *(hs_selectedJets[isys]),
 					  *(hs_selectedJetsLoose[isys]),
+                      *(hs_AK8Jets[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
 					  selectedBoostedJets[isys],
                                           selectedAk4Cluster,

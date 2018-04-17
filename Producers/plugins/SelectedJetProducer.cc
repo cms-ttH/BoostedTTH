@@ -84,6 +84,7 @@ private:
     /** pileupjetid for collections **/
     std::vector<std::string> PUJetIDMins;
     std::string JetID;
+    std::string JetType;
     /** systematics used **/
     std::vector<Systematics::Type> systematics;
     /** apply jet energy correciton? **/
@@ -104,7 +105,7 @@ private:
 //
 // constructors and destructor
 //
-SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
+SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig) : helper(iConfig.getParameter<std::string> ("JetType"))
 {
     jetsToken  = consumes< pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
     genjetsToken = consumes< reco::GenJetCollection >(iConfig.getParameter<edm::InputTag>("miniAODGenJets"));
@@ -119,7 +120,9 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
     collectionNames = iConfig.getParameter< std::vector<std::string> >("collectionNames");
     PUJetIDMins = iConfig.getParameter<std::vector<std::string>> ("PUJetIDMins");
     JetID = iConfig.getParameter<std::string> ("JetID");
-
+    JetType = iConfig.getParameter<std::string> ("JetType");
+    JetType.replace(JetType.begin(),JetType.begin()+2,"ak");// do this for getJetCorrector call with JetType as argument, because it needs ak4... or ak8 ... instead of AK4... or AK8...
+    
     assert(ptMins.size()==etaMaxs.size());
     assert(ptMins.size()==collectionNames.size());
 
@@ -139,11 +142,11 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig)
 
     produces<pat::JetCollection>("rawJets");
 
-    for(uint i=0; i<collectionNames.size();i++){
-	for(uint j=0; j<systematics.size();j++){
-	    produces<pat::JetCollection>(systName(collectionNames[i],systematics[j]));
-	}
-    }  
+  for(uint i=0; i<collectionNames.size();i++){
+    for(uint j=0; j<systematics.size();j++){
+      produces<pat::JetCollection>(systName(collectionNames[i],systematics[j]));
+    }
+  }
 }
 
 
@@ -167,7 +170,7 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    using namespace edm;
 
    helper.UpdateJetCorrectorUncertainties(iSetup);
-   helper.SetAK8JetCorrectorUncertainty(iSetup);
+   // helper.SetAK8JetCorrectorUncertainty(iSetup);
 
    edm::Handle<double> h_rho;
    iEvent.getByToken(rhoToken,h_rho);
@@ -190,7 +193,8 @@ SelectedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    std::vector<std::vector<pat::Jet> > unsortedJets;
    if(applyCorrection){
        // initialize jetcorrector
-       const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+       // std::cout << "getting JetCorrector: " << JetType+"L1L2L3" << std::endl;
+       const JetCorrector* corrector = JetCorrector::getJetCorrector( JetType+"L1L2L3", iSetup );
        helper.SetJetCorrector(corrector);
 
        // Get raw jets
