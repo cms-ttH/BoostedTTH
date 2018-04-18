@@ -71,6 +71,7 @@ private:
   std::vector<electronID::electronID> electronIDs_;
   std::vector<coneSize::coneSize> muonIsoConeSizes_;
   std::vector<corrType::corrType> muonIsoCorrTypes_;
+  std::vector<muonIso::muonIso> muonIsos_;
   std::vector<std::string> collectionNames_;
 
   // data access tokens
@@ -135,6 +136,8 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   muonIsoConeSizes_ = std::vector<coneSize::coneSize>(leptonIDs.size(),coneSize::R04);
   const vector<std::string> muonIsoCorrTypes = iConfig.getParameter<std::vector<std::string> >("muonIsoCorrTypes");
   muonIsoCorrTypes_ = std::vector<corrType::corrType>(leptonIDs.size(),corrType::deltaBeta);
+  const vector<std::string> muonIsoTypes = iConfig.getParameter<std::vector<std::string> >("muonIsoTypes");
+  muonIsos_ = std::vector<muonIso::muonIso>(leptonIDs.size(), muonIso::PFIsoTight);
   collectionNames_= iConfig.getParameter<std::vector< std::string> >("collectionNames");
 
   assert(ptMins_.size()==etaMaxs_.size());
@@ -179,6 +182,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	  else if( leptonIDs[i] == "tightDL"  ) muonIDs_[i] = muonID::muonTightDL;
           else if( leptonIDs[i] == "tightDL_IsoInverted"  )   muonIDs_[i] = muonID::muonTightDL_IsoInverted;
 	  else if( leptonIDs[i] == "muonMediumICHEP"  ) muonIDs_[i] = muonID::muonMediumICHEP;
+      
 
 	  else {
 	      std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonIDs[i] << std::endl;
@@ -199,6 +203,16 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	      std::cerr << "\n\nERROR: No matching isolation correction type found for: " << muonIsoCorrTypes_[i] << std::endl;
 	      throw std::exception();
 	  }
+      if( muonIsoTypes[i] == "PFIsoTight") muonIsos_[i] = muonIso::PFIsoTight;
+      else if(muonIsoTypes[i] == "PFIsoMedium") muonIsos_[i] = muonIso::PFIsoMedium;
+      else if(muonIsoTypes[i] == "PFIsoLoose") muonIsos_[i] = muonIso::PFIsoLoose;
+      else if(muonIsoTypes[i] == "PFIsoVeryLoose") muonIsos_[i] = muonIso::PFIsoVeryLoose;
+      else if(muonIsoTypes[i] == "PFIsoVeryTight") muonIsos_[i] = muonIso::PFIsoVeryTight;
+      else if(muonIsoTypes[i] == "CalculateManually") muonIsos_[i] = muonIso::CalculateManually;
+      else{
+          std::cerr << "\n\nERROR: No matching isolation type found for: " << muonIsos_[i] << std::endl;
+	      throw std::exception();
+      }
       }
       if( leptonType_ == Electron ) produces<pat::ElectronCollection>(collectionNames_[i]);
       if( leptonType_ == Muon     ) produces<pat::MuonCollection>(collectionNames_[i]);
@@ -307,14 +321,51 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         }
 
 	// produce the different muon collections
+    double debug_muonreliso = 0;
 	for(uint i=0; i<ptMins_.size();i++){
 	    // select muon collection
-	    std::unique_ptr<pat::MuonCollection> selectedLeptons = std::make_unique<pat::MuonCollection>(helper_.GetSortedByPt(helper_.GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i]))) ;
-	    for (auto & lep : *selectedLeptons){
+        std::cout << "analyzing collection " << collectionNames_[i] << std::endl;
+	    std::unique_ptr<pat::MuonCollection> selectedLeptons = std::make_unique<pat::MuonCollection>(helper_.GetSortedByPt(helper_.GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i], muonIsos_[i]))) ;
+	    
+        for (auto & lep : *selectedLeptons){
+            // std::cout << "\tcalc rel iso\n";
+            debug_muonreliso = helper_.GetMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i]);
+            // std::cout << "\tdone\n";
+            // std::cout << "adding rel muon isolations\n";
 		helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
+        if(debug_muonreliso > 0.15) 
+        {
+            std::cout << "\tsaved " << lep.userFloat("relIso") << "\t calc: " << debug_muonreliso << std::endl << std::endl;
+            if(lep.hasUserFloat("relIso")) std::cout << "\tuserFloat exists\n";
+        }
 	    }
+        for (auto & lep : *selectedLeptons){
+                std::cout << "\tcalc rel iso\n";
+                debug_muonreliso = helper_.GetMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i]);
+                std::cout << "\tdone\n";
+                std::cout << "adding rel muon isolations\n";
+            // helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
+            if(lep.hasUserFloat("relIso"))
+            {
+                std::cout << "found user float relIso\n";
+                if(debug_muonreliso > 0.15) 
+                {
+                    std::cout << "\tsaved " << lep.userFloat("relIso") << "\t calc: " << debug_muonreliso << std::endl << std::endl;
+                    if(lep.hasUserFloat("relIso")) std::cout << "\tuserFloat exists\n";
+                }
+            }
+            else 
+            {
+                std::cerr << "found no user float in 2nd loop!\n";
+                throw std::exception();
+            }
+            }
 	    iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
-	}
+        
+        std::cout << "____________________________________________\n";
+        
+        }
+    
     }
 }
 
