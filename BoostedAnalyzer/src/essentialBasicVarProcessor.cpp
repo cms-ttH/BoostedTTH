@@ -59,6 +59,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Tau4_CHSAK8", "N_JetsAK8" );
 
   vars.InitVars( "SoftDropMass_PUPPIAK8", "N_JetsAK8" );
+  vars.InitVars( "SoftDropMass_CHSAK8", "N_JetsAK8" );
 
 //   vars.InitVars( "LooseJet_E","N_LooseJets" );
 //   vars.InitVars( "LooseJet_M","N_LooseJets" );
@@ -245,9 +246,18 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       float SoftDropMass_PUPPIAK8 = itJet->userFloat("ak8PFJetsPuppiSoftDropMass");
       if (SoftDropMass_PUPPIAK8 > 0){
         vars.FillVars( "SoftDropMass_PUPPIAK8", iJet, SoftDropMass_PUPPIAK8 );
-        std::cout << SoftDropMass_PUPPIAK8 << std::endl;       
+        // std::cout << SoftDropMass_PUPPIAK8 << std::endl;       
       } 
     }
+
+    if(itJet->hasUserFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSSoftDropMass")){
+      float SoftDropMass_CHSAK8 = itJet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSSoftDropMass");
+      if (SoftDropMass_CHSAK8 > 0){
+        vars.FillVars( "SoftDropMass_CHSAK8", iJet, SoftDropMass_CHSAK8 );
+        std::cout << SoftDropMass_CHSAK8 << std::endl;       
+      } 
+    }
+    
     
   }
 
