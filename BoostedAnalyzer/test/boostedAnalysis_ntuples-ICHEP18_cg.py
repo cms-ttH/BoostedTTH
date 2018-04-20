@@ -271,17 +271,17 @@ if options.electronSmearing and options.electronRegression:
 ##########################################
 """
 ### electron ID ####
-"""
-eleMVAid=False
-if eleMVAid:
-    from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-    dataFormat = DataFormat.MiniAOD
-    switchOnVIDElectronIdProducer(process, dataFormat)
-# Spring 16 MVA ID 
-    my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff']
-    for idmod in my_id_modules:
-        setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
+
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+dataFormat = DataFormat.MiniAOD
+switchOnVIDElectronIdProducer(process, dataFormat)
+# Spring 18 94X cut based identification
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff']
+for idmod in my_id_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+        
+"""
 ### BJetness ###
 if options.calcBJetness:
     process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")        
@@ -554,8 +554,8 @@ if options.isData:
   "essentialMVAVarProcessor",
   "BDTVarProcessor",
   "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
-  "TTBBStudienProcessor"
+  # "ReconstructionMEvarProcessor",
+  # "TTBBStudienProcessor"
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
@@ -565,8 +565,8 @@ else:
   "essentialMVAVarProcessor",
   "BDTVarProcessor",
   "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
-  "TTBBStudienProcessor"
+  # "ReconstructionMEvarProcessor",
+  # "TTBBStudienProcessor"
   )
 
 printContent=False
@@ -596,12 +596,11 @@ if options.ProduceMemNtuples==True:
 process.p = cms.Path()
 if options.deterministicSeeds:
     process.p*=process.deterministicSeeds
-#process.p *= process.BadPFMuonFilter*process.BadChargedCandidateFilter*process.badGlobalMuonTaggerMAOD*process.cloneGlobalMuonTaggerMAOD
-#if eleMVAid:
-    #process.p *= process.egmGsfElectronIDSequence
-#if options.calcBJetness:
-    #process.p *= process.BJetness
+
+process.p *= process.egmGsfElectronIDSequence
+
 #process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons
+
 process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
 #if options.updatePUJetId:
 	#process.p*=process.pileupJetIdUpdated*process.updatedPatJets

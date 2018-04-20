@@ -81,6 +81,10 @@ private:
   edm::EDGetTokenT< edm::View<pat::Electron> >EDMElectronsToken;  // electrons
   edm::EDGetTokenT< edm::ValueMap<float> >    EDMeleMVAvaluesToken; // values of electron mva
   edm::EDGetTokenT< edm::ValueMap<int> >      EDMeleMVAcategoriesToken;  // category of electron mva
+  edm::EDGetTokenT<edm::View<bool> >          EDMeleCutBasedMediumIDmapToken;
+  edm::EDGetTokenT<edm::View<bool> >          EDMeleCutBasedLooseIDmapToken;
+  edm::EDGetTokenT<edm::View<bool> >          EDMeleCutBasedVetoIDmapToken;
+  edm::EDGetTokenT<edm::View<bool> >          EDMeleCutBasedTightIDmapToken;
   
   bool isData;
   bool useMuonRC; // flag to enable or disable Rochester Correction
@@ -123,6 +127,11 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   EDMMuonsToken             = consumes< pat::MuonCollection >     (iConfig.getParameter<edm::InputTag>("leptons"));
   EDMVertexToken            = consumes< reco::VertexCollection >  (iConfig.getParameter<edm::InputTag>("vertices"));
   EDMRhoToken               = consumes< double >                  (iConfig.getParameter<edm::InputTag>("rho"));
+  EDMeleCutBasedMediumIDmapToken = consumes< edm::View<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
+  EDMeleCutBasedLooseIDmapToken = consumes< edm::View<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
+  EDMeleCutBasedVetoIDmapToken = consumes< edm::View<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
+  EDMeleCutBasedTightIDmapToken = consumes< edm::View<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
+  
   EDMeleMVAvaluesToken      = consumes<edm::ValueMap<float> >     (iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
   EDMeleMVAcategoriesToken  = consumes<edm::ValueMap<int> >       (iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
   
@@ -169,6 +178,11 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	  else if( leptonIDs[i] == "electronNonTrigMVAid80"  ) electronIDs_[i] = electronID::electronNonTrigMVAid80;
 	  else if( leptonIDs[i] == "electronGeneralPurposeMVA2016WP80"  ) electronIDs_[i] = electronID::electronGeneralPurposeMVA2016WP80;
 	  else if( leptonIDs[i] == "electronGeneralPurposeMVA2016WP90"  ) electronIDs_[i] = electronID::electronGeneralPurposeMVA2016WP90;
+      else if( leptonIDs[i] == "electron94XCutBasedLoose" ) electronIDs_[i] = electronID::electron94XCutBasedLoose;
+      else if( leptonIDs[i] == "electron94XCutBasedMedium" ) electronIDs_[i] = electronID::electron94XCutBasedMedium;
+      else if( leptonIDs[i] == "electron94XCutBasedTight" ) electronIDs_[i] = electronID::electron94XCutBasedTight;
+      else if( leptonIDs[i] == "electron94XCutBasedVeto" ) electronIDs_[i] = electronID::electron94XCutBasedVeto;
+
 
 	  else {
 	      std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonIDs[i] << std::endl;
@@ -251,21 +265,53 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
 	std::vector<pat::Electron> updatedElectrons;
-	// get electron mva info
-	edm::Handle<edm::ValueMap<float> > h_mvaValues;
-	iEvent.getByToken(EDMeleMVAvaluesToken,h_mvaValues);
-	if (h_mvaValues.isValid()){
-	    edm::Handle<edm::ValueMap<int> > h_mvaCategories;
-	    iEvent.getByToken(EDMeleMVAcategoriesToken,h_mvaCategories);
+	// get electron id maps
+    edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
+    edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
+    edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
+    edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
+    
+    iEvent.getByToken(EDMeleCutBasedLooseIDmapToken, loose_id_decisions);
+    iEvent.getByToken(EDMeleCutBasedMediumIDmapToken, medium_id_decisions);
+    iEvent.getByToken(EDMeleCutBasedTightIDmapToken, tight_id_decisions);
+    iEvent.getByToken(EDMeleCutBasedVetoIDmapToken, veto_id_decisions);
+    
+    if(loose_id_decisions.isValid() && medium_id_decisions.isValid() && tight_id_decisions.isValid() && veto_id_decisions.isValid()){
+        bool passesID;
+        for(size_t i=0; i<ptMins_.size(); i++)
+        {
+            for(size_t j=0; j< hElectrons->size(); j++){
+                auto electron = hElectrons->ptrAt(j);
+                bool passesID = false;
+                if(electronIDs_[i] == electronID::electron94XCutBasedVeto) passesID = (*veto_id_decisions)[electron];
+                else if(electronIDs_[i] == electronID::electron94XCutBasedLoose) passesID = (*loose_id_decisions)[electron];
+                else if(electronIDs_[i] == electronID::electron94XCutBasedMedium) passesID = (*medium_id_decisions)[electron];
+                else if(electronIDs_[i] == electronID::electron94XCutBasedTight) passesID = (*tight_id_decisions)[electron];
+                else{
+                    throw cms::Exception("InvalidElectronID") << "Could not match the electron ID with a ID decision map!";
+                }
+                if( passesID ) updatedElectrons.push_back(hElectrons->at(j));
+            }
+        }
+    }
+    else{
+        throw cms::Exception("InvalidIDdecisions") << "ID decisions are corrupted!";
+    }
+    
+	// edm::Handle<edm::ValueMap<float> > h_mvaValues;
+	// iEvent.getByToken(EDMeleMVAvaluesToken,h_mvaValues);
+	// if (h_mvaValues.isValid()){
+	    // edm::Handle<edm::ValueMap<int> > h_mvaCategories;
+	    // iEvent.getByToken(EDMeleMVAcategoriesToken,h_mvaCategories);
 
-	    // add electron mva info to electrons
-	    updatedElectrons = helper_.GetElectronsWithMVAid(hElectrons,h_mvaValues,h_mvaCategories);
-	}
-	else{
-	    for (size_t i = 0; i < hElectrons->size(); ++i){
-		updatedElectrons.push_back(hElectrons->at(i));
-	    }
-	}
+	    //add electron mva info to electrons
+	    // updatedElectrons = helper_.GetElectronsWithMVAid(hElectrons,h_mvaValues,h_mvaCategories);
+	// }
+	// else{
+	    // for (size_t i = 0; i < hElectrons->size(); ++i){
+		// updatedElectrons.push_back(hElectrons->at(i));
+	    // }
+	// }
 
 	// produce the different electron collections
 	for(uint i=0; i<ptMins_.size();i++){
@@ -321,48 +367,48 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         }
 
 	// produce the different muon collections
-    double debug_muonreliso = 0;
+    // double debug_muonreliso = 0;
 	for(uint i=0; i<ptMins_.size();i++){
 	    // select muon collection
-        std::cout << "analyzing collection " << collectionNames_[i] << std::endl;
+        // std::cout << "analyzing collection " << collectionNames_[i] << std::endl;
 	    std::unique_ptr<pat::MuonCollection> selectedLeptons = std::make_unique<pat::MuonCollection>(helper_.GetSortedByPt(helper_.GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i], muonIsos_[i]))) ;
 	    
         for (auto & lep : *selectedLeptons){
             // std::cout << "\tcalc rel iso\n";
-            debug_muonreliso = helper_.GetMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i]);
+            // debug_muonreliso = helper_.GetMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i]);
             // std::cout << "\tdone\n";
             // std::cout << "adding rel muon isolations\n";
 		helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
-        if(debug_muonreliso > 0.15) 
-        {
-            std::cout << "\tsaved " << lep.userFloat("relIso") << "\t calc: " << debug_muonreliso << std::endl << std::endl;
-            if(lep.hasUserFloat("relIso")) std::cout << "\tuserFloat exists\n";
-        }
+        // if(debug_muonreliso > 0.15) 
+        // {
+            // std::cout << "\tsaved " << lep.userFloat("relIso") << "\t calc: " << debug_muonreliso << std::endl << std::endl;
+            // if(lep.hasUserFloat("relIso")) std::cout << "\tuserFloat exists\n";
+        // }
 	    }
-        for (auto & lep : *selectedLeptons){
-                std::cout << "\tcalc rel iso\n";
-                debug_muonreliso = helper_.GetMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i]);
-                std::cout << "\tdone\n";
-                std::cout << "adding rel muon isolations\n";
-            // helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
-            if(lep.hasUserFloat("relIso"))
-            {
-                std::cout << "found user float relIso\n";
-                if(debug_muonreliso > 0.15) 
-                {
-                    std::cout << "\tsaved " << lep.userFloat("relIso") << "\t calc: " << debug_muonreliso << std::endl << std::endl;
-                    if(lep.hasUserFloat("relIso")) std::cout << "\tuserFloat exists\n";
-                }
-            }
-            else 
-            {
-                std::cerr << "found no user float in 2nd loop!\n";
-                throw std::exception();
-            }
-            }
+        // for (auto & lep : *selectedLeptons){
+                // std::cout << "\tcalc rel iso\n";
+                // debug_muonreliso = helper_.GetMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i]);
+                // std::cout << "\tdone\n";
+                // std::cout << "adding rel muon isolations\n";
+            // //helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
+            // if(lep.hasUserFloat("relIso"))
+            // {
+                // std::cout << "found user float relIso\n";
+                // if(debug_muonreliso > 0.15) 
+                // {
+                    // std::cout << "\tsaved " << lep.userFloat("relIso") << "\t calc: " << debug_muonreliso << std::endl << std::endl;
+                    // if(lep.hasUserFloat("relIso")) std::cout << "\tuserFloat exists\n";
+                // }
+            // }
+            // else 
+            // {
+                // std::cerr << "found no user float in 2nd loop!\n";
+                // throw std::exception();
+            // }
+            // }
 	    iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
         
-        std::cout << "____________________________________________\n";
+        // std::cout << "____________________________________________\n";
         
         }
     
