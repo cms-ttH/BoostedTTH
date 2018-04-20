@@ -81,10 +81,10 @@ private:
   edm::EDGetTokenT< edm::View<pat::Electron> >EDMElectronsToken;  // electrons
   edm::EDGetTokenT< edm::ValueMap<float> >    EDMeleMVAvaluesToken; // values of electron mva
   edm::EDGetTokenT< edm::ValueMap<int> >      EDMeleMVAcategoriesToken;  // category of electron mva
-  edm::EDGetTokenT<edm::View<bool> >          EDMeleCutBasedMediumIDmapToken;
-  edm::EDGetTokenT<edm::View<bool> >          EDMeleCutBasedLooseIDmapToken;
-  edm::EDGetTokenT<edm::View<bool> >          EDMeleCutBasedVetoIDmapToken;
-  edm::EDGetTokenT<edm::View<bool> >          EDMeleCutBasedTightIDmapToken;
+  edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedMediumIDmapToken;
+  edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedLooseIDmapToken;
+  edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedVetoIDmapToken;
+  edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedTightIDmapToken;
   
   bool isData;
   bool useMuonRC; // flag to enable or disable Rochester Correction
@@ -127,10 +127,11 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   EDMMuonsToken             = consumes< pat::MuonCollection >     (iConfig.getParameter<edm::InputTag>("leptons"));
   EDMVertexToken            = consumes< reco::VertexCollection >  (iConfig.getParameter<edm::InputTag>("vertices"));
   EDMRhoToken               = consumes< double >                  (iConfig.getParameter<edm::InputTag>("rho"));
-  EDMeleCutBasedMediumIDmapToken = consumes< edm::View<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
-  EDMeleCutBasedLooseIDmapToken = consumes< edm::View<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
-  EDMeleCutBasedVetoIDmapToken = consumes< edm::View<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
-  EDMeleCutBasedTightIDmapToken = consumes< edm::View<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
+  
+  EDMeleCutBasedMediumIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
+  EDMeleCutBasedLooseIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
+  EDMeleCutBasedVetoIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
+  EDMeleCutBasedTightIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
   
   EDMeleMVAvaluesToken      = consumes<edm::ValueMap<float> >     (iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
   EDMeleMVAcategoriesToken  = consumes<edm::ValueMap<int> >       (iConfig.getParameter<edm::InputTag>("electronMVAcategories"));

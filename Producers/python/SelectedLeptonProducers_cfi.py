@@ -51,7 +51,12 @@ SelectedMuonProducer = cms.EDProducer(
     leptons = cms.InputTag("slimmedMuons"),
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
-
+    
+    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium"),
+    eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose"),
+    eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto"),
+    eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight"),
+    
     ptMins   = cms.vdouble(15),
     etaMaxs  = cms.vdouble(2.4),
     leptonIDs = cms.vstring("tightDL"),
