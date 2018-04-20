@@ -319,7 +319,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	    std::unique_ptr<pat::ElectronCollection> selectedLeptons = std::make_unique<pat::ElectronCollection>( helper_.GetSortedByPt(helper_.GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])));
 	    for (auto & lep : *selectedLeptons){
 		// TODO conesize and corr type should not be hardcoded
-		helper_.AddElectronRelIso(lep,coneSize::R03, corrType::rhoEA,effAreaType::spring16,"relIso");
+		helper_.AddElectronRelIso(lep,coneSize::R03, corrType::rhoEA,effAreaType::fall17,"relIso");
 	    }
 	    iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
 	}
