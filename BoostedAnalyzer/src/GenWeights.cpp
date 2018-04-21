@@ -42,7 +42,7 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
             weight_name="Weight_scale_variation_muR1p0_muF2p0";
             }
             else if(i==3){
-            weight_name="Weight_scale_variation_muR1p0_muF2p0";
+            weight_name="Weight_scale_variation_muR1p0_muF0p5";
             }
             else if(i==4){
             weight_name="Weight_scale_variation_muR2p0_muF1p0";
