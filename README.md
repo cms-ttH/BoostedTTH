@@ -9,7 +9,7 @@ Follow These Steps:
 
     # setup environment
     export SCRAM_ARCH="slc6_amd64_gcc630"
-    export CMSSW_VERSION="CMSSW_9_4_3"
+    export CMSSW_VERSION="CMSSW_9_4_4"
     
   
     # create new CMSSW environment
