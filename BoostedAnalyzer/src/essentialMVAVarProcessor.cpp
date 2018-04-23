@@ -181,7 +181,7 @@ void essentialMVAVarProcessor::Init(const InputCollections& input,VariableContai
 void essentialMVAVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
-  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+  const char* btagger="DeepCSV";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;

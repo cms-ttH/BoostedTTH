@@ -61,7 +61,7 @@ bool BoostedUtils::FirstBoostedJetIsHarder(boosted::BoostedJet jet1, boosted::Bo
 
 
 bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
-  return MiniAODHelper::GetJetCSV(jet1,"pfCombinedInclusiveSecondaryVertexV2BJetTags") > MiniAODHelper::GetJetCSV(jet2,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  return MiniAODHelper::GetJetCSV(jet1,"DeepCSV") > MiniAODHelper::GetJetCSV(jet2,"DeepCSV");
 }
 
 
@@ -250,12 +250,15 @@ boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCol
 
 bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
 
-  float CSVLwp = 0.5426;
-  float CSVMwp = 0.8484;
-  float CSVTwp = 0.9535;
+//   float CSVLwp = 0.5426;
+//   float CSVMwp = 0.8484;
+//   float CSVTwp = 0.9535;
+  float CSVLwp = 0.1522;
+  float CSVMwp = 0.4941;
+  float CSVTwp = 0.8001;
 
 
-  float csvValue = MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  float csvValue = MiniAODHelper::GetJetCSV(jet,"DeepCSV");
 
   switch(workingPoint){
     case 'L': if(csvValue > CSVLwp){ return true; } break;

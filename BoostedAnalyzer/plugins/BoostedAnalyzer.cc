@@ -425,7 +425,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     jet_tag_pos = find (selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
     
     pointerToMEMClassifier.reset(new MEMClassifier());
-    pointerToCommonBDT5Classifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/"));
+    pointerToCommonBDT5Classifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/bdtweights_Spring17V3/", 0.4941 ));
     DNNClassifierBase::pyInitialize();
     pointerToDnnSLClassifier.reset(new DNNClassifier_SL("v6a"));
     
@@ -899,7 +899,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     for(const auto& itJet : selectedJets){
 	jetPts.push_back(itJet.pt());
 	jetEtas.push_back(itJet.eta());
-	jetCSVs.push_back(helper.GetJetCSV(itJet,"pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+	jetCSVs.push_back(helper.GetJetCSV(itJet,"DeepCSV"));
 	jetFlavors.push_back(itJet.hadronFlavour());
     }
     

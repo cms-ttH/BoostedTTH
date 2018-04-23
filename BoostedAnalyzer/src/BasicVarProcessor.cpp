@@ -114,7 +114,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   vars.FillIntVar("Evt_Lumi",lumi_section);
 
 
-  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+  const char* btagger="DeepCSV";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
