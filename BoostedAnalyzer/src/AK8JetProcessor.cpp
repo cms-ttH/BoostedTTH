@@ -107,7 +107,6 @@ void AK8JetProcessor::Process(const InputCollections& input, VariableContainer& 
     auto const & sdSubjetsPuppi = itJet->subjets("SoftDropPuppi");
     //make sure subjets exist
     if (sdSubjetsPuppi.size() > 0) {
-      std::cout << itJet->userFloat("ak8PFJetsPuppiSoftDropMass") << std::endl;
       vars.FillVars( "AK8Jet_Puppi_Softdrop_Mass", iJet, itJet->userFloat("ak8PFJetsPuppiSoftDropMass"));
       vars.FillVars( "AK8Jet_Pruned_Mass", iJet, itJet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSPrunedMass"));
       for ( auto& it : sdSubjetsPuppi ) {
