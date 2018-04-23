@@ -46,25 +46,6 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
 
-  //AK8 Jets
-  vars.InitVar( "N_JetsAK8","I" );
-  vars.InitVars( "Jet_PtAK8","N_JetsAK8" );
-  vars.InitVars( "Jet_PhiAK8","N_JetsAK8" );
-  vars.InitVars( "Jet_EtaAK8","N_JetsAK8" );
-
-  vars.InitVars( "Tau1_PuppiAK8", "N_JetsAK8" );
-  vars.InitVars( "Tau2_PuppiAK8", "N_JetsAK8" );
-  vars.InitVars( "Tau3_PuppiAK8", "N_JetsAK8" );
-  vars.InitVars( "Tau4_PuppiAK8", "N_JetsAK8" );
-
-  vars.InitVars( "Tau1_CHSAK8", "N_JetsAK8" );
-  vars.InitVars( "Tau2_CHSAK8", "N_JetsAK8" );
-  vars.InitVars( "Tau3_CHSAK8", "N_JetsAK8" );
-  vars.InitVars( "Tau4_CHSAK8", "N_JetsAK8" );
-
-  vars.InitVars( "SoftDropMass_PUPPIAK8", "N_JetsAK8" );
-  vars.InitVars( "SoftDropMass_CHSAK8", "N_JetsAK8" );
-
 //   vars.InitVars( "LooseJet_E","N_LooseJets" );
 //   vars.InitVars( "LooseJet_M","N_LooseJets" );
 //   vars.InitVars( "LooseJet_Pt","N_LooseJets" );
@@ -170,7 +151,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
   vars.FillVar( "N_Jets",input.selectedJets.size());
   vars.FillVar( "N_LooseJets",input.selectedJetsLoose.size());
-  vars.FillVar( "N_JetsAK8",input.AK8Jets.size());
   vars.FillVar( "N_TightLeptons",input.selectedElectrons.size()+ input.selectedMuons.size());  
   vars.FillVar( "N_LooseLeptons",input.selectedElectronsLoose.size()+ input.selectedMuonsLoose.size());  
   vars.FillVar( "N_TightElectrons",input.selectedElectrons.size());  
@@ -210,67 +190,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       vars.FillVars( "Jet_GenJet_Pt",iJet,-9.0);
       vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
     }
-  }
-
-  //Ak8 Jets
-  for(std::vector<pat::Jet>::const_iterator itJet = input.AK8Jets.begin() ; itJet != input.AK8Jets.end(); ++itJet){
-    int iJet = itJet - input.AK8Jets.begin();
-    vars.FillVars( "Jet_PtAK8",iJet,itJet->pt() );
-    vars.FillVars( "Jet_EtaAK8",iJet,itJet->eta() );
-    vars.FillVars( "Jet_PhiAK8",iJet,itJet->phi() );
-
-    if(itJet->hasUserFloat("NjettinessAK8Puppi:tau1")){
-      vars.FillVars( "Tau1_PuppiAK8", iJet, itJet->userFloat("NjettinessAK8Puppi:tau1") );
-    }
-    if(itJet->hasUserFloat("NjettinessAK8Puppi:tau2")){
-      vars.FillVars( "Tau2_PuppiAK8", iJet, itJet->userFloat("NjettinessAK8Puppi:tau2") );
-    }
-    if(itJet->hasUserFloat("NjettinessAK8Puppi:tau3")){
-      vars.FillVars( "Tau3_PuppiAK8", iJet, itJet->userFloat("NjettinessAK8Puppi:tau3") );
-    }
-    if(itJet->hasUserFloat("NjettinessAK8Puppi:tau4")){
-      vars.FillVars( "Tau4_PuppiAK8", iJet, itJet->userFloat("NjettinessAK8Puppi:tau4") );
-    }
-
-    if(itJet->hasUserFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau1")){
-      vars.FillVars( "Tau1_CHSAK8", iJet, itJet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau1") );
-    }
-    if(itJet->hasUserFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2")){
-      vars.FillVars( "Tau2_CHSAK8", iJet, itJet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2") );
-    }
-    if(itJet->hasUserFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3")){
-      vars.FillVars( "Tau3_CHSAK8", iJet, itJet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3") );
-    }
-    if(itJet->hasUserFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau4")){
-      vars.FillVars( "Tau4_CHSAK8", iJet, itJet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau4") );
-    }
-    
-    TLorentzVector puppi_softdrop, puppi_softdrop_subjet;
-    auto const & sdSubjetsPuppi = itJet->subjets("SoftDropPuppi");
-    for ( auto const & it : sdSubjetsPuppi ) {
-      puppi_softdrop_subjet.SetPtEtaPhiM(it->correctedP4(0).pt(), it->correctedP4(0).eta(), it->correctedP4(0).phi(), it->correctedP4(0).mass());
-      puppi_softdrop += puppi_softdrop_subjet;
-    }
-    float softdrop_mass_puppi = puppi_softdrop.M();
-    // vars.FillVars( "SoftDropMass_PUPPIAK8", iJet, softdrop_mass_puppi);
-
-    if(itJet->hasUserFloat("ak8PFJetsPuppiSoftDropMass")){
-      float SoftDropMass_PUPPIAK8 = itJet->userFloat("ak8PFJetsPuppiSoftDropMass");
-      if (SoftDropMass_PUPPIAK8 > 0){
-        vars.FillVars( "SoftDropMass_PUPPIAK8", iJet, SoftDropMass_PUPPIAK8 );
-        // std::cout << SoftDropMass_PUPPIAK8 << std::endl;       
-      } 
-    }
-
-    if(itJet->hasUserFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSSoftDropMass")){
-      float SoftDropMass_CHSAK8 = itJet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSSoftDropMass");
-      if (SoftDropMass_CHSAK8 > 0){
-        vars.FillVars( "SoftDropMass_CHSAK8", iJet, SoftDropMass_CHSAK8 );
-        std::cout << SoftDropMass_CHSAK8 << std::endl;       
-      } 
-    }
-    
-    
   }
 
 
