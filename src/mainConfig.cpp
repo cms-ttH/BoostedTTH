@@ -3,6 +3,6 @@
 const MainConfig mainConfig
 
 MainConfig::MainConfig()
-	: csvV2WPmedium(0.8484)
+	: csvV2WPmedium(0.4941)
 {
 }

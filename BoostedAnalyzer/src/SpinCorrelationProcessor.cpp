@@ -347,7 +347,7 @@ reco::GenParticle SpinCorrelationProcessor::MatchPartontoJet (vector<reco::GenPa
 
 using namespace std;
 
-SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,10,-9999,9999,0.8484)){}
+SpinCorrelationProcessor::SpinCorrelationProcessor ():generator(InterpretationGenerator(IntType::tt,0,10,-9999,9999,0.4941)){}
 SpinCorrelationProcessor::~SpinCorrelationProcessor (){}
 
 void SpinCorrelationProcessor::Init(const InputCollections& input,VariableContainer& vars){
@@ -627,7 +627,7 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       int ntags=0;
       int njets=input.selectedJets.size();
       for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
-	jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+	jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j,"DeepCSV"));
 	if(BoostedUtils::PassesCSV(*j)) ntags++;
       }
       TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));

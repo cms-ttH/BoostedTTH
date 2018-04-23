@@ -73,10 +73,10 @@ void BDTVarProcessor::Process(const InputCollections& input,VariableContainer& v
   vector<double> jetcsvs;
   vector<double> loose_jetcsvs;
   for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
-      jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+      jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j,"DeepCSV"));
   }
   for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
-      loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+      loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j,"DeepCSV"));
   }
 
   float bdtoutput_common5=commonBDT5->GetBDTOutput(lepvecs, jetvecs, jetcsvs,metP4);
