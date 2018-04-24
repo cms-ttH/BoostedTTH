@@ -7,13 +7,13 @@ LeptonSelectionNoTrigger = cms.PSet(
 )
 
 LeptonSelectionData = cms.PSet(
-    muonTriggers = cms.vstring("HLT_IsoMu24_v*","HLT_IsoTkMu24_v*"),
-    electronTriggers = cms.vstring("HLT_Ele27_WPTight_Gsf_v*"),
+    muonTriggers = cms.vstring("HLT_IsoMu24_2p1_v*","HLT_IsoMu27_v*","HLT_IsoMu27_v*"),
+    electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
     channel = cms.string("both")
 )
 LeptonSelectionMC = cms.PSet(
-    muonTriggers = cms.vstring("HLT_IsoMu24_v*","HLT_IsoTkMu24_v*"),
-    electronTriggers = cms.vstring("HLT_Ele27_WPTight_Gsf_v*"),
+    muonTriggers = cms.vstring("HLT_IsoMu24_2p1_v*","HLT_IsoMu27_v*","HLT_IsoMu27_v*"),
+    electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
     channel = cms.string("both")
 )
 
@@ -25,19 +25,19 @@ DiLeptonSelectionNoTrigger  = cms.PSet(
 )
 
 DiLeptonSelectionMC = cms.PSet(
-    mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v*",
-                               "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*"),
-    elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
-    elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
-                               "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+    mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*",
+                               "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v*"),
+    elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+    elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                               "HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
     dlchannel = cms.string("all"),
 )
 DiLeptonSelectionData = cms.PSet(
-    mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v*",
-                               "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*"),
-    elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
-    elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
-                               "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+    mumuTriggers = cms.vstring("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*",
+                               "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v*"),
+    elelTriggers = cms.vstring("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+    elmuTriggers = cms.vstring("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*","HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                               "HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
     dlchannel = cms.string("all"),
 )
 
@@ -60,38 +60,36 @@ JetTagSelection = cms.PSet(
 
 checkBasicDataTriggers= cms.PSet(
     relevantTriggers=cms.vstring(
-				 #"HLT_IsoMu24_eta2p1_v*",
-                                 #"HLT_Ele27_eta2p1_WPLoose_Gsf_HT200_v*",
-                                 #"HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
-                                 ##"HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
-                                 #"HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*",
-                                 #"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
-                                 #"HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*",
-                                 #"HLT_IsoMu18_v*",
-                                 "HLT_IsoMu24_v*",
-                                 "HLT_IsoTkMu24_v*",
-                                 "HLT_Ele27_eta2p1_WPTight_Gsf_v*",
-                                 #"HLT_Ele23_WPLoose_Gsf_v*",
-                                 #"HLT_IsoMu20_v*",
-                                 #"HLT_Ele27_eta2p1_WPLoose_Gsf_v*")
+				 "HLT_Ele35_WPTight_Gsf_v*",
+                                 "HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*",
+                                 "HLT_IsoMu24_2p1_v*",
+                                 "HLT_IsoMu27_v*",
+                                 "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                                 "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                                 "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                                 "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                                 "HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                                 "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                                 "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
+                                 "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*",
+                                 "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v*",
                                  )
 )
 checkBasicMCTriggers= cms.PSet(
     relevantTriggers=cms.vstring(
-				 #"HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
-                                 #"HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
-                                 #"HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*",
-                                 #"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
-                                 #"HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*",
-                                 #"HLT_Ele27_eta2p1_WP85_Gsf_HT200_v*",
-                                 #"HLT_IsoMu24_eta2p1_v*",
-                                 #"HLT_IsoMu20_eta2p1_v*",
-                                 #"HLT_Ele22_eta2p1_WP75_Gsf_v*",
- 				 #"HLT_IsoMu20_v*",
-                                 #"HLT_Ele27_eta2p1_WPLoose_Gsf_v*",
-                                 "HLT_IsoMu24_v*",
-                                 "HLT_IsoTkMu24_v*",
-                                 "HLT_Ele27_eta2p1_WPTight_Gsf_v*",
+	                "HLT_Ele35_WPTight_Gsf_v*",
+                                 "HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*",
+                                 "HLT_IsoMu24_2p1_v*",
+                                 "HLT_IsoMu27_v*",
+                                 "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                                 "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                                 "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                                 "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                                 "HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                                 "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                                 "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
+                                 "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*",
+                                 "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v*",
                                  )
 )
 

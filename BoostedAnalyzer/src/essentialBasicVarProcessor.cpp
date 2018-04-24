@@ -32,6 +32,10 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_Phi","N_Jets" );
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVBFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVCFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVUDSGFlavour","N_Jets" );
+  vars.InitVars( "Jet_DeepCSVBBFlavour","N_Jets" );
   vars.InitVars( "Jet_CSV_DNN","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
@@ -41,12 +45,6 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
 
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
-
-  //AK8 Jets
-  vars.InitVar( "N_JetsAK8","I" );
-  vars.InitVars( "Jet_PtAK8","N_JetsAK8" );
-  vars.InitVars( "Jet_PhiAK8","N_JetsAK8" );
-  vars.InitVars( "Jet_EtaAK8","N_JetsAK8" );
 
 //   vars.InitVars( "LooseJet_E","N_LooseJets" );
 //   vars.InitVars( "LooseJet_M","N_LooseJets" );
@@ -149,7 +147,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
   vars.FillVar( "N_Jets",input.selectedJets.size());
   vars.FillVar( "N_LooseJets",input.selectedJetsLoose.size());
-  vars.FillVar( "N_JetsAK8",input.AK8Jets.size());
   vars.FillVar( "N_TightLeptons",input.selectedElectrons.size()+ input.selectedMuons.size());  
   vars.FillVar( "N_LooseLeptons",input.selectedElectronsLoose.size()+ input.selectedMuonsLoose.size());  
   vars.FillVar( "N_TightElectrons",input.selectedElectrons.size());  
@@ -167,6 +164,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
+    vars.FillVars( "Jet_DeepCSVBFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbflavour) );
+    vars.FillVars( "Jet_DeepCSVCFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvcflavour) );
+    vars.FillVars( "Jet_DeepCSVUDSGFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvudsgflavour) );
+    vars.FillVars( "Jet_DeepCSVBBFlavour",iJet,MiniAODHelper::GetJetCSV(*itJet,btaggerdeepcsvbbflavour) );
     vars.FillVars( "Jet_CSV_DNN",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
@@ -187,13 +188,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     }
   }
 
-  //Ak8 Jets
-  for(std::vector<pat::Jet>::const_iterator itJet = input.AK8Jets.begin() ; itJet != input.AK8Jets.end(); ++itJet){
-    int iJet = itJet - input.AK8Jets.begin();
-    vars.FillVars( "Jet_PtAK8",iJet,itJet->pt() );
-    vars.FillVars( "Jet_EtaAK8",iJet,itJet->eta() );
-    vars.FillVars( "Jet_PhiAK8",iJet,itJet->phi() );
-   }
   // Loose Jets
 //   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){
 //     int iJet = itJet - input.selectedJetsLoose.begin();
