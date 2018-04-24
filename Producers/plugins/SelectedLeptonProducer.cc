@@ -72,6 +72,7 @@ private:
   std::vector<coneSize::coneSize> muonIsoConeSizes_;
   std::vector<corrType::corrType> muonIsoCorrTypes_;
   std::vector<std::string> collectionNames_;
+  std::vector<muonIso::muonIso> muonIsos_;
 
   // data access tokens
   edm::EDGetTokenT< double >                  EDMRhoToken; //  pileup density
@@ -136,6 +137,8 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   const vector<std::string> muonIsoCorrTypes = iConfig.getParameter<std::vector<std::string> >("muonIsoCorrTypes");
   muonIsoCorrTypes_ = std::vector<corrType::corrType>(leptonIDs.size(),corrType::deltaBeta);
   collectionNames_= iConfig.getParameter<std::vector< std::string> >("collectionNames");
+  const vector<std::string> muonIsoTypes = iConfig.getParameter<std::vector<std::string> >("muonIsoTypes");
+  muonIsos_ = std::vector<muonIso::muonIso>(leptonIDs.size(), muonIso::PFIsoTight);
 
   assert(ptMins_.size()==etaMaxs_.size());
   assert(leptonIDs.size()==etaMaxs_.size());
@@ -198,6 +201,16 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 	  else {
 	      std::cerr << "\n\nERROR: No matching isolation correction type found for: " << muonIsoCorrTypes_[i] << std::endl;
 	      throw std::exception();
+	  }
+	  if( muonIsoTypes[i] == "PFIsoTight") muonIsos_[i] = muonIso::PFIsoTight;
+	  else if(muonIsoTypes[i] == "PFIsoMedium") muonIsos_[i] = muonIso::PFIsoMedium;
+	  else if(muonIsoTypes[i] == "PFIsoLoose") muonIsos_[i] = muonIso::PFIsoLoose;
+	  else if(muonIsoTypes[i] == "PFIsoVeryLoose") muonIsos_[i] = muonIso::PFIsoVeryLoose;
+	  else if(muonIsoTypes[i] == "PFIsoVeryTight") muonIsos_[i] = muonIso::PFIsoVeryTight;
+	  else if(muonIsoTypes[i] == "CalculateManually") muonIsos_[i] = muonIso::CalculateManually;
+	  else{
+	  std::cerr << "\n\nERROR: No matching isolation type found for: " << muonIsos_[i] << std::endl;
+	  throw std::exception();
 	  }
       }
       if( leptonType_ == Electron ) produces<pat::ElectronCollection>(collectionNames_[i]);
@@ -309,7 +322,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	// produce the different muon collections
 	for(uint i=0; i<ptMins_.size();i++){
 	    // select muon collection
-	    std::unique_ptr<pat::MuonCollection> selectedLeptons = std::make_unique<pat::MuonCollection>(helper_.GetSortedByPt(helper_.GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i]))) ;
+	    std::unique_ptr<pat::MuonCollection> selectedLeptons = std::make_unique<pat::MuonCollection>(helper_.GetSortedByPt(helper_.GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i],muonIsos_[i]))) ;
 	    for (auto & lep : *selectedLeptons){
 		helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
 	    }
