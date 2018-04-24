@@ -77,7 +77,7 @@ void TTbarReconstructionVarProcessor::Process(const InputCollections& input,Vari
     vector<float> jetcsvs;
     int ntags=0;
     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
-	jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+	jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j,"DeepCSV"));
 	if(BoostedUtils::PassesCSV(*j)) ntags++;
     }
     if(input.selectedElectrons.size()+input.selectedMuons.size()<1) return;

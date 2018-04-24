@@ -95,7 +95,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
   
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
-  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+  const char* btagger="DeepCSV";
 
   if(input.genTopEvt.TTxIsFilled()){
     std::vector<reco::GenJet> additional_b_genjets = input.genTopEvt.GetAdditionalBGenJets();

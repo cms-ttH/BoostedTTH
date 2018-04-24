@@ -9,7 +9,7 @@ Follow These Steps:
 
     # setup environment
     export SCRAM_ARCH="slc6_amd64_gcc630"
-    export CMSSW_VERSION="CMSSW_9_4_3"
+    export CMSSW_VERSION="CMSSW_9_4_4"
     
   
     # create new CMSSW environment
@@ -55,7 +55,7 @@ Follow These Steps:
     # install common classifier
     mkdir TTH
     cd TTH
-    git clone --depth 1 https://gitlab.cern.ch/ttH/CommonClassifier.git
+    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git
     source CommonClassifier/setup/install_mem.sh
     # use recent version of LHAPDF header
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h

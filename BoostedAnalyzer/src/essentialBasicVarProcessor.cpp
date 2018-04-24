@@ -123,11 +123,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillIntVar("Evt_Lumi",lumi_section);
 
 
-  const char* btagger="pfCombinedInclusiveSecondaryVertexV2BJetTags";
-  const char* btaggerdeepcsvbflavour="pfDeepCSVJetTags:probb";
-  const char* btaggerdeepcsvcflavour="pfDeepCSVJetTags:probc";
-  const char* btaggerdeepcsvudsgflavour="pfDeepCSVJetTags:probudsg";
-  const char* btaggerdeepcsvbbflavour="pfDeepCSVJetTags:probbb";
+  const char* btagger="DeepCSV";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
@@ -191,8 +187,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
     }
   }
-
-
 
   // Loose Jets
 //   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){

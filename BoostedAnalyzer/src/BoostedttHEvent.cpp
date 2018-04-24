@@ -1,7 +1,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedttHEvent.hpp"
 
 
-BoostedttHEvent::BoostedttHEvent():input(0),verbose(false),btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"){
+BoostedttHEvent::BoostedttHEvent():input(0),verbose(false),btagger("DeepCSV"){
   ResetEvent();
 }
 
@@ -263,7 +263,7 @@ void BoostedttHEvent::ak4ClusterHiggsCandBoostedRec(const bool cleanTopHadCand, 
 
     // Higgs tagger (SecondCSV)
     std::vector<pat::Jet> sortedAk4jets = BoostedUtils::GetHiggsFilterJets((*itAk4Clu).ak4jets);
-    float tag = MiniAODHelper::GetJetCSV(sortedAk4jets[1],"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    float tag = MiniAODHelper::GetJetCSV(sortedAk4jets[1],"DeepCSV");
     if(verbose) std::cout << "Ak4 higgs tag of fat jet is " << tag  << std::endl;
 
     if(tag>higgsCandTag){
@@ -315,7 +315,7 @@ void BoostedttHEvent::ak4JetsHiggsCandBoostedRec(const bool cleanTopHadCand, con
 
     // Higgs tagger (SecondCSV)
     std::vector<pat::Jet> sortedAk4jets = BoostedUtils::GetHiggsFilterJets(cleanedAk4jets);
-    float tag = MiniAODHelper::GetJetCSV(sortedAk4jets[1],"pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    float tag = MiniAODHelper::GetJetCSV(sortedAk4jets[1],"DeepCSV");
     if(verbose) std::cout << "Ak4 higgs tag of fat jet is " << tag  << std::endl;
 
 

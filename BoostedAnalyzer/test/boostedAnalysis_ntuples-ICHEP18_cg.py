@@ -41,12 +41,14 @@ options.parseArguments()
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     options.maxEvents = 10000 # reset for testing
 
+if options.isData:
+    options.globalTag="94X_dataRun2_ReReco_EOY17_v6"
+
 if not options.inputFiles:
     if not options.isData:
         options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_v1/180212_111050/0000/Skim_3.root']
     else:
-        options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/SingleElectron/KIT_tthbb_sl_skims_v1_Run2017B/180212_150807/0000/Skim_50.root']
-        options.globalTag="94X_dataRun2_v6"
+    	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/SingleElectron/KIT_tthbb_sl_skims_v1_Run2017B/180212_150807/0000/Skim_50.root']
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
     print "\n\nConfig ERROR: GT contains seems to be for data but isData==False\n\n"
@@ -581,7 +583,7 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt').getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt').getVLuminosityBlockRange()
 
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)

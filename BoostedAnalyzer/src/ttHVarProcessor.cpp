@@ -3,7 +3,7 @@
 using namespace std;
 
 ttHVarProcessor::ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, const boosted::SubjetType subjettype_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix_, bool doMEM_)
-    : recotype(recotype_), prefix(prefix_), btagger("pfCombinedInclusiveSecondaryVertexV2BJetTags"), toptagger(topTaggerMode_,subjetAssign_,topTaggerfilePath_),subjettype(subjettype_),higgstagger(higgsTaggerMode_,higgsTaggerFilePath_),doMEM(doMEM_)
+    : recotype(recotype_), prefix(prefix_), btagger("DeepCSV"), toptagger(topTaggerMode_,subjetAssign_,topTaggerfilePath_),subjettype(subjettype_),higgstagger(higgsTaggerMode_,higgsTaggerFilePath_),doMEM(doMEM_)
 {
 }
 
@@ -1051,7 +1051,7 @@ void ttHVarProcessor::FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHE
         jetcsvs.push_back(MiniAODHelper::GetJetCSV(*itJet));
         jettype.push_back(MEMClassifier::JetType::RESOLVED);
 
-        if(jetcsvs.back()>0.8484) ntags++;
+        if(jetcsvs.back()>0.4941) ntags++;
     }
 
     if(jetvecs.size()<minJets) return;
