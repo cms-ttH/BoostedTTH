@@ -493,15 +493,15 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
     enabled = cms.bool(True),  # If False, no smearing is performed
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
-    algopt = cms.string('AK4PFchs_pt'),
-    algo = cms.string('AK4PFchs'),
+    #algopt = cms.string('AK4PFchs_pt'),
+    #algo = cms.string('AK4PFchs'),
     genJets = cms.InputTag("slimmedGenJets"),
     dRMax = cms.double(0.2),  # = cone size (0.4) / 2
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
-    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
-    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
 )
 
 process.patSmearedJetsAK8 = cms.EDProducer("SmearedPATJetProducer",
