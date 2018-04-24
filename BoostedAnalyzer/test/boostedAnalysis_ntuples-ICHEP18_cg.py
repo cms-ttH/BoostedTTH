@@ -301,8 +301,8 @@ process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","sele
 process.SelectedElectronProducer.isData=options.isData
 
 process.SelectedMuonProducer.leptons=muonCollection
-process.SelectedMuonProducer.ptMins=[25.,25.,26.]
-process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.5]
+process.SelectedMuonProducer.ptMins=[15.,25.,26.]
+process.SelectedMuonProducer.etaMaxs=[2.5,2.5,2.5]
 process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
 process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3

@@ -241,7 +241,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     }
     vars.FillVars("Electron_Eta_Supercluster",iEle,itEle->superCluster()->eta());
   }
-  // std::cout << "saving muon info\n";
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     int iMu = itMu - input.selectedMuonsLoose.begin();
     vars.FillVars( "Muon_E",iMu,itMu->energy() );
@@ -249,9 +248,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Muon_Pt",iMu,itMu->pt() );
     vars.FillVars( "Muon_Eta",iMu,itMu->eta() );
     vars.FillVars( "Muon_Phi",iMu,itMu->phi() );
-    // std::cout << "checking for relIso\n";
     if(itMu->hasUserFloat("relIso")){
-        // std::cout << "filling rel muon iso: " << itMu->userFloat("relIso") << std::endl;
 	vars.FillVars( "Muon_RelIso",iMu,itMu->userFloat("relIso") );
     }
     vars.FillVars( "Muon_Charge",iMu,itMu->charge() );
