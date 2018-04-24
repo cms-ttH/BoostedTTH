@@ -197,105 +197,13 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
-  
-"""
-## update jes
-if options.isData:
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV4_DATA_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
-            )
-        )
-    process.GlobalTag.toGet.append(
-        cms.PSet(
-            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV4_DATA_AK4PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
-            )
-        )
-"""
-###### electron energy regression #######
-"""
-if options.electronRegression:
-    if options.electronRegression == "GT":
-        from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
-        process = regressionWeights(process)
-    else:
-        from EgammaAnalysis.ElectronTools.regressionWeights_local_cfi import GBRDWrapperRcd
-        GBRDWrapperRcd.connect = cms.string("sqlite_file:" + options.electronRegression)
-        process.regressions = GBRDWrapperRcd
-        process.regressions.DumpStat = cms.untracked.bool(False)
-        process.es_prefer_regressions = cms.ESPrefer("PoolDBESSource", "regressions")
-    process.load("EgammaAnalysis.ElectronTools.regressionApplication_cff")
 
-    # set the electron and photon sources
-    process.slimmedElectrons.src = electronCollection
-    process.slimmedPhotons.src = photonCollection
-
-    # overwrite output collections
-    electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
-    photonCollection = cms.InputTag("slimmedPhotons", "", process.name_())
-
-##########################################
-
-##### electron energy smearing #####
-
-if options.electronSmearing and options.electronRegression:
-    # the smearing procedure requires a preselection
-    process.selectedElectrons = cms.EDFilter("PATElectronSelector",
-        src = electronCollection,
-        cut = cms.string("pt>5 && abs(superCluster.eta)<2.5")
-    )
-    electronCollection = cms.InputTag("selectedElectrons", "", process.name_())
-    # setup the smearing
-    process.load("EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi")
-    from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import files
-    process.calibratedPatElectrons.isMC           = cms.bool(not options.isData)
-    process.calibratedPatElectrons.correctionFile = cms.string(files[options.electronSmearing])
-    process.calibratedPatElectrons.electrons      = electronCollection
-    #seq += process.calibratedPatElectrons
-
-    # use our deterministic seeds or a random generator service
-    if options.deterministicSeeds:
-        process.calibratedPatElectrons.seedUserInt = process.deterministicSeeds.seedUserInt
-    else:
-        process.load("Configuration.StandardSequences.Services_cff")
-        process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-            calibratedPatElectrons = cms.PSet(
-                initialSeed = cms.untracked.uint32(81),
-                engineName  = cms.untracked.string("TRandom3")
-            )
-        )
-
-    # overwrite output collections
-    electronCollection = cms.InputTag("calibratedPatElectrons", "", process.name_())
-
-##########################################
-"""
-### electron ID ####
-"""
-eleMVAid=False
-if eleMVAid:
-    from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-    dataFormat = DataFormat.MiniAOD
-    switchOnVIDElectronIdProducer(process, dataFormat)
-# Spring 16 MVA ID 
-    my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff']
-    for idmod in my_id_modules:
-        setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-
-### BJetness ###
-if options.calcBJetness:
-    process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")        
-    process.load('BoostedTTH.BoostedAnalyzer.BJetness_cfi')
-    process.BJetness.is_data = options.isData
-    process.BJetness.patElectrons = electronCollection
-    process.BJetness.muons = muonCollection
-"""
+### Electron scale and smearing corrections ###  
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,applyEnergyCorrections=False,
+                       applyVIDOnCorrectedEgamma=False,
+                       isMiniAOD=True)
+#a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
 
 # lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
@@ -317,124 +225,6 @@ process.SelectedMuonProducer.useMuonRC=options.useMuonRC
 process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
 process.SelectedMuonProducer.isData=options.isData
 
-#process.SelectedMuonProducerUncorr=process.SelectedMuonProducer.clone(ptMins=[15.],etaMaxs=[2.4],leptonIDs=["tight"],muonIsoConeSizes=["R04"],muonIsoCorrTypes=["deltaBeta"],collectionNames=["selectedMuonsUncorr"],useMuonRC=False)
-
-### MET correction with official met tool ###
-"""
-if options.recorrectMET:
-    # patch the phi correction parameter sets that are used in runMetCorAndUncFromMiniAOD,
-    # we only need to overwrite patMultPhiCorrParams_T1Txy_25ns with the new one
-    if options.isData:
-        if options.dataEra in ("2016B", "2016C", "2016D", "2016E", "2016F"):
-            from MetTools.MetPhiCorrections.tools.multPhiCorr_ReMiniAOD_Data_BCDEF_80X_sumPt_cfi \
-                    import multPhiCorr_Data_BCDEF_80X as metPhiCorrParams
-        else: # "2016G", "2016Hv2", "2016Hv3"
-            from MetTools.MetPhiCorrections.tools.multPhiCorr_ReMiniAOD_Data_GH_80X_sumPt_cfi \
-                    import multPhiCorr_Data_GH_80X as metPhiCorrParams
-    else:
-        from MetTools.MetPhiCorrections.tools.multPhiCorr_Summer16_MC_DY_80X_sumPt_cfi \
-                import multPhiCorr_MC_DY_sumPT_80X as metPhiCorrParams
-    # actual patch
-    import PhysicsTools.PatUtils.patPFMETCorrections_cff as metCors
-    metCors.patMultPhiCorrParams_T1Txy_25ns = metPhiCorrParams
-
-    # use the standard tool
-    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-    # do not use a postfix here!
-    runMetCorAndUncFromMiniAOD(process,
-        isData           = options.isData,
-        electronColl     = electronCollection.value(),
-        muonColl         = muonCollection.value(),
-        tauColl          = tauCollection.value(),
-        photonColl       = photonCollection.value(),
-        jetCollUnskimmed = jetCollection.value(),
-        recoMetFromPFCs  = True
-    )
-
-    # overwrite output collections
-    METCollection = cms.InputTag("slimmedMETs", "", process.name_())
-
-    # also add MET corrections due to e/g corrections, such as the slew rate fix in reMiniAOD
-    if options.isData:
-        from PhysicsTools.PatUtils.tools.corMETFromMuonAndEG import corMETFromMuonAndEG
-        corMETFromMuonAndEG(process,
-            pfCandCollection      = "",
-            electronCollection    = "slimmedElectronsBeforeGSFix",
-            photonCollection      = "slimmedPhotonsBeforeGSFix",
-            corElectronCollection = electronCollection.value(),
-            corPhotonCollection   = photonCollection.value(),
-            allMETEGCorrected     = True,
-            muCorrection          = False,
-            eGCorrection          = True,
-            runOnMiniAOD          = True,
-            postfix               = "MuEGClean"
-        )
-        
-        process.slimmedMETsMuEGClean = process.slimmedMETs.clone(
-            src             = cms.InputTag("patPFMetT1MuEGClean"),
-            rawVariation    = cms.InputTag("patPFMetRawMuEGClean"),
-            t1Uncertainties = cms.InputTag("patPFMetT1%sMuEGClean")
-        )
-        del process.slimmedMETsMuEGClean.caloMET
-        
-        process.egcorrMET = cms.Sequence(
-            process.cleanedPhotonsMuEGClean+process.cleanedCorPhotonsMuEGClean+
-            process.matchedPhotonsMuEGClean + process.matchedElectronsMuEGClean +
-            process.corMETPhotonMuEGClean+process.corMETElectronMuEGClean+
-            process.patPFMetT1MuEGClean+process.patPFMetRawMuEGClean+
-            process.patPFMetT1SmearMuEGClean+process.patPFMetT1TxyMuEGClean+
-            process.patPFMetTxyMuEGClean+process.patPFMetT1JetEnUpMuEGClean+
-            process.patPFMetT1JetResUpMuEGClean+process.patPFMetT1SmearJetResUpMuEGClean+
-            process.patPFMetT1ElectronEnUpMuEGClean+process.patPFMetT1PhotonEnUpMuEGClean+
-            process.patPFMetT1MuonEnUpMuEGClean+process.patPFMetT1TauEnUpMuEGClean+
-            process.patPFMetT1UnclusteredEnUpMuEGClean+process.patPFMetT1JetEnDownMuEGClean+
-            process.patPFMetT1JetResDownMuEGClean+process.patPFMetT1SmearJetResDownMuEGClean+
-            process.patPFMetT1ElectronEnDownMuEGClean+process.patPFMetT1PhotonEnDownMuEGClean+
-            process.patPFMetT1MuonEnDownMuEGClean+process.patPFMetT1TauEnDownMuEGClean+
-            process.patPFMetT1UnclusteredEnDownMuEGClean+process.slimmedMETsMuEGClean)
-
-        # overwrite output collections
-        METCollection = cms.InputTag("slimmedMETsMuEGClean", "", process.name_())
-
-
-### additional MET filters ###
-process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-process.BadPFMuonFilter.muons = muonCollection
-process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-process.BadChargedCandidateFilter.muons = muonCollection
-process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-process.load("RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff")
-process.badGlobalMuonTaggerMAOD.muons         = muonCollection
-process.badGlobalMuonTaggerMAOD.taggingMode   = cms.bool(True)
-process.cloneGlobalMuonTaggerMAOD.muons       = muonCollection
-process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
-"""
-###############################################
-
-### update PUJetID
-"""
-if options.updatePUJetId:
-    process.load("RecoJets.JetProducers.PileupJetID_cfi")
-    process.pileupJetIdUpdated = process.pileupJetId.clone(
-        jets             = jetCollection,
-        vertexes         = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        inputIsCorrected = cms.bool(True),
-        applyJec         = cms.bool(True)
-    )
-
-
-    process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-    process.updatedPatJets.jetSource         = jetCollection
-    process.updatedPatJets.addJetCorrFactors = cms.bool(False)
-    process.updatedPatJets.userData.userFloats.src.append("pileupJetIdUpdated:fullDiscriminant")
-    process.updatedPatJets.userData.userInts.src.append("pileupJetIdUpdated:fullId")
-
-    # overwrite output collections
-    jetCollection = cms.InputTag("updatedPatJets", "", process.name_())
-"""
-
-##############################################
 
 # jet selection
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
@@ -647,15 +437,12 @@ if options.ProduceMemNtuples==True:
 process.p = cms.Path()
 if options.deterministicSeeds:
     process.p*=process.deterministicSeeds
-#process.p *= process.BadPFMuonFilter*process.BadChargedCandidateFilter*process.badGlobalMuonTaggerMAOD*process.cloneGlobalMuonTaggerMAOD
-#if eleMVAid:
-    #process.p *= process.egmGsfElectronIDSequence
-#if options.calcBJetness:
-    #process.p *= process.BJetness
-#process.p*=process.regressionApplication*process.selectedElectrons*process.calibratedPatElectrons
-process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer#*process.SelectedMuonProducerUncorr
-#if options.updatePUJetId:
-    #process.p*=process.pileupJetIdUpdated*process.updatedPatJets
+
+# electron scale and smearing corrections    
+process.p *= process.egammaPostRecoSeq
+
+process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer
+
 process.p*=process.CorrectedJetProducer
 process.p*=process.CorrectedJetProducerAK8
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed                                    

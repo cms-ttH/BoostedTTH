@@ -9,7 +9,7 @@ Follow These Steps:
 
     # setup environment
     export SCRAM_ARCH="slc6_amd64_gcc630"
-    export CMSSW_VERSION="CMSSW_9_4_4"
+    export CMSSW_VERSION="CMSSW_9_4_6"
     
   
     # create new CMSSW environment
@@ -21,6 +21,8 @@ Follow These Steps:
     #git cms-merge-topic riga:deterministicSeeds
         
     #git cms-merge-topic michaelwassmer:CMSSW_8_0_26_patch2_changed_SmearedJetProducer -s recursive -X theirs
+
+    git cms-merge-topic cms-egamma:EgammaPostRecoTools_940 #just adds in an extra file to have a setup function to make things easier
     
     # install common classifier
     mkdir TTH
