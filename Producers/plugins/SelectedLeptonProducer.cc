@@ -78,8 +78,8 @@ private:
   edm::EDGetTokenT< reco::VertexCollection >  EDMVertexToken; // vertex
   edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  // muons
   edm::EDGetTokenT< edm::View<pat::Electron> >EDMElectronsToken;  // electrons
-  edm::EDGetTokenT< edm::ValueMap<float> >    EDMeleMVAvaluesToken; // values of electron mva
-  edm::EDGetTokenT< edm::ValueMap<int> >      EDMeleMVAcategoriesToken;  // category of electron mva
+  //edm::EDGetTokenT< edm::ValueMap<float> >    EDMeleMVAvaluesToken; // values of electron mva
+  //edm::EDGetTokenT< edm::ValueMap<int> >      EDMeleMVAcategoriesToken;  // category of electron mva
   
   bool isData;
   bool useMuonRC; // flag to enable or disable Rochester Correction
@@ -122,8 +122,8 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   EDMMuonsToken             = consumes< pat::MuonCollection >     (iConfig.getParameter<edm::InputTag>("leptons"));
   EDMVertexToken            = consumes< reco::VertexCollection >  (iConfig.getParameter<edm::InputTag>("vertices"));
   EDMRhoToken               = consumes< double >                  (iConfig.getParameter<edm::InputTag>("rho"));
-  EDMeleMVAvaluesToken      = consumes<edm::ValueMap<float> >     (iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
-  EDMeleMVAcategoriesToken  = consumes<edm::ValueMap<int> >       (iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
+  //EDMeleMVAvaluesToken      = consumes<edm::ValueMap<float> >     (iConfig.getParameter<edm::InputTag>("electronMVAvalues"));
+  //EDMeleMVAcategoriesToken  = consumes<edm::ValueMap<int> >       (iConfig.getParameter<edm::InputTag>("electronMVAcategories"));
   
   // setup of outputs
   ptMins_ = iConfig.getParameter< std::vector<double> >("ptMins");
@@ -239,10 +239,10 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	std::vector<pat::Electron> updatedElectrons;
 	// get electron mva info
 	edm::Handle<edm::ValueMap<float> > h_mvaValues;
-	iEvent.getByToken(EDMeleMVAvaluesToken,h_mvaValues);
+	//iEvent.getByToken(EDMeleMVAvaluesToken,h_mvaValues);
 	if (h_mvaValues.isValid()){
 	    edm::Handle<edm::ValueMap<int> > h_mvaCategories;
-	    iEvent.getByToken(EDMeleMVAcategoriesToken,h_mvaCategories);
+	    //iEvent.getByToken(EDMeleMVAcategoriesToken,h_mvaCategories);
 
 	    // add electron mva info to electrons
 	    updatedElectrons = helper_.GetElectronsWithMVAid(hElectrons,h_mvaValues,h_mvaCategories);
