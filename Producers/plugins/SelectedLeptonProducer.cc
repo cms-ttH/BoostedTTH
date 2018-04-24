@@ -90,7 +90,7 @@ private:
   bool useMuonRC; // flag to enable or disable Rochester Correction
   bool deterministicSeeds; // flag to enable or disable deterministic seeds for RC
   RoccoR rc; // Object to calculate Rochester Correction
-  std::string roccor_dir=string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/Producers/data/rcdata2016v3"; // directory of text files used to calculate RC
+  std::string roccor_dir=string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/Producers/data/RoccoR2017v0.txt"; // directory of text files used to calculate RC
 };
 
 
