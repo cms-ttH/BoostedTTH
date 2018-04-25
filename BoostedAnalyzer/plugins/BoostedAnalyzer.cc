@@ -146,7 +146,6 @@ private:
     virtual void beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup) override;
     float GetTopPtWeight(const float& toppt1, const float& toppt2);
     map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype=Systematics::NA);
-    std::map<std::string, int> getS;
     std::string outfileName(const std::string& basename,const Systematics::Type& sysType);
     std::string systName(const Systematics::Type& sysType);
 
@@ -932,8 +931,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                 selected=true;
                 next_event=false;
                 selectionTags[selectionNames.at(i_sel)] = selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys]); 
-                // if(selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])) selectionTags[selectionNames.at(i_sel)] = 1;
-                // else selectionTags[selectionNames.at(i_sel)] = 0; 
             }
         }
         // if the vertex,filter or lepton selection is not fulfilled, skip the other jec variations
