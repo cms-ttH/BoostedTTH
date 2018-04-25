@@ -197,6 +197,7 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
+  
 
 ### Electron scale and smearing corrections ###  
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
@@ -210,7 +211,7 @@ electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
-process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.1]
+process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.4]
 process.SelectedElectronProducer.leptonIDs=["electron94XCutBasedTight"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
@@ -327,16 +328,17 @@ for s in systsJES:
 ###############################################
 
 
+
 ### correct MET manually ###
-process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
-process.CorrectedMETproducer.isData=options.isData
+#process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
+#process.CorrectedMETproducer.isData=options.isData
 #process.CorrectedMETproducer.oldJets=cms.InputTag("slimmedJets", "", "PAT")
 #process.CorrectedMETproducer.newJets=cms.InputTag("slimmedJets", "", "PAT")
 #process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
 #process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
 #process.CorrectedMETproducer.oldMuons=cms.InputTag("SelectedMuonProducerUncorr:selectedMuonsUncorr")
 #process.CorrectedMETproducer.newMuons=cms.InputTag("SelectedMuonProducer:selectedMuons")
-process.CorrectedMETproducer.mets=METCollection
+#process.CorrectedMETproducer.mets=METCollection
 
 # load and run the boosted analyzer
 if options.isData:
@@ -359,7 +361,7 @@ if writeNominal:
 process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer"+s+":selectedJets"+s) for s in variations]
 process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer"+s+":selectedJetsLoose"+s) for s in variations]
 process.BoostedAnalyzer.AK8Jets=[cms.InputTag("SelectedJetProducerAK8"+s+":selectedJetsAK8"+s) for s in variations]
-process.BoostedAnalyzer.correctedMETs=[cms.InputTag("CorrectedMETproducer:correctedMET")]*(len(variations))
+process.BoostedAnalyzer.correctedMETs=[METCollection]*(len(variations))
 
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
@@ -440,10 +442,11 @@ process.p = cms.Path()
 if options.deterministicSeeds:
     process.p*=process.deterministicSeeds
 
+#process.p *= process.fullPatMetSequence
+
 # electron scale and smearing corrections    
 process.p *= process.egammaPostRecoSeq
-if printContent:
-    process.p *= process.content
+
 process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer
 
 process.p*=process.CorrectedJetProducer
@@ -455,16 +458,11 @@ for s in [""]+systs:
     process.p *= getattr(process,'SelectedJetProducer'+s)
     process.p *= getattr(process,'SelectedJetProducerAK8'+s)
 
-#if options.recorrectMET:
-    
-#process.p *= process.fullPatMetSequence
-#if options.isData:
-    #process.p *= process.egcorrMET
-
-process.p *= process.CorrectedMETproducer
 
 if not options.isData and not options.isBoostedMiniAOD:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
 
+if printContent:
+    process.p *= process.content
 
 process.p *= process.BoostedAnalyzer
