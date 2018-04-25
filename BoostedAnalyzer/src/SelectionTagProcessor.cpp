@@ -14,7 +14,6 @@ void SelectionTagProcessor::Init(const InputCollections& input, VariableContaine
 	vars.InitVar("Miss", "I");
 	vars.InitVar("Fake", "I");
 	vars.InitVar("recoSelected", "I");
-	// MonoJetGenSelectionProcessor = new
 	initialized = true;
 
 }
