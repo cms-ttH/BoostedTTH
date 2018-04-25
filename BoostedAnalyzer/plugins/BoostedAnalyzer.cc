@@ -123,6 +123,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenDarkMatterEvent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DarkMatterProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MonoJetGenSelectionProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/SelectionTagProcessor.hpp"
 
 //
 // class declaration
@@ -145,6 +146,7 @@ private:
     virtual void beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup) override;
     float GetTopPtWeight(const float& toppt1, const float& toppt2);
     map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Jet>& selectedJetsLoose, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype=Systematics::NA);
+    std::map<std::string, int> getS;
     std::string outfileName(const std::string& basename,const Systematics::Type& sysType);
     std::string systName(const Systematics::Type& sysType);
 
@@ -212,6 +214,8 @@ private:
     std::vector<std::string> processorNames;
     /** selections applied */
     std::vector<std::string> selectionNames;
+    /** use tagging for selections **/
+    bool taggingSelection;
     
     bool ProduceMemNtuples;
     uint jet_tag_pos;
@@ -272,6 +276,8 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenPhotons;
     edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJets;
     edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsLoose;
+
+    std::map<std::string, int> selectionTags;
     
     //mem classifier for MVAVarProcessor
     std::unique_ptr<MEMClassifier> pointerToMEMClassifier = nullptr;
@@ -316,6 +322,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     selectionNames= iConfig.getParameter< std::vector<std::string> >("selectionNames");
     ProduceMemNtuples = iConfig.getParameter<bool>("memNtuples");
     std::vector<std::string> systematicsNames = iConfig.getParameter<std::vector<std::string> >("systematics");
+    taggingSelection= iConfig.getParameter<bool>("taggingSelection");
     for (auto const &s : systematicsNames){
       jetSystematics.push_back(Systematics::get(s));
     }
@@ -573,6 +580,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
         if(std::find(processorNames.begin(),processorNames.end(),"MonoJetGenSelectionProcessor")!=processorNames.end()) {
 		treewriter->AddTreeProcessor(new MonoJetGenSelectionProcessor(),"MonoJetGenSelectionProcessor");
         }
+    if(std::find(processorNames.begin(),processorNames.end(),"SelectionTagProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new SelectionTagProcessor(),"SelectionTagProcessor");
+    }
     }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
@@ -841,6 +851,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     
     // nominal weight and weights for reweighting
     std::vector<map<string,float> >weightsVector;
+    //selectiontags
+    // map<string, int> &pselectionTags = *selectionTags;
+    // map<string, int>* selectionTags = new map<string, int>() ;
+    map<string, int> selectionTags;
+
     // inputs
     std::vector<InputCollections> inputs;
     for(size_t isys=0; isys<jetSystematics.size(); isys++){
@@ -877,7 +892,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                                           *CustomGenElectrons,
                                           *CustomGenMuons,
                                           *CustomGenTaus,
-                                          *CustomGenPhotons
+                                          *CustomGenPhotons,
+                      selectionTags
+
 					  ));
 
     }
@@ -901,21 +918,31 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         // start with selection=true and change this if one selection fails
     	bool selected=true;
     	// for every systematic: loop over selections
-    	for(size_t i_sel=0; i_sel<selections.size() && selected; i_sel++){
-    	    // see if event is selected
-    	    if(!selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])){
-    		    selected=false;
+        for(size_t i_sel=0; i_sel<selections.size() && selected; i_sel++){
+            // see if event is selected
+            if(!taggingSelection){
+                // std::cout << "not running in tagging mode" << std::endl;        
+        	    if(!selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])){
+        		    selected=false;
                     // if the vertex,filter or lepton selection is not fulfilled, set the flag to skip the other jec variations
                     if(!selected && i_sel!=jet_tag_pos && jet_tag_pos!=selections.size()) next_event=true;
-    	    }
-    	}
-    	// if the vertex,filter or lepton selection is not fulfilled, skip the other jec variations
-    	if(next_event) break;
+        	    }
+        	}
+            else{
+                selected=true;
+                next_event=false;
+                selectionTags[selectionNames.at(i_sel)] = selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys]); 
+                // if(selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])) selectionTags[selectionNames.at(i_sel)] = 1;
+                // else selectionTags[selectionNames.at(i_sel)] = 0; 
+            }
+        }
+        // if the vertex,filter or lepton selection is not fulfilled, skip the other jec variations
+        if(next_event) break;
         // if one of the jet collections fulfills the selection and mem ntuples are supposed to be written, skip the checks for the other jet collections and go directly to writing 
-    	at_least_one_selected = at_least_one_selected || selected;
+        at_least_one_selected = at_least_one_selected || selected;
         if(ProduceMemNtuples&&at_least_one_selected) break;
         // if normal ntuples are supposed to be written and the selections are fulfilled for the jet collection, then write
-    	if(!ProduceMemNtuples&&selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
+        if(!ProduceMemNtuples&&selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
     }
     // write the mem ntuples if the mem ntuples flag is set and at least one jet collection fulfills the selection criteria
     if(ProduceMemNtuples&&at_least_one_selected) treewriters.back()->Process(inputs, false);

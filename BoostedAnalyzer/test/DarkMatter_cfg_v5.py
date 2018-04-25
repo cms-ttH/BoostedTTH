@@ -626,7 +626,7 @@ if options.isData:
   "TriggerVarProcessor",
   "DarkMatterProcessor"
   #"ReconstructionMEvarProcessor",
-  #"TTBBStudienProcessor"
+  #"TTBBStudienProcessor",
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
@@ -639,8 +639,9 @@ else:
   #"ReconstructionMEvarProcessor",
   #"TTBBStudienProcessor"
   "DarkMatterProcessor",
-  "MonoJetGenSelectionProcessor"
+  "MonoJetGenSelectionProcessor",
   )
+if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
 
 printContent=False
 if printContent:
