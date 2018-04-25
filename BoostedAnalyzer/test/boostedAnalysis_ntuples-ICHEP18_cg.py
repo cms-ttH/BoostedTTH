@@ -122,7 +122,7 @@ if not options.isData:
     tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
     METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
     jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
-    #AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
+    AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
 else:
     electronCollection = cms.InputTag("slimmedElectrons", "", "RECO")
     photonCollection   = cms.InputTag("slimmedPhotons", "", "RECO")
@@ -130,7 +130,7 @@ else:
     tauCollection      = cms.InputTag("slimmedTaus", "", "RECO")
     METCollection      = cms.InputTag("slimmedMETs", "", "RECO")
     jetCollection      = cms.InputTag("slimmedJets", "", "RECO")
-    #AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","RECO")
+    AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","RECO")
 
 ###### deterministic seed producer ######
 
@@ -233,7 +233,7 @@ process.SelectedMuonProducer.isData=options.isData
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
 # selection of corrected and smeared jets -- one producer for every jet systematic that selects two collections (regular and loose jets) each
 # selection of the nominal jets
-process.SelectedJetProducer.jets='patSmearedJets'
+process.SelectedJetProducer.jets=cms.InputTag('patSmearedJets',"",process.name_())
 process.SelectedJetProducer.applyCorrection=False
 process.SelectedJetProducer.ptMins=[20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4]
@@ -255,7 +255,7 @@ process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets=jetCollectio
                                                                JetID="tight",
                                                                PUJetIDMins=["none"])
 
-process.CorrectedJetProducerAK8=process.CorrectedJetProducer.clone(jets=cms.InputTag("slimmedJetsAK8"), 
+process.CorrectedJetProducerAK8=process.CorrectedJetProducer.clone(jets=AK8jetCollection, 
                                                                ptMins=[-1.],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJetsAK8"],
@@ -263,12 +263,12 @@ process.CorrectedJetProducerAK8=process.CorrectedJetProducer.clone(jets=cms.Inpu
                                                                systematics=[""]+systsJES,
                                                                JetID="none",
                                                                PUJetIDMins=["none"],
-                                                               miniAODGenJets=cms.InputTag("slimmedGenJetsAK8"),
+                                                               miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
                                                                leptonJetDr=0.8,
                                                                JetType="AK8PFchs"
                                                                )
 
-process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.InputTag('patSmearedJetsAK8'),
+process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.InputTag('patSmearedJetsAK8',"",process.name_()),
                                                                      ptMins=[30.],
                                                                      etaMaxs=[2.4],
                                                                      collectionNames=["selectedJetsAK8"],
@@ -304,7 +304,7 @@ process.patSmearedJetsAK8 = cms.EDProducer("SmearedPATJetProducer",
     skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
 #    algopt = cms.string('AK4PFchs_pt'),
 #    algo = cms.string('AK4PFchs'),
-    genJets = cms.InputTag("slimmedGenJetsAK8"),
+    genJets = cms.InputTag("slimmedGenJetsAK8","","PAT"),
     dRMax = cms.double(0.4),  # = cone size (0.8) / 2
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
