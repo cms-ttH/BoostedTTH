@@ -417,8 +417,8 @@ else:
   "TriggerVarProcessor",
   "ReconstructionMEvarProcessor",
   "AK8JetProcessor"
-  
   )
+if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
 
 printContent=False
 if printContent:
