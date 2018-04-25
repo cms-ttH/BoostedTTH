@@ -48,7 +48,7 @@ Follow These Steps:
     #git cms-merge-topic riga:ttHFGenFilter_tagging
  
     # bjetness code
-    #git clone --depth 1 https://github.com/IHEP-CMS/BJetnessTTHbb.git
+    #git clone https://github.com/IHEP-CMS/BJetnessTTHbb.git
     #cd BJetnessTTHbb/BJetness
     #mkdir data
     #cp -r /afs/cern.ch/work/f/fromeo/public/BJetnessTTHbb/JEC/ data/
@@ -58,7 +58,7 @@ Follow These Steps:
     # install common classifier
     mkdir TTH
     cd TTH
-    git clone --depth 1 https://gitlab.cern.ch/ttH/CommonClassifier.git
+    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git
     source CommonClassifier/setup/install_mem.sh
     # use recent version of LHAPDF header
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
@@ -69,8 +69,8 @@ Follow These Steps:
     
     # install miniaod and boostedtth
     cd $JENKINSCMSSWSRCDIR
-    git clone --depth 1 -b CMSSW_8_0_26_patch2_DarkMatter https://github.com/cms-ttH/MiniAOD.git
-    git clone --depth 1 -b CMSSW_8_0_26_patch2_DarkMatter https://github.com/cms-ttH/BoostedTTH.git
+    git clone -b CMSSW_8_0_26_patch2_DarkMatter https://github.com/cms-ttH/MiniAOD.git
+    git clone -b CMSSW_8_0_26_patch2_DarkMatter https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
     #cd $JENKINSCMSSWSRCDIR/BoostedTTH/BoostedAnalyzer/data
