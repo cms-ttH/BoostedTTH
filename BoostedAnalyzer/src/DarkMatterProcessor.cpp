@@ -10,6 +10,8 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   
   vars.InitVar( "Evt_Pt_MET" );
   vars.InitVar( "Evt_Phi_MET" );
+  vars.InitVar( "Evt_Pt_MET_T1" );
+  vars.InitVar( "Evt_Phi_MET_T1" );
   vars.InitVar( "Evt_Pt_MET_UnclEnUp");
   vars.InitVar( "Evt_Pt_MET_UnclEnDown");
   vars.InitVar( "Evt_Pt_GenMET" );
@@ -109,6 +111,8 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   
   vars.FillVar( "Evt_Pt_MET",met_p4.pt() );
   vars.FillVar( "Evt_Phi_MET",met_p4.phi() );
+  vars.FillVar( "Evt_Pt_MET_T1",input.correctedMET.corPt(pat::MET::Type1) );
+  vars.FillVar( "Evt_Phi_MET_T1",input.correctedMET.corPhi(pat::MET::Type1) );
   vars.FillVar( "Evt_Pt_MET_UnclEnUp",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnUp,pat::MET::Type1XY));
   vars.FillVar( "Evt_Pt_MET_UnclEnDown",input.correctedMET.shiftedPt(pat::MET::UnclusteredEnDown,pat::MET::Type1XY));
   vars.FillVar( "CaloMET",input.correctedMET.caloMETPt() );
