@@ -463,7 +463,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	     cout << itPro << endl;
     }
     // add processors that have been requested in the config
-    // add processors that have been requested in the config
     for(auto& treewriter : treewriters){
         if(std::find(processorNames.begin(),processorNames.end(),"WeightProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new WeightProcessor(),"WeightProcessor");
@@ -560,13 +559,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     if(std::find(processorNames.begin(),processorNames.end(),"AK8JetProcessor")!=processorNames.end()) {
       treewriter->AddTreeProcessor(new AK8JetProcessor(&helper),"AK8JetProcessor");
     }
-    if(std::find(processorNames.begin(),processorNames.end(),"AK8JetProcessor")!=processorNames.end()) {
-      treewriter->AddTreeProcessor(new AK8JetProcessor(&helper),"AK8JetProcessor");
     if(std::find(processorNames.begin(),processorNames.end(),"SelectionTagProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new SelectionTagProcessor(),"SelectionTagProcessor");
+      treewriter->AddTreeProcessor(new SelectionTagProcessor(),"SelectionTagProcessor");
     }
     }
- }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
     /*
@@ -799,8 +795,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // nominal weight and weights for reweighting
     std::vector<map<string,float> >weightsVector;
     //selectiontags
-    // map<string, int> &pselectionTags = *selectionTags;
-    // map<string, int>* selectionTags = new map<string, int>() ;
     map<string, int> selectionTags;
 
     // inputs
@@ -868,9 +862,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             else{
                 selected=true;
                 next_event=false;
-                selectionTags[selectionNames.at(i_sel)] = selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys]); 
-                // if(selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])) selectionTags[selectionNames.at(i_sel)] = 1;
-                // else selectionTags[selectionNames.at(i_sel)] = 0; 
+                selectionTags[selectionNames.at(i_sel)] = selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys]);
             }
         }
         // if the vertex,filter or lepton selection is not fulfilled, skip the other jec variations

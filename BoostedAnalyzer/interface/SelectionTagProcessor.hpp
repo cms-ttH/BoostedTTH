@@ -15,6 +15,7 @@ public:
 	void Process(const InputCollections& input, VariableContainer& var);
 
 private:
+	bool isSelected;
 
 };
 
