@@ -166,14 +166,6 @@ private:
     TriggerInfoProducer triggerInfoProd;
     /** produces filter information */
     FilterInfoProducer filterInfoProd;
-    /** Calculated MEM for "boosted" events? Takes several seconds per event */
-    bool doBoostedMEM;
-    /** processors run */
-    std::vector<std::string> processorNames;
-    /** selections applied */
-    std::vector<std::string> selectionNames;
-    /** use tagging for selections **/
-    bool taggingSelection;
     
     // --------------- CLASSIFIERS ---------------
     //mem classifier for MVAVarProcessor
@@ -251,8 +243,8 @@ private:
     bool ProduceMemNtuples;
     /** Calculated MEM for "boosted" events? Takes several seconds per event */
     bool doBoostedMEM;
-    /** map for selectiontags**/
-    std::map<std::string, int> selectionTags;
+    /** use tagging for selections **/
+    bool taggingSelection;
     
     // --------------- MISCELLANEOUS ---------------
     /** writes flat trees  */
@@ -288,6 +280,8 @@ private:
     int eventcount;
     /** variable to holt the position of JetTagSelection in selections vector, for later use */
     uint jet_tag_pos;
+    /** map for selectiontags**/
+    std::map<std::string, int> selectionTags;
     
 };
 
@@ -572,6 +566,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
         treewriter->AddTreeProcessor(new SelectionTagProcessor(),"SelectionTagProcessor");
     }
     }
+ }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
     /*

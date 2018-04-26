@@ -204,7 +204,7 @@ from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,applyEnergyCorrections=False,
                        applyVIDOnCorrectedEgamma=False,
                        isMiniAOD=True)
-#a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
+a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
 electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 
 # lepton selection

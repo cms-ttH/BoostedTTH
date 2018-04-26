@@ -1,5 +1,4 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/SelectionTagProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/MonoJetGenSelectionProcessor.hpp"
 
 using namespace std;
 

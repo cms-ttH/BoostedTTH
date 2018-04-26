@@ -51,8 +51,6 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
     processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor", "AK8JetProcessor", "SelectionTagProcessor"),
-    selectionNames = cms.vstring("FilterSelection","VertexSelection","METSelection","MonoJetSelection","LeptonVetoSelection","BTagVetoSelection","PhotonVetoSelection","monoVselection"),
-
     outfileName = cms.string("BoostedTTH"),
 
     taggingSelection=cms.bool(True),
