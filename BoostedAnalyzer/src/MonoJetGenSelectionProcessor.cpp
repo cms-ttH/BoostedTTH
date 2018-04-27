@@ -103,8 +103,7 @@ int MonoJetGenSelectionProcessor::GenPhotonVetoSelection(const InputCollections&
 
 int MonoJetGenSelectionProcessor::GenmonoVselection(const InputCollections& input){
 
-  // if (input.customGenJetsAK8.size() >= 1) {
-  if (input.customGenJetsAK8.size() >= 1 && input.AK8Jets.size() > 0) {
+  if (input.customGenJetsAK8.size() >= 1) {
     auto leadingJet = input.customGenJetsAK8.at(0);
 
     float leadingJet_eta = leadingJet.eta();
