@@ -476,7 +476,7 @@ process.CorrectedJetProducerAK8=process.CorrectedJetProducer.clone(jets=cms.Inpu
                                                                collectionNames=["correctedJetsAK8"],
                                                                applyCorrection=True,
                                                                systematics=[""]+systsJES,
-                                                               JetID="none",
+                                                               JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                miniAODGenJets=cms.InputTag("slimmedGenJetsAK8"),
                                                                leptonJetDr=0.8,
@@ -488,7 +488,8 @@ process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.In
                                                                      etaMaxs=[2.4],
                                                                      collectionNames=["selectedJetsAK8"],
                                                                      applyCorrection=False,
-                                                                     systematics=[""]
+                                                                     systematics=[""],
+                                                                     JetID="none"
                                                                     )
 for syst in systs:
     setattr(process,'SelectedJetProducerAK8'+syst,process.SelectedJetProducerAK8.clone(jets='patSmearedJetsAK8'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK8.collectionNames)]))
