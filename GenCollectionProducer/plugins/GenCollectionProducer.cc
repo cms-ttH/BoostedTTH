@@ -122,7 +122,7 @@ GenCollectionProducer::GenCollectionProducer(const edm::ParameterSet& iConfig)
         if(collection_type.at(i)=="Jet"){
             produces<std::vector<reco::GenJet>>(collection_name.at(i));
         }
-        if(collection_type.at(i)=="AK8Jet"){
+        else if(collection_type.at(i)=="AK8Jet"){
             produces<std::vector<reco::GenJet>>(collection_name.at(i));
         }
         else {
@@ -182,7 +182,7 @@ GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
             std::unique_ptr<std::vector<reco::GenJet>> pOut(new std::vector<reco::GenJet>(collection));
             iEvent.put(std::move(pOut),collection_name.at(i));
         }
-        if(collection_type.at(i)=="AK8Jet"){
+        else if(collection_type.at(i)=="AK8Jet"){
             std::vector<reco::GenJet> collection = ApplyPtEtaCuts(*GenJetsAK8,pt_min.at(i),eta_max.at(i));
             std::unique_ptr<std::vector<reco::GenJet>> pOut(new std::vector<reco::GenJet>(collection));
             iEvent.put(std::move(pOut),collection_name.at(i));
