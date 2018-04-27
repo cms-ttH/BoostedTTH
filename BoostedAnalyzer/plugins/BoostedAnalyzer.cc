@@ -275,6 +275,7 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenPhotons;
     edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJets;
     edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsLoose;
+    edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsAK8;
 
     std::map<std::string, int> selectionTags;
     
@@ -371,6 +372,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     customGenPhotons = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenPhotons"));
     customGenJets = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("customGenJets"));
     customGenJetsLoose = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("customGenJetsLoose"));
+    customGenJetsAK8 = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("customGenJetsAK8"));
     
     // initialize helper classes
     helper.SetUp("2015_74x", isData ? -1 : 1, analysisType::LJ, isData);
@@ -728,6 +730,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle< std::vector<reco::GenParticle> > CustomGenPhotons;
     edm::Handle< std::vector<reco::GenJet> > CustomGenJets;
     edm::Handle< std::vector<reco::GenJet> > CustomGenJetsLoose;
+    edm::Handle< std::vector<reco::GenJet> > CustomGenJetsAK8;
     if(!isData){
     	iEvent.getByToken( customGenElectrons,CustomGenElectrons );
     	iEvent.getByToken( customGenMuons,CustomGenMuons );
@@ -735,6 +738,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         iEvent.getByToken( customGenPhotons,CustomGenPhotons );
     	iEvent.getByToken( customGenJets,CustomGenJets );
     	iEvent.getByToken( customGenJetsLoose,CustomGenJetsLoose );
+        iEvent.getByToken( customGenJetsAK8,CustomGenJetsAK8 );
     }
     // selected vertices and set vertex for MiniAODhelper
     // TODO: vertex selection in external producer
@@ -888,6 +892,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                                           jetSystematics[isys],
                                           *CustomGenJets,
                                           *CustomGenJetsLoose,
+                                          *CustomGenJetsAK8,
                                           *CustomGenElectrons,
                                           *CustomGenMuons,
                                           *CustomGenTaus,

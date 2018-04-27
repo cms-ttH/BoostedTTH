@@ -62,6 +62,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const Systematics::Type&                      systematic_,
                     const std::vector<reco::GenJet>&              customGenJets_,
                     const std::vector<reco::GenJet>&              customGenJetsLoose_,
+                    const std::vector<reco::GenJet>&              customGenJetsAK8_,
                     const std::vector<reco::GenParticle>&         customGenElectrons_,
                     const std::vector<reco::GenParticle>&         customGenMuons_,
                     const std::vector<reco::GenParticle>&         customGenTaus_,
@@ -100,6 +101,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
         systematic(systematic_),
         customGenJets(customGenJets_),
         customGenJetsLoose(customGenJetsLoose_),
+        customGenJetsAK8(customGenJetsAK8_),
         customGenElectrons(customGenElectrons_),
         customGenMuons(customGenMuons_),
         customGenTaus(customGenTaus_),
@@ -148,6 +150,7 @@ InputCollections(   const InputCollections&                       input,
         systematic(input.systematic),
         customGenJets(input.customGenJets),
         customGenJetsLoose(input.customGenJetsLoose),
+        customGenJetsAK8(input.customGenJetsAK8),
         customGenElectrons(input.customGenElectrons),
         customGenMuons(input.customGenMuons),
         customGenTaus(input.customGenTaus),
@@ -184,6 +187,7 @@ InputCollections(   const InputCollections&                       input,
   const Systematics::Type&                      systematic;
   const std::vector<reco::GenJet>&              customGenJets;
   const std::vector<reco::GenJet>&              customGenJetsLoose;
+  const std::vector<reco::GenJet>&              customGenJetsAK8;
   const std::vector<reco::GenParticle>&         customGenElectrons;
   const std::vector<reco::GenParticle>&         customGenMuons;
   const std::vector<reco::GenParticle>&         customGenTaus;
