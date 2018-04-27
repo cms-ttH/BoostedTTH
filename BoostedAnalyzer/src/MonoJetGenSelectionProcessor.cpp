@@ -17,6 +17,7 @@ void MonoJetGenSelectionProcessor::Init(const InputCollections& input,VariableCo
   vars.InitVar("GenLeptonVetoSelection",0,"I");
   vars.InitVar("GenBTagVetoSelection",0,"I");
   vars.InitVar("GenPhotonVetoSelection",0,"I");
+  vars.InitVar("GenmonoVselection",0,"I");
   initialized=true;
 }
 
@@ -28,6 +29,7 @@ void MonoJetGenSelectionProcessor::Process(const InputCollections& input,Variabl
   vars.FillVar("GenLeptonVetoSelection",GenLeptonVetoSelection(input));
   vars.FillVar("GenBTagVetoSelection",GenBTagVetoSelection(input));
   vars.FillVar("GenPhotonVetoSelection",GenPhotonVetoSelection(input));
+  vars.FillVar("GenmonoVselection",GenmonoVselection(input));
 }
 
 // needs to done correctly, is there a GenVertex Collection??
@@ -97,6 +99,39 @@ int MonoJetGenSelectionProcessor::GenPhotonVetoSelection(const InputCollections&
     else{
         return 1;    
     }
-    
 }
+
+int MonoJetGenSelectionProcessor::GenmonoVselection(const InputCollections& input){
+
+  // if (input.customGenJetsAK8.size() >= 1) {
+  if (input.customGenJetsAK8.size() >= 1 && input.AK8Jets.size() > 0) {
+    auto leadingJet = input.customGenJetsAK8.at(0);
+
+    float leadingJet_eta = leadingJet.eta();
+    float leadingJet_Pt = leadingJet.pt();
+    float leadingJet_mass = leadingJet.mass();
+    float leadingJet_Nhf = leadingJet.hadEnergy()/leadingJet.energy();
+    float leadingJet_Chf = leadingJet.emEnergy()/leadingJet.energy();
+
+    monoVtagged = false;
+
+    if (leadingJet_Pt > minpt && abs(leadingJet_eta) < maxeta && leadingJet_mass > minMass && leadingJet_mass < maxMass && leadingJet_Nhf < neutral_hadron_fraction_max && leadingJet_Chf> charged_hadron_fraction_min) {
+      monoVtagged = true;
+    }
+
+    if (monoVtagged ) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+  else {
+    return true;
+  }
+
+}
+
+    
+
 
