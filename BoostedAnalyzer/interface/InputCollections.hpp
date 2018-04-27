@@ -33,9 +33,9 @@ struct InputCollections{
    Constructor in which all references to the objects that are analyzed are set
  */
 InputCollections(   const EventInfo&                              eventInfo_,
-		    const TriggerInfo&                            triggerInfo_,
-		    const FilterInfo&                             filterInfo_,
-		    const std::vector<reco::Vertex>&              selectedPVs_,
+        const TriggerInfo&                            triggerInfo_,
+        const FilterInfo&                             filterInfo_,
+        const std::vector<reco::Vertex>&              selectedPVs_,
 
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsDL_,
@@ -57,19 +57,21 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const SampleType                              sampleType_,
                     const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
-		    const edm::Event&                             iEvent_,
-		    const edm::EventSetup&                        iSetup_,
+        const edm::Event&                             iEvent_,
+        const edm::EventSetup&                        iSetup_,
                     const Systematics::Type&                      systematic_,
                     const std::vector<reco::GenJet>&              customGenJets_,
                     const std::vector<reco::GenJet>&              customGenJetsLoose_,
+                    const std::vector<reco::GenJet>&              customGenJetsAK8_,
                     const std::vector<reco::GenParticle>&         customGenElectrons_,
                     const std::vector<reco::GenParticle>&         customGenMuons_,
                     const std::vector<reco::GenParticle>&         customGenTaus_,
-                    const std::vector<reco::GenParticle>&         customGenPhotons_
+                    const std::vector<reco::GenParticle>&         customGenPhotons_,
+                    const std::map<std::string, int>&              selectionTags_
                     
-		      /**** bjetness code ****/
+          /**** bjetness code ****/
 
-		            ):
+                ):
                     eventInfo(eventInfo_),
                     triggerInfo(triggerInfo_),
                     filterInfo(filterInfo_),
@@ -94,15 +96,17 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
                     weights(weights_),
-		    iEvent(iEvent_),
-		    iSetup(iSetup_),
-		    systematic(systematic_),
-		    customGenJets(customGenJets_),
-		    customGenJetsLoose(customGenJetsLoose_),
-		    customGenElectrons(customGenElectrons_),
-		    customGenMuons(customGenMuons_),
-		    customGenTaus(customGenTaus_),
-		    customGenPhotons(customGenPhotons_)
+        iEvent(iEvent_),
+        iSetup(iSetup_),
+        systematic(systematic_),
+        customGenJets(customGenJets_),
+        customGenJetsLoose(customGenJetsLoose_),
+        customGenJetsAK8(customGenJetsAK8_),
+        customGenElectrons(customGenElectrons_),
+        customGenMuons(customGenMuons_),
+        customGenTaus(customGenTaus_),
+        customGenPhotons(customGenPhotons_),
+        selectionTags(selectionTags_)
                     {}
 
 /**
@@ -116,7 +120,7 @@ InputCollections(   const InputCollections&                       input,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
                     const std::map<std::string,float>&            weights_
-        		    ): 
+                ): 
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
                     filterInfo(input.filterInfo),
@@ -141,15 +145,17 @@ InputCollections(   const InputCollections&                       input,
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
                     weights(weights_),
-		    iEvent(input.iEvent),
-		    iSetup(input.iSetup),
-		    systematic(input.systematic),
-		    customGenJets(input.customGenJets),
-		    customGenJetsLoose(input.customGenJetsLoose),
-		    customGenElectrons(input.customGenElectrons),
-		    customGenMuons(input.customGenMuons),
-		    customGenTaus(input.customGenTaus),
-		    customGenPhotons(input.customGenPhotons)
+        iEvent(input.iEvent),
+        iSetup(input.iSetup),
+        systematic(input.systematic),
+        customGenJets(input.customGenJets),
+        customGenJetsLoose(input.customGenJetsLoose),
+        customGenJetsAK8(input.customGenJetsAK8),
+        customGenElectrons(input.customGenElectrons),
+        customGenMuons(input.customGenMuons),
+        customGenTaus(input.customGenTaus),
+        customGenPhotons(input.customGenPhotons),
+        selectionTags(input.selectionTags)
                     {}
 
   const EventInfo&                              eventInfo;
@@ -181,10 +187,12 @@ InputCollections(   const InputCollections&                       input,
   const Systematics::Type&                      systematic;
   const std::vector<reco::GenJet>&              customGenJets;
   const std::vector<reco::GenJet>&              customGenJetsLoose;
+  const std::vector<reco::GenJet>&              customGenJetsAK8;
   const std::vector<reco::GenParticle>&         customGenElectrons;
   const std::vector<reco::GenParticle>&         customGenMuons;
   const std::vector<reco::GenParticle>&         customGenTaus;
   const std::vector<reco::GenParticle>&         customGenPhotons;
+  const std::map<std::string, int>&              selectionTags;
 
 };
 
