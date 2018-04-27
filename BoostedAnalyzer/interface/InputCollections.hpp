@@ -32,9 +32,9 @@ struct InputCollections{
    Constructor in which all references to the objects that are analyzed are set
  */
 InputCollections(   const EventInfo&                              eventInfo_,
-		    const TriggerInfo&                            triggerInfo_,
-		    const FilterInfo&                             filterInfo_,
-		    const std::vector<reco::Vertex>&              selectedPVs_,
+        const TriggerInfo&                            triggerInfo_,
+        const FilterInfo&                             filterInfo_,
+        const std::vector<reco::Vertex>&              selectedPVs_,
 
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsDL_,
@@ -53,12 +53,13 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const SampleType                              sampleType_,
                     const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
-		    const edm::Event&                             iEvent_,
-		    const edm::EventSetup&                        iSetup_,
-                    const Systematics::Type&                      systematic_
-		      /**** bjetness code ****/
-
-		            ):
+        const edm::Event&                             iEvent_,
+        const edm::EventSetup&                        iSetup_,
+                    const Systematics::Type&                      systematic_,
+                    const std::map<std::string, int>&             selectionTags_
+                    
+          /**** bjetness code ****/
+                ):
                     eventInfo(eventInfo_),
                     triggerInfo(triggerInfo_),
                     filterInfo(filterInfo_),
@@ -80,9 +81,10 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
                     weights(weights_),
-		    iEvent(iEvent_),
-		    iSetup(iSetup_),
-		    systematic(systematic_)
+        iEvent(iEvent_),
+        iSetup(iSetup_),
+        systematic(systematic_),
+        selectionTags(selectionTags_)
                     {}
 
 /**
@@ -96,7 +98,7 @@ InputCollections(   const InputCollections&                       input,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
                     const std::map<std::string,float>&            weights_
-        		    ): 
+                ): 
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
                     filterInfo(input.filterInfo),
@@ -118,10 +120,10 @@ InputCollections(   const InputCollections&                       input,
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
                     weights(weights_),
-		    iEvent(input.iEvent),
-		    iSetup(input.iSetup),
-		    systematic(input.systematic)
-
+        iEvent(input.iEvent),
+        iSetup(input.iSetup),
+        systematic(input.systematic),
+        selectionTags(input.selectionTags)
                     {}
 
   const EventInfo&                              eventInfo;
@@ -148,7 +150,7 @@ InputCollections(   const InputCollections&                       input,
   const edm::Event &                            iEvent;
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;
-
+  const std::map<std::string, int>&              selectionTags;
 };
 
 #endif

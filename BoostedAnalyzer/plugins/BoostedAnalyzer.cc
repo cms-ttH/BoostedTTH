@@ -117,7 +117,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AK8JetProcessor.hpp"
-
+#include "BoostedTTH/BoostedAnalyzer/interface/SelectionTagProcessor.hpp"
 
 //
 // class declaration
@@ -226,7 +226,7 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenJet> > genJetsToken;
     // LHERunInfo data access token
     edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoToken;
-    
+
     // --------------- FLAGS ---------------
     /** is analyzed sample data? */
     bool isData;
@@ -243,6 +243,8 @@ private:
     bool ProduceMemNtuples;
     /** Calculated MEM for "boosted" events? Takes several seconds per event */
     bool doBoostedMEM;
+    /** use tagging for selections **/
+    bool taggingSelection;
     
     // --------------- MISCELLANEOUS ---------------
     /** writes flat trees  */
@@ -278,6 +280,8 @@ private:
     int eventcount;
     /** variable to holt the position of JetTagSelection in selections vector, for later use */
     uint jet_tag_pos;
+    /** map for selectiontags**/
+    std::map<std::string, int> selectionTags;
     
 };
 
@@ -314,6 +318,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     useGenHadronMatch   = iConfig.getParameter<bool>("useGenHadronMatch");
     if(isData) useGenHadronMatch=false;
     std::vector<std::string> systematicsNames = iConfig.getParameter<std::vector<std::string> >("systematics");
+    taggingSelection= iConfig.getParameter<bool>("taggingSelection");
     for (auto const &s : systematicsNames){
       jetSystematics.push_back(Systematics::get(s));
     }
@@ -475,84 +480,87 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
             }
             treewriter->AddTreeProcessor(new MVAVarProcessor(pointerToMEMClassifier.get()),"MVAVarProcessor");
         }
-	if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
-	    if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {
-		cout << "adding essentialBasicVarProcessor, needed for essentialMVAVarProcessor" << endl;
-		treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
-	    }
-	    treewriter->AddTreeProcessor(new essentialMVAVarProcessor(pointerToMEMClassifier.get()),"essentialMVAVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedAk4VarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BoostedAk4VarProcessor(),"BoostedAk4VarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
+    if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
+        if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {
+        cout << "adding essentialBasicVarProcessor, needed for essentialMVAVarProcessor" << endl;
+        treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
+        }
+        treewriter->AddTreeProcessor(new essentialMVAVarProcessor(pointerToMEMClassifier.get()),"essentialMVAVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"BoostedAk4VarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new BoostedAk4VarProcessor(),"BoostedAk4VarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) {
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
         }
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) {
+    if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
-	}
+    }
         if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4Higgs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4Higgs_",doBoostedMEM),"BoostedTopAk4HiggsVarProcessor");
         }
         if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsFromAk4CVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
         }
-	if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier.get()),"BDTVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"DNNVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new DNNVarProcessor(pointerToDnnSLClassifier.get()),"DNNVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"essentialMCMatchVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new essentialMCMatchVarProcessor(),"essentialMCMatchVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"AdditionalJetProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new AdditionalJetProcessor(),"AdditionalJetProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"DiLeptonVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new DiLeptonVarProcessor(),"DiLeptonVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"TriggerVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new TriggerVarProcessor(relevantTriggers),"TriggerVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"TTbarReconstructionVarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new TTbarReconstructionVarProcessor(),"TTbarReconstructionVarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"ReconstructionMEvarProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new ReconstructionMEvarProcessor(),"ReconstructionMEvarProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"SpinCorrelationProcessor")!=processorNames.end()) {
-	    treewriter->AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"GenJetOrderedJetCollectionProcessor")!=processorNames.end()) {
-	  treewriter->AddTreeProcessor(new GenJetOrderedJetCollectionProcessor,"GenJetOrderedJetCollectionProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"TTBBStudienProcessor")!=processorNames.end()) {
-	  treewriter->AddTreeProcessor(new TTBBStudienProcessor,"TTBBStudienProcessor");
-	}
-	if(std::find(processorNames.begin(),processorNames.end(),"SlimmedNtuples")!=processorNames.end()) {
-	  treewriter->AddTreeProcessor(new SlimmedNtuples(),"SlimmedNtuples");
-	}
+    if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier.get()),"BDTVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"DNNVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new DNNVarProcessor(pointerToDnnSLClassifier.get()),"DNNVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"essentialMCMatchVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new essentialMCMatchVarProcessor(),"essentialMCMatchVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"AdditionalJetProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new AdditionalJetProcessor(),"AdditionalJetProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"DiLeptonVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new DiLeptonVarProcessor(),"DiLeptonVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"TriggerVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new TriggerVarProcessor(relevantTriggers),"TriggerVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"TTbarReconstructionVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new TTbarReconstructionVarProcessor(),"TTbarReconstructionVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"ReconstructionMEvarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new ReconstructionMEvarProcessor(),"ReconstructionMEvarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"BJetnessProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new BJetnessProcessor(consumesCollector()),"BJetnessProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"SpinCorrelationProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new SpinCorrelationProcessor(),"SpinCorrelationProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"GenJetOrderedJetCollectionProcessor")!=processorNames.end()) {
+      treewriter->AddTreeProcessor(new GenJetOrderedJetCollectionProcessor,"GenJetOrderedJetCollectionProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"TTBBStudienProcessor")!=processorNames.end()) {
+      treewriter->AddTreeProcessor(new TTBBStudienProcessor,"TTBBStudienProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"SlimmedNtuples")!=processorNames.end()) {
+      treewriter->AddTreeProcessor(new SlimmedNtuples(),"SlimmedNtuples");
+    }
     if(std::find(processorNames.begin(),processorNames.end(),"AK8JetProcessor")!=processorNames.end()) {
       treewriter->AddTreeProcessor(new AK8JetProcessor(&helper),"AK8JetProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"SelectionTagProcessor")!=processorNames.end()) {
+      treewriter->AddTreeProcessor(new SelectionTagProcessor(),"SelectionTagProcessor");
     }
     }
 
@@ -786,6 +794,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     
     // nominal weight and weights for reweighting
     std::vector<map<string,float> >weightsVector;
+    //selectiontags
+    map<string, int> selectionTags;
+
     // inputs
     std::vector<InputCollections> inputs;
     for(size_t isys=0; isys<jetSystematics.size(); isys++){
@@ -813,7 +824,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  weights,
 					  iEvent,
 					  iSetup,
-                                          jetSystematics[isys]
+                                          jetSystematics[isys],
+                      selectionTags
 					  ));
 
     }
@@ -837,21 +849,29 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         // start with selection=true and change this if one selection fails
     	bool selected=true;
     	// for every systematic: loop over selections
-    	for(size_t i_sel=0; i_sel<selections.size() && selected; i_sel++){
-    	    // see if event is selected
-    	    if(!selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])){
-    		    selected=false;
+        for(size_t i_sel=0; i_sel<selections.size() && selected; i_sel++){
+            // see if event is selected
+            if(!taggingSelection){
+                // std::cout << "not running in tagging mode" << std::endl;        
+        	    if(!selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys])){
+        		    selected=false;
                     // if the vertex,filter or lepton selection is not fulfilled, set the flag to skip the other jec variations
                     if(!selected && i_sel!=jet_tag_pos && jet_tag_pos!=selections.size()) next_event=true;
-    	    }
-    	}
-    	// if the vertex,filter or lepton selection is not fulfilled, skip the other jec variations
-    	if(next_event) break;
+        	    }
+        	}
+            else{
+                selected=true;
+                next_event=false;
+                selectionTags[selectionNames.at(i_sel)] = selections.at(i_sel)->IsSelected(inputs[i_sys],cutflows[i_sys]);
+            }
+        }
+        // if the vertex,filter or lepton selection is not fulfilled, skip the other jec variations
+        if(next_event) break;
         // if one of the jet collections fulfills the selection and mem ntuples are supposed to be written, skip the checks for the other jet collections and go directly to writing 
-    	at_least_one_selected = at_least_one_selected || selected;
+        at_least_one_selected = at_least_one_selected || selected;
         if(ProduceMemNtuples&&at_least_one_selected) break;
         // if normal ntuples are supposed to be written and the selections are fulfilled for the jet collection, then write
-    	if(!ProduceMemNtuples&&selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
+        if(!ProduceMemNtuples&&selected) treewriters[i_sys]->Process(inputs[i_sys], false);    // second parameter: verbose
     }
     // write the mem ntuples if the mem ntuples flag is set and at least one jet collection fulfills the selection criteria
     if(ProduceMemNtuples&&at_least_one_selected) treewriters.back()->Process(inputs, false);
