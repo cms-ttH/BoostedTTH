@@ -348,12 +348,12 @@ if options.recorrectMET:
     # do not use a postfix here!
     runMetCorAndUncFromMiniAOD(process,
         isData           = options.isData,
-        electronColl     = electronCollection.value(),
-        muonColl         = muonCollection.value(),
-        tauColl          = tauCollection.value(),
-        photonColl       = photonCollection.value(),
-        jetCollUnskimmed = jetCollection.value(),
-        recoMetFromPFCs  = True
+        #electronColl     = electronCollection.value(),
+        #muonColl         = muonCollection.value(),
+        #tauColl          = tauCollection.value(),
+        #photonColl       = photonCollection.value(),
+        #jetCollUnskimmed = jetCollection.value(),
+        #recoMetFromPFCs  = True
     )
 
     # overwrite output collections
@@ -551,15 +551,15 @@ process.GenCollectionProducer.eta_max=[2.4,2.4,2.3,2.5,2.4,2.4]
 
 
 ### correct MET manually ###
-process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
-process.CorrectedMETproducer.isData=options.isData
+#process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
+#process.CorrectedMETproducer.isData=options.isData
 #process.CorrectedMETproducer.oldJets=cms.InputTag("slimmedJets", "", "PAT")
 #process.CorrectedMETproducer.newJets=cms.InputTag("slimmedJets", "", "PAT")
 #process.CorrectedMETproducer.oldElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
 #process.CorrectedMETproducer.newElectrons=cms.InputTag("slimmedElectrons", "", "PAT")
 #process.CorrectedMETproducer.oldMuons=cms.InputTag("SelectedMuonProducerUncorr:selectedMuonsUncorr")
 #process.CorrectedMETproducer.newMuons=cms.InputTag("SelectedMuonProducer:selectedMuons")
-process.CorrectedMETproducer.mets=METCollection
+#process.CorrectedMETproducer.mets=METCollection
 
 # load and run the boosted analyzer
 if options.isData:
@@ -582,7 +582,7 @@ if writeNominal:
 process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer"+s+":selectedJets"+s) for s in variations]
 process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer"+s+":selectedJetsLoose"+s) for s in variations]
 process.BoostedAnalyzer.AK8Jets=[cms.InputTag("SelectedJetProducerAK8"+s+":selectedJetsAK8"+s) for s in variations]
-process.BoostedAnalyzer.correctedMETs=[cms.InputTag("CorrectedMETproducer:correctedMET")]*(len(variations))
+process.BoostedAnalyzer.correctedMETs=[METCollection]*(len(variations))
 
 if options.isBoostedMiniAOD:
     process.BoostedAnalyzer.useFatJets=True
@@ -695,7 +695,7 @@ process.p *= process.fullPatMetSequence
 #if options.isData:
 	#process.p *= process.egcorrMET
 
-process.p *= process.CorrectedMETproducer
+#process.p *= process.CorrectedMETproducer
 
 if printContent:
     process.p *= process.content
