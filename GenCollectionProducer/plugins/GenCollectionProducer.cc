@@ -62,6 +62,8 @@ class GenCollectionProducer : public edm::stream::EDProducer<> {
       // ----------member data ---------------------------
       // token for slimmed genjets collection
       edm::EDGetTokenT< std::vector<reco::GenJet> > GenJetsToken;
+      // token for slimmed AK8genjets collection
+      edm::EDGetTokenT< std::vector<reco::GenJet> > GenJetsAK8Token;
       // token for pruned gen particle collection
       edm::EDGetTokenT< std::vector<reco::GenParticle> > GenParticlesToken;
       
@@ -106,6 +108,7 @@ GenCollectionProducer::GenCollectionProducer(const edm::ParameterSet& iConfig)
     pdgids["Photon"]=22;
     // register data access
     GenJetsToken  = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets"));
+    GenJetsAK8Token  = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJetsAK8"));
     GenParticlesToken = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles"));
     
     // read config
@@ -117,6 +120,9 @@ GenCollectionProducer::GenCollectionProducer(const edm::ParameterSet& iConfig)
     // register the objects which will later be put into the edm::event instance
     for(size_t i=0;i<collection_name.size();i++){
         if(collection_type.at(i)=="Jet"){
+            produces<std::vector<reco::GenJet>>(collection_name.at(i));
+        }
+        else if(collection_type.at(i)=="AK8Jet"){
             produces<std::vector<reco::GenJet>>(collection_name.at(i));
         }
         else {
@@ -162,15 +168,22 @@ GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 */
     // handle to manage the objects to be accessed
     edm::Handle<std::vector<reco::GenJet>> GenJets;
+    edm::Handle<std::vector<reco::GenJet>> GenJetsAK8;
     edm::Handle<std::vector<reco::GenParticle>> GenParticles;
     // get the objects
     iEvent.getByToken(GenJetsToken,GenJets);
+    iEvent.getByToken(GenJetsAK8Token,GenJetsAK8);
     iEvent.getByToken(GenParticlesToken,GenParticles);
     
     // get basic collections of the gen particles/jets with pt and eta cuts applied
     for(size_t i=0;i<collection_name.size();i++){
         if(collection_type.at(i)=="Jet"){
             std::vector<reco::GenJet> collection = ApplyPtEtaCuts(*GenJets,pt_min.at(i),eta_max.at(i));
+            std::unique_ptr<std::vector<reco::GenJet>> pOut(new std::vector<reco::GenJet>(collection));
+            iEvent.put(std::move(pOut),collection_name.at(i));
+        }
+        else if(collection_type.at(i)=="AK8Jet"){
+            std::vector<reco::GenJet> collection = ApplyPtEtaCuts(*GenJetsAK8,pt_min.at(i),eta_max.at(i));
             std::unique_ptr<std::vector<reco::GenJet>> pOut(new std::vector<reco::GenJet>(collection));
             iEvent.put(std::move(pOut),collection_name.at(i));
         }
