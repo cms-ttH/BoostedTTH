@@ -36,7 +36,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dumpExtended = cms.bool(False),
     dumpAlwaysEvents = cms.vint32(),
 
-    doBoostedMEM = cms.bool(True),
+    doBoostedMEM = cms.bool(False),
     
     memNtuples = cms.bool(False),
 
@@ -47,4 +47,6 @@ BoostedAnalyzer = cms.EDAnalyzer(
     processorNames = cms.vstring("WeightProcessor","TriggerVarProcessor","DarkMatterProcessor"),
 
     outfileName = cms.string("BoostedTTH"),
+    
+     taggingSelection=cms.bool(False),
 )
