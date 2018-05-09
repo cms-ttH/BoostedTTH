@@ -454,7 +454,7 @@ process.SelectedJetProducer.ptMins=[20,30]
 process.SelectedJetProducer.etaMaxs=[2.4,2.4]
 process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
 process.SelectedJetProducer.systematics=[""]
-process.SelectedJetProducer.PUJetIDMins=["loose","loose"]
+process.SelectedJetProducer.PUJetIDMins=["none","none"]
 process.SelectedJetProducer.JetID="none"
 # selection of the systematically shifted jets
 for syst in systs:
