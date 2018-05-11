@@ -849,6 +849,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     	genDarkMatterEvent.Initialize(*h_genParticles,packedGenParticles_dummy);
     	// fill the event
     	genDarkMatterEvent.Fill();
+        genDarkMatterEvent.FillBoson();
     	//cout << "DarkMatterEvent MET: " << genDarkMatterEvent.ReturnNaiveMET() << endl;
     }
     

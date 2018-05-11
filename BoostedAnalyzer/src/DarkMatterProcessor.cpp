@@ -76,6 +76,9 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "Neutrino_Px","N_Neutrinos" );
   vars.InitVars( "Neutrino_Py","N_Neutrinos" );
   vars.InitVars( "Neutrino_Pz","N_Neutrinos" );
+  
+  vars.InitVar( "W_Pt");
+  vars.InitVar( "Z_Pt");
 
   initialized=true;
 }
@@ -142,6 +145,18 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVars ( "DeltaPhi_Jet_Hadr_Recoil",i,fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi()-input.selectedJets.at(i).phi())));
   }
   
+  
+  if(input.genDarkMatterEvt.WBosonIsFilled()){
+    const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
+    math::XYZTLorentzVector WBoson = DM_Evt.ReturnWBoson();
+    vars.FillVar( "W_Pt", WBoson.Pt() );
+  }
+
+  if(input.genDarkMatterEvt.ZBosonIsFilled()){
+    const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
+    math::XYZTLorentzVector ZBoson = DM_Evt.ReturnZBoson();
+    vars.FillVar( "Z_Pt", ZBoson.Pt() );
+  }
   
   if(input.genDarkMatterEvt.IsFilled()){
   

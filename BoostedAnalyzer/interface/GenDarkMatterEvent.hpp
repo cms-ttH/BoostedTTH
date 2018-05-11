@@ -32,15 +32,30 @@ class GenDarkMatterEvent{
         std::vector<TLorentzVector> ReturnNeutrino4Vectors() const;
         
         double ReturnNaiveMET() const;
+        
+        // for MC reweighting of Z/W boson + jets events
+        void FillBoson();
+        bool ZBosonIsFilled() const;
+        bool WBosonIsFilled() const;
+        math::XYZTLorentzVector ReturnZBoson() const;
+        math::XYZTLorentzVector ReturnWBoson() const;
   
     private:
         bool hasDarkMatter = false;
         bool isFilled = false;
+        
         std::vector<reco::GenParticle> prunedGenParticles;
         std::vector<pat::PackedGenParticle> packedGenParticles;
         std::vector<reco::GenParticle> Neutralinos;
         reco::GenParticle Mediator;
         std::vector<reco::GenParticle> Neutrinos;
+        
+        // for MC reweighting of Z/W boson + jets events
+        bool hasVectorBoson = false;
+        bool ZBosonisFilled = false;
+        bool WBosonisFilled = false;
+        math::XYZTLorentzVector ZBoson;
+        math::XYZTLorentzVector WBoson;
 };
 
 

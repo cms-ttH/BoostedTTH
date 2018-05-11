@@ -16,10 +16,18 @@ void GenDarkMatterEvent::Initialize(std::vector<reco::GenParticle> prunedGenPart
     hasDarkMatter = false;
     isFilled = false;
     
+    hasVectorBoson = false;
+    WBosonisFilled = false;
+    ZBosonisFilled = false;
+    
     for(size_t i=0;i<prunedGenParticles.size();i++){
         if(prunedGenParticles[i].pdgId()==1000022){
             hasDarkMatter = true;
-            break;
+            //break;
+        }
+        if(abs(prunedGenParticles[i].pdgId())==23 or abs(prunedGenParticles[i].pdgId())==24){
+            hasVectorBoson = true;
+            //break;
         }
     }
 }
@@ -155,4 +163,86 @@ double GenDarkMatterEvent::ReturnNaiveMET() const
         vec4_invisibles+=Neutrinos[i].p4();
     }
     return vec4_invisibles.pt();
+}
+
+// for MC reweighting of Z/W boson + jets events: save the pt of the generator v boson
+
+void GenDarkMatterEvent::FillBoson()
+{
+    if (not hasVectorBoson) {
+        //std::cout << "The Generator Event does not have a VectorBoson with PDGID 23 or 24 (Z/W)." << std::endl;
+        //std::cout << "Therefore, the Boson cannot be filled." << std::endl;
+        return;
+    }
+    std::vector<const reco::Candidate*> decay_prodW;
+    std::vector<const reco::Candidate*> decay_prodZ;
+    //std::cout << "doing Boson stuff" << std::endl;
+    //std::cout << "looping over " << prunedGenParticles.size() << " genParticles" << std::endl;
+    for (size_t i = 0; i < prunedGenParticles.size(); i++) {
+        const reco::GenParticle & genparticle = prunedGenParticles[i];
+        if (abs(genparticle.pdgId()) == 23 || abs(genparticle.pdgId()) == 24) {
+           //std::cout <<"looking at mother: " << genparticle.pdgId() << std::endl;
+           //std::cout << "looping over "<< genparticle.numberOfDaughters() <<" daughters" << std::endl;
+            for (size_t j = 0; j < genparticle.numberOfDaughters(); j++) {
+                const reco::Candidate * daughter = genparticle.daughter( j );
+                //std::cout << "looking at daughter: " << daughter->pdgId() << std::endl;
+                
+                //Z Bosons
+                if(abs(genparticle.pdgId()) == 23){
+                    if ((abs(daughter->pdgId()) == 12 or abs(daughter->pdgId()) == 14 or abs(daughter->pdgId()) == 16))  {
+                        decay_prodZ.push_back(daughter);
+                    }
+                }
+
+                //W Bosons
+                else if (abs(genparticle.pdgId()) == 24){
+                    if (abs(daughter->pdgId()) == 11 or abs(daughter->pdgId()) == 12 or abs(daughter->pdgId()) == 13 or abs(daughter->pdgId()) == 14 or abs(daughter->pdgId()) == 15 or abs(daughter->pdgId()) == 16) {
+                        decay_prodW.push_back(daughter);
+                    }
+                }
+            }
+        }
+    }
+    if (decay_prodW.size() == 2){
+        //std::cout << "filling W Boson" << std::endl;
+        if((decay_prodW.at(0)->pdgId())*(decay_prodW.at(1)->pdgId())<0 and abs(abs(decay_prodW.at(0)->pdgId())-abs(decay_prodW.at(1)->pdgId()))==1){
+            WBoson = decay_prodW.at(0)->p4() + decay_prodW.at(1)->p4();
+            WBosonisFilled = true;
+        }
+    }
+    if (decay_prodZ.size() == 2){
+        //std::cout << "filling Z Boson" << std::endl;
+        if((decay_prodZ.at(0)->pdgId())+(decay_prodZ.at(1)->pdgId())==0){
+            ZBoson = decay_prodZ.at(0)->p4() + decay_prodZ.at(1)->p4();
+            ZBosonisFilled = true;
+        }
+    }
+}
+
+// return if the WBoson has been filled
+bool GenDarkMatterEvent::WBosonIsFilled() const
+{
+    return WBosonisFilled;
+}
+
+// return if the ZBoson has been filled
+bool GenDarkMatterEvent::ZBosonIsFilled() const
+{
+    return ZBosonisFilled;
+}
+
+math::XYZTLorentzVector GenDarkMatterEvent::ReturnWBoson() const
+{
+    if (not WBosonisFilled) {
+        std::cerr << "Attention: WBoson is not filled!";
+    }
+    return WBoson;
+}
+
+math::XYZTLorentzVector GenDarkMatterEvent::ReturnZBoson() const
+{
+    if (not ZBosonisFilled) {
+        std::cerr << "Attention: ZBoson is not filled!";
+    }
+    return ZBoson;
 }
