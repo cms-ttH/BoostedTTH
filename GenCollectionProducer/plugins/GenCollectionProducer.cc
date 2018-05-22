@@ -214,8 +214,20 @@ std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::
  
     std::vector<reco::GenParticle> mod_GenParticles;
     for(size_t i=0;i<GenParticles_.size();i++){
-        if(GenParticles_.at(i).pt()>=pt_min_ && GenParticles_.at(i).eta()<=eta_max_ && GenParticles_.at(i).status()==1 && fabs(GenParticles_.at(i).pdgId())==pdgids[type_]) {
-            mod_GenParticles.push_back(GenParticles_.at(i));
+        if(GenParticles_.at(i).pt()>=pt_min_ && GenParticles_.at(i).eta()<=eta_max_ && fabs(GenParticles_.at(i).pdgId())==pdgids[type_]) {
+            // electron, muon or photon
+            if(type_!="Tau") {
+                if(GenParticles_.at(i).isPromptFinalState()){
+                    mod_GenParticles.push_back(GenParticles_.at(i));
+                }
+            }
+            // tau (is this correct?)
+            else {
+                if(GenParticles_.at(i).isPromptDecayed()){
+                    mod_GenParticles.push_back(GenParticles_.at(i));
+                }
+            }
+            
         }
     }
     return mod_GenParticles;
