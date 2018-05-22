@@ -217,7 +217,7 @@ std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::
         if(GenParticles_.at(i).pt()>=pt_min_ && GenParticles_.at(i).eta()<=eta_max_ && fabs(GenParticles_.at(i).pdgId())==pdgids[type_]) {
             // electron, muon or photon
             if(type_!="Tau") {
-                if(GenParticles_.at(i).isPromptFinalState()){
+                if(GenParticles_.at(i).statusFlags().isPrompt() && GenParticles_.at(i).isLastCopyBeforeFSR()){
                     mod_GenParticles.push_back(GenParticles_.at(i));
                 }
             }
