@@ -196,7 +196,7 @@ void GenDarkMatterEvent::FillBoson()
 
                 //W Bosons
                 else if (abs(genparticle.pdgId()) == 24){
-                    if (abs(daughter->pdgId()) == 11 or abs(daughter->pdgId()) == 12 or abs(daughter->pdgId()) == 13 or abs(daughter->pdgId()) == 14 or abs(daughter->pdgId()) == 15 or abs(daughter->pdgId()) == 16) {
+                    if (abs(daughter->pdgId()) == 11 or abs(daughter->pdgId()) == 12 or abs(daughter->pdgId()) == 13 or abs(daughter->pdgId()) == 14) {//or abs(daughter->pdgId()) == 15 or abs(daughter->pdgId()) == 16
                         decay_prodW.push_back(daughter);
                     }
                 }
