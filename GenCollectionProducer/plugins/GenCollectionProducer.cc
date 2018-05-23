@@ -57,7 +57,8 @@ class GenCollectionProducer : public edm::stream::EDProducer<> {
       //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
       
       std::vector<reco::GenJet> ApplyPtEtaCuts(const std::vector<reco::GenJet>& GenJets_,double& pt_min_,double& eta_max_);
-      std::vector<reco::GenParticle> ApplyPtEtaCuts(const std::vector<reco::GenParticle>& GenParticles_,std::string& type_,double& pt_min_,double& eta_max_);
+      std::vector<reco::GenParticle> ApplyPtEtaCuts(const std::vector<reco::GenParticle>& GenParticles_,std::string type_,double pt_min_,double eta_max_);
+      std::vector<reco::GenJet> DeltaRCleaning(const std::vector<reco::GenJet>& GenJets_,const std::vector<reco::GenParticle>& Leptons,double R);
 
       // ----------member data ---------------------------
       // token for slimmed genjets collection
@@ -73,6 +74,7 @@ class GenCollectionProducer : public edm::stream::EDProducer<> {
       std::vector<double> pt_min;
       std::vector<double> eta_max;
       std::map<std::string,int> pdgids;
+      bool doDeltaRCleaning;
 };
 
 //
@@ -116,6 +118,7 @@ GenCollectionProducer::GenCollectionProducer(const edm::ParameterSet& iConfig)
     collection_type = iConfig.getParameter< std::vector<std::string> >("collection_type");
     pt_min = iConfig.getParameter< std::vector<double> >("pt_min");
     eta_max = iConfig.getParameter< std::vector<double> >("eta_max");
+    doDeltaRCleaning = iConfig.getParameter< bool >("doDeltaRCleaning");
     
     // register the objects which will later be put into the edm::event instance
     for(size_t i=0;i<collection_name.size();i++){
@@ -175,15 +178,29 @@ GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
     iEvent.getByToken(GenJetsAK8Token,GenJetsAK8);
     iEvent.getByToken(GenParticlesToken,GenParticles);
     
+    std::vector<reco::GenParticle> electrons = ApplyPtEtaCuts(*GenParticles,"Electron",10.,2.4);
+    std::vector<reco::GenParticle> muons = ApplyPtEtaCuts(*GenParticles,"Muon",10.,2.4);
+    std::vector<reco::GenParticle> leptons;
+    leptons.insert(leptons.end(),electrons.begin(),electrons.end());
+    leptons.insert(leptons.end(),muons.begin(),muons.end());
+    
     // get basic collections of the gen particles/jets with pt and eta cuts applied
     for(size_t i=0;i<collection_name.size();i++){
         if(collection_type.at(i)=="Jet"){
             std::vector<reco::GenJet> collection = ApplyPtEtaCuts(*GenJets,pt_min.at(i),eta_max.at(i));
+            if(doDeltaRCleaning){
+                std::vector<reco::GenJet> collection_cleaned = DeltaRCleaning(collection,leptons,0.4);
+                collection = collection_cleaned;
+            }
             std::unique_ptr<std::vector<reco::GenJet>> pOut(new std::vector<reco::GenJet>(collection));
             iEvent.put(std::move(pOut),collection_name.at(i));
         }
         else if(collection_type.at(i)=="AK8Jet"){
             std::vector<reco::GenJet> collection = ApplyPtEtaCuts(*GenJetsAK8,pt_min.at(i),eta_max.at(i));
+            if(doDeltaRCleaning){
+                std::vector<reco::GenJet> collection_cleaned = DeltaRCleaning(collection,leptons,0.8);
+                collection = collection_cleaned;
+            }
             std::unique_ptr<std::vector<reco::GenJet>> pOut(new std::vector<reco::GenJet>(collection));
             iEvent.put(std::move(pOut),collection_name.at(i));
         }
@@ -210,18 +227,18 @@ std::vector<reco::GenJet> GenCollectionProducer::ApplyPtEtaCuts(const std::vecto
 }
 
 // get collection of specified genparticles with pt and eta cuts
-std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::vector<reco::GenParticle>& GenParticles_,std::string& type_,double& pt_min_,double& eta_max_){
- 
+std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::vector<reco::GenParticle>& GenParticles_,std::string type_,double pt_min_,double eta_max_){
+    // look for prompt gen particles
     std::vector<reco::GenParticle> mod_GenParticles;
     for(size_t i=0;i<GenParticles_.size();i++){
-        if(GenParticles_.at(i).pt()>=pt_min_ && GenParticles_.at(i).eta()<=eta_max_ && fabs(GenParticles_.at(i).pdgId())==pdgids[type_]) {
-            // electron, muon or photon
+        if(fabs(GenParticles_.at(i).pdgId())==pdgids[type_]) {
+            // prompt electrons, muons or photons
             if(type_!="Tau") {
-                if(GenParticles_.at(i).statusFlags().isPrompt() && GenParticles_.at(i).isLastCopyBeforeFSR()){
+                if(GenParticles_.at(i).isPromptFinalState()){
                     mod_GenParticles.push_back(GenParticles_.at(i));
                 }
             }
-            // tau (is this correct?)
+            // prompt taus (is this correct?)
             else {
                 if(GenParticles_.at(i).isPromptDecayed()){
                     mod_GenParticles.push_back(GenParticles_.at(i));
@@ -230,7 +247,39 @@ std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::
             
         }
     }
-    return mod_GenParticles;
+    // add collinear photons to electrons and muons to obtain dressed leptons
+    if(type_=="Electron"||type_=="Muon"){
+        for(size_t i=0;i<GenParticles_.size();i++){
+            for(size_t j=0;j<mod_GenParticles.size();j++){
+                if(fabs(GenParticles_.at(i).pdgId())==pdgids["Photon"] && GenParticles_.at(i).status()==1 && reco::deltaR(GenParticles_.at(i),mod_GenParticles.at(j))<0.1) {
+                    mod_GenParticles.at(j).setP4(mod_GenParticles.at(j).p4()+GenParticles_.at(i).p4());
+                }
+            }
+        }
+    }
+    // do pt and eta cuts
+    std::vector<reco::GenParticle> mod_GenParticles_pt_eta;
+    for(size_t i=0;i<mod_GenParticles.size();i++){
+        if(mod_GenParticles.at(i).pt()>=pt_min_ && mod_GenParticles.at(i).eta()<=eta_max_) {
+            mod_GenParticles_pt_eta.push_back(mod_GenParticles.at(i));
+        }
+    }
+    //
+    return mod_GenParticles_pt_eta;
+}
+
+std::vector<reco::GenJet> GenCollectionProducer::DeltaRCleaning(const std::vector<reco::GenJet>& GenJets_,const std::vector<reco::GenParticle>& Leptons,double R) {
+    std::vector<reco::GenJet> cleaned_jets;
+    for(size_t i=0;i<GenJets_.size();i++){
+        bool isolated = true;
+        for(size_t j=0;j<Leptons.size();j++){
+            isolated = isolated && reco::deltaR(GenJets_.at(i),Leptons.at(j))<R;
+        }
+        if(isolated) {
+            cleaned_jets.push_back(GenJets_.at(i));
+        }
+    }
+    return cleaned_jets;
 }
 
 // ------------ method called once each stream before processing any runs, lumis or events  ------------

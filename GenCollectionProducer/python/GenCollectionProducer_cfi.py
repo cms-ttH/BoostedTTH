@@ -7,5 +7,6 @@ GenCollectionProducer = cms.EDProducer('GenCollectionProducer',
                       eta_max = cms.vdouble(2.4,2.4,2.4,2.4,2.4),
                       genParticles=cms.InputTag("prunedGenParticles"),
                       genJets=cms.InputTag("slimmedGenJets"),
-                      genJetsAK8=cms.InputTag("slimmedGenJetsAK8")
+                      genJetsAK8=cms.InputTag("slimmedGenJetsAK8"),
+                      doDeltaRCleaning = cms.bool(False)
 )
