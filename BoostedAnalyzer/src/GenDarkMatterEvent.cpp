@@ -20,16 +20,18 @@ void GenDarkMatterEvent::Initialize(std::vector<reco::GenParticle> prunedGenPart
     WBosonisFilled = false;
     ZBosonisFilled = false;
     
+    int n_decay_prods = 0;
+    
     for(size_t i=0;i<prunedGenParticles.size();i++){
         if(prunedGenParticles[i].pdgId()==1000022){
             hasDarkMatter = true;
             //break;
         }
-        if(abs(prunedGenParticles[i].pdgId())==23 or abs(prunedGenParticles[i].pdgId())==24){
-            hasVectorBoson = true;
-            //break;
+        if((abs(prunedGenParticles[i].pdgId()) == 11 or abs(prunedGenParticles[i].pdgId()) == 12 or abs(prunedGenParticles[i].pdgId()) == 13 or abs(prunedGenParticles[i].pdgId()) == 14 or abs(prunedGenParticles[i].pdgId()) == 15 or abs(prunedGenParticles[i].pdgId()) == 16) and prunedGenParticles[i].isPromptFinalState()){
+            n_decay_prods+=1;
         }
     }
+    if(n_decay_prods>=2) hasVectorBoson = true;
 }
 
 // return the prunedGenParticles collection
