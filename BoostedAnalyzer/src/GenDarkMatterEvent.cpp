@@ -174,46 +174,51 @@ void GenDarkMatterEvent::FillBoson()
         //std::cout << "Therefore, the Boson cannot be filled." << std::endl;
         return;
     }
-    std::vector<const reco::Candidate*> decay_prodW;
-    std::vector<const reco::Candidate*> decay_prodZ;
+    std::vector<reco::GenParticle> decay_prodW;
+    std::vector<reco::GenParticle> decay_prodZ;
+    std::vector<reco::GenParticle> radiated_photons;
     //std::cout << "doing Boson stuff" << std::endl;
     //std::cout << "looping over " << prunedGenParticles.size() << " genParticles" << std::endl;
     for (size_t i = 0; i < prunedGenParticles.size(); i++) {
         const reco::GenParticle & genparticle = prunedGenParticles[i];
-        if (abs(genparticle.pdgId()) == 23 || abs(genparticle.pdgId()) == 24) {
-           //std::cout <<"looking at mother: " << genparticle.pdgId() << std::endl;
-           //std::cout << "looping over "<< genparticle.numberOfDaughters() <<" daughters" << std::endl;
-            for (size_t j = 0; j < genparticle.numberOfDaughters(); j++) {
-                const reco::Candidate * daughter = genparticle.daughter( j );
-                //std::cout << "looking at daughter: " << daughter->pdgId() << std::endl;
-                
-                //Z Bosons
-                if(abs(genparticle.pdgId()) == 23){
-                    if ((abs(daughter->pdgId()) == 12 or abs(daughter->pdgId()) == 14 or abs(daughter->pdgId()) == 16))  {
-                        decay_prodZ.push_back(daughter);
-                    }
-                }
-
-                //W Bosons
-                else if (abs(genparticle.pdgId()) == 24){
-                    if (abs(daughter->pdgId()) == 11 or abs(daughter->pdgId()) == 12 or abs(daughter->pdgId()) == 13 or abs(daughter->pdgId()) == 14) {//or abs(daughter->pdgId()) == 15 or abs(daughter->pdgId()) == 16
-                        decay_prodW.push_back(daughter);
-                    }
-                }
-            }
+        
+        //Z Bosons
+        if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16) and genparticle.isPromptFinalState())  {
+            decay_prodZ.push_back(genparticle);
         }
+        
+
+        //W Bosons
+        if ((abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 13 or abs(genparticle.pdgId()) == 14) and genparticle.isPromptFinalState()) {//or abs(daughter->pdgId()) == 15 or abs(daughter->pdgId()) == 16
+            decay_prodW.push_back(genparticle);
+        }
+        
+        if(abs(genparticle.pdgId())==22 and genparticle.status()==1 and !genparticle.statusFlags().isPrompt()) {
+            radiated_photons.push_back(genparticle);
+        }
+                
+  
     }
     if (decay_prodW.size() == 2){
         //std::cout << "filling W Boson" << std::endl;
-        if((decay_prodW.at(0)->pdgId())*(decay_prodW.at(1)->pdgId())<0 and abs(abs(decay_prodW.at(0)->pdgId())-abs(decay_prodW.at(1)->pdgId()))==1){
-            WBoson = decay_prodW.at(0)->p4() + decay_prodW.at(1)->p4();
+        if((decay_prodW.at(0).pdgId())*(decay_prodW.at(1).pdgId())<0 and abs(abs(decay_prodW.at(0).pdgId())-abs(decay_prodW.at(1).pdgId()))==1){
+            for(size_t k=0;k<decay_prodW.size();k++){
+                if(abs(decay_prodW.at(k).pdgId())==11 or abs(decay_prodW.at(k).pdgId())==13){
+                    for(size_t l=0;l<radiated_photons.size();l++){
+                        if(reco::deltaR(radiated_photons.at(l).p4(),decay_prodW.at(k).p4())<0.1){
+                            decay_prodW.at(k).setP4(decay_prodW.at(k).p4()+radiated_photons.at(l).p4());
+                        }
+                    }
+                }
+            }
+            WBoson = decay_prodW.at(0).p4() + decay_prodW.at(1).p4();
             WBosonisFilled = true;
         }
     }
     if (decay_prodZ.size() == 2){
         //std::cout << "filling Z Boson" << std::endl;
-        if((decay_prodZ.at(0)->pdgId())+(decay_prodZ.at(1)->pdgId())==0){
-            ZBoson = decay_prodZ.at(0)->p4() + decay_prodZ.at(1)->p4();
+        if((decay_prodZ.at(0).pdgId())+(decay_prodZ.at(1).pdgId())==0){
+            ZBoson = decay_prodZ.at(0).p4() + decay_prodZ.at(1).p4();
             ZBosonisFilled = true;
         }
     }
