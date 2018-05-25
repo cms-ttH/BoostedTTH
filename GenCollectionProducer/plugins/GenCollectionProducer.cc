@@ -231,7 +231,7 @@ std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::
     // look for prompt gen particles
     std::vector<reco::GenParticle> mod_GenParticles;
     for(size_t i=0;i<GenParticles_.size();i++){
-        if(fabs(GenParticles_.at(i).pdgId())==pdgids[type_]) {
+        if(abs(GenParticles_.at(i).pdgId())==pdgids[type_]) {
             // prompt electrons, muons or photons
             if(type_!="Tau") {
                 if(GenParticles_.at(i).isPromptFinalState()){
@@ -251,7 +251,7 @@ std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::
     if(type_=="Electron"||type_=="Muon"){
         for(size_t i=0;i<GenParticles_.size();i++){
             for(size_t j=0;j<mod_GenParticles.size();j++){
-                if(fabs(GenParticles_.at(i).pdgId())==pdgids["Photon"] && GenParticles_.at(i).status()==1 && !GenParticles_.at(i).statusFlags().isPrompt() && reco::deltaR(GenParticles_.at(i),mod_GenParticles.at(j))<0.1) {
+                if(abs(GenParticles_.at(i).pdgId())==pdgids["Photon"] && GenParticles_.at(i).status()==1 && !GenParticles_.at(i).statusFlags().isPrompt() && reco::deltaR(GenParticles_.at(i),mod_GenParticles.at(j))<0.1) {
                     mod_GenParticles.at(j).setP4(mod_GenParticles.at(j).p4()+GenParticles_.at(i).p4());
                 }
             }
