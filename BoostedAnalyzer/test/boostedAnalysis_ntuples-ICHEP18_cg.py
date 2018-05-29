@@ -48,7 +48,7 @@ if not options.inputFiles:
     if not options.isData:
         options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_v1/180212_111050/0000/Skim_3.root']
     else:
-    	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/SingleElectron/KIT_tthbb_sl_skims_v1_Run2017B/180212_150807/0000/Skim_50.root']
+      options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/SingleElectron/KIT_tthbb_sl_skims_v1_Run2017B/180212_150807/0000/Skim_50.root']
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
     print "\n\nConfig ERROR: GT contains seems to be for data but isData==False\n\n"
@@ -203,8 +203,21 @@ if options.isData:
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,applyEnergyCorrections=False,
                        applyVIDOnCorrectedEgamma=False,
-                       isMiniAOD=True)
+                       isMiniAOD=True,
+                       era='2017-Nov17ReReco') #era is new to select between 2016 / 2017,  it defaults to 2017
 # a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
+# following needs to be loaded for the ID value map producers
+
+process.load("Configuration.Geometry.GeometryRecoDB_cff")
+process.load("Configuration.StandardSequences.Services_cff")
+process.load("Configuration.StandardSequences.MagneticField_cff")
+process.load("Geometry.CaloEventSetup.CaloTowerConstituents_cfi")
+
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, '94X_dataRun2_ReReco_EOY17_v2', '')
+
+
 electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 
 # lepton selection
