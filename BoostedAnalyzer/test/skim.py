@@ -12,9 +12,9 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 
 if not options.inputFiles:
     if not options.isData:
-        options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/0081D8CE-41F2-E711-A8FD-FA163E3BE999.root']
+        options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/10000/968BB369-8542-E811-A8CF-002481CFE864.root']
     else:
-        options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2017B/SingleElectron/MINIAOD/17Nov2017-v1/40000/064D4B85-E9DB-E711-8B34-02163E019D0E.root']
+        options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2017B/SingleElectron/MINIAOD/31Mar2018-v1/90000/6052A1DF-9B37-E811-AA01-008CFA110C88.root']
 
 process = cms.Process("p")
 #set some defaults
@@ -34,7 +34,10 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = "80X_mcRun2_asymptotic_2016_TrancheIV_v8"
+if not options.isData:
+    process.GlobalTag.globaltag = "94X_mc2017_realistic_v13"
+else:
+    process.GlobalTag.globaltag = "94X_dataRun2_ReReco_EOY17_v6"
 process.load("CondCore.CondDB.CondDB_cfi")
 
 
