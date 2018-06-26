@@ -80,10 +80,10 @@ private:
   edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  // muons
   edm::EDGetTokenT< edm::View<pat::Electron> >EDMElectronsToken;  // electrons
 
-  edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedMediumIDmapToken;
-  edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedLooseIDmapToken;
-  edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedVetoIDmapToken;
-  edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedTightIDmapToken;
+  //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedMediumIDmapToken;
+  //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedLooseIDmapToken;
+  //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedVetoIDmapToken;
+  //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedTightIDmapToken;
   
   bool isData;
   bool useMuonRC; // flag to enable or disable Rochester Correction
@@ -127,10 +127,10 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
   EDMVertexToken            = consumes< reco::VertexCollection >  (iConfig.getParameter<edm::InputTag>("vertices"));
   EDMRhoToken               = consumes< double >                  (iConfig.getParameter<edm::InputTag>("rho"));
 
-  EDMeleCutBasedMediumIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
-  EDMeleCutBasedLooseIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
-  EDMeleCutBasedVetoIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
-  EDMeleCutBasedTightIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
+  //EDMeleCutBasedMediumIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
+  //EDMeleCutBasedLooseIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
+  //EDMeleCutBasedVetoIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
+  //EDMeleCutBasedTightIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
   
   // setup of outputs
   ptMins_ = iConfig.getParameter< std::vector<double> >("ptMins");
@@ -260,18 +260,18 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         
         std::vector<pat::Electron> updatedElectrons;
         
-        edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-        edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-        edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
-        edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
+        //edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
+        //edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
+        //edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
+        //edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
         
-        iEvent.getByToken(EDMeleCutBasedLooseIDmapToken, loose_id_decisions);
-        iEvent.getByToken(EDMeleCutBasedMediumIDmapToken, medium_id_decisions);
-        iEvent.getByToken(EDMeleCutBasedTightIDmapToken, tight_id_decisions);
-        iEvent.getByToken(EDMeleCutBasedVetoIDmapToken, veto_id_decisions);
+        //iEvent.getByToken(EDMeleCutBasedLooseIDmapToken, loose_id_decisions);
+        //iEvent.getByToken(EDMeleCutBasedMediumIDmapToken, medium_id_decisions);
+        //iEvent.getByToken(EDMeleCutBasedTightIDmapToken, tight_id_decisions);
+        //iEvent.getByToken(EDMeleCutBasedVetoIDmapToken, veto_id_decisions);
 
 
-        if(loose_id_decisions.isValid() && medium_id_decisions.isValid() && tight_id_decisions.isValid() && veto_id_decisions.isValid()){
+        //if(loose_id_decisions.isValid() && medium_id_decisions.isValid() && tight_id_decisions.isValid() && veto_id_decisions.isValid()){
             for(size_t i=0; i<ptMins_.size(); i++)
             {
                 for(size_t j=0; j< hElectrons->size(); j++){
@@ -300,10 +300,10 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                 iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
                 updatedElectrons.clear();
             }
-        }  
-        else{
-            throw cms::Exception("InvalidIDdecisions") << "ID decisions are corrupted!";
-        }
+        //}  
+        //else{
+           //throw cms::Exception("InvalidIDdecisions") << "ID decisions are corrupted!";
+        //}
     }
 
     else if( leptonType_ == Muon ) {

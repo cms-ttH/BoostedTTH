@@ -201,12 +201,12 @@ if options.isData:
   
 
 ### Electron scale and smearing corrections ###  
-from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,applyEnergyCorrections=False,
-                       applyVIDOnCorrectedEgamma=False,
-                       isMiniAOD=True)
+#from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+#setupEgammaPostRecoSeq(process,applyEnergyCorrections=False,
+#                       applyVIDOnCorrectedEgamma=False,
+#                       isMiniAOD=True)
 # a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
-electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
+#electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 
 # lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
@@ -452,7 +452,7 @@ if options.deterministicSeeds:
 process.p *= process.fullPatMetSequence
 
 # electron scale and smearing corrections    
-process.p *= process.egammaPostRecoSeq
+#process.p *= process.egammaPostRecoSeq
 
 process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer
 
