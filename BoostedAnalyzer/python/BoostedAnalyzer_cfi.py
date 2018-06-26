@@ -53,5 +53,5 @@ BoostedAnalyzer = cms.EDAnalyzer(
     processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor", "AK8JetProcessor", "SelectionTagProcessor"),
     outfileName = cms.string("BoostedTTH"),
 
-    taggingSelection=cms.bool(True),
+    taggingSelection=cms.bool(False),
 )

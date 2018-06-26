@@ -46,9 +46,10 @@ if options.isData:
 
 if not options.inputFiles:
     if not options.isData:
-        options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_v1/180212_111050/0000/Skim_3.root']
+        options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_94X/180617_103318/0000/Skim_1.root']
     else:
-    	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/SingleElectron/KIT_tthbb_sl_skims_v1_Run2017B/180212_150807/0000/Skim_50.root']
+    	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
+
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
     print "\n\nConfig ERROR: GT contains seems to be for data but isData==False\n\n"
@@ -115,22 +116,22 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
 
 ### some standard collections ####
-if not options.isData:
-    electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
-    photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
-    muonCollection     = cms.InputTag("slimmedMuons", "", "PAT")
-    tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
-    METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
-    jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
-    AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
-else:
-    electronCollection = cms.InputTag("slimmedElectrons", "", "RECO")
-    photonCollection   = cms.InputTag("slimmedPhotons", "", "RECO")
-    muonCollection     = cms.InputTag("slimmedMuons", "", "RECO")
-    tauCollection      = cms.InputTag("slimmedTaus", "", "RECO")
-    METCollection      = cms.InputTag("slimmedMETs", "", "RECO")
-    jetCollection      = cms.InputTag("slimmedJets", "", "RECO")
-    AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","RECO")
+#if not options.isData:
+electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
+photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
+muonCollection     = cms.InputTag("slimmedMuons", "", "PAT")
+tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
+METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
+jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
+AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
+#else:
+    #electronCollection = cms.InputTag("slimmedElectrons", "", "RECO")
+    #photonCollection   = cms.InputTag("slimmedPhotons", "", "RECO")
+    #muonCollection     = cms.InputTag("slimmedMuons", "", "RECO")
+    #tauCollection      = cms.InputTag("slimmedTaus", "", "RECO")
+    #METCollection      = cms.InputTag("slimmedMETs", "", "RECO")
+    #jetCollection      = cms.InputTag("slimmedJets", "", "RECO")
+    #AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","RECO")
 
 ###### deterministic seed producer ######
 
