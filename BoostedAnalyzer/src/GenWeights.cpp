@@ -147,6 +147,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
         // check if this line has anything to do with generator weights
         if(!line.Contains("weight")) continue;
         // check if a new weighgroup begins
+        //std::cout << line << std::endl;
         if(line.Contains("weightgroupcombine")) {
             // pdf weights?
             if(line.Contains("pdf")) {
@@ -203,23 +204,23 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
         line.ReplaceAll("id","");
         
         split=0;
-        if(line.Contains("pdfset")) split=line.Index("pdfset");
+        if(line.Contains("lhapdf")) split=line.Index("lhapdf");
         if(line.Contains("member")) split=line.Index("member");                
-        if(line.Contains("mur")) {
+        if(line.Contains("renscfact")) {
             //cout << "-----------------------------------" << endl;
             //cout << line << endl;
             split=line.Index("hdamp");
             line.ReplaceAll(line(split,line.Length()),"");
             //cout << line << endl;
-            split=line.Index("muf");
+            split=line.Index("facscfact");
             muf = line(split,line.Length());
             line.ReplaceAll(muf,"");
-            muf.ReplaceAll("muf","");
+            muf.ReplaceAll("facscfact","");
             //cout << line << endl;
-            split=line.Index("mur");
+            split=line.Index("renscfact");
             mur = line(split,line.Length());
             line.ReplaceAll(mur,"");
-            mur.ReplaceAll("mur","");
+            mur.ReplaceAll("renscfact","");
             //cout << line << endl;
             //std::string mur_ = mur.Data();
             //std::string muf_ = muf.Data();
@@ -229,20 +230,21 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             mur.ReplaceAll(".","p");
             muf = TString::Format("%.1f",muf_d);
             muf.ReplaceAll(".","p");
+            split=line.Index("lhapdf");
+            line.ReplaceAll(line(split,line.Length()),"");
         }
         // get the id of the weight
         TString id=TString(line,split);
         line.ReplaceAll(TString(id),"");
         // some more string acrobatics to get a nice identifier string for the weights
         if(is_pdf_var) {
-            line.ReplaceAll("pdfset","Weight_"+name_string+"_");
+            line.ReplaceAll("lhapdf","Weight_"+name_string+"_");
             line.ReplaceAll("member","Weight_"+name_string+"_");
         }
         if(is_scale_var) line="Weight_"+name_string+"_muR_"+mur+"_muF_"+muf;
         //cout << line << "   " << id << endl;
         // add the unique weightid and the corresponding name to a map to use later when reading the weights from the events
         lhe_weights[std::string(id)]=line;
-        
         }
         
         initialized = true;
