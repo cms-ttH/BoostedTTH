@@ -78,6 +78,12 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
     weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_up"] = weight_up;
     weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_down"] = weight_down;
     
+    // PS weights for samples containg ps weights
+    for(uint k=0;k<genInfos.weights().size();k++){
+        auto index = std::to_string(k);
+        weights["GenWeight_"+index] = genInfos.weights().at(k)/gen_weight;
+    }
+    
   }
 
   return true;
