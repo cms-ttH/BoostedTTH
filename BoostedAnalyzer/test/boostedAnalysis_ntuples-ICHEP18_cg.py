@@ -405,7 +405,7 @@ if options.isData:
   "essentialMVAVarProcessor",
   "BDTVarProcessor",
   "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
+  #"ReconstructionMEvarProcessor",
   "AK8JetProcessor"
   )
 else:
@@ -416,7 +416,7 @@ else:
   "essentialMVAVarProcessor",
   "BDTVarProcessor",
   "TriggerVarProcessor",
-  "ReconstructionMEvarProcessor",
+  #"ReconstructionMEvarProcessor",
   "AK8JetProcessor"
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
