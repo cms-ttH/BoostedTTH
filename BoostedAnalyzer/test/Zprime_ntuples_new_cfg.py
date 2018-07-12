@@ -458,6 +458,7 @@ process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[15.,15.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.4]
 process.SelectedElectronProducer.leptonIDs=["electronGeneralPurposeMVA2016WP80","electronGeneralPurposeMVA2016WP90","electronGeneralPurposeMVA2016WP90"]
+#process.SelectedMuonProducer.electronIsoConeSizes=["R04","R04","R04"]
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
 
@@ -790,8 +791,11 @@ process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"),
+
+    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK4PFchs.txt"),
 )
 
 process.patSmearedJetsAK4PUPPI = cms.EDProducer("SmearedPATJetProducer",
@@ -806,8 +810,10 @@ process.patSmearedJetsAK4PUPPI = cms.EDProducer("SmearedPATJetProducer",
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFPuppi.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFPuppi.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFPuppi.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK4PFPuppi.txt"),
+    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFPuppi.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK4PFPuppi.txt"),
 )
 
 process.patSmearedJetsAK8CHSSoftDrop = cms.EDProducer("SmearedPATJetProducer",
@@ -823,8 +829,10 @@ process.patSmearedJetsAK8CHSSoftDrop = cms.EDProducer("SmearedPATJetProducer",
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFchs.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFchs.txt"),
+    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK8PFchs.txt"),
 )
 process.patSmearedJetsAK8CHSPruning = cms.EDProducer("SmearedPATJetProducer",
     src = cms.InputTag("CorrectedJetProducerAK8CHSPruning:correctedJetsAK8CHSPruning"),
@@ -839,8 +847,10 @@ process.patSmearedJetsAK8CHSPruning = cms.EDProducer("SmearedPATJetProducer",
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFchs.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFchs.txt"),
+    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK8PFchs.txt"),
 )
 process.patSmearedJetsAK8PUPPISoftDrop = cms.EDProducer("SmearedPATJetProducer",
     src = cms.InputTag("CorrectedJetProducerAK8PUPPISoftDrop:correctedJetsAK8PUPPISoftDrop"),
@@ -855,8 +865,10 @@ process.patSmearedJetsAK8PUPPISoftDrop = cms.EDProducer("SmearedPATJetProducer",
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFPuppi.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFPuppi.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFPuppi.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFPuppi.txt"),
+    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFPuppi.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK8PFPuppi.txt"),
 )
 process.patSmearedJetsAK8PUPPIPruning = cms.EDProducer("SmearedPATJetProducer",
     src = cms.InputTag("CorrectedJetProducerAK8PUPPIPruning:correctedJetsAK8PUPPIPruning"),
@@ -871,8 +883,10 @@ process.patSmearedJetsAK8PUPPIPruning = cms.EDProducer("SmearedPATJetProducer",
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFPuppi.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFPuppi.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFPuppi.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFPuppi.txt"),
+    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFPuppi.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK8PFPuppi.txt"),
 )
 #process.patSmearedJetsAK12 = cms.EDProducer("SmearedPATJetProducer",
     #src = cms.InputTag("CorrectedJetProducerAK12:correctedJetsAK12"),
