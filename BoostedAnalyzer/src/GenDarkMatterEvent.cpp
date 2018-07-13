@@ -23,7 +23,7 @@ void GenDarkMatterEvent::Initialize(std::vector<reco::GenParticle> prunedGenPart
     int n_decay_prods = 0;
     
     for(size_t i=0;i<prunedGenParticles.size();i++){
-        if(prunedGenParticles[i].pdgId()==1000022){
+        if(prunedGenParticles[i].pdgId()==1000022 or abs(prunedGenParticles[i].pdgId())==18){
             hasDarkMatter = true;
             //break;
         }
@@ -58,13 +58,13 @@ void GenDarkMatterEvent::Fill()
     // find the lightest neutralinos in the event, the mediator, and neutrinos
     for(size_t i=0;i<prunedGenParticles.size();i++){
         reco::GenParticle genparticle = prunedGenParticles[i];
-        if(genparticle.pdgId()==1000022 and genparticle.isLastCopy() and genparticle.status()==1){
+        if((genparticle.pdgId()==1000022 or abs(genparticle.pdgId())==18) and genparticle.status()==1){
             Neutralinos.push_back(genparticle);
         }
-        if((genparticle.pdgId()==23 || genparticle.pdgId()==25) and genparticle.isLastCopy()) {
+        if((genparticle.pdgId()==23 || genparticle.pdgId()==25 || genparticle.pdgId()==55) and genparticle.isLastCopy()) {
             Mediator = genparticle;
         }
-        if((abs(genparticle.pdgId())==12 or abs(genparticle.pdgId())==14 or abs(genparticle.pdgId())==16) and genparticle.isLastCopy() and genparticle.status()==1){
+        if((abs(genparticle.pdgId())==12 or abs(genparticle.pdgId())==14 or abs(genparticle.pdgId())==16) and genparticle.status()==1){
             Neutrinos.push_back(genparticle);
         }
     }
