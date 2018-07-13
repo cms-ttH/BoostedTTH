@@ -14,6 +14,7 @@ void SelectionTagProcessor::Init(const InputCollections& input, VariableContaine
 	vars.InitVar("Miss", "I");
 	vars.InitVar("Fake", "I");
 	vars.InitVar("recoSelected", "I");
+	vars.InitVar("genSelected", "I");
 	initialized = true;
 
 }
@@ -33,14 +34,16 @@ void SelectionTagProcessor::Process(const InputCollections& input, VariableConta
 	else if(!GenSelector->GenLeptonVetoSelection(input)) genSelected = false;
 	else if(!GenSelector->GenBTagVetoSelection(input)) genSelected = false;
 	else if(!GenSelector->GenPhotonVetoSelection(input)) genSelected = false;
-	// else if(!GenSelector->GenMETSelection(input)) genSelected = false;
-	//DO METSElection Offline
+	else if(!GenSelector->GenMETSelection(input)) genSelected = false;
+	else if(!GenSelector->GenVertexSelection(input)) genSelected = false;
+	else if(!GenSelector->GenmonoVselection(input)) genSelected = false;
 
 	miss = genSelected && !recoSelected;
 	fake = !genSelected && recoSelected;
 	vars.FillVar("Miss", miss);
 	vars.FillVar("Fake", fake);
 	vars.FillVar("recoSelected", recoSelected);
+	vars.FillVar("genSelected", genSelected);
 }
 
 
