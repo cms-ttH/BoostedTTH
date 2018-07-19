@@ -605,7 +605,9 @@ process.SelectedJetProducerAK4=process.SelectedJetProducer.clone(jets='patSmeare
                                                                 JetID="none",
                                                                 )
 
+#process.SelectedJetProducerAK4PUPPI=process.SelectedJetProducer.clone(jets='patSmearedJetsAK4',
 process.SelectedJetProducerAK4PUPPI=process.SelectedJetProducer.clone(jets='patSmearedJetsAK4PUPPI',
+                                                                      
                                                                 applyCorrection=False,
                                                                 ptMins=[75],
                                                                 etaMaxs=[2.4],
@@ -678,7 +680,7 @@ for syst in systs:
 
 # correction of  miniAOD jets -- one producer creates a jet collection for nominal JES and every JES systematic
 process.CorrectedJetProducerAK4=process.SelectedJetProducer.clone(jets=jetCollection, 
-                                                               ptMins=[-1.],
+                                                               ptMins=[1.0],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJetsAK4"],#
                                                                applyCorrection=True,
@@ -690,7 +692,7 @@ process.CorrectedJetProducerAK4=process.SelectedJetProducer.clone(jets=jetCollec
                                                                jetTypeLabel="AK4PFchs",
                                                                )
 process.CorrectedJetProducerAK4PUPPI=process.SelectedJetProducer.clone(jets=jetCollectionAK4PUPPI, 
-                                                               ptMins=[-1.],
+                                                               ptMins=[1.0],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJetsAK4PUPPI"],#
                                                                applyCorrection=True,
@@ -698,12 +700,15 @@ process.CorrectedJetProducerAK4PUPPI=process.SelectedJetProducer.clone(jets=jetC
                                                                JetID="loose",
                                                                PUJetIDMins=["none"],
                                                                corrLable="ak4PFPuppiL1L2L3",
+                                                               #corrLable="ak4PFchsL1L2L3",
+                                                               #pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK4PFchs.txt",
                                                                pathToJECCorrTextFile="src/MiniAOD/MiniAODHelper/data/jec/Summer16_23Sep2016V4_MC_UncertaintySources_AK4PFPuppi.txt",
                                                                jetTypeLabel="AK4PFpuppi",
+                                                               #jetTypeLabel="AK4PFchs",
                                                                )
 # correction of  JETTOOLBOX jets -- one producer creates a jet collection for nominal JES and every JES systematic
 process.CorrectedJetProducerAK8CHSSoftDrop=process.SelectedJetProducer.clone(jets=jetCollectionAK8CHSSoftDrop, 
-                                                               ptMins=[-1.],
+                                                               ptMins=[1.0],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJetsAK8CHSSoftDrop"],
                                                                applyCorrection=True,
@@ -715,7 +720,7 @@ process.CorrectedJetProducerAK8CHSSoftDrop=process.SelectedJetProducer.clone(jet
                                                                jetTypeLabel="AK8PFchs",
                                                                )
 process.CorrectedJetProducerAK8CHSPruning=process.SelectedJetProducer.clone(jets=jetCollectionAK8CHSPruning, 
-                                                               ptMins=[-1.],
+                                                               ptMins=[1.0],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJetsAK8CHSPruning"],
                                                                applyCorrection=True,
@@ -727,7 +732,7 @@ process.CorrectedJetProducerAK8CHSPruning=process.SelectedJetProducer.clone(jets
                                                                jetTypeLabel="AK8PFchs",
                                                                )
 process.CorrectedJetProducerAK8PUPPISoftDrop=process.SelectedJetProducer.clone(jets=jetCollectionAK8PUPPISoftDrop, 
-                                                               ptMins=[-1.],
+                                                               ptMins=[1.0],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJetsAK8PUPPISoftDrop"],
                                                                applyCorrection=True,
@@ -739,7 +744,7 @@ process.CorrectedJetProducerAK8PUPPISoftDrop=process.SelectedJetProducer.clone(j
                                                                jetTypeLabel="AK8PFpuppi",
                                                                )
 process.CorrectedJetProducerAK8PUPPIPruning=process.SelectedJetProducer.clone(jets=jetCollectionAK8PUPPIPruning, 
-                                                               ptMins=[-1.],
+                                                               ptMins=[1.0],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJetsAK8PUPPIPruning"],
                                                                applyCorrection=True,
@@ -753,7 +758,7 @@ process.CorrectedJetProducerAK8PUPPIPruning=process.SelectedJetProducer.clone(je
 
 ## correction of  JETTOOLBOX jets -- one producer creates a jet collection for nominal JES and every JES systematic
 #process.CorrectedJetProducerAK12=process.SelectedJetProducer.clone(jets=jetCollectionAK12, 
-                                                               #ptMins=[-1.],
+                                                               #ptMins=[1.0],
                                                                #etaMaxs=[999.],
                                                                #collectionNames=["correctedJetsAK12"],
                                                                #applyCorrection=True,
@@ -765,7 +770,7 @@ process.CorrectedJetProducerAK8PUPPIPruning=process.SelectedJetProducer.clone(je
 
 ## correction of  JETTOOLBOX jets -- one producer creates a jet collection for nominal JES and every JES systematic
 #process.CorrectedJetProducerAK15=process.SelectedJetProducer.clone(jets=jetCollectionAK15, 
-                                                               #ptMins=[-1.],
+                                                               #ptMins=[1.0],
                                                                #etaMaxs=[999.],
                                                                #collectionNames=["correctedJetsAK15"],
                                                                #applyCorrection=True,
@@ -799,6 +804,7 @@ process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
 )
 
 process.patSmearedJetsAK4PUPPI = cms.EDProducer("SmearedPATJetProducer",
+    #src = cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4"),
     src = cms.InputTag("CorrectedJetProducerAK4PUPPI:correctedJetsAK4PUPPI"),
     enabled = cms.bool(True),  # If False, no smearing is performed
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -810,10 +816,27 @@ process.patSmearedJetsAK4PUPPI = cms.EDProducer("SmearedPATJetProducer",
     dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
-    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFPuppi.txt"),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK4PFPuppi.txt"),
-    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFPuppi.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK4PFPuppi.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"),
+
+    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK4PFchs.txt"),
+    
+    #src = cms.InputTag("CorrectedJetProducerAK4PUPPI:correctedJetsAK4PUPPI"),
+    #enabled = cms.bool(True),  # If False, no smearing is performed
+    #rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    #skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
+##    algopt = cms.string('AK4PFchs_pt'),
+##    algo = cms.string('AK4PFchs'),
+    #genJets = cms.InputTag("slimmedGenJets"),
+    #dRMax = cms.double(0.2),  # = cone size (0.4) / 2
+    #dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
+    #variation = cms.int32(0),  # systematic +1 0 -1 sigma
+    #debug = cms.untracked.bool(False),
+    ##resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFPuppi.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK4PFPuppi.txt"),
+    ##scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFPuppi.txt"),
+    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK4PFPuppi.txt"),
 )
 
 process.patSmearedJetsAK8CHSSoftDrop = cms.EDProducer("SmearedPATJetProducer",
@@ -866,7 +889,8 @@ process.patSmearedJetsAK8PUPPISoftDrop = cms.EDProducer("SmearedPATJetProducer",
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
     #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFPuppi.txt"),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFPuppi.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFPuppi.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFchs.txt"),
     #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFPuppi.txt"),
     scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK8PFPuppi.txt"),
 )
@@ -884,7 +908,8 @@ process.patSmearedJetsAK8PUPPIPruning = cms.EDProducer("SmearedPATJetProducer",
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
     #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK8PFPuppi.txt"),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFPuppi.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFPuppi.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFchs.txt"),
     #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK8PFPuppi.txt"),
     scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK8PFPuppi.txt"),
 )

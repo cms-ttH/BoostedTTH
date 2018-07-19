@@ -26,7 +26,30 @@ ZPrimeToTPrimeAllHadProcessor::ZPrimeToTPrimeAllHadProcessor(){
 }
             
             
-            
+std::vector<float> smearfactor_JetMass(float phi, float eta){
+    std::vector<float> res;
+
+    
+    UInt_t seed = int((phi + 10.0)*10000);
+    int warmup = int((eta + 10.0)*10);
+    
+   
+    TRandom3 myrandom=TRandom3(seed);
+    
+    for (int i=0; i<warmup; i++){
+        myrandom.Gaus(0.0,7.99);
+    }
+    
+    float randomnumber=myrandom.Gaus(0.0,7.99/82.0);
+    res.push_back(1+sqrt(1.23*1.23 -1.0)*randomnumber);
+    res.push_back(1+sqrt((1.23+0.18)*(1.23+0.18) -1.0)*randomnumber);
+    res.push_back(1+sqrt((1.23-0.18)*(1.23-0.18) -1.0)*randomnumber);
+
+    
+    
+    return res;
+
+}   
             
 ZPrimeToTPrimeAllHadProcessor::~ZPrimeToTPrimeAllHadProcessor(){
     delete histo_ABCD_QCD_MSD_top_nobtag;
@@ -1036,6 +1059,9 @@ void ZPrimeToTPrimeAllHadProcessor::InitABCDVars(VariableContainer& vars){
    vars.InitVars("Ws_ABCDCHSPruning_Eta",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Ws_ABCDCHSPruning_Phi",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Ws_ABCDCHSPruning_MSD",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_MSD_smeared",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_MSD_JetResup",-9.0,"N_Zprime_ABCDCHSPruning");
+   vars.InitVars("Ws_ABCDCHSPruning_MSD_JetResdown",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Ws_ABCDCHSPruning_t21",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Tops_ABCDCHSPruning_matcheddecays",-9.0,"N_Zprime_ABCDCHSPruning");
    vars.InitVars("Tops_ABCDCHSPruning_real",-9.0,"N_Zprime_ABCDCHSPruning");
@@ -3764,9 +3790,7 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].pt());
      vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_Eta",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].eta());
      vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_Phi",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].phi());
-     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_MSD",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));
-     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_t21",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("NjettinessAK8CHS:tau1"));
-     
+     vars.FillVars("Ws_ABCDCHSSoftDrop_masscorrwithtopbtag_MSD",i,WsABCDCHSSoftDropmasscorrwithtopbtag[i].userFloat("ak8PFJetsCHSSoftDropMass"));     
      vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_Pt",i,TopsABCDCHSSoftDropmasscorrwithtopbtag[i].pt());
      vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_Eta",i,TopsABCDCHSSoftDropmasscorrwithtopbtag[i].eta());
      vars.FillVars("Tops_ABCDCHSSoftDrop_masscorrwithtopbtag_Phi",i,TopsABCDCHSSoftDropmasscorrwithtopbtag[i].phi());
@@ -4007,6 +4031,9 @@ void ZPrimeToTPrimeAllHadProcessor::Process(const InputCollections& input,Variab
      vars.FillVars("Ws_ABCDCHSPruning_Eta",i,WsABCDCHSPruning[i].eta());
      vars.FillVars("Ws_ABCDCHSPruning_Phi",i,WsABCDCHSPruning[i].phi());
      vars.FillVars("Ws_ABCDCHSPruning_MSD",i,WsABCDCHSPruning[i].userFloat("ak8PFJetsCHSPrunedMass"));
+     vars.FillVars("Ws_ABCDCHSPruning_MSD_smeared",i,WsABCDCHSPruning[i].userFloat("ak8PFJetsCHSPrunedMass")*(smearfactor_JetMass(WsABCDCHSPruning[i].phi(),WsABCDCHSPruning[i].eta()))[0]);
+     vars.FillVars("Ws_ABCDCHSPruning_MSD_JetResup",i,WsABCDCHSPruning[i].userFloat("ak8PFJetsCHSPrunedMass")*(smearfactor_JetMass(WsABCDCHSPruning[i].phi(),WsABCDCHSPruning[i].eta()))[1]);
+     vars.FillVars("Ws_ABCDCHSPruning_MSD_JetResdown",i,WsABCDCHSPruning[i].userFloat("ak8PFJetsCHSPrunedMass")*(smearfactor_JetMass(WsABCDCHSPruning[i].phi(),WsABCDCHSPruning[i].eta()))[2]);
      vars.FillVars("Ws_ABCDCHSPruning_t21",i,WsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau2")/WsABCDCHSPruning[i].userFloat("NjettinessAK8CHS:tau1"));
      vars.FillVars("Ws_ABCDCHSPruning_corrL1L2L3",i,corr_AK8CHS_L1L2L3);
      vars.FillVars("Ws_ABCDCHSPruning_corrL2L3",i,corr_AK8CHS_L2L3);

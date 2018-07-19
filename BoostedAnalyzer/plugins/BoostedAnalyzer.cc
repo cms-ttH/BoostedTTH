@@ -614,6 +614,7 @@ BoostedAnalyzer::~BoostedAnalyzer()
 void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     if(eventcount<20||eventcount%1000==0){
+//     if(eventcount<20||eventcount%10==0){
 	cout << "Analyzing event " << eventcount << endl;
 	watch.Print();
 	watch.Continue();
