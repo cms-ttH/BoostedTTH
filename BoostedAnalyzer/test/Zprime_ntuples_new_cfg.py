@@ -817,10 +817,10 @@ process.patSmearedJetsAK4PUPPI = cms.EDProducer("SmearedPATJetProducer",
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
     #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt"),
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"),
+    #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"),
 
     #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK4PFchs.txt"),
+    #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK4PFchs.txt"),
     
     #src = cms.InputTag("CorrectedJetProducerAK4PUPPI:correctedJetsAK4PUPPI"),
     #enabled = cms.bool(True),  # If False, no smearing is performed
@@ -833,9 +833,9 @@ process.patSmearedJetsAK4PUPPI = cms.EDProducer("SmearedPATJetProducer",
     #dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
     #variation = cms.int32(0),  # systematic +1 0 -1 sigma
     #debug = cms.untracked.bool(False),
-    ##resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFPuppi.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_PtResolution_AK4PFPuppi.txt"),
     #resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK4PFPuppi.txt"),
-    ##scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFPuppi.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Spring16_25nsV10_MC_SF_AK4PFPuppi.txt"),
     #scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK4PFPuppi.txt"),
 )
 
