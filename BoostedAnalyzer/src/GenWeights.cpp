@@ -134,6 +134,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
     int split=0;
     for (auto iter=myLHERunInfoProduct.begin(); iter!=myLHERunInfoProduct.end(); iter++) {
         TString line = *iter;
+        //cout << "LHE Header: " << line << endl;
         // first remove some characters which complicate everything
         line.ToLower();
         line.ReplaceAll("\n","");
@@ -146,6 +147,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
         line.ReplaceAll("+","");
         // check if this line has anything to do with generator weights
         if(!line.Contains("weight")) continue;
+        //cout << "LHE Header: " << line << endl;
         // check if a new weighgroup begins
         if(line.Contains("weightgroupcombine")) {
             // pdf weights?
@@ -188,6 +190,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             // some names have .lhgrid string in their name->remove
             name_string.ReplaceAll(".lhgrid","");
             name_string.ReplaceAll("centralscalevariation","scale_variation");
+            name_string.ReplaceAll("-1","");// madgraph signal samples ...
             //cout << "blablabla " << split << "       " << pdf_string << endl;
             continue;
         }
@@ -208,6 +211,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
         if(line.Contains("mur")) {
             //cout << "-----------------------------------" << endl;
             //cout << line << endl;
+            line.ReplaceAll("dyn-1","");// madgraph signal samples ...
             split=line.Index("hdamp");
             line.ReplaceAll(line(split,line.Length()),"");
             //cout << line << endl;
