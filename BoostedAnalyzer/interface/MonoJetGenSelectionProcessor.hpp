@@ -20,11 +20,12 @@ public:
   int GenBTagVetoSelection(const InputCollections& input);
   int GenPhotonVetoSelection(const InputCollections& input);
   int GenmonoVselection(const InputCollections& input);
+  bool isMadgraphSample=true; //TODO load from config file
 
 private:
-  const float minMET = 250;
+  const float minMET = 200;
   const float maxMET = 100000;
-  const float pt_min = 100;
+  const float pt_min = 120;
   const float eta_max = 2.5;
   const float charged_hadron_fraction_min = 0.1;
   const float neutral_hadron_fraction_max = 0.8;
