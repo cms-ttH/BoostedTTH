@@ -87,9 +87,11 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
   // GenMET
-  if(input.correctedMET.genMET()!=0){
-      vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
-      vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
+  if(!isMadgraphSample){
+    if(input.correctedMET.genMET()!=0){
+        vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
+       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
+    }
   }
   
   math::XYZTLorentzVector met_p4(0.,0.,0.,0.);
@@ -163,6 +165,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
     
     TLorentzVector Mediator_p4 = DM_Evt.ReturnMediator4Vector();
+    TLorentzVector NaiveMET_p4 = DM_Evt.ReturnNaiveMET4Vector();
     std::vector<TLorentzVector> Neutralinos_p4 = DM_Evt.ReturnNeutralino4Vectors();
     std::vector<TLorentzVector> Neutrinos_p4 = DM_Evt.ReturnNeutrino4Vectors();
     
@@ -170,6 +173,11 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVar( "N_Neutrinos",Neutrinos_p4.size() );
     
     vars.FillVar( "NaiveMET",DM_Evt.ReturnNaiveMET());
+    if(isMadgraphSample){    
+      vars.FillVar( "Evt_Pt_GenMET",NaiveMET_p4.Pt());
+      vars.FillVar( "Evt_Phi_GenMET",NaiveMET_p4.Phi());
+    }
+    
     
     vars.FillVar( "Mediator_Mass",Mediator_p4.M());
     vars.FillVar( "Mediator_Pt",Mediator_p4.Pt());
