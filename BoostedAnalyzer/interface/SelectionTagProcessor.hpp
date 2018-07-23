@@ -10,7 +10,9 @@ class SelectionTagProcessor: public TreeProcessor {
 
 public:
 
-	SelectionTagProcessor();
+	// SelectionTagProcessor(const edm::ParameterSet& iConfig);
+	// explicit SelectionTagProcessor(const edm::ParameterSet&);
+	SelectionTagProcessor(const edm::ParameterSet&);
 	~SelectionTagProcessor();
 
 	void Init(const InputCollections& input, VariableContainer& var);
@@ -20,7 +22,7 @@ public:
 	bool fake;
 	bool recoSelected;
 	bool genSelected;
-	MonoJetGenSelectionProcessor* GenSelector = new MonoJetGenSelectionProcessor();
+	MonoJetGenSelectionProcessor* GenSelector;
 
 
 private:

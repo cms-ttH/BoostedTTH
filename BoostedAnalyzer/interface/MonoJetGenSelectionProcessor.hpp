@@ -4,15 +4,16 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
-class MonoJetGenSelectionProcessor: public TreeProcessor{
-  
+class MonoJetGenSelectionProcessor: public TreeProcessor {
+
 public:
-  
-  MonoJetGenSelectionProcessor();
+
+  MonoJetGenSelectionProcessor(const edm::ParameterSet& iConfig);
+  MonoJetGenSelectionProcessor(bool isMadgraphSample = false);
   ~MonoJetGenSelectionProcessor();
-  
-  void Init(const InputCollections& input,VariableContainer& var);
-  void Process(const InputCollections& input,VariableContainer& var);
+
+  void Init(const InputCollections& input, VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
   int GenVertexSelection(const InputCollections& input);
   int GenMETSelection(const InputCollections& input);
   int GenMonoJetSelection(const InputCollections& input);
@@ -20,7 +21,7 @@ public:
   int GenBTagVetoSelection(const InputCollections& input);
   int GenPhotonVetoSelection(const InputCollections& input);
   int GenmonoVselection(const InputCollections& input);
-  bool isMadgraphSample=true; //TODO load from config file
+  bool isMadgraphSample = false; 
 
 private:
   const float minMET = 200;

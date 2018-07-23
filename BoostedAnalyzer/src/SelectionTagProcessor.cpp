@@ -2,7 +2,10 @@
 
 using namespace std;
 
-SelectionTagProcessor::SelectionTagProcessor() {}
+SelectionTagProcessor::SelectionTagProcessor(const edm::ParameterSet& iConfig) {
+	MonoJetGenSelectionProcessor* GenSelector = new MonoJetGenSelectionProcessor(iConfig);
+
+}
 SelectionTagProcessor::~SelectionTagProcessor() {}
 
 

@@ -2,7 +2,9 @@
 
 using namespace std;
 
-DarkMatterProcessor::DarkMatterProcessor(){}
+DarkMatterProcessor::DarkMatterProcessor(const edm::ParameterSet& iConfig):DarkMatterProcessor(iConfig.getParameter<bool>("isMadgraphSample")){}
+DarkMatterProcessor::DarkMatterProcessor (bool isMadgraphSample_):isMadgraphSample(isMadgraphSample_){}
+
 DarkMatterProcessor::~DarkMatterProcessor(){}
 
 

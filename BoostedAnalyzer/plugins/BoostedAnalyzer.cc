@@ -576,13 +576,13 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
 	  treewriter->AddTreeProcessor(new SlimmedNtuples(),"SlimmedNtuples");
 	}
 	if(std::find(processorNames.begin(),processorNames.end(),"DarkMatterProcessor")!=processorNames.end()) {
-		treewriter->AddTreeProcessor(new DarkMatterProcessor(),"DarkMatterProcessor");
+		treewriter->AddTreeProcessor(new DarkMatterProcessor(iConfig),"DarkMatterProcessor");
         }
         if(std::find(processorNames.begin(),processorNames.end(),"MonoJetGenSelectionProcessor")!=processorNames.end()) {
-		treewriter->AddTreeProcessor(new MonoJetGenSelectionProcessor(),"MonoJetGenSelectionProcessor");
+		treewriter->AddTreeProcessor(new MonoJetGenSelectionProcessor(iConfig),"MonoJetGenSelectionProcessor");
         }
     if(std::find(processorNames.begin(),processorNames.end(),"SelectionTagProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new SelectionTagProcessor(),"SelectionTagProcessor");
+        treewriter->AddTreeProcessor(new SelectionTagProcessor(iConfig),"SelectionTagProcessor");
     }
     }
 

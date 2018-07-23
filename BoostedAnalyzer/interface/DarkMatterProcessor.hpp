@@ -4,17 +4,19 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
+
 class DarkMatterProcessor: public TreeProcessor{
   
 public:
   
-  DarkMatterProcessor();
+  DarkMatterProcessor(const edm::ParameterSet& iConfig);
+  DarkMatterProcessor(bool isMadgraphSample=false);
   ~DarkMatterProcessor();
   
   void Init(const InputCollections& input,VariableContainer& var);
   void Process(const InputCollections& input,VariableContainer& var);
 private:
-	bool isMadgraphSample=true; //TODO load from config
+	bool isMadgraphSample=false; 
 };
 
 #endif

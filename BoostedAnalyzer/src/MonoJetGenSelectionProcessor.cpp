@@ -5,8 +5,10 @@
 
 using namespace std;
 
-MonoJetGenSelectionProcessor::MonoJetGenSelectionProcessor(){}
+MonoJetGenSelectionProcessor::MonoJetGenSelectionProcessor(const edm::ParameterSet& iConfig):MonoJetGenSelectionProcessor(iConfig.getParameter<bool>("isMadgraphSample")){}
+MonoJetGenSelectionProcessor::MonoJetGenSelectionProcessor (bool isMadgraphSample_):isMadgraphSample(isMadgraphSample_){}
 MonoJetGenSelectionProcessor::~MonoJetGenSelectionProcessor(){}
+
 
 
 void MonoJetGenSelectionProcessor::Init(const InputCollections& input,VariableContainer& vars){
