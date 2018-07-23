@@ -185,7 +185,7 @@ void GenDarkMatterEvent::FillBoson()
         const reco::GenParticle & genparticle = prunedGenParticles[i];
         
         //Z Bosons
-        if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16) and genparticle.isPromptFinalState())  {
+        if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16 or abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 13) and genparticle.isPromptFinalState())  {
             decay_prodZ.push_back(genparticle);
         }
         
@@ -220,6 +220,15 @@ void GenDarkMatterEvent::FillBoson()
     if (decay_prodZ.size() == 2){
         //std::cout << "filling Z Boson" << std::endl;
         if((decay_prodZ.at(0).pdgId())+(decay_prodZ.at(1).pdgId())==0){
+	    for(size_t k=0;k<decay_prodZ.size();k++){
+                if(abs(decay_prodZ.at(k).pdgId())==11 or abs(decay_prodZ.at(k).pdgId())==13){
+                    for(size_t l=0;l<radiated_photons.size();l++){
+                        if(reco::deltaR(radiated_photons.at(l).p4(),decay_prodZ.at(k).p4())<0.1){
+                            decay_prodZ.at(k).setP4(decay_prodZ.at(k).p4()+radiated_photons.at(l).p4());
+                        }
+                    }
+                }
+            }
             ZBoson = decay_prodZ.at(0).p4() + decay_prodZ.at(1).p4();
             ZBosonisFilled = true;
         }
