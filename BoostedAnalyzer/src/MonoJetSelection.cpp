@@ -18,7 +18,7 @@ void MonoJetSelection::InitCutflow(Cutflow& cutflow){
 
   pt_str = std::to_string(pt_min); 
   eta_str = std::to_string(eta_max); 
-  cutflow.AddStep("At least one jet with pt greater than "+pt_str+"and eta smaller than "+eta_str);
+  cutflow.AddStep("At least one jet with pt greater than "+pt_str+" and eta smaller than "+eta_str);
 
   initialized=true;
 }
@@ -73,7 +73,7 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
         if(!dPhi_jet_met_criterium) return false;
     }
 
-    cutflow.EventSurvivedStep("At least one jet with pt greater than "+pt_str+"and eta smaller than "+eta_str,input.weights.at("Weight"));
+    cutflow.EventSurvivedStep("At least one jet with pt greater than "+pt_str+" and eta smaller than "+eta_str,input.weights.at("Weight"));
     return true;
 
 }
