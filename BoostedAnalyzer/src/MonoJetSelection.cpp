@@ -16,6 +16,7 @@ double MonoJetSelection::DeltaPhi(const double& phi1, const double& phi2){
 
 void MonoJetSelection::InitCutflow(Cutflow& cutflow){
 
+  // create string for cutflow
   pt_str = std::to_string(pt_min); 
   eta_str = std::to_string(eta_max); 
   cutflow.AddStep("At least one jet with pt greater than "+pt_str+" and eta smaller than "+eta_str);
@@ -26,10 +27,11 @@ void MonoJetSelection::InitCutflow(Cutflow& cutflow){
 bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     if(!initialized) cerr << "MonoJetSelection not initialized" << endl;
 
+    // do not use the event if there are no selected jets
     if(input.selectedJets.size()<1) return false;
 
-    bool dPhi_jet_met_criterium = true;
-
+    // use a selection criteria for monojet events according to CMS monojet analysis
+    // leading jet has to fulfill pt,eta and several quality criteria
     bool leading_jet_criterium = input.selectedJets.at(0).pt()>pt_min && fabs(input.selectedJets.at(0).eta())<eta_max && charged_hadron_fraction_min<input.selectedJets.at(0).userFloat("chargedHadronEnergyFraction") && neutral_hadron_fraction_max>input.selectedJets.at(0).userFloat("neutralHadronEnergyFraction");
 
     if(!leading_jet_criterium) return false;
@@ -40,6 +42,8 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
     jet_cleaning_criterium = charged_hadron_fraction_min<input.selectedJets.at(i).userFloat("chargedHadronEnergyFraction") && neutral_hadron_fraction_max>input.selectedJets.at(i).userFloat("neutralHadronEnergyFraction");
     if(!jet_cleaning_criterium) return false;
     }*/
+    
+    // get correct MET/hadronic recoil from events, see METSelection.cpp for explanation
     math::XYZTLorentzVector met_p4(0.,0.,0.,0.);
     math::XYZTLorentzVector hadr_recoil_p4(0.,0.,0.,0.);
     if(input.systematic==Systematics::JESup) {
@@ -67,7 +71,9 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
     for(const auto& ph : input.selectedPhotonsLoose){
         hadr_recoil_p4 += ph.p4();
     }
-
+    
+    // deltaphi criteria between jets and MET to suppress mismeasured QCD events
+    bool dPhi_jet_met_criterium = true;
     for(size_t i=0;i<input.selectedJets.size()&&i<4;i++) {
         dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(i).phi()))>0.5;
         if(!dPhi_jet_met_criterium) return false;
