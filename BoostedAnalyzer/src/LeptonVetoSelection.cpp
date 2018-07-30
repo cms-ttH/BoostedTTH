@@ -15,6 +15,7 @@ void LeptonVetoSelection::InitCutflow(Cutflow& cutflow){
 bool LeptonVetoSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "LeptonVetoSelection not initialized" << endl;
 
+  // veto the event if there is any loose lepton
   if(input.selectedElectronsLoose.size()>0 || input.selectedMuonsLoose.size()>0 || input.selectedTaus.size()>0) {
     return false;
   }

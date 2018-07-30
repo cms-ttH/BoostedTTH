@@ -15,6 +15,7 @@ void PhotonVetoSelection::InitCutflow(Cutflow& cutflow){
 bool PhotonVetoSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "PhotonVetoSelection not initialized" << endl;
 
+  // veto the event if a loose photon is found
   if(input.selectedPhotonsLoose.size()>0) {
     return false;
   }
