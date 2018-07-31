@@ -127,10 +127,10 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   
   // hadronic recoil
   hadr_recoil_p4 = met_p4;
-  for(const auto& el : input.selectedElectrons){
+  for(const auto& el : input.selectedElectronsLoose){
       hadr_recoil_p4 += el.p4();
   }
-  for(const auto& mu : input.selectedMuons){
+  for(const auto& mu : input.selectedMuonsLoose){
       hadr_recoil_p4 += mu.p4();
   }
   for(const auto& ph : input.selectedPhotonsLoose){

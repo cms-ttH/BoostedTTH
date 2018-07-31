@@ -62,10 +62,10 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
         met_p4 = input.correctedMET.corP4(pat::MET::Type1XY);
     }
     hadr_recoil_p4 = met_p4;
-    for(const auto& el : input.selectedElectrons){
+    for(const auto& el : input.selectedElectronsLoose){
         hadr_recoil_p4 += el.p4();
     }
-    for(const auto& mu : input.selectedMuons){
+    for(const auto& mu : input.selectedMuonsLoose){
         hadr_recoil_p4 += mu.p4();
     }
     for(const auto& ph : input.selectedPhotonsLoose){
