@@ -57,5 +57,5 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     taggingSelection=cms.bool(True),
 
-    isMadgraphSample=cms.bool(True),
+    isMadgraphSample=cms.bool(False),
 )
