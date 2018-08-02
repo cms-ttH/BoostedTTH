@@ -970,11 +970,16 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
  	weights["Weight_TopPt"] = 1.0;
 	weights["Weight_PV"] = 1.0;
 	weights["Weight_GenValue"] = 1.0;
+        weights["Weight_GEN_nom"] = 1.0;
 	return weights;
     }
 
+    // start with weight equals 1
     float weight = 1.;
     float weight_GenValue=1.0;
+    
+    // set weight +1 if nominal genweight > 0 and -1 if nominal genweight < 0
+    // set weight_GenValue to nominal genweight
     if(genInfo.weights().size()>0){
 	weight = genInfo.weights()[0]>0 ? 1.: -1.;
 	weight_GenValue = genInfo.weights()[0];
@@ -983,17 +988,21 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     //dummy variables for the getCSVWeight function, might be useful for checks
     double csvWgtHF, csvWgtLF, csvWgtCF;
 
+    // set xsweight to weight which is given as option in cmsRun command 
     float xsweight = eventWeight;
     float csvweight = 1.;
     float puweight = 1.;
     float topptweight = genTopEvt.IsTTbar()? GetTopPtWeight(genTopEvt.GetHardTop().pt(),genTopEvt.GetHardTopBar().pt()) : 1.;
     //float topptweightUp = 1.0 + 2.0*(topptweight-1.0);
     //float topptweightDown = 1.0;
-    //get vectors of jet properties
+    
+    // create vectors of jet properties
     std::vector<double> jetPts;
     std::vector<double> jetEtas;
     std::vector<double> jetCSVs;
     std::vector<int> jetFlavors;
+    
+    // fill jet properties
     for(const auto& itJet : selectedJetsLoose){
 	jetPts.push_back(itJet.pt());
 	jetEtas.push_back(itJet.eta());
@@ -1001,14 +1010,16 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	jetFlavors.push_back(itJet.hadronFlavour());
     }
     
-    // calculate the csv weight for the desired systematic
+    // calculate the csv weight for the desired systematic using the information from the jet properties vectors
     csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,systype, csvWgtHF, csvWgtLF, csvWgtCF);
     
     // compute PU weights, and set nominal weight
     puWeights.compute(eventInfo);
     puweight = puWeights.nominalWeight();
 
+    // multiply +1 or -1 with xsweight
     weight *= xsweight;//puweight*csvweight;
+    // fill map with weights
     weights["Weight_GenValue"] = weight_GenValue;
     weights["Weight"] = weight;
     weights["Weight_XS"] = xsweight;
@@ -1016,9 +1027,10 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     weights["Weight_PU"] = puweight;
     weights["Weight_TopPt"] = topptweight;
     
+    // weights for csv systmatics
+    // only do these for the nominal samples and NOT for JES/JER variations
     bool doSystematics=true;
-//     if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
-     if(doSystematics && systype == Systematics::NA) { // only do these for the nominal samples
+    if(doSystematics && systype == Systematics::NA) { 
         //std::cout << "Do csv weights for csv systematics " << std::endl;
 	weights["Weight_CSVLFup"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFup, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
 	weights["Weight_CSVLFdown"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFdown, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
@@ -1038,7 +1050,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 	weights["Weight_CSVCErr2down"] = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
  	//weights["Weight_TopPtup"] = topptweightUp;
  	//weights["Weight_TopPtdown"] = topptweightDown;
-  }
+    }
     
     //Add Lepton Scalefactors to weight map
     /*
@@ -1061,11 +1073,14 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
 
     return weights;
 }
+
+// function to convert sysType enum to string
 std::string BoostedAnalyzer::systName(const Systematics::Type& sysType){
   if( sysType == Systematics::NA ) return "nominal";
-  else                         return Systematics::toString(sysType);
+  else return Systematics::toString(sysType);
 }
 
+// function to create name for output file of BoostedAnalyzer using basename and the sysType 
 std::string BoostedAnalyzer::outfileName(const std::string& basename, const Systematics::Type& sysType){
   const std::string systLabel = Systematics::toString(sysType);
   const size_t stringIndex = basename.find("nominal");
@@ -1075,7 +1090,7 @@ std::string BoostedAnalyzer::outfileName(const std::string& basename, const Syst
     return outfileName;
   }
   if(sysType==Systematics::NA) return basename+"_nominal";
-  else                     return basename+"_"+systLabel;
+  else return basename+"_"+systLabel;
 }
 
 
@@ -1095,16 +1110,8 @@ void BoostedAnalyzer::endJob()
 	std::ofstream fout(outfileNames[i]+"_Cutflow.txt");
 	cutflows[i].Print(fout);
 	fout.close();
-        //if(!ProduceMemNtuples) {
-            //delete treewriters[i];
-        //}
     }
-    //if(ProduceMemNtuples) {
-        //delete treewriters.back();
-    //}
-    //for(size_t i=0; i<selections.size();i++) {
-        //delete selections[i];
-    //}
+    
 }
 
 // ------------ method called when starting to processes a run ------------
@@ -1130,8 +1137,6 @@ void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSet
     }
     LHERunInfoProduct myLHERunInfoProduct = *(runhandle.product());
     genweights.GetNamesFromLHE(myLHERunInfoProduct);
-    
-    
     
 }
 
