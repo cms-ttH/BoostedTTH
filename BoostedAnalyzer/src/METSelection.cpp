@@ -39,10 +39,10 @@ bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     }
     double met = met_p4.pt();
     hadr_recoil_p4 = met_p4;
-    for(const auto& el : input.selectedElectrons){
+    for(const auto& el : input.selectedElectronsLoose){
         hadr_recoil_p4 += el.p4();
     }
-    for(const auto& mu : input.selectedMuons){
+    for(const auto& mu : input.selectedMuonsLoose){
         hadr_recoil_p4 += mu.p4();
     }
     for(const auto& ph : input.selectedPhotonsLoose){
@@ -51,7 +51,7 @@ bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     double hadr_recoil = hadr_recoil_p4.pt();
     //double uncormet = input.correctedMET.uncorPt();
     double calomet = input.correctedMET.caloMETPt();
-    if((met>minMET&&met<maxMET)&&(fabs(calomet-met)/calomet<0.5)){
+    if((hadr_recoil>minMET&&hadr_recoil<maxMET)&&(fabs(calomet-met)/calomet<0.5)){
 	cutflow.EventSurvivedStep(selectionName ,input.weights.at("Weight"));
 	return true;
     }

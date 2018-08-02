@@ -58,10 +58,10 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
         met_p4 = input.correctedMET.corP4(pat::MET::Type1XY);
     }
     hadr_recoil_p4 = met_p4;
-    for(const auto& el : input.selectedElectrons){
+    for(const auto& el : input.selectedElectronsLoose){
         hadr_recoil_p4 += el.p4();
     }
-    for(const auto& mu : input.selectedMuons){
+    for(const auto& mu : input.selectedMuonsLoose){
         hadr_recoil_p4 += mu.p4();
     }
     for(const auto& ph : input.selectedPhotonsLoose){
@@ -70,6 +70,7 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
 
     for(size_t i=0;i<input.selectedJets.size()&&i<4;i++) {
         dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(i).phi()))>0.5;
+        // dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi()-input.selectedJets.at(i).phi()))>0.5;
         if(!dPhi_jet_met_criterium) return false;
     }
 
