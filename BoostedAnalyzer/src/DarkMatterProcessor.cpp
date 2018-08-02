@@ -139,7 +139,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   
   vars.FillVar( "Hadr_Recoil_Pt",hadr_recoil_p4.pt() );
   vars.FillVar( "Hadr_Recoil_Phi",hadr_recoil_p4.phi() );
-  vars.FillVar( "CaloMET_Hadr_Recoil_ratio",fabs(hadr_recoil_p4.pt()-input.correctedMET.caloMETPt())/hadr_recoil_p4.pt() );
+  vars.FillVar( "CaloMET_Hadr_Recoil_ratio",fabs(hadr_recoil_p4.pt()-input.correctedMET.caloMETPt())/input.correctedMET.caloMETPt() );
   
   for(size_t i=0;i<input.selectedJets.size();i++){
     vars.FillVars ( "DeltaPhi_Jet_Hadr_Recoil",i,fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi()-input.selectedJets.at(i).phi())));
