@@ -41,6 +41,18 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
 
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
+  
+  vars.InitVars( "Jet_DeepCSV_b","N_Jets");
+  vars.InitVars( "Jet_DeepCSV_bb","N_Jets");
+  vars.InitVars( "Jet_DeepCSV_c","N_Jets");
+  vars.InitVars( "Jet_DeepCSV_udsg","N_Jets");
+  
+  vars.InitVars( "Jet_DeepFlavour_b","N_Jets");
+  vars.InitVars( "Jet_DeepFlavour_bb","N_Jets");
+  vars.InitVars( "Jet_DeepFlavour_lepb","N_Jets");
+  vars.InitVars( "Jet_DeepFlavour_c","N_Jets");
+  vars.InitVars( "Jet_DeepFlavour_uds","N_Jets");
+  vars.InitVars( "Jet_DeepFlavour_g","N_Jets");
 
 //   vars.InitVars( "LooseJet_E","N_LooseJets" );
 //   vars.InitVars( "LooseJet_M","N_LooseJets" );
@@ -178,6 +190,17 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       vars.FillVars( "Jet_GenJet_Pt",iJet,-9.0);
       vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
     }
+    vars.FillVars( "Jet_DeepCSV_b",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probb"));
+    vars.FillVars( "Jet_DeepCSV_bb",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probbb"));
+    vars.FillVars( "Jet_DeepCSV_c",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probc"));
+    vars.FillVars( "Jet_DeepCSV_udsg",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probudsg"));
+    
+    vars.FillVars( "Jet_DeepFlavour_b",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probb"));
+    vars.FillVars( "Jet_DeepFlavour_bb",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probbb"));
+    vars.FillVars( "Jet_DeepFlavour_lepb",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:problepb"));
+    vars.FillVars( "Jet_DeepFlavour_c",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probc"));
+    vars.FillVars( "Jet_DeepFlavour_uds",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probuds"));
+    vars.FillVars( "Jet_DeepFlavour_g",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probg"));
   }
 
   // Loose Jets
