@@ -22,6 +22,8 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "Hadr_Recoil_Pt" );
   vars.InitVar( "Hadr_Recoil_Phi" );
   vars.InitVar( "CaloMET_Hadr_Recoil_ratio" );
+  vars.InitVar( "Jets_Hadr_Recoil_Pt");
+  vars.InitVar( "Jets_Hadr_Recoil_Phi");
   
   vars.InitVars( "DeltaPhi_Jet_MET","N_Jets");
   vars.InitVars( "DeltaPhi_Jet_Hadr_Recoil","N_Jets");
@@ -92,10 +94,11 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
   }
   
+  // 4-vectors to contain MET and hadronic recoil
   math::XYZTLorentzVector met_p4(0.,0.,0.,0.);
   math::XYZTLorentzVector hadr_recoil_p4(0.,0.,0.,0.);
   
-  // reco MET
+  // get reco MET
   if(input.systematic==Systematics::JESup) {
       met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnUp,pat::MET::Type1XY);
   }
@@ -125,7 +128,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVars ( "DeltaPhi_Jet_MET",i,fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(i).phi())));
   }
   
-  // hadronic recoil
+  // calculate hadronic recoil from reco MET
   hadr_recoil_p4 = met_p4;
   for(const auto& el : input.selectedElectronsLoose){
       hadr_recoil_p4 += el.p4();
@@ -145,7 +148,15 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVars ( "DeltaPhi_Jet_Hadr_Recoil",i,fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi()-input.selectedJets.at(i).phi())));
   }
   
+  // naive calculation for hadronic recoil in analogy to MET calculation, however not all jets included in loose collection. Should probably use slimmedJETs collection
+  math::XYZTLorentzVector jets_loose_p4(0.,0.,0.,0.);
+  for(const auto& jet_loose : input.selectedJetsLoose){
+    jets_loose_p4 -= jet_loose.p4();
+  }
+  vars.FillVar( "Jets_Hadr_Recoil_Pt",jets_loose_p4.pt() );
+  vars.FillVar( "Jets_Hadr_Recoil_Phi",jets_loose_p4.phi() );
   
+  // get particle-level W/Z pt for later usage in V boson reweighting
   if(input.genDarkMatterEvt.WBosonIsFilled()){
     const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
     math::XYZTLorentzVector WBoson = DM_Evt.ReturnWBoson();
@@ -158,6 +169,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVar( "Z_Pt", ZBoson.Pt() );
   }
   
+  // get and fill some gen level information
   if(input.genDarkMatterEvt.IsFilled()){
   
     const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
