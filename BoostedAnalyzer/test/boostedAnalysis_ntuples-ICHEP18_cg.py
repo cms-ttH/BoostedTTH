@@ -238,31 +238,32 @@ METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 
 # jet selection
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
+process.SelectedJetProducerAK4=process.SelectedJetProducer.clone()
 # selection of corrected and smeared jets -- one producer for every jet systematic that selects two collections (regular and loose jets) each
 # selection of the nominal jets
-process.SelectedJetProducer.jets=cms.InputTag('patSmearedJetsAK4',"",process.name_())
-process.SelectedJetProducer.applyCorrection=False
-process.SelectedJetProducer.ptMins=[20,30]
-process.SelectedJetProducer.etaMaxs=[2.4,2.4]
-process.SelectedJetProducer.collectionNames=["selectedJetsLoose","selectedJets"]
-process.SelectedJetProducer.systematics=[""]
-process.SelectedJetProducer.PUJetIDMins=["loose","loose"]
-process.SelectedJetProducer.JetID="none"
+process.SelectedJetProducerAK4.jets=cms.InputTag('patSmearedJetsAK4',"",process.name_())
+process.SelectedJetProducerAK4.applyCorrection=False
+process.SelectedJetProducerAK4.ptMins=[20,30]
+process.SelectedJetProducerAK4.etaMaxs=[2.4,2.4]
+process.SelectedJetProducerAK4.collectionNames=["selectedJetsLooseAK4","selectedJetsAK4"]
+process.SelectedJetProducerAK4.systematics=[""]
+process.SelectedJetProducerAK4.PUJetIDMins=["loose","loose"]
+process.SelectedJetProducerAK4.JetID="none"
 # selection of the systematically shifted jets
 for syst in systs:
-    setattr(process,'SelectedJetProducer'+syst,process.SelectedJetProducer.clone(jets='patSmearedJetsAK4'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducer.collectionNames)]))
+    setattr(process,'SelectedJetProducerAK4'+syst,process.SelectedJetProducerAK4.clone(jets='patSmearedJetsAK4'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK4.collectionNames)]))
 
 # correction of  miniAOD jets -- one producer creates a jet collection for nominal JES and every JES systematic
-process.CorrectedJetProducer=process.SelectedJetProducer.clone(jets=jetCollection, 
+process.CorrectedJetProducerAK4=process.SelectedJetProducerAK4.clone(jets=jetCollection, 
                                                                ptMins=[-1.],
                                                                etaMaxs=[999.],
-                                                               collectionNames=["correctedJets"],
+                                                               collectionNames=["correctedJetsAK4"],
                                                                applyCorrection=True,
                                                                systematics=[""]+systsJES,
                                                                JetID="tight",
                                                                PUJetIDMins=["none"])
 
-process.CorrectedJetProducerAK8=process.CorrectedJetProducer.clone(jets=AK8jetCollection, 
+process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8jetCollection, 
                                                                ptMins=[-1.],
                                                                etaMaxs=[999.],
                                                                collectionNames=["correctedJetsAK8"],
@@ -289,7 +290,7 @@ for syst in systs:
 # smearing of corrected jets -- producers that create the nominal and up/down JER correction
 # jer shift of nominal sample
 process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
-    src = cms.InputTag("CorrectedJetProducer:correctedJets"),
+    src = cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4"),
     enabled = cms.bool(True),  # If False, no smearing is performed
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
@@ -325,10 +326,10 @@ for s in systsJER:
     v=0
     if s=='JERup': v=+1
     elif s=='JERdown': v=-1
-    setattr(process,'patSmearedJetsAK4'+s,process.patSmearedJetsAK4.clone(variation=v,src=cms.InputTag("CorrectedJetProducer:correctedJets")))
+    setattr(process,'patSmearedJetsAK4'+s,process.patSmearedJetsAK4.clone(variation=v,src=cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4")))
     setattr(process,'patSmearedJetsAK8'+s,process.patSmearedJetsAK8.clone(variation=v,src=cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8")))
 for s in systsJES:
-    setattr(process,'patSmearedJetsAK4'+s,process.patSmearedJetsAK4.clone(variation=0,src=cms.InputTag("CorrectedJetProducer:correctedJets"+s)))
+    setattr(process,'patSmearedJetsAK4'+s,process.patSmearedJetsAK4.clone(variation=0,src=cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4"+s)))
     setattr(process,'patSmearedJetsAK8'+s,process.patSmearedJetsAK8.clone(variation=0,src=cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8"+s)))
 
 
@@ -365,8 +366,8 @@ else:
 variations = systs
 if writeNominal:
     variations.insert(0,"") # also store nominal case
-process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducer"+s+":selectedJets"+s) for s in variations]
-process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducer"+s+":selectedJetsLoose"+s) for s in variations]
+process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducerAK4"+s+":selectedJetsAK4"+s) for s in variations]
+process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducerAK4"+s+":selectedJetsLooseAK4"+s) for s in variations]
 process.BoostedAnalyzer.AK8Jets=[cms.InputTag("SelectedJetProducerAK8"+s+":selectedJetsAK8"+s) for s in variations]
 process.BoostedAnalyzer.correctedMETs=[METCollection]*(len(variations))
 
@@ -456,13 +457,13 @@ process.p *= process.fullPatMetSequence
 
 process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer
 
-process.p*=process.CorrectedJetProducer
+process.p*=process.CorrectedJetProducerAK4
 process.p*=process.CorrectedJetProducerAK8
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed                                    
 for s in [""]+systs:
     process.p *= getattr(process,'patSmearedJetsAK4'+s)
     process.p *= getattr(process,'patSmearedJetsAK8'+s)
-    process.p *= getattr(process,'SelectedJetProducer'+s)
+    process.p *= getattr(process,'SelectedJetProducerAK4'+s)
     process.p *= getattr(process,'SelectedJetProducerAK8'+s)
 
 
