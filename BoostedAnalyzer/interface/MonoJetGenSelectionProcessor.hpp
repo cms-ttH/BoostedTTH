@@ -27,7 +27,7 @@ private:
   const float minMET = 200;
   const float maxMET = 100000;
   const float pt_min = 120;
-  const float eta_max = 2.5;
+  const float eta_max = 2.4;
   const float charged_hadron_fraction_min = 0.1;
   const float neutral_hadron_fraction_max = 0.8;
 
