@@ -79,8 +79,18 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "Neutrino_Py","N_Neutrinos" );
   vars.InitVars( "Neutrino_Pz","N_Neutrinos" );
   
+  // particle-level quantities!
   vars.InitVar( "W_Pt");
+  vars.InitVar( "W_Phi");
+  vars.InitVar( "W_Eta");
+  vars.InitVar( "W_Mass");
+  vars.InitVar( "W_Energy");
   vars.InitVar( "Z_Pt");
+  vars.InitVar( "Z_Phi");
+  vars.InitVar( "Z_Eta");
+  vars.InitVar( "Z_Mass");
+  vars.InitVar( "Z_Energy");
+  
 
   initialized=true;
 }
@@ -167,12 +177,20 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
     math::XYZTLorentzVector WBoson = DM_Evt.ReturnWBoson();
     vars.FillVar( "W_Pt", WBoson.Pt() );
+    vars.FillVar( "W_Phi", WBoson.Phi() );
+    vars.FillVar( "W_Eta", WBoson.Eta() );
+    vars.FillVar( "W_Energy", WBoson.E() );
+    vars.FillVar( "W_Mass", WBoson.M() );
   }
 
   if(input.genDarkMatterEvt.ZBosonIsFilled()){
     const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
     math::XYZTLorentzVector ZBoson = DM_Evt.ReturnZBoson();
     vars.FillVar( "Z_Pt", ZBoson.Pt() );
+    vars.FillVar( "Z_Phi", ZBoson.Phi() );
+    vars.FillVar( "Z_Eta", ZBoson.Eta() );
+    vars.FillVar( "Z_Energy", ZBoson.E() );
+    vars.FillVar( "Z_Mass", ZBoson.M() );
   }
   
   // get and fill some gen level information
