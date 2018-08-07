@@ -15,6 +15,7 @@ void BTagVetoSelection::InitCutflow(Cutflow& cutflow){
 bool BTagVetoSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "BTagVetoSelection not initialized" << endl;
   
+  // veto the event if one of the loose jets satisfies at medium btag
   for(auto& jet : input.selectedJetsLoose){
     if(BoostedUtils::PassesCSV(jet, 'M')) return false;
   }
