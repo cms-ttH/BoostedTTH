@@ -68,24 +68,9 @@ int MonoJetGenSelectionProcessor::GenMonoJetSelection(const InputCollections& in
   
   bool dPhi_jet_met_criterium = true;
  
-  // customGenJets are already ordered with respect to pt
-  // cout << input.customGenJets.at(0).energy() << endl;     // O(300-500)
-  // cout << input.customGenJets.at(0).hadEnergy() << endl;  //0..5
-  // cout << input.customGenJets.at(0).emEnergy() << endl;   // 0..5
-  // bool leading_jet_criterium = input.customGenJets.at(0).pt()>pt_min && abs(input.customGenJets.at(0).eta())<eta_max && charged_hadron_fraction_min<input.customGenJets.at(0).emEnergy()/input.customGenJets.at(0).energy() && neutral_hadron_fraction_max>input.customGenJets.at(0).hadEnergy()/input.customGenJets.at(0).energy();
   bool leading_jet_criterium = input.customGenJets.at(0).pt()>pt_min && abs(input.customGenJets.at(0).eta())<eta_max ;
   
   if(!leading_jet_criterium) return 0;
-  
-  for(size_t i=0;i<input.customGenJets.size()&&i<4;i++) {
-      if(isMadgraphSample){
-        const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
-        TLorentzVector NaiveMET_p4 = DM_Evt.ReturnNaiveMET4Vector();
-        dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(input.customGenJets.at(i).phi()-NaiveMET_p4.Phi()))>0.5;
-      }
-      else dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(input.customGenJets.at(i).phi()-input.correctedMET.genMET()->phi()))>0.5;
-      if(!dPhi_jet_met_criterium) return 0;
-  }
   
   return 1;
 }
