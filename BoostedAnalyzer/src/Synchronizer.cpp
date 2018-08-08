@@ -439,17 +439,16 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     }
 
 
-    trig_mu=input.triggerInfo.IsTriggered("HLT_IsoMu24_v*")||input.triggerInfo.IsTriggered("HLT_IsoTkMu24_v*");
-    trig_el=input.triggerInfo.IsTriggered("HLT_Ele27_WPTight_Gsf_v*");
-    trig_elel=input.triggerInfo.IsTriggered("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
+    trig_mu=input.triggerInfo.IsTriggered("HLT_IsoMu24_2p1_v*")||input.triggerInfo.IsTriggered("HLT_IsoMu24_2p1_v*");
+    trig_el=input.triggerInfo.IsTriggered("HLT_Ele35_WPTight_Gsf_v*")||input.triggerInfo.IsTriggered("HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*");
+    trig_elel=input.triggerInfo.IsTriggered("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*")||input.triggerInfo.IsTriggered("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
     trig_elmu=input.triggerInfo.IsTriggered("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*")
-	|| input.triggerInfo.IsTriggered("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*")
 	|| input.triggerInfo.IsTriggered("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*")
+	|| input.triggerInfo.IsTriggered("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*")
 	|| input.triggerInfo.IsTriggered("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*");
-    trig_mumu=input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*")
-	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v*")
-	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*")
-	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
+    trig_mumu=input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*")
+	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*")
+	|| input.triggerInfo.IsTriggered("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v*");
 
 
     

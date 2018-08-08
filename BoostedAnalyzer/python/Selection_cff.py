@@ -7,12 +7,12 @@ LeptonSelectionNoTrigger = cms.PSet(
 )
 
 LeptonSelectionData = cms.PSet(
-    muonTriggers = cms.vstring("HLT_IsoMu24_2p1_v*","HLT_IsoMu27_v*","HLT_IsoMu27_v*"),
+    muonTriggers = cms.vstring("HLT_IsoMu24_2p1_v*","HLT_IsoMu27_v*"),
     electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
     channel = cms.string("both")
 )
 LeptonSelectionMC = cms.PSet(
-    muonTriggers = cms.vstring("HLT_IsoMu24_2p1_v*","HLT_IsoMu27_v*","HLT_IsoMu27_v*"),
+    muonTriggers = cms.vstring("HLT_IsoMu24_2p1_v*","HLT_IsoMu27_v*"),
     electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
     channel = cms.string("both")
 )
@@ -77,7 +77,7 @@ checkBasicDataTriggers= cms.PSet(
 )
 checkBasicMCTriggers= cms.PSet(
     relevantTriggers=cms.vstring(
-	                "HLT_Ele35_WPTight_Gsf_v*",
+                                 "HLT_Ele35_WPTight_Gsf_v*",
                                  "HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*",
                                  "HLT_IsoMu24_2p1_v*",
                                  "HLT_IsoMu27_v*",
