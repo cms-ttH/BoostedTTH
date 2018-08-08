@@ -1,9 +1,10 @@
 import csv
 import os
 import shutil
+import sys
 from subprocess import call
 
-csvfile=open('ttH.csv','r') 
+csvfile=open(sys.argv[1],'r') 
 reader = csv.DictReader(csvfile, delimiter=',')
 
 def repl(old,new,filename):
