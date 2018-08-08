@@ -17,11 +17,11 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
         return;
     }
     // number of generator weights which are stored in the LHEEventProduct
-    const uint weightnumber = lhe_weights.size();
+    const uint weightnumber = LHEEvent.weights().size();
     // central lhe weight which is stored
     const double LHE_central_weight = LHEEvent.originalXWGTUP();
     //loop over every generator weight available and add the weight with its corresponding name to the weights map. the name is derived with the generator id and the lhe_weights map which maps the weight id to the corresponding name
-    for (uint i = 0;i < weightnumber && i < LHEEvent.weights().size(); i++) {
+    for (uint i = 0;i < weightnumber; i++) {
         std::string weight_id = LHEEvent.weights()[i].id;
         if(!lhe_weights.count(weight_id)) continue;
         std::string weight_name = lhe_weights.at(weight_id);
