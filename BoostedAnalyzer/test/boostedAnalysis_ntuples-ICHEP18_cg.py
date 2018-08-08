@@ -26,7 +26,7 @@ options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing
 options.register( "calcBJetness",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
 options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.register( "systematicVariations","nominal", VarParsing.multiplicity.list, VarParsing.varType.string, "comma-separated list of systematic variations ('nominal' or systematics base name, up/down will be added)" )
-options.register("deterministicSeeds",False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
+options.register("deterministicSeeds",True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
 options.register("electronRegression","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
 options.register("electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 options.register( "useMuonRC", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
@@ -115,49 +115,6 @@ process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
 
-### some standard collections ####
-#if not options.isData:
-electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
-photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
-muonCollection     = cms.InputTag("slimmedMuons", "", "PAT")
-tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
-METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
-jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
-AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
-#else:
-    #electronCollection = cms.InputTag("slimmedElectrons", "", "RECO")
-    #photonCollection   = cms.InputTag("slimmedPhotons", "", "RECO")
-    #muonCollection     = cms.InputTag("slimmedMuons", "", "RECO")
-    #tauCollection      = cms.InputTag("slimmedTaus", "", "RECO")
-    #METCollection      = cms.InputTag("slimmedMETs", "", "RECO")
-    #jetCollection      = cms.InputTag("slimmedJets", "", "RECO")
-    #AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","RECO")
-
-###### deterministic seed producer ######
-
-if options.deterministicSeeds:
-    process.load("PhysicsTools.PatUtils.deterministicSeeds_cfi")
-    process.deterministicSeeds.produceCollections = cms.bool(True)
-    process.deterministicSeeds.produceValueMaps   = cms.bool(False)
-    process.deterministicSeeds.electronCollection = electronCollection
-    process.deterministicSeeds.muonCollection     = muonCollection
-    process.deterministicSeeds.tauCollection      = tauCollection
-    process.deterministicSeeds.photonCollection   = photonCollection
-    process.deterministicSeeds.jetCollection      = jetCollection
-    process.deterministicSeeds.METCollection      = METCollection
-    #process.deterministicSeeds.AK8jetCollection   = AK8jetCollection
-
-    # overwrite output collections
-    electronCollection = cms.InputTag("deterministicSeeds", "electronsWithSeed", process.name_())
-    muonCollection     = cms.InputTag("deterministicSeeds", "muonsWithSeed", process.name_())
-    tauCollection      = cms.InputTag("deterministicSeeds", "tausWithSeed", process.name_())
-    photonCollection   = cms.InputTag("deterministicSeeds", "photonsWithSeed", process.name_())
-    jetCollection      = cms.InputTag("deterministicSeeds", "jetsWithSeed", process.name_())
-    METCollection      = cms.InputTag("deterministicSeeds", "METsWithSeed", process.name_())
-    #AK8jetCollection   = cms.InputTag("deterministicSeeds", "AK8jetsWithSeed", process.name_())
-
-##########################################
-
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
 # necessarily reflect actual corrections level
@@ -200,6 +157,57 @@ if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
   
 
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+
+runMetCorAndUncFromMiniAOD(process, isData=options.isData)
+#METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
+
+
+### some standard collections ####
+#if not options.isData:
+electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
+photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
+muonCollection     = cms.InputTag("slimmedMuons", "", "PAT")
+tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
+METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
+jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
+AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
+#else:
+    #electronCollection = cms.InputTag("slimmedElectrons", "", "RECO")
+    #photonCollection   = cms.InputTag("slimmedPhotons", "", "RECO")
+    #muonCollection     = cms.InputTag("slimmedMuons", "", "RECO")
+    #tauCollection      = cms.InputTag("slimmedTaus", "", "RECO")
+    #METCollection      = cms.InputTag("slimmedMETs", "", "RECO")
+    #jetCollection      = cms.InputTag("slimmedJets", "", "RECO")
+    #AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","RECO")
+
+###### deterministic seed producer ######
+
+if options.deterministicSeeds:
+    process.load("PhysicsTools.PatUtils.deterministicSeeds_cfi")
+    process.deterministicSeeds.produceCollections = cms.bool(True)
+    process.deterministicSeeds.produceValueMaps   = cms.bool(False)
+    process.deterministicSeeds.electronCollection = electronCollection
+    process.deterministicSeeds.muonCollection     = muonCollection
+    process.deterministicSeeds.tauCollection      = tauCollection
+    process.deterministicSeeds.photonCollection   = photonCollection
+    process.deterministicSeeds.jetCollection      = jetCollection
+    process.deterministicSeeds.METCollection      = METCollection
+    #process.deterministicSeeds.AK8jetCollection   = AK8jetCollection
+
+    # overwrite output collections
+    electronCollection = cms.InputTag("deterministicSeeds", "electronsWithSeed", process.name_())
+    muonCollection     = cms.InputTag("deterministicSeeds", "muonsWithSeed", process.name_())
+    tauCollection      = cms.InputTag("deterministicSeeds", "tausWithSeed", process.name_())
+    photonCollection   = cms.InputTag("deterministicSeeds", "photonsWithSeed", process.name_())
+    jetCollection      = cms.InputTag("deterministicSeeds", "jetsWithSeed", process.name_())
+    METCollection      = cms.InputTag("deterministicSeeds", "METsWithSeed", process.name_())
+    #AK8jetCollection   = cms.InputTag("deterministicSeeds", "AK8jetsWithSeed", process.name_())
+
+##########################################
+
+
+
 ### Electron scale and smearing corrections ###  
 #from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 #setupEgammaPostRecoSeq(process,applyEnergyCorrections=False,
@@ -229,11 +237,6 @@ process.SelectedMuonProducer.useMuonRC=options.useMuonRC
 process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
 process.SelectedMuonProducer.isData=options.isData
 
-
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-
-runMetCorAndUncFromMiniAOD(process, isData=options.isData)
-METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 
 
 # jet selection
@@ -447,10 +450,11 @@ if options.ProduceMemNtuples==True:
 
 ##### DEFINE PATH ##########
 process.p = cms.Path()
-if options.deterministicSeeds:
-    process.p*=process.deterministicSeeds
 
 process.p *= process.fullPatMetSequence
+
+if options.deterministicSeeds:
+    process.p*=process.deterministicSeeds
 
 # electron scale and smearing corrections    
 #process.p *= process.egammaPostRecoSeq
