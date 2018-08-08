@@ -114,12 +114,9 @@ int MonoJetGenSelectionProcessor::GenmonoVselection(const InputCollections& inpu
     float leadingJet_eta = leadingJet.eta();
     float leadingJet_Pt = leadingJet.pt();
     float leadingJet_mass = leadingJet.mass();
-    float leadingJet_Nhf = leadingJet.hadEnergy()/leadingJet.energy();
-    float leadingJet_Chf = leadingJet.emEnergy()/leadingJet.energy();
 
     monoVtagged = false;
-
-    if (leadingJet_Pt > minpt && abs(leadingJet_eta) < maxeta && leadingJet_mass > minMass && leadingJet_mass < maxMass && leadingJet_Nhf < neutral_hadron_fraction_max && leadingJet_Chf> charged_hadron_fraction_min) {
+    if (leadingJet_Pt > minpt && abs(leadingJet_eta) < maxeta && leadingJet_mass > minMass && leadingJet_mass < maxMass) {
       monoVtagged = true;
     }
 
