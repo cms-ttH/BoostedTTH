@@ -56,6 +56,4 @@ BoostedAnalyzer = cms.EDAnalyzer(
     outfileName = cms.string("BoostedTTH"),
 
     taggingSelection=cms.bool(True),
-
-    isMadgraphSample=cms.bool(False),
 )

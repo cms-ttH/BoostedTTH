@@ -49,7 +49,7 @@ MonoJetTriggers = cms.PSet(
     )
 
 METSelection = cms.PSet(
-    minMET = cms.double(200),
+    minMET = cms.double(250),
     maxMET = cms.double(100000),
 )
 

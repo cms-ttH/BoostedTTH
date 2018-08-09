@@ -8,8 +8,7 @@ class MonoJetGenSelectionProcessor: public TreeProcessor {
 
 public:
 
-  MonoJetGenSelectionProcessor(const edm::ParameterSet& iConfig);
-  MonoJetGenSelectionProcessor(bool isMadgraphSample = false);
+  MonoJetGenSelectionProcessor();
   ~MonoJetGenSelectionProcessor();
 
   void Init(const InputCollections& input, VariableContainer& var);
@@ -21,7 +20,6 @@ public:
   int GenBTagVetoSelection(const InputCollections& input);
   int GenPhotonVetoSelection(const InputCollections& input);
   int GenmonoVselection(const InputCollections& input);
-  bool isMadgraphSample = false; 
 
 private:
   const float minMET = 200;

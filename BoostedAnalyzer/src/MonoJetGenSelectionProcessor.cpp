@@ -5,8 +5,7 @@
 
 using namespace std;
 
-MonoJetGenSelectionProcessor::MonoJetGenSelectionProcessor(const edm::ParameterSet& iConfig):MonoJetGenSelectionProcessor(iConfig.getParameter<bool>("isMadgraphSample")){}
-MonoJetGenSelectionProcessor::MonoJetGenSelectionProcessor (bool isMadgraphSample_):isMadgraphSample(isMadgraphSample_){}
+MonoJetGenSelectionProcessor::MonoJetGenSelectionProcessor(){}
 MonoJetGenSelectionProcessor::~MonoJetGenSelectionProcessor(){}
 
 
@@ -42,7 +41,8 @@ int MonoJetGenSelectionProcessor::GenVertexSelection(const InputCollections& inp
 
 // check if the MET Selection is fulfilled on GEN level
 int MonoJetGenSelectionProcessor::GenMETSelection(const InputCollections& input){
-    if(isMadgraphSample){
+  if(input.correctedMET.genMET()->pt()<1){ // fix for broken GenMET in MadGraphMonoJetSamples
+    if(input.genDarkMatterEvt.IsFilled()){
       const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
       TLorentzVector NaiveMET_p4 = DM_Evt.ReturnNaiveMET4Vector();
       double met = NaiveMET_p4.Pt();
@@ -50,16 +50,18 @@ int MonoJetGenSelectionProcessor::GenMETSelection(const InputCollections& input)
         return 1;
       }
     }
-    else{
-      if(input.correctedMET.genMET()!=0){
-        double met=input.correctedMET.genMET()->pt();
-        if(met>minMET&&met<maxMET){
-            return 1;
-        }
+  }
+  else{
+    if(input.correctedMET.genMET()!=0){
+      double met=input.correctedMET.genMET()->pt();
+      if(met>minMET&&met<maxMET){
+        return 1;
       }
     }
-    return 0;
+  }
+  return 0;
 }
+
 
 // check if the MonoJetSelection is fullfilled on GEN level
 int MonoJetGenSelectionProcessor::GenMonoJetSelection(const InputCollections& input){
@@ -132,6 +134,7 @@ int MonoJetGenSelectionProcessor::GenmonoVselection(const InputCollections& inpu
   }
 
 }
+
 
     
 

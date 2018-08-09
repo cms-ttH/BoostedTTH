@@ -2,9 +2,7 @@
 
 using namespace std;
 
-DarkMatterProcessor::DarkMatterProcessor(const edm::ParameterSet& iConfig):DarkMatterProcessor(iConfig.getParameter<bool>("isMadgraphSample")){}
-DarkMatterProcessor::DarkMatterProcessor (bool isMadgraphSample_):isMadgraphSample(isMadgraphSample_){}
-
+DarkMatterProcessor::DarkMatterProcessor(){}
 DarkMatterProcessor::~DarkMatterProcessor(){}
 
 
@@ -91,11 +89,16 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
   // GenMET
-  if(!isMadgraphSample){
-    if(input.correctedMET.genMET()!=0){
-        vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
-       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
+  if(input.correctedMET.genMET()->pt()<1){ // fix for broken GenMET in MadGraphMonoJetSamples
+    if(input.genDarkMatterEvt.IsFilled()){
+      const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
+      vars.FillVar( "Evt_Pt_GenMET",DM_Evt.ReturnNaiveMET4Vector().Pt());
+      vars.FillVar( "Evt_Phi_GenMET",DM_Evt.ReturnNaiveMET4Vector().Phi());
     }
+  }
+  else{
+      vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
+      vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
   }
   
   // 4-vectors to contain MET and hadronic recoil
@@ -187,10 +190,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVar( "N_Neutrinos",Neutrinos_p4.size() );
     
     vars.FillVar( "NaiveMET",DM_Evt.ReturnNaiveMET());
-    if(isMadgraphSample){    
-      vars.FillVar( "Evt_Pt_GenMET",NaiveMET_p4.Pt());
-      vars.FillVar( "Evt_Phi_GenMET",NaiveMET_p4.Phi());
-    }
+
     
     
     vars.FillVar( "Mediator_Mass",Mediator_p4.M());

@@ -9,14 +9,12 @@ class DarkMatterProcessor: public TreeProcessor{
   
 public:
   
-  DarkMatterProcessor(const edm::ParameterSet& iConfig);
-  DarkMatterProcessor(bool isMadgraphSample=false);
+  DarkMatterProcessor();
   ~DarkMatterProcessor();
   
   void Init(const InputCollections& input,VariableContainer& var);
   void Process(const InputCollections& input,VariableContainer& var);
 private:
-	bool isMadgraphSample=false; 
 };
 
 #endif
