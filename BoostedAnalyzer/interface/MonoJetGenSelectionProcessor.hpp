@@ -24,7 +24,7 @@ public:
 private:
   const float minMET = 200;
   const float maxMET = 100000;
-  const float pt_min = 120;
+  const float pt_min = 100;
   const float eta_max = 2.4;
 
   //Ak8Stuff
