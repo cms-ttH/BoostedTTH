@@ -91,9 +91,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   // GenMET
   if(input.correctedMET.genMET()!=0){
     if(input.correctedMET.genMET()->pt()<1){ // fix for broken GenMET in MadGraphMonoJetSamples
-      cout << "test" << endl;
       if(input.genDarkMatterEvt.IsFilled()){
-        cout << "test2" << endl;
         const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
         vars.FillVar( "Evt_Pt_GenMET",DM_Evt.ReturnNaiveMET4Vector().Pt());
         vars.FillVar( "Evt_Phi_GenMET",DM_Evt.ReturnNaiveMET4Vector().Phi());
