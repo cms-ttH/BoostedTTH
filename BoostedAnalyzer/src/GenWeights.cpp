@@ -77,6 +77,22 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
     weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_nominal"] =  weight_nom;
     weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_up"] = weight_up;
     weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_down"] = weight_down;
+
+    std::vector<double> int_pdf_weights;
+    for(size_t i=PDFSet.lhapdfID();i<(PDFSet.lhapdfID()+PDFSet.size());i++){
+         if(weights.count("Weight_pdf_variation_"+std::to_string(i))){
+            int_pdf_weights.push_back(weights["Weight_pdf_variation_"+std::to_string(i)]);
+         }
+         else if(i==(size_t)PDFSet.lhapdfID()){
+           int_pdf_weights.push_back(1.);
+         }
+    }
+    if(int_pdf_weights.size()==PDFSet.size()){
+        const LHAPDF::PDFUncertainty int_pdfUnc = PDFSet.uncertainty(int_pdf_weights, 68.);
+        weights["Weight_LHA_"+std::to_string(PDFSet.lhapdfID())+"_nominal"] =  int_pdfUnc.central;
+        weights["Weight_LHA_"+std::to_string(PDFSet.lhapdfID())+"_down"] =(int_pdfUnc.central - int_pdfUnc.errminus);
+        weights["Weight_LHA_"+std::to_string(PDFSet.lhapdfID())+"_up"] = (int_pdfUnc.central + int_pdfUnc.errplus);
+    }
     
   }
 
