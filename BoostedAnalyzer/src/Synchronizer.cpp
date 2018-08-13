@@ -510,8 +510,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if(input.weights.count("Weight_scale_variation_muR_2p0_muF_2p0")>0) me_up =input.weights.at("Weight_scale_variation_muR_2p0_muF_2p0");
     if(input.weights.count("Weight_scale_variation_muR_0p5_muF_0p5")>0) me_down =input.weights.at("Weight_scale_variation_muR_0p5_muF_0p5");
     if(input.weights.count("Weight_TopPt")>0) top_pt_weight=input.weights.at("Weight_TopPt");
-    if(input.weights.count("Weight_LHA_PDF4LHC15_nlo_30_up")>0) pdf_up=input.weights.at("Weight_LHA_PDF4LHC15_nlo_30_up");
-    if(input.weights.count("Weight_LHA_PDF4LHC15_nlo_30_down")>0) pdf_down=input.weights.at("Weight_LHA_PDF4LHC15_nlo_30_down");
+    if(input.weights.count("Weight_LHA_306000_up")>0) pdf_up=input.weights.at("Weight_LHA_306000_up");
+    if(input.weights.count("Weight_LHA_306000_down")>0) pdf_down=input.weights.at("Weight_LHA_306000_down");
     
     if(is_SL) {
         std::vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
