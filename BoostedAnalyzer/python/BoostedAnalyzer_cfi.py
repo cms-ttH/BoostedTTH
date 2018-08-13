@@ -22,7 +22,7 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dataset=cms.string("NA"),
 
     # b-tag SF, defined in Weights_cff
-    bTagSFs = cms.PSet(BTagSFs80X),
+    bTagSFs = cms.PSet(BTagSFs94XDeepCSV),
 
     # PU weights, defined in Weights_cff
     nominalPUWeight = cms.PSet(NominalPUWeight),
