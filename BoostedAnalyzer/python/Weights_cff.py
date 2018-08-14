@@ -62,7 +62,7 @@ BTagSFs94XDeepCSV = cms.PSet(
     nHFPtBins = cms.int32(5),
     nLFPtBins = cms.int32(4),
     nLFEtaBins = cms.int32(3),
-    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/factorized_jes/Deepcsv_rwt_fit_lf_v2_final_2018_2_12test.root")
+    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/Deepcsv_rwt_fit_lf_v2_final_2018_2_12test.root")
 )
 
 
