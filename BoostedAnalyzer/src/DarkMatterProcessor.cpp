@@ -91,6 +91,11 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "Z_Mass");
   vars.InitVar( "Z_Energy");
   
+  vars.InitVar( "Zmumu_Pt" );
+  vars.InitVar( "Zmumu_Phi" );
+  vars.InitVar( "Zmumu_Eta" );
+  vars.InitVar( "Zmumu_Energy" );
+  vars.InitVar( "Zmumu_Mass" );
 
   initialized=true;
 }
@@ -191,6 +196,15 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVar( "Z_Eta", ZBoson.Eta() );
     vars.FillVar( "Z_Energy", ZBoson.E() );
     vars.FillVar( "Z_Mass", ZBoson.M() );
+  }
+  
+  if(input.selectedMuonsLoose.size()==2){
+    auto Zmumu = input.selectedMuons[0].p4()+input.selectedMuons[1].p4();
+    vars.FillVar( "Zmumu_Pt",Zmumu.Pt() );
+    vars.FillVar( "Zmumu_Phi",Zmumu.Phi() );
+    vars.FillVar( "Zmumu_Eta",Zmumu.Eta() );
+    vars.FillVar( "Zmumu_Energy",Zmumu.E() );
+    vars.FillVar( "Zmumu_Mass",Zmumu.M() );
   }
   
   // get and fill some gen level information
