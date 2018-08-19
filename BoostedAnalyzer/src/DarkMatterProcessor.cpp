@@ -199,7 +199,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
   }
   
   if(input.selectedMuonsLoose.size()==2){
-    auto Zmumu = input.selectedMuons[0].p4()+input.selectedMuons[1].p4();
+    auto Zmumu = input.selectedMuonsLoose[0].p4()+input.selectedMuonsLoose[1].p4();
     vars.FillVar( "Zmumu_Pt",Zmumu.Pt() );
     vars.FillVar( "Zmumu_Phi",Zmumu.Phi() );
     vars.FillVar( "Zmumu_Eta",Zmumu.Eta() );
