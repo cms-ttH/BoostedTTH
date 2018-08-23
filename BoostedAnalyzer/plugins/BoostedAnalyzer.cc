@@ -863,7 +863,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // inputs
     std::vector<InputCollections> inputs;
     for(size_t isys=0; isys<jetSystematics.size(); isys++){
-        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*(hs_selectedJetsLoose[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
+        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*(hs_selectedJetsLoose[isys]),*h_selectedElectrons,*h_selectedMuons,genTopEvt,jetSystematics[isys]);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
 					  filterInfo,
@@ -1053,13 +1053,13 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     }
     
     //Add Lepton Scalefactors to weight map
-    /*
+    
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
 
-    for(  auto sfit = selectedScaleFactors.begin() ; sfit != selectedScaleFactors.end() ; sfit++  ){
-      weights["Weight_"+sfit->first] = sfit->second;
+    for(  auto sfit : selectedScaleFactors  ){
+      weights["Weight_"+sfit.first] = sfit.second;
     }
-    */
+    
     // set optional additional PU weights
     for(std::vector<PUWeights::Weight>::const_iterator it = puWeights.additionalWeightsBegin();
 	  it != puWeights.additionalWeightsEnd(); ++it) {
