@@ -546,7 +546,7 @@ for s in systsJES:
 # GenCollectionProducer
 process.load("BoostedTTH.GenCollectionProducer.GenCollectionProducer_cfi")
 process.GenCollectionProducer.collection_name=["CustomGenElectrons","CustomGenMuons","CustomGenTaus","CustomGenPhotons","CustomGenJets","CustomGenJetsLoose","CustomGenJetsAK8",]
-process.GenCollectionProducer.collection_type=["Electron","Muon","Tau","Photon","Jet","Jet","AK8Jet"]
+process.GenCollectionProducer.collection_type=["Electron","Muon","Tau","Photon","AK4Jet","AK4Jet","AK8Jet"]
 process.GenCollectionProducer.pt_min=[10.,10.,18.,15.,30.,20.,30.]
 process.GenCollectionProducer.eta_max=[2.4,2.4,2.3,2.5,2.4,2.4,2.4]
 process.GenCollectionProducer.doDeltaRCleaning=True

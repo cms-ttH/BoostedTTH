@@ -122,14 +122,14 @@ GenCollectionProducer::GenCollectionProducer(const edm::ParameterSet& iConfig)
     
     // register the objects which will later be put into the edm::event instance
     for(size_t i=0;i<collection_name.size();i++){
-        if(collection_type.at(i)=="Jet"){
+        if(collection_type.at(i)=="AK4Jet"||collection_type.at(i)=="AK8Jet"){
             produces<std::vector<reco::GenJet>>(collection_name.at(i));
         }
-        else if(collection_type.at(i)=="AK8Jet"){
-            produces<std::vector<reco::GenJet>>(collection_name.at(i));
+        else if(collection_type.at(i)=="Electron"||collection_type.at(i)=="Muon"||collection_type.at(i)=="Tau"||collection_type.at(i)=="Photon"){
+            produces<std::vector<reco::GenParticle>>(collection_name.at(i));
         }
         else {
-            produces<std::vector<reco::GenParticle>>(collection_name.at(i));
+            throw cms::Exception("GenCollectionProducer") << "Wrong collection type " << collection_type.at(i) <<"\n";
         }
     }
 }
@@ -186,7 +186,7 @@ GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
     
     // get basic collections of the gen particles/jets with pt and eta cuts applied
     for(size_t i=0;i<collection_name.size();i++){
-        if(collection_type.at(i)=="Jet"){
+        if(collection_type.at(i)=="AK4Jet"){
             std::vector<reco::GenJet> collection = ApplyPtEtaCuts(*GenJets,pt_min.at(i),eta_max.at(i));
             if(doDeltaRCleaning){
                 std::vector<reco::GenJet> collection_cleaned = DeltaRCleaning(collection,leptons,0.4);
