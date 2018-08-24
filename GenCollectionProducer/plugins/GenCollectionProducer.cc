@@ -193,6 +193,7 @@ GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 collection = collection_cleaned;
             }
             std::unique_ptr<std::vector<reco::GenJet>> pOut(new std::vector<reco::GenJet>(collection));
+            std::sort(pOut->begin(),pOut->end(),[](const auto& a, const auto& b){return a.pt()>b.pt();});
             iEvent.put(std::move(pOut),collection_name.at(i));
         }
         else if(collection_type.at(i)=="AK8Jet"){
@@ -202,11 +203,13 @@ GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 collection = collection_cleaned;
             }
             std::unique_ptr<std::vector<reco::GenJet>> pOut(new std::vector<reco::GenJet>(collection));
+            std::sort(pOut->begin(),pOut->end(),[](const auto& a, const auto& b){return a.pt()>b.pt();});
             iEvent.put(std::move(pOut),collection_name.at(i));
         }
         else {
             std::vector<reco::GenParticle> collection = ApplyPtEtaCuts(*GenParticles,collection_type.at(i),pt_min.at(i),eta_max.at(i));
             std::unique_ptr<std::vector<reco::GenParticle>> pOut(new std::vector<reco::GenParticle>(collection));
+            std::sort(pOut->begin(),pOut->end(),[](const auto& a, const auto& b){return a.pt()>b.pt();});
             iEvent.put(std::move(pOut),collection_name.at(i));
         }
     }
@@ -226,7 +229,7 @@ std::vector<reco::GenJet> GenCollectionProducer::ApplyPtEtaCuts(const std::vecto
     return mod_GenJets;
 }
 
-// get collection of specified genparticles with pt and eta cuts
+// get collection of specified genparticles with pt and eta cuts and in addition calculate dressed leptons
 std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::vector<reco::GenParticle>& GenParticles_,const std::string& type_,const double& pt_min_,const double& eta_max_){
     // look for prompt gen particles
     std::vector<reco::GenParticle> mod_GenParticles;
@@ -268,6 +271,7 @@ std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::
     return mod_GenParticles_pt_eta;
 }
 
+// do a lepton deltaR cleaning with jets
 std::vector<reco::GenJet> GenCollectionProducer::DeltaRCleaning(const std::vector<reco::GenJet>& GenJets_,const std::vector<reco::GenParticle>& Leptons,double R) {
     std::vector<reco::GenJet> cleaned_jets;
     for(size_t i=0;i<GenJets_.size();i++){

@@ -112,6 +112,56 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   
   vars.InitVars( "CSV","N_Jets" );
   vars.InitVars( "CSV_DNN","N_Jets" );
+  
+  vars.InitVar( "N_GenElectrons", "I");
+  vars.InitVar( "N_GenMuons", "I");
+  vars.InitVar( "N_GenTaus", "I");
+  vars.InitVar( "N_GenPhotons", "I");
+  vars.InitVar( "N_GenAK4Jets", "I");
+  vars.InitVar( "N_GenAK8Jets", "I");
+  
+  vars.InitVars("GenElectron_Pt","N_GenElectrons");
+  vars.InitVars("GenElectron_Eta","N_GenElectrons");
+  vars.InitVars("GenElectron_Phi","N_GenElectrons");
+  vars.InitVars("GenElectron_E","N_GenElectrons");
+  vars.InitVars("GenElectron_M","N_GenElectrons");
+  vars.InitVars("GenElectron_Charge","N_GenElectrons");
+  
+  vars.InitVars("GenMuon_Pt","N_GenMuons");
+  vars.InitVars("GenMuon_Eta","N_GenMuons");
+  vars.InitVars("GenMuon_Phi","N_GenMuons");
+  vars.InitVars("GenMuon_E","N_GenMuons");
+  vars.InitVars("GenMuon_M","N_GenMuons");
+  vars.InitVars("GenMuon_Charge","N_GenMuons");
+  
+  vars.InitVars("GenTau_Pt","N_GenTaus");
+  vars.InitVars("GenTau_Eta","N_GenTaus");
+  vars.InitVars("GenTau_Phi","N_GenTaus");
+  vars.InitVars("GenTau_E","N_GenTaus");
+  vars.InitVars("GenTau_M","N_GenTaus");
+  vars.InitVars("GenTau_Charge","N_GenTaus");
+  
+  vars.InitVars("GenPhoton_Pt","N_GenPhotons");
+  vars.InitVars("GenPhoton_Eta","N_GenPhotons");
+  vars.InitVars("GenPhoton_Phi","N_GenPhotons");
+  vars.InitVars("GenPhoton_E","N_GenPhotons");
+  vars.InitVars("GenPhoton_M","N_GenPhotons");
+  vars.InitVars("GenPhoton_Charge","N_GenPhotons");
+  
+  vars.InitVars("GenAK4Jet_Pt","N_GenAK4Jets");
+  vars.InitVars("GenAK4Jet_Eta","N_GenAK4Jets");
+  vars.InitVars("GenAK4Jet_Phi","N_GenAK4Jets");
+  vars.InitVars("GenAK4Jet_E","N_GenAK4Jets");
+  vars.InitVars("GenAK4Jet_M","N_GenAK4Jets");
+  vars.InitVars("GenAK4Jet_Charge","N_GenAK4Jets");
+  
+  vars.InitVars("GenAK8Jet_Pt","N_GenAK8Jets");
+  vars.InitVars("GenAK8Jet_Eta","N_GenAK8Jets");
+  vars.InitVars("GenAK8Jet_Phi","N_GenAK8Jets");
+  vars.InitVars("GenAK8Jet_E","N_GenAK8Jets");
+  vars.InitVars("GenAK8Jet_M","N_GenAK8Jets");
+  vars.InitVars("GenAK8Jet_Charge","N_GenAK8Jets");
+  
   initialized=true;
 }
 
@@ -398,5 +448,72 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     int iCSV = itCSV - csvJetsSorted_DNN.begin();
     vars.FillVars("CSV" ,iCSV,*itCSV);
   }
-
+  
+  vars.FillVar("N_GenElectrons",input.customGenElectrons.size());
+  vars.FillVar("N_GenMuons",input.customGenMuons.size());
+  vars.FillVar("N_GenTaus",input.customGenTaus.size());
+  vars.FillVar("N_GenPhotons",input.customGenPhotons.size());
+  vars.FillVar("N_GenAK4Jets",input.customGenJetsLoose.size());
+  vars.FillVar("N_GenAK8Jets",input.customGenJetsAK8.size());
+  
+  for(auto it = input.customGenElectrons.begin();it!=input.customGenElectrons.end();it++){
+      auto i = it-input.customGenElectrons.begin();
+      vars.FillVars("GenElectron_Pt",i,it->pt());
+      vars.FillVars("GenElectron_Eta",i,it->eta());
+      vars.FillVars("GenElectron_Phi",i,it->phi());
+      vars.FillVars("GenElectron_E",i,it->energy());
+      vars.FillVars("GenElectron_M",i,it->mass());
+      vars.FillVars("GenElectron_Charge",i,it->charge());
+  }
+  
+  for(auto it = input.customGenMuons.begin();it!=input.customGenMuons.end();it++){
+      auto i = it-input.customGenMuons.begin();
+      vars.FillVars("GenMuon_Pt",i,it->pt());
+      vars.FillVars("GenMuon_Eta",i,it->eta());
+      vars.FillVars("GenMuon_Phi",i,it->phi());
+      vars.FillVars("GenMuon_E",i,it->energy());
+      vars.FillVars("GenMuon_M",i,it->mass());
+      vars.FillVars("GenMuon_Charge",i,it->charge());
+  }
+  
+  for(auto it = input.customGenTaus.begin();it!=input.customGenTaus.end();it++){
+      auto i = it-input.customGenTaus.begin();
+      vars.FillVars("GenTau_Pt",i,it->pt());
+      vars.FillVars("GenTau_Eta",i,it->eta());
+      vars.FillVars("GenTau_Phi",i,it->phi());
+      vars.FillVars("GenTau_E",i,it->energy());
+      vars.FillVars("GenTau_M",i,it->mass());
+      vars.FillVars("GenTau_Charge",i,it->charge());
+  }
+  
+  for(auto it = input.customGenPhotons.begin();it!=input.customGenPhotons.end();it++){
+      auto i = it-input.customGenPhotons.begin();
+      vars.FillVars("GenPhoton_Pt",i,it->pt());
+      vars.FillVars("GenPhoton_Eta",i,it->eta());
+      vars.FillVars("GenPhoton_Phi",i,it->phi());
+      vars.FillVars("GenPhoton_E",i,it->energy());
+      vars.FillVars("GenPhoton_M",i,it->mass());
+      vars.FillVars("GenPhoton_Charge",i,it->charge());
+  }
+  
+  for(auto it = input.customGenJetsLoose.begin();it!=input.customGenJetsLoose.end();it++){
+      auto i = it-input.customGenJetsLoose.begin();
+      vars.FillVars("GenAK4Jet_Pt",i,it->pt());
+      vars.FillVars("GenAK4Jet_Eta",i,it->eta());
+      vars.FillVars("GenAK4Jet_Phi",i,it->phi());
+      vars.FillVars("GenAK4Jet_E",i,it->energy());
+      vars.FillVars("GenAK4Jet_M",i,it->mass());
+      vars.FillVars("GenAK4Jet_Charge",i,it->charge());
+  }
+  
+  for(auto it = input.customGenJetsAK8.begin();it!=input.customGenJetsAK8.end();it++){
+      auto i = it-input.customGenJetsAK8.begin();
+      vars.FillVars("GenAK8Jet_Pt",i,it->pt());
+      vars.FillVars("GenAK8Jet_Eta",i,it->eta());
+      vars.FillVars("GenAK8Jet_Phi",i,it->phi());
+      vars.FillVars("GenAK8Jet_E",i,it->energy());
+      vars.FillVars("GenAK8Jet_M",i,it->mass());
+      vars.FillVars("GenAK8Jet_Charge",i,it->charge());
+  }
+  
 }
