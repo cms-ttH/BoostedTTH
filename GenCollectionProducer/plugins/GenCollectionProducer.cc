@@ -56,8 +56,8 @@ class GenCollectionProducer : public edm::stream::EDProducer<> {
       //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
       //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
       
-      std::vector<reco::GenJet> ApplyPtEtaCuts(const std::vector<reco::GenJet>& GenJets_,double& pt_min_,double& eta_max_);
-      std::vector<reco::GenParticle> ApplyPtEtaCuts(const std::vector<reco::GenParticle>& GenParticles_,std::string type_,double pt_min_,double eta_max_);
+      std::vector<reco::GenJet> ApplyPtEtaCuts(const std::vector<reco::GenJet>& GenJets_,const double& pt_min_,const double& eta_max_);
+      std::vector<reco::GenParticle> ApplyPtEtaCuts(const std::vector<reco::GenParticle>& GenParticles_,const std::string& type_,const double& pt_min_,const double& eta_max_);
       std::vector<reco::GenJet> DeltaRCleaning(const std::vector<reco::GenJet>& GenJets_,const std::vector<reco::GenParticle>& Leptons,double R);
 
       // ----------member data ---------------------------
@@ -215,7 +215,7 @@ GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 }
 
 // get collection of genjets with pt and eta cuts
-std::vector<reco::GenJet> GenCollectionProducer::ApplyPtEtaCuts(const std::vector<reco::GenJet>& GenJets_,double& pt_min_,double& eta_max_){
+std::vector<reco::GenJet> GenCollectionProducer::ApplyPtEtaCuts(const std::vector<reco::GenJet>& GenJets_,const double& pt_min_,const double& eta_max_){
  
     std::vector<reco::GenJet> mod_GenJets;
     for(size_t i=0;i<GenJets_.size();i++){
@@ -227,7 +227,7 @@ std::vector<reco::GenJet> GenCollectionProducer::ApplyPtEtaCuts(const std::vecto
 }
 
 // get collection of specified genparticles with pt and eta cuts
-std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::vector<reco::GenParticle>& GenParticles_,std::string type_,double pt_min_,double eta_max_){
+std::vector<reco::GenParticle> GenCollectionProducer::ApplyPtEtaCuts(const std::vector<reco::GenParticle>& GenParticles_,const std::string& type_,const double& pt_min_,const double& eta_max_){
     // look for prompt gen particles
     std::vector<reco::GenParticle> mod_GenParticles;
     for(size_t i=0;i<GenParticles_.size();i++){
