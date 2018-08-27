@@ -89,7 +89,7 @@ private:
   bool useMuonRC; // flag to enable or disable Rochester Correction
   bool deterministicSeeds; // flag to enable or disable deterministic seeds for RC
   RoccoR rc; // Object to calculate Rochester Correction
-  std::string roccor_dir=string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/Producers/data/rcdata2016v3"; // directory of text files used to calculate RC
+  std::string roccor_dir=string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/Producers/data/rcdata2017v1/RoccoR2017v1.txt"; // directory of text files used to calculate RC
 };
 
 
@@ -290,6 +290,12 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                     if( passesID ) updatedElectrons.push_back(hElectrons->at(j));
 
                 }
+                // apply energy corrections (scale & smearing)
+                for(auto& ele : updatedElectrons){
+                    ele.addUserFloat("ptBeforeRun2Calibration",ele.pt());
+                    ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
+                }
+                
                 // produce the different electron collections
 
                 std::unique_ptr<pat::ElectronCollection> selectedLeptons = std::make_unique<pat::ElectronCollection>( helper_.GetSortedByPt(helper_.GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])));
@@ -332,12 +338,10 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                 }
                 else {
                     if(muons[i].genLepton()) {
-                        momentum_sf = rc.kScaleFromGenMC(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), trackerLayersWithMeasurement, muons[i].genLepton()->pt(), r1, 0, 0);
+                        momentum_sf = rc.kSpreadMC(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), muons[i].genLepton()->pt(), 0, 0);
                     }
                     else {
-                        double r2=r1;
-                        if(!deterministicSeeds) {r2=rnd.Rndm();}
-                        momentum_sf = rc.kScaleAndSmearMC(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), trackerLayersWithMeasurement, r1, r2, 0, 0);
+                        momentum_sf = rc.kSmearMC(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), trackerLayersWithMeasurement, r1, 0, 0);
                     }
                 }
                 auto tmp_vector = muons[i].p4();

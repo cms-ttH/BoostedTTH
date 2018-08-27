@@ -9,7 +9,7 @@ Follow These Steps:
 
     # setup environment
     export SCRAM_ARCH="slc6_amd64_gcc630"
-    export CMSSW_VERSION="CMSSW_9_4_6_patch1"
+    export CMSSW_VERSION="CMSSW_9_4_9"
     
   
     # create new CMSSW environment
@@ -22,8 +22,8 @@ Follow These Steps:
         
     git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
 
-    #git cms-merge-topic cms-egamma:EgammaPostRecoTools_940 #just adds in an extra file to have a setup function to make things easier
-    git cms-merge-topic cms-egamma:Egamma80XMiniAODV2_946 #adds the c++ changes necessary to enable 2016 scale & smearing corrections (is loaded per default)
+    git cms-merge-topic cms-egamma:EgammaPostRecoTools_940 #just adds in an extra file to have a setup function to make things easier
+    #git cms-merge-topic cms-egamma:Egamma80XMiniAODV2_946 #adds the c++ changes necessary to enable 2016 scale & smearing corrections (is loaded per default)
     
     
     # install common classifier
