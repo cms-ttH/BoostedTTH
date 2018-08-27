@@ -162,10 +162,17 @@ if options.recorrectMET:
 
 #METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 
+### Electron scale and smearing corrections ###  
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       runVID=False, #saves CPU time by not needlessly re-running VID
+                       era='2017-Nov17ReReco')
+# a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
+#electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 
 ### some standard collections ####
 #if not options.isData:
-electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
+electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
 photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
 muonCollection     = cms.InputTag("slimmedMuons", "", "PAT")
 tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
@@ -206,15 +213,6 @@ if options.deterministicSeeds:
 
 ##########################################
 
-
-
-### Electron scale and smearing corrections ###  
-#from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-#setupEgammaPostRecoSeq(process,applyEnergyCorrections=False,
-#                       applyVIDOnCorrectedEgamma=False,
-#                       isMiniAOD=True)
-# a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
-#electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 
 # lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
@@ -272,7 +270,7 @@ process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8je
                                                                collectionNames=["correctedJetsAK8"],
                                                                applyCorrection=True,
                                                                systematics=[""]+systsJES,
-                                                               JetID="none",
+                                                               JetID="tight",
                                                                PUJetIDMins=["none"],
                                                                miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
                                                                leptonJetDr=0.8,
@@ -284,7 +282,9 @@ process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.In
                                                                      etaMaxs=[2.4],
                                                                      collectionNames=["selectedJetsAK8"],
                                                                      applyCorrection=False,
-                                                                     systematics=[""]
+                                                                     systematics=[""],
+                                                                     JetID="none",
+                                                                     PUJetIDMins=["loose"]
                                                                     )
 for syst in systs:
     setattr(process,'SelectedJetProducerAK8'+syst,process.SelectedJetProducerAK8.clone(jets='patSmearedJetsAK8'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK8.collectionNames)]))
@@ -456,11 +456,11 @@ process.p = cms.Path()
 if options.recorrectMET:
     process.p *= process.fullPatMetSequence
 
+# electron scale and smearing corrections    
+process.p *= process.egammaPostRecoSeq
+
 if options.deterministicSeeds:
     process.p*=process.deterministicSeeds
-
-# electron scale and smearing corrections    
-#process.p *= process.egammaPostRecoSeq
 
 process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer
 
