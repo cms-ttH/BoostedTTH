@@ -1,7 +1,7 @@
-CFG=/nfs/dust/cms/user/mwassmer/ttH_2018/dev/CMSSW_9_4_6_patch1/src/BoostedTTH/BoostedAnalyzer/test/boostedAnalysis_ntuples-ICHEP18_cg.py
+CFG=/nfs/dust/cms/user/mwassmer/ttH_2018/dev/CMSSW_9_4_9/src/BoostedTTH/BoostedAnalyzer/test/boostedAnalysis_ntuples-ICHEP18_cg.py
 OUTFOLDER=/nfs/dust/cms/user/mwassmer/ttH_2018/sync/syncfiles
 SCRIPTFOLDER=/nfs/dust/cms/user/mwassmer/ttH_2018/sync/syncscripts
-SETUP="#!/bin/bash \nexport VO_CMS_SW_DIR=/cvmfs/cms.cern.ch; source \$VO_CMS_SW_DIR/cmsset_default.sh; cd /nfs/dust/cms/user/mwassmer/ttH_2018/dev/CMSSW_9_4_6_patch1/src; eval \`scram runtime -sh\`;"
+SETUP="#!/bin/bash \nexport VO_CMS_SW_DIR=/cvmfs/cms.cern.ch; source \$VO_CMS_SW_DIR/cmsset_default.sh; cd /nfs/dust/cms/user/mwassmer/ttH_2018/dev/CMSSW_9_4_9/src; eval \`scram runtime -sh\`;"
 
 printf "$SETUP cmsRun $CFG dumpSyncExe=True maxEvents=99999999 inputFiles='root://xrootd-cms.infn.it///store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/60000/AC628CE7-0169-E811-9C5E-00010100096B.root' isData=False outName=${OUTFOLDER}/syncTTH globalTag=94X_mc2017_realistic_v13 systematicVariations=nominal" > ${SCRIPTFOLDER}/syncTTH.sh
 
