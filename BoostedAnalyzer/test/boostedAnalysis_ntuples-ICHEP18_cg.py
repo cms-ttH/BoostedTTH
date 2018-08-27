@@ -409,7 +409,7 @@ if options.isData:
   "WeightProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
-  "BDTVarProcessor",
+ "BDTVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   "AK8JetProcessor"
@@ -417,10 +417,10 @@ if options.isData:
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-  "essentialMCMatchVarProcessor",
+  "MCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
-  "BDTVarProcessor",
+ "BDTVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   "AK8JetProcessor"
