@@ -290,6 +290,12 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                     if( passesID ) updatedElectrons.push_back(hElectrons->at(j));
 
                 }
+                // apply energy corrections (scale & smearing)
+                for(auto& ele : updatedElectrons){
+                    ele.addUserFloat("ptBeforeRun2Calibration",ele.pt());
+                    ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
+                }
+                
                 // produce the different electron collections
 
                 std::unique_ptr<pat::ElectronCollection> selectedLeptons = std::make_unique<pat::ElectronCollection>( helper_.GetSortedByPt(helper_.GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])));
