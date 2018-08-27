@@ -30,7 +30,7 @@ options.register("deterministicSeeds",True,VarParsing.multiplicity.singleton,Var
 options.register("electronRegression","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
 options.register("electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 options.register( "useMuonRC", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
-options.register("recorrectMET",     False,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
+options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
 options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
 options.register("updatePUJetId",     False,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
 options.register( "ProduceMemNtuples", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
@@ -156,10 +156,10 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
   
+if options.recorrectMET:
+    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+    runMetCorAndUncFromMiniAOD(process, isData=options.isData)
 
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-
-runMetCorAndUncFromMiniAOD(process, isData=options.isData)
 #METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 
 
@@ -280,7 +280,7 @@ process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8je
                                                                )
 
 process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.InputTag('patSmearedJetsAK8',"",process.name_()),
-                                                                     ptMins=[30.],
+                                                                     ptMins=[170.],
                                                                      etaMaxs=[2.4],
                                                                      collectionNames=["selectedJetsAK8"],
                                                                      applyCorrection=False,
@@ -453,7 +453,8 @@ if options.ProduceMemNtuples==True:
 ##### DEFINE PATH ##########
 process.p = cms.Path()
 
-process.p *= process.fullPatMetSequence
+if options.recorrectMET:
+    process.p *= process.fullPatMetSequence
 
 if options.deterministicSeeds:
     process.p*=process.deterministicSeeds
