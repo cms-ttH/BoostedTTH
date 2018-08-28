@@ -34,7 +34,7 @@ void BosonWeightProcessor::Init(const InputCollections& input, VariableContainer
   vars.InitVar( "BosonWeight_muFUp" );
   vars.InitVar( "BosonWeight_muFDown" );
 
-  fWeightsW = new TFile("../data/TheoryXS_evj.root");
+  fWeightsW = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/TheoryXS_evj.root");
   hWbosonWeight_nominal =   (TH1D*)fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n");
   hWbosonWeight_QCD1Up =    (TH1D*)fWeightsW->Get("evj_NNLO_NLO_unn_nnn_n");
   hWbosonWeight_QCD1Down =  (TH1D*)fWeightsW->Get("evj_NNLO_NLO_dnn_nnn_n");
@@ -57,7 +57,7 @@ void BosonWeightProcessor::Init(const InputCollections& input, VariableContainer
   hWbosonWeight_muFUp =     (TH1D*)fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
   hWbosonWeight_muFDown =   (TH1D*)fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
 
-  fWeightsZvv = new TFile("../data/TheoryXS_vvj.root");
+  fWeightsZvv = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/TheoryXS_vvj.root");
   hZvvbosonWeight_nominal =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n");
   hZvvbosonWeight_QCD1Up =    (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_unn_nnn_n");
   hZvvbosonWeight_QCD1Down =  (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_dnn_nnn_n");
@@ -80,7 +80,7 @@ void BosonWeightProcessor::Init(const InputCollections& input, VariableContainer
   hZvvbosonWeight_muFUp =     (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
   hZvvbosonWeight_muFDown =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
 
-  fWeightsZll = new TFile("../data/TheoryXS_eej.root");
+  fWeightsZll = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/TheoryXS_eej.root");
   hZllbosonWeight_nominal =   (TH1D*)fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n");
   hZllbosonWeight_QCD1Up =    (TH1D*)fWeightsZll->Get("eej_NNLO_NLO_unn_nnn_n");
   hZllbosonWeight_QCD1Down =  (TH1D*)fWeightsZll->Get("eej_NNLO_NLO_dnn_nnn_n");
