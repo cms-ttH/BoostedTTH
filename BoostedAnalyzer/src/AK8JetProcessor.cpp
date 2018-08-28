@@ -53,6 +53,11 @@ void AK8JetProcessor::Init(const InputCollections& input, VariableContainer& var
   vars.InitVars( "AK8Jet_Dr_GenB1", -9., "N_AK8Jets" );
   vars.InitVars( "AK8Jet_Dr_GenB2", -9., "N_AK8Jets" );
 
+  vars.InitVars( "AK8Jet_EnergyCorrelation_b1N2", -9.,"N_AK8Jets" );
+  vars.InitVars( "AK8Jet_EnergyCorrelation_b1N3", -9.,"N_AK8Jets" );
+  vars.InitVars( "AK8Jet_EnergyCorrelation_b2N2", -9.,"N_AK8Jets" );
+  vars.InitVars( "AK8Jet_EnergyCorrelation_b2N3", -9.,"N_AK8Jets" );
+  
   initialized = true;
 }
 
