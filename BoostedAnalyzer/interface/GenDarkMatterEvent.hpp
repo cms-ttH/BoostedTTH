@@ -39,6 +39,7 @@ class GenDarkMatterEvent{
         void FillBoson();
         bool ZBosonIsFilled() const;
         bool WBosonIsFilled() const;
+        bool IsZnunu() const;
         math::XYZTLorentzVector ReturnZBoson() const;
         math::XYZTLorentzVector ReturnWBoson() const;
   
@@ -56,6 +57,7 @@ class GenDarkMatterEvent{
         bool hasVectorBoson = false;
         bool ZBosonisFilled = false;
         bool WBosonisFilled = false;
+        bool isZnunu = false;
         math::XYZTLorentzVector ZBoson;
         math::XYZTLorentzVector WBoson;
 };
