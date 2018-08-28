@@ -58,27 +58,28 @@ void BosonWeightProcessor::Init(const InputCollections& input, VariableContainer
   hWbosonWeight_muFDown =   (TH1D*)fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
 
   fWeightsZvv = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/TheoryXS_vvj.root");
-  hZvvbosonWeight_nominal =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n");
-  hZvvbosonWeight_QCD1Up =    (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_unn_nnn_n");
-  hZvvbosonWeight_QCD1Down =  (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_dnn_nnn_n");
-  hZvvbosonWeight_QCD2Up =    (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nun_nnn_n");
-  hZvvbosonWeight_QCD2Down =  (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_ndn_nnn_n");
-  hZvvbosonWeight_QCD3Up =    (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnu_nnn_n");
-  hZvvbosonWeight_QCD3Down =  (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnd_nnn_n");
-  hZvvbosonWeight_EW1Up =     (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_unn_n");
-  hZvvbosonWeight_EW1Down =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_dnn_n");
-  hZvvbosonWeight_EW2Up =     (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nun_n");
-  hZvvbosonWeight_EW2Down =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_ndn_n");
-  hZvvbosonWeight_EW3Up =     (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnu_n");
-  hZvvbosonWeight_EW3Down =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnd_n");
-  hZvvbosonWeight_MixedUp =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_u");
-  hZvvbosonWeight_MixedDown = (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_d");
-  hZvvbosonWeight_AlphaUp =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n_alpha_up");
-  hZvvbosonWeight_AlphaDown = (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n_alpha_down");
-  hZvvbosonWeight_muRUp =     (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_2p0_muF_1p0");
-  hZvvbosonWeight_muRDown =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
-  hZvvbosonWeight_muFUp =     (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
-  hZvvbosonWeight_muFDown =   (TH1D*)fWeightsZll->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
+  hZvvbosonWeight_nominal =   (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n");
+  hZvvbosonWeight_QCD1Up =    (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_unn_nnn_n");
+  hZvvbosonWeight_QCD1Down =  (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_dnn_nnn_n");
+  hZvvbosonWeight_QCD2Up =    (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nun_nnn_n");
+  hZvvbosonWeight_QCD2Down =  (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_ndn_nnn_n");
+  hZvvbosonWeight_QCD3Up =    (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnu_nnn_n");
+  hZvvbosonWeight_QCD3Down =  (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnd_nnn_n");
+  hZvvbosonWeight_EW1Up =     (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_unn_n");
+  hZvvbosonWeight_EW1Down =   (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_dnn_n");
+  hZvvbosonWeight_EW2Up =     (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nun_n");
+  hZvvbosonWeight_EW2Down =   (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_ndn_n");
+  hZvvbosonWeight_EW3Up =     (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnu_n");
+  hZvvbosonWeight_EW3Down =   (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnd_n");
+  hZvvbosonWeight_MixedUp =   (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_u");
+  hZvvbosonWeight_MixedDown = (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_d");
+  hZvvbosonWeight_AlphaUp =   (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_alpha_up");
+  hZvvbosonWeight_AlphaDown = (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_alpha_down");
+  hZvvbosonWeight_muRUp =     (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_2p0_muF_1p0");
+  hZvvbosonWeight_muRDown =   (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
+  hZvvbosonWeight_muFUp =     (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
+  hZvvbosonWeight_muFDown =   (TH1D*)fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
+hZvvbosonWeight_muFDown->Print();
 
   fWeightsZll = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/TheoryXS_eej.root");
   hZllbosonWeight_nominal =   (TH1D*)fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n");
@@ -102,7 +103,6 @@ void BosonWeightProcessor::Init(const InputCollections& input, VariableContainer
   hZllbosonWeight_muRDown =   (TH1D*)fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
   hZllbosonWeight_muFUp =     (TH1D*)fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
   hZllbosonWeight_muFDown =   (TH1D*)fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
-
   initialized = true;
 }
 
