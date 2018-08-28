@@ -198,7 +198,7 @@ void GenDarkMatterEvent::FillBoson()
         
         //Z Bosons
         if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16 or abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 13) and genparticle.isPromptFinalState())  {
-            decay_prodZ.push_back(genparticle);
+            decay_prodZ.push_back(genparticle);            
         }
         
 
@@ -243,6 +243,10 @@ void GenDarkMatterEvent::FillBoson()
             }
             ZBoson = decay_prodZ.at(0).p4() + decay_prodZ.at(1).p4();
             ZBosonisFilled = true;
+            if(abs(decay_prodZ.at(0).pdgId()) == 12 or abs(decay_prodZ.at(0).pdgId()) == 14 or abs(decay_prodZ.at(0).pdgId()) == 16 ){
+                isZnunu = true;
+            }
+            else isZnunu = false;
         }
     }
 }
@@ -258,6 +262,13 @@ bool GenDarkMatterEvent::ZBosonIsFilled() const
 {
     return ZBosonisFilled;
 }
+
+// return if the ZBoson decayed to Neutrinos
+bool GenDarkMatterEvent::IsZnunu() const
+{
+    return isZnunu;
+}
+
 
 math::XYZTLorentzVector GenDarkMatterEvent::ReturnWBoson() const
 {
