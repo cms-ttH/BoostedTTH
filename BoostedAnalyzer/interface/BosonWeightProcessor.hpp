@@ -16,7 +16,8 @@ public:
 	void Process(const InputCollections& input, VariableContainer& var);
 private:
 	TFile* fWeightsW = 0;
-	TFile* fWeightsZ = 0;
+	TFile* fWeightsZvv = 0;
+	TFile* fWeightsZll = 0;
 
 	TH1D* hWbosonWeight_nominal = 0;
 	TH1D* hWbosonWeight_QCD1Up = 0;
@@ -41,27 +42,49 @@ private:
 	TH1D* hWbosonWeight_muFDown = 0;
 
 
-	TH1D* hZbosonWeight_nominal = 0;
-	TH1D* hZbosonWeight_QCD1Up = 0;
-	TH1D* hZbosonWeight_QCD1Down = 0;
-	TH1D* hZbosonWeight_QCD2Up = 0;
-	TH1D* hZbosonWeight_QCD2Down = 0;
-	TH1D* hZbosonWeight_QCD3Up = 0;
-	TH1D* hZbosonWeight_QCD3Down = 0;
-	TH1D* hZbosonWeight_EW1Up = 0;
-	TH1D* hZbosonWeight_EW1Down = 0;
-	TH1D* hZbosonWeight_EW2Up = 0;
-	TH1D* hZbosonWeight_EW2Down = 0;
-	TH1D* hZbosonWeight_EW3Up = 0;
-	TH1D* hZbosonWeight_EW3Down = 0;
-	TH1D* hZbosonWeight_MixedUp = 0;
-	TH1D* hZbosonWeight_MixedDown = 0;
-	TH1D* hZbosonWeight_AlphaUp = 0;
-	TH1D* hZbosonWeight_AlphaDown = 0;
-	TH1D* hZbosonWeight_muRUp = 0;
-	TH1D* hZbosonWeight_muRDown = 0;
-	TH1D* hZbosonWeight_muFUp = 0;
-	TH1D* hZbosonWeight_muFDown = 0;
+	TH1D* hZvvbosonWeight_nominal = 0;
+	TH1D* hZvvbosonWeight_QCD1Up = 0;
+	TH1D* hZvvbosonWeight_QCD1Down = 0;
+	TH1D* hZvvbosonWeight_QCD2Up = 0;
+	TH1D* hZvvbosonWeight_QCD2Down = 0;
+	TH1D* hZvvbosonWeight_QCD3Up = 0;
+	TH1D* hZvvbosonWeight_QCD3Down = 0;
+	TH1D* hZvvbosonWeight_EW1Up = 0;
+	TH1D* hZvvbosonWeight_EW1Down = 0;
+	TH1D* hZvvbosonWeight_EW2Up = 0;
+	TH1D* hZvvbosonWeight_EW2Down = 0;
+	TH1D* hZvvbosonWeight_EW3Up = 0;
+	TH1D* hZvvbosonWeight_EW3Down = 0;
+	TH1D* hZvvbosonWeight_MixedUp = 0;
+	TH1D* hZvvbosonWeight_MixedDown = 0;
+	TH1D* hZvvbosonWeight_AlphaUp = 0;
+	TH1D* hZvvbosonWeight_AlphaDown = 0;
+	TH1D* hZvvbosonWeight_muRUp = 0;
+	TH1D* hZvvbosonWeight_muRDown = 0;
+	TH1D* hZvvbosonWeight_muFUp = 0;
+	TH1D* hZvvbosonWeight_muFDown = 0;
+
+	TH1D* hZllbosonWeight_nominal = 0;
+	TH1D* hZllbosonWeight_QCD1Up = 0;
+	TH1D* hZllbosonWeight_QCD1Down = 0;
+	TH1D* hZllbosonWeight_QCD2Up = 0;
+	TH1D* hZllbosonWeight_QCD2Down = 0;
+	TH1D* hZllbosonWeight_QCD3Up = 0;
+	TH1D* hZllbosonWeight_QCD3Down = 0;
+	TH1D* hZllbosonWeight_EW1Up = 0;
+	TH1D* hZllbosonWeight_EW1Down = 0;
+	TH1D* hZllbosonWeight_EW2Up = 0;
+	TH1D* hZllbosonWeight_EW2Down = 0;
+	TH1D* hZllbosonWeight_EW3Up = 0;
+	TH1D* hZllbosonWeight_EW3Down = 0;
+	TH1D* hZllbosonWeight_MixedUp = 0;
+	TH1D* hZllbosonWeight_MixedDown = 0;
+	TH1D* hZllbosonWeight_AlphaUp = 0;
+	TH1D* hZllbosonWeight_AlphaDown = 0;
+	TH1D* hZllbosonWeight_muRUp = 0;
+	TH1D* hZllbosonWeight_muRDown = 0;
+	TH1D* hZllbosonWeight_muFUp = 0;
+	TH1D* hZllbosonWeight_muFDown = 0;
 
 	double BosonWeight_nominal = 1;
 	double BosonWeight_QCD1Up = 1;
