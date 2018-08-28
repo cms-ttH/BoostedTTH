@@ -105,8 +105,17 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
 
   // GenMET
   if(input.correctedMET.genMET()!=0){
-      vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
-      vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
+    if(input.correctedMET.genMET()->pt()<1){ // fix for broken GenMET in MadGraphMonoJetSamples
+      if(input.genDarkMatterEvt.IsFilled()){
+        const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
+        vars.FillVar( "Evt_Pt_GenMET",DM_Evt.ReturnNaiveMET4Vector().Pt());
+        vars.FillVar( "Evt_Phi_GenMET",DM_Evt.ReturnNaiveMET4Vector().Phi());
+      }
+    }
+    else{
+        vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
+        vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
+    }
   }
   
   // 4-vectors to contain MET and hadronic recoil
@@ -213,6 +222,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
     
     TLorentzVector Mediator_p4 = DM_Evt.ReturnMediator4Vector();
+    TLorentzVector NaiveMET_p4 = DM_Evt.ReturnNaiveMET4Vector();
     std::vector<TLorentzVector> Neutralinos_p4 = DM_Evt.ReturnNeutralino4Vectors();
     std::vector<TLorentzVector> Neutrinos_p4 = DM_Evt.ReturnNeutrino4Vectors();
     
@@ -220,6 +230,8 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVar( "N_Neutrinos",Neutrinos_p4.size() );
     
     vars.FillVar( "NaiveMET",DM_Evt.ReturnNaiveMET());
+
+    
     
     vars.FillVar( "Mediator_Mass",Mediator_p4.M());
     vars.FillVar( "Mediator_Pt",Mediator_p4.Pt());

@@ -167,6 +167,18 @@ double GenDarkMatterEvent::ReturnNaiveMET() const
     return vec4_invisibles.pt();
 }
 
+TLorentzVector GenDarkMatterEvent::ReturnNaiveMET4Vector() const
+{
+    math::XYZTLorentzVector vec4_invisibles;
+    for(size_t i=0;i<Neutralinos.size();i++){
+        vec4_invisibles+=Neutralinos[i].p4();
+    }
+    for(size_t i=0;i<Neutrinos.size();i++){
+        vec4_invisibles+=Neutrinos[i].p4();
+    }
+    return BoostedUtils::GetTLorentzVector(vec4_invisibles);
+}
+
 // for MC reweighting of Z/W boson + jets events: save the pt of the generator v boson
 
 void GenDarkMatterEvent::FillBoson()

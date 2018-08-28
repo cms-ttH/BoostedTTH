@@ -32,6 +32,8 @@ class GenDarkMatterEvent{
         std::vector<TLorentzVector> ReturnNeutrino4Vectors() const;
         
         double ReturnNaiveMET() const;
+        TLorentzVector ReturnNaiveMET4Vector() const;
+
         
         // for MC reweighting of Z/W boson + jets events
         void FillBoson();

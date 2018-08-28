@@ -82,10 +82,14 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
     bool dPhi_jet_met_criterium = true;
     for(size_t i=0;i<input.selectedJets.size()&&i<4;i++) {
         dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(i).phi()))>0.5;
+        // dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi()-input.selectedJets.at(i).phi()))>0.5;
         if(!dPhi_jet_met_criterium) return false;
     }
     
     if(fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(0).phi()))<1.0) return false;
+
+    bool dPhi_jet0_met_criterium = fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(0).phi())) > 1.0;
+    if(!dPhi_jet0_met_criterium) return false;
 
     cutflow.EventSurvivedStep("At least one jet with pt greater than "+pt_str+" and eta smaller than "+eta_str,input.weights.at("Weight"));
     return true;

@@ -76,8 +76,8 @@ bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     // check in addition if a quality criteria for MET is fulfilled to reduce fake MET events
     // if the events satisfies the conditions, return true
     if((hadr_recoil>minMET&&hadr_recoil<maxMET)&&(fabs(calomet-met)/calomet<0.5)){
-	cutflow.EventSurvivedStep(selectionName ,input.weights.at("Weight"));
-	return true;
+    	cutflow.EventSurvivedStep(selectionName ,input.weights.at("Weight"));
+	   return true;
     }
     
     return false;   

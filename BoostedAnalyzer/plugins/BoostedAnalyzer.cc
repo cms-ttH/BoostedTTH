@@ -124,6 +124,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DarkMatterProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MonoJetGenSelectionProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SelectionTagProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BosonWeightProcessor.hpp"
 
 //
 // class declaration
@@ -583,6 +584,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
         }
     if(std::find(processorNames.begin(),processorNames.end(),"SelectionTagProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new SelectionTagProcessor(),"SelectionTagProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"BosonWeightProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new BosonWeightProcessor(),"BosonWeightProcessor");
     }
     }
 
