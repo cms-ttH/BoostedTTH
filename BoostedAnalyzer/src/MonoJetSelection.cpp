@@ -84,6 +84,8 @@ bool MonoJetSelection::IsSelected(const InputCollections& input,Cutflow& cutflow
         dPhi_jet_met_criterium = fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(i).phi()))>0.5;
         if(!dPhi_jet_met_criterium) return false;
     }
+    
+    if(fabs(TVector2::Phi_mpi_pi(met_p4.phi()-input.selectedJets.at(0).phi()))<1.0) return false;
 
     cutflow.EventSurvivedStep("At least one jet with pt greater than "+pt_str+" and eta smaller than "+eta_str,input.weights.at("Weight"));
     return true;
