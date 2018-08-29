@@ -11,6 +11,8 @@ EventInfo::EventInfo(const edm::Event& iEvent, const edm::Handle<reco::BeamSpot>
   BSx = beamSpot->x0();
   BSy = beamSpot->y0();
   BSz = beamSpot->z0();
+
+  isData = iEvent.isRealData();
   
  
   if( hcalNoiseSummary.isValid() ){

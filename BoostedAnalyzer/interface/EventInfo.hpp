@@ -29,6 +29,7 @@ public:
   float sumTrueNVtx, numTruePV, nm1_true, n0_true, np1_true;
 
   bool firstVertexIsGood;
+  bool isData;
 
   float rho;
   
