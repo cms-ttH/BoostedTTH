@@ -7,6 +7,7 @@
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -37,6 +38,7 @@ public:
 private:
     edm::EDGetTokenT<edm::TriggerResults> triggerBitsToken;
     edm::EDGetTokenT<pat::PackedTriggerPrescales> triggerPrescalesToken;
+    edm::EDGetTokenT<pat::TriggerObjectStandAlone> triggerObjectsToken;
 
 };
 

@@ -5,6 +5,7 @@ Inputs_tth_sl= cms.PSet(
     hcalNoise=cms.InputTag("hcalnoise"),
     triggerBits=cms.InputTag("TriggerResults::HLT"),
     triggerPrescales=cms.InputTag("patTrigger"),
+    triggerObjects=cms.InputTag("selectedPatTrigger"),
     filterBits=cms.InputTag("TriggerResults::PAT"),
     additionalFilters=cms.VInputTag(["BadChargedCandidateFilter","BadPFMuonFilter","badGlobalMuonTaggerMAOD","cloneGlobalMuonTaggerMAOD"]),
     beamSpot=cms.InputTag("offlineBeamSpot"),

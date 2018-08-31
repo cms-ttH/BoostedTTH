@@ -56,6 +56,7 @@ TriggerInfoProducer::TriggerInfoProducer(const edm::ParameterSet& iConfig,
 				       edm::ConsumesCollector && iC){
     triggerBitsToken        = iC.consumes< edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerBits"));
     triggerPrescalesToken   = iC.consumes< pat::PackedTriggerPrescales>(iConfig.getParameter<edm::InputTag>("triggerPrescales"));
+    triggerObjectsToken     = iC.consumes< pat::TriggerObjectStandAlone>(iConfig.getParameter<edm::InputTag>("triggerObjects"));
 
 }
 
