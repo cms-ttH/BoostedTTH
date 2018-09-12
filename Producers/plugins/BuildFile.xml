@@ -6,4 +6,5 @@
 <use name="MiniAOD/MiniAODHelper"/>
 <use   name="DataFormats/PatCandidates"/>
 <use   name="JetMETCorrections/Objects"/>
+<use name="PhysicsTools/PatUtils"/>
 </library>
