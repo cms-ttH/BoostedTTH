@@ -70,7 +70,9 @@ checkBasicDataTriggers= cms.PSet(
 				 "HLT_PFMET170_*","HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_*","HLT_PFMETNoMu100_PFMHTNoMu100_IDTight_*","HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_*","HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_*",
 				 "HLT_Ele27_WPTight_*","HLT_Ele105_CaloIdVT_GsfTrkIdT_*",
 				 "HLT_Photon165_HE10_*","HLT_Photon175_*",
-				 "HLT_EcalHT800_*"
+				 "HLT_EcalHT800_*",
+				 "HLT_IsoMu24_v*","HLT_IsoTkMu24_v*",
+				 "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v*","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*"
                                  )
 )
 checkBasicMCTriggers= cms.PSet(
@@ -78,7 +80,9 @@ checkBasicMCTriggers= cms.PSet(
 				 "HLT_PFMET170_*","HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_*","HLT_PFMETNoMu100_PFMHTNoMu100_IDTight_*","HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_*","HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_*",
 				 "HLT_Ele27_WPTight_*","HLT_Ele105_CaloIdVT_GsfTrkIdT_*",
 				 "HLT_Photon165_HE10_*","HLT_Photon175_*",
-				 "HLT_EcalHT800_*"
+				 "HLT_EcalHT800_*",
+				 "HLT_IsoMu24_v*","HLT_IsoTkMu24_v*",
+				 "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v*","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*"
                                  )
 )
 
