@@ -356,8 +356,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet1_phi=input.selectedJets.at(0).phi();
 	jet1_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
 	if(input.selectedJets.at(0).hasUserInt("deterministicSeed")) jet1_seed=(uint32_t)input.selectedJets.at(0).userInt("deterministicSeed");
-	if(input.selectedJets.at(0).hasUserInt("pileupJetIdUpdated:fullId")) jet1_PUJetId=input.selectedJets.at(0).userInt("pileupJetIdUpdated:fullId");
-	if(input.selectedJets.at(0).hasUserFloat("pileupJetIdUpdated:fullDiscriminant")) { jet1_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetIdUpdated:fullDiscriminant");}
+	if(input.selectedJets.at(0).hasUserInt("pileupJetId:fullId")) jet1_PUJetId=input.selectedJets.at(0).userInt("pileupJetId:fullId");
+	if(input.selectedJets.at(0).hasUserFloat("pileupJetId:fullDiscriminant")) { jet1_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetId:fullDiscriminant");}
 	if(input.selectedJets.at(0).hasUserFloat("HelperJES")) jet1_jesSF=input.selectedJets.at(0).userFloat("HelperJES");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJESup")) jet1_jesSF_up=input.selectedJets.at(0).userFloat("HelperJESup");
 	if(input.selectedJets.at(0).hasUserFloat("HelperJESdown")) jet1_jesSF_down=input.selectedJets.at(0).userFloat("HelperJESdown");
@@ -374,8 +374,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet2_phi=input.selectedJets.at(1).phi();
 	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
 	if(input.selectedJets.at(1).hasUserInt("deterministicSeed")) jet2_seed=(uint32_t)input.selectedJets.at(1).userInt("deterministicSeed");
-	if(input.selectedJets.at(1).hasUserInt("pileupJetIdUpdated:fullId")) jet2_PUJetId=input.selectedJets.at(1).userInt("pileupJetIdUpdated:fullId");
-	if(input.selectedJets.at(1).hasUserFloat("pileupJetIdUpdated:fullDiscriminant")){ jet2_PUJetDiscriminant=input.selectedJets.at(1).userFloat("pileupJetIdUpdated:fullDiscriminant");}
+	if(input.selectedJets.at(1).hasUserInt("pileupJetId:fullId")) jet2_PUJetId=input.selectedJets.at(1).userInt("pileupJetId:fullId");
+	if(input.selectedJets.at(1).hasUserFloat("pileupJetId:fullDiscriminant")){ jet2_PUJetDiscriminant=input.selectedJets.at(1).userFloat("pileupJetId:fullDiscriminant");}
 	if(input.selectedJets.at(1).hasUserFloat("HelperJES")) jet2_jesSF=input.selectedJets.at(1).userFloat("HelperJES");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESup")) jet2_jesSF_up=input.selectedJets.at(1).userFloat("HelperJESup");
 	if(input.selectedJets.at(1).hasUserFloat("HelperJESdown")) jet2_jesSF_down=input.selectedJets.at(1).userFloat("HelperJESdown");
@@ -439,7 +439,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     }
 
 
-    trig_mu=input.triggerInfo.IsTriggered("HLT_IsoMu24_2p1_v*")||input.triggerInfo.IsTriggered("HLT_IsoMu24_2p1_v*");
+    trig_mu=input.triggerInfo.IsTriggered("HLT_IsoMu24_eta2p1_v*")||input.triggerInfo.IsTriggered("HLT_IsoMu27_v*");
     trig_el=input.triggerInfo.IsTriggered("HLT_Ele35_WPTight_Gsf_v*")||input.triggerInfo.IsTriggered("HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*");
     trig_elel=input.triggerInfo.IsTriggered("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*")||input.triggerInfo.IsTriggered("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
     trig_elmu=input.triggerInfo.IsTriggered("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*")
