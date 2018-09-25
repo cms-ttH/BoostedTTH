@@ -6,6 +6,9 @@ CMSSW tools for analyzing TTH events with boosted objects
 
 ## Installation
 Follow These Steps:
+If it is your first time setting up a CMSSW release CMSSW will create a hidden .cmsgit-cache directory in your home directory that can grow quite large. Therefore it is a good idea to specify the path of this directory to be on the dust (or other high volume storage)
+Do for example:
+export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
 
     # setup environment
     export SCRAM_ARCH="slc6_amd64_gcc630"
