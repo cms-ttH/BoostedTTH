@@ -399,7 +399,8 @@ process.BoostedAnalyzer.selectionNames = [
 "FilterSelection",
 "VertexSelection",
 "LeptonSelection",
-"JetTagSelection"
+"JetTagSelection",
+"METSelection"
 ]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)

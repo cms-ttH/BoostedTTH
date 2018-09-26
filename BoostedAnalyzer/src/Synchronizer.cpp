@@ -45,7 +45,7 @@ void Synchronizer::DumpSyncExeHeader(std::ostream &out, bool addExtendedInfo){
 	out << ",n_leps_tight,n_leps_dl,n_leps_loose,rho";
 	out << ",raw_el1_pt,raw_el1_eta,raw_el1_iso,raw_el1_pdgId,raw_el2_pt,raw_el2_eta,raw_el2_iso,raw_el2_pdgId";
 	out << ",raw_mu1_pt,raw_mu1_eta,raw_mu1_iso,raw_mu1_pdgId,raw_mu2_pt,raw_mu2_eta,raw_mu2_iso,raw_mu2_pdgId";
-	out << ",pass_FilterSelection,pass_VertexSelection,pass_LeptonSelection,pass_DiLeptonSelection";
+	out << ",pass_FilterSelection,pass_VertexSelection,pass_LeptonSelection,pass_DiLeptonSelection,pass_METSelection";
 	    
     }
     out << endl;
@@ -198,6 +198,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     int pass_VertexSelection=-1;
     int pass_LeptonSelection=-1;
     int pass_DiLeptonSelection=-1;
+    int pass_METSelection=-1;
     
     // hack to use loose isolation scale factors for muons in case of dilepton channel
     if(int(input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())>1) {
@@ -285,6 +286,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    if(i==0) pass_FilterSelection=0;
 	    if(i==1) pass_VertexSelection=0;
 	    if(i==2) pass_LeptonSelection=0;
+            if(i==3) pass_METSelection=0;
 
 	    break;
 	}
@@ -292,6 +294,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    if(i==0) pass_FilterSelection=1;
 	    if(i==1) pass_VertexSelection=1;
 	    if(i==2) pass_LeptonSelection=1;
+            if(i==3) pass_METSelection=1;
 	}
     }
     if(is_SL){
@@ -636,7 +639,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	    out << boost::format(",%i,%i,%i,%.4f")%n_leps_tight%n_leps_dl%n_leps_loose%rho;
 	    out << boost::format(",%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%i")%raw_el1_pt%raw_el1_eta%raw_el1_iso%raw_el1_pdgId%raw_el2_pt%raw_el2_eta%raw_el2_iso%raw_el2_pdgId;
 	    out << boost::format(",%.4f,%.4f,%.4f,%i,%.4f,%.4f,%.4f,%i")%raw_mu1_pt%raw_mu1_eta%raw_mu1_iso%raw_mu1_pdgId%raw_mu2_pt%raw_mu2_eta%raw_mu2_iso%raw_mu2_pdgId;
-	    out << boost::format(",%i,%i,%i,%i")%pass_FilterSelection%pass_VertexSelection%pass_LeptonSelection%pass_DiLeptonSelection;
+	    out << boost::format(",%i,%i,%i,%i,%i")%pass_FilterSelection%pass_VertexSelection%pass_LeptonSelection%pass_DiLeptonSelection%pass_METSelection;
 	}
 	out<<"\n";
     }
@@ -692,6 +695,7 @@ void Synchronizer::Init(std::string filename, const std::vector<std::string>& je
     selectionsSL.push_back(new FilterSelection(iConfig));
     selectionsSL.push_back(new VertexSelection());
     selectionsSL.push_back(new LeptonSelection(iConfig));
+    selectionsSL.push_back(new METSelection(20.,99999.));
     selectionsSL.push_back(new JetTagSelection(4,2));
     for (auto &c : cutflowsSL){
 	for (auto &s : selectionsSL){

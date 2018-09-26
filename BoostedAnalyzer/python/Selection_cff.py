@@ -42,8 +42,8 @@ DiLeptonSelectionData = cms.PSet(
 )
 
 METSelection = cms.PSet(
-    minMET = cms.double(-1),
-    maxMET = cms.double(800),
+    minMET = cms.double(20.),
+    maxMET = cms.double(100000.),
 )
 
 DiLeptonMETSelection = cms.PSet(
