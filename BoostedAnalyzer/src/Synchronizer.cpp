@@ -38,7 +38,7 @@ Synchronizer::~Synchronizer (){
 
 
 void Synchronizer::DumpSyncExeHeader(std::ostream &out, bool addExtendedInfo){
-    out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_eta,lep1_iso,lep1_pdgId,lep1_idSF,lep1_isoSF,lep1_seed,lep2_pt,lep2_eta,lep2_iso,lep2_pdgId,lep2_idSF,lep2_isoSF,lep2_seed,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_jesSF_PileUpDataMC_down,jet1_jesSF_RelativeFSR_up,jet1_jerSF_nominal,jet1_csv,jet1_PUJetId,jet1_PUJetDiscriminant,jet1_seed,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_jesSF_PileUpDataMC_down,jet2_jesSF_RelativeFSR_up,jet2_jerSF_nominal,jet2_csv,jet2_PUJetId,jet2_PUJetDiscriminant,jet2_seed,MET_pt,MET_phi,mll,ttHFCategory,ttHFGenFilterTag,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down,triggerSF,top_pt_weight,bdt_output,dnn_ttH_output,dnn_ttbb_output";
+    out << "run,lumi,event,is_e,is_mu,is_ee,is_emu,is_mumu,n_jets,n_btags,lep1_pt,lep1_eta,lep1_iso,lep1_pdgId,lep1_idSF,lep1_isoSF,lep1_seed,lep2_pt,lep2_eta,lep2_iso,lep2_pdgId,lep2_idSF,lep2_isoSF,lep2_seed,jet1_pt,jet1_eta,jet1_phi,jet1_jesSF,jet1_jesSF_up,jet1_jesSF_down,jet1_jesSF_PileUpDataMC_down,jet1_jesSF_RelativeFSR_up,jet1_jerSF_nominal,jet1_csv,jet1_PUJetId,jet1_PUJetDiscriminant,jet1_seed,jet2_pt,jet2_eta,jet2_phi,jet2_jesSF,jet2_jesSF_up,jet2_jesSF_down,jet2_jesSF_PileUpDataMC_down,jet2_jesSF_RelativeFSR_up,jet2_jerSF_nominal,jet2_csv,jet2_PUJetId,jet2_PUJetDiscriminant,jet2_seed,MET_pt,MET_phi,mll,ttHFCategory,ttHFGenFilterTag,n_interactions,puWeight,csvSF,csvSF_lf_up,csvSF_hf_down,csvSF_cErr1_down,pdf_up,pdf_down,me_up,me_down,isr_up,isr_down,fsr_up,fsr_down,triggerSF,top_pt_weight,bdt_output,dnn_ttH_output,dnn_ttbb_output";
     if(addExtendedInfo){
 	out << ",jet3_pt,jet3_eta,jet3_csv,jet4_pt,jet4_eta,jet4_csv,jet5_pt,jet5_eta,jet5_csv,jet6_pt,jet6_eta,jet6_csv,jet7_pt,jet7_eta,jet7_csv";
 	out << ",trig_el,trig_mu,trig_elel,trig_elmu,trig_mumu";
@@ -147,6 +147,11 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     
     float me_up=-1;
     float me_down=-1;
+    
+    float isr_up=-1;
+    float isr_down=-1;
+    float fsr_up=-1;
+    float fsr_down=-1;
     
     float triggerSF=-1;
     float top_pt_weight=-1;
@@ -515,6 +520,10 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if(input.weights.count("Weight_TopPt")>0) top_pt_weight=input.weights.at("Weight_TopPt");
     if(input.weights.count("Weight_LHA_306000_up")>0) pdf_up=input.weights.at("Weight_LHA_306000_up");
     if(input.weights.count("Weight_LHA_306000_down")>0) pdf_down=input.weights.at("Weight_LHA_306000_down");
+    if(input.weights.count("GenWeight_6")>0) isr_up=input.weights.at("GenWeight_6");
+    if(input.weights.count("GenWeight_7")>0) fsr_up=input.weights.at("GenWeight_7");
+    if(input.weights.count("GenWeight_8")>0) isr_down=input.weights.at("GenWeight_8");
+    if(input.weights.count("GenWeight_9")>0) fsr_down=input.weights.at("GenWeight_9");
     
     if(is_SL) {
         std::vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
@@ -619,7 +628,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 %.4f,\
 %.4f,%.4f,%.4f,%.4f,\
 %.4f,%.4f,\
-%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%
+%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%
 	run% lumi% event%
 	is_e% is_mu% is_ee% is_emu% is_mumu%
 	n_jets% n_btags%
@@ -632,7 +641,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	puWeight%
 	csvSF% csvSF_lf_up% csvSF_hf_down% csvSF_cErr1_down%
 	pdf_up% pdf_down%
-	me_up% me_down% triggerSF% top_pt_weight% bdt_output% dnn_ttH_output% dnn_ttbb_output;
+	me_up% me_down% isr_up% isr_down% fsr_up% fsr_down% triggerSF% top_pt_weight% bdt_output% dnn_ttH_output% dnn_ttbb_output;
 	if(addExtendedInfo){
 	    out << boost::format(",%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f")%jet3_pt%jet3_eta%jet3_csv%jet4_pt%jet4_eta%jet4_csv%jet5_pt%jet5_eta%jet5_csv%jet6_pt%jet6_eta%jet6_csv%jet7_pt%jet7_eta%jet7_csv;
 	    out << boost::format(",%i,%i,%i,%i,%i")%trig_el%trig_mu%trig_elel%trig_elmu%trig_mumu;

@@ -5,7 +5,7 @@ SETUP="#!/bin/bash \nexport VO_CMS_SW_DIR=/cvmfs/cms.cern.ch; source \$VO_CMS_SW
 
 printf "$SETUP cmsRun $CFG dumpSyncExe=True maxEvents=99999999 inputFiles='root://xrootd-cms.infn.it///store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/60000/AC628CE7-0169-E811-9C5E-00010100096B.root' isData=False outName=${OUTFOLDER}/syncTTH globalTag=94X_mc2017_realistic_v13 systematicVariations=nominal" > ${SCRIPTFOLDER}/syncTTH.sh
 
-# printf "$SETUP cmsRun $CFG dumpSyncExe=True maxEvents=99999999 inputFiles='file:/pnfs/desy.de/cms/tier2/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/0693E0E7-97BE-E611-B32F-0CC47A78A3D8.root' isData=False outName=${OUTFOLDER}/syncTTbar globalTag=94X_mc2017_realistic_v13 systematicVariations=nominal" > ${SCRIPTFOLDER}/syncTTbar.sh
+printf "$SETUP cmsRun $CFG dumpSyncExe=True maxEvents=99999999 inputFiles='root://xrootd-cms.infn.it///store/mc/RunIIFall17MiniAODv2/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/64301B32-E742-E811-823F-0025905A60D0.root' isData=False outName=${OUTFOLDER}/syncTTH globalTag=94X_mc2017_realistic_v13 systematicVariations=nominal" > ${SCRIPTFOLDER}/syncTTbar.sh
 # 
 # #######
 # 
