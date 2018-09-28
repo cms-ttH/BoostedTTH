@@ -25,6 +25,7 @@ public:
 private:
     std::map<std::string, bool> triggers;
     std::map<std::string, int> prescales;
+    std::map<std::string, math::XYZTLorentzVector> objects;
 };
 
 
