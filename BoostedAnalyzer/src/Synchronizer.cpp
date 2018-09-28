@@ -554,9 +554,9 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         add_features.push_back(eth_blr_trans);
         add_features.push_back(0.);
         bdt_output=bdtclassifier->GetBDTOutput(lepvecs, jetvecs, jetcsvs,metP4);
-        DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs[0],metP4,add_features);
-        dnn_ttbb_output = dnn_output.ttbb();
-        dnn_ttH_output = dnn_output.ttH();
+        //DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs[0],metP4,add_features);
+        //dnn_ttbb_output = dnn_output.ttbb();
+        //dnn_ttH_output = dnn_output.ttH();
     }
     
     else if(is_DL) {
@@ -596,9 +596,9 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         add_features.push_back(eth_blr_trans);
         add_features.push_back(0.);
         bdt_output=dlbdtclassifier->GetBDTOutput(lepvecs,lepcharges,jetvecs,jetcsvs,metP4);
-        DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs,metP4,add_features);
-        dnn_ttbb_output = dnn_output.ttbb();
-        dnn_ttH_output = dnn_output.ttH();
+        //DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs,metP4,add_features);
+        //dnn_ttbb_output = dnn_output.ttbb();
+        //dnn_ttH_output = dnn_output.ttH();
     }
     
 

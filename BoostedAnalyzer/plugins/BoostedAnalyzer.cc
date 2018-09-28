@@ -432,13 +432,13 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     
     pointerToMEMClassifier.reset(new MEMClassifier());
     pointerToCommonBDT5Classifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/lj_BDT_DeepCSV_Summer18_v1/", 0.4941 ));
-    DNNClassifierBase::pyInitialize();
-    pointerToDnnSLClassifier.reset(new DNNClassifier_SL("v6a"));
+    //DNNClassifierBase::pyInitialize();
+    //pointerToDnnSLClassifier.reset(new DNNClassifier_SL("v6a"));
     
     // initialize synchronizer
     if(dumpSyncExe){
         pointerToDLBDTClassifier.reset(new DLBDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/dlbdtweights_v5/"));
-        pointerToDnnDLClassifier.reset(new DNNClassifier_DL("v3a"));
+        //pointerToDnnDLClassifier.reset(new DNNClassifier_DL("v3a"));
 	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,pointerToCommonBDT5Classifier.get(),pointerToDLBDTClassifier.get(),pointerToDnnSLClassifier.get(),pointerToDnnDLClassifier.get(),pointerToMEMClassifier.get(),dumpExtended);
     }
 
@@ -592,7 +592,7 @@ BoostedAnalyzer::~BoostedAnalyzer()
       //delete pointerToDLBDTClassifier;
       //delete pointerToDnnDLClassifier;
   }
-  DNNClassifierBase::pyFinalize();
+  //DNNClassifierBase::pyFinalize();
   //delete ResMon;
 }
 
