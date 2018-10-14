@@ -450,8 +450,16 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     int iCSV = itCSV - csvJetsSorted_DNN.begin();
     vars.FillVars("CSV" ,iCSV,*itCSV);
   }
-
-  if(!isData){
+  
+  if(isData){
+    vars.FillVar("N_GenElectrons",0);
+    vars.FillVar("N_GenMuons",0);
+    vars.FillVar("N_GenTaus",0);
+    vars.FillVar("N_GenPhotons",0);
+    vars.FillVar("N_GenAK4Jets",0);
+    vars.FillVar("N_GenAK8Jets",0);
+  }
+  else{
     vars.FillVar("N_GenElectrons",input.customGenElectrons.size());
     vars.FillVar("N_GenMuons",input.customGenMuons.size());
     vars.FillVar("N_GenTaus",input.customGenTaus.size());
