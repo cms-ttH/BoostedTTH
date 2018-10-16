@@ -57,8 +57,8 @@ if options.globalTag is "NONE":
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     #options.maxEvents = 10000 # reset for testing
-    options.maxEvents = 999999999 # reset for testing
-    #options.maxEvents = 10 # reset for testing
+    #options.maxEvents = 999999999 # reset for testing
+    options.maxEvents = 10 # reset for testing
     #options.maxEvents = 1000 # reset for testing
 
 if not options.inputFiles:

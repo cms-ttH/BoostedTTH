@@ -49,7 +49,7 @@ if options.globalTag is "NONE":
 	if options.isData:
 		options.globalTag = "80X_dataRun2_Prompt_ICHEP16JEC_v0"
 	else:
-		options.globalTag = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
+		options.globalTag = "80X_mcRun2_asymptotic_2016_TrancheIV_v8"
 
 
 # re-set some defaults

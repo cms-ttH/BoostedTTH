@@ -12,24 +12,27 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
 			       const LHEEventProduct& LHEEvent
 			       ) const {
     if(!initialized) {
-        //cout << "genweights can not be read" << endl;
-        //cout << "get the names for the genweights from the lhe file before you retrieve the weights or your file does not have the lheruninfoproduct" << endl;
+        std::cout << "genweights can not be read" << endl;
+        std::cout << "get the names for the genweights from the lhe file before you retrieve the weights or your file does not have the lheruninfoproduct" << endl;
         return;
     }
     // number of generator weights which are stored in the LHEEventProduct
     
-    /*
+    std::cout<<"now all lhe_weights should be listed"<<std::endl;
             for(auto it:lhe_weights){
                     std::cout<<"ti2 "<<it.first<<"   "<<it.second<<std::endl;
-            }  */  
+            }    
     const uint weightnumber = LHEEvent.weights().size();
+    std::cout<<"weightnumber "<<weightnumber<<std::endl;
     // central lhe weight which is stored
     const double LHE_central_weight = LHEEvent.originalXWGTUP();
+    
+    std::cout<<"LHE_central_weight "<<LHE_central_weight<<std::endl;
     //loop over every generator weight available and add the weight with its corresponding name to the weights map. the name is derived with the generator id and the lhe_weights map which maps the weight id to the corresponding name
     for (uint i = 0;i < weightnumber; i++) {
         std::string weight_id = LHEEvent.weights()[i].id;
-//         std::cout<<"sssagge"<<LHEEvent.weights()[i].id<<std::endl;
-//         if(!lhe_weights.count(weight_id)) continue;
+         std::cout<<"sssagge"<<LHEEvent.weights()[i].id<<std::endl;
+//          if(!lhe_weights.count(weight_id)) continue;
         
         
         if(!lhe_weights.count(weight_id) && i>9) continue;
@@ -131,6 +134,9 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
     double weight_up = 1.0;
     double weight_down = 1.0;
     double weight_nom = 1.0;
+    std::cout<<"pdfNominal "<<pdfNominal<<std::endl;
+    std::cout<<"pdfUnc.central "<<pdfUnc.central<<std::endl;
+    
     if (std::isfinite(1./pdfNominal)) {
       weight_up = (pdfUnc.central + pdfUnc.errplus) / pdfNominal;
       weight_down = (pdfUnc.central - pdfUnc.errminus) / pdfNominal;
