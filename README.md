@@ -27,7 +27,7 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
 
     git cms-merge-topic cms-egamma:EgammaPostRecoTools_940 #just adds in an extra file to have a setup function to make things easier
     #git cms-merge-topic cms-egamma:Egamma80XMiniAODV2_946 #adds the c++ changes necessary to enable 2016 scale & smearing corrections (is loaded per default)
-    
+    git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
     
     # install common classifier
     mkdir TTH
