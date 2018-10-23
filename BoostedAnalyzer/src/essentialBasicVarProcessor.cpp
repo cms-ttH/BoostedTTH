@@ -25,6 +25,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVar( "N_BTagsT","I" );
   vars.InitVar( "N_BTagsL" ,"I");
   vars.InitVar( "N_PrimaryVertices","I" );
+  vars.InitVar( "N_TruePV", "I");
   
   vars.InitVars( "Jet_E","N_Jets" );
   vars.InitVars( "Jet_M","N_Jets" );
@@ -152,6 +153,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   }
   
   // Fill Multiplicity Variables
+  vars.FillVar( "N_TruePV",input.eventInfo.numTruePV);
   vars.FillVar( "N_PrimaryVertices",input.selectedPVs.size());  
   vars.FillVar( "N_Jets",input.selectedJets.size());
   vars.FillVar( "N_LooseJets",input.selectedJetsLoose.size());
