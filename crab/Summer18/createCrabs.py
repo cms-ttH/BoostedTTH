@@ -53,17 +53,16 @@ def split_for_systematic_variations(variations,nvariations):
 for row in reader:
     variation_list = get_list_of_systematics("systematicVariations.txt")
     #print variation_list
-    variations_list = split_for_systematic_variations(variation_list,4)
-    if 'Single' in row['name']:
-        src='template_data_cfg.py'
-    else:
-        src='template_cfg.py'
+    variations_list = split_for_systematic_variations(variation_list,100)
+    src='template_slimmed_ntuples_cfg.py'
+    if row['isData']=='True':
+        variations_list = ['nominal']
     datasets=row['dataset'].split(",")
     for variations,l in zip(variations_list,range(len(variations_list))):
         print "looking at systematic sources ",variations
         for dataset,i in zip(datasets,range(len(datasets))):
             print "looking at dataset ",dataset
-            out='configs/'+row['name']+'_'+str(i)+"_"+str(l)+'_crab.py'
+            out='configs_slimmed_ntuples/'+row['name']+'_'+str(i)+"_"+str(l)+'_crab.py'
             filenames = []
             for filename in variations.split(","):
                 if filename=="nominal":
@@ -75,8 +74,9 @@ for row in reader:
             repl('THEREQUESTNAME',row['name']+"_"+str(i)+"_"+str(l),out)
             repl('THEINPUTDATASET',dataset,out)
             repl('DATAERA',row['run'],out)
-            #repl('GLOBALTAG',row['globalTag'],out)
+            repl('GLOBALTAG',row['globalTag'],out)
+            repl('ISDATA',row['isData'],out)
             #repl('GENERATORNAME',row['generator'],out)
             #repl('WEIGHT',row['weight'],out)
-            #repl('SYSTEMATICVARIATIONS',variations,out)
+            repl('SYSTEMATICVARIATIONS',variations,out)
             #repl('OUTPUTFILES',str(filenames).replace("'",'"'),out)
