@@ -140,8 +140,8 @@ private:
     virtual void beginLuminosityBlock(edm::LuminosityBlock const& iBlock, edm::EventSetup const& iSetup) override;
     float GetTopPtWeight(const float& toppt1, const float& toppt2);
     map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype=Systematics::NA);
-    std::string outfileName(const std::string& basename,const Systematics::Type& sysType);
-    std::string systName(const Systematics::Type& sysType);
+    static std::string outfileName(const std::string& basename,const Systematics::Type& sysType);
+    static std::string systName(const Systematics::Type& sysType);
 
     // -------------------------------------------------------------------
     // --------------------------- member data ---------------------------
@@ -181,7 +181,52 @@ private:
     //resource monitor
     std::unique_ptr<ResourceMonitor> ResMon = nullptr;
 
-    // --------------- TOKENS ---------------
+    // --------------- FLAGS ---------------
+    /** is analyzed sample data? */
+    bool isData;
+    /** use fat jets? this is only possible if the miniAOD contains them */
+    bool useFatJets;
+    /** dump some event content for newer synchronization */
+    bool dumpSyncExe;
+    bool dumpExtended;
+    /** Calculated MEM for "boosted" events? Takes several seconds per event */
+    bool doBoostedMEM;
+    /** produce ntuples for mem calculation?*/
+    bool ProduceMemNtuples;
+    /** use GenBmatching info? this is only possible if the miniAOD contains them */
+    bool useGenHadronMatch;
+    /** use tagging for selections **/
+    bool taggingSelection;
+    bool dogenweights;
+
+    // --------------- MISCELLANEOUS ---------------
+    /** event weight:  xs*lumi/(nPosEvents-nNegEvents) */
+    double eventWeight;
+    std::vector<int> dumpAlwaysEvents;
+     /** which generator was used on ME level for this sample? */
+    std::string usedGenerator;
+    /** base name for outfiles (incl path)**/
+    std::string outfileNameBase;
+    /** generator systematics weigths (pdf, ME scale, etc) */
+    /** triggers that are checked (independtend of the ones used for selected)*/
+    std::vector<std::string> relevantTriggers;
+     /** processors run */
+    std::vector<std::string> processorNames;
+    /** selections applied */
+    std::vector<std::string> selectionNames;
+    /** writes flat trees  */
+    std::vector<std::unique_ptr<TreeWriter>> treewriters;
+    /** stores cutflows*/
+    std::vector<Cutflow> cutflows;
+    /** selections that are applied before writing the tree*/
+    std::vector<std::unique_ptr<Selection>> selections;
+    /** outfile base names*/
+    std::vector<std::string> outfileNames;
+    /** stops the time spent in every processor*/
+    /** systematics */
+    std::vector<Systematics::Type> jetSystematics;
+
+     // --------------- TOKENS ---------------
     /** pu summary data access token **/
     edm::EDGetTokenT< std::vector<PileupSummaryInfo> > puInfoToken;
     /** pileup density data access token **/
@@ -226,56 +271,10 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenJet> > genJetsToken;
     // LHERunInfo data access token
     edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoToken;
-
-    // --------------- FLAGS ---------------
-    /** is analyzed sample data? */
-    bool isData;
-    /** use fat jets? this is only possible if the miniAOD contains them */
-    bool useFatJets;
-    /** use GenBmatching info? this is only possible if the miniAOD contains them */
-    bool useGenHadronMatch;
-    /** dump some event content for newer synchronization */
-    bool dumpSyncExe;
-    bool dumpExtended;
-    /** generator systematics weigths (pdf, ME scale, etc) */
-    bool dogenweights;
-    /** produce ntuples for mem calculation?*/
-    bool ProduceMemNtuples;
-    /** Calculated MEM for "boosted" events? Takes several seconds per event */
-    bool doBoostedMEM;
-    /** use tagging for selections **/
-    bool taggingSelection;
     
-    // --------------- MISCELLANEOUS ---------------
-    /** writes flat trees  */
-    std::vector<std::unique_ptr<TreeWriter>> treewriters;
-    /** stores cutflows*/
-    std::vector<Cutflow> cutflows;
-    /** selections that are applied before writing the tree*/
-    std::vector<std::unique_ptr<Selection>> selections;
-    /** triggers that are checked (independtend of the ones used for selected)*/
-    std::vector<std::string> relevantTriggers;
-    /** base name for outfiles (incl path)**/
-    std::string outfileNameBase;
-    /** outfile base names*/
-    std::vector<std::string> outfileNames;
-    /** stops the time spent in every processor*/
-    std::vector<int> dumpAlwaysEvents;
-    /** systematics */
-    std::vector<Systematics::Type> jetSystematics;
-    /** which generator was used on ME level for this sample? */
-    std::string usedGenerator;
-    /** processors run */
-    std::vector<std::string> processorNames;
-    /** selections applied */
-    std::vector<std::string> selectionNames;
+
     /** time counter */
     TStopwatch watch;
-    // TODO: does not function properly
-    /** events to be analyzed */
-    int maxEvents;
-    /** event weight:  xs*lumi/(nPosEvents-nNegEvents) */
-    double eventWeight;
     /** Event counter */
     int eventcount;
     /** variable to holt the position of JetTagSelection in selections vector, for later use */
@@ -288,37 +287,62 @@ private:
 //
 // constructors and destructor
 //
-BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
+BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): 
     // initialize gen top event with consumes collector (allows to access data from file within this class)
     synchronizer(Synchronizer(iConfig,consumesCollector())),
     genTopEvtProd(GenTopEventProducer(consumesCollector())),
     triggerInfoProd(TriggerInfoProducer(iConfig,consumesCollector())),
-    filterInfoProd(FilterInfoProducer(iConfig,consumesCollector()))
+    filterInfoProd(FilterInfoProducer(iConfig,consumesCollector())),
+
+    //
+    // get all configurations from the python config
+    // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
+
+    isData              ( iConfig.getParameter<bool>("isData") ),
+    useFatJets          ( iConfig.getParameter<bool>("useFatJets") ),
+    dumpSyncExe         ( iConfig.getParameter<bool>("dumpSyncExe") ),
+    dumpExtended        ( iConfig.getParameter<bool>("dumpExtended") ),
+    doBoostedMEM        ( iConfig.getParameter<bool>("doBoostedMEM") ),
+    ProduceMemNtuples   ( iConfig.getParameter<bool>("memNtuples") ),
+    useGenHadronMatch   ( iConfig.getParameter<bool>("useGenHadronMatch") ),
+    taggingSelection    ( iConfig.getParameter<bool>("taggingSelection") ),
+
+    eventWeight         ( iConfig.getParameter<double>("eventWeight") ),
+    dumpAlwaysEvents    ( iConfig.getParameter<std::vector<int> >("dumpAlwaysEvents") ),
+    usedGenerator       ( iConfig.getParameter<std::string>("generatorName") ),
+    outfileNameBase     ( iConfig.getParameter<std::string>("outfileName") ),
+    relevantTriggers    ( iConfig.getParameter< std::vector<std::string> >("relevantTriggers") ),
+    processorNames      ( iConfig.getParameter< std::vector<std::string> >("processorNames") ),
+    selectionNames      ( iConfig.getParameter< std::vector<std::string> >("selectionNames") ),
+
+    puInfoToken                     ( consumes< std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("puInfo")) ),
+    rhoToken                        ( consumes<double> (iConfig.getParameter<edm::InputTag>("rho")) ),
+    hcalNoiseToken                  ( consumes< HcalNoiseSummary >(iConfig.getParameter<edm::InputTag>("hcalNoise")) ),
+    beamSpotToken                   ( consumes< reco::BeamSpot > (iConfig.getParameter<edm::InputTag>("beamSpot")) ),
+    conversionCollectionToken       ( consumes< reco::ConversionCollection > (iConfig.getParameter<edm::InputTag>("conversionCollection")) ),
+    primaryVerticesToken            ( consumes< reco::VertexCollection > (iConfig.getParameter<edm::InputTag>("primaryVertices")) ),
+    selectedMuonsToken              ( consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuons")) ),
+    selectedMuonsDLToken            ( consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsDL")) ),
+    selectedMuonsLooseToken         ( consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsLoose")) ),
+    selectedElectronsToken          ( consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons")) ),
+    selectedElectronsDLToken        ( consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL")) ),
+    selectedElectronsLooseToken     ( consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose")) ),
+
+    boostedJetsToken                ( consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets")) ),
+    genInfoToken                    ( consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo")) ),
+    lheInfoToken                    ( consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo")) ),
+    genParticlesToken               ( consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles")) ),
+    genJetsToken                    ( consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets")) ),
+    LHERunInfoToken                 ( consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer")) )
 
 {
   
     //set up resource monitor
     ResMon.reset(new ResourceMonitor());
-    //
-    // get all configurations from the python config
-    // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
-    eventWeight         = iConfig.getParameter<double>("eventWeight");
-    isData              = iConfig.getParameter<bool>("isData");
-    useFatJets          = iConfig.getParameter<bool>("useFatJets");
-    dumpSyncExe         = iConfig.getParameter<bool>("dumpSyncExe");
-    dumpExtended        = iConfig.getParameter<bool>("dumpExtended");
-    dumpAlwaysEvents    = iConfig.getParameter<std::vector<int> >("dumpAlwaysEvents");
-    usedGenerator       = iConfig.getParameter<std::string>("generatorName");
-    doBoostedMEM        = iConfig.getParameter<bool>("doBoostedMEM");
-    outfileNameBase     = iConfig.getParameter<std::string>("outfileName");
-    relevantTriggers    = iConfig.getParameter< std::vector<std::string> >("relevantTriggers");
-    processorNames      = iConfig.getParameter< std::vector<std::string> >("processorNames");
-    selectionNames      = iConfig.getParameter< std::vector<std::string> >("selectionNames");
-    ProduceMemNtuples   = iConfig.getParameter<bool>("memNtuples");
-    useGenHadronMatch   = iConfig.getParameter<bool>("useGenHadronMatch");
+
     if(isData) useGenHadronMatch=false;
     std::vector<std::string> systematicsNames = iConfig.getParameter<std::vector<std::string> >("systematics");
-    taggingSelection= iConfig.getParameter<bool>("taggingSelection");
+
     for (auto const &s : systematicsNames){
       jetSystematics.push_back(Systematics::get(s));
     }
@@ -329,17 +353,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     
     // REGISTER DATA ACCESS
     // This needs to be done in the constructor of this class or via the consumes collector in the constructor of helper classes
-    puInfoToken                     = consumes< std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("puInfo") );
-    rhoToken                        = consumes<double> (iConfig.getParameter<edm::InputTag>("rho") );
-    hcalNoiseToken                  = consumes< HcalNoiseSummary >(iConfig.getParameter<edm::InputTag>("hcalNoise"));
-    beamSpotToken                   = consumes< reco::BeamSpot > (iConfig.getParameter<edm::InputTag>("beamSpot"));
-    primaryVerticesToken            = consumes< reco::VertexCollection > (iConfig.getParameter<edm::InputTag>("primaryVertices"));
-    selectedMuonsToken              = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuons"));
-    selectedMuonsDLToken            = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsDL"));
-    selectedMuonsLooseToken         = consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsLoose"));
-    selectedElectronsToken          = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons"));
-    selectedElectronsDLToken        = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL"));
-    selectedElectronsLooseToken     = consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose"));
+
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJets")){
 	     selectedJetsTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
@@ -352,14 +366,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
 	     correctedMETsTokens.push_back(consumes< std::vector<pat::MET> >(tag));
     }
-    boostedJetsToken                = consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets"));
-    genInfoToken                    = consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo"));
-    lheInfoToken                    = consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo"));
-    genParticlesToken               = consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles"));
-    genJetsToken                    = consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets"));
-    conversionCollectionToken       = consumes< reco::ConversionCollection > (iConfig.getParameter<edm::InputTag>("conversionCollection"));
-    LHERunInfoToken                 = consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer"));
     
+
     // initialize helper classes
     helper.SetUp("2015_74x", isData ? -1 : 1, analysisType::LJ, isData);
 
@@ -585,15 +593,7 @@ BoostedAnalyzer::~BoostedAnalyzer()
 {
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
-  //delete pointerToMEMClassifier;
-  //delete pointerToCommonBDT5Classifier;
-  //delete pointerToDnnSLClassifier;
-  if(dumpSyncExe) {
-      //delete pointerToDLBDTClassifier;
-      //delete pointerToDnnDLClassifier;
-  }
-  //DNNClassifierBase::pyFinalize();
-  //delete ResMon;
+   //DNNClassifierBase::pyFinalize();
 }
 
 
