@@ -642,6 +642,7 @@ else:
   #"TTBBStudienProcessor"
   "DarkMatterProcessor",
   "MonoJetGenSelectionProcessor",
+  "BosonWeightProcessor"
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
 
