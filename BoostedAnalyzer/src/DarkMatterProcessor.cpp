@@ -21,6 +21,8 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "NaiveMET" );
   vars.InitVar( "Hadr_Recoil_Pt" );
   vars.InitVar( "Hadr_Recoil_Phi" );
+  vars.InitVar( "Gen_Hadr_Recoil_Pt" );
+  vars.InitVar( "Gen_Hadr_Recoil_Phi" );
   vars.InitVar( "CaloMET_Hadr_Recoil_ratio" );
   vars.InitVar( "Jets_Hadr_Recoil_Pt");
   vars.InitVar( "Jets_Hadr_Recoil_Phi");
@@ -102,7 +104,10 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
 
 void DarkMatterProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
-
+  
+  // 4-vector for hadronic recoil on gen level
+  math::XYZTLorentzVector gen_hadr_recoil_p4(0.,0.,0.,0.);
+  
   // GenMET
   if(input.correctedMET.genMET()!=0){
     if(input.correctedMET.genMET()->pt()<1){ // fix for broken GenMET in MadGraphMonoJetSamples
@@ -110,13 +115,30 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
         const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
         vars.FillVar( "Evt_Pt_GenMET",DM_Evt.ReturnNaiveMET4Vector().Pt());
         vars.FillVar( "Evt_Phi_GenMET",DM_Evt.ReturnNaiveMET4Vector().Phi());
+        gen_hadr_recoil_p4 = BoostedUtils::GetXYZTLorentzVector(DM_Evt.ReturnNaiveMET4Vector());
       }
     }
     else{
         vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
         vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
+        gen_hadr_recoil_p4 = input.correctedMET.genMET()->p4();
+    }
+    
+    // calculate gen hadronic recoil from gen MET
+    for(const auto& el : input.customGenElectrons){
+        gen_hadr_recoil_p4 += el.p4();
+    }
+    for(const auto& mu : input.customGenMuons){
+        gen_hadr_recoil_p4 += mu.p4();
+    }
+    for(const auto& ph : input.customGenPhotons){
+        gen_hadr_recoil_p4 += ph.p4();
     }
   }
+  
+  // fill hadronic recoil pt and phi on gen level
+  vars.FillVar( "Gen_Hadr_Recoil_Pt",gen_hadr_recoil_p4.pt() );
+  vars.FillVar( "Gen_Hadr_Recoil_Phi",gen_hadr_recoil_p4.phi() );
   
   // 4-vectors to contain MET and hadronic recoil
   math::XYZTLorentzVector met_p4(0.,0.,0.,0.);
