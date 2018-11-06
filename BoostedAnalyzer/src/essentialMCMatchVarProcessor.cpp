@@ -339,28 +339,35 @@ bool dfirst=true;
 //     }
 //   }
   if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()&&input.genTopEvt.IsSemiLepton()){
-
-    // b jets from had top
-    std::vector<reco::GenJet> bhad_genjet=input.genTopEvt.GetAllTopHadBGenJets();
-    if(bhad_genjet.size() > 1){ std::cout<<"MORE THAN ONE B FROM HADTOP"<<std::endl; }
-
-    // b jets from lep top
-    std::vector<reco::GenJet> blep_genjet=input.genTopEvt.GetAllTopLepBGenJets();
-    if(bhad_genjet.size() > 1){ std::cout<<"MORE THAN ONE B FROM LEPTOP"<<std::endl; }
-
+    std::cout << "--------------------------------------------" << std::endl;
     // b jets from higgs
     reco::GenJet b1_genjet=input.genTopEvt.GetHiggsBBarGenJet();
     reco::GenJet b2_genjet=input.genTopEvt.GetHiggsBGenJet();
-    // jets from W decay
-    std::vector<reco::GenJet> w_genjet=input.genTopEvt.GetWGenJets();
-    if(w_genjet.size() == 0){ std::cout<<"NO W JETS FOUND"<<std::endl; }
-    // additional b jets
-    std::vector<reco::GenJet> b_add_genjet=input.genTopEvt.GetAdditionalBGenJets();
 
-    std::vector<reco::GenParticle> bhad_hadron=input.genTopEvt.GetAllTopHadBHadrons();
-    std::vector<reco::GenParticle> blep_hadron=input.genTopEvt.GetAllTopLepBHadrons();
-    reco::GenParticle b1_hadron=input.genTopEvt.GetHiggsBBarHadron();
-    reco::GenParticle b2_hadron=input.genTopEvt.GetHiggsBHadron();
+
+    // get gen hadrons
+    // b had from had top
+    std::vector<reco::GenParticle> bhad_hadron=input.genTopEvt.GetAllTopHadDecayQuarks();
+    if(bhad_hadron.size() > 1){ std::cout<<"MORE THAN ONE B FROM HADTOP"<<std::endl; }
+
+    // b had from lep top    
+    std::vector<reco::GenParticle> blep_hadron=input.genTopEvt.GetAllTopLepDecayQuarks();
+    if(blep_hadron.size() > 1){ std::cout<<"MORE THAN ONE B FROM LEPTOP"<<std::endl; }
+
+    //b hads from higgs
+    std::vector<reco::GenParticle> b_higgs = input.genTopEvt.GetHiggsDecayProducts();
+    if(b_higgs.size() == 0){ std::cout<<"NO HIGGS BS FOUND"<<std::endl; }
+    if(b_higgs.size() > 2){ std::cout<<"MORE THEN TWO HIGGS DECAY PRODUCTS FOUND"<<std::endl; }
+    
+    // quarks from W decay
+    std::vector<reco::GenParticle> w_genquark=input.genTopEvt.GetWQuarks();
+    if(w_genquark.size() == 0){ std::cout<<"NO W QUARKS FOUND"<<std::endl; }
+    if(w_genquark.size() > 2){  std::cout<<"MORE THAN TWO Q FROM W FOUND"<<std::endl; }
+
+    // additional b hadrons
+    // TODO: is there also a member which returns BQuark instead of hadron
+    std::vector<reco::GenParticle> b_add_genhad=input.genTopEvt.GetAdditionalBHadrons();
+    if(b_add_genhad.size() == 0){ std::cout<<"NO ADDITIONAL B QUARKS FOUND"<<std::endl; }
 
 //     vars.FillVar( "GenHiggs_B1_GenJet_Pt",b1_genjet.pt() );
 //     vars.FillVar( "GenHiggs_B2_GenJet_Pt",b2_genjet.pt() );
@@ -407,87 +414,115 @@ bool dfirst=true;
     bool first_add_jet = true;
     double dR_threshold = 0.05;
 
-    // init all 'inacceptance' variables with 'false'
-
     // loop over reco jets, get GenJet perform dR Matching with GenParticle Objects
     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++) {
-      const reco::GenJet *genj = j->genJet();
-      if(!genj){
-        std::cout << "no genjet" << std::endl;
+      //const reco::GenJet *genj = j->genJet();
+      //if(!genj){
+      //  continue;
+      //  }
+
+      const reco::GenParticle *genp = j->genParticle();
+      if(!genp){
         continue;
         }
 
-      //const reco::GenParticle *genpart = j->genParton();
-      //if(!genpart){
-      //  std::cout << "no genparton" << std::endl;
-      //  continue;
-      //  }
-      //std::cout << "genparton p4:    ";
-      //std::cout << genp->p4() << std::endl;
-
-      //const reco::GenParticle *genp = j->genParticle();
-      //if(!genp){
-      //  std::cout << "no genparticle" << std::endl;
-      //  continue;
-      // }
-      //std::cout << "genparticle p4:  ";
-      //std::cout << genp2->p4() << std::endl;
-
       // search for b jet from hadronic top
-      for(uint i=0; i<bhad_genjet.size(); i++){     
-        if( std::abs(BoostedUtils::DeltaR(genj->p4(), bhad_genjet[i].p4())) < dR_threshold ){
+      for(uint i=0; i<bhad_hadron.size(); i++){     
+        if( std::abs(BoostedUtils::DeltaR(genp->p4(), bhad_hadron[i].p4())) < dR_threshold ){
           // has_bhad
+          std::cout << "pdgId of bhad_hadron ";
+          std::cout << genp->pdgId() << std::endl;
+          std::cout << bhad_hadron[i].pdgId() << std::endl;
+          std::cout << genp->p4() << std::endl;
+          std::cout << bhad_hadron[i].p4() << std::endl << std::endl;
           vars.FillVar("GenTopHad_B_inacceptance",1);
           }
         }
 
       // search for b jet from leptonic top
-      for(uint i=0; i<blep_genjet.size(); i++){
-        if( std::abs(BoostedUtils::DeltaR(genj->p4(), blep_genjet[i].p4())) < dR_threshold ){
+      for(uint i=0; i<blep_hadron.size(); i++){
+        if( std::abs(BoostedUtils::DeltaR(genp->p4(), blep_hadron[i].p4())) < dR_threshold ){
           // has_blep
+          std::cout << "pdgId of blep_hadron ";
+          std::cout << genp->pdgId() << std::endl;
+          std::cout << blep_hadron[i].pdgId() << std::endl;
+          std::cout << genp->p4() << std::endl;
+          std::cout << blep_hadron[i].p4() << std::endl << std::endl;
           vars.FillVar("GenTopLep_B_inacceptance",1);
           }
         }
 
       // search for quark jets from hadronic W
-      for(uint i=0; i<w_genjet.size(); i++){
-        if( std::abs(BoostedUtils::DeltaR(genj->p4(), w_genjet[i].p4())) < dR_threshold ){
+      for(uint i=0; i<w_genquark.size(); i++){
+        if( std::abs(BoostedUtils::DeltaR(genp->p4(), w_genquark[i].p4())) < dR_threshold ){
           if( first_W_jet ){
             // has_lj
+            std::cout << "pdgId of first w quark ";
+            std::cout << genp->pdgId() << std::endl;
+            std::cout << w_genquark[i].pdgId() << std::endl;
+            std::cout << genp->p4() << std::endl;
+            std::cout << w_genquark[i].p4() << std::endl << std::endl;
             vars.FillVar("GenTopHad_Q_inacceptance",1);
             first_W_jet = false;
             }
           else{
             // has_Whad
+            std::cout << "pdgId of second w quark ";
+            std::cout << genp->pdgId() << std::endl;
+            std::cout << w_genquark[i].pdgId() << std::endl;
+            std::cout << genp->p4() << std::endl;
+            std::cout << w_genquark[i].p4() << std::endl << std::endl;
             vars.FillVar("GenTopHad_QQ_inacceptance",1);
             }   
           }
         }
 
       // search for b jets from higgs
-      // output value for DeltaR = -2 if one vector is (0,0,0,0), thus using std::abs
-      if( std::abs(BoostedUtils::DeltaR(genj->p4(), b1_genjet.p4())) < dR_threshold || std::abs(BoostedUtils::DeltaR(genj->p4(), b2_genjet.p4())) < dR_threshold) {     
+      for(uint i=0; i<b_higgs.size(); i++){
+      if( std::abs(BoostedUtils::DeltaR(genp->p4(), b_higgs[i].p4())) < dR_threshold ){
+      //if( std::abs(BoostedUtils::DeltaR(genp->p4(), b1_hadron.p4())) < dR_threshold || std::abs(BoostedUtils::DeltaR(genp->p4(), b2_hadron.p4())) < dR_threshold) {     
         if( first_higgs_b ){
           // has_bH
+          std::cout << "pdgId of first h->b hadron ";
+          std::cout << genp->pdgId() << std::endl;
+          std::cout << b_higgs[i].pdgId() << std::endl;
+          std::cout << genp->p4() << std::endl;
+          std::cout << b_higgs[i].p4() << std::endl << std::endl;
           vars.FillVar("GenHiggs_B_inacceptance",1);
           first_higgs_b = false;
           }
         else {
           // has_H
+          std::cout << "pdgId of second h->b hadron ";
+          std::cout << genp->pdgId() << std::endl;
+          std::cout << b_higgs[i].pdgId() << std::endl;
+          std::cout << genp->p4() << std::endl;
+          std::cout << b_higgs[i].p4() << std::endl << std::endl;
           vars.FillVar("GenHiggs_BB_inacceptance",1);
           }
         }
+        }
 
       // search for additional b jets
-      for(uint i=0; i<b_add_genjet.size(); i++){
-        if( std::abs(BoostedUtils::DeltaR(genj->p4(), b_add_genjet[i].p4())) < dR_threshold ){
+      for(uint i=0; i<b_add_genhad.size(); i++){
+        if( std::abs(BoostedUtils::DeltaR(genp->p4(), b_add_genhad[i].p4())) < dR_threshold ){
           if( first_add_jet ){
             // has_b
+            std::cout << "pdgId of first add b-hadron ";
+            std::cout << genp->pdgId() << std::endl;
+            std::cout << b_add_genhad[i].pdgId() << std::endl;
+            std::cout << genp->p4() << std::endl;
+            std::cout << b_add_genhad[i].p4() << std::endl << std::endl;
             vars.FillVar("GenAdd_B_inacceptance",1);
             first_add_jet = false;
             }
           else {
             // has_bb
+            std::cout << "pdgId of second add b-hadron ";
+            std::cout << genp->pdgId() << std::endl;
+            std::cout << b_add_genhad[i].pdgId() << std::endl;
+            std::cout << genp->p4() << std::endl;
+            std::cout << b_add_genhad[i].p4() << std::endl << std::endl;
             vars.FillVar("GenAdd_BB_inacceptance",1);
             }
           }
