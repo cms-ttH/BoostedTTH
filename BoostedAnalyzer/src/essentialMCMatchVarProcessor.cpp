@@ -419,6 +419,8 @@ bool dfirst=true;
     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++) {
       reco::GenJet genj = j.genJet();
  
+      //reco::GenParticle genp = j.genParton();
+
       // search for b jet from hadronic top
       for(uint i=0; i<bhad_genjet.size(); i++){     
         if( BoostedUtils::DeltaR(genj.p4(), bhad_genjet[i].p4()) < dR_threshold ){
