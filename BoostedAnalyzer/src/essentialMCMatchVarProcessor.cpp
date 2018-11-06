@@ -339,6 +339,7 @@ bool dfirst=true;
 //     }
 //   }
   if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()&&input.genTopEvt.IsSemiLepton()){
+
     // b jets from had top
     std::vector<reco::GenJet> bhad_genjet=input.genTopEvt.GetAllTopHadBGenJets();
     if(bhad_genjet.size() > 1){ std::cout<<"MORE THAN ONE B FROM HADTOP"<<std::endl; }
@@ -352,6 +353,7 @@ bool dfirst=true;
     reco::GenJet b2_genjet=input.genTopEvt.GetHiggsBGenJet();
     // jets from W decay
     std::vector<reco::GenJet> w_genjet=input.genTopEvt.GetWGenJets();
+    if(w_genjet.size() == 0){ std::cout<<"NO W JETS FOUND"<<std::endl; }
     // additional b jets
     std::vector<reco::GenJet> b_add_genjet=input.genTopEvt.GetAdditionalBGenJets();
 
@@ -406,24 +408,34 @@ bool dfirst=true;
     double dR_threshold = 0.05;
 
     // init all 'inacceptance' variables with 'false'
-    vars.FillVar("GenTopHad_B_inacceptance",0);
-    vars.FillVar("GenTopLep_B_inacceptance",0);
-    vars.FillVar("GenTopHad_Q_inacceptance",0);
-    vars.FillVar("GenTopHad_QQ_inacceptance",0);
-    vars.FillVar("GenHiggs_B_inacceptance",0);
-    vars.FillVar("GenHiggs_BB_inacceptance",0);
-    vars.FillVar("GenAdd_B_inacceptance",0);
-    vars.FillVar("GenAdd_BB_inacceptance",0);   
 
     // loop over reco jets, get GenJet perform dR Matching with GenParticle Objects
     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++) {
-      reco::GenJet genj = j.genJet();
- 
-      //reco::GenParticle genp = j.genParton();
+      const reco::GenJet *genj = j->genJet();
+      if(!genj){
+        std::cout << "no genjet" << std::endl;
+        continue;
+        }
+
+      const reco::GenParticle *genpart = j->genParton();
+      if(!genpart){
+        std::cout << "no genparton" << std::endl;
+        continue;
+        }
+      //std::cout << "genparton p4:    ";
+      //std::cout << genp->p4() << std::endl;
+
+      const reco::GenParticle *genp = j->genParticle();
+      if(!genp){
+        std::cout << "no genparticle" << std::endl;
+        continue;
+        }
+      //std::cout << "genparticle p4:  ";
+      //std::cout << genp2->p4() << std::endl;
 
       // search for b jet from hadronic top
       for(uint i=0; i<bhad_genjet.size(); i++){     
-        if( BoostedUtils::DeltaR(genj.p4(), bhad_genjet[i].p4()) < dR_threshold ){
+        if( std::abs(BoostedUtils::DeltaR(genj->p4(), bhad_genjet[i].p4())) < dR_threshold ){
           // has_bhad
           vars.FillVar("GenTopHad_B_inacceptance",1);
           }
@@ -431,7 +443,7 @@ bool dfirst=true;
 
       // search for b jet from leptonic top
       for(uint i=0; i<blep_genjet.size(); i++){
-        if( BoostedUtils::DeltaR(genj.p4(), blep_genjet[i].p4()) < dR_threshold ){
+        if( std::abs(BoostedUtils::DeltaR(genj->p4(), blep_genjet[i].p4())) < dR_threshold ){
           // has_blep
           vars.FillVar("GenTopLep_B_inacceptance",1);
           }
@@ -439,7 +451,7 @@ bool dfirst=true;
 
       // search for quark jets from hadronic W
       for(uint i=0; i<w_genjet.size(); i++){
-        if( BoostedUtils::DeltaR(genj.p4(), w_genjet[i].p4()) < dR_threshold ){
+        if( std::abs(BoostedUtils::DeltaR(genj->p4(), w_genjet[i].p4())) < dR_threshold ){
           if( first_W_jet ){
             // has_lj
             vars.FillVar("GenTopHad_Q_inacceptance",1);
@@ -453,7 +465,8 @@ bool dfirst=true;
         }
 
       // search for b jets from higgs
-      if( BoostedUtils::DeltaR(genj.p4(), b1_genjet.p4()) < dR_threshold or BoostedUtils::DeltaR(genj.p4(), b2_genjet.p4()) < dR_threshold) {
+      // output value for DeltaR = -2 if one vector is (0,0,0,0), thus using std::abs
+      if( std::abs(BoostedUtils::DeltaR(genj->p4(), b1_genjet.p4())) < dR_threshold || std::abs(BoostedUtils::DeltaR(genj->p4(), b2_genjet.p4())) < dR_threshold) {     
         if( first_higgs_b ){
           // has_bH
           vars.FillVar("GenHiggs_B_inacceptance",1);
@@ -467,7 +480,7 @@ bool dfirst=true;
 
       // search for additional b jets
       for(uint i=0; i<b_add_genjet.size(); i++){
-        if( BoostedUtils::DeltaR(genj.p4(), b_add_genjet[i].p4()) < dR_threshold ){
+        if( std::abs(BoostedUtils::DeltaR(genj->p4(), b_add_genjet[i].p4())) < dR_threshold ){
           if( first_add_jet ){
             // has_b
             vars.FillVar("GenAdd_B_inacceptance",1);
@@ -485,4 +498,3 @@ bool dfirst=true;
     } // end of isSemiLep
     
   }
-}
