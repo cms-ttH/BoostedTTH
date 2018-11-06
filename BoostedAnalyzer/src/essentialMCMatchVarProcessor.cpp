@@ -417,19 +417,19 @@ bool dfirst=true;
         continue;
         }
 
-      const reco::GenParticle *genpart = j->genParton();
-      if(!genpart){
-        std::cout << "no genparton" << std::endl;
-        continue;
-        }
+      //const reco::GenParticle *genpart = j->genParton();
+      //if(!genpart){
+      //  std::cout << "no genparton" << std::endl;
+      //  continue;
+      //  }
       //std::cout << "genparton p4:    ";
       //std::cout << genp->p4() << std::endl;
 
-      const reco::GenParticle *genp = j->genParticle();
-      if(!genp){
-        std::cout << "no genparticle" << std::endl;
-        continue;
-        }
+      //const reco::GenParticle *genp = j->genParticle();
+      //if(!genp){
+      //  std::cout << "no genparticle" << std::endl;
+      //  continue;
+      // }
       //std::cout << "genparticle p4:  ";
       //std::cout << genp2->p4() << std::endl;
 
