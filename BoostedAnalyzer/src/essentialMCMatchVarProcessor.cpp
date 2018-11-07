@@ -339,7 +339,6 @@ bool dfirst=true;
 //     }
 //   }
   if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()&&input.genTopEvt.IsSemiLepton()){
-    std::cout << "--------------------------------------------" << std::endl;
     // b jets from higgs
     reco::GenJet b1_genjet=input.genTopEvt.GetHiggsBBarGenJet();
     reco::GenJet b2_genjet=input.genTopEvt.GetHiggsBGenJet();
