@@ -62,14 +62,14 @@ void essentialMCMatchVarProcessor::Init(const InputCollections& input,VariableCo
   vars.InitVar( "GenHiggs_Pt",-9. );
   vars.InitVar( "GenHiggs_Eta",-9. );
   vars.InitVar( "GenHiggs_Phi",-9. );
-//   vars.InitVar( "GenHiggs_B1_Pt",-9. );
-//   vars.InitVar( "GenHiggs_B2_Pt",-9. );
-//   vars.InitVar( "GenHiggs_B1_Eta",-9. );
-//   vars.InitVar( "GenHiggs_B2_Eta",-9. );
-//   vars.InitVar( "GenHiggs_B1_Phi",-9. );
-//   vars.InitVar( "GenHiggs_B2_Phi",-9. );
-//   vars.InitVar( "GenHiggs_B1_E",-9. );
-//   vars.InitVar( "GenHiggs_B2_E",-9. );
+  vars.InitVar( "GenHiggs_B1_Pt",-9. );
+  vars.InitVar( "GenHiggs_B2_Pt",-9. );
+  vars.InitVar( "GenHiggs_B1_Eta",-9. );
+  vars.InitVar( "GenHiggs_B2_Eta",-9. );
+  vars.InitVar( "GenHiggs_B1_Phi",-9. );
+  vars.InitVar( "GenHiggs_B2_Phi",-9. );
+  vars.InitVar( "GenHiggs_B1_E",-9. );
+  vars.InitVar( "GenHiggs_B2_E",-9. );
 //   
 //   vars.InitVars( "GenTopHad_B_Idx",-1,"N_GenTopHad" );
 //   vars.InitVars( "GenTopHad_Q1_Idx",-1,"N_GenTopHad" );
@@ -85,12 +85,12 @@ void essentialMCMatchVarProcessor::Init(const InputCollections& input,VariableCo
   vars.InitVar( "GenHiggs_DecProd2_Eta",-9. );
   vars.InitVar( "GenHiggs_DecProd2_PDGID",-999 );
 
-//  vars.InitVar( "GenHiggs_B1_GenJet_Pt",-9. );
-//   vars.InitVar( "GenHiggs_B2_GenJet_Pt",-9. );
-//   vars.InitVar( "GenHiggs_B1_GenJet_Eta",-9. );
-//   vars.InitVar( "GenHiggs_B2_GenJet_Eta",-9. );
-//   vars.InitVar( "GenHiggs_B1_GenJet_Phi",-9. );
-//   vars.InitVar( "GenHiggs_B2_GenJet_Phi",-9. );
+ vars.InitVar( "GenHiggs_B1_GenJet_Pt",-9. );
+  vars.InitVar( "GenHiggs_B2_GenJet_Pt",-9. );
+  vars.InitVar( "GenHiggs_B1_GenJet_Eta",-9. );
+  vars.InitVar( "GenHiggs_B2_GenJet_Eta",-9. );
+  vars.InitVar( "GenHiggs_B1_GenJet_Phi",-9. );
+  vars.InitVar( "GenHiggs_B2_GenJet_Phi",-9. );
 // 
 //   vars.InitVars( "GenTopLep_B_GenJet_Pt",-9., "N_GenTopLep" );
 //   vars.InitVars( "GenTopHad_B_GenJet_Pt",-9., "N_GenTopHad");
@@ -302,14 +302,14 @@ bool dfirst=true;
     vars.FillVar( "GenHiggs_Phi",higgs.phi());
   }
 //   if(b1.pt()>0.){
-//     vars.FillVar("GenHiggs_B1_Pt",b1.pt());
-//     vars.FillVar("GenHiggs_B2_Pt",b2.pt());
-//     vars.FillVar("GenHiggs_B1_Eta",b1.eta());
-//     vars.FillVar("GenHiggs_B2_Eta",b2.eta());
-//     vars.FillVar("GenHiggs_B1_Phi",b1.phi());
-//     vars.FillVar("GenHiggs_B2_Phi",b2.phi());
-//     vars.FillVar("GenHiggs_B1_E",b1.energy());
-//     vars.FillVar("GenHiggs_B2_E",b2.energy());
+    vars.FillVar("GenHiggs_B1_Pt",b1.pt());
+    vars.FillVar("GenHiggs_B2_Pt",b2.pt());
+    vars.FillVar("GenHiggs_B1_Eta",b1.eta());
+    vars.FillVar("GenHiggs_B2_Eta",b2.eta());
+    vars.FillVar("GenHiggs_B1_Phi",b1.phi());
+    vars.FillVar("GenHiggs_B2_Phi",b2.phi());
+    vars.FillVar("GenHiggs_B1_E",b1.energy());
+    vars.FillVar("GenHiggs_B2_E",b2.energy());
 //     
 //     int idxb1=-1;
 //     int idxb2=-1;
@@ -368,13 +368,13 @@ bool dfirst=true;
     std::vector<reco::GenParticle> b_add_genhad=input.genTopEvt.GetAdditionalBHadrons();
     //if(b_add_genhad.size() == 0){ std::cout<<"NO ADDITIONAL B QUARKS FOUND"<<std::endl; }
 
-//     vars.FillVar( "GenHiggs_B1_GenJet_Pt",b1_genjet.pt() );
-//     vars.FillVar( "GenHiggs_B2_GenJet_Pt",b2_genjet.pt() );
-//     vars.FillVar( "GenHiggs_B1_GenJet_Eta",b1_genjet.eta() );
-//     vars.FillVar( "GenHiggs_B2_GenJet_Eta",b2_genjet.eta());
-//     vars.FillVar( "GenHiggs_B1_GenJet_Phi",b1_genjet.phi());
-//     vars.FillVar( "GenHiggs_B2_GenJet_Phi",b2_genjet.phi() );
-// 
+    vars.FillVar( "GenHiggs_B1_GenJet_Pt",b1_genjet.pt() );
+    vars.FillVar( "GenHiggs_B2_GenJet_Pt",b2_genjet.pt() );
+    vars.FillVar( "GenHiggs_B1_GenJet_Eta",b1_genjet.eta() );
+    vars.FillVar( "GenHiggs_B2_GenJet_Eta",b2_genjet.eta());
+    vars.FillVar( "GenHiggs_B1_GenJet_Phi",b1_genjet.phi());
+    vars.FillVar( "GenHiggs_B2_GenJet_Phi",b2_genjet.phi() );
+
 //     vars.FillVar( "GenHiggs_B1_Hadron_Pt",b1_hadron.pt() );
 //     vars.FillVar( "GenHiggs_B2_Hadron_Pt",b2_hadron.pt() );
 //     vars.FillVar( "GenHiggs_B1_Hadron_Eta",b1_hadron.eta() );
