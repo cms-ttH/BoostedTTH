@@ -168,7 +168,7 @@ if options.recorrectMET:
 ### Electron scale and smearing corrections ###  
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
-                       runVID=False, #saves CPU time by not needlessly re-running VID
+                       runVID=True, #saves CPU time by not needlessly re-running VID
                        era='2017-Nov17ReReco')
 # a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
 #electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
@@ -222,7 +222,7 @@ process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[15.,25.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.4]
-process.SelectedElectronProducer.leptonIDs=["electron94XCutBasedTight"]*3
+process.SelectedElectronProducer.leptonIDs=["electron94XCutBasedTightV2"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
 

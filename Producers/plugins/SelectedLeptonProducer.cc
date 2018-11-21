@@ -179,6 +179,10 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
           else if( leptonIDs[i] == "electron94XCutBasedMedium" ) electronIDs_[i] = electronID::electron94XCutBasedMedium;
           else if( leptonIDs[i] == "electron94XCutBasedTight" ) electronIDs_[i] = electronID::electron94XCutBasedTight;
           else if( leptonIDs[i] == "electron94XCutBasedVeto" ) electronIDs_[i] = electronID::electron94XCutBasedVeto;
+          else if( leptonIDs[i] == "electron94XCutBasedLooseV2" ) electronIDs_[i] = electronID::electron94XCutBasedLooseV2;
+          else if( leptonIDs[i] == "electron94XCutBasedMediumV2" ) electronIDs_[i] = electronID::electron94XCutBasedMediumV2;
+          else if( leptonIDs[i] == "electron94XCutBasedTightV2" ) electronIDs_[i] = electronID::electron94XCutBasedTightV2;
+          else if( leptonIDs[i] == "electron94XCutBasedVetoV2" ) electronIDs_[i] = electronID::electron94XCutBasedVetoV2;
 
 	  else {
 	      std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonIDs[i] << std::endl;
@@ -278,11 +282,11 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                     auto electron = hElectrons->ptrAt(j);
                     if(electron.isNull()) continue;
                     bool passesID = false;
-                    if(electronIDs_[i] == electronID::electron94XCutBasedVeto) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V1-veto"); //(*veto_id_decisions)[electron];
-                    else if(electronIDs_[i] == electronID::electron94XCutBasedLoose) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V1-loose");//(*loose_id_decisions)[electron];
-                    else if(electronIDs_[i] == electronID::electron94XCutBasedMedium) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V1-medium");//(*medium_id_decisions)[electron];
-                    else if(electronIDs_[i] == electronID::electron94XCutBasedTight) {
-                        passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V1-tight");//(*tight_id_decisions)[electron];
+                    if(electronIDs_[i] == electronID::electron94XCutBasedVetoV2) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V2-veto"); //(*veto_id_decisions)[electron];
+                    else if(electronIDs_[i] == electronID::electron94XCutBasedLooseV2) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V2-loose");//(*loose_id_decisions)[electron];
+                    else if(electronIDs_[i] == electronID::electron94XCutBasedMediumV2) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V2-medium");//(*medium_id_decisions)[electron];
+                    else if(electronIDs_[i] == electronID::electron94XCutBasedTightV2) {
+                        passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V2-tight");//(*tight_id_decisions)[electron];
                     }
                     else{
                         throw cms::Exception("InvalidElectronID") << "Could not match the electron ID with a ID decision map!";
