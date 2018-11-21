@@ -2,8 +2,9 @@ import csv
 import os
 import shutil
 from subprocess import call
+import sys
 
-csvfile=open('MonoJet_Backgrounds.csv','r') 
+csvfile=open(sys.argv[1],'r') 
 reader = csv.DictReader(csvfile, delimiter=',')
 
 def repl(old,new,filename):
