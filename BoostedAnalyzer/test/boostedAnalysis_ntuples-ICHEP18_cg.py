@@ -169,7 +169,10 @@ if options.recorrectMET:
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        runVID=True, #saves CPU time by not needlessly re-running VID
-                       era='2017-Nov17ReReco')
+                       era='2017-Nov17ReReco',
+                       applyEnergyCorrections=False,
+                       applyVIDOnCorrectedEgamma=False
+                       )
 # a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
 #electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 
