@@ -182,6 +182,8 @@ private:
     double eventWeight;
     /** Event counter */
     int eventcount;
+    /** number of events to process */
+    int nevents_to_process;
     /** is analyzed sample data? */
     bool isData;
     /** use fat jets? this is only possible if the miniAOD contains them */
@@ -324,6 +326,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): \
     ProduceMemNtuples = iConfig.getParameter<bool>("memNtuples");
     std::vector<std::string> systematicsNames = iConfig.getParameter<std::vector<std::string> >("systematics");
     taggingSelection= iConfig.getParameter<bool>("taggingSelection");
+    nevents_to_process = iConfig.getParameter<int>("nevents_to_process");
     for (auto const &s : systematicsNames){
       jetSystematics.push_back(Systematics::get(s));
     }
@@ -1115,7 +1118,13 @@ void BoostedAnalyzer::endJob()
 	cutflows[i].Print(fout);
 	fout.close();
     }
-    
+    std::cout << "#events to process "<< nevents_to_process << std::endl;
+    std::cout << "#events processed " << eventcount << std::endl;
+    std::cout << "#events processed / #events to process " << nevents_to_process*1.0/eventcount << std::endl;
+    if(nevents_to_process != eventcount) {
+        std::cerr << "Possible error: Number of events to process is not the same as the number of events which have been processed. This can happen if the maxevents options is set too low or if a lumi json was used to use only runs which were certified. On MC that should not happen." << std::endl;
+        std::cout << "Possible error: Number of events to process is not the same as the number of events which have been processed. This can happen if the maxevents options is set too low or if a lumi json was used to use only runs which were certified. On MC that should not happen." << std::endl;
+    }
 }
 
 // ------------ method called when starting to processes a run ------------

@@ -39,6 +39,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     doBoostedMEM = cms.bool(False),
     
     memNtuples = cms.bool(False),
+    
+    nevents_to_process = cms.int32(10000),
 
     minJetsForMEM = cms.int32(4),
     minTagsForMEM = cms.int32(3),

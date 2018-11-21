@@ -33,6 +33,7 @@ options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton
 options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
 options.register("updatePUJetId",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
 options.register( "ProduceMemNtuples", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
+options.register("neventsToProcess",10000,VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events which should be processed" )
 
 options.parseArguments()
 
@@ -611,7 +612,7 @@ process.BoostedAnalyzer.selectionNames = [
 #"JetTagSelection",
 "METSelection",
 "MonoJetSelection",
-#"LeptonVetoSelection",
+"LeptonVetoSelection",
 "BTagVetoSelection",
 "PhotonVetoSelection",
 "monoVselection"
@@ -645,6 +646,8 @@ else:
   "BosonWeightProcessor"
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
+
+process.BoostedAnalyzer.nevents_to_process = options.neventsToProcess
 
 printContent=False
 if printContent:
