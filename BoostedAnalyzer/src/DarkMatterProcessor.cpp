@@ -98,6 +98,8 @@ void DarkMatterProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "Zmumu_Eta" );
   vars.InitVar( "Zmumu_Energy" );
   vars.InitVar( "Zmumu_Mass" );
+  
+  vars.InitVar( "Zmumu_Pt_Hadr_Recoil_Pt_ratio");
 
   initialized=true;
 }
@@ -236,6 +238,7 @@ void DarkMatterProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVar( "Zmumu_Eta",Zmumu.Eta() );
     vars.FillVar( "Zmumu_Energy",Zmumu.E() );
     vars.FillVar( "Zmumu_Mass",Zmumu.M() );
+    vars.FillVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio",fabs(Zmumu.Pt()-hadr_recoil_p4.pt())/hadr_recoil_p4.pt());
   }
   
   // get and fill some gen level information
