@@ -28,6 +28,7 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     git cms-merge-topic cms-egamma:EgammaPostRecoTools_940 #just adds in an extra file to have a setup function to make things easier
     #git cms-merge-topic cms-egamma:Egamma80XMiniAODV2_946 #adds the c++ changes necessary to enable 2016 scale & smearing corrections (is loaded per default)
     git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
+    git cms-merge-topic guitargeek:EgammaID_9_4_X
     
     # install common classifier
     mkdir TTH
@@ -43,8 +44,8 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     
     # install miniaod and boostedtth
     cd $CMSSWSRCDIR
-    git clone -b CMSSW_9_4_5 https://github.com/cms-ttH/MiniAOD.git
-    git clone -b CMSSW_9_4_3 https://github.com/cms-ttH/BoostedTTH.git
+    git clone -b CMSSW_9_4_9_egamma_id_V2 https://github.com/cms-ttH/MiniAOD.git
+    git clone -b CMSSW_9_4_9_egamma_id_V2 https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
     cd $CMSSWSRCDIR/BoostedTTH/BoostedAnalyzer/data
