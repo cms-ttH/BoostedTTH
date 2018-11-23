@@ -1120,7 +1120,7 @@ void BoostedAnalyzer::endJob()
     }
     std::cout << "#events to process "<< nevents_to_process << std::endl;
     std::cout << "#events processed " << eventcount << std::endl;
-    std::cout << "#events processed / #events to process " << nevents_to_process*1.0/eventcount << std::endl;
+    std::cout << "#events processed / #events to process " << eventcount*1.0/nevents_to_process << std::endl;
     if(nevents_to_process != eventcount) {
         std::cerr << "Possible error: Number of events to process is not the same as the number of events which have been processed. This can happen if the maxevents options is set too low or if a lumi json was used to use only runs which were certified. On MC that should not happen." << std::endl;
         std::cout << "Possible error: Number of events to process is not the same as the number of events which have been processed. This can happen if the maxevents options is set too low or if a lumi json was used to use only runs which were certified. On MC that should not happen." << std::endl;
