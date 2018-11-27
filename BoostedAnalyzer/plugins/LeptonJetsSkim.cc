@@ -148,11 +148,11 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	// TODO: correct jets (maybe even with JESUP) to make sure the jetcuts are loose enough
 	if(!(selectedJets.size()>0)) return false;
 	bool pass = false;
-	math::XYZTLorentzVector hadr_recoil(0.,0.,0.,0.);
-	for(const auto& jet : selectedJets){
-	    hadr_recoil+=jet.p4();
-	}
-	pass = selectedJets[0].pt()>65. && hadr_recoil.pt()>150.;
+	//math::XYZTLorentzVector hadr_recoil(0.,0.,0.,0.);
+	//for(const auto& jet : selectedJets){
+	    //hadr_recoil+=jet.p4();
+	//}
+	pass = selectedJets[0].pt()>65.;
 
 	if(pass){
 	    return true;
