@@ -114,6 +114,27 @@ process.source = cms.Source(  "PoolSource",
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
+jec_mc_data = 'DATA' if options.isData else 'MC'
+#print jec_mc_data
+process.CondDB.connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+process.jec = cms.ESSource('PoolDBESSource',
+    process.CondDB,
+    #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db'),
+    toGet = cms.VPSet(
+        cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK4PFchs'),
+            label  = cms.untracked.string('AK4PFchs')
+        ),
+        cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+            label  = cms.untracked.string('AK8PFchs')
+        ),
+        # ...and so on for all jet types you need
+    )
+)
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
