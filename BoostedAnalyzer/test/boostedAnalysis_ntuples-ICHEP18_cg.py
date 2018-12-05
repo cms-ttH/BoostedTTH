@@ -310,8 +310,8 @@ process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
     useDeterministicSeed=cms.bool(False),# default deterministic seeds not used, but our own
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK4PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_PtResolution_AK4PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_SF_AK4PFchs.txt"),
 )
 
 process.patSmearedJetsAK8 = cms.EDProducer("SmearedPATJetProducer",
@@ -327,8 +327,8 @@ process.patSmearedJetsAK8 = cms.EDProducer("SmearedPATJetProducer",
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
     useDeterministicSeed=cms.bool(False),# default deterministic seeds not used, but our own
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_PtResolution_AK8PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Summer16_25nsV1_MC_SF_AK8PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_PtResolution_AK8PFchs.txt"),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_SF_AK8PFchs.txt"),
 )
 
 # up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
