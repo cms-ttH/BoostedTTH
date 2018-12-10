@@ -32,7 +32,7 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     # install common classifier
     mkdir TTH
     cd TTH
-    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git -b KIT_Run2017_Analysis
+    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git -b master
     source CommonClassifier/setup/install_mem.sh
     # use recent version of LHAPDF header
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
