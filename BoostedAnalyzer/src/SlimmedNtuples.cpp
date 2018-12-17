@@ -33,6 +33,7 @@ void SlimmedNtuples::Init(const std::vector<InputCollections>& input,VariableCon
     vars.InitVar( "met_phi" );
     
     vars.InitVar( "njets" , "I" );
+    vars.InitVar( "nbtags", "I" );
     
     for(uint i_sys=1;i_sys<uint(input.size());i_sys++) {
         TString syst_str = Systematics::toString(input.at(i_sys).systematic);
@@ -97,6 +98,7 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
   // fill nominal jet collection into the tree
   std::vector<pat::Jet> jets = GetSortedBySeed(input_nom.selectedJetsLoose);
   uint iJet=0;
+  uint iBtag=0;
   for(std::vector<pat::Jet>::const_iterator itJet = jets.begin() ; itJet != jets.end(); ++itJet){
     pat::Jet jet = *itJet;
     double jes_nom = 1.;
@@ -114,6 +116,7 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
     vars.FillVars( "jet_phi" , iJet , jet.phi() );
     vars.FillVars( "jet_csv" , iJet , MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags") );
     vars.FillVars( "jet_deepcsv" , iJet , MiniAODHelper::GetJetCSV(jet,"DeepCSV") );
+    if(MiniAODHelper::PassesCSV(jet,'M')) iBtag++;
     // save the product of the nominal jec, meaning JESnominal*JERnominal
     vars.FillVars( "jet_corr" , iJet , jes_nom*jer_nom );
     vars.FillVars( "jet_corr_JER" , iJet , jer_nom );
@@ -122,6 +125,7 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
   }
   // number of jets
   vars.FillIntVar( "njets" , iJet);
+  vars.FillIntVar( "nbtags", iBtag);
   // met properties
   vars.FillVar( "met_pt" , input_nom.correctedMET.corPt(pat::MET::Type1XY) );
   vars.FillVar( "met_phi" , input_nom.correctedMET.corPhi(pat::MET::Type1XY) );
