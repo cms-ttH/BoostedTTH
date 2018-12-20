@@ -18,7 +18,7 @@ options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
-options.register( "globalTag", "94X_mc2017_realistic_v14", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "globalTag", "94X_mc2017_realistic_v17", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 datasets=['NA','mu','el','elel','elmu','mumu']
@@ -42,7 +42,7 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 10000 # reset for testing
 
 if options.isData:
-    options.globalTag="94X_dataRun2_v6"
+    options.globalTag="94X_dataRun2_v11"
 
 if not options.inputFiles:
     if not options.isData:
@@ -114,27 +114,38 @@ process.source = cms.Source(  "PoolSource",
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
-jec_mc_data = 'DATA' if options.isData else 'MC'
+#jec_mc_data = 'DATA' if options.isData else 'MC'
 #print jec_mc_data
-process.CondDB.connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
-process.jec = cms.ESSource('PoolDBESSource',
-    process.CondDB,
-    #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db'),
-    toGet = cms.VPSet(
-        cms.PSet(
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
-        ),
-        cms.PSet(
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
-            label  = cms.untracked.string('AK8PFchs')
-        ),
-        # ...and so on for all jet types you need
-    )
-)
-process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+#process.CondDB.connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+#process.jec = cms.ESSource('PoolDBESSource',
+    #process.CondDB,
+    ##connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db'),
+    #toGet = cms.VPSet(
+        #cms.PSet(
+            #record = cms.string('JetCorrectionsRecord'),
+            #tag    = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK4PFchs'),
+            #label  = cms.untracked.string('AK4PFchs')
+        #),
+        #cms.PSet(
+            #record = cms.string('JetCorrectionsRecord'),
+            #tag    = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+            #label  = cms.untracked.string('AK8PFchs')
+        #),
+        ## ...and so on for all jet types you need
+    #)
+#)
+#process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+
+#process.GlobalTag.toGet = cms.VPSet(
+  #cms.PSet(record = cms.string("JetCorrectionsRecord"),
+           #tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK4PFchs'),
+           #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+          #),
+  #cms.PSet(record = cms.string("JetCorrectionsRecord"),
+           #tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+           #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+          #)
+#)
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
