@@ -149,12 +149,21 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
 #Add producer calculating the L1 prefire weights
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
-from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
-process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
-    DataEra = cms.string("2017BtoF"),
-    UseJetEMPt = cms.bool(False),
-    PrefiringRateSystematicUncty = cms.double(0.2),
-    SkipWarnings = False)
+#from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+#process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    #DataEra = cms.string("2017BtoF"),
+    #UseJetEMPt = cms.bool(False),
+    #PrefiringRateSystematicUncty = cms.double(0.2),
+    #SkipWarnings = False)
+process.prefiringweight = cms.EDProducer("L1ECALPrefiringWeightProducer",
+                                 ThePhotons = cms.InputTag("slimmedPhotons"),
+	                         TheJets = cms.InputTag("slimmedJets"),
+                                 L1Maps = cms.string("L1PrefiringMaps_new.root"), # update this line with the location of this file
+                                 DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
+                                 UseJetEMPt = cms.bool(False), #can be set to true to use jet prefiring maps parametrized vs pt(em) instead of pt
+	                         PrefiringRateSystematicUncty = cms.double(0.2) #Minimum relative prefiring uncty per object
+                                 )
+
 
 
 
