@@ -147,6 +147,17 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
           #)
 #)
 
+#Add producer calculating the L1 prefire weights
+# https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2017BtoF"),
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
+
+
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
 # necessarily reflect actual corrections level
@@ -515,6 +526,9 @@ for s in [""]+systs:
 
 if not options.isData and not options.isBoostedMiniAOD:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+
+if True:
+    process.p += process.prefiringweight
 
 if printContent:
     process.p *= process.content

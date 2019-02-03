@@ -272,6 +272,11 @@ private:
     // LHERunInfo data access token
     edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoToken;
     
+    // tokes for L1ECAL prefire
+    edm::EDGetTokenT< double > prefweight_token;
+    edm::EDGetTokenT< double > prefweightup_token;
+    edm::EDGetTokenT< double > prefweightdown_token;
+
 
     /** time counter */
     TStopwatch watch;
@@ -673,6 +678,20 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	hs_correctedMETs.push_back(h_correctedMETs);
     }
 
+    
+    //L1ECAL prefire 
+    edm::Handle< double > theprefweight;
+    edm::Handle< double > theprefweightup;
+    edm::Handle< double > theprefweightdown;
+    if(!isData){
+        iEvent.getByToken(prefweight_token, theprefweight ) ;
+        iEvent.getByToken(prefweightup_token, theprefweightup ) ;
+        iEvent.getByToken(prefweightdown_token, theprefweightdown ) ;
+    }
+    double prefiringweight =(*theprefweight);
+    double prefiringweightup =(*theprefweightup);
+    double prefiringweightdown =(*theprefweightdown);
+    
     // MC only (generator weights for example)
     edm::Handle<GenEventInfoProduct> h_genInfo;
     edm::Handle<LHEEventProduct> h_lheInfo;
@@ -800,7 +819,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // inputs
     std::vector<InputCollections> inputs;
     for(size_t isys=0; isys<jetSystematics.size(); isys++){
-        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys]);
+        auto weights = GetWeights(*h_genInfo,*h_lheInfo,eventInfo,selectedPVs,*(hs_selectedJets[isys]),*h_selectedElectronsLoose,*h_selectedMuonsLoose,genTopEvt,jetSystematics[isys], prefiringweight, prefiringweightup, prefiringweightdown);
 	inputs.push_back(InputCollections(eventInfo,
 					  triggerInfo,
 					  filterInfo,
@@ -885,7 +904,7 @@ float BoostedAnalyzer::GetTopPtWeight(const float& toppt1,const float& toppt2){
     return sqrt(sf1*sf2);
 }
 
-map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype){
+map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Jet>& selectedJets, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt, const Systematics::Type& systype, const double& prefiringweight, const double& prefiringweightup, const double& prefiringweightdown ){
     map<string,float> weights;
 
     if(isData){
@@ -896,6 +915,10 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
  	weights["Weight_TopPt"]    = 1.0;
 	weights["Weight_PV"]       = 1.0;
 	weights["Weight_GenValue"] = 1.0;
+    weights["Weight_L1ECALPrefire"] = 1.0;
+    weights["Weight_L1ECALPrefireUp"] = 1.0;
+    weights["Weight_L1ECALPrefireDown"] = 1.0;
+    
 	return weights;
     }
 
@@ -941,6 +964,11 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     weights["Weight_CSV"]      = csvweight;
     weights["Weight_PU"]       = puweight;
     weights["Weight_TopPt"]    = topptweight;
+    weights["Weight_L1ECALPrefire"] = prefiringweight;
+    weights["Weight_L1ECALPrefireUp"] = prefiringweightup;
+    weights["Weight_L1ECALPrefireDown"] = prefiringweightdown;
+    
+    
 
     bool doSystematics=true;
 //     if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
