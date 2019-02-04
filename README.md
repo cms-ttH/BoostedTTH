@@ -20,6 +20,8 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     cd $CMSSW_VERSION/src
     export CMSSWSRCDIR="$( pwd )"
     eval `scramv1 runtime -sh` 
+
+    git cms-merge-topic lathomas:L1Prefiring_9_4_9
     
     git cms-merge-topic yrath:deterministicSeeds
         
