@@ -339,9 +339,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     genParticlesToken               ( consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles")) ),
     genJetsToken                    ( consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets")) ),
     LHERunInfoToken                 ( consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer"))),
-    prefweight_token (consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"))),
-    prefweightup_token ( consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"))),
-    prefweightdown_token ( consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown")))
+    prefweight_token (consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProb"))),
+    prefweightup_token ( consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProbUp"))),
+    prefweightdown_token ( consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProbDown")))
 
 {
   
