@@ -266,11 +266,14 @@ private:
     /** LHE data access token **/
     edm::EDGetTokenT< LHEEventProduct > lheInfoToken;
     /** gen particles data access token **/
+    edm::EDGetTokenT< LHEEventProduct > lheInfoTokenalternative;
+    /** gen particles data access token **/
     edm::EDGetTokenT< std::vector<reco::GenParticle> > genParticlesToken;
     /** gen jets data access token **/
     edm::EDGetTokenT< std::vector<reco::GenJet> > genJetsToken;
     // LHERunInfo data access token
     edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoToken;
+    edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoTokenalternative;
     
 
     /** time counter */
@@ -331,9 +334,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     boostedJetsToken                ( consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets")) ),
     genInfoToken                    ( consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo")) ),
     lheInfoToken                    ( consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo")) ),
+    lheInfoTokenalternative         ( consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfoalternative")) ),
     genParticlesToken               ( consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles")) ),
     genJetsToken                    ( consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets")) ),
-    LHERunInfoToken                 ( consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer")) )
+    LHERunInfoToken                 ( consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer")) ),
+    LHERunInfoTokenalternative      ( consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("source")) )
 
 {
   
@@ -677,13 +682,19 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle<GenEventInfoProduct> h_genInfo;
     edm::Handle<LHEEventProduct> h_lheInfo;
     edm::Handle<LHEEventProduct> h_dummie;
+    edm::Handle<LHEEventProduct> h_dummiealternative;
     edm::Handle< std::vector<reco::GenParticle> > h_genParticles;
     edm::Handle< std::vector<reco::GenJet> > h_genJets;
     if(!isData){
 	iEvent.getByToken( genInfoToken, h_genInfo );
 	iEvent.getByToken( lheInfoToken, h_dummie );
+	iEvent.getByToken( lheInfoTokenalternative, h_dummiealternative );
 	if (h_dummie.isValid()){
 	    iEvent.getByToken( lheInfoToken, h_lheInfo );
+	    dogenweights = true;
+	}
+	else if (h_dummiealternative.isValid()){
+	    iEvent.getByToken( lheInfoTokenalternative, h_lheInfo );
 	    dogenweights = true;
 	}
 	else {
@@ -1047,13 +1058,23 @@ void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSet
     lhe_weights["1009"]="Weight_muRdownmuFdown";
     */
     edm::Handle<LHERunInfoProduct> runhandle;
+    edm::Handle<LHERunInfoProduct> runhandlealternative;
     //iEvent.getRun()
     iRun.getByLabel("externalLHEProducer",runhandle);
-    if(!runhandle.isValid()) {
-        cout << "Attention: no genweights will be written because the LHERunInfoProduct is not available!" << endl;
-        return;
+    iRun.getByLabel("source",runhandlealternative);
+    
+    LHERunInfoProduct myLHERunInfoProduct;
+    if(runhandle.isValid()) {
+		myLHERunInfoProduct = *(runhandle.product());
     }
-    LHERunInfoProduct myLHERunInfoProduct = *(runhandle.product());
+    else if(runhandlealternative.isValid()) {
+		myLHERunInfoProduct = *(runhandlealternative.product());
+	}
+	else {
+		cout << "Attention: no genweights will be written because the LHERunInfoProduct is not available!" << endl;
+        return;
+	}
+    
     genweights.GetNamesFromLHE(myLHERunInfoProduct);
     
     

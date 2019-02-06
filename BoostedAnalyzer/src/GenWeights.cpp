@@ -4,7 +4,7 @@ using namespace std;
 
 GenWeights::GenWeights(){ 
     LHAPDFinitialized = false;
-    initialized = false;
+    initialized = true;
 }
 
 
@@ -18,6 +18,7 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
     }
     // number of generator weights which are stored in the LHEEventProduct
     const uint weightnumber = LHEEvent.weights().size();
+    //cout << "This is the number of weights stored in the LHEEvent: " << weightnumber << endl;
     // central lhe weight which is stored
     const double LHE_central_weight = LHEEvent.originalXWGTUP();
     //loop over every generator weight available and add the weight with its corresponding name to the weights map. the name is derived with the generator id and the lhe_weights map which maps the weight id to the corresponding name
@@ -27,8 +28,33 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
         std::string weight_name = lhe_weights.at(weight_id);
 //         cout << weight_id << "   " << weight_name << endl;
         weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
+        
+        /*if(weight_id == "1001") weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[0].wgt/LHE_central_weight;
+        if(weight_id == "1002") weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[1].wgt/LHE_central_weight;
+        if(weight_id == "1003") weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[2].wgt/LHE_central_weight;
+        if(weight_id == "1004") weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[3].wgt/LHE_central_weight;
+        if(weight_id == "1005") weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[4].wgt/LHE_central_weight;
+        if(weight_id == "1006") weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[5].wgt/LHE_central_weight;
+        if(weight_id == "1007") weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[6].wgt/LHE_central_weight;
+        if(weight_id == "1008") weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[7].wgt/LHE_central_weight;
+        if(weight_id == "1009") weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[8].wgt/LHE_central_weight;*/
     }
     weights["Weight_LHECentral"]=LHE_central_weight;
+    /*
+    //cout << "Size of map before: " << weights.size() << endl;
+
+    if(!weights.count("Weight_scale_variation_muR_1p0_muF_1p0") && LHEEvent.weights().size()>0) weights["Weight_scale_variation_muR_1p0_muF_1p0"] = LHEEvent.weights()[0].wgt/LHE_central_weight;
+    if(!weights.count("Weight_scale_variation_muR_2p0_muF_1p0") && LHEEvent.weights().size()>1) weights["Weight_scale_variation_muR_2p0_muF_1p0"] = LHEEvent.weights()[1].wgt/LHE_central_weight;
+    if(!weights.count("Weight_scale_variation_muR_0p5_muF_1p0") && LHEEvent.weights().size()>2) weights["Weight_scale_variation_muR_0p5_muF_1p0"] = LHEEvent.weights()[2].wgt/LHE_central_weight;
+    if(!weights.count("Weight_scale_variation_muR_1p0_muF_2p0") && LHEEvent.weights().size()>3) weights["Weight_scale_variation_muR_1p0_muF_2p0"] = LHEEvent.weights()[3].wgt/LHE_central_weight;
+    if(!weights.count("Weight_scale_variation_muR_2p0_muF_2p0") && LHEEvent.weights().size()>4) weights["Weight_scale_variation_muR_2p0_muF_2p0"] = LHEEvent.weights()[4].wgt/LHE_central_weight;
+    if(!weights.count("Weight_scale_variation_muR_0p5_muF_2p0") && LHEEvent.weights().size()>5) weights["Weight_scale_variation_muR_0p5_muF_2p0"] = LHEEvent.weights()[5].wgt/LHE_central_weight;
+    if(!weights.count("Weight_scale_variation_muR_1p0_muF_0p5") && LHEEvent.weights().size()>6) weights["Weight_scale_variation_muR_1p0_muF_0p5"] = LHEEvent.weights()[6].wgt/LHE_central_weight;
+    if(!weights.count("Weight_scale_variation_muR_2p0_muF_0p5") && LHEEvent.weights().size()>7) weights["Weight_scale_variation_muR_2p0_muF_0p5"] = LHEEvent.weights()[7].wgt/LHE_central_weight;
+    if(!weights.count("Weight_scale_variation_muR_0p5_muF_0p5") && LHEEvent.weights().size()>8) weights["Weight_scale_variation_muR_0p5_muF_0p5"] = LHEEvent.weights()[8].wgt/LHE_central_weight;
+    
+    //cout << "Size of the map after scale variations: " << weights.size() << endl;
+    */
 }
 
 

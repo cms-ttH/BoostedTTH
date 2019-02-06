@@ -25,6 +25,7 @@ Inputs_tth_sl= cms.PSet(
     boostedJets=cms.InputTag("BoostedJetMatcher:boostedjets:p"),
     genInfo=cms.InputTag("generator"),
     lheInfo=cms.InputTag("externalLHEProducer"),
+    lheInfoalternative=cms.InputTag("source"),
     genParticles=cms.InputTag("prunedGenParticles"),
     genJets=cms.InputTag("slimmedGenJets"),
     conversionCollection= cms.InputTag("reducedEgamma:reducedConversions"),
