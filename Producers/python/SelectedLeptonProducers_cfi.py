@@ -21,8 +21,8 @@ SelectedElectronProducer = cms.EDProducer(
 
     ptMins   = cms.vdouble(15),
     etaMaxs  = cms.vdouble(2.4),
-    leptonIDs = cms.vstring("electron80XCutBasedM"),
-    collectionNames= cms.vstring("selectedLeptonsDL"),
+    leptonIDs = cms.vstring("loose"),
+    collectionNames= cms.vstring("selectedElectronsLoose"),
 
 
     # The following two parameters are dummies in case of electrons
@@ -30,7 +30,7 @@ SelectedElectronProducer = cms.EDProducer(
     # via the 'leptonID' value
     muonIsoConeSizes = cms.vstring("R03"),
     muonIsoCorrTypes = cms.vstring("rhoEA"),
-    muonIsoTypes = cms.vstring("PFIsoTight"),
+    muonIsoTypes = cms.vstring("loose"),
     useMuonRC = cms.bool(True),
     useDeterministicSeeds = cms.bool(False)
     )
@@ -50,11 +50,11 @@ SelectedMuonProducer = cms.EDProducer(
 
     ptMins   = cms.vdouble(15),
     etaMaxs  = cms.vdouble(2.4),
-    leptonIDs = cms.vstring("tightDL"),
-    collectionNames= cms.vstring("selectedLeptonsDL"),
+    leptonIDs = cms.vstring("loose"),
+    collectionNames= cms.vstring("selectedMuonsLoose"),
     muonIsoConeSizes = cms.vstring("R04"),
     muonIsoCorrTypes = cms.vstring("deltaBeta"),
-    muonIsoTypes = cms.vstring("PFIsoTight"),
+    muonIsoTypes = cms.vstring("loose"),
     useMuonRC = cms.bool(True),
     useDeterministicSeeds = cms.bool(False),
     # The following two parameters are dummies in case of muons

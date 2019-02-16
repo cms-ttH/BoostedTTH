@@ -252,19 +252,19 @@ if options.deterministicSeeds:
 # lepton selection
 process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 process.SelectedElectronProducer.leptons=electronCollection
-process.SelectedElectronProducer.ptMins=[15.,25.,30.]
+process.SelectedElectronProducer.ptMins=[15.,15.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.4]
-process.SelectedElectronProducer.leptonIDs=["electron94XCutBasedTight"]*3
+process.SelectedElectronProducer.leptonIDs=["loose","tight","tight"]
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
 
 process.SelectedMuonProducer.leptons=muonCollection
-process.SelectedMuonProducer.ptMins=[15.,25.,26.]
+process.SelectedMuonProducer.ptMins=[15.,15.,29.]
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.4]
-process.SelectedMuonProducer.leptonIDs=["tightDL","tightDL","tight"]
+process.SelectedMuonProducer.leptonIDs=["loose","tight","tight"]
 process.SelectedMuonProducer.muonIsoConeSizes=["R04"]*3
 process.SelectedMuonProducer.muonIsoCorrTypes=["deltaBeta"]*3
-process.SelectedMuonProducer.muonIsoTypes = ["PFIsoLoose", "PFIsoLoose", "PFIsoTight"]
+process.SelectedMuonProducer.muonIsoTypes = ["loose", "loose", "tight"]
 process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuonsDL","selectedMuons"]
 process.SelectedMuonProducer.useMuonRC=options.useMuonRC
 process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
