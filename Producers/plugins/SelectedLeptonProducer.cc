@@ -34,6 +34,7 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 //#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 #include "DataFormats/PatCandidates/interface/Lepton.h"
@@ -52,11 +53,12 @@ public:
     
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
     
+    // some enums to make things nicer
     enum class LeptonType    {Electron, Muon};
     enum class ElectronID    {Veto, Loose, Medium, Tight};
     enum class MuonID        {Loose, Medium, Tight};
-    enum class MuonIsoConeSize      {R03, R04};
-    enum class MuonIsoCorrType      {rhoEA, deltaBeta};
+    enum class IsoConeSize      {R03, R04};
+    enum class IsoCorrType      {rhoEA, deltaBeta};
     enum class MuonIsolation {Loose, Medium, Tight};
     
     
@@ -66,10 +68,15 @@ public:
     // Functions to return an electron collection with the desired properties
     std::vector<pat::Electron> GetSelectedElectrons(const std::vector<pat::Electron>& inputElectrons, const double iMinPt = 10., const ElectronID = ElectronID::Loose, const double iMaxEta = 2.4);
     bool isGoodElectron(const pat::Electron& iElectron, const double iMinPt = 10., const double iMaxEta = 2.4, const ElectronID iElectronID = ElectronID::Loose) const;
+    // Function to calculate electron relative isolation manually
+    double GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType, const IsoConeSize) const;
     
     // Functions to return a muon collection with the desired properties
-    std::vector<pat::Muon> GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt = 10., const MuonID = MuonID::Loose, const MuonIsoConeSize = MuonIsoConeSize::R04, const MuonIsoCorrType = MuonIsoCorrType::deltaBeta, const double iMaxEta = 2.4, const MuonIsolation = MuonIsolation::Loose);
-    bool isGoodMuon(const pat::Muon&, const double iMinPt = 10., const double iMaxEta = 2.4, const MuonID = MuonID::Loose, const MuonIsoConeSize = MuonIsoConeSize::R04, const MuonIsoCorrType = MuonIsoCorrType::deltaBeta, const MuonIsolation = MuonIsolation::Loose) const;
+    std::vector<pat::Muon> GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt = 10., const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const double iMaxEta = 2.4, const MuonIsolation = MuonIsolation::Loose);
+    bool isGoodMuon(const pat::Muon&, const double iMinPt = 10., const double iMaxEta = 2.4, const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const MuonIsolation = MuonIsolation::Loose) const;
+    
+    // Function to apply the muon rochester correction to a given muon collection
+    void ApplyMuonMomentumCorrection(std::vector<pat::Muon>& inputMuons);
     
 private:
     
@@ -87,29 +94,37 @@ private:
     const std::vector<double> ptMins_;
     const std::vector<double> etaMaxs_;    
     const std::vector<std::string > leptonIDs;
-    const std::vector<std::string> muonIsoConeSizes;
-    const std::vector<std::string> muonIsoCorrTypes;
+    const std::vector<std::string> isoConeSizes;
+    const std::vector<std::string> isoCorrTypes;
     const std::vector<std::string> muonIsoTypes;
     
+    // flags used for muon Rochester correction
     const bool isData;
     const bool useMuonRC;                                           // flag to enable or disable Rochester Correction
     const bool deterministicSeeds;                                  // flag to enable or disable deterministic seeds for RC
     
+    // lepton selection criteria
     std::vector<MuonID> muonIDs_;
     std::vector<ElectronID> electronIDs_;
-    std::vector<MuonIsoConeSize> muonIsoConeSizes_;
-    std::vector<MuonIsoCorrType> muonIsoCorrTypes_;
+    std::vector<IsoConeSize> IsoConeSizes_;
+    std::vector<IsoCorrType> IsoCorrTypes_;
     std::vector<MuonIsolation> muonIsos_;
     
     // data access tokens
     // pileup density
     edm::EDGetTokenT< double >                  EDMRhoToken; 
-    // vertex
+    // vertex collection
     edm::EDGetTokenT< reco::VertexCollection >  EDMVertexToken;
     // muons
     edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  
     // electrons
     edm::EDGetTokenT< edm::View<pat::Electron> >EDMElectronsToken;
+    
+    // primary vertex
+    reco::Vertex vertex;
+    
+    // event-specific average pile-up energy density per unit area in the phi-eta plane
+    double rho;
     
     // use to get electron ID decisions, if electron IDs are recalculated by egamma VID tool
     //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedMediumIDmapToken;
@@ -117,25 +132,28 @@ private:
     //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedVetoIDmapToken;
     //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedTightIDmapToken;
     
-    
-    RoccoR rc;                                                // Object to calculate Rochester Correction
+    // Object to calculate Rochester Correction
+    RoccoR rc;
     // directory of text files used to calculate RC
     std::string roccor_dir=std::string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/Producers/data/rcdata2017v1/RoccoR2017v1.txt";
     
-    reco::Vertex vertex;
+    // Object to get electron effective areas
+    EffectiveAreas EA;
+    // txt file to calculate effective areas for electrons relative isolation
+    const std::string ea_dir = std::string(getenv("CMSSW_BASE"))+"/src/BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt";
+    
 };
 
 
-//
-// constructors and destructor
-//
+
+// constructor
 SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig) :  leptonType{iConfig.getParameter<std::string>("leptonType")},
                                                                                     collectionNames_{iConfig.getParameter<std::vector< std::string> >("collectionNames")},
                                                                                     ptMins_{iConfig.getParameter< std::vector<double> >("ptMins")},
                                                                                     etaMaxs_{iConfig.getParameter< std::vector<double> >("etaMaxs")},
                                                                                     leptonIDs{iConfig.getParameter< std::vector<std::string> >("leptonIDs")},
-                                                                                    muonIsoConeSizes{iConfig.getParameter<std::vector<std::string> >("muonIsoConeSizes")},
-                                                                                    muonIsoCorrTypes{iConfig.getParameter<std::vector<std::string> >("muonIsoCorrTypes")},
+                                                                                    isoConeSizes{iConfig.getParameter<std::vector<std::string> >("isoConeSizes")},
+                                                                                    isoCorrTypes{iConfig.getParameter<std::vector<std::string> >("isoCorrTypes")},
                                                                                     muonIsoTypes{iConfig.getParameter<std::vector<std::string> >("muonIsoTypes")},
                                                                                     isData{iConfig.getParameter<bool>("isData")},
                                                                                     useMuonRC{iConfig.getParameter<bool>("useMuonRC")},
@@ -145,7 +163,8 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
                                                                                     EDMRhoToken{consumes< double >                  (iConfig.getParameter<edm::InputTag>("rho"))},
                                                                                     EDMVertexToken{consumes< reco::VertexCollection >  (iConfig.getParameter<edm::InputTag>("vertices"))},
                                                                                     EDMMuonsToken{consumes< pat::MuonCollection >     (iConfig.getParameter<edm::InputTag>("leptons"))},
-                                                                                    EDMElectronsToken{consumes< edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("leptons"))}
+                                                                                    EDMElectronsToken{consumes< edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("leptons"))},
+                                                                                    EA{ea_dir}
                                                                                     
 {
     // setup of producer
@@ -164,20 +183,22 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     //EDMeleCutBasedVetoIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
     //EDMeleCutBasedTightIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
     
-    electronIDs_ = std::vector<ElectronID>(leptonIDs.size(),ElectronID::Loose);
-    muonIDs_ = std::vector<MuonID>(leptonIDs.size(),MuonID::Loose);
-    muonIsoConeSizes_ = std::vector<MuonIsoConeSize>(leptonIDs.size(),MuonIsoConeSize::R04);
-    muonIsoCorrTypes_ = std::vector<MuonIsoCorrType>(leptonIDs.size(),MuonIsoCorrType::deltaBeta);
-    muonIsos_ = std::vector<MuonIsolation>(leptonIDs.size(), MuonIsolation::Loose);
+    // fill lepton selection criteria with default values
+    electronIDs_        = std::vector<ElectronID>(leptonIDs.size(),ElectronID::Loose);
+    muonIDs_            = std::vector<MuonID>(leptonIDs.size(),MuonID::Loose);
+    IsoConeSizes_       = std::vector<IsoConeSize>(leptonIDs.size(),IsoConeSize::R03);
+    IsoCorrTypes_       = std::vector<IsoCorrType>(leptonIDs.size(),IsoCorrType::rhoEA);
+    muonIsos_           = std::vector<MuonIsolation>(leptonIDs.size(), MuonIsolation::Loose);
     
+    // some safety guards
     assert(ptMins_.size()==etaMaxs_.size());
     assert(leptonIDs.size()==etaMaxs_.size());
     assert(collectionNames_.size()==etaMaxs_.size());
-    if(leptonType_==LeptonType::Muon) assert(muonIsoConeSizes.size()==etaMaxs_.size());
-    if(leptonType_==LeptonType::Muon) assert(muonIsoCorrTypes.size()==etaMaxs_.size());
+    if(leptonType_==LeptonType::Muon) assert(isoConeSizes.size()==etaMaxs_.size());
+    if(leptonType_==LeptonType::Muon) assert(isoCorrTypes.size()==etaMaxs_.size());
     if(leptonType_==LeptonType::Muon) assert(muonIsoTypes.size()==etaMaxs_.size());
     
-    
+    // translate strings from config to nice C++ objects
     for(size_t i=0; i<ptMins_.size(); i++){
         if(leptonType_ == LeptonType::Electron){
             if(      leptonIDs[i] == "loose"   )         electronIDs_[i] = ElectronID::Loose;
@@ -197,17 +218,17 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
                 std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonIDs[i] << std::endl;
                 throw std::exception();
             }
-            if(      muonIsoConeSizes[i] == "R03"  ) muonIsoConeSizes_[i] = MuonIsoConeSize::R03;
-            else if( muonIsoConeSizes[i] == "R04"  ) muonIsoConeSizes_[i] = MuonIsoConeSize::R04;
+            if(      isoConeSizes[i] == "R03"  ) IsoConeSizes_[i] = IsoConeSize::R03;
+            else if( isoConeSizes[i] == "R04"  ) IsoConeSizes_[i] = IsoConeSize::R04;
             else {
-                std::cerr << "\n\nERROR: No matching isolation cone size found for: " << muonIsoConeSizes[i] << std::endl;
+                std::cerr << "\n\nERROR: No matching isolation cone size found for: " << isoConeSizes[i] << std::endl;
                 throw std::exception();
             }
             
-            if(      muonIsoCorrTypes[i] == "deltaBeta" ) muonIsoCorrTypes_[i] = MuonIsoCorrType::deltaBeta;
-            else if( muonIsoCorrTypes[i] == "rhoEA"     ) muonIsoCorrTypes_[i] = MuonIsoCorrType::rhoEA;
+            if(      isoCorrTypes[i] == "deltaBeta" ) IsoCorrTypes_[i] = IsoCorrType::deltaBeta;
+            else if( isoCorrTypes[i] == "rhoEA"     ) IsoCorrTypes_[i] = IsoCorrType::rhoEA;
             else {
-                std::cerr << "\n\nERROR: No matching isolation correction type found for: " << muonIsoCorrTypes[i] << std::endl;
+                std::cerr << "\n\nERROR: No matching isolation correction type found for: " << isoCorrTypes[i] << std::endl;
                 throw std::exception();
             }
             if(      muonIsoTypes[i] == "loose"  )   muonIsos_[i] = MuonIsolation::Loose;
@@ -219,16 +240,22 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
             }
         }
         if( leptonType_ == LeptonType::Electron ) produces<pat::ElectronCollection>(collectionNames_[i]);
-        if( leptonType_ == LeptonType::Muon     ) produces<pat::MuonCollection>(collectionNames_[i]);
+        else if( leptonType_ == LeptonType::Muon     ) produces<pat::MuonCollection>(collectionNames_[i]);
+        else {
+            std::cerr << "\n\nERROR: Unknown lepton type " << leptonType << std::endl;
+            std::cerr << "Please select 'electron' or 'muon'\n" << std::endl;
+            throw std::exception();
+        }
         
     }
     
+    // if muon rochester corrections should be applied, init the corresponding module
     if(useMuonRC) {
         rc.init(roccor_dir);
     }
 }
 
-
+// destructor
 SelectedLeptonProducer::~SelectedLeptonProducer() {}
 
 
@@ -240,7 +267,7 @@ SelectedLeptonProducer::~SelectedLeptonProducer() {}
 void
 SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-    
+    // get the vertices and the rho (average pile-up energy density per unit area in the phi-eta plane)
     edm::Handle<reco::VertexCollection> hVtxs;
     iEvent.getByToken(EDMVertexToken,hVtxs);
     if(not hVtxs.isValid()) {
@@ -253,6 +280,13 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     }
     vertex = hVtxs->at(0);
     
+    edm::Handle<double> hRho;
+    iEvent.getByToken(EDMRhoToken,hRho);
+    if(not hRho.isValid()) {
+        std::cerr << "\n\nERROR: retrieved pile-up energy density is not valid" << std::endl;
+        throw std::exception();
+    }
+    rho = *hRho;
     
     if( leptonType_ == LeptonType::Electron ) {
         // get input electron collection
@@ -275,9 +309,9 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         //iEvent.getByToken(EDMeleCutBasedMediumIDmapToken, medium_id_decisions);
         //iEvent.getByToken(EDMeleCutBasedTightIDmapToken, tight_id_decisions);
         //iEvent.getByToken(EDMeleCutBasedVetoIDmapToken, veto_id_decisions);
-        
-        
         //if(loose_id_decisions.isValid() && medium_id_decisions.isValid() && tight_id_decisions.isValid() && veto_id_decisions.isValid()){
+        
+        
         for(size_t i=0; i<ptMins_.size(); i++)
         {
             // check the electron IDs and only accept electrons fulfilling the requested ID
@@ -294,7 +328,8 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                 //(*veto_id_decisions)[electron];
                 else if(electronIDs_[i] == ElectronID::Veto) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V1-veto");  
                 else{
-                    throw cms::Exception("InvalidElectronID") << "Could not match the electron ID with a ID decision map!";
+                    std::cerr << "\n\nERROR: InvalidElectronID" <<  std::endl;
+                    throw std::exception();
                 }
                 if( passesID ) updatedElectrons.push_back(hElectrons->at(j));
                 
@@ -305,9 +340,10 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                 ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
             }
             
-            // produce the different electron collections
-            
-            std::unique_ptr<pat::ElectronCollection> selectedLeptons = std::make_unique<pat::ElectronCollection>(GetSortedByPt(GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])));
+            // produce the different electron collections            
+            std::unique_ptr<pat::ElectronCollection> selectedLeptons =  std::make_unique<pat::ElectronCollection>(
+                                                                        GetSortedByPt(
+                                                                        GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])));
             //for (auto & lep : *selectedLeptons){
                 // TODO conesize and corr type should not be hardcoded
                 //helper_.AddElectronRelIso(lep,coneSize::R03, CorrType::rhoEA,effAreaType::fall17,"relIso");
@@ -333,47 +369,27 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         
         std::vector<pat::Muon> muons = *hMuons;
         
+        // if the flag is set, apply the muon momentum correction (rochester correction)
         if(useMuonRC) {
-            double momentum_sf;
-            TRandom3 rnd;
-            for(uint i=0;i<muons.size();i++) {
-                momentum_sf=1.;
-                if(deterministicSeeds) {
-                    int32_t seed = muons[i].userInt("deterministicSeed");
-                    rnd.SetSeed((uint32_t)seed);
-                }
-                double r1 = rnd.Rndm();
-                int trackerLayersWithMeasurement=0;
-                if(!muons[i].innerTrack().isNull()) {
-                    trackerLayersWithMeasurement = muons[i].innerTrack()->hitPattern().trackerLayersWithMeasurement();
-                }
-                if(isData) {
-                    momentum_sf = rc.kScaleDT(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), 0, 0);
-                }
-                else {
-                    if(muons[i].genLepton()) {
-                        momentum_sf = rc.kSpreadMC(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), muons[i].genLepton()->pt(), 0, 0);
-                    }
-                    else {
-                        momentum_sf = rc.kSmearMC(muons[i].charge(), muons[i].pt(), muons[i].eta(), muons[i].phi(), trackerLayersWithMeasurement, r1, 0, 0);
-                    }
-                }
-                auto tmp_vector = muons[i].p4();
-                muons[i].addUserFloat( "PtbeforeRC", tmp_vector.Pt());
-                tmp_vector.SetPxPyPzE(momentum_sf*tmp_vector.Px(),momentum_sf*tmp_vector.Py(),momentum_sf*tmp_vector.Pz(),TMath::Sqrt((1+(tmp_vector.P2()/(tmp_vector.E()*tmp_vector.E())*(momentum_sf*momentum_sf-1))))*tmp_vector.E());
-                muons[i].setP4(tmp_vector);            
-            }
+            ApplyMuonMomentumCorrection(muons);
         }
         
         // produce the different muon collections
-        for(uint i=0; i<ptMins_.size();i++){
+        for(size_t i=0; i<ptMins_.size();i++){
             // select muon collection
-            std::unique_ptr<pat::MuonCollection> selectedLeptons = std::make_unique<pat::MuonCollection>(GetSortedByPt(GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],muonIsoConeSizes_[i],muonIsoCorrTypes_[i],etaMaxs_[i],muonIsos_[i]))) ;
+            std::unique_ptr<pat::MuonCollection> selectedLeptons =  std::make_unique<pat::MuonCollection>(
+                                                                    GetSortedByPt( 
+                                                                    GetSelectedMuons(muons,ptMins_[i],muonIDs_[i],IsoConeSizes_[i],IsoCorrTypes_[i],etaMaxs_[i],muonIsos_[i]))) ;
             //for (auto & lep : *selectedLeptons){
-                //helper_.AddMuonRelIso(lep, muonIsoConeSizes_[i], muonIsoCorrTypes_[i],"relIso");
+                //helper_.AddMuonRelIso(lep, IsoConeSizes_[i], IsoCorrTypes_[i],"relIso");
             //}
             iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
         }
+    }
+    else {
+        std::cerr << "\n\nERROR: Unknown lepton type " << leptonType << std::endl;
+        std::cerr << "Please select 'electron' or 'muon'\n" << std::endl;
+        throw std::exception();
     }
 }
 
@@ -424,8 +440,38 @@ SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, const dou
     return passesKinematics and (not inCrack) and passesIPcuts;
 }
 
+double SelectedLeptonProducer::GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType icorrType, const IsoConeSize iconeSize) const {
+    double isoChargedHadrons = inputElectron.pfIsolationVariables().sumChargedHadronPt;
+    double isoNeutralHadrons = inputElectron.pfIsolationVariables().sumNeutralHadronEt;
+    double isoPhotons = inputElectron.pfIsolationVariables().sumPhotonEt;
+    // The following line provides the isolation sum for particles from PU needed if deltaBeta pile-up correction is used
+    double pileup = 0;
+    if(iconeSize == IsoConeSize::R03) {
+        if(icorrType == IsoCorrType::deltaBeta) pileup = 0.5*inputElectron.pfIsolationVariables().sumPUPt;
+        else if(icorrType == IsoCorrType::rhoEA) {
+            double eta = 0.;
+            if( inputElectron.superCluster().isAvailable() ){
+                eta = fabs(inputElectron.superCluster()->position().eta());
+            }
+            else {
+                eta = fabs(inputElectron.eta());
+            }
+            pileup = rho*EA.getEffectiveArea(eta);
+        }
+        else {
+            std::cerr << "\n\nERROR: invalid electron isolation correction type" << std::endl;
+            throw std::exception();
+        }
+    }
+    else {
+        std::cerr << "\n\nERROR: electron isolation is not implemeted for conesizes other than 0.3" << std::endl;
+        throw std::exception();
+    }
+    return (isoChargedHadrons+std::max(0.,isoNeutralHadrons+isoPhotons-pileup))/inputElectron.pt();
+}
+
 std::vector<pat::Muon>
-SelectedLeptonProducer::GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt, const MuonID iMuonID, const MuonIsoConeSize iconeSize, const MuonIsoCorrType icorrType, const double iMaxEta, const MuonIsolation imuonIso){
+SelectedLeptonProducer::GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const double iMaxEta, const MuonIsolation imuonIso){
     
     
     std::vector<pat::Muon> selectedMuons;
@@ -441,7 +487,7 @@ SelectedLeptonProducer::GetSelectedMuons(const std::vector<pat::Muon>& inputMuon
 }
 
 bool
-SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, const double iMaxEta, const MuonID iMuonID, const MuonIsoConeSize iconeSize, const MuonIsoCorrType icorrType, const MuonIsolation imuonIso) const{
+SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, const double iMaxEta, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const MuonIsolation imuonIso) const{
     bool passesKinematics = (iMinPt<=iMuon.pt()) and (iMaxEta>=fabs(iMuon.eta()));
     bool passesID = false;
     bool passesIso = false;
@@ -456,7 +502,8 @@ SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, 
             passesID         = muon::isTightMuon(iMuon, vertex);
             break;
         default:
-            throw cms::Exception("InvalidMuonID") << "No matching muon ID found!";
+            std::cerr << "\n\nERROR: InvalidMuonID" <<  std::endl;
+            throw std::exception();
 
     }
     switch(imuonIso){
@@ -470,10 +517,43 @@ SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, 
             passesIso         = iMuon.passed(pat::Muon::PFIsoTight);
             break;
         default:
-            throw cms::Exception("InvalidMuonIso") << "No matching muon Isolation found!";
+            std::cerr << "\n\nERROR: InvalidMuonIso" <<  std::endl;
+            throw std::exception();
 
     }
     return passesKinematics and passesID and passesIso;
+}
+
+void SelectedLeptonProducer::ApplyMuonMomentumCorrection(std::vector<pat::Muon>& inputMuons){
+    double momentum_sf;
+    TRandom3 rnd;
+    for(size_t i=0;i<inputMuons.size();i++) {
+        momentum_sf=1.;
+        if(deterministicSeeds) {
+            int32_t seed = inputMuons[i].userInt("deterministicSeed");
+            rnd.SetSeed((uint32_t)seed);
+        }
+        double r1 = rnd.Rndm();
+        int trackerLayersWithMeasurement=0;
+        if(!inputMuons[i].innerTrack().isNull()) {
+            trackerLayersWithMeasurement = inputMuons[i].innerTrack()->hitPattern().trackerLayersWithMeasurement();
+        }
+        if(isData) {
+            momentum_sf = rc.kScaleDT(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), 0, 0);
+        }
+        else {
+            if(inputMuons[i].genLepton()) {
+                momentum_sf = rc.kSpreadMC(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), inputMuons[i].genLepton()->pt(), 0, 0);
+            }
+            else {
+                momentum_sf = rc.kSmearMC(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), trackerLayersWithMeasurement, r1, 0, 0);
+            }
+        }
+        auto tmp_vector = inputMuons[i].p4();
+        inputMuons[i].addUserFloat( "PtbeforeRC", tmp_vector.Pt());
+        tmp_vector.SetPxPyPzE(momentum_sf*tmp_vector.Px(),momentum_sf*tmp_vector.Py(),momentum_sf*tmp_vector.Pz(),TMath::Sqrt((1+(tmp_vector.P2()/(tmp_vector.E()*tmp_vector.E())*(momentum_sf*momentum_sf-1))))*tmp_vector.E());
+        inputMuons[i].setP4(tmp_vector);
+    }
 }
 
 
