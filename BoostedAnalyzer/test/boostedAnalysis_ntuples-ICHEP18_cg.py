@@ -255,6 +255,8 @@ process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[15.,15.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.4]
 process.SelectedElectronProducer.leptonIDs=["loose","tight","tight"]
+process.SelectedElectronProducer.isoConeSizes=["R03"]*3
+process.SelectedElectronProducer.isoCorrTypes=["rhoEA"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
 

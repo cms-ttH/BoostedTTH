@@ -32,7 +32,9 @@ SelectedElectronProducer = cms.EDProducer(
     isoCorrTypes = cms.vstring("rhoEA"),
     muonIsoTypes = cms.vstring("loose"),
     useMuonRC = cms.bool(True),
-    useDeterministicSeeds = cms.bool(False)
+    useDeterministicSeeds = cms.bool(False),
+    rc_dir = cms.string("BoostedTTH/Producers/data/rcdata2017v1/RoccoR2017v1.txt"),
+    ea_dir = cms.string("BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt")
     )
 
 
@@ -57,6 +59,8 @@ SelectedMuonProducer = cms.EDProducer(
     muonIsoTypes = cms.vstring("loose"),
     useMuonRC = cms.bool(True),
     useDeterministicSeeds = cms.bool(False),
+    rc_dir = cms.string("BoostedTTH/Producers/data/rcdata2017v1/RoccoR2017v1.txt"),
+    ea_dir = cms.string("BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt")
     # The following two parameters are dummies in case of muons
     # they are not used for the muon selection, which is defined
     # via the 'leptonID' value
