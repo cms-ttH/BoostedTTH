@@ -68,7 +68,8 @@ public:
     // Functions to return an electron collection with the desired properties
     std::vector<pat::Electron> GetSelectedElectrons(const std::vector<pat::Electron>& inputElectrons, const double iMinPt = 10., const ElectronID = ElectronID::Loose, const double iMaxEta = 2.4);
     bool isGoodElectron(const pat::Electron& iElectron, const double iMinPt = 10., const double iMaxEta = 2.4, const ElectronID iElectronID = ElectronID::Loose) const;
-    // Function to calculate electron relative isolation manually
+    
+    // Function to calculate electron relative isolation manually, for sync exercises
     double GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType, const IsoConeSize) const;
     void AddElectronRelIsolation(std::vector<pat::Electron>& inputElectrons, const IsoCorrType icorrType, const IsoConeSize iconeSize);
     
@@ -76,6 +77,7 @@ public:
     std::vector<pat::Muon> GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt = 10., const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const double iMaxEta = 2.4, const MuonIsolation = MuonIsolation::Loose);
     bool isGoodMuon(const pat::Muon&, const double iMinPt = 10., const double iMaxEta = 2.4, const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const MuonIsolation = MuonIsolation::Loose) const;
     
+    // Function to calculate muon relative isolation manually, for sync exercises
     double GetMuonRelIsolation(const pat::Muon& inputMuon, const IsoCorrType, const IsoConeSize) const;
     void AddMuonRelIsolation(std::vector<pat::Muon>& inputMuons, const IsoCorrType icorrType, const IsoConeSize iconeSize);
     
@@ -146,7 +148,7 @@ private:
 
 
 
-// constructor
+// constructor with initializer list for all inputs which are obtained from the config
 SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig) :  leptonType{iConfig.getParameter<std::string>("leptonType")},
                                                                                     collectionNames_{iConfig.getParameter<std::vector< std::string> >("collectionNames")},
                                                                                     ptMins_{iConfig.getParameter< std::vector<double> >("ptMins")},
@@ -277,6 +279,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         std::cerr << "\n\nERROR: retrieved vertex collection is empty" << std::endl;
         throw std::exception();
     }
+    // primary vertex
     vertex = hVtxs->at(0);
     
     edm::Handle<double> hRho;
@@ -285,6 +288,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         std::cerr << "\n\nERROR: retrieved pile-up energy density is not valid" << std::endl;
         throw std::exception();
     }
+    //pile-up density
     rho = *hRho;
     
     if( leptonType_ == LeptonType::Electron ) {
@@ -333,7 +337,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                 if( passesID ) updatedElectrons.push_back(inputElectrons->at(j));
                 
             }
-            
+            // add the electron relative isolation as a userfloat, mainly for sync by now
             AddElectronRelIsolation(updatedElectrons,IsoCorrTypes_[i],IsoConeSizes_[i]);
             
             // apply energy corrections (scale & smearing)
@@ -342,11 +346,11 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                 ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
             }
             
-            // produce the different electron collections            
+            // produce the different electron collections and create a unique ptr to it      
             std::unique_ptr<pat::ElectronCollection> selectedLeptons =  std::make_unique<pat::ElectronCollection>(
                                                                         GetSortedByPt(
                                                                         GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])));
-            
+            // put the collection into the event with help of the unique ptr
             iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
         }
         //}  
@@ -374,12 +378,13 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         // produce the different muon collections
         for(size_t i=0; i<ptMins_.size();i++){
             std::vector<pat::Muon> updatedMuons = correctedMuons;
+            // add the muon relative isolation as a userfloat, mainly for sync by now
             AddMuonRelIsolation(updatedMuons,IsoCorrTypes_[i],IsoConeSizes_[i]);
-            // select muon collection
+            // produce the different muon collections and create a unique ptr to it      
             std::unique_ptr<pat::MuonCollection> selectedLeptons =  std::make_unique<pat::MuonCollection>(
                                                                     GetSortedByPt( 
                                                                     GetSelectedMuons(updatedMuons,ptMins_[i],muonIDs_[i],IsoConeSizes_[i],IsoCorrTypes_[i],etaMaxs_[i],muonIsos_[i]))) ;
-            
+            // put the collection into the event with help of the unique ptr
             iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
         }
     }
@@ -389,13 +394,13 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         throw std::exception();
     }
 }
-
+// template function to sort a collection by pt and return the sorted collection, should work with pat::Muon and pat::Electron collections and probably more
 template <typename T> T SelectedLeptonProducer::GetSortedByPt(const T& collection){
     T result = collection;
     std::sort(result.begin(), result.end(), [] (typename T::value_type a, typename T::value_type b) { return a.pt() > b.pt();});
     return result;
 }
-
+// function to select electrons with several properties and return a collection
 std::vector<pat::Electron>
 SelectedLeptonProducer::GetSelectedElectrons(const std::vector<pat::Electron>& inputElectrons, const double iMinPt, const ElectronID iElectronID, const double iMaxEta){
     
@@ -410,7 +415,7 @@ SelectedLeptonProducer::GetSelectedElectrons(const std::vector<pat::Electron>& i
     
     return selectedElectrons;
 }
-
+// function to check whether an electron fulfills several requirements
 bool
 SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, const double iMinPt, const double iMaxEta,const ElectronID iElectronID) const{
     bool passesKinematics = (iMinPt<=iElectron.pt()) and (iMaxEta>=fabs(iElectron.eta()));
@@ -436,7 +441,7 @@ SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, const dou
     
     return passesKinematics and (not inCrack) and passesIPcuts;
 }
-
+// function to calculate electron relative isolation by hand. Mainly needed for sync purposes since isolations are part of other provided electron properties like ID
 double SelectedLeptonProducer::GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType icorrType, const IsoConeSize iconeSize) const {
     double isoChargedHadrons = inputElectron.pfIsolationVariables().sumChargedHadronPt;
     double isoNeutralHadrons = inputElectron.pfIsolationVariables().sumNeutralHadronEt;
@@ -465,13 +470,13 @@ double SelectedLeptonProducer::GetEletronRelIsolation(const pat::Electron& input
     }
     return (isoChargedHadrons+std::max(0.,isoNeutralHadrons+isoPhotons-pileup))/inputElectron.pt();
 }
-
+// function to add the calculate electron relative isolation to the electron as a userfloat
 void SelectedLeptonProducer::AddElectronRelIsolation(std::vector<pat::Electron>& inputElectrons, const IsoCorrType icorrType, const IsoConeSize iconeSize) {
     for(auto& ele : inputElectrons){
         ele.addUserFloat("relIso",GetEletronRelIsolation(ele, icorrType, iconeSize));
     }
 }
-
+// function to select muons with several properties and return a collection
 std::vector<pat::Muon>
 SelectedLeptonProducer::GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const double iMaxEta, const MuonIsolation imuonIso){
     
@@ -487,7 +492,7 @@ SelectedLeptonProducer::GetSelectedMuons(const std::vector<pat::Muon>& inputMuon
     
     return selectedMuons;
 }
-
+// function to check whether a muon fulfills several requirements
 bool
 SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, const double iMaxEta, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const MuonIsolation imuonIso) const{
     bool passesKinematics = (iMinPt<=iMuon.pt()) and (iMaxEta>=fabs(iMuon.eta()));
@@ -525,7 +530,7 @@ SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, 
     }
     return passesKinematics and passesID and passesIso;
 }
-
+// function to apply muon momentum correction (rochester correction)
 void SelectedLeptonProducer::ApplyMuonMomentumCorrection(std::vector<pat::Muon>& inputMuons){
     double momentum_sf;
     TRandom3 rnd;
@@ -557,7 +562,7 @@ void SelectedLeptonProducer::ApplyMuonMomentumCorrection(std::vector<pat::Muon>&
         inputMuons[i].setP4(tmp_vector);
     }
 }
-
+// function to calculate muon relative isolation by hand. Mainly needed for sync purposes since isolation-checks are provided centrally
 double SelectedLeptonProducer::GetMuonRelIsolation(const pat::Muon& inputMuon, const IsoCorrType icorrType, const IsoConeSize iconeSize) const {
     double isoChargedHadrons = inputMuon.pfIsolationR04().sumChargedHadronPt;
     double isoNeutralHadrons = inputMuon.pfIsolationR04().sumNeutralHadronEt;
@@ -576,7 +581,7 @@ double SelectedLeptonProducer::GetMuonRelIsolation(const pat::Muon& inputMuon, c
     }
     return (isoChargedHadrons+std::max(0.,isoNeutralHadrons+isoPhotons-pileup))/inputMuon.pt();
 }
-
+// function to add the calculate muon relative isolation to the muon as a userfloat
 void SelectedLeptonProducer::AddMuonRelIsolation(std::vector<pat::Muon>& inputMuons, const IsoCorrType icorrType, const IsoConeSize iconeSize) {
     for(auto& mu : inputMuons){
         mu.addUserFloat("relIso",GetMuonRelIsolation(mu, icorrType, iconeSize));
