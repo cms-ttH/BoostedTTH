@@ -82,6 +82,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopSLSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopFHSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/ttEventRecoTrainVariablesProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/ttXReconstructionAndGenVarProcessor.hpp"
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
@@ -484,6 +485,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
         }
         if(std::find(processorNames.begin(),processorNames.end(),"ttEventRecoTrainVariablesProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new ttEventRecoTrainVariablesProcessor(),"ttEventRecoTrainVariablesProcessor");
+        }
+        if(std::find(processorNames.begin(),processorNames.end(),"ttXReconstructionAndGenVarProcessor")!=processorNames.end()) {
+            treewriter->AddTreeProcessor(new ttXReconstructionAndGenVarProcessor(),"ttXReconstructionAndGenVarProcessor");
         }
         if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
             if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
