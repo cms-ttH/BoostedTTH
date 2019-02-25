@@ -193,11 +193,14 @@ void ttXReconstructionAndGenVarProcessor::FillAngularDifferences(const std::stri
     vars.FillVar( genPrefix+"_DeltaEta_"+name1+"_"+name2,   fabs(gen1.eta()  - gen2.eta() )   );
     vars.FillVar(recoPrefix+"_DeltaEta_"+name1+"_"+name2,   fabs(reco1.Eta() - reco2.Eta())   );
 
-    // deltaPhi
-    math::XYZTLorentzVector reco1_vec = math::XYZTLorentzVector( reco1.E(), reco1.Px(), reco1.Py(), reco1.Pz() );
-    math::XYZTLorentzVector reco2_vec = math::XYZTLorentzVector( reco2.E(), reco2.Px(), reco2.Py(), reco2.Pz() );
-    vars.FillVar( genPrefix+"_DeltaPhi_"+name1+"_"+name2,   BoostedUtils::DeltaPhi(gen1.p4(),  gen2.p4())   );
-    vars.FillVar(recoPrefix+"_DeltaPhi_"+name1+"_"+name2,   BoostedUtils::DeltaPhi(reco1_vec,  reco2_vec)   );
+    // deltaPhi TODO fix
+    float dphi_gen = fabs( gen1.phi() - gen2.phi() );
+    if( dphi_gen > M_PI ) dphi_gen = 2.*M_PI - dphi_gen;
+    vars.FillVar( genPrefix+"_DeltaPhi_"+name1+"_"+name2,   dphi_gen   );
+
+    float dphi_reco = fabs( reco1.Phi() - reco2.Phi() );
+    if( dphi_reco > M_PI ) dphi_reco = 2.*M_PI - dphi_reco;    
+    vars.FillVar(recoPrefix+"_DeltaPhi_"+name1+"_"+name2,   dphi_reco   );
 
     // deltaTheta
     vars.FillVar( genPrefix+"_DeltaTheta_"+name1+"_"+name2, fabs(gen1.theta()  - gen2.theta() ) );

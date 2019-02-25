@@ -447,7 +447,7 @@ if options.isData:
   "WeightProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
- "BDTVarProcessor",
+  "BDTVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   "AK8JetProcessor"
@@ -455,17 +455,17 @@ if options.isData:
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-#  "MCMatchVarProcessor",
+  #"MCMatchVarProcessor",
   "essentialMCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
-  "BDTVarProcessor",
+  #"BDTVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
-  "AK8JetProcessor",
+  #"AK8JetProcessor",
   #"SpinCorrelationProcessor",
   #"TTbarReconstructionVarProcessor"
-  "ttEventRecoTrainVariablesProcessor"
+  "ttXReconstructionAndGenVarProcessor",
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
 
