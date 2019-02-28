@@ -26,6 +26,13 @@ void ttXReconstructionAndGenVarProcessor::Init(const InputCollections &input, Va
     InitAngularDifferences("BHad",   "BLep",   vars);
     InitAngularDifferences("BHad",   "Lepton", vars);
 
+    // FLAGS
+    vars.InitVar("genTopIsFilled", 0, "I");
+    vars.InitVar("genTopIsSL", 0, "I");
+
+    // QUALITY CONTROL VALUES
+    vars.InitVar("chi2_ttbarMatcher", "F");
+
     initialized = true;
     } // close init
 
@@ -35,6 +42,9 @@ void ttXReconstructionAndGenVarProcessor::Init(const InputCollections &input, Va
 void ttXReconstructionAndGenVarProcessor::Process(const InputCollections &input, VariableContainer &vars) {
     if( !initialized ) cerr << "tree processor not initialized" << endl;
     if(input.selectedJets.size() < 4) return;
+
+    if( input.genTopEvt.IsFilled())     vars.FillVar("genTopIsFilled", 1);
+    if( input.genTopEvt.IsSemiLepton()) vars.FillVar("genTopIsSL", 1);
 
     if( input.genTopEvt.IsFilled() && input.genTopEvt.IsSemiLepton() ) {
         // Generator Level
@@ -63,7 +73,7 @@ void ttXReconstructionAndGenVarProcessor::Process(const InputCollections &input,
         if( input.selectedElectrons.size() + input.selectedMuons.size() < 1 ) return;
         
         // generate best interpretation
-        Interpretation *recoTTX = GetTTXInterpretation( input );
+        Interpretation *recoTTX = GetTTInterpretation( input, vars );
         //if( recoTTX == 0 ) return;
 
         // SIMPLE KINEMATIC VARIABLES
@@ -88,7 +98,7 @@ void ttXReconstructionAndGenVarProcessor::Process(const InputCollections &input,
 
 
 
-Interpretation *ttXReconstructionAndGenVarProcessor::GetTTXInterpretation( const InputCollections &input ) {
+Interpretation *ttXReconstructionAndGenVarProcessor::GetTTInterpretation( const InputCollections &input, VariableContainer &vars ) {
 
     // get jet vectors
     vector<TLorentzVector> jetVecs = BoostedUtils::GetTLorentzVectors( BoostedUtils::GetJetVecs(input.selectedJets) );
@@ -125,9 +135,12 @@ Interpretation *ttXReconstructionAndGenVarProcessor::GetTTXInterpretation( const
             } 
         }
 
+    // fill chi2
+    vars.FillVar("chi2_ttbarMatcher", best_chi2);
+
     return bestInterpretation;
 
-    } // close GetTTXInterpretation
+    } // close GetTTInterpretation
 
 
 void ttXReconstructionAndGenVarProcessor::InitSimpleKinematicVariables(const std::string &name, VariableContainer &vars) {

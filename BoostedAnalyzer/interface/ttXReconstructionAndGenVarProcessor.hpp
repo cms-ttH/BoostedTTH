@@ -27,7 +27,7 @@ public:
     void FillAngularDifferences(const std::string &name1, const std::string &name2, const reco::GenParticle &gen1, const reco::GenParticle &gen2, const TLorentzVector &reco1, const TLorentzVector &reco2, VariableContainer &vars);
     
 
-    Interpretation *GetTTXInterpretation(const InputCollections &input);
+    Interpretation *GetTTInterpretation(const InputCollections &input, VariableContainer &vars);
 
 private:
     std::string recoPrefix;
