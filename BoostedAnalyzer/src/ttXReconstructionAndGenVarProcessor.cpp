@@ -21,17 +21,24 @@ void ttXReconstructionAndGenVarProcessor::Init(const InputCollections &input, Va
     InitSimpleKinematicVariables("WLep",    vars);
     InitSimpleKinematicVariables("Lepton",  vars);
 
+    InitSimpleKinematicVariables("Boson",   vars);
+
     // ANGULAR DIFFERENCES
     InitAngularDifferences("TopHad", "TopLep", vars);
     InitAngularDifferences("BHad",   "BLep",   vars);
     InitAngularDifferences("BHad",   "Lepton", vars);
 
+    InitAngularDifferences("Boson",  "TopHad", vars);
+    InitAngularDifferences("Boson",  "TopLep", vars);
+    InitAngularDifferences("Boson",  "Lepton", vars);
+
     // FLAGS
     vars.InitVar("genTopIsFilled", 0, "I");
+    vars.InitVar("genTTXIsFilled", 0, "I");
     vars.InitVar("genTopIsSL", 0, "I");
 
     // QUALITY CONTROL VALUES
-    vars.InitVar("chi2_ttbarMatcher", "F");
+    vars.InitVar("TTXmatcher_chi2", "F");
 
     initialized = true;
     } // close init
@@ -68,12 +75,23 @@ void ttXReconstructionAndGenVarProcessor::Process(const InputCollections &input,
         std::vector<reco::GenParticle> hadQs = input.genTopEvt.GetWQuarks();
         if( !(hadQs.size() == 2) ){ std::cout << "UNEQUAL TWO QUARKS FROM HADRONIC W" << std::endl; }
 
+        // higgs boson
+        reco::GenParticle higgs  = input.genTopEvt.GetHiggs();
+        // higgs decay quarks
+        std::vector<reco::GenParticle> higgsBs = input.genTopEvt.GetHiggsDecayProducts();
+        if( !(higgsBs.size() == 2) ){ std::cout << "UNEQUAL TWO BS FROM HIGGS" << std::endl; }
+
+
         // Reconstruction Level
         // dont fill stuff if not at least one lepton
         if( input.selectedElectrons.size() + input.selectedMuons.size() < 1 ) return;
         
         // generate best interpretation
-        Interpretation *recoTTX = GetTTInterpretation( input, vars );
+        Interpretation *recoTTX = 0;
+        if( input.selectedJets.size() < 6) {
+            recoTTX = GetTTXInterpretation(input, vars ); }
+        else {
+            recoTTX = GetTTXInterpretation(input, vars ); }
         //if( recoTTX == 0 ) return;
 
         // SIMPLE KINEMATIC VARIABLES
@@ -84,12 +102,20 @@ void ttXReconstructionAndGenVarProcessor::Process(const InputCollections &input,
         FillSimpleKinematicVariables("WHad",    WHad,   recoTTX->WHad(),    vars);
         FillSimpleKinematicVariables("WLep",    WLep,   recoTTX->WLep(),    vars);
         FillSimpleKinematicVariables("Lepton",  lepton, recoTTX->Lep(),     vars);
-        
-
+    
         // ANGULAR DIFFERENCES
         FillAngularDifferences("TopHad", "TopLep", topHad, topLep, recoTTX->TopHad(), recoTTX->TopLep(), vars);
         FillAngularDifferences("BHad",   "BLep",   bHad,   bLep,   recoTTX->BHad(),   recoTTX->BLep(),   vars);
         FillAngularDifferences("BHad",   "Lepton", bHad,   lepton, recoTTX->BHad(),   recoTTX->Lep(),    vars);
+
+        if( input.selectedJets.size() >= 6 ) {
+            FillSimpleKinematicVariables("Boson", higgs, recoTTX->Higgs(), vars);
+
+            FillAngularDifferences("Boson", "TopHad", higgs, topHad, recoTTX->Higgs(), recoTTX->TopHad(), vars);
+            FillAngularDifferences("Boson", "TopLep", higgs, topLep, recoTTX->Higgs(), recoTTX->TopLep(), vars);
+            FillAngularDifferences("Boson", "Lepton", higgs, lepton, recoTTX->Higgs(), recoTTX->Lep(), vars);
+            }        
+
 
         } // end of if filled
     } // close process
@@ -98,8 +124,7 @@ void ttXReconstructionAndGenVarProcessor::Process(const InputCollections &input,
 
 
 
-Interpretation *ttXReconstructionAndGenVarProcessor::GetTTInterpretation( const InputCollections &input, VariableContainer &vars ) {
-
+Interpretation *ttXReconstructionAndGenVarProcessor::GetTTXInterpretation( const InputCollections &input, VariableContainer &vars ) {
     // get jet vectors
     vector<TLorentzVector> jetVecs = BoostedUtils::GetTLorentzVectors( BoostedUtils::GetJetVecs(input.selectedJets) );
 
@@ -118,7 +143,8 @@ Interpretation *ttXReconstructionAndGenVarProcessor::GetTTInterpretation( const 
     TVector2 metVec(input.correctedMET.corP4(pat::MET::Type1XY).px(), input.correctedMET.corP4(pat::MET::Type1XY).py());
 
     // Generate Interpretations
-    Interpretation **ints = generator.GenerateTTHInterpretations( jetVecs, jetCSVs, lepVec, metVec );
+    // Interpretation **ints = generator.GenerateTTHInterpretations( jetVecs, jetCSVs, lepVec, metVec );
+    Interpretation **ints = generator.GenerateNJetDependentInterpretations( jetVecs, jetCSVs, lepVec, metVec );
     uint nInts = generator.GetNints();
 
     // find best interpretation
@@ -128,7 +154,14 @@ Interpretation *ttXReconstructionAndGenVarProcessor::GetTTInterpretation( const 
 
     // loop over all interpretations and calculate chi2 values
     for( uint i = 0; i < nInts; i++ ) {
-        float chi2 = quality.TTChi2( *(ints[i]) );
+        float chi2 = -99999;
+        if( jetVecs.size() < 6 ) {
+            chi2 = quality.TTChi2( *(ints[i]) );
+            }
+        else {
+            chi2 = quality.TTHChi2( *(ints[i]) );
+            }
+
         if( chi2 > best_chi2 ) {
             best_chi2 = chi2;
             bestInterpretation = ints[i];
@@ -136,12 +169,14 @@ Interpretation *ttXReconstructionAndGenVarProcessor::GetTTInterpretation( const 
         }
 
     // fill chi2
-    vars.FillVar("chi2_ttbarMatcher", best_chi2);
+    vars.FillVar("TTXmatcher_chi2", best_chi2);
 
     return bestInterpretation;
 
+
     } // close GetTTInterpretation
 
+    
 
 void ttXReconstructionAndGenVarProcessor::InitSimpleKinematicVariables(const std::string &name, VariableContainer &vars) {
     // Eta 
@@ -159,6 +194,9 @@ void ttXReconstructionAndGenVarProcessor::InitSimpleKinematicVariables(const std
     // Mass
     vars.InitVar( genPrefix+"_M_"+name      );
     vars.InitVar(recoPrefix+"_M_"+name      );
+
+    // deltaR reconstruction/gen
+    vars.InitVar(recoPrefix+"_GENdR_"+name  );
 
     } // close InitSimpleKinematicVariables
 
@@ -179,6 +217,13 @@ void ttXReconstructionAndGenVarProcessor::FillSimpleKinematicVariables(const std
     // Mass
     vars.FillVar( genPrefix+"_M_"+name,      genParticle.mass() );
     vars.FillVar(recoPrefix+"_M_"+name,     recoParticle.M()    );
+
+    // deltaR reconstruction/gen
+    float dphi = fabs( genParticle.phi() - recoParticle.Phi() );
+    if( dphi > M_PI ) dphi = 2.*M_PI - dphi;
+    float deta = fabs( genParticle.eta() - recoParticle.Eta() );
+    float dR2 = dphi*dphi + deta*deta;
+    vars.FillVar(recoPrefix+"_GENdR_"+name, sqrt(dR2));
 
     } // close FillSimpleKinematicVariables
 
