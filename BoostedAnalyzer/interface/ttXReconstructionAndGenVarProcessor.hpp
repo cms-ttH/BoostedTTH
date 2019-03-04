@@ -22,10 +22,13 @@ public:
     
     void InitSimpleKinematicVariables(const std::string &name, VariableContainer &vars);
     void FillSimpleKinematicVariables(const std::string &name, const reco::GenParticle &genParticle, const TLorentzVector &recoParticle, VariableContainer &vars);
+    void FillSimpleKinematicVariables(const std::string &name, const TLorentzVector &recoParticle,   VariableContainer &vars);
+    void FillSimpleKinematicVariables(const std::string &name, const reco::GenParticle &genParticle, VariableContainer &vars);
 
     void InitAngularDifferences(const std::string &name1, const std::string &name2, VariableContainer &vars);
     void FillAngularDifferences(const std::string &name1, const std::string &name2, const reco::GenParticle &gen1, const reco::GenParticle &gen2, const TLorentzVector &reco1, const TLorentzVector &reco2, VariableContainer &vars);
-    
+    void FillAngularDifferences(const std::string &name1, const std::string &name2, const reco::GenParticle &gen1, const reco::GenParticle &gen2, VariableContainer &vars);
+    void FillAngularDifferences(const std::string &name1, const std::string &name2, const TLorentzVector &reco1, const TLorentzVector &reco2, VariableContainer &vars);
 
     Interpretation *GetTTXInterpretation(const InputCollections &input, VariableContainer &vars);
 

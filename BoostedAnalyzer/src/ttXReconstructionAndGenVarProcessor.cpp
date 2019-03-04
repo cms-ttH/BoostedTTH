@@ -21,7 +21,12 @@ void ttXReconstructionAndGenVarProcessor::Init(const InputCollections &input, Va
     InitSimpleKinematicVariables("WLep",    vars);
     InitSimpleKinematicVariables("Lepton",  vars);
 
+    InitSimpleKinematicVariables("QHad1",   vars);
+    InitSimpleKinematicVariables("QHad2",   vars);
+
     InitSimpleKinematicVariables("Boson",   vars);
+    InitSimpleKinematicVariables("BAdd1",   vars);
+    InitSimpleKinematicVariables("BAdd2",   vars);
 
     // ANGULAR DIFFERENCES
     InitAngularDifferences("TopHad", "TopLep", vars);
@@ -31,6 +36,7 @@ void ttXReconstructionAndGenVarProcessor::Init(const InputCollections &input, Va
     InitAngularDifferences("Boson",  "TopHad", vars);
     InitAngularDifferences("Boson",  "TopLep", vars);
     InitAngularDifferences("Boson",  "Lepton", vars);
+    InitAngularDifferences("BAdd1",  "BAdd2",  vars);
 
     // FLAGS
     vars.InitVar("genTopIsFilled", 0, "I");
@@ -39,6 +45,8 @@ void ttXReconstructionAndGenVarProcessor::Init(const InputCollections &input, Va
 
     // QUALITY CONTROL VALUES
     vars.InitVar("TTXmatcher_chi2", "F");
+    vars.InitVar("N_BosonDecayProducts", "I");
+    vars.InitVar("N_WDecayProducts", "I");
 
     initialized = true;
     } // close init
@@ -50,8 +58,8 @@ void ttXReconstructionAndGenVarProcessor::Process(const InputCollections &input,
     if( !initialized ) cerr << "tree processor not initialized" << endl;
     if(input.selectedJets.size() < 4) return;
 
-    if( input.genTopEvt.IsFilled())     vars.FillVar("genTopIsFilled", 1);
-    if( input.genTopEvt.IsSemiLepton()) vars.FillVar("genTopIsSL", 1);
+    if( input.genTopEvt.IsFilled())     vars.FillVar("genTopIsFilled", 	1);
+    if( input.genTopEvt.IsSemiLepton()) vars.FillVar("genTopIsSL", 	1);
 
     if( input.genTopEvt.IsFilled() && input.genTopEvt.IsSemiLepton() ) {
         // Generator Level
@@ -73,26 +81,22 @@ void ttXReconstructionAndGenVarProcessor::Process(const InputCollections &input,
         reco::GenParticle lepton = input.genTopEvt.GetLepton();
         // lf quarks
         std::vector<reco::GenParticle> hadQs = input.genTopEvt.GetWQuarks();
-        if( !(hadQs.size() == 2) ){ std::cout << "UNEQUAL TWO QUARKS FROM HADRONIC W" << std::endl; }
+        //if( !(hadQs.size() == 2) ){ std::cout << "UNEQUAL TWO QUARKS FROM HADRONIC W" << std::endl; }
+        vars.FillVar("N_WDecayProducts", hadQs.size());
 
-        // higgs boson
-        reco::GenParticle higgs  = input.genTopEvt.GetHiggs();
-        // higgs decay quarks
-        std::vector<reco::GenParticle> higgsBs = input.genTopEvt.GetHiggsDecayProducts();
-        if( !(higgsBs.size() == 2) ){ std::cout << "UNEQUAL TWO BS FROM HIGGS" << std::endl; }
-
+        // boson
+        reco::GenParticle boson = input.genTopEvt.GetBoson();
+        // boson decay quarks
+        std::vector<reco::GenParticle> bosonBs = input.genTopEvt.GetBosonDecayProducts();
+        //if( !(bosonBs.size() == 2) ){ std::cout << "UNEQUAL TWO BS FROM BOSON DECAY" << std::endl; }
+        vars.FillVar("N_BosonDecayProducts", bosonBs.size());
 
         // Reconstruction Level
         // dont fill stuff if not at least one lepton
         if( input.selectedElectrons.size() + input.selectedMuons.size() < 1 ) return;
         
         // generate best interpretation
-        Interpretation *recoTTX = 0;
-        if( input.selectedJets.size() < 6) {
-            recoTTX = GetTTXInterpretation(input, vars ); }
-        else {
-            recoTTX = GetTTXInterpretation(input, vars ); }
-        //if( recoTTX == 0 ) return;
+        Interpretation *recoTTX = GetTTXInterpretation(input, vars);
 
         // SIMPLE KINEMATIC VARIABLES
         FillSimpleKinematicVariables("TopHad",  topHad, recoTTX->TopHad(),  vars);
@@ -102,21 +106,39 @@ void ttXReconstructionAndGenVarProcessor::Process(const InputCollections &input,
         FillSimpleKinematicVariables("WHad",    WHad,   recoTTX->WHad(),    vars);
         FillSimpleKinematicVariables("WLep",    WLep,   recoTTX->WLep(),    vars);
         FillSimpleKinematicVariables("Lepton",  lepton, recoTTX->Lep(),     vars);
+
+        FillSimpleKinematicVariables("QHad1", recoTTX->Q1(), vars);
+        FillSimpleKinematicVariables("QHad2", recoTTX->Q2(), vars);
+        if( hadQs.size() >= 2 ) {
+            FillSimpleKinematicVariables("QHad1", hadQs[0], vars);
+            FillSimpleKinematicVariables("QHad2", hadQs[1], vars);
+            }
     
         // ANGULAR DIFFERENCES
         FillAngularDifferences("TopHad", "TopLep", topHad, topLep, recoTTX->TopHad(), recoTTX->TopLep(), vars);
         FillAngularDifferences("BHad",   "BLep",   bHad,   bLep,   recoTTX->BHad(),   recoTTX->BLep(),   vars);
         FillAngularDifferences("BHad",   "Lepton", bHad,   lepton, recoTTX->BHad(),   recoTTX->Lep(),    vars);
 
+
+        // BOSON SPECIFICS
         if( input.selectedJets.size() >= 6 ) {
-            FillSimpleKinematicVariables("Boson", higgs, recoTTX->Higgs(), vars);
+            // SIMPLE KINEMATIC VARIABLES
+            FillSimpleKinematicVariables("Boson", boson, recoTTX->Higgs(), vars);
+            FillSimpleKinematicVariables("BAdd1", recoTTX->B1(), vars);
+            FillSimpleKinematicVariables("BAdd2", recoTTX->B2(), vars);
+            if( bosonBs.size() >= 2 ){
+                FillSimpleKinematicVariables("BAdd1", bosonBs[0], vars);
+                FillSimpleKinematicVariables("BAdd2", bosonBs[1], vars);
+                }
 
-            FillAngularDifferences("Boson", "TopHad", higgs, topHad, recoTTX->Higgs(), recoTTX->TopHad(), vars);
-            FillAngularDifferences("Boson", "TopLep", higgs, topLep, recoTTX->Higgs(), recoTTX->TopLep(), vars);
-            FillAngularDifferences("Boson", "Lepton", higgs, lepton, recoTTX->Higgs(), recoTTX->Lep(), vars);
-            }        
-
-
+            FillAngularDifferences("Boson", "TopHad", boson, topHad, recoTTX->Higgs(), recoTTX->TopHad(), vars);
+            FillAngularDifferences("Boson", "TopLep", boson, topLep, recoTTX->Higgs(), recoTTX->TopLep(), vars);
+            FillAngularDifferences("Boson", "Lepton", boson, lepton, recoTTX->Higgs(), recoTTX->Lep(), vars);
+            FillAngularDifferences("BAdd1", "BAdd2",  recoTTX->B1(), recoTTX->B2(), vars);
+            if( bosonBs.size() == 2 ){
+                FillAngularDifferences("BAdd1", "BAdd2", bosonBs[0], bosonBs[1], vars);
+                }        
+            } // end of 6 jets
         } // end of if filled
     } // close process
 
@@ -201,7 +223,6 @@ void ttXReconstructionAndGenVarProcessor::InitSimpleKinematicVariables(const std
     } // close InitSimpleKinematicVariables
 
 void ttXReconstructionAndGenVarProcessor::FillSimpleKinematicVariables(const std::string &name, const reco::GenParticle &genParticle, const TLorentzVector &recoParticle, VariableContainer &vars) {
-    
     // Eta 
     vars.FillVar( genPrefix+"_Eta_"+name,    genParticle.eta()  );
     vars.FillVar(recoPrefix+"_Eta_"+name,   recoParticle.Eta()  );
@@ -224,8 +245,45 @@ void ttXReconstructionAndGenVarProcessor::FillSimpleKinematicVariables(const std
     float deta = fabs( genParticle.eta() - recoParticle.Eta() );
     float dR2 = dphi*dphi + deta*deta;
     vars.FillVar(recoPrefix+"_GENdR_"+name, sqrt(dR2));
+    } // close FillSimpleKinematicVariables
+
+
+void ttXReconstructionAndGenVarProcessor::FillSimpleKinematicVariables(const std::string &name, const reco::GenParticle &genParticle, VariableContainer &vars) {
+    // GEN ONLY
+    
+    // Eta 
+    vars.FillVar( genPrefix+"_Eta_"+name,    genParticle.eta()  );
+
+    // pT
+    vars.FillVar( genPrefix+"_pT_"+name,     genParticle.pt()   );
+
+    // theta
+    vars.FillVar( genPrefix+"_Theta_"+name,  genParticle.theta());
+
+    // Mass
+    vars.FillVar( genPrefix+"_M_"+name,      genParticle.mass() );
 
     } // close FillSimpleKinematicVariables
+
+
+void ttXReconstructionAndGenVarProcessor::FillSimpleKinematicVariables(const std::string &name, const TLorentzVector &recoParticle, VariableContainer &vars) {
+    // RECO ONLY
+
+    // Eta 
+    vars.FillVar(recoPrefix+"_Eta_"+name,   recoParticle.Eta()  );
+
+    // pT
+    vars.FillVar(recoPrefix+"_pT_"+name,    recoParticle.Pt()   );
+
+    // theta
+    vars.FillVar(recoPrefix+"_Theta_"+name, recoParticle.Theta());
+
+    // Mass
+    vars.FillVar(recoPrefix+"_M_"+name,     recoParticle.M()    );
+
+    } // close FillSimpleKinematics
+
+
 
 
 void ttXReconstructionAndGenVarProcessor::InitAngularDifferences(const std::string &name1, const std::string &name2, VariableContainer &vars) {
@@ -251,7 +309,7 @@ void ttXReconstructionAndGenVarProcessor::FillAngularDifferences(const std::stri
     vars.FillVar( genPrefix+"_DeltaEta_"+name1+"_"+name2,   fabs(gen1.eta()  - gen2.eta() )   );
     vars.FillVar(recoPrefix+"_DeltaEta_"+name1+"_"+name2,   fabs(reco1.Eta() - reco2.Eta())   );
 
-    // deltaPhi TODO fix
+    // deltaPhi
     float dphi_gen = fabs( gen1.phi() - gen2.phi() );
     if( dphi_gen > M_PI ) dphi_gen = 2.*M_PI - dphi_gen;
     vars.FillVar( genPrefix+"_DeltaPhi_"+name1+"_"+name2,   dphi_gen   );
@@ -262,6 +320,40 @@ void ttXReconstructionAndGenVarProcessor::FillAngularDifferences(const std::stri
 
     // deltaTheta
     vars.FillVar( genPrefix+"_DeltaTheta_"+name1+"_"+name2, fabs(gen1.theta()  - gen2.theta() ) );
+    vars.FillVar(recoPrefix+"_DeltaTheta_"+name1+"_"+name2, fabs(reco1.Theta() - reco2.Theta()) );
+
+    } // close FillAngularDifferences
+
+
+void ttXReconstructionAndGenVarProcessor::FillAngularDifferences(const std::string &name1, const std::string &name2, const reco::GenParticle &gen1, const reco::GenParticle &gen2, VariableContainer &vars) {
+    // GEN ONLY
+
+    // deltaEta
+    vars.FillVar( genPrefix+"_DeltaEta_"+name1+"_"+name2,   fabs(gen1.eta()  - gen2.eta() )   );
+
+    // deltaPhi
+    float dphi_gen = fabs( gen1.phi() - gen2.phi() );
+    if( dphi_gen > M_PI ) dphi_gen = 2.*M_PI - dphi_gen;
+    vars.FillVar( genPrefix+"_DeltaPhi_"+name1+"_"+name2,   dphi_gen   );
+
+    // deltaTheta
+    vars.FillVar( genPrefix+"_DeltaTheta_"+name1+"_"+name2, fabs(gen1.theta()  - gen2.theta() ) );
+
+    } // close FillAngularDifferences
+
+
+void ttXReconstructionAndGenVarProcessor::FillAngularDifferences(const std::string &name1, const std::string &name2, const TLorentzVector &reco1, const TLorentzVector &reco2, VariableContainer &vars) {
+    // RECO ONLY
+
+    // deltaEta
+    vars.FillVar(recoPrefix+"_DeltaEta_"+name1+"_"+name2,   fabs(reco1.Eta() - reco2.Eta())   );
+
+    // deltaPhi
+    float dphi_reco = fabs( reco1.Phi() - reco2.Phi() );
+    if( dphi_reco > M_PI ) dphi_reco = 2.*M_PI - dphi_reco;    
+    vars.FillVar(recoPrefix+"_DeltaPhi_"+name1+"_"+name2,   dphi_reco   );
+
+    // deltaTheta
     vars.FillVar(recoPrefix+"_DeltaTheta_"+name1+"_"+name2, fabs(reco1.Theta() - reco2.Theta()) );
 
     } // close FillAngularDifferences
