@@ -34,9 +34,11 @@ void VariableContainer::InitVar( const TString& name,float defaultValue, const s
     intMap[name] = 0;
     intMapDefaults[name] = defaultValue;
     intMapFilled[name] = false;
+    intMapType[name] = TString(type);
   }
   else
     cout << "unknown type " << type << endl;
+    cout << "only F/I/L support for now" << endl;
 }
 
 
@@ -171,7 +173,7 @@ void VariableContainer::ConnectTree(TTree* tree){
   }
   auto itI= intMap.begin();
   while (itI != intMap.end()) {
-    tree->Branch(itI->first, &(itI->second), itI->first+"/L" );
+    tree->Branch(itI->first, &(itI->second), itI->first+"/"+intMapType[itI->first]);
     itI++;
   }
   auto itA= arrayMap.begin();

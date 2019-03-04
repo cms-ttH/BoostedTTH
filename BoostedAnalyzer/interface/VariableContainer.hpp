@@ -50,6 +50,7 @@ private:
   std::map<TString,long> intMap;
   std::map<TString,long> intMapDefaults;
   std::map<TString,bool> intMapFilled;
+  std::map<TString, TString> intMapType;
   std::map<TString,Float_t*> arrayMap;
   std::map<TString,Float_t> arrayMapDefaults;
   std::map<TString,bool> arrayMapFilled;

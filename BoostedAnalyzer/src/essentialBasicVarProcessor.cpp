@@ -8,7 +8,7 @@ essentialBasicVarProcessor::~essentialBasicVarProcessor(){}
 
 void essentialBasicVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
  
-  vars.InitVar("Evt_ID","I");
+  vars.InitVar("Evt_ID","L");
   vars.InitVar("Evt_Odd","I");
   vars.InitVar("Evt_Run","I");
   vars.InitVar("Evt_Lumi","I");
