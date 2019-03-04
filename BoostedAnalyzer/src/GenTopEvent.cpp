@@ -415,111 +415,170 @@ std::vector<int> GenTopEvent::GetAdditionalCHadronAfterTopType() const{
 }
 
 void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenParticles, int ttXid_){
-  bool foundT=false;
-  bool foundTbar=false;
-  bool foundH=false;
-  ttXid=ttXid_;
-  for(auto p=prunedGenParticles.begin(); p!=prunedGenParticles.end(); p++){
-    if (abs(p->pdgId())==6){
-      if(p->pdgId()==6) foundT=true;
-      if(p->pdgId()==-6) foundTbar=true;
-      if(p->pdgId()==6 && p->isHardProcess()) hard_top=*p;
-      if(p->pdgId()==-6 && p->isHardProcess()) hard_topbar=*p;
-      bool lastTop=true;
-      for(uint i=0;i<p->numberOfDaughters();i++){
-	if (abs(p->daughter(i)->pdgId())==6)
-	  lastTop=false;
-      }
-      if(lastTop){
-	if(p->pdgId()==6) top=*p;
-	if(p->pdgId()==-6) topbar=*p;
-	bool setTDecay=false;
-	bool setTBarDecay=false;
-	for(uint i=0;i<p->numberOfDaughters();i++){
-	  if(p->pdgId()==6 && abs(p->daughter(i)->pdgId())<6){
-	    if(setTDecay) std::cerr << "GenTopEvent: error 1"<<std::endl;
-	    top_decay_quark=*(reco::GenParticle*)p->daughter(i);
-	    setTDecay=true;
-	  }
-	  if(p->pdgId()==-6 && abs(p->daughter(i)->pdgId())<6){
-	    if(setTBarDecay) std::cerr << "GenTopEvent: error 1"<<std::endl;
-	    topbar_decay_quark=*(reco::GenParticle*)p->daughter(i);
-	    setTBarDecay=true;
-	  }
-	}
-      }
-    }
+    bool foundT     = false;
+    bool foundTbar  = false;
+    bool foundH     = false;
+    bool foundZ     = false;
+
+    ttXid = ttXid_;
+    // loop over gen particles
+    for( auto p = prunedGenParticles.begin(); p != prunedGenParticles.end(); p++) {
+
+        // HANDLE TOP QUARKS
+        if( abs(p->pdgId()) == 6) {
+
+            if(p->pdgId() == 6) foundT    = true;
+            if(p->pdgId() ==-6) foundTbar = true;
+
+            if(p->pdgId() == 6 && p->isHardProcess()) hard_top    = *p;
+            if(p->pdgId() ==-6 && p->isHardProcess()) hard_topbar = *p;
+
+            // is this the last top?
+            bool lastTop = true;
+            for( uint i = 0; i < p->numberOfDaughters(); i++) {
+                if( abs(p->daughter(i)->pdgId()) == 6) lastTop = false;
+                }
+
+            if(lastTop) {
+                if( p->pdgId() == 6 ) top    = *p;
+                if( p->pdgId() ==-6 ) topbar = *p;
+
+                bool setTDecay    = false;
+                bool setTBarDecay = false;
+
+                for( uint i = 0; i < p->numberOfDaughters(); i++) {
+                    if( p->pdgId() == 6 && abs(p->daughter(i)->pdgId()) < 6) {
+                        if(setTDecay) std::cerr << "GenTopEvent: error 1"<<std::endl;
+                        top_decay_quark = *(reco::GenParticle*)p->daughter(i);
+                        setTDecay = true;
+                        }
+
+                    if( p->pdgId() ==-6 && abs(p->daughter(i)->pdgId()) < 6) {
+                        if(setTBarDecay) std::cerr << "GenTopEvent: error 1"<<std::endl;
+                        topbar_decay_quark = *(reco::GenParticle*)p->daughter(i);
+                        setTBarDecay = true;
+                        }
+                    } // end of daughter loop
+                } // end of if(lastTop)
+            } // end of Top
   
-    if (abs(p->pdgId())==24){
-      bool lastW=true;
-      for(uint i=0;i<p->numberOfDaughters();i++){
-	if (abs(p->daughter(i)->pdgId())==24)
-	  lastW=false;
-      }
-      bool fromT=false;
-      const reco::Candidate* mother=&(*p);
-      while(mother!=0 && abs(mother->pdgId())==24){
-	if (abs(mother->mother()->pdgId())==6){
-	  fromT=true;
-	  break;
-	}
-	else mother=mother->mother();
-	
-      }
-      if(lastW&&fromT){
-	if(p->pdgId()==24) wplus=*p;
-	if(p->pdgId()==-24) wminus=*p;
-	for(uint i=0;i<p->numberOfDaughters();i++){
-	  if(p->pdgId()==24 && abs(p->daughter(i)->pdgId())<=16){
-	    wplus_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
-	  }
-	  if(p->pdgId()==-24 && abs(p->daughter(i)->pdgId())<=16){
-	    wminus_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
-	  }
-	}
-      }
-    }
+        // HANDLE W BOSONS
+        if( abs(p->pdgId()) == 24) {
 
-    if (abs(p->pdgId())==25){
-      bool lastH=true;
-      foundH=true;
-      for(uint i=0;i<p->numberOfDaughters();i++){
-	if (abs(p->daughter(i)->pdgId())==25)
-	  lastH=false;
-      }
-      if(lastH){
-	higgs=*p;
-	for(uint i=0;i<p->numberOfDaughters();i++){
-	  if(p->pdgId()==25 && abs(p->daughter(i)->pdgId())!=25){
-	    higgs_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
-	  }
-	}
-      }
-    }
+            // is this the last W?
+            bool lastW = true;
+            for( uint i = 0; i < p->numberOfDaughters(); i++) {
+                if( abs(p->daughter(i)->pdgId()) == 24) lastW = false;
+                }
 
-  }
-  if(wminus_decay_products.size()!=2 || wplus_decay_products.size()!=2) {
-      std::cerr << "GenTopEvent: error 2"<<std::endl;
-      while(wminus_decay_products.size()<2){
-	  wminus_decay_products.push_back(reco::GenParticle());
-      }
-  }
-  if(top.energy()<1||topbar.energy()<1||wplus.energy()<1||wminus.energy()<1||top_decay_quark.energy()<1||topbar_decay_quark.energy()<1) std::cerr << "GenTopEvent: error 4"<<std::endl;
+            // is this W from top
+            bool fromT = false;
+            const reco::Candidate* mother = &(*p);
+            while( mother != 0 && abs(mother->pdgId()) == 24) {
+                if( abs(mother->mother()->pdgId()) == 6) {
+                    fromT = true;
+                    break;
+                    }
+                else mother = mother->mother();
+                }
 
-  int nquarks_from_wplus=0;
-  for(auto p=wplus_decay_products.begin(); p!=wplus_decay_products.end();p++){
-    if(abs(p->pdgId())<6) nquarks_from_wplus++;
-  }
-  int nquarks_from_wminus=0;
-  for(auto p=wminus_decay_products.begin(); p!=wminus_decay_products.end();p++){
-    if(abs(p->pdgId())<6) nquarks_from_wminus++;
-  }
-  topIsHadronic=nquarks_from_wplus==2;
-  topbarIsHadronic=nquarks_from_wminus==2;
-  isTTbar=foundT&&foundTbar;
-  isTTH=foundT&&foundTbar&&foundH;
-  isFilled=true;
-}
+            
+            if( lastW && fromT) {
+                if( p->pdgId() == 24) wplus  = *p;
+                if( p->pdgId() ==-24) wminus = *p;
+
+                for( uint i = 0; i < p->numberOfDaughters(); i++) {
+                    if( p->pdgId() == 24 && abs(p->daughter(i)->pdgId()) <= 16) {
+                        wplus_decay_products.push_back(  *(reco::GenParticle*) p->daughter(i) );
+                        }
+                    if( p->pdgId() ==-24 && abs(p->daughter(i)->pdgId()) <= 16) {
+                        wminus_decay_products.push_back( *(reco::GenParticle*) p->daughter(i) );
+                        }
+                    }
+
+                } // end if(lastW&&fromTop)
+            } // end of W
+
+        // HANDLE HIGGS
+        if( abs(p->pdgId()) == 25) {
+            foundH = true;
+
+            // is this the last Higgs?
+            bool lastH = true;
+            for( uint i = 0; i < p->numberOfDaughters(); i++) {
+                if( abs(p->daughter(i)->pdgId()) == 25) lastH = false;
+                }
+        
+            if(lastH) {
+                higgs = *p;
+                boson = *p;
+                for( uint i = 0; i < p->numberOfDaughters(); i++) {
+                    if( p->pdgId() == 25 && abs(p->daughter(i)->pdgId()) != 25) {
+                        higgs_decay_products.push_back( *(reco::GenParticle*) p->daughter(i) );
+                        boson_decay_products.push_back( *(reco::GenParticle*) p->daughter(i) );
+                        }
+                    }
+                } // end if(lastHiggs)
+            } // end of Higgs
+
+        if( abs(p->pdgId()) == 23) {
+            foundZ = true;
+
+            // is this the last Z?
+            bool lastZ = true;
+            for( uint i = 0; i < p->numberOfDaughters(); i++) {
+                if( abs(p->daughter(i)->pdgId()) == 23) lastZ = false;
+                }
+
+            if(lastZ) {
+                Z = *p;
+                boson = *p;
+                for( uint i = 0; i < p->numberOfDaughters(); i++) {
+                    if( p->pdgId() == 23 && abs(p->daughter(i)->pdgId()) != 23) {
+                        Z_decay_products.push_back( *(reco::GenParticle*) p->daughter(i) );
+                        boson_decay_products.push_back( *(reco::GenParticle*) p->daughter(i) );
+                        }
+                    }
+                } // end if(lastZ)
+            } // end of Z
+        
+
+        } // end particle loop 
+
+
+    // fill W decays with empty vectors if none were found
+    if( wminus_decay_products.size() != 2 || wplus_decay_products.size() != 2) {
+        std::cerr << "GenTopEvent: error 2"<<std::endl;
+        while( wminus_decay_products.size() < 2) {
+	        wminus_decay_products.push_back( reco::GenParticle() );
+            }
+        }
+
+    // check top, W energies
+    if( top.energy() < 1 || topbar.energy() < 1 || wplus.energy() < 1 || wminus.energy() < 1 || top_decay_quark.energy() < 1 || topbar_decay_quark.energy() < 1) 
+        std::cerr << "GenTopEvent: error 4"<<std::endl;
+
+    // is W+ hadronic?
+    int nquarks_from_wplus = 0;
+    for( auto p = wplus_decay_products.begin(); p != wplus_decay_products.end(); p++) {
+        if( abs(p->pdgId()) < 6) nquarks_from_wplus++;
+        }
+
+    // is W- hadronic?
+    int nquarks_from_wminus=0;
+    for( auto p = wminus_decay_products.begin(); p != wminus_decay_products.end(); p++) {
+        if( abs(p->pdgId()) < 6) nquarks_from_wminus++;
+        }
+
+    // flags
+    topIsHadronic    = nquarks_from_wplus  == 2;
+    topbarIsHadronic = nquarks_from_wminus == 2;
+    isTTbar          = foundT && foundTbar;
+    isTTH            = foundT && foundTbar && foundH;
+    isTTZ            = foundT && foundTbar && foundZ;
+    isFilled         = true;
+
+    } // close fillTT
 
 void GenTopEvent::Print() const{
   std::cout << "top" << std::endl;
@@ -614,6 +673,11 @@ reco::GenParticle GenTopEvent::GetHiggs() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return higgs;
+}
+reco::GenParticle GenTopEvent::GetBoson() const{
+    assert(isFilled);
+    if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+    return boson;
 }
 reco::GenParticle GenTopEvent::GetTop() const{
     assert(isFilled);
@@ -756,6 +820,11 @@ std::vector<reco::GenParticle> GenTopEvent::GetHiggsDecayProducts() const{
     assert(isFilled);
   if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
   return higgs_decay_products;
+}
+std::vector<reco::GenParticle> GenTopEvent::GetBosonDecayProducts() const{
+    assert(isFilled);
+  if(!isFilled) std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+  return boson_decay_products;
 }
 reco::GenParticle GenTopEvent::GetTopDecayQuark() const{
     assert(isFilled);
