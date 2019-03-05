@@ -40,10 +40,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 
-
-#include "MiniAOD/MiniAODHelper/interface/Systematics.h"
-#include "MiniAOD/MiniAODHelper/interface/PUJetID.h"
-
+#include "../interface/Systematics.h"
 
 // correction stuff
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
@@ -71,7 +68,8 @@ public:
 
 private:
     // some enums to make things nicer
-    enum class JetID {Loose, Tight ,none, jetMETcorrection};
+    enum class JetID {Loose, Tight , none, jetMETcorrection};
+    enum PUJetIDWP {none, loose, medium, tight };
 
     // member functions
     virtual void beginStream(edm::StreamID) override;
@@ -81,9 +79,8 @@ private:
     bool fileExists(const std::string& fileName);
     void UpdateJetCorrectorUncertainties(const edm::EventSetup& iSetup);
     JetCorrectionUncertainty* CreateJetCorrectorUncertainty(const edm::EventSetup& iSetup, const std::string& jetTypeLabel, const std::string& uncertaintyLabel) const;
-    std::vector<pat::Jet> GetSelectedJets(const std::vector<pat::Jet>&, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetID::WP wp = PUJetID::none);
-    bool isGoodJet(const pat::Jet& iJet, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetID::WP wp);
-    // jetID::jetID getjetID(const std::string& jetID);
+    std::vector<pat::Jet> GetSelectedJets(const std::vector<pat::Jet>&, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP = PUJetIDWP::none);
+    bool isGoodJet(const pat::Jet& iJet, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP wp);
     std::vector<pat::Jet> GetUncorrectedJets(const std::vector<pat::Jet> &inputJets);
     std::vector<pat::Jet> GetDeltaRCleanedJets(const std::vector<pat::Jet> &inputJets, const std::vector<pat::Muon>& inputMuons, const std::vector<pat::Electron>& inputElectrons, const double deltaRCut);
     std::vector<pat::Jet> GetCorrectedJets(const std::vector<pat::Jet>&, const edm::Event&, const edm::EventSetup&, const edm::Handle<reco::GenJetCollection>&, const Systematics::Type iSysType = Systematics::NA, const bool& doJES = true, const bool& doJER = true, const float& corrFactor = 1, const float& uncFactor = 1);
@@ -92,6 +89,8 @@ private:
     double GetJECUncertainty(const pat::Jet& jet, const edm::EventSetup& iSetup, const Systematics::Type iSysType);
     void AddJetCorrectorUncertainty(const edm::EventSetup& iSetup, const std::string& uncertaintyLabel);
     template <typename T> T GetSortedByPt(const T&);
+    int TranslateJetPUIDtoInt(PUJetIDWP wp);
+
 
 
     //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
@@ -121,6 +120,8 @@ private:
     std::vector<std::string> collectionNames;
     /** pileupjetid for collections **/
     std::vector<std::string> PUJetIDMins;
+    
+
     const std::string JetID_;
     /** systematics used **/
     const std::vector<std::string> systematics_config;
@@ -142,6 +143,7 @@ private:
 
     // selection criteria
     JetID Jet_ID;
+    std::vector<PUJetIDWP> PUJetID_WP;
 
     std::string jetTypeLabelForJECUncertainty;
     std::string jecUncertaintyTxtFileName;
@@ -285,7 +287,8 @@ JetCorrectionUncertainty* SelectedJetProducer::CreateJetCorrectorUncertainty(con
     return 0;
 }
 
-std::vector<pat::Jet> SelectedJetProducer::GetSelectedJets(const std::vector<pat::Jet>& inputJets, const float iMinPt, const float iMaxAbsEta, const JetID iJetID, const PUJetID::WP wp) {
+std::vector<pat::Jet> SelectedJetProducer::GetSelectedJets(const std::vector<pat::Jet>& inputJets,
+        const float iMinPt, const float iMaxAbsEta, const JetID iJetID, const  PUJetIDWP wp) {
     // iterate through inputjets and find good Jets
     std::vector<pat::Jet> selectedJets;
     for ( std::vector<pat::Jet>::const_iterator it = inputJets.begin(), ed = inputJets.end(); it != ed; ++it ) {
@@ -305,7 +308,7 @@ std::string SelectedJetProducer::systName(std::string name, Systematics::Type sy
 }
 
 bool SelectedJetProducer::isGoodJet(const pat::Jet& iJet, const float iMinPt, const float iMaxAbsEta,
-                                    const JetID iJetID, const PUJetID::WP wp) {
+                                    const JetID iJetID, const PUJetIDWP wp) {
 
 //   CheckVertexSetUp();
 
@@ -377,10 +380,17 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet& iJet, const float iMinPt, co
     }
     // PileUP Jet ID
     if (iJet.hasUserInt("pileupJetId:fullId")) {
-        if (iJet.userInt("pileupJetId:fullId") < PUJetID::toInt(wp)) return false;
+        if (iJet.userInt("pileupJetId:fullId") < TranslateJetPUIDtoInt(wp)) return false;
     }
 
     return true;
+}
+
+int SelectedJetProducer::TranslateJetPUIDtoInt(PUJetIDWP wp){
+    if(wp==PUJetIDWP::loose) return 4;
+    else if(wp==PUJetIDWP::medium) return 6;
+    else if(wp==PUJetIDWP::tight) return 7;
+    else return 0;
 }
 
 std::vector<pat::Jet> SelectedJetProducer::GetUncorrectedJets(const std::vector<pat::Jet> &inputJets) {
@@ -478,7 +488,6 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalC
 
     totalCorrFactor = 1.;
     if ( doJES || doJER ) { // check again if JES or JER is demandes
-
         /// JES
         if ( doJES ) {
             double scale = 1.;
@@ -512,7 +521,11 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalC
                 jet.scaleEnergy( jecvar );
                 totalCorrFactor *= jecvar;
             }
+        // implement on demand
+        // if (doJER){
+        //}
         }
+
     }
 }
 
@@ -585,9 +598,28 @@ SelectedJetProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup
         throw std::exception();
     }
 
-
-    if (JetID_ == "loose")          Jet_ID = JetID::Loose;
+    //translate Jet_ID
+    if      (JetID_ == "none")      Jet_ID = JetID::none;
+    else if (JetID_ == "loose")     Jet_ID = JetID::Loose;
     else if (JetID_ == "tight")     Jet_ID = JetID::Tight;
+    else{
+        std::cerr << "\n\nERROR: No matching JetID found for: " << JetID_ << std::endl;
+        throw std::exception();
+    }
+
+    //translate Jet_PUID
+    // fill Jet_PUIDs with default values
+    PUJetID_WP        = std::vector<PUJetIDWP>(PUJetIDMins.size(),PUJetIDWP::loose);
+    for(size_t i=0; i<PUJetIDMins.size(); i++){
+        if (PUJetIDMins[i] == "none")          PUJetID_WP[i] = PUJetIDWP::none;
+        else if (PUJetIDMins[i] == "loose")    PUJetID_WP[i] = PUJetIDWP::loose;
+        else if (PUJetIDMins[i] == "medium")   PUJetID_WP[i] = PUJetIDWP::medium;
+        else if (PUJetIDMins[i] == "tight")    PUJetID_WP[i] = PUJetIDWP::tight;
+        else{
+            std::cerr << "\n\nERROR: No matching PUJetID_WP found for: " << PUJetIDMins[i] << std::endl;
+            throw std::exception();
+        }
+    }
 
     // selected jets with jet ID cuts ( do this before jet energy correction !!! )
     const std::vector<pat::Jet> idJets = GetSelectedJets(*inputJets, 0., 9999., Jet_ID);
@@ -621,7 +653,7 @@ SelectedJetProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup
     for (uint i = 0; i < ptMins.size(); i++ ) {
         for (uint j = 0; j < systematics.size(); j++) {
             //Get jet Collection which passes selections
-            std::vector<pat::Jet> selectedJets_unsorted = GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], JetID::none, PUJetID::get(PUJetIDMins[i]) );
+            std::vector<pat::Jet> selectedJets_unsorted = GetSelectedJets(unsortedJets[j], ptMins[i], etaMaxs[i], JetID::none, PUJetID_WP[i] );
             // sort the selected jets with respect to pt
             std::unique_ptr<pat::JetCollection> selectedJets = std::make_unique<pat::JetCollection>(GetSortedByPt(selectedJets_unsorted));
             iEvent.put(std::move(selectedJets), systName(collectionNames[i], systematics[j]));
