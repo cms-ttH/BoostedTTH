@@ -12,7 +12,7 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
 
     # setup environment
     export SCRAM_ARCH="slc6_amd64_gcc630"
-    export CMSSW_VERSION="CMSSW_9_4_10"
+    export CMSSW_VERSION="CMSSW_9_4_13"
     
   
     # create new CMSSW environment
@@ -25,7 +25,7 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
         
     git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
 
-    git cms-merge-topic cms-egamma:EgammaPostRecoTools_940 #just adds in an extra file to have a setup function to make things easier
+    git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier
     #git cms-merge-topic cms-egamma:Egamma80XMiniAODV2_946 #adds the c++ changes necessary to enable 2016 scale & smearing corrections (is loaded per default)
     git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
     
@@ -43,7 +43,7 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     
     # install miniaod and boostedtth
     cd $CMSSWSRCDIR
-    git clone -b CMSSW_9_4_10 https://github.com/cms-ttH/MiniAOD.git
+    git clone -b Legacy_2016_2017_Devel https://github.com/cms-ttH/MiniAOD.git
     git clone -b CMSSW_9_4_10 https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
