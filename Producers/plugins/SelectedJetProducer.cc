@@ -40,7 +40,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 
-#include "../interface/Systematics.h"
+#include "../interface/SystematicsHelper.h"
 
 // correction stuff
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
@@ -75,7 +75,7 @@ private:
     virtual void beginStream(edm::StreamID) override;
     virtual void produce(edm::Event&, const edm::EventSetup&) override;
     virtual void endStream() override;
-    std::string systName(std::string name, Systematics::Type);
+    std::string systName(std::string name, SystematicsHelper::Type);
     bool fileExists(const std::string& fileName);
     void UpdateJetCorrectorUncertainties(const edm::EventSetup& iSetup);
     JetCorrectionUncertainty* CreateJetCorrectorUncertainty(const edm::EventSetup& iSetup, const std::string& jetTypeLabel, const std::string& uncertaintyLabel) const;
@@ -83,10 +83,10 @@ private:
     bool isGoodJet(const pat::Jet& iJet, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP wp);
     std::vector<pat::Jet> GetUncorrectedJets(const std::vector<pat::Jet> &inputJets);
     std::vector<pat::Jet> GetDeltaRCleanedJets(const std::vector<pat::Jet> &inputJets, const std::vector<pat::Muon>& inputMuons, const std::vector<pat::Electron>& inputElectrons, const double deltaRCut);
-    std::vector<pat::Jet> GetCorrectedJets(const std::vector<pat::Jet>&, const edm::Event&, const edm::EventSetup&, const edm::Handle<reco::GenJetCollection>&, const Systematics::Type iSysType = Systematics::NA, const bool& doJES = true, const bool& doJER = true, const float& corrFactor = 1, const float& uncFactor = 1);
-    pat::Jet GetCorrectedJet(const pat::Jet&, const edm::Event&, const edm::EventSetup&, const edm::Handle<reco::GenJetCollection>&, const Systematics::Type iSysType = Systematics::NA, const bool doJES = true, const bool doJER = true, const float corrFactor = 1, const float uncFactor = 1);
-    void ApplyJetEnergyCorrection(pat::Jet& jet, double& totalCorrFactor, const edm::Event& event, const edm::EventSetup& setup, const edm::Handle<reco::GenJetCollection>& genjets, const Systematics::Type iSysType, const bool doJES, const bool doJER, const bool addUserFloats, const float corrFactor, const float uncFactor);
-    double GetJECUncertainty(const pat::Jet& jet, const edm::EventSetup& iSetup, const Systematics::Type iSysType);
+    std::vector<pat::Jet> GetCorrectedJets(const std::vector<pat::Jet>&, const edm::Event&, const edm::EventSetup&, const edm::Handle<reco::GenJetCollection>&, const SystematicsHelper::Type iSysType = SystematicsHelper::NA, const bool& doJES = true, const bool& doJER = true, const float& corrFactor = 1, const float& uncFactor = 1);
+    pat::Jet GetCorrectedJet(const pat::Jet&, const edm::Event&, const edm::EventSetup&, const edm::Handle<reco::GenJetCollection>&, const SystematicsHelper::Type iSysType = SystematicsHelper::NA, const bool doJES = true, const bool doJER = true, const float corrFactor = 1, const float uncFactor = 1);
+    void ApplyJetEnergyCorrection(pat::Jet& jet, double& totalCorrFactor, const edm::Event& event, const edm::EventSetup& setup, const edm::Handle<reco::GenJetCollection>& genjets, const SystematicsHelper::Type iSysType, const bool doJES, const bool doJER, const bool addUserFloats, const float corrFactor, const float uncFactor);
+    double GetJECUncertainty(const pat::Jet& jet, const edm::EventSetup& iSetup, const SystematicsHelper::Type iSysType);
     void AddJetCorrectorUncertainty(const edm::EventSetup& iSetup, const std::string& uncertaintyLabel);
     template <typename T> T GetSortedByPt(const T&);
     int TranslateJetPUIDtoInt(PUJetIDWP wp);
@@ -123,9 +123,9 @@ private:
     
 
     const std::string JetID_;
-    /** systematics used **/
+    /** Systematics used **/
     const std::vector<std::string> systematics_config;
-    std::vector<Systematics::Type> systematics;
+    std::vector<SystematicsHelper::Type> systematics;
 
 
 
@@ -194,7 +194,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet& iConfig) :
     // load systematics
     for (uint i = 0; i < systematics_config.size(); i++) {
         try {
-            systematics.push_back(Systematics::get(systematics_config[i]));
+            systematics.push_back(SystematicsHelper::get(systematics_config[i]));
         }
         catch (cms::Exception& e) {
             throw cms::Exception("InvalidUncertaintyName") << "SelectedJetProducer: systematic name " << systematics_config[i] << " not recognized" << std::endl;
@@ -298,12 +298,12 @@ std::vector<pat::Jet> SelectedJetProducer::GetSelectedJets(const std::vector<pat
     return selectedJets;
 }
 
-std::string SelectedJetProducer::systName(std::string name, Systematics::Type sysType) {
-    if ( sysType == Systematics::NA ) {
+std::string SelectedJetProducer::systName(std::string name, SystematicsHelper::Type sysType) {
+    if ( sysType == SystematicsHelper::NA ) {
         return name;
     }
     else {
-        return name + Systematics::toString(sysType);
+        return name + SystematicsHelper::toString(sysType);
     }
 }
 
@@ -453,7 +453,7 @@ std::vector<pat::Jet> SelectedJetProducer::GetDeltaRCleanedJets(const std::vecto
 
 std::vector<pat::Jet> SelectedJetProducer::GetCorrectedJets(const std::vector<pat::Jet>& inputJets, const edm::Event& event,
         const edm::EventSetup& setup, const edm::Handle<reco::GenJetCollection>& genjets,
-        const Systematics::Type iSysType, const bool& doJES, const bool& doJER, const float& corrFactor, const float& uncFactor) {
+        const SystematicsHelper::Type iSysType, const bool& doJES, const bool& doJER, const float& corrFactor, const float& uncFactor) {
 
     // do nothing if neither JES or JER is demanded
     if ( !doJES && !doJER ) return inputJets;
@@ -470,7 +470,7 @@ std::vector<pat::Jet> SelectedJetProducer::GetCorrectedJets(const std::vector<pa
 
 pat::Jet SelectedJetProducer::GetCorrectedJet(const pat::Jet& inputJet, const edm::Event& event,
         const edm::EventSetup& setup, const edm::Handle<reco::GenJetCollection>& genjets,
-        const Systematics::Type iSysType, const bool doJES, const bool doJER,
+        const SystematicsHelper::Type iSysType, const bool doJES, const bool doJER,
         const float corrFactor, const float uncFactor) {
 
     double factor = 1.;
@@ -482,7 +482,7 @@ pat::Jet SelectedJetProducer::GetCorrectedJet(const pat::Jet& inputJet, const ed
 }
 
 void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalCorrFactor, const edm::Event& event, const edm::EventSetup& setup,
-        const edm::Handle<reco::GenJetCollection>& genjets, const Systematics::Type iSysType, const bool doJES, const bool doJER,
+        const edm::Handle<reco::GenJetCollection>& genjets, const SystematicsHelper::Type iSysType, const bool doJES, const bool doJER,
         const bool addUserFloats,
         const float corrFactor, const float uncFactor) {
 
@@ -504,19 +504,19 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalC
 
             if ( addUserFloats ) {
                 jet.addUserFloat("HelperJES", scale);
-                const double uncUp = GetJECUncertainty(jet, setup, Systematics::JESup);
-                const double uncDown = GetJECUncertainty(jet, setup, Systematics::JESdown);
+                const double uncUp = GetJECUncertainty(jet, setup, SystematicsHelper::JESup);
+                const double uncDown = GetJECUncertainty(jet, setup, SystematicsHelper::JESdown);
                 const double jecvarUp = 1. + (uncUp);
                 const double jecvarDown = 1. + (uncDown);
                 jet.addUserFloat("HelperJESup", jecvarUp);
                 jet.addUserFloat("HelperJESdown", jecvarDown);
             }
 
-            if ( Systematics::isJECUncertainty(iSysType) ) {
+            if ( SystematicsHelper::isJECUncertainty(iSysType) ) {
                 const double unc = GetJECUncertainty(jet, setup, iSysType);
                 const double jecvar = 1. + (unc * uncFactor);
                 if ( addUserFloats ) {
-                    jet.addUserFloat("Helper" + Systematics::toString(iSysType), jecvar);
+                    jet.addUserFloat("Helper" + SystematicsHelper::toString(iSysType), jecvar);
                 }
                 jet.scaleEnergy( jecvar );
                 totalCorrFactor *= jecvar;
@@ -535,9 +535,9 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalC
 //
 // Note: for JEC down, value will internally be multiplied by -1
 // --> *always* scale JES by (1+value).
-double SelectedJetProducer::GetJECUncertainty(const pat::Jet& jet, const edm::EventSetup& iSetup, const Systematics::Type iSysType) {
+double SelectedJetProducer::GetJECUncertainty(const pat::Jet& jet, const edm::EventSetup& iSetup, const SystematicsHelper::Type iSysType) {
 
-    const std::string uncertaintyLabel = Systematics::GetJECUncertaintyLabel(iSysType);
+    const std::string uncertaintyLabel = SystematicsHelper::GetJECUncertaintyLabel(iSysType);
     std::map< std::string, std::unique_ptr<JetCorrectionUncertainty> >::iterator jecUncIt = jecUncertainties_.find(uncertaintyLabel);
     if ( jecUncIt == jecUncertainties_.end() ) { // Lazy initialization
         AddJetCorrectorUncertainty(iSetup, uncertaintyLabel);
@@ -547,7 +547,7 @@ double SelectedJetProducer::GetJECUncertainty(const pat::Jet& jet, const edm::Ev
 
     unc->setJetEta(jet.eta());
     unc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
-    if ( Systematics::isJECUncertaintyUp(iSysType) )    return +1. * unc->getUncertainty(true);
+    if ( SystematicsHelper::isJECUncertaintyUp(iSysType) )    return +1. * unc->getUncertainty(true);
     else                                                return -1. * unc->getUncertainty(false);
 }
 
