@@ -48,6 +48,7 @@
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 
+
 //To use when the object is either a reference or a pointer
 template <typename T>
 T *ptr(T &obj) { return &obj; } //turn reference into pointer!
@@ -144,6 +145,10 @@ class SelectedJetProducer : public edm::stream::EDProducer<>
     /** rho data access token (for jet cleaning)**/
     edm::EDGetTokenT<double> rhoToken;
 
+    //JEC files
+    const std::string jecFileAK4;
+    const std::string jecFileAK8;
+
     // selection criterias
     JetID Jet_ID;
     std::vector<PUJetIDWP> PUJetID_WP;
@@ -182,9 +187,10 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : Jet
                                                                              genjetsToken{consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("miniAODGenJets"))},
                                                                              muonsToken{consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))},
                                                                              electronsToken{consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"))},
-                                                                             rhoToken{consumes<double>(iConfig.getParameter<edm::InputTag>("rho"))}
+                                                                             rhoToken{consumes<double>(iConfig.getParameter<edm::InputTag>("rho"))},
+                                                                             jecFileAK4{iConfig.getParameter<std::string>("jecFileAK4")},
+                                                                             jecFileAK8{iConfig.getParameter<std::string>("jecFileAK8")}
 {
-
     // do this for getJetCorrector call with JetType as argument, because it needs ak4... or ak8 ... instead of AK4... or AK8...
     JetType.replace(JetType.begin(), JetType.begin() + 2, "ak");
 
@@ -219,12 +225,12 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : Jet
     if (TString(JetType).Contains("ak4"))
     {
         jetTypeLabelForJECUncertainty = "AK4PFchs";
-        jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/MiniAOD/MiniAODHelper/data/jec/Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+        jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4;
     }
     else if (TString(JetType).Contains("ak8"))
     {
         jetTypeLabelForJECUncertainty = "AK8PFchs";
-        jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/MiniAOD/MiniAODHelper/data/jec/Fall17_17Nov2017_V32_MC_UncertaintySources_AK8PFchs.txt";
+        jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8;
     }
 
     if (jecUncertaintyTxtFileName != "")
@@ -321,7 +327,8 @@ std::vector<pat::Jet> SelectedJetProducer::GetSelectedJets(const std::vector<pat
     // iterate through inputjets and find good Jets
     std::vector<pat::Jet> selectedJets;
     for (std::vector<pat::Jet>::const_iterator it = inputJets.begin(), ed = inputJets.end(); it != ed; ++it)
-    {
+    {   
+        std::cout << it->pt() << std::endl; 
         if (isGoodJet(*it, iMinPt, iMaxAbsEta, iJetID, wp))
             selectedJets.push_back(*it);
     }
