@@ -328,11 +328,11 @@ std::vector<pat::Jet> SelectedJetProducer::GetSelectedJets(const std::vector<pat
 {
   // iterate through inputjets and find good Jets
   std::vector<pat::Jet> selectedJets;
-  for (std::vector<pat::Jet>::const_iterator it = inputJets.begin(), ed = inputJets.end(); it != ed; ++it)
+  for (auto& jet: inputJets )
   {
-    if (isGoodJet(*it, iMinPt, iMaxAbsEta, iJetID, wp))
+    if (isGoodJet(jet, iMinPt, iMaxAbsEta, iJetID, wp))
     {
-      selectedJets.push_back(*it);
+      selectedJets.push_back(jet);
     }
   }
   return selectedJets;
@@ -449,10 +449,10 @@ std::vector<pat::Jet> SelectedJetProducer::GetUncorrectedJets(const std::vector<
   std::vector<pat::Jet> outputJets;
   outputJets.reserve(inputJets.size());
   // loop over inputJets and save a uncorrected version
-  for (std::vector<pat::Jet>::const_iterator it = inputJets.begin(), ed = inputJets.end(); it != ed; ++it)
+  for (auto const &iJet: inputJets)
   {
-    pat::Jet jet = (*it);
-    jet.setP4(it->correctedJet(0).p4());
+    pat::Jet jet = iJet;
+    jet.setP4(iJet.correctedJet(0).p4());
     outputJets.push_back(jet);
   }
   return outputJets;
@@ -462,21 +462,20 @@ std::vector<pat::Jet> SelectedJetProducer::GetUncorrectedJets(const std::vector<
 std::vector<pat::Jet> SelectedJetProducer::GetDeltaRCleanedJets(const std::vector<pat::Jet> &inputJets, const std::vector<pat::Muon> &inputMuons,
                                                                 const std::vector<pat::Electron> &inputElectrons, const double deltaRCut) const
 {
-
   std::vector<pat::Jet> outputJets; //resulting jets
   // loop over inputJets
-  for (std::vector<pat::Jet>::const_iterator iJet = inputJets.begin(); iJet != inputJets.end(); ++iJet)
+  for (const auto &iJet: inputJets)
   {
     bool isOverlap = false;
     // get Jet 4-momentum
     TLorentzVector jet_p4;
-    jet_p4.SetPxPyPzE(iJet->px(), iJet->py(), iJet->pz(), iJet->energy());
+    jet_p4.SetPxPyPzE(iJet.px(), iJet.py(), iJet.pz(), iJet.energy());
     // loop over all electrons
-    for (std::vector<pat::Electron>::const_iterator iEle = inputElectrons.begin(); iEle != inputElectrons.end(); iEle++)
+    for (const auto &iEle: inputElectrons)
     {
       // get electron 4-momentum
       TLorentzVector ele_p4;
-      ele_p4.SetPxPyPzE(iEle->px(), iEle->py(), iEle->pz(), iEle->energy());
+      ele_p4.SetPxPyPzE(iEle.px(), iEle.py(), iEle.pz(), iEle.energy());
       //calculate DeltaR between Jet and electron
       double delta_tmp = jet_p4.DeltaR(ele_p4);
       if (delta_tmp < deltaRCut)
@@ -490,11 +489,11 @@ std::vector<pat::Jet> SelectedJetProducer::GetDeltaRCleanedJets(const std::vecto
       continue;
 
     // loop over all muons
-    for (std::vector<pat::Muon>::const_iterator iMuon = inputMuons.begin(); iMuon != inputMuons.end(); iMuon++)
+    for (const auto &iMuon: inputMuons)
     {
       // get muon 4-momentum
       TLorentzVector muon_p4;
-      muon_p4.SetPxPyPzE(iMuon->px(), iMuon->py(), iMuon->pz(), iMuon->energy());
+      muon_p4.SetPxPyPzE(iMuon.px(), iMuon.py(), iMuon.pz(), iMuon.energy());
       // calculate DeltaR between jet and electron
       double delta_tmp = jet_p4.DeltaR(muon_p4);
       if (delta_tmp < deltaRCut)
@@ -508,7 +507,7 @@ std::vector<pat::Jet> SelectedJetProducer::GetDeltaRCleanedJets(const std::vecto
       continue;
 
     // save Jet if no overlap is found
-    outputJets.push_back(*iJet);
+    outputJets.push_back(iJet);
   }
   return outputJets;
 }
@@ -527,9 +526,10 @@ std::vector<pat::Jet> SelectedJetProducer::GetCorrectedJets(const std::vector<pa
   std::vector<pat::Jet> outputJets;
 
   //loop over input jets and correct each one
-  for (std::vector<pat::Jet>::const_iterator it = inputJets.begin(), ed = inputJets.end(); it != ed; ++it)
+  // for (std::vector<pat::Jet>::const_iterator it = inputJets.begin(), ed = inputJets.end(); it != ed; ++it)
+  for (auto& jet: inputJets)
   {
-    outputJets.push_back(GetCorrectedJet(*it, event, setup, genjets, iSysType, doJES, doJER, corrFactor, uncFactor));
+    outputJets.push_back(GetCorrectedJet(jet, event, setup, genjets, iSysType, doJES, doJER, corrFactor, uncFactor));
   }
   return outputJets;
 }
