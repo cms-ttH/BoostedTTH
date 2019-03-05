@@ -359,31 +359,31 @@ bool dfirst=true;
     // get gen particles
     // b quark from had top
     std::vector<reco::GenParticle> bhad_quark=input.genTopEvt.GetAllTopHadDecayQuarks();
-    if(bhad_quark.size() > 1){ std::cout<<"MORE THAN ONE B FROM HADTOP"<<std::endl; }
+    //if(bhad_quark.size() > 1){ std::cout<<"MORE THAN ONE B FROM HADTOP"<<std::endl; }
 
     // b quark from lep top    
     std::vector<reco::GenParticle> blep_quark=input.genTopEvt.GetAllTopLepDecayQuarks();
-    if(blep_quark.size() > 1){ std::cout<<"MORE THAN ONE B FROM LEPTOP"<<std::endl; }
+    //if(blep_quark.size() > 1){ std::cout<<"MORE THAN ONE B FROM LEPTOP"<<std::endl; }
 
     //b quarks from higgs
     std::vector<reco::GenParticle> bhiggs_quarks = input.genTopEvt.GetHiggsDecayProducts();
-    if(!(bhiggs_quarks.size() == 2) && !(bhiggs_quarks.size() == 0))
-      {std::cout<<"NOT ZERO OR TWO B QUARKS FROM HIGGS"<<std::endl; }
+    //if(!(bhiggs_quarks.size() == 2) && !(bhiggs_quarks.size() == 0))
+      //{std::cout<<"NOT ZERO OR TWO B QUARKS FROM HIGGS"<<std::endl; }
     
     // quarks from W decay
 
     std::vector<reco::GenParticle> hadw_quarks=input.genTopEvt.GetWQuarks();
-    if(!(hadw_quarks.size() == 2)){ std::cout<<"UNEQUAL TWO QUARKS FROM HADRONIC W"<<std::endl; }
+    //if(!(hadw_quarks.size() == 2)){ std::cout<<"UNEQUAL TWO QUARKS FROM HADRONIC W"<<std::endl; }
 
 
     // get gen jets
     // b jet from had top
     std::vector<reco::GenJet> bhad_genjet=input.genTopEvt.GetAllTopHadBGenJets();
-    if(bhad_genjet.size() > 1){ std::cout<<"MORE THAN ONE bJET FROM HADTOP"<<std::endl; }
+    //if(bhad_genjet.size() > 1){ std::cout<<"MORE THAN ONE bJET FROM HADTOP"<<std::endl; }
 
     // b jet from lep top
     std::vector<reco::GenJet> blep_genjet=input.genTopEvt.GetAllTopLepBGenJets();
-    if(blep_genjet.size() > 1){ std::cout<<"MORE THAN ONE bJET FROM HADTOP"<<std::endl; }
+    //if(blep_genjet.size() > 1){ std::cout<<"MORE THAN ONE bJET FROM HADTOP"<<std::endl; }
 
     // b jets from higgs
     reco::GenJet bhiggs_genjet1 = input.genTopEvt.GetHiggsBBarGenJet();
@@ -391,7 +391,7 @@ bool dfirst=true;
 
     // jets from W decay
     std::vector<reco::GenJet> hadw_genjets=input.genTopEvt.GetWGenJets();
-    if(!(hadw_genjets.size() == 2)){ std::cout<<"UNEQUAL TWO JETS FROM HADRONIC W"<<std::endl; }
+    //if(!(hadw_genjets.size() == 2)){ std::cout<<"UNEQUAL TWO JETS FROM HADRONIC W"<<std::endl; }
 
      vars.FillVar( "GenHiggs_B1_GenJet_Pt",bhiggs_genjet1.pt() );
      vars.FillVar( "GenHiggs_B2_GenJet_Pt",bhiggs_genjet2.pt() );

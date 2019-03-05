@@ -21,18 +21,20 @@ SelectedElectronProducer = cms.EDProducer(
 
     ptMins   = cms.vdouble(15),
     etaMaxs  = cms.vdouble(2.4),
-    leptonIDs = cms.vstring("electron80XCutBasedM"),
-    collectionNames= cms.vstring("selectedLeptonsDL"),
+    leptonIDs = cms.vstring("loose"),
+    collectionNames= cms.vstring("selectedElectronsLoose"),
 
 
     # The following two parameters are dummies in case of electrons
     # they are not used for the electron selection, which is defined
     # via the 'leptonID' value
-    muonIsoConeSizes = cms.vstring("R03"),
-    muonIsoCorrTypes = cms.vstring("rhoEA"),
-    muonIsoTypes = cms.vstring("PFIsoTight"),
+    isoConeSizes = cms.vstring("R03"),
+    isoCorrTypes = cms.vstring("rhoEA"),
+    muonIsoTypes = cms.vstring("loose"),
     useMuonRC = cms.bool(True),
-    useDeterministicSeeds = cms.bool(False)
+    useDeterministicSeeds = cms.bool(False),
+    rc_dir = cms.string("BoostedTTH/Producers/data/rcdata2017v1/RoccoR2017v1.txt"),
+    ea_dir = cms.string("BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt")
     )
 
 
@@ -50,13 +52,15 @@ SelectedMuonProducer = cms.EDProducer(
 
     ptMins   = cms.vdouble(15),
     etaMaxs  = cms.vdouble(2.4),
-    leptonIDs = cms.vstring("tightDL"),
-    collectionNames= cms.vstring("selectedLeptonsDL"),
-    muonIsoConeSizes = cms.vstring("R04"),
-    muonIsoCorrTypes = cms.vstring("deltaBeta"),
-    muonIsoTypes = cms.vstring("PFIsoTight"),
+    leptonIDs = cms.vstring("loose"),
+    collectionNames= cms.vstring("selectedMuonsLoose"),
+    isoConeSizes = cms.vstring("R04"),
+    isoCorrTypes = cms.vstring("deltaBeta"),
+    muonIsoTypes = cms.vstring("loose"),
     useMuonRC = cms.bool(True),
     useDeterministicSeeds = cms.bool(False),
+    rc_dir = cms.string("BoostedTTH/Producers/data/rcdata2017v1/RoccoR2017v1.txt"),
+    ea_dir = cms.string("BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt")
     # The following two parameters are dummies in case of muons
     # they are not used for the muon selection, which is defined
     # via the 'leptonID' value
