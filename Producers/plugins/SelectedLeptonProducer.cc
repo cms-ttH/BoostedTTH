@@ -66,20 +66,20 @@ public:
     template <typename T> T GetSortedByPt(const T&);
     
     // Functions to return an electron collection with the desired properties
-    std::vector<pat::Electron> GetSelectedElectrons(const std::vector<pat::Electron>& inputElectrons, const double iMinPt = 10., const ElectronID = ElectronID::Loose, const double iMaxEta = 2.4);
+    std::vector<pat::Electron> GetSelectedElectrons(const std::vector<pat::Electron>& inputElectrons, const double iMinPt = 10., const ElectronID = ElectronID::Loose, const double iMaxEta = 2.4) const;
     bool isGoodElectron(const pat::Electron& iElectron, const double iMinPt = 10., const double iMaxEta = 2.4, const ElectronID iElectronID = ElectronID::Loose) const;
     
     // Function to calculate electron relative isolation manually, for sync exercises
-    double GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType, const IsoConeSize) const;
-    void AddElectronRelIsolation(std::vector<pat::Electron>& inputElectrons, const IsoCorrType icorrType, const IsoConeSize iconeSize);
+    double GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType icorrType = IsoCorrType::rhoEA, const IsoConeSize iconeSize = IsoConeSize::R03) const;
+    void AddElectronRelIsolation(std::vector<pat::Electron>& inputElectrons, const IsoCorrType icorrType = IsoCorrType::rhoEA, const IsoConeSize iconeSize = IsoConeSize::R03);
     
     // Functions to return a muon collection with the desired properties
-    std::vector<pat::Muon> GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt = 10., const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const double iMaxEta = 2.4, const MuonIsolation = MuonIsolation::Loose);
+    std::vector<pat::Muon> GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt = 10., const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const double iMaxEta = 2.4, const MuonIsolation = MuonIsolation::Loose) const;
     bool isGoodMuon(const pat::Muon&, const double iMinPt = 10., const double iMaxEta = 2.4, const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const MuonIsolation = MuonIsolation::Loose) const;
     
     // Function to calculate muon relative isolation manually, for sync exercises
-    double GetMuonRelIsolation(const pat::Muon& inputMuon, const IsoCorrType, const IsoConeSize) const;
-    void AddMuonRelIsolation(std::vector<pat::Muon>& inputMuons, const IsoCorrType icorrType, const IsoConeSize iconeSize);
+    double GetMuonRelIsolation(const pat::Muon& inputMuon, const IsoCorrType icorrType = IsoCorrType::deltaBeta, const IsoConeSize iconeSize = IsoConeSize::R04) const;
+    void AddMuonRelIsolation(std::vector<pat::Muon>& inputMuons, const IsoCorrType icorrType = IsoCorrType::deltaBeta, const IsoConeSize iconeSize = IsoConeSize::R04);
     
     // Function to apply the muon rochester correction to a given muon collection
     void ApplyMuonMomentumCorrection(std::vector<pat::Muon>& inputMuons);
@@ -402,7 +402,7 @@ template <typename T> T SelectedLeptonProducer::GetSortedByPt(const T& collectio
 }
 // function to select electrons with several properties and return a collection
 std::vector<pat::Electron>
-SelectedLeptonProducer::GetSelectedElectrons(const std::vector<pat::Electron>& inputElectrons, const double iMinPt, const ElectronID iElectronID, const double iMaxEta){
+SelectedLeptonProducer::GetSelectedElectrons(const std::vector<pat::Electron>& inputElectrons, const double iMinPt, const ElectronID iElectronID, const double iMaxEta) const{
     
     std::vector<pat::Electron> selectedElectrons;
     
@@ -478,7 +478,7 @@ void SelectedLeptonProducer::AddElectronRelIsolation(std::vector<pat::Electron>&
 }
 // function to select muons with several properties and return a collection
 std::vector<pat::Muon>
-SelectedLeptonProducer::GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const double iMaxEta, const MuonIsolation imuonIso){
+SelectedLeptonProducer::GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const double iMaxEta, const MuonIsolation imuonIso) const{
     
     
     std::vector<pat::Muon> selectedMuons;
