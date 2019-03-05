@@ -33,7 +33,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_Phi","N_Jets" );
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
-  vars.InitVars( "Jet_CSV_DNN","N_Jets" );
+  //vars.InitVars( "Jet_CSV_DNN","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
@@ -47,7 +47,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_DeepCSV_bb","N_Jets");
   vars.InitVars( "Jet_DeepCSV_c","N_Jets");
   vars.InitVars( "Jet_DeepCSV_udsg","N_Jets");
-  
+
+  vars.InitVars( "Jet_DeepFlavourCSV","N_Jets");  
   vars.InitVars( "Jet_DeepFlavour_b","N_Jets");
   vars.InitVars( "Jet_DeepFlavour_bb","N_Jets");
   vars.InitVars( "Jet_DeepFlavour_lepb","N_Jets");
@@ -114,7 +115,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVar("Evt_MHT");
   
   vars.InitVars( "CSV","N_Jets" );
-  vars.InitVars( "CSV_DNN","N_Jets" );
+  //vars.InitVars( "CSV_DNN","N_Jets" );
   initialized=true;
 }
 
@@ -174,7 +175,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
-    vars.FillVars( "Jet_CSV_DNN",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,btagger) );
+    //vars.FillVars( "Jet_CSV_DNN",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
@@ -192,11 +193,13 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       vars.FillVars( "Jet_GenJet_Pt",iJet,-9.0);
       vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
     }
+
     vars.FillVars( "Jet_DeepCSV_b",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probb"));
     vars.FillVars( "Jet_DeepCSV_bb",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probbb"));
     vars.FillVars( "Jet_DeepCSV_c",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probc"));
     vars.FillVars( "Jet_DeepCSV_udsg",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probudsg"));
     
+    vars.FillVars( "Jet_DeepFlavourCSV",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"DeepFlavour"));
     vars.FillVars( "Jet_DeepFlavour_b",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probb"));
     vars.FillVars( "Jet_DeepFlavour_bb",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probbb"));
     vars.FillVars( "Jet_DeepFlavour_lepb",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:problepb"));
@@ -383,23 +386,23 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   // Fill CSV Variables
   // All Jets
   std::vector<double> csvJets;
-  std::vector<double> csvJets_DNN;
+  //std::vector<double> csvJets_DNN;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
     csvJets.push_back(MiniAODHelper::GetJetCSV(*itJet,btagger));
-    csvJets_DNN.push_back(MiniAODHelper::GetJetCSV_DNN(*itJet,btagger));
+    //csvJets_DNN.push_back(MiniAODHelper::GetJetCSV_DNN(*itJet,btagger));
   }
   std::vector<double> csvJetsSorted=csvJets;
-  std::vector<double> csvJetsSorted_DNN=csvJets_DNN;
+  //std::vector<double> csvJetsSorted_DNN=csvJets_DNN;
   std::sort(csvJetsSorted.begin(),csvJetsSorted.end(),std::greater<double>());
-  std::sort(csvJetsSorted_DNN.begin(),csvJetsSorted_DNN.end(),std::greater<double>());
+  //std::sort(csvJetsSorted_DNN.begin(),csvJetsSorted_DNN.end(),std::greater<double>());
   
   for(std::vector<double>::iterator itCSV = csvJetsSorted.begin() ; itCSV != csvJetsSorted.end(); ++itCSV){
     int iCSV = itCSV - csvJetsSorted.begin();
     vars.FillVars("CSV" ,iCSV,*itCSV);
   }
-  for(std::vector<double>::iterator itCSV = csvJetsSorted_DNN.begin() ; itCSV != csvJetsSorted_DNN.end(); ++itCSV){
-    int iCSV = itCSV - csvJetsSorted_DNN.begin();
-    vars.FillVars("CSV" ,iCSV,*itCSV);
-  }
+  //for(std::vector<double>::iterator itCSV = csvJetsSorted_DNN.begin() ; itCSV != csvJetsSorted_DNN.end(); ++itCSV){
+  //  int iCSV = itCSV - csvJetsSorted_DNN.begin();
+  //  vars.FillVars("CSV" ,iCSV,*itCSV);
+  //}
 
 }
