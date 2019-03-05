@@ -36,9 +36,10 @@ void VariableContainer::InitVar( const TString& name,float defaultValue, const s
     intMapFilled[name] = false;
     intMapType[name] = TString(type);
   }
-  else
+  else{
     cout << "unknown type " << type << endl;
     cout << "only F/I/L support for now" << endl;
+  }
 }
 
 
