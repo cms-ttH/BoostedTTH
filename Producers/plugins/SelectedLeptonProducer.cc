@@ -398,16 +398,16 @@ SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, const dou
     
     switch(iElectronID){
         case ElectronID::Veto:
-            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V1-veto");
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V2-veto");
             break;
         case ElectronID::Loose:
-            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V1-loose");
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
             break;
         case ElectronID::Medium:
-            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V1-medium");
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V2-medium");
             break;
         case ElectronID::Tight:
-            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V1-tight");
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V2-tight");
             break;
         default:
             std::cerr << "\n\nERROR: InvalidElectronID" <<  std::endl;
