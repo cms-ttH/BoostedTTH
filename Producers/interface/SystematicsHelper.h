@@ -1,7 +1,6 @@
 #ifndef SYSTEMATICSHelper_H
 #define SYSTEMATICSHelper_H
 
-#include <iostream>
 #include <map>
 #include <string>
 
@@ -253,7 +252,6 @@ void SystematicsHelper::init() {
   add( CSVHFStats2up,            CSVHFStats2down,            "CSVHFStats2",              "HFStats2"            );
   add( CSVCErr1up,               CSVCErr1down,               "CSVcErr1",                 "CErr1"               );
   add( CSVCErr2up,               CSVCErr2down,               "CSVcErr2",                 "CErr2"               );
-  // std::cout << "using Sytematics.cc" << std::endl;
 }
 
 bool SystematicsHelper::isInit() {
@@ -271,7 +269,6 @@ void SystematicsHelper::add(SystematicsHelper::Type typeUp, SystematicsHelper::T
 
 
 SystematicsHelper::Type SystematicsHelper::get(const std::string& name) {
-  std::cout << "using new systematicsHelper" << std::endl;
   if( name == "" ) return NA;
 
   if( !isInit() ) init();
@@ -286,8 +283,6 @@ SystematicsHelper::Type SystematicsHelper::get(const std::string& name) {
 }
 
 std::string SystematicsHelper::toString(const Type type) {
-  // std::cout << "using Sytematics.cc" << std::endl;
-
   if( type == NA ) return "";
 
   if( !isInit() ) init();
@@ -302,8 +297,6 @@ std::string SystematicsHelper::toString(const Type type) {
 }
 
 bool SystematicsHelper::isJECUncertaintyUp(const Type type) {
-  // std::cout << "using Sytematics.cc" << std::endl;
-
   const std::string str = toString(type);
   return str.find("JES")==0 && str.find("up")==str.size()-2;
 }
