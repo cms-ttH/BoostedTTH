@@ -130,7 +130,7 @@ private:
     // muons
     edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  
     // electrons
-    edm::EDGetTokenT< edm::View<pat::Electron> >EDMElectronsToken;
+    edm::EDGetTokenT< pat::ElectronCollection >EDMElectronsToken;
     
     // primary vertex
     reco::Vertex vertex;
@@ -138,11 +138,6 @@ private:
     // event-specific average pile-up energy density per unit area in the phi-eta plane
     double rho;
     
-    // use to get electron ID decisions, if electron IDs are recalculated by egamma VID tool
-    //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedMediumIDmapToken;
-    //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedLooseIDmapToken;
-    //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedVetoIDmapToken;
-    //edm::EDGetTokenT<edm::ValueMap<bool> >          EDMeleCutBasedTightIDmapToken;
     
 };
 
@@ -167,7 +162,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
                                                                                     EDMRhoToken{consumes< double >                  (iConfig.getParameter<edm::InputTag>("rho"))},
                                                                                     EDMVertexToken{consumes< reco::VertexCollection >  (iConfig.getParameter<edm::InputTag>("vertices"))},
                                                                                     EDMMuonsToken{consumes< pat::MuonCollection >     (iConfig.getParameter<edm::InputTag>("leptons"))},
-                                                                                    EDMElectronsToken{consumes< edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("leptons"))}
+                                                                                    EDMElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("leptons"))}
                                                                                     
 {
     // setup of producer
@@ -180,11 +175,6 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     }
     
     
-    // use to get electron ID decisions, if electron IDs are recalculated by egamma VID tool
-    //EDMeleCutBasedMediumIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
-    //EDMeleCutBasedLooseIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
-    //EDMeleCutBasedVetoIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
-    //EDMeleCutBasedTightIDmapToken = consumes< edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
     
     // fill lepton selection criteria with default values
     electronIDs_        = std::vector<ElectronID>(leptonIDs.size(),ElectronID::Loose);
@@ -293,7 +283,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     
     if( leptonType_ == LeptonType::Electron ) {
         // get input electron collection
-        edm::Handle< edm::View<pat::Electron> > inputElectrons;
+        edm::Handle< pat::ElectronCollection > inputElectrons;
         iEvent.getByToken(EDMElectronsToken,inputElectrons);
         if(not inputElectrons.isValid()) {
             std::cerr << "\n\nERROR: retrieved electron collection is not valid" << std::endl;
@@ -301,42 +291,10 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         }
         
         
-        // use to get electron ID decisions, if electron IDs are recalculated by egamma VID tool
-        //edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-        //edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-        //edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
-        //edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
-        
-        //iEvent.getByToken(EDMeleCutBasedLooseIDmapToken, loose_id_decisions);
-        //iEvent.getByToken(EDMeleCutBasedMediumIDmapToken, medium_id_decisions);
-        //iEvent.getByToken(EDMeleCutBasedTightIDmapToken, tight_id_decisions);
-        //iEvent.getByToken(EDMeleCutBasedVetoIDmapToken, veto_id_decisions);
-        //if(loose_id_decisions.isValid() && medium_id_decisions.isValid() && tight_id_decisions.isValid() && veto_id_decisions.isValid()){
-        
-        
         for(size_t i=0; i<ptMins_.size(); i++)
         {
-            std::vector<pat::Electron> updatedElectrons;
-            // check the electron IDs and only accept electrons fulfilling the requested ID
-            for(size_t j=0; j< inputElectrons->size(); j++){
-                auto electron = inputElectrons->ptrAt(j);
-                if(electron.isNull()) continue;
-                bool passesID = false;
-                //(*loose_id_decisions)[electron];
-                if(electronIDs_[i] == ElectronID::Loose) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V1-loose");
-                //(*medium_id_decisions)[electron];
-                else if(electronIDs_[i] == ElectronID::Medium) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V1-medium");
-                else if(electronIDs_[i] == ElectronID::Tight) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V1-tight");
-                //(*tight_id_decisions)[electron];
-                //(*veto_id_decisions)[electron];
-                else if(electronIDs_[i] == ElectronID::Veto) passesID = electron->electronID("cutBasedElectronID-Fall17-94X-V1-veto");  
-                else{
-                    std::cerr << "\n\nERROR: InvalidElectronID" <<  std::endl;
-                    throw std::exception();
-                }
-                if( passesID ) updatedElectrons.push_back(inputElectrons->at(j));
-                
-            }
+            std::vector<pat::Electron> updatedElectrons = *inputElectrons;
+            
             // add the electron relative isolation as a userfloat, mainly for sync by now
             AddElectronRelIsolation(updatedElectrons,IsoCorrTypes_[i],IsoConeSizes_[i]);
             
@@ -353,10 +311,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             // put the collection into the event with help of the unique ptr
             iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
         }
-        //}  
-        //else{
-        //throw cms::Exception("InvalidIDdecisions") << "ID decisions are corrupted!";
-        //}
+
     }
     
     else if( leptonType_ == LeptonType::Muon ) {
@@ -421,6 +376,8 @@ SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, const dou
     bool passesKinematics = (iMinPt<=iElectron.pt()) and (iMaxEta>=fabs(iElectron.eta()));
     bool inCrack = false;
     bool passesIPcuts = false;
+    bool passesID = false;
+    
     double absSCeta = 999; 
     if( iElectron.superCluster().isAvailable() ){
         absSCeta = fabs(iElectron.superCluster()->position().eta());
@@ -439,7 +396,25 @@ SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, const dou
     if( isEB ) passesIPcuts = (IP_d0 < 0.05 and IP_dZ < 0.1);
     else passesIPcuts = (IP_d0 < 0.1 and IP_dZ < 0.2);
     
-    return passesKinematics and (not inCrack) and passesIPcuts;
+    switch(iElectronID){
+        case ElectronID::Veto:
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V1-veto");
+            break;
+        case ElectronID::Loose:
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V1-loose");
+            break;
+        case ElectronID::Medium:
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V1-medium");
+            break;
+        case ElectronID::Tight:
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V1-tight");
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidElectronID" <<  std::endl;
+            throw std::exception();
+    }
+    
+    return passesKinematics and (not inCrack) and passesIPcuts and passesID;
 }
 // function to calculate electron relative isolation by hand. Mainly needed for sync purposes since isolations are part of other provided electron properties like ID
 double SelectedLeptonProducer::GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType icorrType, const IsoConeSize iconeSize) const {
