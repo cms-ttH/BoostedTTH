@@ -150,6 +150,9 @@ private:
   const std::string jecFileAK4;
   const std::string jecFileAK8;
 
+  const std::string era;
+
+
   // selection criterias
   JetID Jet_ID;
   std::vector<PUJetIDWP> PUJetID_WP;
@@ -160,6 +163,7 @@ private:
   std::map<std::string, std::unique_ptr<JetCorrectionUncertainty>> jecUncertainties_;
   const JetCorrector *corrector;
   const bool doJES = true;
+
 };
 //
 // constants, enums and typedefs
@@ -190,7 +194,8 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : Jet
                                                                              electronsToken{consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"))},
                                                                              rhoToken{consumes<double>(iConfig.getParameter<edm::InputTag>("rho"))},
                                                                              jecFileAK4{iConfig.getParameter<std::string>("jecFileAK4")},
-                                                                             jecFileAK8{iConfig.getParameter<std::string>("jecFileAK8")}
+                                                                             jecFileAK8{iConfig.getParameter<std::string>("jecFileAK8")},
+                                                                             era{iConfig.getParameter<std::string>("era")}
 {
   // do this for getJetCorrector call with JetType as argument, because it needs ak4... or ak8 ... instead of AK4... or AK8...
   JetType.replace(JetType.begin(), JetType.begin() + 2, "ak");
@@ -389,6 +394,9 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
                iJet.chargedMultiplicity() > 0
                //iJet.chargedEmEnergyFraction() < 0.99
       );
+      if (TString(era).Contains("2016")){
+        tight = (tight && iJet.chargedEmEnergyFraction() < 0.99);
+      }
     }
 
     if (iJetID == JetID::jetMETcorrection)

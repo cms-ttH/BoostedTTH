@@ -19,6 +19,7 @@ SelectedJetProducer = cms.EDProducer(
     JetID = cms.string("none"),
     JetType = cms.string("AK4PFchs"),
     jecFileAK4 = cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt"),
-    jecFileAK8 = cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK8PFchs.txt")
+    jecFileAK8 = cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK8PFchs.txt"),
+    era = cms.string('2017')
     )
 
