@@ -55,11 +55,11 @@ public:
     
     // some enums to make things nicer
     enum class LeptonType    {Electron, Muon};
-    enum class ElectronID    {Veto, Loose, Medium, Tight};
-    enum class MuonID        {Loose, Medium, Tight};
+    enum class ElectronID    {None, Veto, Loose, Medium, Tight};
+    enum class MuonID        {None, Loose, Medium, Tight};
     enum class IsoConeSize      {R03, R04};
     enum class IsoCorrType      {rhoEA, deltaBeta};
-    enum class MuonIsolation {Loose, Medium, Tight};
+    enum class MuonIsolation {None, Loose, Medium, Tight};
     
     
     // Function to sort leptons by pt
@@ -198,6 +198,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
             else if( leptonIDs[i] == "medium"  )         electronIDs_[i] = ElectronID::Medium;
             else if( leptonIDs[i] == "tight"   )         electronIDs_[i] = ElectronID::Tight;
             else if( leptonIDs[i] == "veto"   )          electronIDs_[i] = ElectronID::Veto;
+            else if( leptonIDs[i] == "none"   )          electronIDs_[i] = ElectronID::None;
             else {
                 std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonIDs[i] << std::endl;
                 throw std::exception();
@@ -207,6 +208,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
             if(      leptonIDs[i] == "loose"  )   muonIDs_[i] = MuonID::Loose;
             else if( leptonIDs[i] == "medium"  )   muonIDs_[i] = MuonID::Medium;
             else if( leptonIDs[i] == "tight"  )   muonIDs_[i] = MuonID::Tight;
+            else if( leptonIDs[i] == "none"  )   muonIDs_[i] = MuonID::None;
             else{
                 std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonIDs[i] << std::endl;
                 throw std::exception();
@@ -215,6 +217,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
             if(      muonIsoTypes[i] == "loose"  )   muonIsos_[i] = MuonIsolation::Loose;
             else if( muonIsoTypes[i] == "medium"  )   muonIsos_[i] = MuonIsolation::Medium;
             else if( muonIsoTypes[i] == "tight"  )   muonIsos_[i] = MuonIsolation::Tight;
+            else if( muonIsoTypes[i] == "none"  )   muonIsos_[i] = MuonIsolation::None;
             else{
                 std::cerr << "\n\nERROR: No matching muon isolation type found for: " << muonIsoTypes[i] << std::endl;
                 throw std::exception();
@@ -397,6 +400,9 @@ SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, const dou
     else passesIPcuts = (IP_d0 < 0.1 and IP_dZ < 0.2);
     
     switch(iElectronID){
+        case ElectronID::None:
+            passesID = true;
+            break;
         case ElectronID::Veto:
             passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V2-veto");
             break;
@@ -474,6 +480,9 @@ SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, 
     bool passesID = false;
     bool passesIso = false;
     switch(iMuonID){
+        case MuonID::None:
+            passesID         = true;
+            break;
         case MuonID::Loose:
             passesID         = muon::isLooseMuon(iMuon);
             break;
@@ -489,6 +498,9 @@ SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, 
 
     }
     switch(imuonIso){
+        case MuonIsolation::None:
+            passesIso         = true;
+            break;
         case MuonIsolation::Loose:
             passesIso         = iMuon.passed(pat::Muon::PFIsoLoose);
             break;
