@@ -114,6 +114,26 @@ process.source = cms.Source(  "PoolSource",
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
+# ReRun DeepJet
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJets'),
+   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   svSource = cms.InputTag('slimmedSecondaryVertices'),
+   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
+   btagDiscriminators = [
+      'pfDeepFlavourJetTags:probb',
+      'pfDeepFlavourJetTags:probbb',
+      'pfDeepFlavourJetTags:problepb',
+      'pfDeepFlavourJetTags:probc',
+      'pfDeepFlavourJetTags:probuds',
+      'pfDeepFlavourJetTags:probg'
+      ],
+   postfix='NewDFTraining'
+)
+
+
 #jec_mc_data = 'DATA' if options.isData else 'MC'
 #print jec_mc_data
 #process.CondDB.connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
@@ -212,7 +232,7 @@ photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
 muonCollection     = cms.InputTag("slimmedMuons", "", "PAT")
 tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
 METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
-jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
+jetCollection      = cms.InputTag("selectedUpdatedPatJetsNewDFTraining", "", process.name_())
 AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
 #else:
     #electronCollection = cms.InputTag("slimmedElectrons", "", "RECO")
@@ -491,8 +511,24 @@ if options.ProduceMemNtuples==True:
     process.BoostedAnalyzer.memNtuples=True
     process.BoostedAnalyzer.processorNames=cms.vstring("SlimmedNtuples")
 
+process.updateJets = cms.Task(
+                    process.patJetCorrFactorsNewDFTraining,
+                    process.patJetCorrFactorsTransientCorrectedNewDFTraining,
+                    process.pfDeepCSVTagInfosNewDFTraining, 
+                    process.pfDeepFlavourJetTagsNewDFTraining,
+                    process.pfDeepFlavourTagInfosNewDFTraining,
+                    process.pfImpactParameterTagInfosNewDFTraining,
+                    process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining,
+                    process.selectedUpdatedPatJetsNewDFTraining,
+                    process.updatedPatJetsNewDFTraining,
+                    process.updatedPatJetsTransientCorrectedNewDFTraining)
+
+
 ##### DEFINE PATH ##########
 process.p = cms.Path()
+
+# rerun DeepJet
+process.p.associate(process.updateJets)
 
 if options.recorrectMET:
     process.p *= process.fullPatMetSequence
