@@ -78,12 +78,12 @@ private:
     jetMinimal,
     jetPU
   };
-  enum PUJetIDWP
+  enum class PUJetIDWP
   {
     none,
-    loose,
-    medium,
-    tight
+    Loose,
+    Medium,
+    Tight
   };
 
   // member functions
@@ -433,11 +433,11 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
 // function to Translate PUJetIDWP into its corresponding int
 int SelectedJetProducer::TranslateJetPUIDtoInt(PUJetIDWP wp) const
 {
-  if (wp == PUJetIDWP::loose)
+  if (wp == PUJetIDWP::Loose)
     return 4;
-  else if (wp == PUJetIDWP::medium)
+  else if (wp == PUJetIDWP::Medium)
     return 6;
-  else if (wp == PUJetIDWP::tight)
+  else if (wp == PUJetIDWP::Tight)
     return 7;
   else
     return 0;
@@ -691,18 +691,18 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
 
   //translate Jet_PUID
   // fill Jet_PUIDs with default values
-  PUJetID_WP = std::vector<PUJetIDWP>(PUJetIDMins.size(), PUJetIDWP::loose);
+  PUJetID_WP = std::vector<PUJetIDWP>(PUJetIDMins.size(), PUJetIDWP::Loose);
   // load PUJetIDWPs
   for (size_t i = 0; i < PUJetIDMins.size(); i++)
   {
     if (PUJetIDMins[i] == "none")
       PUJetID_WP[i] = PUJetIDWP::none;
     else if (PUJetIDMins[i] == "loose")
-      PUJetID_WP[i] = PUJetIDWP::loose;
+      PUJetID_WP[i] = PUJetIDWP::Loose;
     else if (PUJetIDMins[i] == "medium")
-      PUJetID_WP[i] = PUJetIDWP::medium;
+      PUJetID_WP[i] = PUJetIDWP::Medium;
     else if (PUJetIDMins[i] == "tight")
-      PUJetID_WP[i] = PUJetIDWP::tight;
+      PUJetID_WP[i] = PUJetIDWP::Tight;
     else
     {
       std::cerr << "\n\nERROR: No matching PUJetID_WP found for: " << PUJetIDMins[i] << std::endl;
