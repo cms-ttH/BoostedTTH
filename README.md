@@ -48,7 +48,7 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     # install miniaod and boostedtth
     cd $CMSSWSRCDIR
     git clone -b Legacy_2016_2017_Devel https://github.com/cms-ttH/MiniAOD.git
-    git clone -b CMSSW_9_4_10 https://github.com/cms-ttH/BoostedTTH.git
+    git clone -b Legacy_2016_2017_Devel https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
     cd $CMSSWSRCDIR/BoostedTTH/BoostedAnalyzer/data
