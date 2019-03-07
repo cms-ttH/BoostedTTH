@@ -195,7 +195,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : Jet
                                                                              rhoToken{consumes<double>(iConfig.getParameter<edm::InputTag>("rho"))},
                                                                              jecFileAK4{iConfig.getParameter<std::string>("jecFileAK4")},
                                                                              jecFileAK8{iConfig.getParameter<std::string>("jecFileAK8")},
-                                                                             era{iConfig.getParameter<std::string>("era")}
+                                                                             era{iConfig.getParameter<std::string>("dataEra")}
 {
   // do this for getJetCorrector call with JetType as argument, because it needs ak4... or ak8 ... instead of AK4... or AK8...
   JetType.replace(JetType.begin(), JetType.begin() + 2, "ak");
