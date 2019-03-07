@@ -106,7 +106,8 @@ filtersData= cms.PSet(
                         "Flag_eeBadScFilter",
                         "Flag_BadPFMuonFilter",
                         "Flag_BadChargedCandidateFilter",
-                        "Flag_ecalBadCalibFilter"
+                        # "Flag_ecalBadCalibFilter",
+                        "ecalBadCalibReducedMINIAODFilter"
                         )
 )
 
@@ -118,6 +119,8 @@ filtersMC= cms.PSet(
                         "Flag_EcalDeadCellTriggerPrimitiveFilter",
                         "Flag_BadPFMuonFilter",
                         "Flag_BadChargedCandidateFilter",
-                        "Flag_ecalBadCalibFilter"
+                        # "Flag_ecalBadCalibFilter",
+                        "ecalBadCalibReducedMINIAODFilter"
+                        
                         )
 )
