@@ -31,7 +31,7 @@ options.register("electronRegression","",VarParsing.multiplicity.singleton,VarPa
 options.register("electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 options.register( "useMuonRC", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
 options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
-options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
+options.register("dataEra",     "2017",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
 options.register("updatePUJetId",     False,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
 options.register( "ProduceMemNtuples", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
 
@@ -217,29 +217,31 @@ if options.recorrectMET:
                                )
 #METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 
-# run ecalBadCalibReducedMINIAODFilter
-process.load('RecoMET.METFilters.ecalBadCalibFilter_cfi')
+# run ecalBadCalibReducedMINIAODFilter for 2017 data
+if "2017" in options.dataEra:
+    process.load('RecoMET.METFilters.ecalBadCalibFilter_cfi')
 
-baddetEcallist = cms.vuint32(
-    [872439604,872422825,872420274,872423218,
-     872423215,872416066,872435036,872439336,
-     872420273,872436907,872420147,872439731,
-     872436657,872420397,872439732,872439339,
-     872439603,872422436,872439861,872437051,
-     872437052,872420649,872422436,872421950,
-     872437185,872422564,872421566,872421695,
-     872421955,872421567,872437184,872421951,
-     872421694,872437056,872437057,872437313])
+    baddetEcallist = cms.vuint32(
+        [872439604,872422825,872420274,872423218,
+        872423215,872416066,872435036,872439336,
+        872420273,872436907,872420147,872439731,
+        872436657,872420397,872439732,872439339,
+        872439603,872422436,872439861,872437051,
+        872437052,872420649,872422436,872421950,
+        872437185,872422564,872421566,872421695,
+        872421955,872421567,872437184,872421951,
+        872421694,872437056,872437057,872437313])
 
 
-process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter(
-    "EcalBadCalibFilter",
-    EcalRecHitSource = cms.InputTag("reducedEgamma:reducedEERecHits"),
-    ecalMinEt        = cms.double(50.),
-    baddetEcal    = baddetEcallist, 
-    taggingMode = cms.bool(True),
-    debug = cms.bool(False)
-    )
+    process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter(
+        "EcalBadCalibFilter",
+        EcalRecHitSource = cms.InputTag("reducedEgamma:reducedEERecHits"),
+        ecalMinEt        = cms.double(50.),
+        baddetEcal    = baddetEcallist, 
+        taggingMode = cms.bool(True),
+        debug = cms.bool(False)
+        )
+    
 
 ### Electron scale and smearing corrections ###  
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
@@ -512,6 +514,11 @@ else:
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
 
+if "2017" in options.dataEra:
+    process.BoostedAnalyzer.additionalFilters = cms.VInputTag(["ecalBadCalibReducedMINIAODFilter"])
+    process.BoostedAnalyzer.filters.append("ecalBadCalibReducedMINIAODFilter")
+
+
 printContent=False
 if printContent:
     process.content = cms.EDAnalyzer("EventContentAnalyzer")
@@ -554,8 +561,9 @@ process.p = cms.Path()
 # rerun DeepJet
 process.p.associate(process.updateJets)
 
-# run ecalBadCalibReducedMINIAODFilter
-process.p *= process.ecalBadCalibReducedMINIAODFilter
+# run ecalBadCalibReducedMINIAODFilter for 2017 data
+if "2017" in options.dataEra:
+    process.p *= process.ecalBadCalibReducedMINIAODFilter
 
 if options.recorrectMET:
     process.p *= process.fullPatMetSequence
