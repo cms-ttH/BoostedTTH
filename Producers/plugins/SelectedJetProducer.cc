@@ -147,8 +147,10 @@ private:
   edm::EDGetTokenT<double> rhoToken;
 
   //JEC files
-  const std::string jecFileAK4;
-  const std::string jecFileAK8;
+  const std::string jecFileAK4_2016;
+  const std::string jecFileAK8_2016;
+  const std::string jecFileAK4_2017;
+  const std::string jecFileAK8_2017;
 
   const std::string era;
 
@@ -193,9 +195,11 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : Jet
                                                                              muonsToken{consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))},
                                                                              electronsToken{consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"))},
                                                                              rhoToken{consumes<double>(iConfig.getParameter<edm::InputTag>("rho"))},
-                                                                             jecFileAK4{iConfig.getParameter<std::string>("jecFileAK4")},
-                                                                             jecFileAK8{iConfig.getParameter<std::string>("jecFileAK8")},
-                                                                             era{iConfig.getParameter<std::string>("dataEra")}
+                                                                             jecFileAK4_2016{iConfig.getParameter<std::string>("jecFileAK4_2016")},
+                                                                             jecFileAK8_2016{iConfig.getParameter<std::string>("jecFileAK8_2016")},
+                                                                             jecFileAK4_2017{iConfig.getParameter<std::string>("jecFileAK4_2017")},
+                                                                             jecFileAK8_2017{iConfig.getParameter<std::string>("jecFileAK8_2017")},
+                                                                             era{iConfig.getParameter<std::string>("era")}
 {
   // do this for getJetCorrector call with JetType as argument, because it needs ak4... or ak8 ... instead of AK4... or AK8...
   JetType.replace(JetType.begin(), JetType.begin() + 2, "ak");
@@ -231,12 +235,24 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : Jet
   if (TString(JetType).Contains("ak4"))
   {
     jetTypeLabelForJECUncertainty = "AK4PFchs";
-    jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4;
+    // change File for 2016
+    if (TString(era).Contains("2016")){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2016;
+    }
+    else if(TString(era).Contains("2017")){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2017;
+    }
   }
   else if (TString(JetType).Contains("ak8"))
   {
     jetTypeLabelForJECUncertainty = "AK8PFchs";
-    jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8;
+    // change File for 2016
+    if (TString(era).Contains("2016")){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2016;
+    }
+    else if(TString(era).Contains("2017")){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2017;
+    }
   }
 
   if (jecUncertaintyTxtFileName != "")
