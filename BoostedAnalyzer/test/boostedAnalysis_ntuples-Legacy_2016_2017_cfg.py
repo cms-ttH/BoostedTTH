@@ -352,6 +352,19 @@ for syst in systs:
 
 # smearing of corrected jets -- producers that create the nominal and up/down JER correction
 # jer shift of nominal sample
+if "2016" in options.dataEra:
+    jerResFileAK4 = "Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"
+    jerResFileAK8 = "Summer16_25nsV1_MC_PtResolution_AK8PFchs.txt"
+    jerSFFileAK4 = "Summer16_25nsV1_MC_SF_AK4PFchs.txt"
+    jerSFFileAK8 = "Summer16_25nsV1_MC_SF_AK8PFchs.txt"
+elif "2017" in options.dataEra:
+    jerResFileAK4 = "Fall17_V3_MC_PtResolution_AK4PFchs.txt"
+    jerResFileAK8 = "Fall17_V3_MC_PtResolution_AK8PFchs.txt"
+    jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFchs.txt"
+    jerSFFileAK8 = "Fall17_V3_MC_SF_AK8PFchs.txt"
+else:
+    raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017")
+
 process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
     src = cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4"),
     enabled = cms.bool(True),  # If False, no smearing is performed
@@ -365,9 +378,10 @@ process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
     useDeterministicSeed=cms.bool(False),# default deterministic seeds not used, but our own
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_PtResolution_AK4PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_SF_AK4PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK4),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK4),
 )
+
 
 process.patSmearedJetsAK8 = cms.EDProducer("SmearedPATJetProducer",
     src = cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8"),
@@ -382,8 +396,8 @@ process.patSmearedJetsAK8 = cms.EDProducer("SmearedPATJetProducer",
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
     useDeterministicSeed=cms.bool(False),# default deterministic seeds not used, but our own
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_PtResolution_AK8PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_SF_AK8PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK8),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK8),
 )
 
 # up/down jer shift of nominal sample and nominal jer shift of jes systematic samples

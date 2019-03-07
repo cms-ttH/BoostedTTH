@@ -54,10 +54,17 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     cd $CMSSWSRCDIR/BoostedTTH/BoostedAnalyzer/data
     mkdir jerfiles
     cd jerfiles
+    # 2017
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Fall17_V3_MC/Fall17_V3_MC_PtResolution_AK4PFchs.txt"
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Fall17_V3_MC/Fall17_V3_MC_SF_AK4PFchs.txt"
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Fall17_V3_MC/Fall17_V3_MC_PtResolution_AK8PFchs.txt"
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Fall17_V3_MC/Fall17_V3_MC_SF_AK8PFchs.txt"
+    # 2016
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Summer16_25nsV1_MC/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Summer16_25nsV1_MC/Summer16_25nsV1_MC_SF_AK4PFchs.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Summer16_25nsV1_MC/Summer16_25nsV1_MC_PtResolution_AK8PFchs.txt"
+    wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Summer16_25nsV1_MC/Summer16_25nsV1_MC_SF_AK8PFchs.txt"
+
     cd $CMSSWSRCDIR
    
     #compile
