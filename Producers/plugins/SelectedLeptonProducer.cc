@@ -99,7 +99,7 @@ private:
     // lepton selection criteria
     const std::vector<double> ptMins_;
     const std::vector<double> etaMaxs_;    
-    const std::vector<std::string > leptonIDs;
+    const std::vector<std::string> leptonIDs;
     const std::vector<std::string> isoConeSizes;
     const std::vector<std::string> isoCorrTypes;
     const std::vector<std::string> muonIsoTypes;
