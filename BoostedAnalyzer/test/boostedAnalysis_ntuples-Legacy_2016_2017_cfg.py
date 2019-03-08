@@ -456,6 +456,11 @@ if options.isData and options.useJson:
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
+if "2016" in options.dataEra:
+    from BoostedTTH.BoostedAnalyzer.Weights_cff import BTagSFs94XDeepJet2016
+    process.BoostedAnalyzer.bTagSFs = cms.PSet(BTagSFs94XDeepJet2016)
+
+
 process.BoostedAnalyzer.selectionNames = [
 "FilterSelection",
 "VertexSelection",
