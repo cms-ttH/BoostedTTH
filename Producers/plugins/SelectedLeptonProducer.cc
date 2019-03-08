@@ -305,6 +305,14 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             for(auto& ele : updatedElectrons){
                 ele.addUserFloat("ptBeforeRun2Calibration",ele.pt());
                 ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
+                // only use combined systematics for scaling and smearing since we should not be very sensitive to electron energy scale
+                // as recommended by e/gamma pog only for MC
+                if(not isData){
+                    ele.addUserFloat("CorrFactor_ScaleUp",ele.userFloat("energyScaleUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                    ele.addUserFloat("CorrFactor_ScaleDown",ele.userFloat("energyScaleDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                    ele.addUserFloat("CorrFactor_SigmaUp",ele.userFloat("energySigmaUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                    ele.addUserFloat("CorrFactor_SigmaDown",ele.userFloat("energySigmaDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                }
             }
             
             // produce the different electron collections and create a unique ptr to it      
