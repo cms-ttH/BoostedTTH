@@ -416,9 +416,11 @@ for s in systsJES:
 if options.isData:
     process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
     process.BoostedAnalyzer.filterBits=cms.InputTag("TriggerResults::RECO")
+    process.BoostedAnalyzer.dataEra=options.dataEra
 
 else:
     process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+    process.BoostedAnalyzer.dataEra=options.dataEra
 
     if not options.isBoostedMiniAOD:
         # Supplies PDG ID to real name resolution of MC particles

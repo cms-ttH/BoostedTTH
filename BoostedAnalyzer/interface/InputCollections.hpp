@@ -56,7 +56,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
         const edm::Event&                             iEvent_,
         const edm::EventSetup&                        iSetup_,
                     const Systematics::Type&                      systematic_,
-                    const std::map<std::string, int>&             selectionTags_
+                    const std::map<std::string, int>&             selectionTags_,
+                    const std::string&                            era_
                     
           /**** bjetness code ****/
                 ):
@@ -84,7 +85,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
         iEvent(iEvent_),
         iSetup(iSetup_),
         systematic(systematic_),
-        selectionTags(selectionTags_)
+        selectionTags(selectionTags_),
+        era(era_)
                     {}
 
 /**
@@ -123,7 +125,8 @@ InputCollections(   const InputCollections&                       input,
         iEvent(input.iEvent),
         iSetup(input.iSetup),
         systematic(input.systematic),
-        selectionTags(input.selectionTags)
+        selectionTags(input.selectionTags),
+        era(input.era)
                     {}
 
   const EventInfo&                              eventInfo;
@@ -151,6 +154,7 @@ InputCollections(   const InputCollections&                       input,
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;
   const std::map<std::string, int>&              selectionTags;
+  const std::string&                            era;
 };
 
 #endif
