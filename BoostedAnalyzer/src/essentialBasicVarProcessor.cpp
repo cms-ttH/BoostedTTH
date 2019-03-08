@@ -276,12 +276,14 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         vars.FillVars("Electron_Pt_BeforeRun2Calibration",iEle,itEle->userFloat("ptBeforeRun2Calibration"));
     }
     vars.FillVars("Electron_Eta_Supercluster",iEle,itEle->superCluster()->eta());
-    // electron energy scale combined up/down
-    vars.FillVars( "Electron_CorrFactor_ScaleUp",iEle,itEle->userFloat("CorrFactor_ScaleUp"));
-    vars.FillVars( "Electron_CorrFactor_ScaleDown",iEle,itEle->userFloat("CorrFactor_ScaleDown"));
-    // electron energy smearing combined up/down
-    vars.FillVars( "Electron_CorrFactor_SigmaUp",iEle,itEle->userFloat("CorrFactor_SigmaUp"));
-    vars.FillVars( "Electron_CorrFactor_SigmaDown",iEle,itEle->userFloat("CorrFactor_SigmaDown"));
+    if(itEle->hasUserFloat("Electron_CorrFactor_ScaleUp")){
+        // electron energy scale combined up/down
+        vars.FillVars( "Electron_CorrFactor_ScaleUp",iEle,itEle->userFloat("CorrFactor_ScaleUp"));
+        vars.FillVars( "Electron_CorrFactor_ScaleDown",iEle,itEle->userFloat("CorrFactor_ScaleDown"));
+        // electron energy smearing combined up/down
+        vars.FillVars( "Electron_CorrFactor_SigmaUp",iEle,itEle->userFloat("CorrFactor_SigmaUp"));
+        vars.FillVars( "Electron_CorrFactor_SigmaDown",iEle,itEle->userFloat("CorrFactor_SigmaDown"));
+    }
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     int iMu = itMu - input.selectedMuonsLoose.begin();
