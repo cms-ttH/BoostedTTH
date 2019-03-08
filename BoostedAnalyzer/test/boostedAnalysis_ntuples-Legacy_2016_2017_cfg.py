@@ -31,7 +31,7 @@ options.register("electronRegression","",VarParsing.multiplicity.singleton,VarPa
 options.register("electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 options.register( "useMuonRC", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
 options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
-options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
+options.register("dataEra",     "2017",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
 options.register("updatePUJetId",     False,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
 options.register( "ProduceMemNtuples", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
 
@@ -309,6 +309,7 @@ process.SelectedJetProducerAK4.collectionNames=["selectedJetsLooseAK4","selected
 process.SelectedJetProducerAK4.systematics=[""]
 process.SelectedJetProducerAK4.PUJetIDMins=["loose","loose"]
 process.SelectedJetProducerAK4.JetID="none"
+process.SelectedJetProducerAK4.era= options.dataEra
 # selection of the systematically shifted jets
 for syst in systs:
     setattr(process,'SelectedJetProducerAK4'+syst,process.SelectedJetProducerAK4.clone(jets='patSmearedJetsAK4'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK4.collectionNames)]))
@@ -351,6 +352,19 @@ for syst in systs:
 
 # smearing of corrected jets -- producers that create the nominal and up/down JER correction
 # jer shift of nominal sample
+if "2016" in options.dataEra:
+    jerResFileAK4 = "Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"
+    jerResFileAK8 = "Summer16_25nsV1_MC_PtResolution_AK8PFchs.txt"
+    jerSFFileAK4 = "Summer16_25nsV1_MC_SF_AK4PFchs.txt"
+    jerSFFileAK8 = "Summer16_25nsV1_MC_SF_AK8PFchs.txt"
+elif "2017" in options.dataEra:
+    jerResFileAK4 = "Fall17_V3_MC_PtResolution_AK4PFchs.txt"
+    jerResFileAK8 = "Fall17_V3_MC_PtResolution_AK8PFchs.txt"
+    jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFchs.txt"
+    jerSFFileAK8 = "Fall17_V3_MC_SF_AK8PFchs.txt"
+else:
+    raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017")
+
 process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
     src = cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4"),
     enabled = cms.bool(True),  # If False, no smearing is performed
@@ -364,9 +378,10 @@ process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
     useDeterministicSeed=cms.bool(False),# default deterministic seeds not used, but our own
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_PtResolution_AK4PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_SF_AK4PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK4),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK4),
 )
+
 
 process.patSmearedJetsAK8 = cms.EDProducer("SmearedPATJetProducer",
     src = cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8"),
@@ -381,8 +396,8 @@ process.patSmearedJetsAK8 = cms.EDProducer("SmearedPATJetProducer",
     variation = cms.int32(0),  # systematic +1 0 -1 sigma
     debug = cms.untracked.bool(False),
     useDeterministicSeed=cms.bool(False),# default deterministic seeds not used, but our own
-    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_PtResolution_AK8PFchs.txt"),
-    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/Fall17_V3_MC_SF_AK8PFchs.txt"),
+    resolutionFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK8),
+    scaleFactorFile = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK8),
 )
 
 # up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
