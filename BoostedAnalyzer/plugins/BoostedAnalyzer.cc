@@ -184,6 +184,8 @@ private:
     // --------------- FLAGS ---------------
     /** is analyzed sample data? */
     bool isData;
+    // Whats the dataEra
+    std::string era;
     /** use fat jets? this is only possible if the miniAOD contains them */
     bool useFatJets;
     /** dump some event content for newer synchronization */
@@ -299,6 +301,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
 
     isData              ( iConfig.getParameter<bool>("isData") ),
+    era                 ( iConfig.getParameter<std::string>("dataEra") ),
     useFatJets          ( iConfig.getParameter<bool>("useFatJets") ),
     dumpSyncExe         ( iConfig.getParameter<bool>("dumpSyncExe") ),
     dumpExtended        ( iConfig.getParameter<bool>("dumpExtended") ),
@@ -825,7 +828,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  iEvent,
 					  iSetup,
                                           jetSystematics[isys],
-                      selectionTags
+                      selectionTags,
+                      era
 					  ));
 
     }

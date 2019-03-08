@@ -416,9 +416,11 @@ for s in systsJES:
 if options.isData:
     process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
     process.BoostedAnalyzer.filterBits=cms.InputTag("TriggerResults::RECO")
+    process.BoostedAnalyzer.dataEra=options.dataEra
 
 else:
     process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+    process.BoostedAnalyzer.dataEra=options.dataEra
 
     if not options.isBoostedMiniAOD:
         # Supplies PDG ID to real name resolution of MC particles
@@ -453,6 +455,11 @@ if options.isData and options.useJson:
 
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
+
+if "2016" in options.dataEra:
+    from BoostedTTH.BoostedAnalyzer.Weights_cff import BTagSFs94XDeepJet2016
+    process.BoostedAnalyzer.bTagSFs = cms.PSet(BTagSFs94XDeepJet2016)
+
 
 process.BoostedAnalyzer.selectionNames = [
 "FilterSelection",
