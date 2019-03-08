@@ -94,7 +94,7 @@ private:
     // type of lepton (electron or muon) and names of the collections to create
     const std::string leptonType;
     LeptonType leptonType_;
-    std::vector<std::string> collectionNames_;
+    const std::vector<std::string> collectionNames_;
     
     // lepton selection criteria
     const std::vector<double> ptMins_;
