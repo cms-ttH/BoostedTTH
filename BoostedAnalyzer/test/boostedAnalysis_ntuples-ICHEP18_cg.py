@@ -401,6 +401,7 @@ if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
 process.BoostedAnalyzer.selectionNames = [
+"GenTopSLSelection"
 #"FilterSelection",
 #"VertexSelection",
 #"LeptonSelection",
