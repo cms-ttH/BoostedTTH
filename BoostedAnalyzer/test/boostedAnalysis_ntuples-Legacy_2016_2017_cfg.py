@@ -26,13 +26,13 @@ options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing
 options.register( "calcBJetness",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
 options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.register( "systematicVariations","nominal", VarParsing.multiplicity.list, VarParsing.varType.string, "comma-separated list of systematic variations ('nominal' or systematics base name, up/down will be added)" )
-options.register("deterministicSeeds",True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
-options.register("electronRegression","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
-options.register("electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
+options.register( "deterministicSeeds",True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
+options.register( "electronRegression","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
+options.register( "electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 options.register( "useMuonRC", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
-options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
-options.register("dataEra",     "2017",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
-options.register("updatePUJetId",     False,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
+options.register( "recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
+options.register( "dataEra",     "2017",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period or mc campaign, e.g. '2016B' or '2017'" )
+options.register( "updatePUJetId",     False,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
 options.register( "ProduceMemNtuples", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
 
 options.parseArguments()
@@ -42,7 +42,21 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
     options.maxEvents = 10000 # reset for testing
 
 if options.isData:
-    options.globalTag="94X_dataRun2_v11"
+    if "2016" in options.dataEra:
+        options.globalTag="94X_dataRun2_v10"
+    elif "2017" in options.dataEra:
+        options.globalTag="94X_dataRun2_v11"
+    else:
+        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
+elif not options.isData:
+    if "2016" in options.dataEra:
+        options.globalTag="94X_mcRun2_asymptotic_v3"
+    elif "2017" in options.dataEra:
+        options.globalTag="94X_mc2017_realistic_v17"
+    else:
+        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
+else:
+    raise Exception("Problem with isData option! This should never happen!")
 
 if not options.inputFiles:
     if not options.isData:
@@ -217,13 +231,29 @@ if options.recorrectMET:
                                )
 #METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 
-### Electron scale and smearing corrections ###  
+### E/Gamma recommendations ###  
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+EG_era = None
+EG_corrections = None
+EG_vid = None
+if "2016" in options.dataEra:
+    EG_era = '2016-Legacy'
+    EG_corrections = False
+    EG_vid = True
+elif "2017" in options.dataEra:
+    EG_era = '2017-Nov17ReReco'
+    EG_corrections = True
+    EG_vid = True
+else:
+    raise Exception( "dataEra "+options.dataEra+" not supported for Egamma tools: USE dataEra=2016/2017")
+
 setupEgammaPostRecoSeq(process,
-                       runVID=True, #saves CPU time by not needlessly re-running VID
-                       era='2017-Nov17ReReco')
+                       runVID=EG_vid,
+                       runEnergyCorrections=EG_corrections,
+                       era=EG_era
+                       )
 # a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
-#electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
+# electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 
 ### some standard collections ####
 #if not options.isData:
