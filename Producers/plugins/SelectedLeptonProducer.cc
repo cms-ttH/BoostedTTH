@@ -11,6 +11,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
                                                                                     isoConeSizes{iConfig.getParameter<std::vector<std::string> >("isoConeSizes")},
                                                                                     isoCorrTypes{iConfig.getParameter<std::vector<std::string> >("isoCorrTypes")},
                                                                                     muonIsoTypes{iConfig.getParameter<std::vector<std::string> >("muonIsoTypes")},
+                                                                                    era{iConfig.getParameter<std::string>("era")},
                                                                                     isData{iConfig.getParameter<bool>("isData")},
                                                                                     useMuonRC{iConfig.getParameter<bool>("useMuonRC")},
                                                                                     deterministicSeeds{iConfig.getParameter<bool>("useDeterministicSeeds")},
@@ -33,7 +34,11 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         throw std::exception();
     }
     
-    
+    if( era.find("2016")==std::string::npos and era.find("2017")==std::string::npos){
+        std::cerr << "\n\nERROR: Unknown era" << era << "in SelectedLeptonProducer " << std::endl;
+        std::cerr << "Please select '2016' or '2017'\n" << std::endl;
+        throw std::exception();
+    }
     
     // fill lepton selection criteria with default values
     electronIDs_        = std::vector<ElectronID>(leptonIDs.size(),ElectronID::Loose);
@@ -106,6 +111,24 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         }
         
     }
+    
+    
+    if(leptonType_==LeptonType::Electron){
+        EleID_SF_Loose = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_LooseIDSF")))->Get("EGamma_SF2D");
+        EleID_SF_Loose->SetDirectory(0);
+        EleID_SF_Medium = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_MediumIDSF")))->Get("EGamma_SF2D");
+        EleID_SF_Medium->SetDirectory(0);
+        EleID_SF_Tight = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_TightIDSF")))->Get("EGamma_SF2D");
+        EleID_SF_Tight->SetDirectory(0);
+        EleReco_SF_highPt = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_RecoSF_highPt")))->Get("EGamma_SF2D");
+        EleReco_SF_highPt->SetDirectory(0);
+        EleReco_SF_lowPt = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_RecoSF_lowPt")))->Get("EGamma_SF2D");
+        EleReco_SF_lowPt->SetDirectory(0);
+    }
+    else if(leptonType_==LeptonType::Muon){
+        // put muon stuff here
+    }
+    
 }
 
 // destructor
@@ -174,10 +197,13 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
                 }
             }
             
+            std::vector<pat::Electron> selectedElectrons = GetSortedByPt(GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i]));
+            
+            AddElectronSFs(selectedElectrons, electronIDs_[i]);
+            
             // produce the different electron collections and create a unique ptr to it      
-            std::unique_ptr<pat::ElectronCollection> selectedLeptons =  std::make_unique<pat::ElectronCollection>(
-                                                                        GetSortedByPt(
-                                                                        GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])));
+            std::unique_ptr<pat::ElectronCollection> selectedLeptons =  std::make_unique<pat::ElectronCollection>(selectedElectrons);
+            
             // put the collection into the event with help of the unique ptr
             iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
         }
@@ -324,6 +350,105 @@ void SelectedLeptonProducer::AddElectronRelIsolation(std::vector<pat::Electron>&
         ele.addUserFloat("relIso",GetEletronRelIsolation(ele, icorrType, iconeSize));
     }
 }
+
+// function to add electron object scale factors to electron, currently reconstruction and identification
+void SelectedLeptonProducer::AddElectronSFs(std::vector<pat::Electron>& inputElectrons, const ElectronID iElectronID) const{
+    for(auto& ele : inputElectrons){
+        auto IDSFs = GetElectronIDSF(ele, iElectronID);
+        auto RecoSFs = GetElectronRecoSF(ele);
+        assert(IDSFs.size()==3);
+        assert(RecoSFs.size()==3);
+        ele.addUserFloat("IdentificationSF",IDSFs[0]);
+        ele.addUserFloat("IdentificationSFUp",IDSFs[1]);
+        ele.addUserFloat("IdentificationSFDown",IDSFs[2]);
+        ele.addUserFloat("ReconstructionSF",RecoSFs[0]);
+        ele.addUserFloat("ReconstructionSFUp",RecoSFs[1]);
+        ele.addUserFloat("ReconstructionSFDown",RecoSFs[2]);
+    }
+}
+
+// function to calculate electron ID scale factor
+std::vector<float> SelectedLeptonProducer::GetElectronIDSF(const pat::Electron& iElectron, const ElectronID iElectronID) const{
+    auto pt = iElectron.hasUserFloat("ptBeforeRun2Calibration") ? iElectron.userFloat("ptBeforeRun2Calibration") : iElectron.pt();
+    auto eta = iElectron.superCluster().isAvailable() ? iElectron.superCluster()->position().eta() : iElectron.eta();
+    TH2F* SF_hist = nullptr; 
+    std::vector<float> SFs{1.0,1.0,1.0};
+    
+    switch(iElectronID){
+        case ElectronID::None:
+            break;
+        case ElectronID::Veto:
+            break;
+        case ElectronID::Loose:
+            SF_hist = EleID_SF_Loose;
+            break;
+        case ElectronID::Medium:
+            SF_hist = EleID_SF_Medium;
+            break;
+        case ElectronID::Tight:
+            SF_hist = EleID_SF_Tight;
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidElectronID" <<  std::endl;
+            throw std::exception();
+    }
+    
+    if(SF_hist==nullptr){
+        std::cerr << "\n\nERROR: Electron ID Scale Factor File could not be loaded" <<  std::endl;
+        throw std::exception(); 
+    }
+    
+    auto xmin = SF_hist->GetXaxis()->GetXmin();
+    auto xmax = SF_hist->GetXaxis()->GetXmax();
+    auto ymin = SF_hist->GetYaxis()->GetXmin();
+    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    
+    eta = std::max(xmin+0.1,eta);
+    eta = std::min(xmax-0.1,eta);
+    pt = std::max(ymin+0.1,pt);
+    pt = std::min(ymax-0.1,pt);
+    
+    
+    SFs[0]=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
+    SFs[1]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    SFs[2]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    
+    return SFs;
+}
+
+// function to calculate electron reconstruction scale factor
+std::vector<float> SelectedLeptonProducer::GetElectronRecoSF(const pat::Electron& iElectron) const{
+    auto pt = iElectron.hasUserFloat("ptBeforeRun2Calibration") ? iElectron.userFloat("ptBeforeRun2Calibration") : iElectron.pt();
+    auto eta = iElectron.superCluster().isAvailable() ? iElectron.superCluster()->position().eta() : iElectron.eta();
+    TH2F* SF_hist = nullptr; 
+    std::vector<float> SFs{1.0,1.0,1.0};
+    
+    if(pt>=20.) SF_hist = EleReco_SF_highPt;
+    else SF_hist = EleReco_SF_lowPt;
+    
+    if(SF_hist==nullptr){
+        std::cerr << "\n\nERROR: Electron Reco Scale Factor File could not be loaded" <<  std::endl;
+        throw std::exception(); 
+    }
+    
+    auto xmin = SF_hist->GetXaxis()->GetXmin();
+    auto xmax = SF_hist->GetXaxis()->GetXmax();
+    auto ymin = SF_hist->GetYaxis()->GetXmin();
+    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    
+    eta = std::max(xmin+0.1,eta);
+    eta = std::min(xmax-0.1,eta);
+    pt = std::max(ymin+0.1,pt);
+    pt = std::min(ymax-0.1,pt);
+    
+    SFs[0]=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
+    SFs[1]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    SFs[2]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    
+    
+    return SFs;
+}
+
 // function to select muons with several properties and return a collection
 std::vector<pat::Muon>
 SelectedLeptonProducer::GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const double iMaxEta, const MuonIsolation imuonIso) const{

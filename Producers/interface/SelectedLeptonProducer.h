@@ -43,6 +43,9 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 
+#include "TH2F.h"
+#include "TFile.h"
+
 #include "BoostedTTH/Producers/src/RoccoR.cc" // this is needed to calculate the correction factors of the rochester correction
 //
 // class declaration
@@ -75,6 +78,11 @@ public:
     double GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType icorrType = IsoCorrType::rhoEA, const IsoConeSize iconeSize = IsoConeSize::R03) const;
     void AddElectronRelIsolation(std::vector<pat::Electron>& inputElectrons, const IsoCorrType icorrType = IsoCorrType::rhoEA, const IsoConeSize iconeSize = IsoConeSize::R03);
     
+    // Functions to add object scale factors to electrons meaning reconstruction and identification scale factors
+    void AddElectronSFs(std::vector<pat::Electron>& inputElectrons, const ElectronID iElectronID) const;
+    std::vector<float> GetElectronIDSF(const pat::Electron& iElectron, const ElectronID iElectronID) const;
+    std::vector<float> GetElectronRecoSF(const pat::Electron& iElectron) const;
+    
     // Functions to return a muon collection with the desired properties
     std::vector<pat::Muon> GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt = 10., const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const double iMaxEta = 2.4, const MuonIsolation = MuonIsolation::Loose) const;
     bool isGoodMuon(const pat::Muon&, const double iMinPt = 10., const double iMaxEta = 2.4, const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const MuonIsolation = MuonIsolation::Loose) const;
@@ -105,6 +113,8 @@ private:
     const std::vector<std::string> isoConeSizes;
     const std::vector<std::string> isoCorrTypes;
     const std::vector<std::string> muonIsoTypes;
+    
+    const std::string era;
     
     // flags used for muon Rochester correction
     const bool isData;
@@ -139,6 +149,12 @@ private:
     
     // event-specific average pile-up energy density per unit area in the phi-eta plane
     double rho;
+    
+    TH2F* EleID_SF_Loose = nullptr;
+    TH2F* EleID_SF_Medium = nullptr;
+    TH2F* EleID_SF_Tight = nullptr;
+    TH2F* EleReco_SF_highPt = nullptr;
+    TH2F* EleReco_SF_lowPt = nullptr;
     
     
 };
