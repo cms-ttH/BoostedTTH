@@ -114,9 +114,9 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
     vars.FillVars( "jet_pt" , iJet , jet.pt() );
     vars.FillVars( "jet_eta" , iJet , jet.eta() );
     vars.FillVars( "jet_phi" , iJet , jet.phi() );
-    vars.FillVars( "jet_csv" , iJet , MiniAODHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags") );
-    vars.FillVars( "jet_deepcsv" , iJet , MiniAODHelper::GetJetCSV(jet,"DeepCSV") );
-    if(MiniAODHelper::PassesCSV(jet,'M')) iBtag++;
+    vars.FillVars( "jet_csv" , iJet , CSVHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+    vars.FillVars( "jet_deepcsv" , iJet , CSVHelper::GetJetCSV(jet,"DeepCSV") );
+    if(CSVHelper::PassesCSV(jet,"DeepJet",CSVHelper::CSVwp::Medium,input_nom.era)) iBtag++;
     // save the product of the nominal jec, meaning JESnominal*JERnominal
     vars.FillVars( "jet_corr" , iJet , jes_nom*jer_nom );
     vars.FillVars( "jet_corr_JER" , iJet , jer_nom );

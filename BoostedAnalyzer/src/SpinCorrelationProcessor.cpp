@@ -627,8 +627,8 @@ void SpinCorrelationProcessor::Process(const InputCollections& input,VariableCon
       int ntags=0;
       int njets=input.selectedJets.size();
       for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
-	jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j,"DeepCSV"));
-	if(BoostedUtils::PassesCSV(*j)) ntags++;
+	jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
+	if(CSVHelper::PassesCSV(*j,"DeepJet",CSVHelper::CSVwp::Medium,input.era)) ntags++;
       }
       TLorentzVector lepvec = BoostedUtils::GetTLorentzVector(BoostedUtils::GetPrimLepVec(input.selectedElectrons,input.selectedMuons));
       TVector2 metvec(input.correctedMET.px(),input.correctedMET.py());

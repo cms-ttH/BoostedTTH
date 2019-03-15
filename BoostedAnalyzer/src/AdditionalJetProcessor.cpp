@@ -156,7 +156,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalGenBJet_NHadrons", i, additional_b_genjets_nhadrons[i]);
       vars.FillVars( "AdditionalGenBJet_HadronPt", i, additional_b_genjets_hadron[i].pt());
       vars.FillVars( "AdditionalGenBJet_RecoJetPt", i, additional_b_genjets_recojets[i]!=0 ? additional_b_genjets_recojets[i]->pt() : -1);
-      vars.FillVars( "AdditionalGenBJet_RecoJetCSV", i, additional_b_genjets_recojets[i]!=0 ? MiniAODHelper::GetJetCSV(*additional_b_genjets_recojets[i],btagger) : -2);
+      vars.FillVars( "AdditionalGenBJet_RecoJetCSV", i, additional_b_genjets_recojets[i]!=0 ? CSVHelper::GetJetCSV(*additional_b_genjets_recojets[i],btagger) : -2);
       vars.FillVars( "AdditionalGenBJet_HadronId", i, additional_b_genjets_hadron[i].pdgId());
       float drB=5;
       for(uint k=0; k<btth.size(); k++){
@@ -193,7 +193,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalGenCJet_NHadrons", i, additional_c_genjets_nhadrons[i]);
       vars.FillVars( "AdditionalGenCJet_HadronPt", i, additional_c_genjets_hadron[i].pt());
       vars.FillVars( "AdditionalGenCJet_RecoJetPt", i, additional_c_genjets_recojets[i]!=0 ? additional_c_genjets_recojets[i]->pt() : -1);
-      vars.FillVars( "AdditionalGenCJet_RecoJetCSV", i, additional_c_genjets_recojets[i]!=0 ? MiniAODHelper::GetJetCSV(*additional_c_genjets_recojets[i],btagger) : -2);
+      vars.FillVars( "AdditionalGenCJet_RecoJetCSV", i, additional_c_genjets_recojets[i]!=0 ? CSVHelper::GetJetCSV(*additional_c_genjets_recojets[i],btagger) : -2);
       vars.FillVars( "AdditionalGenCJet_HadronId", i, additional_c_genjets_hadron[i].pdgId());
       float drQ=5;
       for(uint k=0; k<q1.size(); k++){
@@ -222,7 +222,7 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalLightGenJet_Phi", i, additional_light_genjets[i].phi());
       vars.FillVars( "AdditionalLightGenJet_E", i, additional_light_genjets[i].energy());
       vars.FillVars( "AdditionalLightGenJet_RecoJetPt", i, additional_light_genjets_recojets[i]!=0 ? additional_light_genjets_recojets[i]->pt() : -1);
-      vars.FillVars( "AdditionalLightGenJet_RecoJetCSV", i, additional_light_genjets_recojets[i]!=0 ? MiniAODHelper::GetJetCSV(*additional_light_genjets_recojets[i],btagger) : -2);
+      vars.FillVars( "AdditionalLightGenJet_RecoJetCSV", i, additional_light_genjets_recojets[i]!=0 ? CSVHelper::GetJetCSV(*additional_light_genjets_recojets[i],btagger) : -2);
     }
     
     vars.FillVar( "GenEvt_TTxId_FromGenTopEvt",input.genTopEvt.GetTTxId());
