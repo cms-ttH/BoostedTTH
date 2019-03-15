@@ -340,6 +340,7 @@ process.SelectedJetProducerAK4.systematics=[""]
 process.SelectedJetProducerAK4.PUJetIDMins=["loose","loose"]
 process.SelectedJetProducerAK4.JetID="none"
 process.SelectedJetProducerAK4.era= options.dataEra
+process.SelectedJetProducerAK4.isData= options.isData
 # selection of the systematically shifted jets
 for syst in systs:
     setattr(process,'SelectedJetProducerAK4'+syst,process.SelectedJetProducerAK4.clone(jets='patSmearedJetsAK4'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK4.collectionNames)]))
