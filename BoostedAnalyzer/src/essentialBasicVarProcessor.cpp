@@ -109,6 +109,12 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   // electron energy smearing combined up/down
   vars.InitVars( "Electron_CorrFactor_SigmaUp","N_LooseElectrons");
   vars.InitVars( "Electron_CorrFactor_SigmaDown","N_LooseElectrons");
+  vars.InitVars( "Electron_IdentificationSF","N_LooseElectrons");
+  vars.InitVars( "Electron_IdentificationSFUp","N_LooseElectrons");
+  vars.InitVars( "Electron_IdentificationSFDown","N_LooseElectrons");
+  vars.InitVars( "Electron_ReconstructionSF","N_LooseElectrons");
+  vars.InitVars( "Electron_ReconstructionSFUp","N_LooseElectrons");
+  vars.InitVars( "Electron_ReconstructionSFDown","N_LooseElectrons");
   
   
   vars.InitVar( "Evt_Pt_MET" );
@@ -286,6 +292,14 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         // electron energy smearing combined up/down
         vars.FillVars( "Electron_CorrFactor_SigmaUp",iEle,itEle->userFloat("CorrFactor_SigmaUp"));
         vars.FillVars( "Electron_CorrFactor_SigmaDown",iEle,itEle->userFloat("CorrFactor_SigmaDown"));
+    }
+    if(itEle->hasUserFloat("IdentificationSF")){
+        vars.FillVars( "Electron_IdentificationSF",iEle,itEle->userFloat("IdentificationSF"));
+        vars.FillVars( "Electron_IdentificationSFUp",iEle,itEle->userFloat("IdentificationSFUp"));
+        vars.FillVars( "Electron_IdentificationSFDown",iEle,itEle->userFloat("IdentificationSFDown"));
+        vars.FillVars( "Electron_ReconstructionSF",iEle,itEle->userFloat("ReconstructionSF"));
+        vars.FillVars( "Electron_ReconstructionSFUp",iEle,itEle->userFloat("ReconstructionSFUp"));
+        vars.FillVars( "Electron_ReconstructionSFDown",iEle,itEle->userFloat("ReconstructionSFDown"));
     }
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){

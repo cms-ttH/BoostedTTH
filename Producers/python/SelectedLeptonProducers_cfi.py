@@ -7,7 +7,6 @@ SelectedElectronProducer = cms.EDProducer(
     "SelectedLeptonProducer",
     leptonType = cms.string("electron"),
 
-    era          = cms.string("NA"),
     analysisType = cms.string("LJ"),
     isData       = cms.bool(False),
 
@@ -34,7 +33,13 @@ SelectedElectronProducer = cms.EDProducer(
     useMuonRC = cms.bool(True),
     useDeterministicSeeds = cms.bool(False),
     rc_dir = cms.string("BoostedTTH/Producers/data/rcdata2017v1/RoccoR2017v1.txt"),
-    ea_dir = cms.string("BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt")
+    ea_dir = cms.string("BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt"),
+    era = cms.string("2017"),
+    file_EleLooseIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronLoose_Fall17V2.root"),
+    file_EleMediumIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronMedium_Fall17V2.root"),
+    file_EleTightIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronTight_Fall17V2.root"),
+    file_EleRecoSF_highPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco.root"),
+    file_EleRecoSF_lowPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco_lowpt.root")
     )
 
 
@@ -42,7 +47,6 @@ SelectedMuonProducer = cms.EDProducer(
     "SelectedLeptonProducer",
     leptonType = cms.string("muon"),
 
-    era          = cms.string("NA"),
     analysisType = cms.string("LJ"),
     isData       = cms.bool(False),
 
@@ -60,7 +64,8 @@ SelectedMuonProducer = cms.EDProducer(
     useMuonRC = cms.bool(True),
     useDeterministicSeeds = cms.bool(False),
     rc_dir = cms.string("BoostedTTH/Producers/data/rcdata2017v1/RoccoR2017v1.txt"),
-    ea_dir = cms.string("BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt")
+    ea_dir = cms.string("BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt"),
+    era = cms.string("2017"),
     # The following two parameters are dummies in case of muons
     # they are not used for the muon selection, which is defined
     # via the 'leptonID' value
@@ -68,4 +73,9 @@ SelectedMuonProducer = cms.EDProducer(
     #eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose","","boostedAnalysis"),
     #eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto","","boostedAnalysis"),
     #eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight","","boostedAnalysis"),
+    file_EleLooseIDSF=cms.string(""),
+    file_EleMediumIDSF=cms.string(""),
+    file_EleTightIDSF=cms.string(""),
+    file_EleRecoSF_highPt=cms.string(""),
+    file_EleRecoSF_lowPt=cms.string("")
     )
