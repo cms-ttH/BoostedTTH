@@ -35,11 +35,11 @@ SelectedElectronProducer = cms.EDProducer(
     rc_dir = cms.string("BoostedTTH/Producers/data/rcdata2017v1/RoccoR2017v1.txt"),
     ea_dir = cms.string("BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt"),
     era = cms.string("2017"),
-    file_LooseIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronLoose_Fall17V2.root"),
-    file_MediumIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronMedium_Fall17V2.root"),
-    file_TightIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronTight_Fall17V2.root"),
-    file_RecoSF_highPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco.root"),
-    file_RecoSF_lowPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco_lowpt.root")
+    file_EleLooseIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronLoose_Fall17V2.root"),
+    file_EleMediumIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronMedium_Fall17V2.root"),
+    file_EleTightIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronTight_Fall17V2.root"),
+    file_EleRecoSF_highPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco.root"),
+    file_EleRecoSF_lowPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco_lowpt.root")
     )
 
 
@@ -73,9 +73,9 @@ SelectedMuonProducer = cms.EDProducer(
     #eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose","","boostedAnalysis"),
     #eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto","","boostedAnalysis"),
     #eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight","","boostedAnalysis"),
-    file_LooseIDSF=cms.string(""),
-    file_MediumIDSF=cms.string(""),
-    file_TightIDSF=cms.string(""),
-    file_RecoSF_highPt=cms.string(""),
-    file_RecoSF_lowPt=cms.string("")
+    file_EleLooseIDSF=cms.string(""),
+    file_EleMediumIDSF=cms.string(""),
+    file_EleTightIDSF=cms.string(""),
+    file_EleRecoSF_highPt=cms.string(""),
+    file_EleRecoSF_lowPt=cms.string("")
     )

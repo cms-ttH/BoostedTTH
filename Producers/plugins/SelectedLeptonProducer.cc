@@ -114,15 +114,15 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     
     // load electron scale factor histograms from given files
     if(leptonType_==LeptonType::Electron){
-        EleID_SF_Loose = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_LooseIDSF")))->Get("EGamma_SF2D");
+        EleID_SF_Loose = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleLooseIDSF")))->Get("EGamma_SF2D");
         EleID_SF_Loose->SetDirectory(0);
-        EleID_SF_Medium = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_MediumIDSF")))->Get("EGamma_SF2D");
+        EleID_SF_Medium = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleMediumIDSF")))->Get("EGamma_SF2D");
         EleID_SF_Medium->SetDirectory(0);
-        EleID_SF_Tight = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_TightIDSF")))->Get("EGamma_SF2D");
+        EleID_SF_Tight = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleTightIDSF")))->Get("EGamma_SF2D");
         EleID_SF_Tight->SetDirectory(0);
-        EleReco_SF_highPt = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_RecoSF_highPt")))->Get("EGamma_SF2D");
+        EleReco_SF_highPt = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleRecoSF_highPt")))->Get("EGamma_SF2D");
         EleReco_SF_highPt->SetDirectory(0);
-        EleReco_SF_lowPt = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_RecoSF_lowPt")))->Get("EGamma_SF2D");
+        EleReco_SF_lowPt = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleRecoSF_lowPt")))->Get("EGamma_SF2D");
         EleReco_SF_lowPt->SetDirectory(0);
     }
     // load muon scale factor histograms from given files
@@ -200,7 +200,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             
             std::vector<pat::Electron> selectedElectrons = GetSortedByPt(GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i]));
             
-            AddElectronSFs(selectedElectrons, electronIDs_[i]);
+            if(not isData) AddElectronSFs(selectedElectrons, electronIDs_[i]);
             
             // produce the different electron collections and create a unique ptr to it      
             std::unique_ptr<pat::ElectronCollection> selectedLeptons =  std::make_unique<pat::ElectronCollection>(selectedElectrons);
@@ -429,8 +429,13 @@ std::vector<float> SelectedLeptonProducer::GetElectronRecoSF(const pat::Electron
     std::vector<float> SFs{1.0,1.0,1.0};
     
     // load the correct scale factor histogram
-    if(pt>=20.) SF_hist = EleReco_SF_highPt;
-    else SF_hist = EleReco_SF_lowPt;
+    if(era.find("2016")!=std::string::npos or era.find("2017")!=std::string::npos){
+        if(pt>=20.) SF_hist = EleReco_SF_highPt;
+        else SF_hist = EleReco_SF_lowPt;
+    }
+    else if(era.find("2018")!=std::string::npos){
+        SF_hist = EleReco_SF_highPt;
+    }
     
     if(SF_hist==nullptr){
         std::cerr << "\n\nERROR: Electron Reco Scale Factor File could not be loaded" <<  std::endl;
