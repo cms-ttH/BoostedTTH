@@ -73,9 +73,9 @@ SelectedMuonProducer = cms.EDProducer(
     #eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose","","boostedAnalysis"),
     #eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto","","boostedAnalysis"),
     #eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight","","boostedAnalysis"),
-    file_LooseIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronLoose_Fall17V2.root"),
-    file_MediumIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronMedium_Fall17V2.root"),
-    file_TightIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronTight_Fall17V2.root"),
-    file_RecoSF_highPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco.root"),
-    file_RecoSF_lowPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco_lowpt.root")
+    file_LooseIDSF=cms.string(""),
+    file_MediumIDSF=cms.string(""),
+    file_TightIDSF=cms.string(""),
+    file_RecoSF_highPt=cms.string(""),
+    file_RecoSF_lowPt=cms.string("")
     )

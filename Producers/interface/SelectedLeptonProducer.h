@@ -150,6 +150,7 @@ private:
     // event-specific average pile-up energy density per unit area in the phi-eta plane
     double rho;
     
+    // ptrs to 2D histograms which contain the electron scale factors for reconstruction and identification
     TH2F* EleID_SF_Loose = nullptr;
     TH2F* EleID_SF_Medium = nullptr;
     TH2F* EleID_SF_Tight = nullptr;

@@ -112,7 +112,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         
     }
     
-    
+    // load electron scale factor histograms from given files
     if(leptonType_==LeptonType::Electron){
         EleID_SF_Loose = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_LooseIDSF")))->Get("EGamma_SF2D");
         EleID_SF_Loose->SetDirectory(0);
@@ -125,6 +125,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         EleReco_SF_lowPt = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_RecoSF_lowPt")))->Get("EGamma_SF2D");
         EleReco_SF_lowPt->SetDirectory(0);
     }
+    // load muon scale factor histograms from given files
     else if(leptonType_==LeptonType::Muon){
         // put muon stuff here
     }
@@ -367,13 +368,14 @@ void SelectedLeptonProducer::AddElectronSFs(std::vector<pat::Electron>& inputEle
     }
 }
 
-// function to calculate electron ID scale factor
+// function to calculate electron ID scale factors and return them as a triplet
 std::vector<float> SelectedLeptonProducer::GetElectronIDSF(const pat::Electron& iElectron, const ElectronID iElectronID) const{
+    // get pt and eta of the electron
     auto pt = iElectron.hasUserFloat("ptBeforeRun2Calibration") ? iElectron.userFloat("ptBeforeRun2Calibration") : iElectron.pt();
     auto eta = iElectron.superCluster().isAvailable() ? iElectron.superCluster()->position().eta() : iElectron.eta();
     TH2F* SF_hist = nullptr; 
     std::vector<float> SFs{1.0,1.0,1.0};
-    
+    // load the correct scale factor histogram
     switch(iElectronID){
         case ElectronID::None:
             break;
@@ -398,17 +400,19 @@ std::vector<float> SelectedLeptonProducer::GetElectronIDSF(const pat::Electron& 
         throw std::exception(); 
     }
     
+    // determine the ranges of the given TH2Fs
     auto xmin = SF_hist->GetXaxis()->GetXmin();
     auto xmax = SF_hist->GetXaxis()->GetXmax();
     auto ymin = SF_hist->GetYaxis()->GetXmin();
     auto ymax = SF_hist->GetYaxis()->GetXmax();
     
+    // make sure to stay within the range ot the histograms
     eta = std::max(xmin+0.1,eta);
     eta = std::min(xmax-0.1,eta);
     pt = std::max(ymin+0.1,pt);
     pt = std::min(ymax-0.1,pt);
     
-    
+    // calculate the scale factors
     SFs[0]=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
     SFs[1]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
     SFs[2]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
@@ -418,11 +422,13 @@ std::vector<float> SelectedLeptonProducer::GetElectronIDSF(const pat::Electron& 
 
 // function to calculate electron reconstruction scale factor
 std::vector<float> SelectedLeptonProducer::GetElectronRecoSF(const pat::Electron& iElectron) const{
+    // get pt and eta of the electron
     auto pt = iElectron.hasUserFloat("ptBeforeRun2Calibration") ? iElectron.userFloat("ptBeforeRun2Calibration") : iElectron.pt();
     auto eta = iElectron.superCluster().isAvailable() ? iElectron.superCluster()->position().eta() : iElectron.eta();
     TH2F* SF_hist = nullptr; 
     std::vector<float> SFs{1.0,1.0,1.0};
     
+    // load the correct scale factor histogram
     if(pt>=20.) SF_hist = EleReco_SF_highPt;
     else SF_hist = EleReco_SF_lowPt;
     
@@ -431,16 +437,19 @@ std::vector<float> SelectedLeptonProducer::GetElectronRecoSF(const pat::Electron
         throw std::exception(); 
     }
     
+    // determine the ranges of the given TH2Fs
     auto xmin = SF_hist->GetXaxis()->GetXmin();
     auto xmax = SF_hist->GetXaxis()->GetXmax();
     auto ymin = SF_hist->GetYaxis()->GetXmin();
     auto ymax = SF_hist->GetYaxis()->GetXmax();
     
+    // make sure to stay within the range ot the histograms
     eta = std::max(xmin+0.1,eta);
     eta = std::min(xmax-0.1,eta);
     pt = std::max(ymin+0.1,pt);
     pt = std::min(ymax-0.1,pt);
     
+    // calculate the scale factors
     SFs[0]=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
     SFs[1]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
     SFs[2]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
