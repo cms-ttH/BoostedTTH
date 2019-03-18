@@ -29,7 +29,6 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : Jet
   // make sure everything is consistent
   assert(ptMins.size() == etaMaxs.size());
   assert(ptMins.size() == collectionNames.size());
-
   // load systematics
   for (uint i = 0; i < systematics_config.size(); i++)
   {
