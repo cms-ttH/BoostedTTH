@@ -362,7 +362,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet1_pt=input.selectedJets.at(0).pt();
 	jet1_eta=input.selectedJets.at(0).eta();
 	jet1_phi=input.selectedJets.at(0).phi();
-	jet1_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
+	jet1_csv=CSVHelper::GetJetCSV(input.selectedJets.at(0),"DeepJet");
 	if(input.selectedJets.at(0).hasUserInt("deterministicSeed")) jet1_seed=(uint32_t)input.selectedJets.at(0).userInt("deterministicSeed");
 	if(input.selectedJets.at(0).hasUserInt("pileupJetId:fullId")) jet1_PUJetId=input.selectedJets.at(0).userInt("pileupJetId:fullId");
 	if(input.selectedJets.at(0).hasUserFloat("pileupJetId:fullDiscriminant")) { jet1_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetId:fullDiscriminant");}
@@ -380,7 +380,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet2_pt=input.selectedJets.at(1).pt();
 	jet2_eta=input.selectedJets.at(1).eta();
 	jet2_phi=input.selectedJets.at(1).phi();
-	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
+	jet2_csv=CSVHelper::GetJetCSV(input.selectedJets.at(1),"DeepJet");
 	if(input.selectedJets.at(1).hasUserInt("deterministicSeed")) jet2_seed=(uint32_t)input.selectedJets.at(1).userInt("deterministicSeed");
 	if(input.selectedJets.at(1).hasUserInt("pileupJetId:fullId")) jet2_PUJetId=input.selectedJets.at(1).userInt("pileupJetId:fullId");
 	if(input.selectedJets.at(1).hasUserFloat("pileupJetId:fullDiscriminant")){ jet2_PUJetDiscriminant=input.selectedJets.at(1).userFloat("pileupJetId:fullDiscriminant");}
@@ -396,27 +396,27 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if(input.selectedJetsLoose.size()>2){
 	jet3_pt=input.selectedJetsLoose.at(2).pt();
 	jet3_eta=input.selectedJetsLoose.at(2).eta();
-	jet3_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(2));
+	jet3_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(2),"DeepJet");
     }
     if(input.selectedJetsLoose.size()>3){
 	jet4_pt=input.selectedJetsLoose.at(3).pt();
 	jet4_eta=input.selectedJetsLoose.at(3).eta();
-	jet4_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(3));
+	jet4_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(3),"DeepJet");
     }
     if(input.selectedJetsLoose.size()>4){
 	jet5_pt=input.selectedJetsLoose.at(4).pt();
 	jet5_eta=input.selectedJetsLoose.at(4).eta();
-	jet5_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(4));
+	jet5_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(4),"DeepJet");
     }
     if(input.selectedJetsLoose.size()>5){
 	jet6_pt=input.selectedJetsLoose.at(5).pt();
 	jet6_eta=input.selectedJetsLoose.at(5).eta();
-	jet6_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(5));
+	jet6_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(5),"DeepJet");
     }
     if(input.selectedJetsLoose.size()>6){
 	jet7_pt=input.selectedJetsLoose.at(6).pt();
 	jet7_eta=input.selectedJetsLoose.at(6).eta();
-	jet7_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(6));
+	jet7_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(6),"DeepJet");
     }
     n_leps_tight=input.selectedMuons.size()+input.selectedElectrons.size();
     n_leps_dl=input.selectedMuonsDL.size()+input.selectedElectronsDL.size();
@@ -536,11 +536,11 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         std::vector<double> add_features;
         std::vector<unsigned int> out_best_perm;
         for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
-            jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
-            jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
+            jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
+            jetcsvs_dnn.push_back(CSVHelper::GetJetCSV_DNN(*j,"DeepJet"));
         }
         for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
-            loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
+            loose_jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
         }
         double out_P_4b=-1;
         double out_P_2b=-1;
@@ -581,8 +581,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
         std::vector<unsigned int> out_best_perm;
         TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
         for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
-            jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
-            jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
+            jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
+            jetcsvs_dnn.push_back(CSVHelper::GetJetCSV_DNN(*j,"DeepJet"));
         }
         double out_P_4b=-1;
         double out_P_2b=-1;

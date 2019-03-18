@@ -114,6 +114,37 @@ process.source = cms.Source(  "PoolSource",
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
+# ReRun DeepJet
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJets'),
+   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   svSource = cms.InputTag('slimmedSecondaryVertices'),
+   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
+   btagDiscriminators = [
+      'pfDeepFlavourJetTags:probb',
+      'pfDeepFlavourJetTags:probbb',
+      'pfDeepFlavourJetTags:problepb',
+      'pfDeepFlavourJetTags:probc',
+      'pfDeepFlavourJetTags:probuds',
+      'pfDeepFlavourJetTags:probg'
+      ],
+   postfix='NewDFTraining'
+)
+
+process.updateJets = cms.Task(
+                    process.patJetCorrFactorsNewDFTraining,
+                    process.patJetCorrFactorsTransientCorrectedNewDFTraining,
+                    process.pfDeepCSVTagInfosNewDFTraining, 
+                    process.pfDeepFlavourJetTagsNewDFTraining,
+                    process.pfDeepFlavourTagInfosNewDFTraining,
+                    process.pfImpactParameterTagInfosNewDFTraining,
+                    process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining,
+                    process.selectedUpdatedPatJetsNewDFTraining,
+                    process.updatedPatJetsNewDFTraining,
+                    process.updatedPatJetsTransientCorrectedNewDFTraining)
+                    
 #jec_mc_data = 'DATA' if options.isData else 'MC'
 #print jec_mc_data
 #process.CondDB.connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
@@ -491,6 +522,9 @@ if options.ProduceMemNtuples==True:
 
 ##### DEFINE PATH ##########
 process.p = cms.Path()
+
+# rerun DeepJet
+process.p.associate(process.updateJets)
 
 if options.recorrectMET:
     process.p *= process.fullPatMetSequence

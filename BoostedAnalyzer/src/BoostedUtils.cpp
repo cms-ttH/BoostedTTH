@@ -61,7 +61,7 @@ bool BoostedUtils::FirstBoostedJetIsHarder(boosted::BoostedJet jet1, boosted::Bo
 
 
 bool BoostedUtils::FirstHasHigherCSV(pat::Jet jet1,pat::Jet jet2){
-  return MiniAODHelper::GetJetCSV(jet1,"DeepCSV") > MiniAODHelper::GetJetCSV(jet2,"DeepCSV");
+  return CSVHelper::GetJetCSV(jet1,"DeepJet") > CSVHelper::GetJetCSV(jet2,"DeepJet");
 }
 
 
