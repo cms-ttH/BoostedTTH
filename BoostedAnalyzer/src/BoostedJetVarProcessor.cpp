@@ -2,7 +2,7 @@
 
 using namespace std;
 
-BoostedJetVarProcessor::BoostedJetVarProcessor(MiniAODHelper* helper_):btagger("DeepCSV"){
+BoostedJetVarProcessor::BoostedJetVarProcessor(MiniAODHelper* helper_):btagger("DeepJet"){
   toptagger.insert(map< string, TopTagger >::value_type("HEP", TopTagger(TopTag::HEP,TopTag::Pt,"")));
   toptagger.insert(map< string, TopTagger >::value_type("HEPCSV", TopTagger(TopTag::HEP,TopTag::CSV,"")));
   toptagger.insert(map< string, TopTagger >::value_type("Likelihood", TopTagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root")));

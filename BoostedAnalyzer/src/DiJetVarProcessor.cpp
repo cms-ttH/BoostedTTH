@@ -37,7 +37,7 @@ void DiJetVarProcessor::Init(const InputCollections& input, VariableContainer& v
   vars.InitVar( "DeltaPhi","F" );
   vars.InitVar( "PtAve","F" );
 
-  bTagger_ = "DeepCSV";
+  bTagger_ = "DeepJet";
   puJetIDDiscr_ = "pileupJetId:fullDiscriminant";
   jetTagInfoSV_ = "pfSecondaryVertex";
 

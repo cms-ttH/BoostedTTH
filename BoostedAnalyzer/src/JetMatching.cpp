@@ -35,7 +35,7 @@ std::vector<TLorentzVector> JetMatching::GetMatchedVecs(const std::vector<pat::J
       TLorentzVector mjet;
       mjet.SetPtEtaPhiE(itmJet->pt()/itJet->pt(), itJet->eta()-itmJet->eta(), itJet->phi()-itmJet->phi(), itmJet->energy()/itJet->energy());
       matchjetdiff.push_back(mjet);
-      DCSV_Matchedfilterjets.push_back(CSVHelper::GetJetCSV(*itJet,"DeepCSV")-CSVHelper::GetJetCSV(*itmJet,"DeepCSV"));
+      DCSV_Matchedfilterjets.push_back(CSVHelper::GetJetCSV(*itJet,"DeepJet")-CSVHelper::GetJetCSV(*itmJet,"DeepJet"));
       Dr_Matchedfilterjets.push_back(drmin);
 //       fjets.erase(itmJet);
     }
