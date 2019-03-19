@@ -17,8 +17,9 @@
 
 // #include "BoostedTTH/Producers/plugins/SelectedLeptonProducer.cc"
 // #include "BoostedTTH/Producers/plugins/SelectedJetProducer.cc"
-#include "BoostedTTH/Producers/interface/SelectedLeptonProducer.h"
-#include "BoostedTTH/Producers/interface/SelectedJetProducer.h"
+// #include "BoostedTTH/Producers/interface/SelectedLeptonProducer.h"
+// #include "BoostedTTH/Producers/interface/SelectedJetProducer.h"
+#include "BoostedTTH/Producers/interface/Helper.h"
 
 //
 // class declaration
@@ -46,20 +47,20 @@ private:
 
   std::vector<pat::Electron>
   GetSelectedElectrons(const std::vector<pat::Electron> &inputElectrons,
-                       const double iMinPt, const SelectedLeptonProducer::ElectronID iElectronID,
+                       const double iMinPt, const Helper::ElectronID iElectronID,
                        const double iMaxEta) const;
 
   std::vector<pat::Muon>
   GetSelectedMuons(const std::vector<pat::Muon> &inputMuons, const double iMinPt,
-                   const SelectedLeptonProducer::MuonID iMuonID, const SelectedLeptonProducer::IsoConeSize iconeSize,
-                   const SelectedLeptonProducer::IsoCorrType icorrType,
-                   const double iMaxEta, const SelectedLeptonProducer::MuonIsolation imuonIso) const;
+                   const Helper::MuonID iMuonID, const Helper::IsoConeSize iconeSize,
+                   const Helper::IsoCorrType icorrType,
+                   const double iMaxEta, const Helper::MuonIsolation imuonIso) const;
 
   // function to return Jets, which fullfill all IDs
   std::vector<pat::Jet>
   GetSelectedJets(const std::vector<pat::Jet> &inputJets,
                   const float iMinPt, const float iMaxAbsEta,
-                  const SelectedJetProducer::JetID iJetID, const SelectedJetProducer::PUJetIDWP wp) const;
+                  const Helper::JetID iJetID, const Helper::PUJetIDWP wp) const;
 
   // ----------member data ---------------------------
   std::string era;
@@ -76,11 +77,11 @@ private:
   // event-specific average pile-up energy density per unit area in the phi-eta plane
   double rho;
 
-  SelectedLeptonProducer::ElectronID electronID_;
-  SelectedLeptonProducer::MuonID muonID_;
-  SelectedLeptonProducer::MuonIsolation muonIso_;
-  SelectedLeptonProducer::IsoConeSize muonIsoConeSize_;
-  SelectedLeptonProducer::IsoCorrType muonIsoCorrType_;
+  Helper::ElectronID electronID_;
+  Helper::MuonID muonID_;
+  Helper::MuonIsolation muonIso_;
+  Helper::IsoConeSize muonIsoConeSize_;
+  Helper::IsoCorrType muonIsoCorrType_;
 
   // data access tokens
   edm::EDGetTokenT<double> EDMRhoToken;                        // pileup density
