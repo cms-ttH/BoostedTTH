@@ -317,7 +317,7 @@ SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, const dou
     return passesKinematics and (not inCrack) and passesIPcuts and passesID;
 }
 
-// function to check whether an electron fulfills several requirements
+// function to check whether an electron fulfills several requirements, overloaded to take vertex
 bool
 SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, reco::Vertex vert, const double iMinPt, const double iMaxEta,const ElectronID iElectronID){
     bool passesKinematics = (iMinPt<=iElectron.pt()) and (iMaxEta>=fabs(iElectron.eta()));
@@ -576,7 +576,7 @@ SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, 
     return passesKinematics and passesID and passesIso;
 }
 
-// function to check whether a muon fulfills several requirements
+// function to check whether a muon fulfills several requirements with overloaded vertex
 bool
 SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, const double iMaxEta, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const MuonIsolation imuonIso, reco::Vertex vert){
     bool passesKinematics = (iMinPt<=iMuon.pt()) and (iMaxEta>=fabs(iMuon.eta()));
