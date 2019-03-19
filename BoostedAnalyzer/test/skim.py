@@ -4,6 +4,7 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('analysis')
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
+options.register( "dataEra",     "2017",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period or mc campaign, e.g. '2016B' or '2017'" )
 
 options.parseArguments()
 
@@ -34,12 +35,25 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-if not options.isData:
-    process.GlobalTag.globaltag = "94X_mc2017_realistic_v13"
-else:
-    process.GlobalTag.globaltag = "94X_dataRun2_ReReco_EOY17_v6"
-process.load("CondCore.CondDB.CondDB_cfi")
 
+if options.isData:
+    if "2016" in options.dataEra:
+        options.globalTag="94X_dataRun2_v10"
+    elif "2017" in options.dataEra:
+        options.globalTag="94X_dataRun2_v11"
+    else:
+        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
+elif not options.isData:
+    if "2016" in options.dataEra:
+        options.globalTag="94X_mcRun2_asymptotic_v3"
+    elif "2017" in options.dataEra:
+        options.globalTag="94X_mc2017_realistic_v17"
+    else:
+        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
+else:
+    raise Exception("Problem with isData option! This should never happen!")
+
+process.load("CondCore.CondDB.CondDB_cfi")
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
@@ -66,6 +80,7 @@ if options.isData==True:
 
 process.load("BoostedTTH.BoostedAnalyzer.LeptonJetsSkim_cfi")
 process.LeptonJetsSkim.isData=cms.bool(options.isData)
+process.LeptonJetsSkim.era=options.dataEra
 
 process.skimmed=cms.Path(process.LeptonJetsSkim)
 
