@@ -2,7 +2,7 @@
 //
 // Package:    BoostedTTH/BoostedAnalyzer
 // Class:      LeptonJetsSkim
-// 
+//
 /**\class LeptonJetsSkim LeptonJetsSkim.cc BoostedTTH/BoostedProducer/plugins/LeptonJetsSkim.cc
 
  Description: [one line class summary]
@@ -16,184 +16,181 @@
 //
 //
 
-
 // system include files
 #include <memory>
 #include <exception>
 #include <iostream>
 
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDFilter.h"
-
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
-
-#include "DataFormats/PatCandidates/interface/Lepton.h"
-#include "DataFormats/PatCandidates/interface/Electron.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/Jet.h"
-
-//
-// class declaration
-//
-
-class LeptonJetsSkim : public edm::EDFilter {
-   public:
-      explicit LeptonJetsSkim(const edm::ParameterSet&);
-      ~LeptonJetsSkim();
-
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-
-   private:
-      virtual void beginJob() override;
-      virtual bool filter(edm::Event&, const edm::EventSetup&) override;
-      virtual void endJob() override;
-      bool setUpHelper(const edm::Event& iEvent);
-      
-      // ----------member data ---------------------------
-    MiniAODHelper helper_;
-    int minJets_;
-    double jetPtMin_;
-    double jetEtaMax_;
-    double muonPtMin_;
-    double muonEtaMax_;
-    double electronPtMin_;
-    double electronEtaMax_;
-    muonID::muonID muonID_;
-    electronID::electronID electronID_;
-    coneSize::coneSize muonIsoConeSize_;
-    corrType::corrType muonIsoCorrType_;
-    muonIso::muonIso muonIso_;
-
-  
-  // data access tokens
-    edm::EDGetTokenT< double >                    EDMRhoToken; //  pileup density
-    edm::EDGetTokenT< reco::VertexCollection >    EDMVertexToken; // vertex
-    edm::EDGetTokenT< pat::MuonCollection >       EDMMuonsToken;  // muons
-    edm::EDGetTokenT< pat::ElectronCollection > EDMElectronsToken;  // electrons
-    edm::EDGetTokenT< pat::JetCollection >        EDMJetsToken;  // jets
-
-
-};
+#include "../interface/LeptonJetsSkim.hpp"
 
 //
 // constructors and destructor
 //
-LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
+LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet &iConfig)
 {
-   //now do what ever initialization is needed
-  const std::string era = iConfig.getParameter<std::string>("era");
-  analysisType::analysisType iAnalysisType = analysisType::LJ;
-  
-  EDMElectronsToken         = consumes <pat::ElectronCollection >  (iConfig.getParameter<edm::InputTag>("electrons"));
-  EDMMuonsToken             = consumes< pat::MuonCollection >       (iConfig.getParameter<edm::InputTag>("muons"));
-  EDMJetsToken              = consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("jets"));
-  EDMVertexToken            = consumes< reco::VertexCollection >    (iConfig.getParameter<edm::InputTag>("vertices"));
-  EDMRhoToken               = consumes< double >                    (iConfig.getParameter<edm::InputTag>("rho"));
+    //now do what ever initialization is needed
+    era = iConfig.getParameter<std::string>("era");
+    EDMElectronsToken = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
+    EDMMuonsToken = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
+    EDMJetsToken = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("jets"));
+    EDMVertexToken = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+    EDMRhoToken = consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
 
+    minJets_ = iConfig.getParameter<int>("minJets");
+    jetPtMin_ = iConfig.getParameter<double>("jetPtMin");
+    jetEtaMax_ = iConfig.getParameter<double>("jetEtaMax");
+    muonPtMin_ = iConfig.getParameter<double>("muonPtMin");
+    muonEtaMax_ = iConfig.getParameter<double>("muonEtaMax");
+    electronPtMin_ = iConfig.getParameter<double>("electronPtMin");
+    electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
 
-  minJets_        = iConfig.getParameter<int>("minJets");
-  jetPtMin_       = iConfig.getParameter<double>("jetPtMin");
-  jetEtaMax_      = iConfig.getParameter<double>("jetEtaMax");
-  muonPtMin_      = iConfig.getParameter<double>("muonPtMin");
-  muonEtaMax_     = iConfig.getParameter<double>("muonEtaMax");
-  electronPtMin_  = iConfig.getParameter<double>("electronPtMin");
-  electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
-  electronID_     = electronID::skimming;
-  muonID_         = muonID::muonLoose;
-  muonIso_        = muonIso::PFIsoLoose;
-  muonIsoConeSize_ = coneSize::R04;
-  muonIsoCorrType_ = corrType::deltaBeta;
-  const bool isData = iConfig.getParameter<bool>("isData");
-  const int sampleID = isData? -1 : 1;
-  helper_.SetUp(era,sampleID,iAnalysisType,isData);
-
+    electronID_ = SelectedLeptonProducer::ElectronID::None;
+    muonID_ = SelectedLeptonProducer::MuonID::Loose;
+    muonIso_ = SelectedLeptonProducer::MuonIsolation::Loose;
+    muonIsoConeSize_ = SelectedLeptonProducer::IsoConeSize::R04;
+    muonIsoCorrType_ = SelectedLeptonProducer::IsoCorrType::deltaBeta;
 }
-
 
 LeptonJetsSkim::~LeptonJetsSkim()
 {
- 
-   // do anything here that needs to be done at desctruction time
-   // (e.g. close files, deallocate resources etc.)
 
+    // do anything here that needs to be done at desctruction time
+    // (e.g. close files, deallocate resources etc.)
 }
-
 
 //
 // member functions
 //
 
-// ------------ method called on each new Event  ------------
-bool
-LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
+// function to select electrons with several properties and return a collection
+std::vector<pat::Electron> LeptonJetsSkim::GetSelectedElectrons(const std::vector<pat::Electron> &inputElectrons,
+                                                                const double iMinPt, const SelectedLeptonProducer::ElectronID iElectronID,
+                                                                const double iMaxEta) const
 {
-    if( setUpHelper(iEvent) ) {
-	
-	edm::Handle< pat::ElectronCollection > h_electrons;
-	iEvent.getByToken(EDMElectronsToken,h_electrons);	    
-	// select electrons
-	pat::ElectronCollection selectedElectrons = helper_.GetSelectedElectrons(*h_electrons,electronPtMin_,electronID_,electronEtaMax_);
-
-	edm::Handle<pat::MuonCollection> hMuons;
-	iEvent.getByToken(EDMMuonsToken,hMuons);
-	pat::MuonCollection selectedMuons = helper_.GetSelectedMuons(*hMuons,muonPtMin_,muonID_,muonIsoConeSize_,muonIsoCorrType_,muonEtaMax_,muonIso_);
-	
-	edm::Handle<pat::JetCollection> hJets;
-	iEvent.getByToken(EDMJetsToken,hJets);	    
-	pat::JetCollection selectedJets =  helper_.GetSelectedJets(*hJets,jetPtMin_,jetEtaMax_,jetID::jetTight,'-');
-	// TODO: correct jets (maybe even with JESUP) to make sure the jetcuts are loose enough
-
-	if( (selectedMuons.size()+selectedElectrons.size())>=1 && int(selectedJets.size())>minJets_){
-	    return true;
-	}
-	
+    std::vector<pat::Electron> selectedElectrons;
+    for (const auto &ele : inputElectrons)
+    {
+        if (SelectedLeptonProducer::isGoodElectron(ele, vertex, iMinPt, iMaxEta, iElectronID))
+        {
+            selectedElectrons.push_back(ele);
+        }
     }
-    return false;
+    return selectedElectrons;
 }
 
-// Do event-wise setup of MiniAODHelper
-// Return true if successful, false otherwise
-bool
-LeptonJetsSkim::setUpHelper(const edm::Event& iEvent)
+// function to select muons with several properties and return a collection
+std::vector<pat::Muon> LeptonJetsSkim::GetSelectedMuons(const std::vector<pat::Muon> &inputMuons, const double iMinPt,
+                                                        const SelectedLeptonProducer::MuonID iMuonID,
+                                                        const SelectedLeptonProducer::IsoConeSize iconeSize,
+                                                        const SelectedLeptonProducer::IsoCorrType icorrType,
+                                                        const double iMaxEta, const SelectedLeptonProducer::MuonIsolation imuonIso) const
 {
-  // get RHO
-  edm::Handle<double> hRho;
-  iEvent.getByToken(EDMRhoToken,hRho);
-  if( hRho.isValid() ) {
-    helper_.SetRho(*hRho);
-  } else {
-    cout << "could not find rho" << endl;
-    return false;
-  }
-
-  // get PRIMARY VERTICES
-  edm::Handle<reco::VertexCollection> hVtxs;
-  iEvent.getByToken(EDMVertexToken,hVtxs);
-  if( hVtxs->size()>0 ) {
-    helper_.SetVertex( hVtxs->at(0) );
-  } else {
-    cout << "could not find vertices" << endl;
-    return false;
-  }
-  return true;
+    std::vector<pat::Muon> selectedMuons;
+    for (const auto &mu : inputMuons)
+    {
+        if (SelectedLeptonProducer::isGoodMuon(mu, iMinPt, iMaxEta, iMuonID, iconeSize, icorrType, imuonIso, vertex))
+        {
+            selectedMuons.push_back(mu);
+        }
+    }
+    return selectedMuons;
 }
 
+// function to return Jets, which fullfill all IDs
+std::vector<pat::Jet> LeptonJetsSkim::GetSelectedJets(const std::vector<pat::Jet> &inputJets,
+                                                      const float iMinPt, const float iMaxAbsEta,
+                                                      const SelectedJetProducer::JetID iJetID,
+                                                      const SelectedJetProducer::PUJetIDWP wp) const
+{
+    // iterate through inputjets and find good Jets
+    std::vector<pat::Jet> selectedJets;
+    for (auto &jet : inputJets)
+    {
+        if (SelectedJetProducer::isGoodJet(jet, iMinPt, iMaxAbsEta, iJetID, wp, era))
+        {
+            selectedJets.push_back(jet);
+        }
+    }
+    return selectedJets;
+}
+
+// ------------ method called on each new Event  ------------
+bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
+{
+    // get the vertices
+    edm::Handle<reco::VertexCollection> hVtxs;
+    iEvent.getByToken(EDMVertexToken, hVtxs);
+    if (not hVtxs.isValid())
+    {
+        std::cerr << "\n\nERROR: retrieved vertex collection is not valid" << std::endl;
+        throw std::exception();
+    }
+    else if (not(hVtxs->size() > 0))
+    {
+        std::cerr << "\n\nERROR: retrieved vertex collection is empty" << std::endl;
+        throw std::exception();
+    }
+    // primary vertex
+    vertex = hVtxs->at(0);
+
+    // get rho (average pile-up energy density per unit area in the phi-eta plane)
+    edm::Handle<double> hRho;
+    iEvent.getByToken(EDMRhoToken, hRho);
+    if (not hRho.isValid())
+    {
+        std::cerr << "\n\nERROR: retrieved pile-up energy density is not valid" << std::endl;
+        throw std::exception();
+    }
+    //pile-up density
+    rho = *hRho;
+
+    // get input electron collection
+    edm::Handle<pat::ElectronCollection> inputElectrons;
+    iEvent.getByToken(EDMElectronsToken, inputElectrons);
+    if (not inputElectrons.isValid())
+    {
+        std::cerr << "\n\nERROR: retrieved electron collection is not valid" << std::endl;
+        throw std::exception();
+    }
+    // select electrons
+    pat::ElectronCollection selectedElectrons = GetSelectedElectrons(*inputElectrons, electronPtMin_, electronID_, electronEtaMax_);
+
+    // get input muon collection
+    edm::Handle<pat::MuonCollection> inputMuons;
+    iEvent.getByToken(EDMMuonsToken, inputMuons);
+    if (not inputMuons.isValid())
+    {
+        std::cerr << "\n\nERROR: retrieved muon collection is not valid" << std::endl;
+        throw std::exception();
+    }
+    pat::MuonCollection selectedMuons = GetSelectedMuons(*inputMuons, muonPtMin_, muonID_, muonIsoConeSize_, muonIsoCorrType_, muonEtaMax_, muonIso_);
+
+    edm::Handle<pat::JetCollection> inputJets;
+    iEvent.getByToken(EDMJetsToken, inputJets);
+    if (not inputJets.isValid())
+    {
+        std::cerr << "\n\nERROR: retrieved jet collection is not valid" << std::endl;
+        throw std::exception();
+    }
+    pat::JetCollection selectedJets = GetSelectedJets(*inputJets, jetPtMin_, jetEtaMax_, SelectedJetProducer::JetID::Tight, SelectedJetProducer::PUJetIDWP::none);
+    // TODO: correct jets (maybe even with JESUP) to make sure the jetcuts are loose enough
+
+    if ((selectedMuons.size() + selectedElectrons.size()) >= 1 && int(selectedJets.size()) > minJets_)
+    {
+        return true;
+    }
+
+    return false;
+}
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
-LeptonJetsSkim::beginJob()
+void LeptonJetsSkim::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void 
-LeptonJetsSkim::endJob() {
+void LeptonJetsSkim::endJob()
+{
 }
 
 // ------------ method called when starting to processes a run  ------------
@@ -203,7 +200,7 @@ LeptonJetsSkim::beginRun(edm::Run const&, edm::EventSetup const&)
 { 
 }
 */
- 
+
 // ------------ method called when ending the processing of a run  ------------
 /*
 void
@@ -211,7 +208,7 @@ LeptonJetsSkim::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 */
- 
+
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
 void
@@ -219,7 +216,7 @@ LeptonJetsSkim::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetu
 {
 }
 */
- 
+
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
 void
@@ -227,15 +224,15 @@ LeptonJetsSkim::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup 
 {
 }
 */
- 
+
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-LeptonJetsSkim::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
+void LeptonJetsSkim::fillDescriptions(edm::ConfigurationDescriptions &descriptions)
+{
+    //The following says we do not know what parameters are allowed so do no validation
+    // Please change this to state exactly what you do use, even if it is no parameters
+    edm::ParameterSetDescription desc;
+    desc.setUnknown();
+    descriptions.addDefault(desc);
 }
 //define this as a plug-in
 DEFINE_FWK_MODULE(LeptonJetsSkim);
