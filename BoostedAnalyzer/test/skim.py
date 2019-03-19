@@ -7,7 +7,6 @@ options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing
 options.register( "dataEra",     "2017",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period or mc campaign, e.g. '2016B' or '2017'" )
 
 options.parseArguments()
-
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     options.maxEvents = 10000 # reset for testing
 
@@ -38,16 +37,16 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
 if options.isData:
     if "2016" in options.dataEra:
-        options.globalTag="94X_dataRun2_v10"
+        process.GlobalTag.globaltag="94X_dataRun2_v10"
     elif "2017" in options.dataEra:
-        options.globalTag="94X_dataRun2_v11"
+        process.GlobalTag.globaltag="94X_dataRun2_v11"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 elif not options.isData:
     if "2016" in options.dataEra:
-        options.globalTag="94X_mcRun2_asymptotic_v3"
+        process.GlobalTag.globaltag="94X_mcRun2_asymptotic_v3"
     elif "2017" in options.dataEra:
-        options.globalTag="94X_mc2017_realistic_v17"
+        process.GlobalTag.globaltag="94X_mc2017_realistic_v17"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 else:
@@ -80,7 +79,7 @@ if options.isData==True:
 
 process.load("BoostedTTH.BoostedAnalyzer.LeptonJetsSkim_cfi")
 process.LeptonJetsSkim.isData=cms.bool(options.isData)
-process.LeptonJetsSkim.era=options.dataEra
+process.LeptonJetsSkim.era=options.dataEra 
 
 process.skimmed=cms.Path(process.LeptonJetsSkim)
 
