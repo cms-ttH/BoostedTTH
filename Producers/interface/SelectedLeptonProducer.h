@@ -73,6 +73,7 @@ public:
     // Functions to return an electron collection with the desired properties
     std::vector<pat::Electron> GetSelectedElectrons(const std::vector<pat::Electron>& inputElectrons, const double iMinPt = 10., const ElectronID = ElectronID::Loose, const double iMaxEta = 2.4) const;
     bool isGoodElectron(const pat::Electron& iElectron, const double iMinPt = 10., const double iMaxEta = 2.4, const ElectronID iElectronID = ElectronID::Loose) const;
+    static bool isGoodElectron(const pat::Electron& iElectron, reco::Vertex vert, const double iMinPt = 10., const double iMaxEta = 2.4, const ElectronID iElectronID = ElectronID::Loose);
     
     // Function to calculate electron relative isolation manually, for sync exercises
     double GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType icorrType = IsoCorrType::rhoEA, const IsoConeSize iconeSize = IsoConeSize::R03) const;
@@ -86,7 +87,7 @@ public:
     // Functions to return a muon collection with the desired properties
     std::vector<pat::Muon> GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt = 10., const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const double iMaxEta = 2.4, const MuonIsolation = MuonIsolation::Loose) const;
     bool isGoodMuon(const pat::Muon&, const double iMinPt = 10., const double iMaxEta = 2.4, const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const MuonIsolation = MuonIsolation::Loose) const;
-    
+    static bool isGoodMuon(const pat::Muon& iMuon, const double iMinPt, const double iMaxEta, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const MuonIsolation imuonIso, reco::Vertex vert);
     // Function to calculate muon relative isolation manually, for sync exercises
     double GetMuonRelIsolation(const pat::Muon& inputMuon, const IsoCorrType icorrType = IsoCorrType::deltaBeta, const IsoConeSize iconeSize = IsoConeSize::R04) const;
     void AddMuonRelIsolation(std::vector<pat::Muon>& inputMuons, const IsoCorrType icorrType = IsoCorrType::deltaBeta, const IsoConeSize iconeSize = IsoConeSize::R04);

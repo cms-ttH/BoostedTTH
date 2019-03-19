@@ -316,6 +316,58 @@ SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, const dou
     
     return passesKinematics and (not inCrack) and passesIPcuts and passesID;
 }
+
+// function to check whether an electron fulfills several requirements
+bool
+SelectedLeptonProducer::isGoodElectron(const pat::Electron& iElectron, reco::Vertex vert, const double iMinPt, const double iMaxEta,const ElectronID iElectronID){
+    bool passesKinematics = (iMinPt<=iElectron.pt()) and (iMaxEta>=fabs(iElectron.eta()));
+    bool inCrack = false;
+    bool passesIPcuts = false;
+    bool passesID = false;
+    
+    double absSCeta = 999; 
+    if( iElectron.superCluster().isAvailable() ){
+        absSCeta = fabs(iElectron.superCluster()->position().eta());
+        inCrack = (absSCeta>1.4442 and absSCeta<1.5660 );
+    }
+    double IP_d0 = 999;
+    double IP_dZ = 999;
+
+    bool isEB = absSCeta < 1.479; //check if electron is in barrel region
+    if( iElectron.gsfTrack().isAvailable() ){
+        IP_d0 = fabs(iElectron.gsfTrack()->dxy(vert.position()));
+        IP_dZ = fabs(iElectron.gsfTrack()->dz(vert.position()));
+    }
+    
+    //if impact parameter cuts are not met, set passesIPcuts = false
+    if( isEB ) passesIPcuts = (IP_d0 < 0.05 and IP_dZ < 0.1);
+    else passesIPcuts = (IP_d0 < 0.1 and IP_dZ < 0.2);
+    
+    switch(iElectronID){
+        case ElectronID::None:
+            passesID = true;
+            break;
+        case ElectronID::Veto:
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V2-veto");
+            break;
+        case ElectronID::Loose:
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
+            break;
+        case ElectronID::Medium:
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V2-medium");
+            break;
+        case ElectronID::Tight:
+            passesID = iElectron.electronID("cutBasedElectronID-Fall17-94X-V2-tight");
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidElectronID" <<  std::endl;
+            throw std::exception();
+    }
+    
+    return passesKinematics and (not inCrack) and passesIPcuts and passesID;
+}
+
+
 // function to calculate electron relative isolation by hand. Mainly needed for sync purposes since isolations are part of other provided electron properties like ID
 double SelectedLeptonProducer::GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType icorrType, const IsoConeSize iconeSize) const {
     double isoChargedHadrons = inputElectron.pfIsolationVariables().sumChargedHadronPt;
@@ -523,6 +575,53 @@ SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, 
     }
     return passesKinematics and passesID and passesIso;
 }
+
+// function to check whether a muon fulfills several requirements
+bool
+SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, const double iMaxEta, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const MuonIsolation imuonIso, reco::Vertex vert){
+    bool passesKinematics = (iMinPt<=iMuon.pt()) and (iMaxEta>=fabs(iMuon.eta()));
+    bool passesID = false;
+    bool passesIso = false;
+    switch(iMuonID){
+        case MuonID::None:
+            passesID         = true;
+            break;
+        case MuonID::Loose:
+            passesID         = muon::isLooseMuon(iMuon);
+            break;
+        case MuonID::Medium:
+            passesID         = muon::isMediumMuon(iMuon);
+            break;
+        case MuonID::Tight:
+            passesID         = muon::isTightMuon(iMuon, vert);
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidMuonID" <<  std::endl;
+            throw std::exception();
+
+    }
+    switch(imuonIso){
+        case MuonIsolation::None:
+            passesIso         = true;
+            break;
+        case MuonIsolation::Loose:
+            passesIso         = iMuon.passed(pat::Muon::PFIsoLoose);
+            break;
+        case MuonIsolation::Medium:
+            passesIso         = iMuon.passed(pat::Muon::PFIsoMedium);
+            break;
+        case MuonIsolation::Tight:
+            passesIso         = iMuon.passed(pat::Muon::PFIsoTight);
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidMuonIso" <<  std::endl;
+            throw std::exception();
+
+    }
+    return passesKinematics and passesID and passesIso;
+}
+
+
 // function to apply muon momentum correction (rochester correction)
 void SelectedLeptonProducer::ApplyMuonMomentumCorrection(std::vector<pat::Muon>& inputMuons){
     double momentum_sf;
