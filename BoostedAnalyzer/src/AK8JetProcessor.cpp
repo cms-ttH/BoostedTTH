@@ -2,7 +2,7 @@
 
 using namespace std;
 
-AK8JetProcessor::AK8JetProcessor(MiniAODHelper* helper_): btagger("DeepCSV") {}
+AK8JetProcessor::AK8JetProcessor(MiniAODHelper* helper_): btagger("DeepJet") {}
 AK8JetProcessor::~AK8JetProcessor() {}
 
 
@@ -33,13 +33,13 @@ void AK8JetProcessor::Init(const InputCollections& input, VariableContainer& var
   vars.InitVars( "AK8Subjet1_Pt", "N_AK8Jets" );
   vars.InitVars( "AK8Subjet1_Phi", "N_AK8Jets" );
   vars.InitVars( "AK8Subjet1_Eta", "N_AK8Jets" );
-  vars.InitVars( "AK8Subjet1_DeepCSV", "N_AK8Jets" );
+  vars.InitVars( "AK8Subjet1_DeepJet", "N_AK8Jets" );
 
   vars.InitVars( "AK8Subjet2_E", "N_AK8Jets" );
   vars.InitVars( "AK8Subjet2_Pt", "N_AK8Jets" );
   vars.InitVars( "AK8Subjet2_Phi", "N_AK8Jets" );
   vars.InitVars( "AK8Subjet2_Eta", "N_AK8Jets" );
-  vars.InitVars( "AK8Subjet2_DeepCSV", "N_AK8Jets" );
+  vars.InitVars( "AK8Subjet2_DeepJet", "N_AK8Jets" );
 
 
   vars.InitVars( "AK8Jet_Dr_GenTopHad", -9., "N_AK8Jets" );
@@ -67,7 +67,7 @@ void AK8JetProcessor::Process(const InputCollections& input, VariableContainer& 
   // Fill Multiplicity Variables
   vars.FillVar( "N_AK8Jets", input.AK8Jets.size());
 
-  const char* btagger="DeepCSV";
+  const char* btagger="DeepJet";
 
   // Fill Jet Variables
   // All Jets
@@ -78,9 +78,9 @@ void AK8JetProcessor::Process(const InputCollections& input, VariableContainer& 
     vars.FillVars( "AK8Jet_Pt", iJet, itJet->pt() );
     vars.FillVars( "AK8Jet_Eta", iJet, itJet->eta() );
     vars.FillVars( "AK8Jet_Phi", iJet, itJet->phi() );
-    vars.FillVars( "AK8Jet_CSV", iJet, MiniAODHelper::GetJetCSV(*itJet, btagger) );
-    vars.FillVars( "AK8Jet_DoubleCSV", iJet, MiniAODHelper::GetJetCSV(*itJet, "pfBoostedDoubleSecondaryVertexAK8BJetTags") );
-    vars.FillVars( "AK8Jet_CSV_DNN", iJet, MiniAODHelper::GetJetCSV_DNN(*itJet, btagger) );
+    vars.FillVars( "AK8Jet_CSV", iJet, CSVHelper::GetJetCSV(*itJet, btagger) );
+    vars.FillVars( "AK8Jet_DoubleCSV", iJet, CSVHelper::GetJetCSV(*itJet, btagger) );
+    vars.FillVars( "AK8Jet_CSV_DNN", iJet, CSVHelper::GetJetCSV_DNN(*itJet, btagger) );
     
     vars.FillVars( "AK8Jet_Flav", iJet, itJet->hadronFlavour() );
     vars.FillVars( "AK8Jet_PartonFlav", iJet, itJet->partonFlavour() );
@@ -144,14 +144,14 @@ void AK8JetProcessor::Process(const InputCollections& input, VariableContainer& 
           vars.FillVars( "AK8Subjet1_Pt", iJet, it->correctedP4(0).pt());
           vars.FillVars( "AK8Subjet1_Phi", iJet, it->correctedP4(0).phi());
           vars.FillVars( "AK8Subjet1_Eta", iJet, it->correctedP4(0).eta());
-          vars.FillVars( "AK8Subjet1_DeepCSV", iJet, MiniAODHelper::GetJetCSV(*it, btagger));
+          vars.FillVars( "AK8Subjet1_DeepJet", iJet, CSVHelper::GetJetCSV(*it, btagger));
         }
         if (i == 2) {
           vars.FillVars( "AK8Subjet2_E", iJet, it->correctedP4(0).e());
           vars.FillVars( "AK8Subjet2_Pt", iJet, it->correctedP4(0).pt());
           vars.FillVars( "AK8Subjet2_Phi", iJet, it->correctedP4(0).phi());
           vars.FillVars( "AK8Subjet2_Eta", iJet, it->correctedP4(0).eta());
-          vars.FillVars( "AK8Subjet2_DeepCSV", iJet, MiniAODHelper::GetJetCSV(*it, btagger));
+          vars.FillVars( "AK8Subjet2_DeepJet", iJet, CSVHelper::GetJetCSV(*it, btagger));
         }
       }
     }
