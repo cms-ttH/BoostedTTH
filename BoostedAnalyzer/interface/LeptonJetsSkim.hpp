@@ -1,3 +1,6 @@
+#ifndef LeptonJetsSkim_H
+#define LeptonJetsSkim_H
+
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDFilter.h"
@@ -7,15 +10,15 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-// #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
-
 #include "DataFormats/PatCandidates/interface/Lepton.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
-#include "BoostedTTH/Producers/plugins/SelectedLeptonProducer.cc"
-#include "BoostedTTH/Producers/plugins/SelectedJetProducer.cc"
+// #include "BoostedTTH/Producers/plugins/SelectedLeptonProducer.cc"
+// #include "BoostedTTH/Producers/plugins/SelectedJetProducer.cc"
+#include "BoostedTTH/Producers/interface/SelectedLeptonProducer.h"
+#include "BoostedTTH/Producers/interface/SelectedJetProducer.h"
 
 //
 // class declaration
@@ -86,3 +89,5 @@ private:
   edm::EDGetTokenT<pat::ElectronCollection> EDMElectronsToken; // electrons
   edm::EDGetTokenT<pat::JetCollection> EDMJetsToken;           // jets
 };
+
+#endif
