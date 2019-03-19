@@ -21,7 +21,7 @@
 #include <exception>
 #include <iostream>
 
-#include "../interface/LeptonJetsSkim.hpp"
+#include "../interface/LeptonJetsSkim.h"
 
 //
 // constructors and destructor
@@ -44,11 +44,11 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet &iConfig)
     electronPtMin_ = iConfig.getParameter<double>("electronPtMin");
     electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
 
-    electronID_ = SelectedLeptonProducer::ElectronID::None;
-    muonID_ = SelectedLeptonProducer::MuonID::Loose;
-    muonIso_ = SelectedLeptonProducer::MuonIsolation::Loose;
-    muonIsoConeSize_ = SelectedLeptonProducer::IsoConeSize::R04;
-    muonIsoCorrType_ = SelectedLeptonProducer::IsoCorrType::deltaBeta;
+    electronID_ = Helper::ElectronID::None;
+    muonID_ = Helper::MuonID::Loose;
+    muonIso_ = Helper::MuonIsolation::Loose;
+    muonIsoConeSize_ = Helper::IsoConeSize::R04;
+    muonIsoCorrType_ = Helper::IsoCorrType::deltaBeta;
 }
 
 LeptonJetsSkim::~LeptonJetsSkim()
@@ -64,13 +64,13 @@ LeptonJetsSkim::~LeptonJetsSkim()
 
 // function to select electrons with several properties and return a collection
 std::vector<pat::Electron> LeptonJetsSkim::GetSelectedElectrons(const std::vector<pat::Electron> &inputElectrons,
-                                                                const double iMinPt, const SelectedLeptonProducer::ElectronID iElectronID,
+                                                                const double iMinPt, const Helper::ElectronID iElectronID,
                                                                 const double iMaxEta) const
 {
     std::vector<pat::Electron> selectedElectrons;
     for (const auto &ele : inputElectrons)
     {
-        if (SelectedLeptonProducer::isGoodElectron(ele, vertex, iMinPt, iMaxEta, iElectronID))
+        if (Helper::isGoodElectron(ele, vertex, iMinPt, iMaxEta, iElectronID))
         {
             selectedElectrons.push_back(ele);
         }
@@ -80,15 +80,15 @@ std::vector<pat::Electron> LeptonJetsSkim::GetSelectedElectrons(const std::vecto
 
 // function to select muons with several properties and return a collection
 std::vector<pat::Muon> LeptonJetsSkim::GetSelectedMuons(const std::vector<pat::Muon> &inputMuons, const double iMinPt,
-                                                        const SelectedLeptonProducer::MuonID iMuonID,
-                                                        const SelectedLeptonProducer::IsoConeSize iconeSize,
-                                                        const SelectedLeptonProducer::IsoCorrType icorrType,
-                                                        const double iMaxEta, const SelectedLeptonProducer::MuonIsolation imuonIso) const
+                                                        const Helper::MuonID iMuonID,
+                                                        const Helper::IsoConeSize iconeSize,
+                                                        const Helper::IsoCorrType icorrType,
+                                                        const double iMaxEta, const Helper::MuonIsolation imuonIso) const
 {
     std::vector<pat::Muon> selectedMuons;
     for (const auto &mu : inputMuons)
     {
-        if (SelectedLeptonProducer::isGoodMuon(mu, iMinPt, iMaxEta, iMuonID, iconeSize, icorrType, imuonIso, vertex))
+        if (Helper::isGoodMuon(mu, iMinPt, iMaxEta, iMuonID, iconeSize, icorrType, imuonIso, vertex))
         {
             selectedMuons.push_back(mu);
         }
@@ -99,14 +99,14 @@ std::vector<pat::Muon> LeptonJetsSkim::GetSelectedMuons(const std::vector<pat::M
 // function to return Jets, which fullfill all IDs
 std::vector<pat::Jet> LeptonJetsSkim::GetSelectedJets(const std::vector<pat::Jet> &inputJets,
                                                       const float iMinPt, const float iMaxAbsEta,
-                                                      const SelectedJetProducer::JetID iJetID,
-                                                      const SelectedJetProducer::PUJetIDWP wp) const
+                                                      const Helper::JetID iJetID,
+                                                      const Helper::PUJetIDWP wp) const
 {
     // iterate through inputjets and find good Jets
     std::vector<pat::Jet> selectedJets;
     for (auto &jet : inputJets)
     {
-        if (SelectedJetProducer::isGoodJet(jet, iMinPt, iMaxAbsEta, iJetID, wp, era))
+        if (Helper::isGoodJet(jet, iMinPt, iMaxAbsEta, iJetID, wp, era))
         {
             selectedJets.push_back(jet);
         }
@@ -172,7 +172,7 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
         std::cerr << "\n\nERROR: retrieved jet collection is not valid" << std::endl;
         throw std::exception();
     }
-    pat::JetCollection selectedJets = GetSelectedJets(*inputJets, jetPtMin_, jetEtaMax_, SelectedJetProducer::JetID::Tight, SelectedJetProducer::PUJetIDWP::none);
+    pat::JetCollection selectedJets = GetSelectedJets(*inputJets, jetPtMin_, jetEtaMax_, Helper::JetID::Tight, Helper::PUJetIDWP::none);
     // TODO: correct jets (maybe even with JESUP) to make sure the jetcuts are loose enough
 
     if ((selectedMuons.size() + selectedElectrons.size()) >= 1 && int(selectedJets.size()) > minJets_)
