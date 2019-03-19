@@ -927,7 +927,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     for(const auto& itJet : selectedJets){
 	jetPts.push_back(itJet.pt());
 	jetEtas.push_back(itJet.eta());
-	jetCSVs.push_back(helper.GetJetCSV(itJet,"DeepCSV"));
+	jetCSVs.push_back(CSVHelper::GetJetCSV(itJet,"DeepJet"));
 	jetFlavors.push_back(itJet.hadronFlavour());
     }
     

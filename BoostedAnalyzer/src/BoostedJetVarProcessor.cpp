@@ -2,7 +2,7 @@
 
 using namespace std;
 
-BoostedJetVarProcessor::BoostedJetVarProcessor(MiniAODHelper* helper_):btagger("DeepCSV"){
+BoostedJetVarProcessor::BoostedJetVarProcessor(MiniAODHelper* helper_):btagger("DeepJet"){
   toptagger.insert(map< string, TopTagger >::value_type("HEP", TopTagger(TopTag::HEP,TopTag::Pt,"")));
   toptagger.insert(map< string, TopTagger >::value_type("HEPCSV", TopTagger(TopTag::HEP,TopTag::CSV,"")));
   toptagger.insert(map< string, TopTagger >::value_type("Likelihood", TopTagger(TopTag::Likelihood,TopTag::CSV,"toplikelihoodtaggerhistos.root")));
@@ -644,9 +644,9 @@ void BoostedJetVarProcessor::FillHTTJetVars(const InputCollections& input,Variab
     vars.FillVars( "BoostedJet_M13",i,m13 );
     vars.FillVars( "BoostedJet_M23",i,m23 );
 
-    vars.FillVars( "BoostedJet_B_CSV",i,MiniAODHelper::GetJetCSV(nonW,btagger) );
-    vars.FillVars( "BoostedJet_W1_CSV",i,MiniAODHelper::GetJetCSV(W1,btagger) );
-    vars.FillVars( "BoostedJet_W2_CSV",i,MiniAODHelper::GetJetCSV(W2,btagger) );
+    vars.FillVars( "BoostedJet_B_CSV",i,CSVHelper::GetJetCSV(nonW,btagger) );
+    vars.FillVars( "BoostedJet_W1_CSV",i,CSVHelper::GetJetCSV(W1,btagger) );
+    vars.FillVars( "BoostedJet_W2_CSV",i,CSVHelper::GetJetCSV(W2,btagger) );
 
     //Definition with b-jet == highest CSV
     vector<pat::Jet> subjets;
@@ -672,21 +672,21 @@ void BoostedJetVarProcessor::FillHTTJetVars(const InputCollections& input,Variab
     vars.FillVars( "BoostedJet_W1btag_Flav",i,subjets[1].partonFlavour() );
     vars.FillVars( "BoostedJet_W2btag_Flav",i,subjets[2].partonFlavour() );
     vars.FillVars( "BoostedJet_Bbtag_M",i,subjets[0].mass() );
-    vars.FillVars( "BoostedJet_Bbtag_CSV",i,MiniAODHelper::GetJetCSV(subjets[0],btagger) );
+    vars.FillVars( "BoostedJet_Bbtag_CSV",i,CSVHelper::GetJetCSV(subjets[0],btagger) );
 
     vars.FillVars( "BoostedJet_W1btag_E",i,subjets[1].energy() );
     vars.FillVars( "BoostedJet_W1btag_Pt",i,subjets[1].pt() );
     vars.FillVars( "BoostedJet_W1btag_Eta",i,subjets[1].eta() );
     vars.FillVars( "BoostedJet_W1btag_Phi",i,subjets[1].phi() );
     vars.FillVars( "BoostedJet_W1btag_M",i,subjets[1].mass() );
-    vars.FillVars( "BoostedJet_W1btag_CSV",i,MiniAODHelper::GetJetCSV(subjets[1],btagger) );
+    vars.FillVars( "BoostedJet_W1btag_CSV",i,CSVHelper::GetJetCSV(subjets[1],btagger) );
 
     vars.FillVars( "BoostedJet_W2btag_E",i,subjets[2].energy() );
     vars.FillVars( "BoostedJet_W2btag_Pt",i,subjets[2].pt() );
     vars.FillVars( "BoostedJet_W2btag_Eta",i,subjets[2].eta() );
     vars.FillVars( "BoostedJet_W2btag_Phi",i,subjets[2].phi() );
     vars.FillVars( "BoostedJet_W2btag_M",i,subjets[2].mass() );
-    vars.FillVars( "BoostedJet_W2btag_CSV",i,MiniAODHelper::GetJetCSV(subjets[2],btagger) );
+    vars.FillVars( "BoostedJet_W2btag_CSV",i,CSVHelper::GetJetCSV(subjets[2],btagger) );
 
     vars.FillVars( "BoostedJet_Wbtag_E",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).E() );
     vars.FillVars( "BoostedJet_Wbtag_Pt",i,(topvecs_bycsv[1]+topvecs_bycsv[2]).Pt() );
@@ -815,7 +815,7 @@ void BoostedJetVarProcessor::FillSFJetVars(const InputCollections& input,Variabl
       vars.FillVars( "BoostedJet_"+subjetName+"_M",i,itSub->mass() );
       vars.FillVars( "BoostedJet_"+subjetName+"_Eta",i,itSub->eta() );
       vars.FillVars( "BoostedJet_"+subjetName+"_Phi",i,itSub->phi() );
-      vars.FillVars( "BoostedJet_"+subjetName+"_CSV",i,MiniAODHelper::GetJetCSV(*itSub,btagger) );
+      vars.FillVars( "BoostedJet_"+subjetName+"_CSV",i,CSVHelper::GetJetCSV(*itSub,btagger) );
       vars.FillVars( "BoostedJet_"+subjetName+"_Dr",i,BoostedUtils::DeltaR(*itSub,input.selectedBoostedJets[i].fatjet) );
       vars.FillVars( "BoostedJet_"+subjetName+"_Flav",i,itSub->partonFlavour() );
       vars.FillVars( "BoostedJet_"+subjetName+"_Charge",i,itSub->jetCharge() );
@@ -844,7 +844,7 @@ void BoostedJetVarProcessor::FillSFJetVars(const InputCollections& input,Variabl
       vars.FillVars( "BoostedJet_"+subjetName+"_M",i,itSub->mass() );
       vars.FillVars( "BoostedJet_"+subjetName+"_Eta",i,itSub->eta() );
       vars.FillVars( "BoostedJet_"+subjetName+"_Phi",i,itSub->phi() );
-      vars.FillVars( "BoostedJet_"+subjetName+"_CSV",i,MiniAODHelper::GetJetCSV(*itSub,btagger) );
+      vars.FillVars( "BoostedJet_"+subjetName+"_CSV",i,CSVHelper::GetJetCSV(*itSub,btagger) );
       vars.FillVars( "BoostedJet_"+subjetName+"_Dr",i,BoostedUtils::DeltaR(*itSub,input.selectedBoostedJets[i].fatjet) );
       vars.FillVars( "BoostedJet_"+subjetName+"_Flav",i,itSub->partonFlavour() );
       vars.FillVars( "BoostedJet_"+subjetName+"_Charge",i,itSub->jetCharge() );
@@ -918,7 +918,7 @@ void BoostedJetVarProcessor::FillSFJetVars(const InputCollections& input,Variabl
         vars.FillVars( "BoostedJet_"+subjetName+"_M",i,itSub->mass() );
         vars.FillVars( "BoostedJet_"+subjetName+"_Eta",i,itSub->eta() );
         vars.FillVars( "BoostedJet_"+subjetName+"_Phi",i,itSub->phi() );
-        vars.FillVars( "BoostedJet_"+subjetName+"_CSV",i,MiniAODHelper::GetJetCSV(*itSub,btagger) );
+        vars.FillVars( "BoostedJet_"+subjetName+"_CSV",i,CSVHelper::GetJetCSV(*itSub,btagger) );
         vars.FillVars( "BoostedJet_"+subjetName+"_Dr",i,BoostedUtils::DeltaR(*itSub,input.selectedBoostedJets[i].fatjet) );
         vars.FillVars( "BoostedJet_"+subjetName+"_Flav",i,itSub->partonFlavour() );
         vars.FillVars( "BoostedJet_"+subjetName+"_Charge",i,itSub->jetCharge() );
@@ -928,10 +928,10 @@ void BoostedJetVarProcessor::FillSFJetVars(const InputCollections& input,Variabl
     }
 
     std::vector<pat::Jet> filterJets = BoostedUtils::GetHiggsFilterJets(input.selectedBoostedJets[i],4,-1);
-    if(filterJets.size()>0) vars.FillVars( "BoostedJet_CSV1",i,MiniAODHelper::GetJetCSV(filterJets[0],btagger) );
-    if(filterJets.size()>1) vars.FillVars( "BoostedJet_CSV2",i,MiniAODHelper::GetJetCSV(filterJets[1],btagger) );
-    if(filterJets.size()>2) vars.FillVars( "BoostedJet_CSV3",i,MiniAODHelper::GetJetCSV(filterJets[2],btagger) );
-    if(filterJets.size()>3) vars.FillVars( "BoostedJet_CSV4",i,MiniAODHelper::GetJetCSV(filterJets[3],btagger) );
+    if(filterJets.size()>0) vars.FillVars( "BoostedJet_CSV1",i,CSVHelper::GetJetCSV(filterJets[0],btagger) );
+    if(filterJets.size()>1) vars.FillVars( "BoostedJet_CSV2",i,CSVHelper::GetJetCSV(filterJets[1],btagger) );
+    if(filterJets.size()>2) vars.FillVars( "BoostedJet_CSV3",i,CSVHelper::GetJetCSV(filterJets[2],btagger) );
+    if(filterJets.size()>3) vars.FillVars( "BoostedJet_CSV4",i,CSVHelper::GetJetCSV(filterJets[3],btagger) );
 
     vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
     vector<math::XYZTLorentzVector> filtvecs = BoostedUtils::GetJetVecs(input.selectedBoostedJets[i].filterjets);
@@ -983,7 +983,7 @@ void BoostedJetVarProcessor::FillPrunedJetVars(const InputCollections& input,Var
       vars.FillVars( "BoostedJet_Pruned_"+SubjetName+"_M",i,itSub->mass() );
       vars.FillVars( "BoostedJet_Pruned_"+SubjetName+"_Eta",i,itSub->eta() );
       vars.FillVars( "BoostedJet_Pruned_"+SubjetName+"_Phi",i,itSub->phi() );
-      vars.FillVars( "BoostedJet_Pruned_"+SubjetName+"_CSV",i,MiniAODHelper::GetJetCSV(*itSub,btagger) );
+      vars.FillVars( "BoostedJet_Pruned_"+SubjetName+"_CSV",i,CSVHelper::GetJetCSV(*itSub,btagger) );
       vars.FillVars( "BoostedJet_Pruned_"+SubjetName+"_Dr",i,BoostedUtils::DeltaR(*itSub,input.selectedBoostedJets[i].fatjet) );
       vars.FillVars( "BoostedJet_Pruned_"+SubjetName+"_Flav",i,itSub->partonFlavour() );
       vars.FillVars( "BoostedJet_Pruned_"+SubjetName+"_Charge",i,itSub->jetCharge() );
@@ -1006,8 +1006,8 @@ void BoostedJetVarProcessor::FillPrunedJetVars(const InputCollections& input,Var
 
     std::sort(subjets.begin(), subjets.end(),BoostedUtils::FirstHasHigherCSV);
 
-    if(subjets.size()>0) vars.FillVars( "BoostedJet_Pruned_CSV1",i,MiniAODHelper::GetJetCSV(subjets.at(0),btagger) );
-    if(subjets.size()>1) vars.FillVars( "BoostedJet_Pruned_CSV2",i,MiniAODHelper::GetJetCSV(subjets.at(1),btagger) );
+    if(subjets.size()>0) vars.FillVars( "BoostedJet_Pruned_CSV1",i,CSVHelper::GetJetCSV(subjets.at(0),btagger) );
+    if(subjets.size()>1) vars.FillVars( "BoostedJet_Pruned_CSV2",i,CSVHelper::GetJetCSV(subjets.at(1),btagger) );
   }
 }
 
@@ -1031,7 +1031,7 @@ void BoostedJetVarProcessor::FillSDJetVars(const InputCollections& input,Variabl
       vars.FillVars( "BoostedJet_SD_"+SubjetName+"_M",i,itSub->mass() );
       vars.FillVars( "BoostedJet_SD_"+SubjetName+"_Eta",i,itSub->eta() );
       vars.FillVars( "BoostedJet_SD_"+SubjetName+"_Phi",i,itSub->phi() );
-      vars.FillVars( "BoostedJet_SD_"+SubjetName+"_CSV",i,MiniAODHelper::GetJetCSV(*itSub,btagger) );
+      vars.FillVars( "BoostedJet_SD_"+SubjetName+"_CSV",i,CSVHelper::GetJetCSV(*itSub,btagger) );
       vars.FillVars( "BoostedJet_SD_"+SubjetName+"_Dr",i,BoostedUtils::DeltaR(*itSub,input.selectedBoostedJets[i].fatjet) );
       vars.FillVars( "BoostedJet_SD_"+SubjetName+"_Flav",i,itSub->partonFlavour() );
       vars.FillVars( "BoostedJet_SD_"+SubjetName+"_Charge",i,itSub->jetCharge() );
@@ -1058,9 +1058,9 @@ void BoostedJetVarProcessor::FillSDJetVars(const InputCollections& input,Variabl
 
     std::sort(subjets.begin(), subjets.end(),BoostedUtils::FirstHasHigherCSV);
 
-    if(subjets.size()>0) vars.FillVars( "BoostedJet_SD_CSV1",i,MiniAODHelper::GetJetCSV(subjets.at(0),btagger) );
-    if(subjets.size()>1) vars.FillVars( "BoostedJet_SD_CSV2",i,MiniAODHelper::GetJetCSV(subjets.at(1),btagger) );
-    if(subjets.size()>2) vars.FillVars( "BoostedJet_SD_CSV3",i,MiniAODHelper::GetJetCSV(subjets.at(2),btagger) );
+    if(subjets.size()>0) vars.FillVars( "BoostedJet_SD_CSV1",i,CSVHelper::GetJetCSV(subjets.at(0),btagger) );
+    if(subjets.size()>1) vars.FillVars( "BoostedJet_SD_CSV2",i,CSVHelper::GetJetCSV(subjets.at(1),btagger) );
+    if(subjets.size()>2) vars.FillVars( "BoostedJet_SD_CSV3",i,CSVHelper::GetJetCSV(subjets.at(2),btagger) );
 
     vars.FillVars( "BoostedJet_SD_Tau1",i,input.selectedBoostedJets.at(i).tau1Softdrop );
     vars.FillVars( "BoostedJet_SD_Tau2",i,input.selectedBoostedJets.at(i).tau2Softdrop );

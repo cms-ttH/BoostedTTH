@@ -59,7 +59,7 @@ bool DiLeptonJetTagSelection::IsSelected(const InputCollections& input,Cutflow& 
   int njets = 0;
   int ntags = 0;
   for(size_t i=0; i<input.selectedJetsLoose.size();i++){
-    if(BoostedUtils::PassesCSV(input.selectedJetsLoose.at(i), 'M')){
+    if(CSVHelper::PassesCSV(input.selectedJetsLoose.at(i), "DeepJet", CSVHelper::CSVwp::Medium,input.era)){
       ntags++;
     }
     if(input.selectedJetsLoose.at(i).pt()>=ptCut){
