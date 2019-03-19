@@ -70,7 +70,6 @@ public:
 
   static void fillDescriptions(edm::ConfigurationDescriptions &descriptions);
 
-private:
   // some enums to make things nicer
   enum class JetID
   {
@@ -89,7 +88,10 @@ private:
     Medium,
     Tight
   };
+  static bool isGoodJet(const pat::Jet &iJet, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP wp, std::string dataEra="2017");
 
+
+private:
   // member functions
   virtual void beginStream(edm::StreamID) override;
   virtual void produce(edm::Event &, const edm::EventSetup &) override;
@@ -99,7 +101,7 @@ private:
   void UpdateJetCorrectorUncertainties(const edm::EventSetup &iSetup);
   JetCorrectionUncertainty *CreateJetCorrectorUncertainty(const edm::EventSetup &iSetup, const std::string &jetTypeLabel, const std::string &uncertaintyLabel) const;
   std::vector<pat::Jet> GetSelectedJets(const std::vector<pat::Jet> &, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP = PUJetIDWP::none) const;
-  bool isGoodJet(const pat::Jet &iJet, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP wp) const;
+  bool isGoodJet(const pat::Jet &iJet, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP wp);
   std::vector<pat::Jet> GetUncorrectedJets(const std::vector<pat::Jet> &inputJets) const;
   std::vector<pat::Jet> GetDeltaRCleanedJets(const std::vector<pat::Jet> &inputJets, const std::vector<pat::Muon> &inputMuons, const std::vector<pat::Electron> &inputElectrons, const double deltaRCut) const;
   std::vector<pat::Jet> GetCorrectedJets(const std::vector<pat::Jet> &, const edm::Event &, const edm::EventSetup &, const edm::Handle<reco::GenJetCollection> &, const SystematicsHelper::Type iSysType = SystematicsHelper::NA, const bool &doJES = true, const bool &doJER = true, const float &corrFactor = 1, const float &uncFactor = 1);
@@ -108,7 +110,7 @@ private:
   double GetJECUncertainty(const pat::Jet &jet, const edm::EventSetup &iSetup, const SystematicsHelper::Type iSysType);
   void AddJetCorrectorUncertainty(const edm::EventSetup &iSetup, const std::string &uncertaintyLabel);
   template <typename T> T GetSortedByPt(const T &) const;
-  int TranslateJetPUIDtoInt(PUJetIDWP wp) const;
+  static int TranslateJetPUIDtoInt(PUJetIDWP wp);
 
   //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
   //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;

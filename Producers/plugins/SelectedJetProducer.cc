@@ -192,7 +192,7 @@ std::string SelectedJetProducer::systName(std::string name, SystematicsHelper::T
 
 // function to check if Jet FullFills IDs
 bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, const float iMaxAbsEta,
-                                    const JetID iJetID, const PUJetIDWP wp) const
+                                    const JetID iJetID, const PUJetIDWP wp)
 {
   //   CheckVertexSetUp(); // What is this?
 
@@ -276,8 +276,94 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
   return true;
 }
 
+// function to check if Jet FullFills IDs
+bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, const float iMaxAbsEta,
+                                    const JetID iJetID, const PUJetIDWP wp, std::string dataEra)
+{
+  //   CheckVertexSetUp(); // What is this?
+
+  // Transverse momentum requirement
+  if (iJet.pt() < iMinPt)
+    return false;
+
+  // Absolute eta requirement
+  if (fabs(iJet.eta()) > iMaxAbsEta)
+    return false;
+
+  // Jet ID
+  bool loose = false;
+  bool tight = false;
+  bool goodForMETCorrection = false;
+
+  if (iJetID != JetID::none && iJet.isPFJet())
+  {
+    // these are the loose requirements for Run 2016 80X
+    loose = (iJet.neutralHadronEnergyFraction() < 0.99 &&
+             iJet.neutralEmEnergyFraction() < 0.99 &&
+             iJet.numberOfDaughters() > 1);
+    // these are the tight requirements for Run 2017 90X. Since the tight JetID efficiency is > 99% everywhere for this era,
+    // loose is not recommended anymore.
+    tight = (iJet.neutralHadronEnergyFraction() < 0.90 &&
+             iJet.neutralEmEnergyFraction() < 0.90 &&
+             iJet.numberOfDaughters() > 1);
+
+    if (fabs(iJet.eta()) < 2.4)
+    {
+      loose = (loose &&
+               iJet.chargedHadronEnergyFraction() > 0.0 &&
+               iJet.chargedMultiplicity() > 0 &&
+               iJet.chargedEmEnergyFraction() < 0.99);
+      tight = (tight &&
+               iJet.chargedHadronEnergyFraction() > 0.0 &&
+               iJet.chargedMultiplicity() > 0
+               //iJet.chargedEmEnergyFraction() < 0.99
+      );
+      if (TString(dataEra).Contains("2016")){
+        tight = (tight && iJet.chargedEmEnergyFraction() < 0.99);
+      }
+    }
+
+    if (iJetID == JetID::jetMETcorrection)
+    { //only check this if asked, otherwise there could be problems
+      goodForMETCorrection = (iJet.correctedJet(0).pt() > 10.0 &&
+                              ((!iJet.isPFJet() && iJet.emEnergyFraction() < 0.9) ||
+                               (iJet.isPFJet() && (iJet.neutralEmEnergyFraction() + iJet.chargedEmEnergyFraction()) < 0.9)));
+    }
+  }
+
+  switch (iJetID)
+  {
+  case JetID::jetMETcorrection:
+    if (!goodForMETCorrection)
+      return false;
+    break;
+  case JetID::jetPU:
+  case JetID::jetMinimal:
+  case JetID::jetLooseAOD:
+  case JetID::Loose:
+    if (!loose)
+      return false;
+    break;
+  case JetID::Tight:
+    if (!tight)
+      return false;
+    break;
+  case JetID::none:
+  default:
+    break;
+  }
+  // PileUP Jet ID
+  if (iJet.hasUserInt("pileupJetId:fullId"))
+  {
+    if (iJet.userInt("pileupJetId:fullId") < TranslateJetPUIDtoInt(wp))
+      return false;
+  }
+
+  return true;
+}
+
 // function to Translate PUJetIDWP into its corresponding int
-int SelectedJetProducer::TranslateJetPUIDtoInt(PUJetIDWP wp) const
+int SelectedJetProducer::TranslateJetPUIDtoInt(PUJetIDWP wp)
 {
   if (wp == PUJetIDWP::Loose)
     return 4;
