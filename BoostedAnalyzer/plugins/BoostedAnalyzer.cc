@@ -118,6 +118,10 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AK8JetProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SelectionTagProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/HTXSProcessor.hpp"
+
+//include HiggsTemplateCrossSections
+#include "SimDataFormats/HTXS/interface/HiggsTemplateCrossSections.h"
 
 //
 // class declaration
@@ -271,6 +275,8 @@ private:
     edm::EDGetTokenT< std::vector<reco::GenJet> > genJetsToken;
     // LHERunInfo data access token
     edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoToken;
+    /** HTXS data access token **/
+    edm::EDGetTokenT< HTXS::HiggsClassification > htxsSrc_;
     
 
     /** time counter */
@@ -333,7 +339,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     lheInfoToken                    ( consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo")) ),
     genParticlesToken               ( consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles")) ),
     genJetsToken                    ( consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets")) ),
-    LHERunInfoToken                 ( consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer")) )
+    LHERunInfoToken                 ( consumes< LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer")) ),
+
+    htxsSrc_                        ( consumes< HTXS::HiggsClassification >(edm::InputTag("rivetProducerHTXS","HiggsClassification")) )
 
 {
   
@@ -570,6 +578,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     if(std::find(processorNames.begin(),processorNames.end(),"SelectionTagProcessor")!=processorNames.end()) {
       treewriter->AddTreeProcessor(new SelectionTagProcessor(),"SelectionTagProcessor");
     }
+    if(std::find(processorNames.begin(),processorNames.end(),"HTXSProcessor")!=processorNames.end()) {
+      treewriter->AddTreeProcessor(new HTXSProcessor(),"HTXSProcessor");
+    }
     }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
@@ -679,9 +690,11 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle<LHEEventProduct> h_dummie;
     edm::Handle< std::vector<reco::GenParticle> > h_genParticles;
     edm::Handle< std::vector<reco::GenJet> > h_genJets;
+    edm::Handle< HTXS::HiggsClassification > htxs;
     if(!isData){
 	iEvent.getByToken( genInfoToken, h_genInfo );
 	iEvent.getByToken( lheInfoToken, h_dummie );
+    iEvent.getByToken( htxsSrc_, htxs);
 	if (h_dummie.isValid()){
 	    iEvent.getByToken( lheInfoToken, h_lheInfo );
 	    dogenweights = true;
@@ -797,6 +810,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     //selectiontags
     map<string, int> selectionTags;
 
+
     // inputs
     std::vector<InputCollections> inputs;
     for(size_t isys=0; isys<jetSystematics.size(); isys++){
@@ -825,7 +839,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  iEvent,
 					  iSetup,
                                           jetSystematics[isys],
-                      selectionTags
+                      selectionTags,
+                      *htxs 
 					  ));
 
     }

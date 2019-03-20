@@ -18,6 +18,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/FilterInfo.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
+#include "SimDataFormats/HTXS/interface/HiggsTemplateCrossSections.h"
+
 
 enum SampleType{data,tth,ttl,ttbb,ttb,tt2b,ttcc,ttc,nonttbkg,thq};
 namespace HiggsDecay{enum HiggsDecay{NA,bb,nonbb};};
@@ -56,8 +58,9 @@ InputCollections(   const EventInfo&                              eventInfo_,
         const edm::Event&                             iEvent_,
         const edm::EventSetup&                        iSetup_,
                     const Systematics::Type&                      systematic_,
-                    const std::map<std::string, int>&             selectionTags_
-                    
+                    const std::map<std::string, int>&             selectionTags_,
+                    const HTXS::HiggsClassification               htxs_
+    
           /**** bjetness code ****/
                 ):
                     eventInfo(eventInfo_),
@@ -84,7 +87,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
         iEvent(iEvent_),
         iSetup(iSetup_),
         systematic(systematic_),
-        selectionTags(selectionTags_)
+        selectionTags(selectionTags_),
+        htxs(htxs_)
                     {}
 
 /**
@@ -123,7 +127,8 @@ InputCollections(   const InputCollections&                       input,
         iEvent(input.iEvent),
         iSetup(input.iSetup),
         systematic(input.systematic),
-        selectionTags(input.selectionTags)
+        selectionTags(input.selectionTags),
+        htxs(input.htxs)
                     {}
 
   const EventInfo&                              eventInfo;
@@ -150,7 +155,8 @@ InputCollections(   const InputCollections&                       input,
   const edm::Event &                            iEvent;
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;
-  const std::map<std::string, int>&              selectionTags;
+  const std::map<std::string, int>&             selectionTags;
+  const HTXS::HiggsClassification&              htxs;
 };
 
 #endif
