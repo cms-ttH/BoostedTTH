@@ -11,9 +11,46 @@ LeptonSelectionData = cms.PSet(
     electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
     channel = cms.string("both")
 )
+
+LeptonSelectionData2016 = cms.PSet(
+    muonTriggers = cms.vstring("HLT_IsoMu24_v*","HLT_IsoTkMu24_v*"),
+    electronTriggers = cms.vstring("HLT_Ele27_WPTight_Gsf_v*"),
+    channel = cms.string("both")
+)
+
+LeptonSelectionData2017 = cms.PSet(
+    muonTriggers = cms.vstring("HLT_IsoMu27_v*"),
+    electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
+    channel = cms.string("both")
+)
+
+LeptonSelectionData2018 = cms.PSet(
+    muonTriggers = cms.vstring("HLT_IsoMu24_v*"),
+    electronTriggers = cms.vstring("HLT_Ele32_WPTight_Gsf_v*"),
+    channel = cms.string("both")
+)
+
 LeptonSelectionMC = cms.PSet(
     muonTriggers = cms.vstring("HLT_IsoMu24_eta2p1_v*","HLT_IsoMu27_v*"),
     electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
+    channel = cms.string("both")
+)
+
+LeptonSelectionMC2016 = cms.PSet(
+    muonTriggers = cms.vstring("HLT_IsoMu24_v*","HLT_IsoTkMu24_v*"),
+    electronTriggers = cms.vstring("HLT_Ele27_WPTight_Gsf_v*"),
+    channel = cms.string("both")
+)
+
+LeptonSelectionMC2017 = cms.PSet(
+    muonTriggers = cms.vstring("HLT_IsoMu27_v*"),
+    electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
+    channel = cms.string("both")
+)
+
+LeptonSelectionMC2018 = cms.PSet(
+    muonTriggers = cms.vstring("HLT_IsoMu24_v*"),
+    electronTriggers = cms.vstring("HLT_Ele32_WPTight_Gsf_v*"),
     channel = cms.string("both")
 )
 
@@ -60,10 +97,13 @@ JetTagSelection = cms.PSet(
 
 checkBasicDataTriggers= cms.PSet(
     relevantTriggers=cms.vstring(
-				 "HLT_Ele35_WPTight_Gsf_v*",
+                                 "HLT_Ele35_WPTight_Gsf_v*",
                                  "HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*",
-                                 "HLT_IsoMu24_eta2p1_v*",
+                                 "HLT_Ele27_WPTight_Gsf_v*",
+                                 "HLT_Ele32_WPTight_Gsf_v*",
                                  "HLT_IsoMu27_v*",
+                                 "HLT_IsoMu24_v*",
+                                 "HLT_IsoTkMu24_v*",
                                  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
                                  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
                                  "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
@@ -79,8 +119,11 @@ checkBasicMCTriggers= cms.PSet(
     relevantTriggers=cms.vstring(
                                  "HLT_Ele35_WPTight_Gsf_v*",
                                  "HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*",
-                                 "HLT_IsoMu24_eta2p1_v*",
+                                 "HLT_Ele27_WPTight_Gsf_v*",
+                                 "HLT_Ele32_WPTight_Gsf_v*",
                                  "HLT_IsoMu27_v*",
+                                 "HLT_IsoMu24_v*",
+                                 "HLT_IsoTkMu24_v*",
                                  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
                                  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
                                  "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
