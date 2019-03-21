@@ -85,8 +85,9 @@ process.skimmed=cms.Path(process.LeptonJetsSkim)
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
-    fileName = cms.untracked.string('Skim.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*']),
+    fileName = cms.untracked.string('SkimTest2.root'),
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*', 
+            'drop *_*AK8*_*_*', 'drop *_*Puppi*_*_*', 'drop *_*slimmedTausBoosted*_*_*', 'drop *_*oniaPhotonCandidates*_*_*', 'drop *_*slimmedMETsNoHF*_*_*']),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skimmed")
     )
