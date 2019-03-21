@@ -15,5 +15,5 @@ LeptonJetsSkim = cms.EDFilter(
     electronEtaMax  = cms.double(2.5),
     jetPtMin   = cms.double(15),
     jetEtaMax  = cms.double(2.5),
-    minJets  = cms.int32(3),
+    minJets  = cms.int32(2),
     )
