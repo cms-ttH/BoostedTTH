@@ -1,4 +1,10 @@
 <use name="root"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="RecoEgamma/EgammaTools"/>
+<use name="CondFormats/JetMETObjects"/>
+<use name="JetMETCorrections/Objects"/>
+<use name="DataFormats/ParticleFlowCandidate"/>
+<use name="DataFormats/ParticleFlowReco"/>
 <export>
   <lib   name="1"/>
 </export>

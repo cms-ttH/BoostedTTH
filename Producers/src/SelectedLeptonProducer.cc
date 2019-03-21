@@ -604,4 +604,4 @@ SelectedLeptonProducer::fillDescriptions(edm::ConfigurationDescriptions& descrip
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(SelectedLeptonProducer);
+//DEFINE_FWK_MODULE(SelectedLeptonProducer);

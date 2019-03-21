@@ -166,4 +166,4 @@ CorrectedMETproducer::fillDescriptions(edm::ConfigurationDescriptions& descripti
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(CorrectedMETproducer);
+//DEFINE_FWK_MODULE(CorrectedMETproducer);

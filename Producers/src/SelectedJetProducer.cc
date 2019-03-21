@@ -655,4 +655,4 @@ void SelectedJetProducer::fillDescriptions(edm::ConfigurationDescriptions &descr
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(SelectedJetProducer);
+//DEFINE_FWK_MODULE(SelectedJetProducer);
