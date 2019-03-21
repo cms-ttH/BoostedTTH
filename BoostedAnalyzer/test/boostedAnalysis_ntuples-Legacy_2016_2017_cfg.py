@@ -303,17 +303,25 @@ if options.deterministicSeeds:
 from BoostedTTH.Producers.SelectedLeptonProducers_cfi import *
 if "2016" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2016
+    process.SelectedElectronProducer.ptMins=[15.,15.,29.]
+    ###
     process.SelectedMuonProducer = SelectedMuonProducer2016
+    process.SelectedMuonProducer.ptMins=[15.,15.,26.]
 elif "2017" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2017
+    process.SelectedElectronProducer.ptMins=[15.,15.,30.]
+    ###
     process.SelectedMuonProducer = SelectedMuonProducer2017
+    process.SelectedMuonProducer.ptMins=[15.,15.,29.]
 elif "2018" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2018
+    process.SelectedElectronProducer.ptMins=[15.,15.,34.]
+    ###
     process.SelectedMuonProducer = SelectedMuonProducer2018
+    process.SelectedMuonProducer.ptMins=[15.,15.,26.]
     
 
 process.SelectedElectronProducer.leptons=electronCollection
-process.SelectedElectronProducer.ptMins=[15.,15.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.4]
 process.SelectedElectronProducer.leptonIDs=["loose","tight","tight"]
 process.SelectedElectronProducer.isoConeSizes=["R03"]*3
@@ -324,7 +332,6 @@ process.SelectedElectronProducer.era=options.dataEra
 
 
 process.SelectedMuonProducer.leptons=muonCollection
-process.SelectedMuonProducer.ptMins=[15.,15.,29.]
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.4]
 process.SelectedMuonProducer.leptonIDs=["loose","tight","tight"]
 process.SelectedMuonProducer.isoConeSizes=["R04"]*3

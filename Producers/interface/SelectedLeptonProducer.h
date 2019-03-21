@@ -46,7 +46,7 @@
 #include "TH2F.h"
 #include "TFile.h"
 
-#include "BoostedTTH/Producers/src/RoccoR.cc" // this is needed to calculate the correction factors of the rochester correction
+#include "BoostedTTH/Producers/interface/RoccoR.h" // this is needed to calculate the correction factors of the rochester correction
 //
 // class declaration
 //
