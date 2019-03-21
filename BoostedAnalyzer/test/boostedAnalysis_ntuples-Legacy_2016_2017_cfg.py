@@ -294,9 +294,20 @@ if options.deterministicSeeds:
 
 ##########################################
 
-
 # lepton selection
-process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
+#process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
+from BoostedTTH.Producers.SelectedLeptonProducers_cfi import *
+if "2016" in options.dataEra:
+    process.SelectedElectronProducer = SelectedElectronProducer2016
+    process.SelectedMuonProducer = SelectedMuonProducer2016
+elif "2017" in options.dataEra:
+    process.SelectedElectronProducer = SelectedElectronProducer2017
+    process.SelectedMuonProducer = SelectedMuonProducer2017
+elif "2018" in options.dataEra:
+    process.SelectedElectronProducer = SelectedElectronProducer2018
+    process.SelectedMuonProducer = SelectedMuonProducer2018
+    
+
 process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.ptMins=[15.,15.,30.]
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.4]
@@ -305,6 +316,8 @@ process.SelectedElectronProducer.isoConeSizes=["R03"]*3
 process.SelectedElectronProducer.isoCorrTypes=["rhoEA"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
 process.SelectedElectronProducer.isData=options.isData
+process.SelectedElectronProducer.era=options.dataEra
+
 
 process.SelectedMuonProducer.leptons=muonCollection
 process.SelectedMuonProducer.ptMins=[15.,15.,29.]
@@ -317,6 +330,7 @@ process.SelectedMuonProducer.collectionNames=["selectedMuonsLoose","selectedMuon
 process.SelectedMuonProducer.useMuonRC=options.useMuonRC
 process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
 process.SelectedMuonProducer.isData=options.isData
+process.SelectedMuonProducer.era=options.dataEra
 
 
 
@@ -453,7 +467,13 @@ if options.isData:
 
 if "2016" in options.dataEra:
     from BoostedTTH.BoostedAnalyzer.Weights_cff import BTagSFs94XDeepJet2016
+    from BoostedTTH.BoostedAnalyzer.Weights_cff import NominalPUWeight2016
+    from BoostedTTH.BoostedAnalyzer.Weights_cff import AdditionalPUWeights2016
     process.BoostedAnalyzer.bTagSFs = cms.PSet(BTagSFs94XDeepJet2016)
+    process.BoostedAnalyzer.nominalPUWeight = cms.PSet(NominalPUWeight2016)
+    process.BoostedAnalyzer.additionalPUWeights = cms.PSet(AdditionalPUWeights2016)
+
+
 
 
 process.BoostedAnalyzer.selectionNames = [

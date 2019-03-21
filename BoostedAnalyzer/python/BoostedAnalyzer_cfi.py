@@ -26,8 +26,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     bTagSFs = cms.PSet(BTagSFs94XDeepJet2017),
 
     # PU weights, defined in Weights_cff
-    nominalPUWeight = cms.PSet(NominalPUWeight),
-    additionalPUWeights = cms.VPSet(AdditionalPUWeights),
+    nominalPUWeight = cms.PSet(NominalPUWeight2017),
+    additionalPUWeights = cms.VPSet(AdditionalPUWeights2017),
 
     systematics = cms.vstring(""),
     doJERsystematic = cms.bool(False),
