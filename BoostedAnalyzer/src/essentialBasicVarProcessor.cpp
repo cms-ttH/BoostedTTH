@@ -93,6 +93,13 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Muon_RelIso","N_LooseMuons" );
   vars.InitVars( "Muon_Charge","N_LooseMuons" );
   vars.InitVars( "Muon_Pt_BeForeRC","N_LooseMuons" );
+  vars.InitVars( "Muon_IdentificationSF","N_LooseMuons");
+  vars.InitVars( "Muon_IdentificationSFUp","N_LooseMuons");
+  vars.InitVars( "Muon_IdentificationSFDown","N_LooseMuons");
+  vars.InitVars( "Muon_IsolationSF","N_LooseMuons");
+  vars.InitVars( "Muon_IsolationSFUp","N_LooseMuons");
+  vars.InitVars( "Muon_IsolationSFDown","N_LooseMuons");
+
   
   vars.InitVars( "Electron_E","N_LooseElectrons" );
   vars.InitVars( "Electron_M","N_LooseElectrons" );
@@ -315,6 +322,17 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Muon_Charge",iMu,itMu->charge() );
     if(itMu->hasUserFloat("PtbeforeRC")){
 	vars.FillVars( "Muon_Pt_BeForeRC",iMu,itMu->userFloat("PtbeforeRC") );
+    }
+
+    if(itMu->hasUserFloat("IdentificationSF")){
+        vars.FillVars( "Muon_IdentificationSF",iMu,itMu->userFloat("IdentificationSF"));
+        vars.FillVars( "Muon_IdentificationSFUp",iMu,itMu->userFloat("IdentificationSFUp"));
+        vars.FillVars( "Muon_IdentificationSFDown",iMu,itMu->userFloat("IdentificationSFDown"));
+    }
+    if(itMu->hasUserFloat("IsolationSF")){
+        vars.FillVars( "Muon_IsolationSF",iMu,itMu->userFloat("IsolationSF"));
+        vars.FillVars( "Muon_IsolationSFUp",iMu,itMu->userFloat("IsolationSFUp"));
+        vars.FillVars( "Muon_IsolationSFDown",iMu,itMu->userFloat("IsolationSFDown"));
     }
   }
   
