@@ -481,12 +481,26 @@ for s in systsJES:
 
 # load and run the boosted analyzer
 if options.isData:
-    process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi")
+    from BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_data_cfi import *
+    if "2016" in options.dataEra:
+        process.BoostedAnalyzer = BoostedAnalyzer2016
+    elif "2017" in options.dataEra:
+        process.BoostedAnalyzer = BoostedAnalyzer2017
+    elif "2018" in options.dataEra:
+        process.BoostedAnalyzer = BoostedAnalyzer2018
+    
     process.BoostedAnalyzer.filterBits=cms.InputTag("TriggerResults::RECO")
     process.BoostedAnalyzer.dataEra=options.dataEra
 
 else:
-    process.load("BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi")
+    from BoostedTTH.BoostedAnalyzer.BoostedAnalyzer_cfi import *
+    if "2016" in options.dataEra:
+        process.BoostedAnalyzer = BoostedAnalyzer2016
+    elif "2017" in options.dataEra:
+        process.BoostedAnalyzer = BoostedAnalyzer2017
+    elif "2018" in options.dataEra:
+        process.BoostedAnalyzer = BoostedAnalyzer2018
+    
     process.BoostedAnalyzer.dataEra=options.dataEra
 
     if not options.isBoostedMiniAOD:

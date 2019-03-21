@@ -3,10 +3,10 @@ from BoostedTTH.BoostedAnalyzer.Selection_cff import *
 from BoostedTTH.BoostedAnalyzer.Inputs_cff import *
 from BoostedTTH.BoostedAnalyzer.Weights_cff import *
 
-BoostedAnalyzer = cms.EDAnalyzer(
+BoostedAnalyzer2017 = cms.EDAnalyzer(
     'BoostedAnalyzer',
     Inputs_tth_sl, # defined in Inputs_cff
-    LeptonSelectionMC, # defined in Selection_cff
+    LeptonSelectionMC2017, # defined in Selection_cff
     DiLeptonSelectionMC, # defined in Selection_cff
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
@@ -23,11 +23,11 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dataEra = cms.string("2017"),
 
     # b-tag SF, defined in Weights_cff
-    bTagSFs = cms.PSet(BTagSFs94XDeepJet2017),
+    bTagSFs = BTagSFs94XDeepJet2017,
 
     # PU weights, defined in Weights_cff
-    nominalPUWeight = cms.PSet(NominalPUWeight2017),
-    additionalPUWeights = cms.VPSet(AdditionalPUWeights2017),
+    nominalPUWeight = NominalPUWeight2017,
+    additionalPUWeights = AdditionalPUWeights2017,
 
     systematics = cms.vstring(""),
     doJERsystematic = cms.bool(False),
@@ -55,4 +55,24 @@ BoostedAnalyzer = cms.EDAnalyzer(
     outfileName = cms.string("BoostedTTH"),
 
     taggingSelection=cms.bool(False),
+)
+
+BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
+    
+    dataEra = cms.string("2016"),
+    LeptonSelectionMC = LeptonSelectionMC2016,
+    bTagSFs = BTagSFs94XDeepJet2016,
+    nominalPUWeight = NominalPUWeight2016,
+    additionalPUWeights = AdditionalPUWeights2016
+    
+)
+
+BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
+    
+    dataEra = cms.string("2018"),
+    LeptonSelectionMC = LeptonSelectionMC2018,
+    bTagSFs = BTagSFs94XDeepJet2017,
+    nominalPUWeight = NominalPUWeight2017,
+    additionalPUWeights = AdditionalPUWeights2017
+    
 )
