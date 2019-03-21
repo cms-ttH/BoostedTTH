@@ -518,7 +518,13 @@ if options.isData:
 
 if "2016" in options.dataEra:
     from BoostedTTH.BoostedAnalyzer.Weights_cff import BTagSFs94XDeepJet2016
+    from BoostedTTH.BoostedAnalyzer.Weights_cff import NominalPUWeight2016
+    from BoostedTTH.BoostedAnalyzer.Weights_cff import AdditionalPUWeights2016
     process.BoostedAnalyzer.bTagSFs = cms.PSet(BTagSFs94XDeepJet2016)
+    process.BoostedAnalyzer.nominalPUWeight = cms.PSet(NominalPUWeight2016)
+    process.BoostedAnalyzer.additionalPUWeights = cms.PSet(AdditionalPUWeights2016)
+
+
 
 
 process.BoostedAnalyzer.selectionNames = [
