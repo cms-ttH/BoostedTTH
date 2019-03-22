@@ -1048,17 +1048,6 @@ void BoostedAnalyzer::endJob()
 // ------------ method called when starting to processes a run ------------
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {
     
-    /*
-    lhe_weights["1001"]="Weight_muRnmuFn";
-    lhe_weights["1002"]="Weight_muRnmuFup";
-    lhe_weights["1003"]="Weight_muRnmuFdown";
-    lhe_weights["1004"]="Weight_muRupmuFn";
-    lhe_weights["1005"]="Weight_muRupmuFup";
-    lhe_weights["1006"]="Weight_muRupmuFdown";
-    lhe_weights["1007"]="Weight_muRdownmuFn";
-    lhe_weights["1008"]="Weight_muRdownmuFup";
-    lhe_weights["1009"]="Weight_muRdownmuFdown";
-    */
     edm::Handle<LHERunInfoProduct> runhandle1;
     edm::Handle<LHERunInfoProduct> runhandle2;
     //iEvent.getRun()
