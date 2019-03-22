@@ -492,7 +492,6 @@ std::vector<float> SelectedLeptonProducer::GetElectronRecoSF(const pat::Electron
     eta = std::min(xmax-0.1,eta);
     pt = std::max(ymin+0.1,pt);
     pt = std::min(ymax-0.1,pt);
-    std::cout << "superCluster eta = " << eta << std::endl;
     
     // calculate the scale factors
     SFs[0]=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
@@ -625,12 +624,7 @@ void SelectedLeptonProducer::AddMuonRelIsolation(std::vector<pat::Muon>& inputMu
 void SelectedLeptonProducer::AddMuonSFs(std::vector<pat::Muon>& inputMuons, const MuonID& iMuonID, const MuonIsolation& iMuonIso) const{
     for(auto& muon : inputMuons){
         auto IDSFs = GetMuonIDSF(muon, iMuonID);
-        std::cout << "MuonIDSFs:\n";
-        for(auto& val: IDSFs) std::cout << "\t" << val <<std::endl;
-
         auto IsoSFs = GetMuonISOSF(muon, iMuonID, iMuonIso);
-        std::cout << "MuonIsoSFs:\n";
-        for(auto& val: IsoSFs) std::cout << "\t" << val <<std::endl;
         assert(IDSFs.size()==3);
         assert(IsoSFs.size()==3);
         muon.addUserFloat("IdentificationSF",IDSFs[0]);
@@ -674,13 +668,9 @@ std::vector<float> SelectedLeptonProducer::GetMuonIDSF(const pat::Muon& iMuon, c
     // determine the ranges of the given TH2Fs
     auto xmin = SF_hist->GetXaxis()->GetXmin();
     auto xmax = SF_hist->GetXaxis()->GetXmax();
-    std::cout << "DEBUG: xrange [" << xmin << "," << xmax << "]\n";
     auto ymin = SF_hist->GetYaxis()->GetXmin();
     auto ymax = SF_hist->GetYaxis()->GetXmax();
-    std::cout << "DEBUG: yrange [" << ymin << "," << ymax << "]\n";
     
-    std::cout << "eta = " << eta << std::endl;
-    std::cout << "pt = " << pt << std::endl;
     // make sure to stay within the range of the histograms
     pt = std::max(xmin+0.1,pt);
     pt = std::min(xmax-0.1,pt);
@@ -689,7 +679,6 @@ std::vector<float> SelectedLeptonProducer::GetMuonIDSF(const pat::Muon& iMuon, c
 
     // find bin in the scale factor histogram
     auto bin = SF_hist->FindBin(pt,eta);
-    std::cout << "DEBUG: found bin for (" << pt << "," << eta << ") at " << bin << std::endl;
     
     // calculate the scale factors
     SFs[0]=SF_hist->GetBinContent(bin);
