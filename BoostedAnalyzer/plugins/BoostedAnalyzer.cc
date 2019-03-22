@@ -714,9 +714,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if( h_primaryVertices.isValid() ){
 	for( const auto& itvtx : vtxs ){
 	    bool isGood = ( !(itvtx.isFake()) &&
-			    (itvtx.ndof() >= 4.0) &&
-			    (abs(itvtx.z()) <= 24.0) &&
-			    (abs(itvtx.position().Rho()) <= 2.0)
+			    (itvtx.ndof() > 4.0) &&
+			    (abs(itvtx.z()) < 24.0) &&
+			    (abs(itvtx.position().Rho()) < 2.0)
 			    );
 	    if( isGood ) selectedPVs.push_back(itvtx);
 	    if( isFirst ) firstVertexIsGood=isGood;
