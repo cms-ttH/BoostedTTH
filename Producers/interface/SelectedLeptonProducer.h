@@ -87,6 +87,11 @@ public:
     std::vector<pat::Muon> GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt = 10., const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const double iMaxEta = 2.4, const MuonIsolation = MuonIsolation::Loose) const;
     bool isGoodMuon(const pat::Muon&, const double iMinPt = 10., const double iMaxEta = 2.4, const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const MuonIsolation = MuonIsolation::Loose) const;
     
+    // Functions to add object scale factors to muons meaning identification and relative isolation scale factors
+    void AddMuonSFs(std::vector<pat::Muon>& inputMuons, const MuonID& iMuonID, const MuonIsolation& iMuonIso) const;
+    std::vector<float> GetMuonIDSF(const pat::Muon& iMuon, const MuonID& iMuonID) const;
+    std::vector<float> GetMuonISOSF(const pat::Muon& iMuon, const MuonID& iMuonID, const MuonIsolation& iMuonIso) const;
+
     // Function to calculate muon relative isolation manually, for sync exercises
     double GetMuonRelIsolation(const pat::Muon& inputMuon, const IsoCorrType icorrType = IsoCorrType::deltaBeta, const IsoConeSize iconeSize = IsoConeSize::R04) const;
     void AddMuonRelIsolation(std::vector<pat::Muon>& inputMuons, const IsoCorrType icorrType = IsoCorrType::deltaBeta, const IsoConeSize iconeSize = IsoConeSize::R04);
@@ -156,7 +161,18 @@ private:
     TH2F* EleID_SF_Tight = nullptr;
     TH2F* EleReco_SF_highPt = nullptr;
     TH2F* EleReco_SF_lowPt = nullptr;
-    
+
+    // ptrs to 2D histograms which contain the muon scale factors for reconstruction and identification
+    TH2F* MuonID_SF_Loose = nullptr;
+    TH2F* MuonID_SF_Medium = nullptr;
+    TH2F* MuonID_SF_Tight = nullptr;
+
+    TH2F* MuonISO_SF_LooseRelIso_LooseID = nullptr;
+    TH2F* MuonISO_SF_LooseRelIso_MediumID = nullptr;
+    TH2F* MuonISO_SF_LooseRelIso_TightID = nullptr;
+
+    TH2F* MuonISO_SF_TightRelIso_MediumID = nullptr;
+    TH2F* MuonISO_SF_TightRelIso_TightID = nullptr;
     
 };
 #endif

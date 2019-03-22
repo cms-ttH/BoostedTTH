@@ -37,7 +37,12 @@ SelectedElectronProducer2017 = cms.EDProducer(
     file_EleMediumIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronMedium_Fall17V2.root"),
     file_EleTightIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronTight_Fall17V2.root"),
     file_EleRecoSF_highPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco.root"),
-    file_EleRecoSF_lowPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco_lowpt.root")
+    file_EleRecoSF_lowPt=cms.string("BoostedTTH/Producers/data/electronSFs/2017_ElectronReco_lowpt.root"),
+    file_MuonLooseIDSF=cms.string(""),
+    file_MuonMediumIDSF=cms.string(""),
+    file_MuonTightIDSF=cms.string(""),
+    file_MuonIsoSF=cms.string(""),
+    # file_MuonIsoSF_lowPt=cms.string("")
     )
 
 SelectedElectronProducer2016 = SelectedElectronProducer2017.clone(
@@ -96,12 +101,39 @@ SelectedMuonProducer2017 = cms.EDProducer(
     file_EleMediumIDSF=cms.string(""),
     file_EleTightIDSF=cms.string(""),
     file_EleRecoSF_highPt=cms.string(""),
-    file_EleRecoSF_lowPt=cms.string("")
+    file_EleRecoSF_lowPt=cms.string(""),
+
+    file_MuonIDSF=cms.string("BoostedTTH/Producers/data/muonSFs/2017/RunBCDEF_SF_ID_syst.root"),
+    histname_MuonLooseIDSF=cms.string("NUM_LooseID_DEN_genTracks_pt_abseta"),
+    histname_MuonMediumIDSF=cms.string("NUM_MediumID_DEN_genTracks_pt_abseta"),
+    histname_MuonTightIDSF=cms.string("NUM_TightID_DEN_genTracks_pt_abseta"),
+
+    file_MuonIsoSF=cms.string("BoostedTTH/Producers/data/muonSFs/2017/RunBCDEF_SF_ISO_syst.root"),
+    histname_MuonLooseISO_LooseIDSF = cms.string("NUM_LooseRelIso_DEN_LooseID_pt_abseta"),
+    histname_MuonLooseISO_MediumIDSF = cms.string("NUM_LooseRelIso_DEN_MediumID_pt_abseta"),
+    histname_MuonLooseISO_TightIDSF = cms.string("NUM_LooseRelIso_DEN_TightIDandIPCut_pt_abseta"),
+
+    histname_MuonTightISO_MediumIDSF = cms.string("NUM_TightRelIso_DEN_MediumID_pt_abseta"),
+    histname_MuonTightISO_TightIDSF = cms.string("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"),
     )
 
 SelectedMuonProducer2016 = SelectedMuonProducer2017.clone(
     era = cms.string("2016"),
-    rc_dir = cms.string("BoostedTTH/Producers/data/muonSFs/RoccoR2016.txt")
+    rc_dir = cms.string("BoostedTTH/Producers/data/muonSFs/RoccoR2016.txt"),
+
+    file_MuonIDSF=cms.string("BoostedTTH/Producers/data/muonSFs/2016/Merged_SF_ID.root"),
+    histname_MuonLooseIDSF=cms.string("NUM_LooseID_DEN_genTracks_eta_pt"),
+    histname_MuonMediumIDSF=cms.string("NUM_MediumID_DEN_genTracks_eta_pt"),
+    histname_MuonTightIDSF=cms.string("NUM_TightID_DEN_genTracks_eta_pt"),
+
+    file_MuonIsoSF=cms.string("BoostedTTH/Producers/data/muonSFs/2016/Merged_SF_ISO.root"),
+
+    histname_MuonLooseISO_LooseIDSF = cms.string("NUM_LooseRelIso_DEN_LooseID_eta_pt"),
+    histname_MuonLooseISO_MediumIDSF = cms.string("NUM_LooseRelIso_DEN_MediumID_eta_pt"),
+    histname_MuonLooseISO_TightIDSF = cms.string("NUM_LooseRelIso_DEN_TightIDandIPCut_eta_pt"),
+
+    histname_MuonTightISO_MediumIDSF = cms.string("NUM_TightRelIso_DEN_MediumID_eta_pt"),
+    histname_MuonTightISO_TightIDSF = cms.string("NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt"),
     )
 SelectedMuonProducer2018 = SelectedMuonProducer2017.clone(
     era = cms.string("2018"),
