@@ -71,7 +71,6 @@ for row in reader:
                     filenames.append("ntuples_"+filename+"up"+"_Tree.root")
                     filenames.append("ntuples_"+filename+"down"+"_Tree.root")
             shutil.copy(src,out)
-            
             if row['isData']=='TRUE':
                 dataSetTag = 'KIT_tthbb_sl_skims_DATA_94X_LEG_DATAERA'
                 splitting = 'EventAwareLumiBased'
