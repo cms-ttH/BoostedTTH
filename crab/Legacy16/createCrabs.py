@@ -72,11 +72,11 @@ for row in reader:
                     filenames.append("ntuples_"+filename+"down"+"_Tree.root")
             shutil.copy(src,out)
             if row['isData']=='TRUE':
-                dataSetTag = 'KIT_tthbb_sl_skims_DATA_94X_LEG_DATAERA'
+                dataSetTag = 'KIT_tthbb_skims_DATA_94X_LEG_DATAERA'
                 splitting = 'EventAwareLumiBased'
                 units = '80000'
             else:
-                dataSetTag = 'KIT_tthbb_sl_skims_MC_94X_LEG_DATAERA'
+                dataSetTag = 'KIT_tthbb_skims_MC_94X_LEG_DATAERA'
                 splitting = 'FileBased'
                 units = '3'
 
