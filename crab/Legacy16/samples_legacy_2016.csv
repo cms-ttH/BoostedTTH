@@ -30,7 +30,7 @@ WW_TuneCUETP8M1_13TeV-pythia8_v2,"/WW_TuneCUETP8M1_13TeV-pythia8/RunIISummer16Mi
 WZ_TuneCUETP8M1_13TeV-pythia8_v2,"/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM,/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v2/MINIAODSIM",3997571,1,47.13,0.0117896592706,,94X_mc2017_realistic_v17,FALSE,pythia8,NONE,2016
 ZZ_TuneCUETP8M1_13TeV-pythia8_v2,"/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM,/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v2/MINIAODSIM",1988098,1,31.7338,0.0159618892026,,94X_mc2017_realistic_v17,FALSE,pythia8,NONE,2016
 ttbb_4FS_OpenLoops_13TeV-sherpa_v2,/ttbb_4FS_OpenLoops_13TeV-sherpa/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM,19723209,89160.5765541,1,5.68655907278E-10,,94X_mc2017_realistic_v17,FALSE,notSpecified,NONE,2016
-,,,,,,,,,,,
+TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8_v2,/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM,,,,,,94X_mc2017_realistic_v17,FALSE,,NONE,2016
 ,,,,,,,,,,,
 SingleElectronB1,/SingleElectron/Run2016B-17Jul2018_ver2-v1/MINIAOD,246440440,1,1,4.05777558261E-06,,94X_dataRun2_v11,TRUE,notSpecified,NONE,2017B
 ,,,,,,,,,,,
