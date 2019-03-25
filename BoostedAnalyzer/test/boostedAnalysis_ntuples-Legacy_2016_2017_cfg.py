@@ -386,7 +386,7 @@ process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8je
                                                                PUJetIDMins=["none"],
                                                                miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
                                                                leptonJetDr=0.8,
-                                                               JetType="AK8PFchs"
+                                                               JetType="AK8PFCHS"
                                                                )
 
 process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.InputTag('patSmearedJetsAK8',"",process.name_()),
