@@ -212,7 +212,7 @@ std::vector<pat::Jet> SelectedJetProducer::GetSelectedJets(const std::vector<pat
 {
   // iterate through inputjets and find good Jets
   std::vector<pat::Jet> selectedJets;
-  for (auto& jet: inputJets )
+  for (const auto& jet: inputJets )
   {
     if (isGoodJet(jet, iMinPt, iMaxAbsEta, iJetID, wp))
     {
@@ -377,7 +377,7 @@ std::vector<pat::Jet> SelectedJetProducer::GetCorrectedJets(const std::vector<pa
 
   //loop over input jets and correct each one
   // for (std::vector<pat::Jet>::const_iterator it = inputJets.begin(), ed = inputJets.end(); it != ed; ++it)
-  for (auto& jet: inputJets)
+  for (const auto& jet: inputJets)
   {
     outputJets.push_back(GetCorrectedJet(jet, event, setup, genjets, iSysType, doJES, doJER, corrFactor, uncFactor));
   }
