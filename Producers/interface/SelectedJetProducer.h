@@ -128,20 +128,20 @@ private:
   JetType JetType_;
   const bool isData;
   /** min pt of jet collections **/
-  std::vector<double> ptMins;
+  const std::vector<double> ptMins;
   /** max eta of jet collections **/
-  std::vector<double> etaMaxs;
+  const std::vector<double> etaMaxs;
   /** min dir to lepton for jets **/
-  double leptonJetDr;
+  const double leptonJetDr;
 
   /** apply jet energy correciton? **/
   const bool applyCorrection;
   const bool doJER;
 
   /** names of output jet collections **/
-  std::vector<std::string> collectionNames;
+  const std::vector<std::string> collectionNames;
   /** pileupjetid for collections **/
-  std::vector<std::string> PUJetIDMins;
+  const std::vector<std::string> PUJetIDMins;
   /** jetid **/
   const std::string JetID_;
   /** Systematics used **/
