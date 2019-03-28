@@ -143,7 +143,7 @@ private:
   /** pileupjetid for collections **/
   const std::vector<std::string> PUJetIDMins;
   /** jetid **/
-  const std::string JetID_;
+  const std::vector<std::string> JetID_;
   /** Systematics used **/
   const std::vector<std::string> systematics_config;
   std::vector<SystematicsHelper::Type> systematics;
@@ -170,7 +170,7 @@ private:
 
 
   // selection criterias
-  JetID Jet_ID;
+  std::vector<JetID> Jet_ID;
   std::vector<PUJetIDWP> PUJetID_WP;
 
   // some variables neccessary for systematics
