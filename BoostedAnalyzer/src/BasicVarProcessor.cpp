@@ -25,7 +25,7 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVar( "N_BTagsT","I" );
   vars.InitVar( "N_BTagsL" ,"I");
   vars.InitVar( "N_PrimaryVertices","I" );
-  vars.InitVar( "N_BoostedAk4Cluster","I" );
+  //vars.InitVar( "N_BoostedAk4Cluster","I" );
 
   vars.InitVars( "Jet_E","N_Jets" );
   vars.InitVars( "Jet_M","N_Jets" );
@@ -144,7 +144,7 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   vars.FillVar( "N_LooseElectrons",input.selectedElectronsLoose.size());
   vars.FillVar( "N_TightMuons",input.selectedMuons.size());
   vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());
-  vars.FillVar( "N_BoostedAk4Cluster",input.selectedAk4Cluster.size()); 
+  //vars.FillVar( "N_BoostedAk4Cluster",input.selectedAk4Cluster.size()); 
 
 
   // Fill Jet Variables
