@@ -6,7 +6,7 @@ using namespace std;
 
 
 FilterSelection::FilterSelection(const edm::ParameterSet& iConfig){
-    filters=iConfig.getParameter< std::vector<std::string> >("filters");
+    filters=iConfig.getParameter< std::vector<std::string> >("METfilters");
 }
 
 FilterSelection::~FilterSelection (){}
