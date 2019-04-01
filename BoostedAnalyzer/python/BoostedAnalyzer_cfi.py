@@ -66,8 +66,8 @@ BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
     LeptonSelectionMC = LeptonSelectionMC2016,
     bTagSFs = BTagSFs94XDeepJet2016,
     nominalPUWeight = NominalPUWeight2016,
-    additionalPUWeights = AdditionalPUWeights2016
-    METfilters = filtersMC16,    
+    additionalPUWeights = AdditionalPUWeights2016,
+    METfilters = filtersMC16   
 )
 
 BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
@@ -76,6 +76,5 @@ BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
     LeptonSelectionMC = LeptonSelectionMC2018,
     bTagSFs = BTagSFs94XDeepJet2018,
     nominalPUWeight = NominalPUWeight2017,
-    additionalPUWeights = AdditionalPUWeights2017
-    
+    additionalPUWeights = AdditionalPUWeights2017   
 )

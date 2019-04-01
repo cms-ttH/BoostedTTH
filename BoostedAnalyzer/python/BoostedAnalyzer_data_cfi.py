@@ -54,7 +54,7 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
 
 BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
     dataEra = cms.string("2016"),
-    LeptonSelectionData2017 = LeptonSelectionData2016
+    LeptonSelectionData2017 = LeptonSelectionData2016,
     METfilters = filtersData16
 )
 
