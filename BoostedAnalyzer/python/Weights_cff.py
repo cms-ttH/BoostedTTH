@@ -2,6 +2,40 @@ import FWCore.ParameterSet.Config as cms
 
 # PU weights
 # ------------------------------------------------------------
+
+#2018
+NominalPUWeight2018 = cms.PSet(
+    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
+    histNameMCNPU = cms.string("N_True"),
+    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasNominal-69200.root"),
+    histNameDataNPUEstimated = cms.string("pileup")
+)
+AdditionalPUWeights2018 = cms.VPSet(
+  cms.PSet(
+    namePUWeight = cms.string("Weight_pu69p2"),
+    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
+    histNameMCNPU = cms.string("N_True"),
+    fileNameDataNPUEstimated = cms.string("MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasNominal-69200.root"),
+    histNameDataNPUEstimated = cms.string("pileup")
+  ),
+
+  cms.PSet(
+    namePUWeight = cms.string("Weight_pu69p2Up"),
+    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
+    histNameMCNPU = cms.string("N_True"),
+    fileNameDataNPUEstimated = cms.string("MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasUp-72383.root"),
+    histNameDataNPUEstimated = cms.string("pileup")
+  ),
+
+  cms.PSet(
+    namePUWeight = cms.string("Weight_pu69p2Down"),
+    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
+    histNameMCNPU = cms.string("N_True"),
+    fileNameDataNPUEstimated = cms.string("MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasDown-66017.root"),
+    histNameDataNPUEstimated = cms.string("pileup")
+  ),
+)
+
 #2017
 NominalPUWeight2017 = cms.PSet(
     fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/MCNPUTrue.root"),
