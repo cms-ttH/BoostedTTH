@@ -71,7 +71,7 @@ BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
     
     dataEra = cms.string("2018"),
     LeptonSelectionMC = LeptonSelectionMC2018,
-    bTagSFs = BTagSFs94XDeepJet2017,
+    bTagSFs = BTagSFs94XDeepJet2018,
     nominalPUWeight = NominalPUWeight2017,
     additionalPUWeights = AdditionalPUWeights2017
     
