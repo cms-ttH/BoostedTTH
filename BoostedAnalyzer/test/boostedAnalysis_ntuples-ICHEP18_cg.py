@@ -9,6 +9,7 @@ import os
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideCommandLineParsing
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('analysis')
+
 # The following variables are already defined in VarParsing class:
 # maxEvents: singleton, int; default = -1
 # inputFiles: (comma separated, no spaces!) list, string: default empty
@@ -105,7 +106,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.options.allowUnscheduled = cms.untracked.bool(False)
+# process.options.allowUnscheduled = cms.untracked.bool(False) # no effect since 9_1_0
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
@@ -146,6 +147,25 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
            #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
           #)
 #)
+
+# ReRun DeepJet
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJets'),
+   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   svSource = cms.InputTag('slimmedSecondaryVertices'),
+   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
+   btagDiscriminators = [
+      'pfDeepFlavourJetTags:probb',
+      'pfDeepFlavourJetTags:probbb',
+      'pfDeepFlavourJetTags:problepb',
+      'pfDeepFlavourJetTags:probc',
+      'pfDeepFlavourJetTags:probuds',
+      'pfDeepFlavourJetTags:probg'
+      ],
+   postfix='NewDFTraining'
+)
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
@@ -212,7 +232,8 @@ photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
 muonCollection     = cms.InputTag("slimmedMuons", "", "PAT")
 tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
 METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
-jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
+# jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
+jetCollection      = cms.InputTag("selectedUpdatedPatJetsNewDFTraining", "", process.name_())
 AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
 #else:
     #electronCollection = cms.InputTag("slimmedElectrons", "", "RECO")
@@ -491,8 +512,23 @@ if options.ProduceMemNtuples==True:
     process.BoostedAnalyzer.memNtuples=True
     process.BoostedAnalyzer.processorNames=cms.vstring("SlimmedNtuples")
 
+process.updateJets = cms.Task(
+                    process.patJetCorrFactorsNewDFTraining,
+                    process.patJetCorrFactorsTransientCorrectedNewDFTraining,
+                    process.pfDeepCSVTagInfosNewDFTraining, 
+                    process.pfDeepFlavourJetTagsNewDFTraining,
+                    process.pfDeepFlavourTagInfosNewDFTraining,
+                    process.pfImpactParameterTagInfosNewDFTraining,
+                    process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining,
+                    process.selectedUpdatedPatJetsNewDFTraining,
+                    process.updatedPatJetsNewDFTraining,
+                    process.updatedPatJetsTransientCorrectedNewDFTraining)
+
+
 ##### DEFINE PATH ##########
 process.p = cms.Path()
+
+process.p.associate(process.updateJets)
 
 if options.recorrectMET:
     process.p *= process.fullPatMetSequence

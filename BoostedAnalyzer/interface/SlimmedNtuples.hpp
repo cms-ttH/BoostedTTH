@@ -3,6 +3,7 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
 class SlimmedNtuples: public TreeProcessor{
   

@@ -1,146 +1,5 @@
-// -*- C++ -*-
-//
-// Package:    BoostedTTH/ObjectSelectors
-// Class:      SelectedLeptonProducer
-//
-/**\class SelectedLeptonProducer SelectedLeptonProducer.cc BoostedTTH/BoostedProducer/plugins/SelectedLeptonProducer.cc
- * 
- * Description: [one line class summary]
- * 
- * Implementation:
- *     [Notes on implementation]
- */
-//
-// Original Author:  Matthias Schroeder
-//         Created:  Tue, 15 Sep 2015 11:58:04 GMT
-//
-//
 
-
-// system include files
-#include <exception>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
-#include "TRandom3.h"
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
-//#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
-
-#include "DataFormats/PatCandidates/interface/Lepton.h"
-#include "DataFormats/PatCandidates/interface/Electron.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-
-#include "BoostedTTH/Producers/src/RoccoR.cc" // this is needed to calculate the correction factors of the rochester correction
-//
-// class declaration
-//
-
-class SelectedLeptonProducer : public edm::EDProducer {
-public:
-    explicit SelectedLeptonProducer(const edm::ParameterSet&);
-    ~SelectedLeptonProducer();
-    
-    static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-    
-    // some enums to make things nicer
-    enum class LeptonType    {Electron, Muon};
-    enum class ElectronID    {None, Veto, Loose, Medium, Tight};
-    enum class MuonID        {None, Loose, Medium, Tight};
-    enum class IsoConeSize      {R03, R04};
-    enum class IsoCorrType      {rhoEA, deltaBeta};
-    enum class MuonIsolation {None, Loose, Medium, Tight};
-    
-    
-    // Function to sort leptons by pt
-    template <typename T> T GetSortedByPt(const T&);
-    
-    // Functions to return an electron collection with the desired properties
-    std::vector<pat::Electron> GetSelectedElectrons(const std::vector<pat::Electron>& inputElectrons, const double iMinPt = 10., const ElectronID = ElectronID::Loose, const double iMaxEta = 2.4) const;
-    bool isGoodElectron(const pat::Electron& iElectron, const double iMinPt = 10., const double iMaxEta = 2.4, const ElectronID iElectronID = ElectronID::Loose) const;
-    
-    // Function to calculate electron relative isolation manually, for sync exercises
-    double GetEletronRelIsolation(const pat::Electron& inputElectron, const IsoCorrType icorrType = IsoCorrType::rhoEA, const IsoConeSize iconeSize = IsoConeSize::R03) const;
-    void AddElectronRelIsolation(std::vector<pat::Electron>& inputElectrons, const IsoCorrType icorrType = IsoCorrType::rhoEA, const IsoConeSize iconeSize = IsoConeSize::R03);
-    
-    // Functions to return a muon collection with the desired properties
-    std::vector<pat::Muon> GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt = 10., const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const double iMaxEta = 2.4, const MuonIsolation = MuonIsolation::Loose) const;
-    bool isGoodMuon(const pat::Muon&, const double iMinPt = 10., const double iMaxEta = 2.4, const MuonID = MuonID::Loose, const IsoConeSize = IsoConeSize::R04, const IsoCorrType = IsoCorrType::deltaBeta, const MuonIsolation = MuonIsolation::Loose) const;
-    
-    // Function to calculate muon relative isolation manually, for sync exercises
-    double GetMuonRelIsolation(const pat::Muon& inputMuon, const IsoCorrType icorrType = IsoCorrType::deltaBeta, const IsoConeSize iconeSize = IsoConeSize::R04) const;
-    void AddMuonRelIsolation(std::vector<pat::Muon>& inputMuons, const IsoCorrType icorrType = IsoCorrType::deltaBeta, const IsoConeSize iconeSize = IsoConeSize::R04);
-    
-    // Function to apply the muon rochester correction to a given muon collection
-    void ApplyMuonMomentumCorrection(std::vector<pat::Muon>& inputMuons);
-    
-private:
-    
-    virtual void beginJob() override;
-    virtual void produce(edm::Event&, const edm::EventSetup&) override;
-    virtual void endJob() override;
-    
-    // ----------member data ---------------------------
-    // type of lepton (electron or muon) and names of the collections to create
-    const std::string leptonType;
-    LeptonType leptonType_;
-    std::vector<std::string> collectionNames_;
-    
-    // lepton selection criteria
-    const std::vector<double> ptMins_;
-    const std::vector<double> etaMaxs_;    
-    const std::vector<std::string > leptonIDs;
-    const std::vector<std::string> isoConeSizes;
-    const std::vector<std::string> isoCorrTypes;
-    const std::vector<std::string> muonIsoTypes;
-    
-    // flags used for muon Rochester correction
-    const bool isData;
-    const bool useMuonRC;                                           // flag to enable or disable Rochester Correction
-    const bool deterministicSeeds;                                  // flag to enable or disable deterministic seeds for RC
-    
-    // lepton selection criteria
-    std::vector<MuonID> muonIDs_;
-    std::vector<ElectronID> electronIDs_;
-    std::vector<IsoConeSize> IsoConeSizes_;
-    std::vector<IsoCorrType> IsoCorrTypes_;
-    std::vector<MuonIsolation> muonIsos_;
-    
-    // Object to calculate Rochester Correction
-    RoccoR rc;
-    
-    // Object to get electron effective areas
-    EffectiveAreas EA;
-    
-    // data access tokens
-    // pileup density
-    edm::EDGetTokenT< double >                  EDMRhoToken; 
-    // vertex collection
-    edm::EDGetTokenT< reco::VertexCollection >  EDMVertexToken;
-    // muons
-    edm::EDGetTokenT< pat::MuonCollection >     EDMMuonsToken;  
-    // electrons
-    edm::EDGetTokenT< pat::ElectronCollection >EDMElectronsToken;
-    
-    // primary vertex
-    reco::Vertex vertex;
-    
-    // event-specific average pile-up energy density per unit area in the phi-eta plane
-    double rho;
-    
-    
-};
-
+#include "BoostedTTH/Producers/interface/SelectedLeptonProducer.h"
 
 
 // constructor with initializer list for all inputs which are obtained from the config
@@ -152,6 +11,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
                                                                                     isoConeSizes{iConfig.getParameter<std::vector<std::string> >("isoConeSizes")},
                                                                                     isoCorrTypes{iConfig.getParameter<std::vector<std::string> >("isoCorrTypes")},
                                                                                     muonIsoTypes{iConfig.getParameter<std::vector<std::string> >("muonIsoTypes")},
+                                                                                    era{iConfig.getParameter<std::string>("era")},
                                                                                     isData{iConfig.getParameter<bool>("isData")},
                                                                                     useMuonRC{iConfig.getParameter<bool>("useMuonRC")},
                                                                                     deterministicSeeds{iConfig.getParameter<bool>("useDeterministicSeeds")},
@@ -174,7 +34,11 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         throw std::exception();
     }
     
-    
+    if( era.find("2016")==std::string::npos and era.find("2017")==std::string::npos){
+        std::cerr << "\n\nERROR: Unknown era" << era << "in SelectedLeptonProducer " << std::endl;
+        std::cerr << "Please select '2016' or '2017'\n" << std::endl;
+        throw std::exception();
+    }
     
     // fill lepton selection criteria with default values
     electronIDs_        = std::vector<ElectronID>(leptonIDs.size(),ElectronID::Loose);
@@ -247,6 +111,61 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         }
         
     }
+    
+    // load electron scale factor histograms from given files
+    if(leptonType_==LeptonType::Electron){
+        EleID_SF_Loose = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleLooseIDSF")))->Get("EGamma_SF2D");
+        EleID_SF_Loose->SetDirectory(0);
+        EleID_SF_Medium = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleMediumIDSF")))->Get("EGamma_SF2D");
+        EleID_SF_Medium->SetDirectory(0);
+        EleID_SF_Tight = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleTightIDSF")))->Get("EGamma_SF2D");
+        EleID_SF_Tight->SetDirectory(0);
+        EleReco_SF_highPt = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleRecoSF_highPt")))->Get("EGamma_SF2D");
+        EleReco_SF_highPt->SetDirectory(0);
+        EleReco_SF_lowPt = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_EleRecoSF_lowPt")))->Get("EGamma_SF2D");
+        EleReco_SF_lowPt->SetDirectory(0);
+    }
+    // load muon scale factor histograms from given files
+    else if(leptonType_==LeptonType::Muon){
+        // put muon stuff here
+        TString filename;
+        TString histoname;
+        filename = std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_MuonIDSF");
+        histoname = iConfig.getParameter<std::string>("histname_MuonLooseIDSF");
+        MuonID_SF_Loose = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonID_SF_Loose->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonMediumIDSF");
+        MuonID_SF_Medium = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonID_SF_Medium->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonTightIDSF");
+        MuonID_SF_Tight = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonID_SF_Tight->SetDirectory(0);
+
+
+        filename = std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_MuonIsoSF");
+        histoname = iConfig.getParameter<std::string>("histname_MuonLooseISO_LooseIDSF");
+        MuonISO_SF_LooseRelIso_LooseID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_LooseRelIso_LooseID->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonLooseISO_MediumIDSF");
+        MuonISO_SF_LooseRelIso_MediumID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_LooseRelIso_MediumID->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonLooseISO_TightIDSF");
+        MuonISO_SF_LooseRelIso_TightID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_LooseRelIso_TightID->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonTightISO_MediumIDSF");
+        MuonISO_SF_TightRelIso_MediumID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_TightRelIso_MediumID->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonTightISO_TightIDSF");
+        MuonISO_SF_TightRelIso_TightID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_TightRelIso_TightID->SetDirectory(0);    
+    }
+    
 }
 
 // destructor
@@ -305,12 +224,23 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             for(auto& ele : updatedElectrons){
                 ele.addUserFloat("ptBeforeRun2Calibration",ele.pt());
                 ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
+                // only use combined systematics for scaling and smearing since we should not be very sensitive to electron energy scale
+                // as recommended by e/gamma pog only for MC
+                if(not isData){
+                    ele.addUserFloat("CorrFactor_ScaleUp",ele.userFloat("energyScaleUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                    ele.addUserFloat("CorrFactor_ScaleDown",ele.userFloat("energyScaleDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                    ele.addUserFloat("CorrFactor_SigmaUp",ele.userFloat("energySigmaUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                    ele.addUserFloat("CorrFactor_SigmaDown",ele.userFloat("energySigmaDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                }
             }
             
+            std::vector<pat::Electron> selectedElectrons = GetSortedByPt(GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i]));
+            
+            if(not isData) AddElectronSFs(selectedElectrons, electronIDs_[i]);
+            
             // produce the different electron collections and create a unique ptr to it      
-            std::unique_ptr<pat::ElectronCollection> selectedLeptons =  std::make_unique<pat::ElectronCollection>(
-                                                                        GetSortedByPt(
-                                                                        GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i])));
+            std::unique_ptr<pat::ElectronCollection> selectedLeptons =  std::make_unique<pat::ElectronCollection>(selectedElectrons);
+            
             // put the collection into the event with help of the unique ptr
             iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
         }
@@ -338,10 +268,13 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             std::vector<pat::Muon> updatedMuons = correctedMuons;
             // add the muon relative isolation as a userfloat, mainly for sync by now
             AddMuonRelIsolation(updatedMuons,IsoCorrTypes_[i],IsoConeSizes_[i]);
+
+            //add muon scale factors
+
+            std::vector<pat::Muon> selectedMuons = GetSortedByPt(GetSelectedMuons(updatedMuons,ptMins_[i],muonIDs_[i],IsoConeSizes_[i],IsoCorrTypes_[i],etaMaxs_[i],muonIsos_[i]));
+            if(not isData) AddMuonSFs(selectedMuons, muonIDs_[i],muonIsos_[i]);
             // produce the different muon collections and create a unique ptr to it      
-            std::unique_ptr<pat::MuonCollection> selectedLeptons =  std::make_unique<pat::MuonCollection>(
-                                                                    GetSortedByPt( 
-                                                                    GetSelectedMuons(updatedMuons,ptMins_[i],muonIDs_[i],IsoConeSizes_[i],IsoCorrTypes_[i],etaMaxs_[i],muonIsos_[i]))) ;
+            std::unique_ptr<pat::MuonCollection> selectedLeptons =  std::make_unique<pat::MuonCollection>(selectedMuons) ;
             // put the collection into the event with help of the unique ptr
             iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
         }
@@ -457,6 +390,118 @@ void SelectedLeptonProducer::AddElectronRelIsolation(std::vector<pat::Electron>&
         ele.addUserFloat("relIso",GetEletronRelIsolation(ele, icorrType, iconeSize));
     }
 }
+
+// function to add electron object scale factors to electron, currently reconstruction and identification
+void SelectedLeptonProducer::AddElectronSFs(std::vector<pat::Electron>& inputElectrons, const ElectronID iElectronID) const{
+    for(auto& ele : inputElectrons){
+        auto IDSFs = GetElectronIDSF(ele, iElectronID);
+        auto RecoSFs = GetElectronRecoSF(ele);
+        assert(IDSFs.size()==3);
+        assert(RecoSFs.size()==3);
+        ele.addUserFloat("IdentificationSF",IDSFs[0]);
+        ele.addUserFloat("IdentificationSFUp",IDSFs[1]);
+        ele.addUserFloat("IdentificationSFDown",IDSFs[2]);
+        ele.addUserFloat("ReconstructionSF",RecoSFs[0]);
+        ele.addUserFloat("ReconstructionSFUp",RecoSFs[1]);
+        ele.addUserFloat("ReconstructionSFDown",RecoSFs[2]);
+    }
+}
+
+// function to calculate electron ID scale factors and return them as a triplet
+std::vector<float> SelectedLeptonProducer::GetElectronIDSF(const pat::Electron& iElectron, const ElectronID iElectronID) const{
+    // get pt and eta of the electron
+    auto pt = iElectron.hasUserFloat("ptBeforeRun2Calibration") ? iElectron.userFloat("ptBeforeRun2Calibration") : iElectron.pt();
+    auto eta = iElectron.superCluster().isAvailable() ? iElectron.superCluster()->position().eta() : iElectron.eta();
+    TH2F* SF_hist = nullptr; 
+    std::vector<float> SFs{1.0,1.0,1.0};
+    // load the correct scale factor histogram
+    switch(iElectronID){
+        case ElectronID::None:
+            break;
+        case ElectronID::Veto:
+            break;
+        case ElectronID::Loose:
+            SF_hist = EleID_SF_Loose;
+            break;
+        case ElectronID::Medium:
+            SF_hist = EleID_SF_Medium;
+            break;
+        case ElectronID::Tight:
+            SF_hist = EleID_SF_Tight;
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidElectronID" <<  std::endl;
+            throw std::exception();
+    }
+    
+    if(SF_hist==nullptr){
+        std::cerr << "\n\nERROR: Electron ID Scale Factor File could not be loaded" <<  std::endl;
+        throw std::exception(); 
+    }
+    
+    // determine the ranges of the given TH2Fs
+    auto xmin = SF_hist->GetXaxis()->GetXmin();
+    auto xmax = SF_hist->GetXaxis()->GetXmax();
+    auto ymin = SF_hist->GetYaxis()->GetXmin();
+    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    
+    // make sure to stay within the range ot the histograms
+    eta = std::max(xmin+0.1,eta);
+    eta = std::min(xmax-0.1,eta);
+    pt = std::max(ymin+0.1,pt);
+    pt = std::min(ymax-0.1,pt);
+    
+    // calculate the scale factors
+    SFs[0]=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
+    SFs[1]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    SFs[2]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    
+    return SFs;
+}
+
+// function to calculate electron reconstruction scale factor
+std::vector<float> SelectedLeptonProducer::GetElectronRecoSF(const pat::Electron& iElectron) const{
+    // get pt and eta of the electron
+    auto pt = iElectron.hasUserFloat("ptBeforeRun2Calibration") ? iElectron.userFloat("ptBeforeRun2Calibration") : iElectron.pt();
+    auto eta = iElectron.superCluster().isAvailable() ? iElectron.superCluster()->position().eta() : iElectron.eta();
+    TH2F* SF_hist = nullptr; 
+    std::vector<float> SFs{1.0,1.0,1.0};
+    
+    // load the correct scale factor histogram
+    if(era.find("2016")!=std::string::npos or era.find("2017")!=std::string::npos){
+        if(pt>=20.) SF_hist = EleReco_SF_highPt;
+        else SF_hist = EleReco_SF_lowPt;
+    }
+    else if(era.find("2018")!=std::string::npos){
+        SF_hist = EleReco_SF_highPt;
+    }
+    
+    if(SF_hist==nullptr){
+        std::cerr << "\n\nERROR: Electron Reco Scale Factor File could not be loaded" <<  std::endl;
+        throw std::exception(); 
+    }
+    
+    // determine the ranges of the given TH2Fs
+    auto xmin = SF_hist->GetXaxis()->GetXmin();
+    auto xmax = SF_hist->GetXaxis()->GetXmax();
+    auto ymin = SF_hist->GetYaxis()->GetXmin();
+    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    
+    // make sure to stay within the range ot the histograms
+    eta = std::max(xmin+0.1,eta);
+    eta = std::min(xmax-0.1,eta);
+    pt = std::max(ymin+0.1,pt);
+    pt = std::min(ymax-0.1,pt);
+    
+    // calculate the scale factors
+    SFs[0]=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
+    SFs[1]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    SFs[2]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    
+    
+    return SFs;
+}
+
 // function to select muons with several properties and return a collection
 std::vector<pat::Muon>
 SelectedLeptonProducer::GetSelectedMuons(const std::vector<pat::Muon>& inputMuons, const double iMinPt, const MuonID iMuonID, const IsoConeSize iconeSize, const IsoCorrType icorrType, const double iMaxEta, const MuonIsolation imuonIso) const{
@@ -575,6 +620,153 @@ void SelectedLeptonProducer::AddMuonRelIsolation(std::vector<pat::Muon>& inputMu
     }
 }
 
+// function to add electron object scale factors to electron, currently reconstruction and identification
+void SelectedLeptonProducer::AddMuonSFs(std::vector<pat::Muon>& inputMuons, const MuonID& iMuonID, const MuonIsolation& iMuonIso) const{
+    for(auto& muon : inputMuons){
+        auto IDSFs = GetMuonIDSF(muon, iMuonID);
+        auto IsoSFs = GetMuonISOSF(muon, iMuonID, iMuonIso);
+        assert(IDSFs.size()==3);
+        assert(IsoSFs.size()==3);
+        muon.addUserFloat("IdentificationSF",IDSFs[0]);
+        muon.addUserFloat("IdentificationSFUp",IDSFs[1]);
+        muon.addUserFloat("IdentificationSFDown",IDSFs[2]);
+        muon.addUserFloat("IsolationSF",IsoSFs[0]);
+        muon.addUserFloat("IsolationSFUp",IsoSFs[1]);
+        muon.addUserFloat("IsolationSFDown",IsoSFs[2]);
+    }
+}
+
+std::vector<float> SelectedLeptonProducer::GetMuonIDSF(const pat::Muon& iMuon, const MuonID& iMuonID) const{
+    // get pt and eta of the electron
+    auto pt = iMuon.pt();
+    auto eta = abs(iMuon.eta());
+    TH2F* SF_hist = nullptr; 
+    std::vector<float> SFs{1.0,1.0,1.0};
+    // load the correct scale factor histogram
+    switch(iMuonID){
+        case MuonID::None:
+            break;
+        case MuonID::Loose:
+            SF_hist = MuonID_SF_Loose;
+            break;
+        case MuonID::Medium:
+            SF_hist = MuonID_SF_Medium;
+            break;
+        case MuonID::Tight:
+            SF_hist = MuonID_SF_Tight;
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidMuonID" <<  std::endl;
+            throw std::exception();
+    }
+    
+    if(SF_hist==nullptr){
+        std::cerr << "\n\nERROR: Muon ID Scale Factor File could not be loaded" <<  std::endl;
+        throw std::exception(); 
+    }
+    
+    // determine the ranges of the given TH2Fs
+    auto xmin = SF_hist->GetXaxis()->GetXmin();
+    auto xmax = SF_hist->GetXaxis()->GetXmax();
+    auto ymin = SF_hist->GetYaxis()->GetXmin();
+    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    
+    // make sure to stay within the range of the histograms
+    pt = std::max(xmin+0.1,pt);
+    pt = std::min(xmax-0.1,pt);
+    eta = std::max(ymin+0.1,eta);
+    eta = std::min(ymax-0.1,eta);
+
+    // find bin in the scale factor histogram
+    auto bin = SF_hist->FindBin(pt,eta);
+    
+    // calculate the scale factors
+    SFs[0]=SF_hist->GetBinContent(bin);
+    SFs[1]=(SF_hist->GetBinContent(bin))+(SF_hist->GetBinError(bin));
+    SFs[2]=(SF_hist->GetBinContent(bin))-(SF_hist->GetBinError(bin));
+    
+    return SFs;
+}
+
+std::vector<float> SelectedLeptonProducer::GetMuonISOSF(const pat::Muon& iMuon, const MuonID& iMuonID, const MuonIsolation& iMuonIso) const{
+    // get pt and eta of the electron
+    auto pt = iMuon.pt();
+    auto eta = abs(iMuon.eta());
+    TH2F* SF_hist = nullptr; 
+    std::vector<float> SFs{1.0,1.0,1.0};
+    // load the correct scale factor histogram
+    switch(iMuonIso){
+        case MuonIsolation::None:
+            break;
+        case MuonIsolation::Loose:
+            switch(iMuonID){
+                case MuonID::None:
+                    break;
+                case MuonID::Loose:
+                    SF_hist = MuonISO_SF_LooseRelIso_LooseID;
+                    break;
+                case MuonID::Medium:
+                    SF_hist = MuonISO_SF_LooseRelIso_MediumID;
+                    break;
+                case MuonID::Tight:
+                    SF_hist = MuonISO_SF_LooseRelIso_TightID;
+                    break;
+                default:
+                    std::cerr << "\n\nERROR: InvalidMuonID in GetMuonISOSF" <<  std::endl;
+                    throw std::exception();
+            }
+            break;
+        case MuonIsolation::Medium:
+            break;
+        case MuonIsolation::Tight:
+            switch(iMuonID){
+                case MuonID::None:
+                    break;
+                case MuonID::Loose:
+                    break;
+                case MuonID::Medium:
+                    SF_hist = MuonISO_SF_TightRelIso_MediumID;
+                    break;
+                case MuonID::Tight:
+                    SF_hist = MuonISO_SF_TightRelIso_TightID;
+                    break;
+                default:
+                    std::cerr << "\n\nERROR: InvalidMuonID in GetMuonISOSF" <<  std::endl;
+                    throw std::exception();
+            }
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidMuonIsolation" <<  std::endl;
+            throw std::exception();
+    }
+    
+    if(SF_hist==nullptr){
+        std::cerr << "\n\nERROR: Muon Isolation Scale Factor could not be loaded" <<  std::endl;
+        throw std::exception(); 
+    }
+    
+    // determine the ranges of the given TH2Fs
+    auto xmin = SF_hist->GetXaxis()->GetXmin();
+    auto xmax = SF_hist->GetXaxis()->GetXmax();
+    auto ymin = SF_hist->GetYaxis()->GetXmin();
+    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    
+    // make sure to stay within the range of the histograms
+    pt = std::max(xmin+0.1,pt);
+    pt = std::min(xmax-0.1,pt);
+    eta = std::max(ymin+0.1,eta);
+    eta = std::min(ymax-0.1,eta);
+
+    // find bin in the scale factor histogram
+    auto bin = SF_hist->FindBin(pt,eta);
+    
+    // calculate the scale factors
+    SFs[0]=SF_hist->GetBinContent(bin);
+    SFs[1]=(SF_hist->GetBinContent(bin))+(SF_hist->GetBinError(bin));
+    SFs[2]=(SF_hist->GetBinContent(bin))-(SF_hist->GetBinError(bin));
+    
+    return SFs;
+}
 
 // ------------ method called once each job just before starting event loop  ------------
 void

@@ -2,10 +2,10 @@ import FWCore.ParameterSet.Config as cms
 from BoostedTTH.BoostedAnalyzer.Selection_cff import *
 from BoostedTTH.BoostedAnalyzer.Inputs_cff import *
 
-BoostedAnalyzer = cms.EDAnalyzer(
+BoostedAnalyzer2017 = cms.EDAnalyzer(
     'BoostedAnalyzer',
     Inputs_tth_sl, # defined in Inputs_cff
-    LeptonSelectionData, # defined in Selection_cff
+    LeptonSelectionData2017, # defined in Selection_cff
     DiLeptonSelectionData, # defined in Selection_cff
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
@@ -19,6 +19,8 @@ BoostedAnalyzer = cms.EDAnalyzer(
     eventWeight = cms.double(1.),
     isData = cms.bool(True),
     datasetFlag=cms.int32(0),
+    dataEra = cms.string("2017"),
+
 
     recorrectMET = cms.bool(True),
 
@@ -46,4 +48,14 @@ BoostedAnalyzer = cms.EDAnalyzer(
 
     outfileName = cms.string("BoostedTTH"),
     taggingSelection=cms.bool(False)
+)
+
+BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
+    dataEra = cms.string("2016"),
+    LeptonSelectionData2017 = LeptonSelectionData2016
+)
+
+BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
+    dataEra = cms.string("2018"),
+    LeptonSelectionData2017 = LeptonSelectionData2018
 )

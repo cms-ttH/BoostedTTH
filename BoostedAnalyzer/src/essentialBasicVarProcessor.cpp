@@ -7,7 +7,10 @@ essentialBasicVarProcessor::~essentialBasicVarProcessor(){}
 
 
 void essentialBasicVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
- 
+  
+  // load dataEra 
+  era = input.era;
+  
   vars.InitVar("Evt_ID","L");
   vars.InitVar("Evt_Odd","I");
   vars.InitVar("Evt_Run","I");
@@ -48,13 +51,13 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_DeepCSV_c","N_Jets");
   vars.InitVars( "Jet_DeepCSV_udsg","N_Jets");
 
-  vars.InitVars( "Jet_DeepFlavourCSV","N_Jets");  
-  vars.InitVars( "Jet_DeepFlavour_b","N_Jets");
-  vars.InitVars( "Jet_DeepFlavour_bb","N_Jets");
-  vars.InitVars( "Jet_DeepFlavour_lepb","N_Jets");
-  vars.InitVars( "Jet_DeepFlavour_c","N_Jets");
-  vars.InitVars( "Jet_DeepFlavour_uds","N_Jets");
-  vars.InitVars( "Jet_DeepFlavour_g","N_Jets");
+  vars.InitVars( "Jet_DeepJetCSV","N_Jets");  
+  vars.InitVars( "Jet_DeepJet_b","N_Jets");
+  vars.InitVars( "Jet_DeepJet_bb","N_Jets");
+  vars.InitVars( "Jet_DeepJet_lepb","N_Jets");
+  vars.InitVars( "Jet_DeepJet_c","N_Jets");
+  vars.InitVars( "Jet_DeepJet_uds","N_Jets");
+  vars.InitVars( "Jet_DeepJet_g","N_Jets");
 
 //   vars.InitVars( "LooseJet_E","N_LooseJets" );
 //   vars.InitVars( "LooseJet_M","N_LooseJets" );
@@ -90,6 +93,13 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Muon_RelIso","N_LooseMuons" );
   vars.InitVars( "Muon_Charge","N_LooseMuons" );
   vars.InitVars( "Muon_Pt_BeForeRC","N_LooseMuons" );
+  vars.InitVars( "Muon_IdentificationSF","N_LooseMuons");
+  vars.InitVars( "Muon_IdentificationSFUp","N_LooseMuons");
+  vars.InitVars( "Muon_IdentificationSFDown","N_LooseMuons");
+  vars.InitVars( "Muon_IsolationSF","N_LooseMuons");
+  vars.InitVars( "Muon_IsolationSFUp","N_LooseMuons");
+  vars.InitVars( "Muon_IsolationSFDown","N_LooseMuons");
+
   
   vars.InitVars( "Electron_E","N_LooseElectrons" );
   vars.InitVars( "Electron_M","N_LooseElectrons" );
@@ -100,6 +110,19 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Electron_Charge","N_LooseElectrons" );
   vars.InitVars( "Electron_Pt_BeforeRun2Calibration","N_LooseElectrons" );
   vars.InitVars( "Electron_Eta_Supercluster","N_LooseElectrons" );
+  // electron energy scale combined up/down
+  vars.InitVars( "Electron_CorrFactor_ScaleUp","N_LooseElectrons");
+  vars.InitVars( "Electron_CorrFactor_ScaleDown","N_LooseElectrons");
+  // electron energy smearing combined up/down
+  vars.InitVars( "Electron_CorrFactor_SigmaUp","N_LooseElectrons");
+  vars.InitVars( "Electron_CorrFactor_SigmaDown","N_LooseElectrons");
+  vars.InitVars( "Electron_IdentificationSF","N_LooseElectrons");
+  vars.InitVars( "Electron_IdentificationSFUp","N_LooseElectrons");
+  vars.InitVars( "Electron_IdentificationSFDown","N_LooseElectrons");
+  vars.InitVars( "Electron_ReconstructionSF","N_LooseElectrons");
+  vars.InitVars( "Electron_ReconstructionSFUp","N_LooseElectrons");
+  vars.InitVars( "Electron_ReconstructionSFDown","N_LooseElectrons");
+  
   
   vars.InitVar( "Evt_Pt_MET" );
   vars.InitVar( "Evt_Phi_MET" );
@@ -133,22 +156,22 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillIntVar("Evt_Lumi",lumi_section);
 
 
-  const char* btagger="DeepCSV";
+  const char* btagger="DeepJet";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
   std::vector<pat::Jet> selectedUntaggedJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
-    if(BoostedUtils::PassesCSV(*itJet, 'M')){
+    if(CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Medium, era)){
       selectedTaggedJets.push_back(*itJet);
     }
     else{
       selectedUntaggedJets.push_back(*itJet);
     }
-    if(BoostedUtils::PassesCSV(*itJet, 'L')){
+    if(CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Loose, era)){
       selectedTaggedJetsL.push_back(*itJet);
     }
-    if(BoostedUtils::PassesCSV(*itJet, 'T')){
+    if(CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Tight, era)){
       selectedTaggedJetsT.push_back(*itJet);
     }
   }
@@ -174,8 +197,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
-    vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
-    //vars.FillVars( "Jet_CSV_DNN",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,btagger) );
+    vars.FillVars( "Jet_CSV",iJet,CSVHelper::GetJetCSV(*itJet,btagger) );
+    //vars.FillVars( "Jet_CSV_DNN",iJet,CSVHelper::GetJetCSV_DNN(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
@@ -194,18 +217,18 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
     }
 
-    vars.FillVars( "Jet_DeepCSV_b",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probb"));
-    vars.FillVars( "Jet_DeepCSV_bb",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probbb"));
-    vars.FillVars( "Jet_DeepCSV_c",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probc"));
-    vars.FillVars( "Jet_DeepCSV_udsg",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probudsg"));
+    vars.FillVars( "Jet_DeepCSV_b",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probb"));
+    vars.FillVars( "Jet_DeepCSV_bb",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probbb"));
+    vars.FillVars( "Jet_DeepCSV_c",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probc"));
+    vars.FillVars( "Jet_DeepCSV_udsg",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probudsg"));
     
-    vars.FillVars( "Jet_DeepFlavourCSV",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"DeepFlavour"));
-    vars.FillVars( "Jet_DeepFlavour_b",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probb"));
-    vars.FillVars( "Jet_DeepFlavour_bb",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probbb"));
-    vars.FillVars( "Jet_DeepFlavour_lepb",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:problepb"));
-    vars.FillVars( "Jet_DeepFlavour_c",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probc"));
-    vars.FillVars( "Jet_DeepFlavour_uds",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probuds"));
-    vars.FillVars( "Jet_DeepFlavour_g",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probg"));
+    vars.FillVars( "Jet_DeepJetCSV",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"DeepJet"));
+    vars.FillVars( "Jet_DeepJet_b",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probb"));
+    vars.FillVars( "Jet_DeepJet_bb",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probbb"));
+    vars.FillVars( "Jet_DeepJet_lepb",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:problepb"));
+    vars.FillVars( "Jet_DeepJet_c",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probc"));
+    vars.FillVars( "Jet_DeepJet_uds",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probuds"));
+    vars.FillVars( "Jet_DeepJet_g",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probg"));
   }
 
   // Loose Jets
@@ -216,7 +239,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
 //     vars.FillVars( "LooseJet_Pt",iJet,itJet->pt() );
 //     vars.FillVars( "LooseJet_Eta",iJet,itJet->eta() );
 //     vars.FillVars( "LooseJet_Phi",iJet,itJet->phi() );
-//     vars.FillVars( "LooseJet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,btagger) );
+//     vars.FillVars( "LooseJet_CSV",iJet,CSVHelper::GetJetCSV(*itJet,btagger) );
 //     vars.FillVars( "LooseJet_PartonFlav",iJet,itJet->partonFlavour() );
 //     vars.FillVars( "LooseJet_Flav",iJet,itJet->hadronFlavour() );
 //     vars.FillVars( "LooseJet_Charge",iJet,itJet->jetCharge() );
@@ -269,6 +292,22 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         vars.FillVars("Electron_Pt_BeforeRun2Calibration",iEle,itEle->userFloat("ptBeforeRun2Calibration"));
     }
     vars.FillVars("Electron_Eta_Supercluster",iEle,itEle->superCluster()->eta());
+    if(itEle->hasUserFloat("Electron_CorrFactor_ScaleUp")){
+        // electron energy scale combined up/down
+        vars.FillVars( "Electron_CorrFactor_ScaleUp",iEle,itEle->userFloat("CorrFactor_ScaleUp"));
+        vars.FillVars( "Electron_CorrFactor_ScaleDown",iEle,itEle->userFloat("CorrFactor_ScaleDown"));
+        // electron energy smearing combined up/down
+        vars.FillVars( "Electron_CorrFactor_SigmaUp",iEle,itEle->userFloat("CorrFactor_SigmaUp"));
+        vars.FillVars( "Electron_CorrFactor_SigmaDown",iEle,itEle->userFloat("CorrFactor_SigmaDown"));
+    }
+    if(itEle->hasUserFloat("IdentificationSF")){
+        vars.FillVars( "Electron_IdentificationSF",iEle,itEle->userFloat("IdentificationSF"));
+        vars.FillVars( "Electron_IdentificationSFUp",iEle,itEle->userFloat("IdentificationSFUp"));
+        vars.FillVars( "Electron_IdentificationSFDown",iEle,itEle->userFloat("IdentificationSFDown"));
+        vars.FillVars( "Electron_ReconstructionSF",iEle,itEle->userFloat("ReconstructionSF"));
+        vars.FillVars( "Electron_ReconstructionSFUp",iEle,itEle->userFloat("ReconstructionSFUp"));
+        vars.FillVars( "Electron_ReconstructionSFDown",iEle,itEle->userFloat("ReconstructionSFDown"));
+    }
   }
   for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
     int iMu = itMu - input.selectedMuonsLoose.begin();
@@ -283,6 +322,17 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Muon_Charge",iMu,itMu->charge() );
     if(itMu->hasUserFloat("PtbeforeRC")){
 	vars.FillVars( "Muon_Pt_BeForeRC",iMu,itMu->userFloat("PtbeforeRC") );
+    }
+
+    if(itMu->hasUserFloat("IdentificationSF")){
+        vars.FillVars( "Muon_IdentificationSF",iMu,itMu->userFloat("IdentificationSF"));
+        vars.FillVars( "Muon_IdentificationSFUp",iMu,itMu->userFloat("IdentificationSFUp"));
+        vars.FillVars( "Muon_IdentificationSFDown",iMu,itMu->userFloat("IdentificationSFDown"));
+    }
+    if(itMu->hasUserFloat("IsolationSF")){
+        vars.FillVars( "Muon_IsolationSF",iMu,itMu->userFloat("IsolationSF"));
+        vars.FillVars( "Muon_IsolationSFUp",iMu,itMu->userFloat("IsolationSFUp"));
+        vars.FillVars( "Muon_IsolationSFDown",iMu,itMu->userFloat("IsolationSFDown"));
     }
   }
   
@@ -388,8 +438,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   std::vector<double> csvJets;
   //std::vector<double> csvJets_DNN;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
-    csvJets.push_back(MiniAODHelper::GetJetCSV(*itJet,btagger));
-    //csvJets_DNN.push_back(MiniAODHelper::GetJetCSV_DNN(*itJet,btagger));
+    csvJets.push_back(CSVHelper::GetJetCSV(*itJet,btagger));
+    //csvJets_DNN.push_back(CSVHelper::GetJetCSV_DNN(*itJet,btagger));
   }
   std::vector<double> csvJetsSorted=csvJets;
   //std::vector<double> csvJetsSorted_DNN=csvJets_DNN;

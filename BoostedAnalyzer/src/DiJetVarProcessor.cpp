@@ -37,7 +37,7 @@ void DiJetVarProcessor::Init(const InputCollections& input, VariableContainer& v
   vars.InitVar( "DeltaPhi","F" );
   vars.InitVar( "PtAve","F" );
 
-  bTagger_ = "DeepCSV";
+  bTagger_ = "DeepJet";
   puJetIDDiscr_ = "pileupJetId:fullDiscriminant";
   jetTagInfoSV_ = "pfSecondaryVertex";
 
@@ -65,7 +65,7 @@ void DiJetVarProcessor::Process(const InputCollections& input, VariableContainer
     vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
-    vars.FillVars( "Jet_CSV",iJet,MiniAODHelper::GetJetCSV(*itJet,bTagger_) );
+    vars.FillVars( "Jet_CSV",iJet,CSVHelper::GetJetCSV(*itJet,bTagger_) );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
     vars.FillVars( "Jet_PileUpID",iJet,itJet->userFloat(puJetIDDiscr_));
     fillSecondaryVertexInfo(vars,*itJet,iJet);

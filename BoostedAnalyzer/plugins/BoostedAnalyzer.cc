@@ -184,6 +184,8 @@ private:
     // --------------- FLAGS ---------------
     /** is analyzed sample data? */
     bool isData;
+    // Whats the dataEra
+    std::string era;
     /** use fat jets? this is only possible if the miniAOD contains them */
     bool useFatJets;
     /** dump some event content for newer synchronization */
@@ -265,6 +267,8 @@ private:
     edm::EDGetTokenT< GenEventInfoProduct > genInfoToken;
     /** LHE data access token **/
     edm::EDGetTokenT< LHEEventProduct > lheInfoToken;
+    /** LHE data access token **/
+    edm::EDGetTokenT< LHEEventProduct > lheInfoToken_source;
     /** gen particles data access token **/
     edm::EDGetTokenT< std::vector<reco::GenParticle> > genParticlesToken;
     /** gen jets data access token **/
@@ -299,6 +303,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
 
     isData              ( iConfig.getParameter<bool>("isData") ),
+    era                 ( iConfig.getParameter<std::string>("dataEra") ),
     useFatJets          ( iConfig.getParameter<bool>("useFatJets") ),
     dumpSyncExe         ( iConfig.getParameter<bool>("dumpSyncExe") ),
     dumpExtended        ( iConfig.getParameter<bool>("dumpExtended") ),
@@ -331,6 +336,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     boostedJetsToken                ( consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets")) ),
     genInfoToken                    ( consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo")) ),
     lheInfoToken                    ( consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo")) ),
+    lheInfoToken_source             ( consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo_source")) ),
     genParticlesToken               ( consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles")) ),
     genJetsToken                    ( consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets")) ),
     LHERunInfoToken                 ( consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer")) )
@@ -422,8 +428,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
 	else if(itSel == "HbbSelection")                      selection.reset(new HbbSelection());
 	else if(itSel == "4JetSelection")                     selection.reset(new JetTagSelection(4,-1));
 	else if(itSel == "2TagSelection")                     selection.reset(new JetTagSelection(-1,2));
-	else if(itSel == "BoostedTopSelection")               selection.reset(new BoostedSelection(1,0));
-	else if(itSel == "BoostedSelection")                  selection.reset(new BoostedSelection(0,1));
+	//else if(itSel == "BoostedTopSelection")               selection.reset(new BoostedSelection(1,0));
+	//else if(itSel == "BoostedSelection")                  selection.reset(new BoostedSelection(0,1));
 	else {
             cout << "No matching selection found for: " << itSel << endl;
             continue;
@@ -498,27 +504,27 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
     }
-    if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
-    }
-    if(std::find(processorNames.begin(),processorNames.end(),"BoostedAk4VarProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new BoostedAk4VarProcessor(),"BoostedAk4VarProcessor");
-    }
-    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
-            treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
-    }
-    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) {
-            treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
-        }
-    if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) {
-            treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
-    }
-        if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsVarProcessor")!=processorNames.end()) {
-            treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4Higgs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4Higgs_",doBoostedMEM),"BoostedTopAk4HiggsVarProcessor");
-        }
-        if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsFromAk4CVarProcessor")!=processorNames.end()) {
-            treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
-        }
+    //if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
+    //    treewriter->AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
+    //}
+    //if(std::find(processorNames.begin(),processorNames.end(),"BoostedAk4VarProcessor")!=processorNames.end()) {
+    //    treewriter->AddTreeProcessor(new BoostedAk4VarProcessor(),"BoostedAk4VarProcessor");
+    //}
+    //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end()) {
+    //        treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
+    //}
+    //if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end()) {
+    //        treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
+    //    }
+    //if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end()) {
+    //        treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
+    //}
+    //    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsVarProcessor")!=processorNames.end()) {
+    //        treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4Higgs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4Higgs_",doBoostedMEM),"BoostedTopAk4HiggsVarProcessor");
+    //    }
+    //    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsFromAk4CVarProcessor")!=processorNames.end()) {
+    //        treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
+    //    }
     if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier.get()),"BDTVarProcessor");
     }
@@ -531,9 +537,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     if(std::find(processorNames.begin(),processorNames.end(),"essentialMCMatchVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new essentialMCMatchVarProcessor(),"essentialMCMatchVarProcessor");
     }
-    if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
-    }
+    //if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) {
+    //    treewriter->AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
+    //}
     if(std::find(processorNames.begin(),processorNames.end(),"AdditionalJetProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new AdditionalJetProcessor(),"AdditionalJetProcessor");
     }
@@ -580,7 +586,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     else if (usedGenerator == "pythia8"){ generatorflag = genweights.SetGenerator(Generator::pythia8);}
     else{ generatorflag = false; }
     */
-    std::vector<std::string> pdfs = {"NNPDF31_nnlo_hessian_pdfas","CT14nnlo","MMHT2014nnlo68cl","PDF4LHC15_nnlo_100_pdfas","NNPDF30_nlo_nf_5_pdfas"};
+    std::vector<std::string> pdfs = {"NNPDF31_nnlo_hessian_pdfas"};
     genweights.initLHAPDF(pdfs);
 
     assert(selectedJetsTokens.size()==selectedJetsLooseTokens.size());
@@ -676,16 +682,22 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // MC only (generator weights for example)
     edm::Handle<GenEventInfoProduct> h_genInfo;
     edm::Handle<LHEEventProduct> h_lheInfo;
-    edm::Handle<LHEEventProduct> h_dummie;
+    edm::Handle<LHEEventProduct> h_dummie1;
+    edm::Handle<LHEEventProduct> h_dummie2;
     edm::Handle< std::vector<reco::GenParticle> > h_genParticles;
     edm::Handle< std::vector<reco::GenJet> > h_genJets;
     if(!isData){
 	iEvent.getByToken( genInfoToken, h_genInfo );
-	iEvent.getByToken( lheInfoToken, h_dummie );
-	if (h_dummie.isValid()){
+	iEvent.getByToken( lheInfoToken, h_dummie1 );
+    iEvent.getByToken( lheInfoToken_source, h_dummie2 );
+	if (h_dummie1.isValid()){
 	    iEvent.getByToken( lheInfoToken, h_lheInfo );
 	    dogenweights = true;
 	}
+	else if (h_dummie2.isValid()) {
+        iEvent.getByToken( lheInfoToken_source, h_lheInfo );
+        dogenweights = true;
+    }
 	else {
 	    dogenweights = false;
 	}
@@ -702,9 +714,9 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if( h_primaryVertices.isValid() ){
 	for( const auto& itvtx : vtxs ){
 	    bool isGood = ( !(itvtx.isFake()) &&
-			    (itvtx.ndof() >= 4.0) &&
-			    (abs(itvtx.z()) <= 24.0) &&
-			    (abs(itvtx.position().Rho()) <= 2.0)
+			    (itvtx.ndof() > 4.0) &&
+			    (abs(itvtx.z()) < 24.0) &&
+			    (abs(itvtx.position().Rho()) < 2.0)
 			    );
 	    if( isGood ) selectedPVs.push_back(itvtx);
 	    if( isFirst ) firstVertexIsGood=isGood;
@@ -716,9 +728,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // set rho in MiniAODhelper
     // TODO: setup MiniAODhelper more transparently
     helper.SetRho(*h_rho);
-
+    
     /**** GET BOOSTEDJETS ****/
     //TODO: also in external producer?
+    /*
     const JetCorrector* ak4corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
     helper.SetJetCorrector(ak4corrector);
 
@@ -745,9 +758,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // Get CA15 Ak4 jet cluster (alternative to CA15 fatjets)
     pat::JetCollection ak4Jets = *(hs_selectedJets[0]);
     boosted::Ak4ClusterCollection ak4Cluster = Ak4Cluster::GetAk4Cluster(ak4Jets, 0);
-    boosted::Ak4ClusterCollection selectedAk4Cluster = Ak4Cluster::GetSelectedAk4Cluster(ak4Cluster, 200., "A");
-    
-
+    boosted::Ak4ClusterCollection selectedAk4Cluster = Ak4Cluster::GetSelectedAk4Cluster(ak4Cluster, 200., "A");    
+    */
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);
     TriggerInfo triggerInfo = triggerInfoProd.Produce(iEvent);
@@ -815,8 +827,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *(hs_selectedJetsLoose[isys]),
                       *(hs_AK8Jets[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
-					  selectedBoostedJets[isys],
-                                          selectedAk4Cluster,
+					  //selectedBoostedJets[isys],
+                                          //selectedAk4Cluster,
 					  genTopEvt,
 					  *h_genJets,
 					  sampleType,
@@ -825,7 +837,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  iEvent,
 					  iSetup,
                                           jetSystematics[isys],
-                      selectionTags
+                      selectionTags,
+                      era
 					  ));
 
     }
@@ -923,7 +936,7 @@ map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInf
     for(const auto& itJet : selectedJets){
 	jetPts.push_back(itJet.pt());
 	jetEtas.push_back(itJet.eta());
-	jetCSVs.push_back(helper.GetJetCSV(itJet,"DeepCSV"));
+	jetCSVs.push_back(CSVHelper::GetJetCSV(itJet,"DeepJet"));
 	jetFlavors.push_back(itJet.hadronFlavour());
     }
     
@@ -1035,25 +1048,24 @@ void BoostedAnalyzer::endJob()
 // ------------ method called when starting to processes a run ------------
 void BoostedAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {
     
-    /*
-    lhe_weights["1001"]="Weight_muRnmuFn";
-    lhe_weights["1002"]="Weight_muRnmuFup";
-    lhe_weights["1003"]="Weight_muRnmuFdown";
-    lhe_weights["1004"]="Weight_muRupmuFn";
-    lhe_weights["1005"]="Weight_muRupmuFup";
-    lhe_weights["1006"]="Weight_muRupmuFdown";
-    lhe_weights["1007"]="Weight_muRdownmuFn";
-    lhe_weights["1008"]="Weight_muRdownmuFup";
-    lhe_weights["1009"]="Weight_muRdownmuFdown";
-    */
-    edm::Handle<LHERunInfoProduct> runhandle;
+    edm::Handle<LHERunInfoProduct> runhandle1;
+    edm::Handle<LHERunInfoProduct> runhandle2;
     //iEvent.getRun()
-    iRun.getByLabel("externalLHEProducer",runhandle);
-    if(!runhandle.isValid()) {
+    iRun.getByLabel("externalLHEProducer",runhandle1);
+    iRun.getByLabel("source",runhandle2);
+    
+    LHERunInfoProduct myLHERunInfoProduct;
+    if(runhandle1.isValid()) {
+        myLHERunInfoProduct = *(runhandle1.product());
+    }
+    else if(runhandle2.isValid()) {
+        myLHERunInfoProduct = *(runhandle2.product());
+    }
+    else {
         cout << "Attention: no genweights will be written because the LHERunInfoProduct is not available!" << endl;
         return;
     }
-    LHERunInfoProduct myLHERunInfoProduct = *(runhandle.product());
+    
     genweights.GetNamesFromLHE(myLHERunInfoProduct);
     
     

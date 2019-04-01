@@ -149,7 +149,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   int nGoodTagsM=0;
   int nMisTagsM=0;
   for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
-      if (!(BoostedUtils::PassesCSV(*j, 'M'))) continue;
+      if (!(CSVHelper::PassesCSV(*j, "DeepJet", CSVHelper::CSVwp::Medium,input.era))) continue;
       if(abs(j->hadronFlavour())==5) nGoodTagsM++;
       if(abs(j->hadronFlavour())!=5) nMisTagsM++;
   }  

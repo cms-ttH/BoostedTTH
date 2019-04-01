@@ -46,8 +46,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     const std::vector<pat::Jet>&                  AK8Jets_,
                     const pat::MET&                               correctedMET_,
-                    const boosted::BoostedJetCollection&          selectedBoostedJets_,
-                    const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
+//                    const boosted::BoostedJetCollection&          selectedBoostedJets_,
+//                    const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
                     const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              genJets_,
                     const SampleType                              sampleType_,
@@ -56,7 +56,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
         const edm::Event&                             iEvent_,
         const edm::EventSetup&                        iSetup_,
                     const Systematics::Type&                      systematic_,
-                    const std::map<std::string, int>&             selectionTags_
+                    const std::map<std::string, int>&             selectionTags_,
+                    const std::string&                            era_
                     
           /**** bjetness code ****/
                 ):
@@ -74,8 +75,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedJetsLoose(selectedJetsLoose_),
                     AK8Jets(AK8Jets_), 
                     correctedMET(correctedMET_),
-                    selectedBoostedJets(selectedBoostedJets_),
-                    selectedAk4Cluster(selectedAk4Cluster_),
+//                    selectedBoostedJets(selectedBoostedJets_),
+//                    selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(genTopEvt_),
                     genJets(genJets_),
                     sampleType(sampleType_),
@@ -84,7 +85,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
         iEvent(iEvent_),
         iSetup(iSetup_),
         systematic(systematic_),
-        selectionTags(selectionTags_)
+        selectionTags(selectionTags_),
+        era(era_)
                     {}
 
 /**
@@ -113,8 +115,8 @@ InputCollections(   const InputCollections&                       input,
                     selectedJetsLoose(selectedJetsLoose_),
                     AK8Jets(input.AK8Jets), 
                     correctedMET(correctedMET_),
-                    selectedBoostedJets(selectedBoostedJets_),
-                    selectedAk4Cluster(selectedAk4Cluster_),
+//                    selectedBoostedJets(selectedBoostedJets_),
+//                    selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(input.genTopEvt),
                     genJets(input.genJets),
                     sampleType(input.sampleType),
@@ -123,7 +125,8 @@ InputCollections(   const InputCollections&                       input,
         iEvent(input.iEvent),
         iSetup(input.iSetup),
         systematic(input.systematic),
-        selectionTags(input.selectionTags)
+        selectionTags(input.selectionTags),
+        era(input.era)
                     {}
 
   const EventInfo&                              eventInfo;
@@ -140,8 +143,8 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Jet>&                  selectedJetsLoose;
   const std::vector<pat::Jet>&                  AK8Jets;
   const pat::MET&                               correctedMET;
-  const boosted::BoostedJetCollection&          selectedBoostedJets;
-  const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
+//  const boosted::BoostedJetCollection&          selectedBoostedJets;
+//  const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
   const GenTopEvent&                            genTopEvt;
   const std::vector<reco::GenJet>&              genJets;
   const SampleType                              sampleType;
@@ -151,6 +154,7 @@ InputCollections(   const InputCollections&                       input,
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;
   const std::map<std::string, int>&              selectionTags;
+  const std::string&                            era;
 };
 
 #endif
