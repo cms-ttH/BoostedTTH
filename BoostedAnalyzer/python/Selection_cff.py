@@ -140,27 +140,49 @@ checkNoTriggers= cms.PSet(
     relevantTriggers=cms.vstring()
     )
 
-filtersData= cms.PSet(
+filtersData1718= cms.PSet(
     filters=cms.vstring("Flag_goodVertices",
                         "Flag_globalSuperTightHalo2016Filter",
                         "Flag_HBHENoiseFilter",
                         "Flag_HBHENoiseIsoFilter",
                         "Flag_EcalDeadCellTriggerPrimitiveFilter",
-                        "Flag_eeBadScFilter",
                         "Flag_BadPFMuonFilter",
-                        # "Flag_BadChargedCandidateFilter",
-                        # "Flag_ecalBadCalibFilter",
+                        "ecalBadCalibReducedMINIAODFilter"
+                        "Flag_eeBadScFilter",
                         )
 )
 
-filtersMC= cms.PSet(
+filtersMC1718= cms.PSet(
     filters=cms.vstring("Flag_goodVertices",
                         "Flag_globalSuperTightHalo2016Filter",
                         "Flag_HBHENoiseFilter",
                         "Flag_HBHENoiseIsoFilter",
                         "Flag_EcalDeadCellTriggerPrimitiveFilter",
                         "Flag_BadPFMuonFilter",
-                        # "Flag_BadChargedCandidateFilter",
-                        # "Flag_ecalBadCalibFilter",
-                       )
+                        "ecalBadCalibReducedMINIAODFilter"
+                        "Flag_eeBadScFilter",
+                        )
 )
+
+filtersData16= cms.PSet(
+    filters=cms.vstring("Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_HBHENoiseFilter",
+                        "Flag_HBHENoiseIsoFilter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_eeBadScFilter",
+                        )
+)
+
+filtersMC16= cms.PSet(
+    filters=cms.vstring("Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_HBHENoiseFilter",
+                        "Flag_HBHENoiseIsoFilter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        )
+)
+
+# process.BoostedAnalyzer.additionalFilters = cms.VInputTag(["ecalBadCalibReducedMINIAODFilter"])

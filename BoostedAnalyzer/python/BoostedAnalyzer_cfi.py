@@ -11,7 +11,7 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
-    filtersMC, # defined in Selection_cff
+    # filtersMC, # defined in Selection_cff
     
 
     # weight of one event: calculated as
@@ -28,6 +28,9 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
     # PU weights, defined in Weights_cff
     nominalPUWeight = NominalPUWeight2017,
     additionalPUWeights = AdditionalPUWeights2017,
+
+    #MET Filters
+    METfilters = filtersMC1718,
 
     systematics = cms.vstring(""),
     doJERsystematic = cms.bool(False),
@@ -64,7 +67,7 @@ BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
     bTagSFs = BTagSFs94XDeepJet2016,
     nominalPUWeight = NominalPUWeight2016,
     additionalPUWeights = AdditionalPUWeights2016
-    
+    METfilters = filtersMC16,    
 )
 
 BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(

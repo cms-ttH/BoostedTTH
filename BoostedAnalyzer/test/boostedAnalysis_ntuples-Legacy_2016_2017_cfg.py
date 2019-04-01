@@ -566,16 +566,6 @@ if options.isData and options.useJson:
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
 
-if "2016" in options.dataEra:
-    from BoostedTTH.BoostedAnalyzer.Weights_cff import BTagSFs94XDeepJet2016
-    from BoostedTTH.BoostedAnalyzer.Weights_cff import NominalPUWeight2016
-    from BoostedTTH.BoostedAnalyzer.Weights_cff import AdditionalPUWeights2016
-    process.BoostedAnalyzer.bTagSFs = cms.PSet(BTagSFs94XDeepJet2016)
-    process.BoostedAnalyzer.nominalPUWeight = cms.PSet(NominalPUWeight2016)
-    process.BoostedAnalyzer.additionalPUWeights = cms.PSet(AdditionalPUWeights2016)
-
-
-
 
 process.BoostedAnalyzer.selectionNames = [
 "FilterSelection",
@@ -610,10 +600,6 @@ else:
   #"AK8JetProcessor"
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
-
-if "2017" or "2018" in options.dataEra:
-    process.BoostedAnalyzer.additionalFilters = cms.VInputTag(["ecalBadCalibReducedMINIAODFilter"])
-    process.BoostedAnalyzer.filters.append("ecalBadCalibReducedMINIAODFilter")
 
 
 printContent=False
@@ -658,8 +644,8 @@ process.p = cms.Path()
 # rerun DeepJet
 process.p.associate(process.updateJets)
 
-# run ecalBadCalibReducedMINIAODFilter for 2017 data
-if "2017" in options.dataEra:
+# run ecalBadCalibReducedMINIAODFilter for 2017/2018 data
+if "2017" or "2018" in options.dataEra:
     process.p *= process.ecalBadCalibReducedMINIAODFilter
 
 if options.recorrectMET:

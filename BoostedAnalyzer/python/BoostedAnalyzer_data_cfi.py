@@ -10,7 +10,7 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
     checkBasicDataTriggers, # defined in Selection_cff
-    filtersMC, # defined in Selection_cff
+    # filtersMC, # defined in Selection_cff
 
     era = cms.string("2016_80X"), # has little effect so far, might become important for MiniAODhelper
     analysisType = cms.string("LJ"), # has little effect so far, might become important for MiniAODhelper
@@ -21,6 +21,8 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
     datasetFlag=cms.int32(0),
     dataEra = cms.string("2017"),
 
+   #MET Filters
+    METfilters = filtersData1718,
 
     recorrectMET = cms.bool(True),
 
@@ -53,6 +55,7 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
 BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
     dataEra = cms.string("2016"),
     LeptonSelectionData2017 = LeptonSelectionData2016
+    METfilters = filtersData16
 )
 
 BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
