@@ -514,7 +514,7 @@ else:
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
 
-if "2017" in options.dataEra:
+if "2017" or "2018" in options.dataEra:
     process.BoostedAnalyzer.additionalFilters = cms.VInputTag(["ecalBadCalibReducedMINIAODFilter"])
     process.BoostedAnalyzer.filters.append("ecalBadCalibReducedMINIAODFilter")
 
