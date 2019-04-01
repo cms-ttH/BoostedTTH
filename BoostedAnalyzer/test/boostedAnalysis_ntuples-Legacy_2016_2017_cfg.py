@@ -60,9 +60,18 @@ else:
 
 if not options.inputFiles:
     if not options.isData:
-        options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
+        if "2016" in options.dataEra:
+            options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
+        elif "2017" in options.dataEra: 
+            options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
     else:
-    	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
+        if "2016" in options.dataEra: # CAREFUL: NO 2016 Data Skims ready yet
+            # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
+        	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
+        elif "2017" in options.dataEra:
+        	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
+    
+ 
 
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
