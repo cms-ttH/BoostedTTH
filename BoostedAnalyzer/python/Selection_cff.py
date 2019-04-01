@@ -146,7 +146,7 @@ filtersData1718=cms.vstring("Flag_goodVertices",
                     "Flag_HBHENoiseIsoFilter",
                     "Flag_EcalDeadCellTriggerPrimitiveFilter",
                     "Flag_BadPFMuonFilter",
-                    "ecalBadCalibReducedMINIAODFilter"
+                    "ecalBadCalibReducedMINIAODFilter",
                     "Flag_eeBadScFilter",
                     )
 
