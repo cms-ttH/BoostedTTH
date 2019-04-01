@@ -388,7 +388,7 @@ process.SelectedJetProducerAK4.etaMaxs=[2.4,2.4]
 process.SelectedJetProducerAK4.collectionNames=["selectedJetsLooseAK4","selectedJetsAK4"]
 process.SelectedJetProducerAK4.systematics=[""]
 process.SelectedJetProducerAK4.PUJetIDMins=["loose","loose"]
-process.SelectedJetProducerAK4.JetID="none"
+process.SelectedJetProducerAK4.JetID=["none","none"]
 process.SelectedJetProducerAK4.era= options.dataEra
 process.SelectedJetProducerAK4.isData= options.isData
 # selection of the systematically shifted jets
@@ -402,7 +402,7 @@ process.CorrectedJetProducerAK4=process.SelectedJetProducerAK4.clone(jets=jetCol
                                                                collectionNames=["correctedJetsAK4"],
                                                                applyCorrection=True,
                                                                systematics=[""]+systsJES,
-                                                               JetID="tight",
+                                                               JetID=["tight"],
                                                                PUJetIDMins=["none"])
 
 process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8jetCollection, 
@@ -411,11 +411,11 @@ process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8je
                                                                collectionNames=["correctedJetsAK8"],
                                                                applyCorrection=True,
                                                                systematics=[""]+systsJES,
-                                                               JetID="tight",
+                                                               JetID=["tight"],
                                                                PUJetIDMins=["none"],
                                                                miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
                                                                leptonJetDr=0.8,
-                                                               JetType="AK8PFchs"
+                                                               JetType="AK8PFCHS"
                                                                )
 
 process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.InputTag('patSmearedJetsAK8',"",process.name_()),
@@ -424,7 +424,7 @@ process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.In
                                                                      collectionNames=["selectedJetsAK8"],
                                                                      applyCorrection=False,
                                                                      systematics=[""],
-                                                                     JetID="none",
+                                                                     JetID=["none"],
                                                                      PUJetIDMins=["loose"]
                                                                     )
 for syst in systs:
