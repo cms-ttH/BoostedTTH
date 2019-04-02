@@ -71,12 +71,16 @@ if not options.inputFiles:
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
         elif "2017" in options.dataEra: 
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
+        elif "2018" in options.dataEra:
+            options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/40000/EAA9C941-768D-164B-B5C1-C12306823C6E.root']
     else:
         if "2016" in options.dataEra: # CAREFUL: NO 2016 Data Skims ready yet
             # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
         	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
         elif "2017" in options.dataEra:
         	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
+        elif "2018" in options.dataEra:
+            options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2018A/EGamma/MINIAOD/17Sep2018-v2/270000/03C60744-36FC-4B46-B1B3-63F0BEA3A6EE.root']
     
  
 
@@ -144,6 +148,8 @@ process.source = cms.Source(  "PoolSource",
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
+
 # ReRun DeepJet
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 updateJetCollection(
@@ -163,6 +169,19 @@ updateJetCollection(
    postfix='NewDFTraining'
 )
 
+process.updateJets = cms.Task(
+                    process.patJetCorrFactorsNewDFTraining,
+                    process.patJetCorrFactorsTransientCorrectedNewDFTraining,
+                    process.pfDeepCSVTagInfosNewDFTraining, 
+                    process.pfDeepFlavourJetTagsNewDFTraining,
+                    process.pfDeepFlavourTagInfosNewDFTraining,
+                    process.pfImpactParameterTagInfosNewDFTraining,
+                    process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining,
+                    process.selectedUpdatedPatJetsNewDFTraining,
+                    process.updatedPatJetsNewDFTraining,
+                    process.updatedPatJetsTransientCorrectedNewDFTraining)
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 #jec_mc_data = 'DATA' if options.isData else 'MC'
 #print jec_mc_data
@@ -196,6 +215,7 @@ updateJetCollection(
            #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
           #)
 #)
+
 
 # Set up JetCorrections chain to be used in MiniAODHelper
 # Note: name is hard-coded to ak4PFchsL1L2L3 and does not
@@ -237,6 +257,9 @@ process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 
 if options.isData:
   process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
   
 if options.recorrectMET:
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
@@ -247,8 +270,7 @@ if options.recorrectMET:
                                )
 #METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 
-
-### E/Gamma recommendations ###  
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 # run ecalBadCalibReducedMINIAODFilter for 2017 data
 if "2017" or "2018" in options.dataEra:
@@ -275,6 +297,9 @@ if "2017" or "2018" in options.dataEra:
         debug = cms.bool(False)
         )
     
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
+
+### E/Gamma recommendations ###  
 
 ### Electron scale and smearing corrections ###  
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
@@ -289,6 +314,10 @@ elif "2017" in options.dataEra:
     EG_era = '2017-Nov17ReReco'
     EG_corrections = True
     EG_vid = True
+elif "2018" in options.dataEra:
+    EG_era = '2018-Prompt'
+    EG_corrections = False
+    EG_vid = False
 else:
     raise Exception( "dataEra "+options.dataEra+" not supported for Egamma tools: USE dataEra=2016/2017")
 
@@ -299,6 +328,8 @@ setupEgammaPostRecoSeq(process,
                        )
 # a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
 # electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 ### some standard collections ####
 #if not options.isData:
@@ -341,8 +372,7 @@ if options.deterministicSeeds:
     METCollection      = cms.InputTag("deterministicSeeds", "METsWithSeed", process.name_())
     #AK8jetCollection   = cms.InputTag("deterministicSeeds", "AK8jetsWithSeed", process.name_())
 
-##########################################
-
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 # lepton selection
 #process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 from BoostedTTH.Producers.SelectedLeptonProducers_cfi import *
@@ -388,7 +418,7 @@ process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
 process.SelectedMuonProducer.isData=options.isData
 process.SelectedMuonProducer.era=options.dataEra
 
-
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 # jet selection
 process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
@@ -459,8 +489,13 @@ elif "2017" in options.dataEra:
     # jerResFileAK8 = "Fall17_V3_MC_PtResolution_AK8PFchs.txt"
     jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFchs.txt"
     # jerSFFileAK8 = "Fall17_V3_MC_SF_AK8PFchs.txt"
+elif "2018" in options.dataEra:
+    jerResFileAK4 = "Autumn18_V1_MC_PtResolution_AK4PFchs.txt"
+    # jerResFileAK8 = "Autumn18_V1_MC_PtResolution_AK8PFchs.txt"
+    jerSFFileAK4 = "Autumn18_V1_MC_SF_AK4PFchs.txt"
+    # jerSFFileAK8 = "Autumn18_V1_MC_SF_AK8PFchs.txt"
 else:
-    raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017")
+    raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017/2018")
 
 process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
     src = cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4"),
@@ -509,8 +544,7 @@ for s in systsJES:
     # setattr(process,'patSmearedJetsAK8'+s,process.patSmearedJetsAK8.clone(variation=0,src=cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8"+s)))
 
 
-###############################################
-
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 
 ### correct MET manually ###
@@ -598,7 +632,7 @@ if options.isData:
   "WeightProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
- "BDTVarProcessor",
+  "BDTVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
@@ -610,7 +644,7 @@ else:
   "essentialMCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
- "BDTVarProcessor",
+  "BDTVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
@@ -641,18 +675,7 @@ if options.ProduceMemNtuples==True:
     process.BoostedAnalyzer.memNtuples=True
     process.BoostedAnalyzer.processorNames=cms.vstring("SlimmedNtuples")
 
-process.updateJets = cms.Task(
-                    process.patJetCorrFactorsNewDFTraining,
-                    process.patJetCorrFactorsTransientCorrectedNewDFTraining,
-                    process.pfDeepCSVTagInfosNewDFTraining, 
-                    process.pfDeepFlavourJetTagsNewDFTraining,
-                    process.pfDeepFlavourTagInfosNewDFTraining,
-                    process.pfImpactParameterTagInfosNewDFTraining,
-                    process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining,
-                    process.selectedUpdatedPatJetsNewDFTraining,
-                    process.updatedPatJetsNewDFTraining,
-                    process.updatedPatJetsTransientCorrectedNewDFTraining)
-
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 ##### DEFINE PATH ##########
 process.p = cms.Path()
