@@ -113,8 +113,6 @@ SelectedMuonProducer2017 = cms.EDProducer(
 
     histname_MuonTightISO_MediumIDSF = cms.string("NUM_TightRelIso_DEN_MediumID_pt_abseta"),
     histname_MuonTightISO_TightIDSF = cms.string("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"),
-
-    # file_MuonTriggerSF = cms.string("BoostedTTH/Producers/data/muonSFs/2017/TRIGGERSF_FILE.root"),
     )
 
 SelectedMuonProducer2016 = SelectedMuonProducer2017.clone(
@@ -134,7 +132,6 @@ SelectedMuonProducer2016 = SelectedMuonProducer2017.clone(
 
     histname_MuonTightISO_MediumIDSF = cms.string("NUM_TightRelIso_DEN_MediumID_eta_pt"),
     histname_MuonTightISO_TightIDSF = cms.string("NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt"),
-    # file_MuonTriggerSF = cms.string("BoostedTTH/Producers/data/muonSFs/2017/TRIGGERSF_FILE.root"),
     )
 SelectedMuonProducer2018 = SelectedMuonProducer2017.clone(
     era = cms.string("2018"),
@@ -153,6 +150,5 @@ SelectedMuonProducer2018 = SelectedMuonProducer2017.clone(
 
     histname_MuonTightISO_MediumIDSF = cms.string("NUM_TightRelIso_DEN_MediumID_pt_abseta"),
     histname_MuonTightISO_TightIDSF = cms.string("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"),
-    # file_MuonTriggerSF = cms.string("BoostedTTH/Producers/data/muonSFs/2017/TRIGGERSF_FILE.root"),
 
     )
