@@ -165,6 +165,8 @@ private:
   const std::string jecFileAK8_2016;
   const std::string jecFileAK4_2017;
   const std::string jecFileAK8_2017;
+  const std::string jecFileAK4_2018;
+  const std::string jecFileAK8_2018;
 
   const std::string era;
 

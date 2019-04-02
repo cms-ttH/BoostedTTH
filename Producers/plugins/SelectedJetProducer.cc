@@ -21,6 +21,8 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : jet
                                                                              jecFileAK8_2016{iConfig.getParameter<std::string>("jecFileAK8_2016")},
                                                                              jecFileAK4_2017{iConfig.getParameter<std::string>("jecFileAK4_2017")},
                                                                              jecFileAK8_2017{iConfig.getParameter<std::string>("jecFileAK8_2017")},
+                                                                             jecFileAK4_2018{iConfig.getParameter<std::string>("jecFileAK4_2018")},
+                                                                             jecFileAK8_2018{iConfig.getParameter<std::string>("jecFileAK8_2018")},
                                                                              era{iConfig.getParameter<std::string>("era")}
 {
   // do this for getJetCorrector call with JetType as argument, because it needs ak4... or ak8 ... instead of AK4... or AK8...
@@ -72,6 +74,9 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : jet
     else if(era.find("2017")!=std::string::npos){ 
       jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2017;
     }
+    else if(era.find("2018")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2018;
+    }
   }
   else if (JetType_==JetType::AK8PFCHS)
   {
@@ -82,6 +87,9 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : jet
     }
     else if(era.find("2017")!=std::string::npos){ 
       jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2017;
+    }
+    else if(era.find("2018")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2018;
     }
   }
 
