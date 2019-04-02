@@ -79,7 +79,7 @@ Do for example:
     scram b -j 12
     
     ### only for crab use ###
-    cp /cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/gsl/2.2.1/lib/* $CMSSWSRCDIR/../lib/slc6_amd64_gcc630
+    cp /cvmfs/cms.cern.ch/slc6_amd64_gcc700/external/gsl/2.2.1/lib/* $CMSSWSRCDIR/../lib/slc6_amd64_gcc700
     scram b -j 12
     
 ## Overview
