@@ -60,7 +60,7 @@ SelectedElectronProducer2018 = SelectedElectronProducer2017.clone(
     file_EleMediumIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2018_ElectronMedium_Fall17V2.root"),
     file_EleTightIDSF=cms.string("BoostedTTH/Producers/data/electronSFs/2018_ElectronTight_Fall17V2.root"),
     file_EleRecoSF_highPt=cms.string("BoostedTTH/Producers/data/electronSFs/2018_ElectronReco.root"),
-    file_EleRecoSF_lowPt=cms.string("BoostedTTH/Producers/data/electronSFs/2018_ElectronReco_lowpt.root")
+    file_EleRecoSF_lowPt=cms.string("BoostedTTH/Producers/data/electronSFs/2018_ElectronReco.root")
     )
 
 SelectedMuonProducer2017 = cms.EDProducer(
