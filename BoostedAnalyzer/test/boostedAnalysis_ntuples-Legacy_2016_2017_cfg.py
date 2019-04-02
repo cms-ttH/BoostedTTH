@@ -46,6 +46,11 @@ if options.isData:
         options.globalTag="94X_dataRun2_v10"
     elif "2017" in options.dataEra:
         options.globalTag="94X_dataRun2_v11"
+    elif "2018" in options.dataEra:
+        if "D" in options.dataEra:
+            options.globalTag="102X_dataRun2_Sep2018ABC_v2"
+        else:
+            options.globalTag="102X_dataRun2_Prompt_v13"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 elif not options.isData:
@@ -53,6 +58,8 @@ elif not options.isData:
         options.globalTag="94X_mcRun2_asymptotic_v3"
     elif "2017" in options.dataEra:
         options.globalTag="94X_mc2017_realistic_v17"
+    elif "2018" in options.dataEra:
+        options.globalTag="102X_upgrade2018_realistic_v18"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 else:
