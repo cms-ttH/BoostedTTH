@@ -80,7 +80,7 @@ if not options.inputFiles:
         elif "2017" in options.dataEra:
         	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
         elif "2018" in options.dataEra:
-            options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2018A/EGamma/MINIAOD/17Sep2018-v2/270000/03C60744-36FC-4B46-B1B3-63F0BEA3A6EE.root']
+            options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2018B/EGamma/MINIAOD/17Sep2018-v1/60000/37FD0663-1A14-2647-A16B-0ABB87234B43.root']
     
  
 
@@ -333,10 +333,10 @@ setupEgammaPostRecoSeq(process,
 
 ### some standard collections ####
 #if not options.isData:
-electronCollection = cms.InputTag("slimmedElectrons", "", process.name_()) if not "2018" in options.dataEra else cms.InputTag("slimmedElectrons", "", "PAT")
-photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
-muonCollection     = cms.InputTag("slimmedMuons", "", "PAT")
-tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
+electronCollection = cms.InputTag("slimmedElectrons", "", process.name_()) if not "2018" in options.dataEra else cms.InputTag("slimmedElectrons")
+photonCollection   = cms.InputTag("slimmedPhotons")
+muonCollection     = cms.InputTag("slimmedMuons")
+tauCollection      = cms.InputTag("slimmedTaus")
 METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 jetCollection      = cms.InputTag("selectedUpdatedPatJetsNewDFTraining", "", process.name_())
 # AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
