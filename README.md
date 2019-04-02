@@ -30,7 +30,7 @@ Do for example:
     #git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
     
     # needed to run ecalBadCalibReducedMINIAODFilter
-    #git cms-addpkg RecoMET/METFilters
+    git cms-addpkg RecoMET/METFilters
 
     # needed to rerun DeepJet
     git cms-addpkg RecoBTag/TensorFlow
