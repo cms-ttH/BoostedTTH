@@ -8,11 +8,11 @@ CMSSW tools for analyzing TTH events with boosted objects
 Follow These Steps:
 If it is your first time setting up a CMSSW release CMSSW will create a hidden .cmsgit-cache directory in your home directory that can grow quite large. Therefore it is a good idea to specify the path of this directory to be on the dust (or other high volume storage)
 Do for example:
-export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
+#export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
 
     # setup environment
-    export SCRAM_ARCH="slc6_amd64_gcc630"
-    export CMSSW_VERSION="CMSSW_9_4_13"
+    export SCRAM_ARCH="slc6_amd64_gcc700"
+    export CMSSW_VERSION="CMSSW_10_2_13"
     
   
     # create new CMSSW environment
@@ -21,16 +21,16 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     export CMSSWSRCDIR="$( pwd )"
     eval `scramv1 runtime -sh` 
     
-    git cms-merge-topic yrath:deterministicSeeds
+    #git cms-merge-topic yrath:deterministicSeeds
         
-    git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
+    #git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
 
     git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier
     #git cms-merge-topic cms-egamma:Egamma80XMiniAODV2_946 #adds the c++ changes necessary to enable 2016 scale & smearing corrections (is loaded per default)
-    git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
+    #git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
     
     # needed to run ecalBadCalibReducedMINIAODFilter
-    git cms-addpkg RecoMET/METFilters
+    #git cms-addpkg RecoMET/METFilters
 
     # needed to rerun DeepJet
     git cms-addpkg RecoBTag/TensorFlow
@@ -39,8 +39,13 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     # install common classifier
     mkdir TTH
     cd TTH
-    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git -b master
-    source CommonClassifier/setup/install_mem.sh
+    git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
+    git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git -b 10_2_X MEIntegratorStandalone
+    git clone https://gitlab.cern.ch/kit-cn-cms-public/RecoLikelihoodReconstruction.git RecoLikelihoodReconstruction
+    mkdir -p $CMSSW_BASE/lib/$SCRAM_ARCH/
+    cp -R MEIntegratorStandalone/libs/* $CMSSW_BASE/lib/$SCRAM_ARCH/
+    scram setup lhapdf
+    scram setup MEIntegratorStandalone/deps/gsl.xml
     # use recent version of LHAPDF header
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
     sed -i '32i /*' MEIntegratorStandalone/interface/Integrand.h
@@ -51,7 +56,7 @@ export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
     # install miniaod and boostedtth
     cd $CMSSWSRCDIR
     git clone -b Legacy_2016_2017_Devel https://github.com/cms-ttH/MiniAOD.git
-    git clone -b Legacy_2016_2017_Devel https://github.com/cms-ttH/BoostedTTH.git
+    git clone -b Legacy_2016_2017_2018_Devel https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
     cd $CMSSWSRCDIR/BoostedTTH/BoostedAnalyzer/data
