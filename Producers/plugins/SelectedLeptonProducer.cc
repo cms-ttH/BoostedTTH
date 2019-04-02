@@ -565,6 +565,7 @@ SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, 
 // function to apply muon momentum correction (rochester correction)
 void SelectedLeptonProducer::ApplyMuonMomentumCorrection(std::vector<pat::Muon>& inputMuons){
     double momentum_sf;
+    double momentum_sfDelta;
     TRandom3 rnd;
     for(size_t i=0;i<inputMuons.size();i++) {
         momentum_sf=1.;
@@ -579,18 +580,25 @@ void SelectedLeptonProducer::ApplyMuonMomentumCorrection(std::vector<pat::Muon>&
         }
         if(isData) {
             momentum_sf = rc.kScaleDT(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), 0, 0);
+            momentum_sfDelta = rc.kScaleDTerror(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi());
         }
         else {
             if(inputMuons[i].genLepton()) {
                 momentum_sf = rc.kSpreadMC(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), inputMuons[i].genLepton()->pt(), 0, 0);
+                momentum_sfDelta = rc.kSpreadMCerror(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), inputMuons[i].genLepton()->pt());
             }
             else {
                 momentum_sf = rc.kSmearMC(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), trackerLayersWithMeasurement, r1, 0, 0);
+                momentum_sfDelta = rc.kSmearMCerror(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), trackerLayersWithMeasurement, r1);
             }
         }
         auto tmp_vector = inputMuons[i].p4();
         inputMuons[i].addUserFloat( "PtbeforeRC", tmp_vector.Pt());
-        tmp_vector.SetPxPyPzE(momentum_sf*tmp_vector.Px(),momentum_sf*tmp_vector.Py(),momentum_sf*tmp_vector.Pz(),TMath::Sqrt((1+(tmp_vector.P2()/(tmp_vector.E()*tmp_vector.E())*(momentum_sf*momentum_sf-1))))*tmp_vector.E());
+        inputMuons[i].addUserFloat( "roccorSF", momentum_sf);
+        inputMuons[i].addUserFloat( "roccorSFUp", momentum_sf+momentum_sfDelta);
+        inputMuons[i].addUserFloat( "roccorSFDown", momentum_sf-momentum_sfDelta);
+        // tmp_vector.SetPxPyPzE(momentum_sf*tmp_vector.Px(),momentum_sf*tmp_vector.Py(),momentum_sf*tmp_vector.Pz(),TMath::Sqrt((1+(tmp_vector.P2()/(tmp_vector.E()*tmp_vector.E())*(momentum_sf*momentum_sf-1))))*tmp_vector.E());
+        tmp_vector *= momentum_sf;
         inputMuons[i].setP4(tmp_vector);
     }
 }
