@@ -21,13 +21,21 @@ Do for example:
     export CMSSWSRCDIR="$( pwd )"
     eval `scramv1 runtime -sh` 
     
+    # producer of deterministic seeds for physics objects to be able to do synchronization (needs 10X port)
     #git cms-merge-topic yrath:deterministicSeeds
-        
+    
+    # producer to apply JER to jets (needs 10X port)    
     #git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
 
+    # adds function to easily recalculate electron/photon IDs and energy corrections
     git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier
-    #git cms-merge-topic cms-egamma:Egamma80XMiniAODV2_946 #adds the c++ changes necessary to enable 2016 scale & smearing corrections (is loaded per default)
-    #git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
+    
+    # mitigation of EE noise to MET in 2017 data
+    if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
+      git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
+    else
+      git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
+    fi
     
     # needed to run ecalBadCalibReducedMINIAODFilter
     git cms-addpkg RecoMET/METFilters
@@ -36,7 +44,7 @@ Do for example:
     git cms-addpkg RecoBTag/TensorFlow
     git cherry-pick 94ceae257f846998c357fcad408986cc8a039152
 
-    # install common classifier
+    # install common classifier (currently work in progress)
     mkdir TTH
     cd TTH
     git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
@@ -55,7 +63,7 @@ Do for example:
     
     # install miniaod and boostedtth
     cd $CMSSWSRCDIR
-    git clone -b Legacy_2016_2017_Devel https://github.com/cms-ttH/MiniAOD.git
+    git clone -b Legacy_2016_2017_2018_Devel https://github.com/cms-ttH/MiniAOD.git
     git clone -b Legacy_2016_2017_2018_Devel https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
