@@ -611,7 +611,12 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt').getVLuminosityBlockRange()
+    if "2016" in options.dataEra:
+        process.source.lumisToProcess = LumiList.LumiList(filename = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt")).getVLuminosityBlockRange()
+    elif "2017" in options.dataEra:
+        process.source.lumisToProcess = LumiList.LumiList(filename = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt")).getVLuminosityBlockRange()
+    elif "2018" in options.dataEra:
+        process.source.lumisToProcess = LumiList.LumiList(filename = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt")).getVLuminosityBlockRange()
 
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
