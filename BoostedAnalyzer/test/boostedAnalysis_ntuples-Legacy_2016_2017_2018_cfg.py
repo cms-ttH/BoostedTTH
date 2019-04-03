@@ -26,7 +26,7 @@ options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing
 options.register( "calcBJetness",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Calculate BJetness variables" )
 options.register( "dumpSyncExe", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "Dump textfiles for sync exe?" )
 options.register( "systematicVariations","nominal", VarParsing.multiplicity.list, VarParsing.varType.string, "comma-separated list of systematic variations ('nominal' or systematics base name, up/down will be added)" )
-options.register( "deterministicSeeds",True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
+options.register( "deterministicSeeds",False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
 options.register( "electronRegression","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
 options.register( "electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 options.register( "useMuonRC", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
@@ -39,7 +39,7 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 10000 # reset for testing
+    options.maxEvents = 1000 # reset for testing
 
 if options.isData:
     if "2016" in options.dataEra:
@@ -265,7 +265,7 @@ if options.recorrectMET:
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
     runMetCorAndUncFromMiniAOD(process,
                                isData=options.isData,
-                               fixEE2017 = True,
+                               fixEE2017 = True if "2017" in options.dataEra else False,
                                fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} 
                                )
 #METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
@@ -319,7 +319,7 @@ elif "2018" in options.dataEra:
     EG_corrections = False
     EG_vid = False
 else:
-    raise Exception( "dataEra "+options.dataEra+" not supported for Egamma tools: USE dataEra=2016/2017")
+    raise Exception( "dataEra "+options.dataEra+" not supported for Egamma tools: USE dataEra=2016/2017/2018")
 
 setupEgammaPostRecoSeq(process,
                        runVID=EG_vid,
@@ -340,14 +340,7 @@ tauCollection      = cms.InputTag("slimmedTaus")
 METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 jetCollection      = cms.InputTag("selectedUpdatedPatJetsNewDFTraining", "", process.name_())
 # AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
-#else:
-    #electronCollection = cms.InputTag("slimmedElectrons", "", "RECO")
-    #photonCollection   = cms.InputTag("slimmedPhotons", "", "RECO")
-    #muonCollection     = cms.InputTag("slimmedMuons", "", "RECO")
-    #tauCollection      = cms.InputTag("slimmedTaus", "", "RECO")
-    #METCollection      = cms.InputTag("slimmedMETs", "", "RECO")
-    #jetCollection      = cms.InputTag("slimmedJets", "", "RECO")
-    #AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","RECO")
+
 
 ###### deterministic seed producer ######
 
