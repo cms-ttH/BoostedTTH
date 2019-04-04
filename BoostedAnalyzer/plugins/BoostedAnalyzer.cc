@@ -823,10 +823,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectrons,
 					  *h_selectedElectronsDL,
 					  *h_selectedElectronsLoose,
-					  *(hs_selectedJets[isys]),
-					  *(hs_selectedJetsLoose[isys]),
-                      *(hs_AK8Jets[isys]),
-					  (*(hs_correctedMETs[isys]))[0],
+					  *(hs_selectedJets.at(isys)),
+					  *(hs_selectedJetsLoose.at(isys)),
+                      *(hs_AK8Jets.at(isys)),
+					  (*(hs_correctedMETs.at(isys))).at(0),
 					  //selectedBoostedJets[isys],
                                           //selectedAk4Cluster,
 					  genTopEvt,
@@ -836,7 +836,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  weights,
 					  iEvent,
 					  iSetup,
-                                          jetSystematics[isys],
+                                          jetSystematics.at(isys),
                       selectionTags,
                       era
 					  ));
