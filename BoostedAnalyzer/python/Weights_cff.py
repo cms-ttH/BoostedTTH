@@ -155,6 +155,26 @@ BTagSFs94XDeepJet2016 = cms.PSet(
     fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2016_lf.root")
 )
 
+TriggerSFs2016 = cms.PSet(
+    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/XXXX.root"),
+    elecHistName = cms.string("XXXXXXXXXXX"),
+    muonFileName = cms.string("MiniAOD/MiniAODHelper/data/XXXX.root"),
+    muonHistName = cms.string("XXXXXXXXXXX"),
+)
+
+TriggerSFs2017 = cms.PSet(
+    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/XXXX.root"),
+    elecHistName = cms.string("XXXXXXXXXXX"),
+    muonFileName = cms.string("MiniAOD/MiniAODHelper/data/XXXX.root"),
+    muonHistName = cms.string("XXXXXXXXXXX"),
+)
+
+TriggerSFs2018 = cms.PSet(
+    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/XXXX.root"),
+    elecHistName = cms.string("XXXXXXXXXXX"),
+    muonFileName = cms.string("MiniAOD/MiniAODHelper/data/XXXX.root"),
+    muonHistName = cms.string("XXXXXXXXXXX"),
+)
 
 
 

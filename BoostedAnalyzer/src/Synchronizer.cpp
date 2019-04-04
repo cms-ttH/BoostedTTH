@@ -206,12 +206,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     int pass_METSelection=-1;
     
     // hack to use loose isolation scale factors for muons in case of dilepton channel
-    if(int(input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())>1) {
-        leptonsfhelper->ChangeMuIsoHistos(true);
-    }
-    else {
-        leptonsfhelper->ChangeMuIsoHistos(false);
-    }
+    // if(int(input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())>1) {
+    //     leptonsfhelper->ChangeMuIsoHistos(true);
+    // }
+    // else {
+    //     leptonsfhelper->ChangeMuIsoHistos(false);
+    // }
     
     std::map< std::string, float > leptonsfs = leptonsfhelper->GetLeptonSF(input.selectedElectronsLoose,input.selectedMuonsLoose);
 

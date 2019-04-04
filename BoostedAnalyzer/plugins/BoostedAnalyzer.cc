@@ -293,11 +293,11 @@ private:
 //
 BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): 
     // initialize gen top event with consumes collector (allows to access data from file within this class)
+    leptonSFhelper(LeptonSFHelper(iConfig)),
     synchronizer(Synchronizer(iConfig,consumesCollector())),
     genTopEvtProd(GenTopEventProducer(consumesCollector())),
     triggerInfoProd(TriggerInfoProducer(iConfig,consumesCollector())),
     filterInfoProd(FilterInfoProducer(iConfig,consumesCollector())),
-
     //
     // get all configurations from the python config
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
