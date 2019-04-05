@@ -72,9 +72,9 @@ for row in reader:
                     filenames.append("ntuples_"+filename+"down"+"_Tree.root")
             shutil.copy(src,out)
             if row['isData']=='TRUE':
-                dataSetTag = 'KIT_tthbb_skims_DATA_94X_LEG_DATAERA'
+                dataSetTag = 'KIT_tthbb_skims_DATA_DQM_94X_LEG_DATAERA'
                 splitting = 'EventAwareLumiBased'
-                units = '80000'
+                units = '60000'
             else:
                 dataSetTag = 'KIT_tthbb_skims_MC_94X_LEG_DATAERA'
                 splitting = 'FileBased'
@@ -83,6 +83,7 @@ for row in reader:
             repl('THEREQUESTNAME',row['name']+"_"+str(i)+"_"+str(l),out)
             repl('OUTPUTDATASETTAG',dataSetTag,out)
             repl('THEINPUTDATASET',dataset,out)
+            print row['run']
             repl('DATAERA',row['run'],out)
             repl('GLOBALTAG',row['globalTag'],out)
             repl('ISDATA',row['isData'],out)
