@@ -155,6 +155,8 @@ BTagSFs94XDeepJet2016 = cms.PSet(
     fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2016_lf.root")
 )
 
+# Trigger SFs
+
 TriggerSFs2016 = cms.PSet(
     elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/EfficienciesAndSF_2018Data_AfterMuonHLTUpdate.root"),
     elecHistName = cms.string("IsoMu24_PtEtaBins/pt_abseta_ratio"),
@@ -165,8 +167,8 @@ TriggerSFs2016 = cms.PSet(
 TriggerSFs2017 = cms.PSet(
     elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/EfficienciesAndSF_2018Data_AfterMuonHLTUpdate.root"),
     elecHistName = cms.string("IsoMu24_PtEtaBins/pt_abseta_ratio"),
-    muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/EfficienciesAndSF_2018Data_AfterMuonHLTUpdate.root"),
-    muonHistName = cms.string("IsoMu24_PtEtaBins/pt_abseta_ratio"),
+    muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/TriggerEfficienciesAndSF_RunBtoF_Nov17Nov2017.root"),
+    muonHistName = cms.string("IsoMu27_PtEtaBins/pt_abseta_ratio"),
 )
 
 TriggerSFs2018 = cms.PSet(
