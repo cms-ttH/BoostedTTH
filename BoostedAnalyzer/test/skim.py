@@ -12,9 +12,10 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 
 if not options.inputFiles:
     if not options.isData:
-        options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/10000/968BB369-8542-E811-A8CF-002481CFE864.root']
-    else:
-        options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2017B/SingleElectron/MINIAOD/31Mar2018-v1/90000/6052A1DF-9B37-E811-AA01-008CFA110C88.root']
+        options.inputFiles=['root://xrootd-cms.infn.it///store/mc/RunIISummer16MiniAODv3/ttHTobb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/8A9AF78F-4EED-E811-9DA6-0026182FD7A9.root']
+    elif options.isData:
+#        options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2016B/SingleMuon/MINIAOD/17Jul2018_ver2-v1/30000/820D62D6-F895-E811-810A-0CC47AC52C8E.root']
+        options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2016B/SingleElectron/MINIAOD/17Jul2018_ver2-v1/20000/DCD3C4BE-9A8D-E811-AE28-00266CFFBE5C.root']
 
 process = cms.Process("p")
 #set some defaults
@@ -86,10 +87,23 @@ process.skimmed=cms.Path(process.LeptonJetsSkim)
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Skim.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*', 
-            'drop *_*AK8*_*_*', 'drop *_*Puppi*_*_*', 'drop *_*slimmedTausBoosted*_*_*', 'drop *_*oniaPhotonCandidates*_*_*', 'drop *_*slimmedMETsNoHF*_*_*']),
-    SelectEvents = cms.untracked.PSet(
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_DQM','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM',
+                    'keep *_*_*_LHE','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*', 
+                    'drop *_*AK8*_*_*', 'drop *_*Puppi*_*_*', 'drop *_*slimmedTausBoosted*_*_*', 'drop *_*oniaPhotonCandidates*_*_*',
+                    'drop *_*slimmedMETsNoHF*_*_*']),
+   SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skimmed")
     )
 )
+
+# process.OUT = cms.OutputModule(
+#     "PoolOutputModule",
+#     fileName = cms.untracked.string('Skim.root'),
+#     outputCommands = cms.untracked.vstring([
+#         'keep *'
+#     ]),
+#     SelectEvents = cms.untracked.PSet(
+#         SelectEvents = cms.vstring("skimmed")
+#     )
+# )
 process.endpath = cms.EndPath(process.OUT)
