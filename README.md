@@ -25,7 +25,7 @@ Do for example:
     #git cms-merge-topic yrath:deterministicSeeds
     
     # producer to apply JER to jets (needs 10X port)    
-    #git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
+    git cms-merge-topic michaelwassmer:CMSSW_10_2_X_changed_SmearedJetProducer
 
     # adds function to easily recalculate electron/photon IDs and energy corrections
     git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier

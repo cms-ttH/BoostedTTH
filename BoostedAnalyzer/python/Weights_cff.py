@@ -15,7 +15,7 @@ AdditionalPUWeights2018 = cms.VPSet(
     namePUWeight = cms.string("Weight_pu69p2"),
     fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
     histNameMCNPU = cms.string("N_True"),
-    fileNameDataNPUEstimated = cms.string("MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasNominal-69200.root"),
+    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasNominal-69200.root"),
     histNameDataNPUEstimated = cms.string("pileup")
   ),
 
@@ -23,7 +23,7 @@ AdditionalPUWeights2018 = cms.VPSet(
     namePUWeight = cms.string("Weight_pu69p2Up"),
     fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
     histNameMCNPU = cms.string("N_True"),
-    fileNameDataNPUEstimated = cms.string("MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasUp-72383.root"),
+    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasUp-72383.root"),
     histNameDataNPUEstimated = cms.string("pileup")
   ),
 
@@ -31,7 +31,7 @@ AdditionalPUWeights2018 = cms.VPSet(
     namePUWeight = cms.string("Weight_pu69p2Down"),
     fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
     histNameMCNPU = cms.string("N_True"),
-    fileNameDataNPUEstimated = cms.string("MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasDown-66017.root"),
+    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasDown-66017.root"),
     histNameDataNPUEstimated = cms.string("pileup")
   ),
 )

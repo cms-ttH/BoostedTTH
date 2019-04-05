@@ -34,9 +34,9 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         throw std::exception();
     }
     
-    if( era.find("2016")==std::string::npos and era.find("2017")==std::string::npos){
+    if( era.find("2016")==std::string::npos and era.find("2017")==std::string::npos and era.find("2018")==std::string::npos){
         std::cerr << "\n\nERROR: Unknown era" << era << "in SelectedLeptonProducer " << std::endl;
-        std::cerr << "Please select '2016' or '2017'\n" << std::endl;
+        std::cerr << "Please select '2016' or '2017' or '2018'\n" << std::endl;
         throw std::exception();
     }
     
@@ -223,14 +223,16 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             // apply energy corrections (scale & smearing)
             for(auto& ele : updatedElectrons){
                 ele.addUserFloat("ptBeforeRun2Calibration",ele.pt());
-                ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
-                // only use combined systematics for scaling and smearing since we should not be very sensitive to electron energy scale
-                // as recommended by e/gamma pog only for MC
-                if(not isData){
-                    ele.addUserFloat("CorrFactor_ScaleUp",ele.userFloat("energyScaleUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
-                    ele.addUserFloat("CorrFactor_ScaleDown",ele.userFloat("energyScaleDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
-                    ele.addUserFloat("CorrFactor_SigmaUp",ele.userFloat("energySigmaUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
-                    ele.addUserFloat("CorrFactor_SigmaDown",ele.userFloat("energySigmaDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                if(ele.hasUserFloat("ecalTrkEnergyPostCorr")){
+                    ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
+                    // only use combined systematics for scaling and smearing since we should not be very sensitive to electron energy scale
+                    // as recommended by e/gamma pog only for MC
+                    if(not isData){
+                        ele.addUserFloat("CorrFactor_ScaleUp",ele.userFloat("energyScaleUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                        ele.addUserFloat("CorrFactor_ScaleDown",ele.userFloat("energyScaleDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                        ele.addUserFloat("CorrFactor_SigmaUp",ele.userFloat("energySigmaUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                        ele.addUserFloat("CorrFactor_SigmaDown",ele.userFloat("energySigmaDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                    }
                 }
             }
             
