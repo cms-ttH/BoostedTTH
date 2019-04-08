@@ -27,8 +27,11 @@ Do for example:
     # producer to apply JER to jets
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then    
       git cms-merge-topic michaelwassmer:CMSSW_10_2_X_changed_SmearedJetProducer
-    else
+    elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
       git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
+    else
+      echo "WRONG CMSSW VERSION"
+      return 1
     fi      
 
     # adds function to easily recalculate electron/photon IDs and energy corrections
@@ -37,8 +40,11 @@ Do for example:
     # mitigation of EE noise to MET in 2017 data
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
       git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
-    else
+    elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
       git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
+    else
+      echo "WRONG CMSSW VERSION"
+      return 1
     fi
     
     # needed to run ecalBadCalibReducedMINIAODFilter
@@ -54,9 +60,12 @@ Do for example:
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
       git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
-    else
+    elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
       git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone
+    else
+      echo "WRONG CMSSW VERSION"
+      return 1
     fi
     git clone https://gitlab.cern.ch/kit-cn-cms-public/RecoLikelihoodReconstruction.git RecoLikelihoodReconstruction
     mkdir -p $CMSSW_BASE/lib/$SCRAM_ARCH/
