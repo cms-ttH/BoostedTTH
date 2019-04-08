@@ -24,8 +24,12 @@ Do for example:
     # producer of deterministic seeds for physics objects to be able to do synchronization (needs 10X port)
     #git cms-merge-topic yrath:deterministicSeeds
     
-    # producer to apply JER to jets (needs 10X port)    
-    git cms-merge-topic michaelwassmer:CMSSW_10_2_X_changed_SmearedJetProducer
+    # producer to apply JER to jets
+    if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then    
+      git cms-merge-topic michaelwassmer:CMSSW_10_2_X_changed_SmearedJetProducer
+    else
+      git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
+    fi      
 
     # adds function to easily recalculate electron/photon IDs and energy corrections
     git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier
@@ -47,8 +51,13 @@ Do for example:
     # install common classifier (currently work in progress)
     mkdir TTH
     cd TTH
-    git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
-    git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git -b 10_2_X MEIntegratorStandalone
+    if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
+      git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
+      git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
+    else
+      git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier
+      git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone
+    fi
     git clone https://gitlab.cern.ch/kit-cn-cms-public/RecoLikelihoodReconstruction.git RecoLikelihoodReconstruction
     mkdir -p $CMSSW_BASE/lib/$SCRAM_ARCH/
     cp -R MEIntegratorStandalone/libs/* $CMSSW_BASE/lib/$SCRAM_ARCH/
