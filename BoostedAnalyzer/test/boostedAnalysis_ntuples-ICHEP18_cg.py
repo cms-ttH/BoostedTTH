@@ -31,7 +31,7 @@ options.register("electronRegression","",VarParsing.multiplicity.singleton,VarPa
 options.register("electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
 options.register( "useMuonRC", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
 options.register("recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
-options.register("dataEra",     "",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
+options.register("dataEra",     "2017",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period, e.g. '2016B', empty for MC" )
 options.register("updatePUJetId",     False,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
 options.register( "ProduceMemNtuples", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "do you want to produce slimmed ntuples as input to mem code?" )
 
