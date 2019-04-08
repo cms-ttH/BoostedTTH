@@ -93,7 +93,7 @@ void TTBBStudienProcessor::processTopDR(const InputCollections& input, VariableC
     std::vector<pat::Jet> selectedTaggedJets;
     std::vector<pat::Jet> selectedUntaggedJets;
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
-        if(BoostedUtils::PassesCSV(*itJet, 'M')) selectedTaggedJets.push_back(*itJet);
+        if(CSVHelper::PassesCSV(*itJet, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) selectedTaggedJets.push_back(*itJet);
         else selectedUntaggedJets.push_back(*itJet);
     }
 
@@ -282,7 +282,7 @@ void TTBBStudienProcessor::initAmountTags(const InputCollections& input, Variabl
 void TTBBStudienProcessor::processAmountTags(const InputCollections& input, VariableContainer& vars) {
     int nTotalTags = 0, nGoodTags=0, nMisTags=0;
     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
-      if (!(BoostedUtils::PassesCSV(*j, 'M'))) continue;
+      if (!(CSVHelper::PassesCSV(*j, "DeepJet", CSVHelper::CSVwp::Medium,input.era))) continue;
       nTotalTags++;
       if(abs(j->hadronFlavour())==5) nGoodTags++;
       if(abs(j->hadronFlavour())!=5) nMisTags++;

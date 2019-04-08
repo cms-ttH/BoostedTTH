@@ -176,22 +176,22 @@ void MVAVarProcessor::Init(const InputCollections& input,VariableContainer& vars
 void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& vars){
   if(!initialized) cerr << "tree processor not initialized" << endl;
 
-  const char* btagger="DeepCSV";
+  const char* btagger="DeepJet";
   std::vector<pat::Jet> selectedTaggedJets;
   std::vector<pat::Jet> selectedTaggedJetsT;
   std::vector<pat::Jet> selectedTaggedJetsL;
   std::vector<pat::Jet> selectedUntaggedJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
-    if(BoostedUtils::PassesCSV(*itJet, 'M')){
+    if(CSVHelper::PassesCSV(*itJet,btagger, CSVHelper::CSVwp::Medium,input.era)){
       selectedTaggedJets.push_back(*itJet);
     }
     else{
       selectedUntaggedJets.push_back(*itJet);
     }
-    if(BoostedUtils::PassesCSV(*itJet, 'L')){
+    if(CSVHelper::PassesCSV(*itJet,btagger, CSVHelper::CSVwp::Loose, input.era)){
       selectedTaggedJetsL.push_back(*itJet);
     }
-    if(BoostedUtils::PassesCSV(*itJet, 'T')){
+    if(CSVHelper::PassesCSV(*itJet,btagger, CSVHelper::CSVwp::Tight, input.era)){
       selectedTaggedJetsT.push_back(*itJet);
     }
   }
@@ -210,7 +210,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // All Jets
   std::vector<double> csvJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
-    csvJets.push_back(MiniAODHelper::GetJetCSV(*itJet,btagger));
+    csvJets.push_back(CSVHelper::GetJetCSV(*itJet,btagger));
   }
   std::vector<double> csvJetsSorted=csvJets;
   std::sort(csvJetsSorted.begin(),csvJetsSorted.end(),std::greater<double>());
@@ -236,7 +236,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   // Tagged Jets
   vector<float> csvTaggedJets;
   for(std::vector<pat::Jet>::iterator itTaggedJet = selectedTaggedJets.begin() ; itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet){
-    csvTaggedJets.push_back(MiniAODHelper::GetJetCSV(*itTaggedJet,btagger));
+    csvTaggedJets.push_back(CSVHelper::GetJetCSV(*itTaggedJet,btagger));
   }
   sort(csvTaggedJets.begin(),csvTaggedJets.end(),std::greater<float>());
   vars.FillVar("Evt_CSV_Min_Tagged",csvTaggedJets.size()>0 ? csvTaggedJets.back() : -.1);
@@ -690,7 +690,7 @@ void MVAVarProcessor::Process(const InputCollections& input,VariableContainer& v
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){
     if(itJet->pt() >= 30) continue;
     selectedJetsLooseExclusive.push_back(*itJet);
-    jetCSV_loose.push_back(MiniAODHelper::GetJetCSV(*itJet,btagger));
+    jetCSV_loose.push_back(CSVHelper::GetJetCSV(*itJet,btagger));
     jet_loose_vecsTL.push_back(BoostedUtils::GetTLorentzVector(itJet->p4()));
   }
   vector<TLorentzVector> jetvecsTL=BoostedUtils::GetTLorentzVectors(jetvecs);

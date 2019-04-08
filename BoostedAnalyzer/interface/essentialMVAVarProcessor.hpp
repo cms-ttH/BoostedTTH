@@ -6,6 +6,7 @@
 #include "MiniAOD/MiniAODHelper/interface/BDTvars.h"
 #include "TTH/RecoLikelihoodReconstruction/interface/ReconstructionQuality.hpp"
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
+#include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
 class essentialMVAVarProcessor: public TreeProcessor{
   

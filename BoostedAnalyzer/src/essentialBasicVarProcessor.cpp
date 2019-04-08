@@ -142,16 +142,16 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   std::vector<pat::Jet> selectedTaggedJetsL;
   std::vector<pat::Jet> selectedUntaggedJets;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet){
-    if(CSVHelper::PassesCSV(era, *itJet, btagger, CSVHelper::CSVwp::Medium)){
+    if(CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Medium, era)){
       selectedTaggedJets.push_back(*itJet);
     }
     else{
       selectedUntaggedJets.push_back(*itJet);
     }
-    if(CSVHelper::PassesCSV(era, *itJet, btagger, CSVHelper::CSVwp::Loose)){
+    if(CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Loose, era)){
       selectedTaggedJetsL.push_back(*itJet);
     }
-    if(CSVHelper::PassesCSV(era, *itJet, btagger, CSVHelper::CSVwp::Tight)){
+    if(CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Tight, era)){
       selectedTaggedJetsT.push_back(*itJet);
     }
   }

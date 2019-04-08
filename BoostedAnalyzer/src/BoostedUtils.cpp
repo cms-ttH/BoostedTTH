@@ -258,7 +258,7 @@ bool BoostedUtils::PassesCSV(const pat::Jet& jet, const char workingPoint){
   float CSVTwp = 0.8001;
 
 
-  float csvValue = MiniAODHelper::GetJetCSV(jet,"DeepCSV");
+  float csvValue = CSVHelper::GetJetCSV(jet,"DeepJet");
 
   switch(workingPoint){
     case 'L': if(csvValue > CSVLwp){ return true; } break;

@@ -263,7 +263,7 @@ void BoostedttHEvent::ak4ClusterHiggsCandBoostedRec(const bool cleanTopHadCand, 
 
     // Higgs tagger (SecondCSV)
     std::vector<pat::Jet> sortedAk4jets = BoostedUtils::GetHiggsFilterJets((*itAk4Clu).ak4jets);
-    float tag = CSVHelper::GetJetCSV(sortedAk4jets[1],"DeepJet");
+    float tag = CSVHelper::GetJetCSV(sortedAk4jets[1],"DeepCSV");
     if(verbose) std::cout << "Ak4 higgs tag of fat jet is " << tag  << std::endl;
 
     if(tag>higgsCandTag){
@@ -315,11 +315,7 @@ void BoostedttHEvent::ak4JetsHiggsCandBoostedRec(const bool cleanTopHadCand, con
 
     // Higgs tagger (SecondCSV)
     std::vector<pat::Jet> sortedAk4jets = BoostedUtils::GetHiggsFilterJets(cleanedAk4jets);
-<<<<<<< HEAD
-    float tag = MiniAODHelper::GetJetCSV(sortedAk4jets[1],"DeepCSV");
-=======
     float tag = CSVHelper::GetJetCSV(sortedAk4jets[1],"DeepJet");
->>>>>>> cbb82d6... more DeepCSV->DeepJet changes
     if(verbose) std::cout << "Ak4 higgs tag of fat jet is " << tag  << std::endl;
 
 
@@ -821,7 +817,7 @@ float BoostedttHEvent::GetAverageCSV(){
 
   float avgCSV = 0.;
   for(std::vector<pat::Jet>::const_iterator itJet=selectedJets.begin();itJet!=selectedJets.end();++itJet)
-    avgCSV += fmax(MiniAODHelper::GetJetCSV(*itJet,btagger),0.);
+    avgCSV += fmax(CSVHelper::GetJetCSV(*itJet,btagger),0.);
 
   return avgCSV/nJets;
 }
@@ -853,7 +849,7 @@ float BoostedttHEvent::GetAverageCSVHiggsCand(){
 
   for(size_t iJet=0;iJet<selectedJets.size();iJet++){
     if(!HiggsCandak5Jet[iJet]) continue;
-    avgCSV += fmax(MiniAODHelper::GetJetCSV(selectedJets[iJet],btagger),0.);
+    avgCSV += fmax(CSVHelper::GetJetCSV(selectedJets[iJet],btagger),0.);
   }
 
   return avgCSV/nHiggsak5Jets;
@@ -886,7 +882,7 @@ float BoostedttHEvent::GetAverageCSVTopHadCand(){
 
   for(size_t iJet=0;iJet<selectedJets.size();iJet++){
     if(!TopHadCandak5Jet[iJet]) continue;
-    avgCSV += fmax(MiniAODHelper::GetJetCSV(selectedJets[iJet],btagger),0.);
+    avgCSV += fmax(CSVHelper::GetJetCSV(selectedJets[iJet],btagger),0.);
   }
 
   return avgCSV/nTopHadak5Jets;
@@ -919,7 +915,7 @@ float BoostedttHEvent::GetAverageCSVTopLepCand(){
 
   for(size_t iJet=0;iJet<selectedJets.size();iJet++){
     if(!TopLepCandak5Jet[iJet]) continue;
-    avgCSV += fmax(MiniAODHelper::GetJetCSV(selectedJets[iJet],btagger),0.);
+    avgCSV += fmax(CSVHelper::GetJetCSV(selectedJets[iJet],btagger),0.);
   }
 
   return avgCSV/nTopLepak5Jets;
@@ -956,7 +952,7 @@ float BoostedttHEvent::GetAverageCSVClean(){
   float avgCSV = 0.;
 
   for(size_t iJet=0;iJet<cleanedak5Jets.size();iJet++)
-    avgCSV += fmax(MiniAODHelper::GetJetCSV(cleanedak5Jets[iJet],btagger),0.);
+    avgCSV += fmax(CSVHelper::GetJetCSV(cleanedak5Jets[iJet],btagger),0.);
 
   return avgCSV/nCleanedak5Jets;
 }

@@ -464,14 +464,14 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	n_jets=int(input.selectedJetsLoose.size());
 	n_btags=0;
 	for(auto jet=input.selectedJetsLoose.begin();jet!=input.selectedJetsLoose.end(); jet++){
-	    if(helper->PassesCSV(*jet,'M')) n_btags++;
+	    if(CSVHelper::PassesCSV(*jet,"DeepJet",CSVHelper::CSVwp::Medium,input.era)) n_btags++;
 	}
     }
     else{
 	n_jets=int(input.selectedJets.size());
 	n_btags=0;
 	for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
-	    if(BoostedUtils::PassesCSV(*jet,'M')) n_btags++;
+	    if(CSVHelper::PassesCSV(*jet,"DeepJet",CSVHelper::CSVwp::Medium,input.era)) n_btags++;
 	}
     }
     //calculate mll
