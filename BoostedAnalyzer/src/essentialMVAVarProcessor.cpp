@@ -4,13 +4,11 @@ using namespace std;
 
 essentialMVAVarProcessor::essentialMVAVarProcessor()
 {
-  pointerToMEMClassifier.reset(new MEMClassifier());
   pointerToMVAvars.reset(new MVAvars());
 }
 
 essentialMVAVarProcessor::~essentialMVAVarProcessor()
 {
-  //delete mem;
 }
 
 void essentialMVAVarProcessor::Init(const InputCollections &input, VariableContainer &vars)

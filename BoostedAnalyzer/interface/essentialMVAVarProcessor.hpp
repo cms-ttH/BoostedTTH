@@ -7,8 +7,6 @@
 #include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
 #include "TTH/CommonClassifier/interface/MVAvars.h"
-#include "TTH/CommonClassifier/interface/MEMClassifier.h"
-#include "TTH/CommonClassifier/interface/MVAvars.h"
 
 class essentialMVAVarProcessor : public TreeProcessor
 {
@@ -24,13 +22,8 @@ public:
 private:
   MVAvars *mvavars;
   std::map<std::string, float> varMap;
-  //mem classifier for MVAVarProcessor
-  std::unique_ptr<MEMClassifier> pointerToMEMClassifier = nullptr;
   //MVAvars from CommonClassifier classifier for sl channel
   std::unique_ptr<MVAvars> pointerToMVAvars = nullptr;
-
-  //   ReconstructionQuality quality;
-  MEMClassifier *mem;
 };
 
 #endif
