@@ -279,7 +279,7 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
     csvDevTagged = -1.;
 
   vars.FillVar("Evt_CSV_Dev_Tagged", csvDevTagged);
-  // Fill Variables for closest ak5 Jets
+  // Fill Variables for closest ak4 Jets
   // All Jets
   if (input.selectedJets.size() > 1)
   {
@@ -529,8 +529,8 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   //   }
 
   // N Jets with highest CSV
-  std::vector<pat::Jet> jetsByCSV = input.selectedJets;
-  std::sort(jetsByCSV.begin(), jetsByCSV.end(), BoostedUtils::FirstHasHigherCSV);
+  // std::vector<pat::Jet> jetsByCSV = input.selectedJets;
+  // std::sort(jetsByCSV.begin(), jetsByCSV.end(), BoostedUtils::FirstHasHigherCSV);
   //   for(int maxjets=2;maxjets<=4;maxjets++){
   //     float m2JetsAverage=0;
   //     float detaJetsAverage=0;
@@ -584,153 +584,153 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   // Event Angle Variables
   //   float drmax_lj=-1;
   //   float detamax_lj=-1;
-  float drmax_j1j = -1;
-  float drmax_j2j = -1;
-  float drmax_j3j = -1;
-  float drmax_j4j = -1;
-  float detamax_j1j = -1;
-  float detamax_j2j = -1;
-  float detamax_j3j = -1;
-  float detamax_j4j = -1;
+  // float drmax_j1j = -1;
+  // float drmax_j2j = -1;
+  // float drmax_j3j = -1;
+  // float drmax_j4j = -1;
+  // float detamax_j1j = -1;
+  // float detamax_j2j = -1;
+  // float detamax_j3j = -1;
+  // float detamax_j4j = -1;
   //   float costhetamax_jcm=-1;
-  for (std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin(); itJetVec != jetvecs.end(); ++itJetVec)
-  {
-    int iJetVec = itJetVec - jetvecs.begin();
+  // for (std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin(); itJetVec != jetvecs.end(); ++itJetVec)
+  // {
+  //   int iJetVec = itJetVec - jetvecs.begin();
 
-    //     float c_lj=-1.5;
-    //     float c_j1j=-1.5;
-    //     float c_j2j=-1.5;
-    //     float c_j3j=-1.5;
-    //     float c_j4j=-1.5;
-    //     float deta_lj=-1.;
-    float deta_j1j = -1.;
-    float deta_j2j = -1.;
-    float deta_j3j = -1.;
-    float deta_j4j = -1.;
-    //     float dr_lj=-1.;
-    float dr_j1j = -1.;
-    float dr_j2j = -1.;
-    float dr_j3j = -1.;
-    float dr_j4j = -1.;
-    //     float dkt_lj=-50.;
-    //     float dkt_j1j=-50.;
-    //     float dkt_j2j=-50.;
-    //     float dkt_j3j=-50.;
-    //     float dkt_j4j=-50.;
+  //   //     float c_lj=-1.5;
+  //   //     float c_j1j=-1.5;
+  //   //     float c_j2j=-1.5;
+  //   //     float c_j3j=-1.5;
+  //   //     float c_j4j=-1.5;
+  //   //     float deta_lj=-1.;
+  //   float deta_j1j = -1.;
+  //   float deta_j2j = -1.;
+  //   float deta_j3j = -1.;
+  //   float deta_j4j = -1.;
+  //   //     float dr_lj=-1.;
+  //   float dr_j1j = -1.;
+  //   float dr_j2j = -1.;
+  //   float dr_j3j = -1.;
+  //   float dr_j4j = -1.;
+  //     float dkt_lj=-50.;
+  //     float dkt_j1j=-50.;
+  //     float dkt_j2j=-50.;
+  //     float dkt_j3j=-50.;
+  //     float dkt_j4j=-50.;
 
-    //     if(primLepVec.Pt()>1){
-    //       deta_lj = BoostedUtils::DeltaEta(*itJetVec,primLepVec);
-    //       dr_lj = BoostedUtils::DeltaR(*itJetVec,primLepVec);
-    //       dkt_lj = BoostedUtils::DeltaKt(*itJetVec,primLepVec);
-    //       c_lj = BoostedUtils::CosThetaStar(*itJetVec,primLepVec);
-    //     }
-    if (jetvecs.size() > 0)
-    {
-      deta_j1j = BoostedUtils::DeltaEta(*itJetVec, jetvecs[0]);
-      dr_j1j = BoostedUtils::DeltaR(*itJetVec, jetvecs[0]);
-      //       dkt_j1j = BoostedUtils::DeltaKt(*itJetVec,jetvecs[0]);
-      //       c_j1j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[0]);
-    }
-    if (jetvecs.size() > 1)
-    {
-      deta_j2j = BoostedUtils::DeltaEta(*itJetVec, jetvecs[1]);
-      dr_j2j = BoostedUtils::DeltaR(*itJetVec, jetvecs[1]);
-      //       dkt_j2j = BoostedUtils::DeltaKt(*itJetVec,jetvecs[1]);
-      //       c_j2j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[1]);
-    }
-    if (jetvecs.size() > 2)
-    {
-      deta_j3j = BoostedUtils::DeltaEta(*itJetVec, jetvecs[2]);
-      dr_j3j = BoostedUtils::DeltaR(*itJetVec, jetvecs[2]);
-      //       dkt_j3j = BoostedUtils::DeltaKt(*itJetVec,jetvecs[2]);
-      //       c_j3j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[2]);
-    }
-    if (jetvecs.size() > 3)
-    {
-      deta_j4j = BoostedUtils::DeltaEta(*itJetVec, jetvecs[3]);
-      dr_j4j = BoostedUtils::DeltaR(*itJetVec, jetvecs[3]);
-      //       dkt_j4j = BoostedUtils::DeltaKt(*itJetVec,jetvecs[3]);
-      //       c_j4j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[3]);
-    }
+  //     if(primLepVec.Pt()>1){
+  //       deta_lj = BoostedUtils::DeltaEta(*itJetVec,primLepVec);
+  //       dr_lj = BoostedUtils::DeltaR(*itJetVec,primLepVec);
+  //       dkt_lj = BoostedUtils::DeltaKt(*itJetVec,primLepVec);
+  //       c_lj = BoostedUtils::CosThetaStar(*itJetVec,primLepVec);
+  //     }
+  // if (jetvecs.size() > 0)
+  // {
+  //   deta_j1j = BoostedUtils::DeltaEta(*itJetVec, jetvecs[0]);
+  //   dr_j1j = BoostedUtils::DeltaR(*itJetVec, jetvecs[0]);
+  //   //       dkt_j1j = BoostedUtils::DeltaKt(*itJetVec,jetvecs[0]);
+  //   //       c_j1j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[0]);
+  // }
+  // if (jetvecs.size() > 1)
+  // {
+  //   deta_j2j = BoostedUtils::DeltaEta(*itJetVec, jetvecs[1]);
+  //   dr_j2j = BoostedUtils::DeltaR(*itJetVec, jetvecs[1]);
+  //   //       dkt_j2j = BoostedUtils::DeltaKt(*itJetVec,jetvecs[1]);
+  //   //       c_j2j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[1]);
+  // }
+  // if (jetvecs.size() > 2)
+  // {
+  //   deta_j3j = BoostedUtils::DeltaEta(*itJetVec, jetvecs[2]);
+  //   dr_j3j = BoostedUtils::DeltaR(*itJetVec, jetvecs[2]);
+  //   //       dkt_j3j = BoostedUtils::DeltaKt(*itJetVec,jetvecs[2]);
+  //   //       c_j3j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[2]);
+  // }
+  // if (jetvecs.size() > 3)
+  // {
+  //   deta_j4j = BoostedUtils::DeltaEta(*itJetVec, jetvecs[3]);
+  //   dr_j4j = BoostedUtils::DeltaR(*itJetVec, jetvecs[3]);
+  //   //       dkt_j4j = BoostedUtils::DeltaKt(*itJetVec,jetvecs[3]);
+  //   //       c_j4j = BoostedUtils::CosThetaStar(*itJetVec,jetvecs[3]);
+  // }
 
-    //     vars.FillVars("Jet_Deta_Lepton",iJetVec,deta_lj);
-    //     vars.FillVars("Jet_Deta_Jet1",iJetVec,deta_j1j);
-    //     vars.FillVars("Jet_Deta_Jet2",iJetVec,deta_j2j);
-    //     vars.FillVars("Jet_Deta_Jet3",iJetVec,deta_j3j);
-    //     vars.FillVars("Jet_Deta_Jet4",iJetVec,deta_j4j);
-    //
-    //     vars.FillVars("Jet_Dr_Lepton",iJetVec,dr_lj);
-    //     vars.FillVars("Jet_Dr_Jet1",iJetVec,dr_j1j);
-    //     vars.FillVars("Jet_Dr_Jet2",iJetVec,dr_j2j);
-    //     vars.FillVars("Jet_Dr_Jet3",iJetVec,dr_j3j);
-    //     vars.FillVars("Jet_Dr_Jet4",iJetVec,dr_j4j);
+  //     vars.FillVars("Jet_Deta_Lepton",iJetVec,deta_lj);
+  //     vars.FillVars("Jet_Deta_Jet1",iJetVec,deta_j1j);
+  //     vars.FillVars("Jet_Deta_Jet2",iJetVec,deta_j2j);
+  //     vars.FillVars("Jet_Deta_Jet3",iJetVec,deta_j3j);
+  //     vars.FillVars("Jet_Deta_Jet4",iJetVec,deta_j4j);
+  //
+  //     vars.FillVars("Jet_Dr_Lepton",iJetVec,dr_lj);
+  //     vars.FillVars("Jet_Dr_Jet1",iJetVec,dr_j1j);
+  //     vars.FillVars("Jet_Dr_Jet2",iJetVec,dr_j2j);
+  //     vars.FillVars("Jet_Dr_Jet3",iJetVec,dr_j3j);
+  //     vars.FillVars("Jet_Dr_Jet4",iJetVec,dr_j4j);
 
-    //     vars.FillVars("Jet_Dkt_Lepton",iJetVec,dkt_lj);
-    //     vars.FillVars("Jet_Dkt_Jet1",iJetVec,dkt_j1j);
-    //     vars.FillVars("Jet_Dkt_Jet2",iJetVec,dkt_j2j);
-    //     vars.FillVars("Jet_Dkt_Jet3",iJetVec,dkt_j3j);
-    //     vars.FillVars("Jet_Dkt_Jet4",iJetVec,dkt_j4j);
-    //
-    //     vars.FillVars("Jet_CosThetaStar_Lepton",iJetVec,c_lj);
-    //     vars.FillVars("Jet_CosThetaStar_Jet1",iJetVec,c_j1j);
-    //     vars.FillVars("Jet_CosThetaStar_Jet2",iJetVec,c_j2j);
-    //     vars.FillVars("Jet_CosThetaStar_Jet3",iJetVec,c_j3j);
-    //     vars.FillVars("Jet_CosThetaStar_Jet4",iJetVec,c_j4j);
+  //     vars.FillVars("Jet_Dkt_Lepton",iJetVec,dkt_lj);
+  //     vars.FillVars("Jet_Dkt_Jet1",iJetVec,dkt_j1j);
+  //     vars.FillVars("Jet_Dkt_Jet2",iJetVec,dkt_j2j);
+  //     vars.FillVars("Jet_Dkt_Jet3",iJetVec,dkt_j3j);
+  //     vars.FillVars("Jet_Dkt_Jet4",iJetVec,dkt_j4j);
+  //
+  //     vars.FillVars("Jet_CosThetaStar_Lepton",iJetVec,c_lj);
+  //     vars.FillVars("Jet_CosThetaStar_Jet1",iJetVec,c_j1j);
+  //     vars.FillVars("Jet_CosThetaStar_Jet2",iJetVec,c_j2j);
+  //     vars.FillVars("Jet_CosThetaStar_Jet3",iJetVec,c_j3j);
+  //     vars.FillVars("Jet_CosThetaStar_Jet4",iJetVec,c_j4j);
 
-    //     if(drmax_lj < dr_lj){
-    //       drmax_lj = dr_lj;
-    //     }
-    //     if(detamax_lj < deta_lj){
-    //       detamax_lj = deta_lj;
-    //     }
-    if (drmax_j1j < dr_j1j)
-    {
-      drmax_j1j = dr_j1j;
-    }
-    if (drmax_j2j < dr_j2j)
-    {
-      drmax_j2j = dr_j2j;
-    }
-    if (drmax_j3j < dr_j3j)
-    {
-      drmax_j3j = dr_j3j;
-    }
-    if (drmax_j4j < dr_j4j)
-    {
-      drmax_j4j = dr_j4j;
-    }
-    if (detamax_j1j < deta_j1j)
-    {
-      detamax_j1j = deta_j1j;
-    }
-    if (detamax_j2j < deta_j2j)
-    {
-      detamax_j2j = deta_j2j;
-    }
-    if (detamax_j3j < deta_j3j)
-    {
-      detamax_j3j = deta_j3j;
-    }
-    if (detamax_j4j < deta_j4j)
-    {
-      detamax_j4j = deta_j4j;
-    }
-    math::XYZTLorentzVector p4all;
-    for (std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin(); itJetVec != jetvecs.end(); ++itJetVec)
-    {
-      p4all += *itJetVec;
-    }
+  //     if(drmax_lj < dr_lj){
+  //       drmax_lj = dr_lj;
+  //     }
+  //     if(detamax_lj < deta_lj){
+  //       detamax_lj = deta_lj;
+  //     }
+  //   if (drmax_j1j < dr_j1j)
+  //   {
+  //     drmax_j1j = dr_j1j;
+  //   }
+  //   if (drmax_j2j < dr_j2j)
+  //   {
+  //     drmax_j2j = dr_j2j;
+  //   }
+  //   if (drmax_j3j < dr_j3j)
+  //   {
+  //     drmax_j3j = dr_j3j;
+  //   }
+  //   if (drmax_j4j < dr_j4j)
+  //   {
+  //     drmax_j4j = dr_j4j;
+  //   }
+  //   if (detamax_j1j < deta_j1j)
+  //   {
+  //     detamax_j1j = deta_j1j;
+  //   }
+  //   if (detamax_j2j < deta_j2j)
+  //   {
+  //     detamax_j2j = deta_j2j;
+  //   }
+  //   if (detamax_j3j < deta_j3j)
+  //   {
+  //     detamax_j3j = deta_j3j;
+  //   }
+  //   if (detamax_j4j < deta_j4j)
+  //   {
+  //     detamax_j4j = deta_j4j;
+  //   }
+  //   math::XYZTLorentzVector p4all;
+  //   for (std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin(); itJetVec != jetvecs.end(); ++itJetVec)
+  //   {
+  //     p4all += *itJetVec;
+  //   }
 
-    p4all += primLepVec;
+  //   p4all += primLepVec;
 
-    p4all += input.correctedMET.corP4(pat::MET::Type1XY);
+  //   p4all += input.correctedMET.corP4(pat::MET::Type1XY);
 
-    //     float costheta_jcm= BoostedUtils::CosThetaCM(*itJetVec,p4all);
-    //     vars.FillVars("Jet_CosTheta_cm",iJetVec,costheta_jcm  );
-    //     if(costhetamax_jcm<fabs(costheta_jcm)){
-    //       costhetamax_jcm=fabs(costheta_jcm);
-    //     }
-  }
+  //   //     float costheta_jcm= BoostedUtils::CosThetaCM(*itJetVec,p4all);
+  //   //     vars.FillVars("Jet_CosTheta_cm",iJetVec,costheta_jcm  );
+  //   //     if(costhetamax_jcm<fabs(costheta_jcm)){
+  //   //       costhetamax_jcm=fabs(costheta_jcm);
+  //   //     }
+  // }
 
   // Ohio Variables
   std::vector<pat::Jet> selectedJetsLooseExclusive;
