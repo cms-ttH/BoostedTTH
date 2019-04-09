@@ -445,7 +445,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     jet_tag_pos = find (selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
     
     pointerToMEMClassifier.reset(new MEMClassifier());
-    pointerToCommonBDT5Classifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/lj_BDT_DeepCSV_Summer18_v1/", 0.4941 ));
+    pointerToCommonBDT5Classifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/lj_BDT_DeepCSV_Summer18_v1/", CSVHelper::GetWP(era, CSVHelper::CSVwp::Medium, "DeepJet")));
     //DNNClassifierBase::pyInitialize();
     //pointerToDnnSLClassifier.reset(new DNNClassifier_SL("v6a"));
     
