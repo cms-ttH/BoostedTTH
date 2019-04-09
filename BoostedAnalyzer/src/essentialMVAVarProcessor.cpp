@@ -170,9 +170,6 @@ void essentialMVAVarProcessor::Init(const InputCollections &input, VariableConta
   //   vars.InitVar("Evt_3b2bLikelihoodRatio");
   //   vars.InitVar("Evt_2b1bLikelihoodRatio");
 
-  vars.InitVar("Evt_blr_ETH");
-  vars.InitVar("Evt_blr_ETH_transformed");
-
   // Vars from CommonClassifier:
   map<string, float> varMap = pointerToMVAvars->GetVariables();
   for (auto it = varMap.begin(); it != varMap.end(); it++)
@@ -826,20 +823,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
     jettvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedJets[i].p4()));
     jetcsvs.push_back(CSVHelper::GetJetCSV(input.selectedJets[i], btagger));
   }
-
-  std::vector<unsigned int> out_best_perm;
-  double out_P_4b = -1;
-  double out_P_2b = -1;
-  double eth_blr = -1;
-  if (input.selectedJets.size() > 3)
-    eth_blr = pointerToMEMClassifier->GetBTagLikelihoodRatio(jettvecs,
-                                          jetcsvs,
-                                          out_best_perm,
-                                          out_P_4b,
-                                          out_P_2b);
-
-  vars.FillVar("Evt_blr_ETH", eth_blr);
-  vars.FillVar("Evt_blr_ETH_transformed", log(eth_blr / (1 - eth_blr)));
 
   // Variables from CommonClassifier:
   vector<double> loose_jetcsvs;
