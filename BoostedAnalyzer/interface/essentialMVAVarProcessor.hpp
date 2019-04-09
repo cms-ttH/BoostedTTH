@@ -15,7 +15,6 @@ class essentialMVAVarProcessor : public TreeProcessor
 
 public:
   essentialMVAVarProcessor();
-  essentialMVAVarProcessor(MEMClassifier *mem_, MVAvars *mvavars);
 
   ~essentialMVAVarProcessor();
 
