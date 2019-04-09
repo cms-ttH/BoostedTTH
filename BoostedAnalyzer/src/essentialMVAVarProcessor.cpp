@@ -816,26 +816,12 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   //   vars.FillVar("Evt_4b2bLikelihoodRatio",r_42);
   //   vars.FillVar("Evt_3b2bLikelihoodRatio",r_32);
   //   vars.FillVar("Evt_2b1bLikelihoodRatio",r_21);
-  vector<TLorentzVector> jettvecs;
-  vector<double> jetcsvs;
-  for (uint i = 0; i < input.selectedJets.size(); i++)
-  {
-    jettvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedJets[i].p4()));
-    jetcsvs.push_back(CSVHelper::GetJetCSV(input.selectedJets[i], btagger));
-  }
 
   // Variables from CommonClassifier:
-  vector<double> loose_jetcsvs;
-  for (auto j = input.selectedJetsLoose.begin(); j != input.selectedJetsLoose.end(); j++)
-  {
-    loose_jetcsvs.push_back(CSVHelper::GetJetCSV(*j, "DeepJet"));
-  }
-
   vector<TLorentzVector> lepvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons, input.selectedMuons));
-  vector<TLorentzVector> loose_jetvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
   TLorentzVector metP4 = BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
 
-  varMap = pointerToMVAvars->GetMVAvars(lepvecs, jetvecsTL, jetcsvs, metP4);
+  varMap = pointerToMVAvars->GetMVAvars(lepvecs, jetvecsTL, csvJets, metP4);
   for (auto it = varMap.begin(); it != varMap.end(); it++)
   {
     vars.FillVar("MVA_" + it->first, it->second);
