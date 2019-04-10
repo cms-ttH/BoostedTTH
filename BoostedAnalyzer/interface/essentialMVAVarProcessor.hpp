@@ -20,7 +20,6 @@ public:
   void Process(const InputCollections &input, VariableContainer &var);
 
 private:
-  MVAvars *mvavars;
   std::map<std::string, float> varMap;
   //MVAvars from CommonClassifier classifier for sl channel
   std::unique_ptr<MVAvars> pointerToMVAvars = nullptr;
