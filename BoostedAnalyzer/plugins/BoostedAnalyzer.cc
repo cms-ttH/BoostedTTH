@@ -431,9 +431,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     jet_tag_pos = find (selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
     
     // initialize synchronizer
-    // if(dumpSyncExe){
-    	// synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,pointerToCommonBDT5Classifier.get(),pointerToDLBDTClassifier.get(),pointerToDnnSLClassifier.get(),pointerToDnnDLClassifier.get(),pointerToMEMClassifier.get(),dumpExtended);
-    // }
+    if(dumpSyncExe){
+    	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,dumpExtended);
+    }
 
     // INITIALIZE TREEWRITERs
     if(!ProduceMemNtuples) {
