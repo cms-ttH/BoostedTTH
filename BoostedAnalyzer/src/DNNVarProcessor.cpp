@@ -2,21 +2,21 @@
 using namespace std;
 
 DNNVarProcessor::DNNVarProcessor(){
-    DNNClassifierBase::pyInitialize();
-    sldnnclassifier=new DNNClassifier_SL("v5a");
+    // DNNClassifierBase::pyInitialize();
+    sldnnclassifier=new DNNClassifier("v5a");
     classifier_created_inside=true;
 }
 
 
-DNNVarProcessor::DNNVarProcessor(DNNClassifier_SL* sldnnclassifier_):sldnnclassifier(sldnnclassifier_){
+DNNVarProcessor::DNNVarProcessor(DNNClassifier* sldnnclassifier_):sldnnclassifier(sldnnclassifier_){
     classifier_created_inside=false;
 }
 
 DNNVarProcessor::~DNNVarProcessor(){
-    if(classifier_created_inside) {
-        delete sldnnclassifier;
-        DNNClassifierBase::pyFinalize();
-    }
+    // if(classifier_created_inside) {
+    //     delete sldnnclassifier;
+    //     // DNNClassifierBase::pyFinalize();
+    // }
 }
 
 void DNNVarProcessor::Init(const InputCollections& input,VariableContainer& vars){
@@ -48,8 +48,8 @@ void DNNVarProcessor::Process(const InputCollections& input,VariableContainer& v
     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
         jetcsvs.push_back(CSVHelper::GetJetCSV_DNN(*j,"DeepJet"));
     }
-    dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs,lepvecs[0],metP4,add_features);
-    
+    auto output = sldnnclassifier->GetDNNOutput(lepvecs,jetvecs,jetcsvs,metP4, 0.2, dnn_output); //DANGERZONE
+
     vars.FillVar("DNN_RWTH_ttH",dnn_output.ttH());
     vars.FillVar("DNN_RWTH_ttbb",dnn_output.ttbb());
     vars.FillVar("DNN_RWTH_ttb",dnn_output.ttb());

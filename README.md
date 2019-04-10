@@ -60,11 +60,11 @@ Do for example:
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
       # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
       git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2_X_KIT
-      git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
+      git clone https://gitlab.cern.ch/swieland/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X_KIT
     elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
       # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier
       git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2_X_KIT
-      git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone
+      git clone https://gitlab.cern.ch/swieland/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X_KIT
     else
       echo "WRONG CMSSW VERSION"
       return 1

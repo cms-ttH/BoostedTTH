@@ -9,13 +9,13 @@
 class DNNVarProcessor: public TreeProcessor{
 public:
   DNNVarProcessor();
-  DNNVarProcessor(DNNClassifier_SL* sldnnclassifier_);
+  DNNVarProcessor(DNNClassifier* sldnnclassifier_);
   ~DNNVarProcessor();
   void Init(const InputCollections& input, VariableContainer& var);
   void Process(const InputCollections& input,VariableContainer& var);
 
 private:
-  DNNClassifier_SL* sldnnclassifier;
+  DNNClassifier* sldnnclassifier;
   DNNOutput dnn_output;
   bool classifier_created_inside;
 };
