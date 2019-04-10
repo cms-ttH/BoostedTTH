@@ -53,7 +53,7 @@ private:
     //MVAvars from CommonClassifier classifier for sl channel
     MVAvars *mvavars;
     std::map<std::string, float> varMap;
-    std::unique_ptr<MVAvars> pointerToMVAvars = nullptr;
+    std::shared_ptr<MVAvars> pointerToMVAvars = nullptr;
 
     bool initializedCutflowsWithSelections;
     std::string dataset;
