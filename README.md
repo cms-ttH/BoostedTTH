@@ -58,10 +58,12 @@ Do for example:
     mkdir TTH
     cd TTH
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
-      git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
+      # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
+      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2_X_KIT
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
     elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
-      git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier
+      # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier
+      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2_X_KIT
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone
     else
       echo "WRONG CMSSW VERSION"

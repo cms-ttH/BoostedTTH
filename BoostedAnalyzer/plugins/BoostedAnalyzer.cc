@@ -110,10 +110,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenJetOrderedJetCollectionProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Ak4Cluster.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SlimmedNtuples.hpp"
-#include "TTH/CommonClassifier/interface/MEMClassifier.h"
-#include "TTH/CommonClassifier/interface/BDTClassifier.h"
-#include "TTH/CommonClassifier/interface/DLBDTClassifier.h"
-#include "TTH/CommonClassifier/interface/DNNClassifier.h"
 #include "BoostedTTH/BoostedAnalyzer/interface/ResourceMonitor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AK8JetProcessor.hpp"
@@ -166,20 +162,10 @@ private:
     TriggerInfoProducer triggerInfoProd;
     /** produces filter information */
     FilterInfoProducer filterInfoProd;
-    
-    // --------------- CLASSIFIERS ---------------
-    //mem classifier for MVAVarProcessor
-    std::unique_ptr<MEMClassifier> pointerToMEMClassifier = nullptr;
-    //bdt classifier for sl channel
-    std::unique_ptr<BDTClassifier> pointerToCommonBDT5Classifier = nullptr;
-    //bdt classifier for dl channel
-    std::unique_ptr<DLBDTClassifier> pointerToDLBDTClassifier = nullptr;
-    //dnn classifier for sl channel
-    std::unique_ptr<DNNClassifier_SL> pointerToDnnSLClassifier = nullptr;
-    //dnn classifier for dl channel
-    std::unique_ptr<DNNClassifier_DL> pointerToDnnDLClassifier = nullptr;
+
     //resource monitor
     std::unique_ptr<ResourceMonitor> ResMon = nullptr;
+ 
 
     // --------------- FLAGS ---------------
     /** is analyzed sample data? */
@@ -444,16 +430,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     // find the position of the JetTagSelection to check later if the failed selection is the JetTagSelection or not
     jet_tag_pos = find (selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
     
-    pointerToMEMClassifier.reset(new MEMClassifier());
-    pointerToCommonBDT5Classifier.reset(new BDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/lj_BDT_DeepCSV_Summer18_v1/", 0.4941 ));
-    //DNNClassifierBase::pyInitialize();
-    //pointerToDnnSLClassifier.reset(new DNNClassifier_SL("v6a"));
-    
     // initialize synchronizer
     if(dumpSyncExe){
-        pointerToDLBDTClassifier.reset(new DLBDTClassifier(string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/dlbdtweights_v5/"));
-        //pointerToDnnDLClassifier.reset(new DNNClassifier_DL("v3a"));
-	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,pointerToCommonBDT5Classifier.get(),pointerToDLBDTClassifier.get(),pointerToDnnSLClassifier.get(),pointerToDnnDLClassifier.get(),pointerToMEMClassifier.get(),dumpExtended);
+    	synchronizer.Init(outfileNameBase,systematicsNames,iConfig,&helper,&leptonSFhelper,dumpExtended);
     }
 
     // INITIALIZE TREEWRITERs
@@ -487,19 +466,13 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
         if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
         }
-        if(std::find(processorNames.begin(),processorNames.end(),"MVAVarProcessor")!=processorNames.end()) {
-            if(std::find(processorNames.begin(),processorNames.end(),"BasicVarProcessor")==processorNames.end()) {
-                cout << "adding BasicVarProcessor, needed for MVAVarProcessor" << endl;
-                treewriter->AddTreeProcessor(new BasicVarProcessor(),"BasicVarProcessor");
-            }
-            treewriter->AddTreeProcessor(new MVAVarProcessor(pointerToMEMClassifier.get()),"MVAVarProcessor");
-        }
+       
     if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
         if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")==processorNames.end()) {
         cout << "adding essentialBasicVarProcessor, needed for essentialMVAVarProcessor" << endl;
         treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
         }
-        treewriter->AddTreeProcessor(new essentialMVAVarProcessor(pointerToMEMClassifier.get()),"essentialMVAVarProcessor");
+        treewriter->AddTreeProcessor(new essentialMVAVarProcessor(),"essentialMVAVarProcessor");
     }
     if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
@@ -525,13 +498,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     //    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsFromAk4CVarProcessor")!=processorNames.end()) {
     //        treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
     //    }
-    if(std::find(processorNames.begin(),processorNames.end(),"BDTVarProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new BDTVarProcessor(pointerToCommonBDT5Classifier.get()),"BDTVarProcessor");
-    }
-    if(std::find(processorNames.begin(),processorNames.end(),"DNNVarProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new DNNVarProcessor(pointerToDnnSLClassifier.get()),"DNNVarProcessor");
-    }
-    if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
+     if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
     }
     if(std::find(processorNames.begin(),processorNames.end(),"essentialMCMatchVarProcessor")!=processorNames.end()) {
