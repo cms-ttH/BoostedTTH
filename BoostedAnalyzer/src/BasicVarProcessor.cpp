@@ -14,6 +14,8 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVar("Evt_Lumi","I");
 
   vars.InitVar( "N_Jets","I" );
+  vars.InitVar( "N_GenJets","I" );
+  vars.InitVar( "N_Jets_GenJets","I" );
   vars.InitVar( "N_LooseJets","I" );
   vars.InitVar( "N_TightLeptons","I" );
   vars.InitVar( "N_LooseLeptons" ,"I");
@@ -39,6 +41,8 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVars( "Jet_PileUpID","N_Jets" );
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
+  vars.InitVars( "Jet_GenJet_Phi","N_Jets" );
+  vars.InitVars( "Jet_GenJet_E","N_Jets" );
 
   vars.InitVars( "LooseJet_E","N_LooseJets" );
   vars.InitVars( "LooseJet_M","N_LooseJets" );
@@ -144,7 +148,17 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
   vars.FillVar( "N_LooseElectrons",input.selectedElectronsLoose.size());
   vars.FillVar( "N_TightMuons",input.selectedMuons.size());
   vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());
-  vars.FillVar( "N_BoostedAk4Cluster",input.selectedAk4Cluster.size()); 
+  vars.FillVar( "N_BoostedAk4Cluster",input.selectedAk4Cluster.size());
+  vars.FillVar( "N_GenJets",input.genJets.size());
+  
+  int counter=0;
+  for(std::vector<reco::GenJet>::const_iterator itJet = input.genJets.begin() ; itJet != input.genJets.end(); ++itJet){
+      if(itJet->pt()>=30.&&abs(itJet->eta())<2.4){
+          counter+=1;
+      } 
+  }
+  vars.FillVar( "N_Jets_GenJets",counter);
+  
 
 
   // Fill Jet Variables
@@ -164,10 +178,14 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
     if(itJet->genJet()!=NULL){
       vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
       vars.FillVars( "Jet_GenJet_Eta",iJet,itJet->genJet()->eta());
+      vars.FillVars( "Jet_GenJet_Phi",iJet,itJet->genJet()->phi());
+      vars.FillVars( "Jet_GenJet_E",iJet,itJet->genJet()->energy());
     }
     else {
       vars.FillVars( "Jet_GenJet_Pt",iJet,-9.0);
       vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
+      vars.FillVars( "Jet_GenJet_Phi",iJet,-9.0);
+      vars.FillVars( "Jet_GenJet_E",iJet,-9.0);
     }
   }
   // Loose Jets

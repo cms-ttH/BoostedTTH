@@ -14,6 +14,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVar("Evt_Lumi","I");
 
   vars.InitVar( "N_Jets","I" );
+  vars.InitVar( "N_GenJets","I" );
+  vars.InitVar( "N_Jets_GenJets","I" );
   vars.InitVar( "N_LooseJets","I" );
   vars.InitVar( "N_TightLeptons","I" );
   vars.InitVar( "N_LooseLeptons" ,"I");
@@ -42,6 +44,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
 
   vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
   vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
+  vars.InitVars( "Jet_GenJet_Phi","N_Jets" );
+  vars.InitVars( "Jet_GenJet_E","N_Jets" );
   
   vars.InitVars( "Jet_DeepCSV_b","N_Jets");
   vars.InitVars( "Jet_DeepCSV_bb","N_Jets");
@@ -164,6 +168,15 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillVar( "N_LooseElectrons",input.selectedElectronsLoose.size());  
   vars.FillVar( "N_TightMuons",input.selectedMuons.size());  
   vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());  
+  vars.FillVar( "N_GenJets",input.genJets.size());
+  
+  int counter=0;
+  for(std::vector<reco::GenJet>::const_iterator itJet = input.genJets.begin() ; itJet != input.genJets.end(); ++itJet){
+      if(itJet->pt()>=30.&&abs(itJet->eta())<2.4){
+          counter+=1;
+      } 
+  }
+  vars.FillVar( "N_Jets_GenJets",counter);
   
   // Fill Jet Variables
   // All Jets
@@ -188,10 +201,14 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     if(itJet->genJet()!=NULL){
       vars.FillVars( "Jet_GenJet_Pt",iJet,itJet->genJet()->pt());
       vars.FillVars( "Jet_GenJet_Eta",iJet,itJet->genJet()->eta());
+      vars.FillVars( "Jet_GenJet_Phi",iJet,itJet->genJet()->phi());
+      vars.FillVars( "Jet_GenJet_E",iJet,itJet->genJet()->energy());
     }
     else {
       vars.FillVars( "Jet_GenJet_Pt",iJet,-9.0);
       vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
+      vars.FillVars( "Jet_GenJet_Phi",iJet,-9.0);
+      vars.FillVars( "Jet_GenJet_E",iJet,-9.0);
     }
 
     vars.FillVars( "Jet_DeepCSV_b",iJet,MiniAODHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probb"));

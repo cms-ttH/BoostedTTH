@@ -16,6 +16,9 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "AdditionalGenBJet_FromTopType",-9.,"N_AdditionalGenBJets" );
   vars.InitVars( "AdditionalGenBJet_HadronPt",-9.,"N_AdditionalGenBJets" );
   vars.InitVars( "AdditionalGenBJet_RecoJetPt",-9.,"N_AdditionalGenBJets" );
+  vars.InitVars( "AdditionalGenBJet_RecoJetEta",-9.,"N_AdditionalGenBJets" );
+  vars.InitVars( "AdditionalGenBJet_RecoJetPhi",-9.,"N_AdditionalGenBJets" );
+  vars.InitVars( "AdditionalGenBJet_RecoJetE",-9.,"N_AdditionalGenBJets" );
   vars.InitVars( "AdditionalGenBJet_RecoJetCSV",-9.,"N_AdditionalGenBJets" );
   vars.InitVars( "AdditionalGenBJet_HadronId",-9.,"N_AdditionalGenBJets" );
   vars.InitVars( "AdditionalGenBJet_Dr_BfromTTH",-9.,"N_AdditionalGenBJets" );
@@ -30,6 +33,9 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "AdditionalGenCJet_FromTopType",-9.,"N_AdditionalGenCJets" );
   vars.InitVars( "AdditionalGenCJet_HadronPt",-9.,"N_AdditionalGenCJets" );
   vars.InitVars( "AdditionalGenCJet_RecoJetPt",-9.,"N_AdditionalGenCJets" );
+  vars.InitVars( "AdditionalGenCJet_RecoJetEta",-9.,"N_AdditionalGenCJets" );
+  vars.InitVars( "AdditionalGenCJet_RecoJetPhi",-9.,"N_AdditionalGenCJets" );
+  vars.InitVars( "AdditionalGenCJet_RecoJetE",-9.,"N_AdditionalGenCJets" );
   vars.InitVars( "AdditionalGenCJet_RecoJetCSV",-9.,"N_AdditionalGenCJets" );
   vars.InitVars( "AdditionalGenCJet_HadronId",-9.,"N_AdditionalGenCJets" );
   vars.InitVars( "AdditionalGenCJet_Dr_CfromW",-9.,"N_AdditionalGenCJets" );
@@ -41,6 +47,9 @@ void AdditionalJetProcessor::Init(const InputCollections& input,VariableContaine
   vars.InitVars( "AdditionalLightGenJet_Phi",-9.,"N_AdditionalLightGenJets" );
   vars.InitVars( "AdditionalLightGenJet_E",-9.,"N_AdditionalLightGenJets" );
   vars.InitVars( "AdditionalLightGenJet_RecoJetPt",-9.,"N_AdditionalLightGenJets" );
+  vars.InitVars( "AdditionalLightGenJet_RecoJetEta",-9.,"N_AdditionalLightGenJets" );
+  vars.InitVars( "AdditionalLightGenJet_RecoJetPhi",-9.,"N_AdditionalLightGenJets" );
+  vars.InitVars( "AdditionalLightGenJet_RecoJetE",-9.,"N_AdditionalLightGenJets" );
   vars.InitVars( "AdditionalLightGenJet_RecoJetCSV",-9.,"N_AdditionalLightGenJets" );
 
   vars.InitVar( "N_AdditionalBHadrons",-1,"I" );
@@ -156,6 +165,9 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalGenBJet_NHadrons", i, additional_b_genjets_nhadrons[i]);
       vars.FillVars( "AdditionalGenBJet_HadronPt", i, additional_b_genjets_hadron[i].pt());
       vars.FillVars( "AdditionalGenBJet_RecoJetPt", i, additional_b_genjets_recojets[i]!=0 ? additional_b_genjets_recojets[i]->pt() : -1);
+      vars.FillVars( "AdditionalGenBJet_RecoJetEta", i, additional_b_genjets_recojets[i]!=0 ? additional_b_genjets_recojets[i]->eta() : -1);
+      vars.FillVars( "AdditionalGenBJet_RecoJetPhi", i, additional_b_genjets_recojets[i]!=0 ? additional_b_genjets_recojets[i]->phi() : -1);
+      vars.FillVars( "AdditionalGenBJet_RecoJetE", i, additional_b_genjets_recojets[i]!=0 ? additional_b_genjets_recojets[i]->energy() : -1);
       vars.FillVars( "AdditionalGenBJet_RecoJetCSV", i, additional_b_genjets_recojets[i]!=0 ? MiniAODHelper::GetJetCSV(*additional_b_genjets_recojets[i],btagger) : -2);
       vars.FillVars( "AdditionalGenBJet_HadronId", i, additional_b_genjets_hadron[i].pdgId());
       float drB=5;
@@ -193,6 +205,9 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalGenCJet_NHadrons", i, additional_c_genjets_nhadrons[i]);
       vars.FillVars( "AdditionalGenCJet_HadronPt", i, additional_c_genjets_hadron[i].pt());
       vars.FillVars( "AdditionalGenCJet_RecoJetPt", i, additional_c_genjets_recojets[i]!=0 ? additional_c_genjets_recojets[i]->pt() : -1);
+      vars.FillVars( "AdditionalGenCJet_RecoJetEta", i, additional_c_genjets_recojets[i]!=0 ? additional_c_genjets_recojets[i]->eta() : -1);
+      vars.FillVars( "AdditionalGenCJet_RecoJetPhi", i, additional_c_genjets_recojets[i]!=0 ? additional_c_genjets_recojets[i]->phi() : -1);
+      vars.FillVars( "AdditionalGenCJet_RecoJetE", i, additional_c_genjets_recojets[i]!=0 ? additional_c_genjets_recojets[i]->energy() : -1);
       vars.FillVars( "AdditionalGenCJet_RecoJetCSV", i, additional_c_genjets_recojets[i]!=0 ? MiniAODHelper::GetJetCSV(*additional_c_genjets_recojets[i],btagger) : -2);
       vars.FillVars( "AdditionalGenCJet_HadronId", i, additional_c_genjets_hadron[i].pdgId());
       float drQ=5;
@@ -222,6 +237,9 @@ void AdditionalJetProcessor::Process(const InputCollections& input,VariableConta
       vars.FillVars( "AdditionalLightGenJet_Phi", i, additional_light_genjets[i].phi());
       vars.FillVars( "AdditionalLightGenJet_E", i, additional_light_genjets[i].energy());
       vars.FillVars( "AdditionalLightGenJet_RecoJetPt", i, additional_light_genjets_recojets[i]!=0 ? additional_light_genjets_recojets[i]->pt() : -1);
+      vars.FillVars( "AdditionalLightGenJet_RecoJetEta", i, additional_light_genjets_recojets[i]!=0 ? additional_light_genjets_recojets[i]->eta() : -1);
+      vars.FillVars( "AdditionalLightGenJet_RecoJetPhi", i, additional_light_genjets_recojets[i]!=0 ? additional_light_genjets_recojets[i]->phi() : -1);
+      vars.FillVars( "AdditionalLightGenJet_RecoJetE", i, additional_light_genjets_recojets[i]!=0 ? additional_light_genjets_recojets[i]->energy() : -1);
       vars.FillVars( "AdditionalLightGenJet_RecoJetCSV", i, additional_light_genjets_recojets[i]!=0 ? MiniAODHelper::GetJetCSV(*additional_light_genjets_recojets[i],btagger) : -2);
     }
     
