@@ -278,54 +278,53 @@ private:
 // constructors and destructor
 //
 BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): 
-    // initialize gen top event with consumes collector (allows to access data from file within this class)
-    synchronizer(Synchronizer(iConfig,consumesCollector())),
-    genTopEvtProd(GenTopEventProducer(consumesCollector())),
-    triggerInfoProd(TriggerInfoProducer(iConfig,consumesCollector())),
-    filterInfoProd(FilterInfoProducer(iConfig,consumesCollector())),
+    // initialize some helpers with consumes collector (allows to access data from file within this class)
+    synchronizer{iConfig,consumesCollector()},
+    genTopEvtProd{consumesCollector()},
+    triggerInfoProd{iConfig,consumesCollector()},
+    filterInfoProd{iConfig,consumesCollector()},
 
-    //
     // get all configurations from the python config
     // meaning of the parameters is explained in python/BoostedAnalyzer_cfi.py
 
-    isData              ( iConfig.getParameter<bool>("isData") ),
-    era                 ( iConfig.getParameter<std::string>("dataEra") ),
-    useFatJets          ( iConfig.getParameter<bool>("useFatJets") ),
-    dumpSyncExe         ( iConfig.getParameter<bool>("dumpSyncExe") ),
-    dumpExtended        ( iConfig.getParameter<bool>("dumpExtended") ),
-    doBoostedMEM        ( iConfig.getParameter<bool>("doBoostedMEM") ),
-    ProduceMemNtuples   ( iConfig.getParameter<bool>("memNtuples") ),
-    useGenHadronMatch   ( iConfig.getParameter<bool>("useGenHadronMatch") ),
-    taggingSelection    ( iConfig.getParameter<bool>("taggingSelection") ),
+    isData              { iConfig.getParameter<bool>("isData") },
+    era                 { iConfig.getParameter<std::string>("dataEra") },
+    useFatJets          { iConfig.getParameter<bool>("useFatJets") },
+    dumpSyncExe         { iConfig.getParameter<bool>("dumpSyncExe") },
+    dumpExtended        { iConfig.getParameter<bool>("dumpExtended") },
+    doBoostedMEM        { iConfig.getParameter<bool>("doBoostedMEM") },
+    ProduceMemNtuples   { iConfig.getParameter<bool>("memNtuples") },
+    useGenHadronMatch   { iConfig.getParameter<bool>("useGenHadronMatch") },
+    taggingSelection    { iConfig.getParameter<bool>("taggingSelection") },
 
-    eventWeight         ( iConfig.getParameter<double>("eventWeight") ),
-    dumpAlwaysEvents    ( iConfig.getParameter<std::vector<int> >("dumpAlwaysEvents") ),
-    usedGenerator       ( iConfig.getParameter<std::string>("generatorName") ),
-    outfileNameBase     ( iConfig.getParameter<std::string>("outfileName") ),
-    relevantTriggers    ( iConfig.getParameter< std::vector<std::string> >("relevantTriggers") ),
-    processorNames      ( iConfig.getParameter< std::vector<std::string> >("processorNames") ),
-    selectionNames      ( iConfig.getParameter< std::vector<std::string> >("selectionNames") ),
+    eventWeight         { iConfig.getParameter<double>("eventWeight") },
+    dumpAlwaysEvents    { iConfig.getParameter<std::vector<int> >("dumpAlwaysEvents") },
+    usedGenerator       { iConfig.getParameter<std::string>("generatorName") },
+    outfileNameBase     { iConfig.getParameter<std::string>("outfileName") },
+    relevantTriggers    { iConfig.getParameter< std::vector<std::string> >("relevantTriggers") },
+    processorNames      { iConfig.getParameter< std::vector<std::string> >("processorNames") },
+    selectionNames      { iConfig.getParameter< std::vector<std::string> >("selectionNames") },
 
-    puInfoToken                     ( consumes< std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("puInfo")) ),
-    rhoToken                        ( consumes<double> (iConfig.getParameter<edm::InputTag>("rho")) ),
-    hcalNoiseToken                  ( consumes< HcalNoiseSummary >(iConfig.getParameter<edm::InputTag>("hcalNoise")) ),
-    beamSpotToken                   ( consumes< reco::BeamSpot > (iConfig.getParameter<edm::InputTag>("beamSpot")) ),
-    conversionCollectionToken       ( consumes< reco::ConversionCollection > (iConfig.getParameter<edm::InputTag>("conversionCollection")) ),
-    primaryVerticesToken            ( consumes< reco::VertexCollection > (iConfig.getParameter<edm::InputTag>("primaryVertices")) ),
-    selectedMuonsToken              ( consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuons")) ),
-    selectedMuonsDLToken            ( consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsDL")) ),
-    selectedMuonsLooseToken         ( consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsLoose")) ),
-    selectedElectronsToken          ( consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons")) ),
-    selectedElectronsDLToken        ( consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL")) ),
-    selectedElectronsLooseToken     ( consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose")) ),
+    puInfoToken                     { consumes< std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("puInfo")) },
+    rhoToken                        { consumes<double> (iConfig.getParameter<edm::InputTag>("rho")) },
+    hcalNoiseToken                  { consumes< HcalNoiseSummary >(iConfig.getParameter<edm::InputTag>("hcalNoise")) },
+    beamSpotToken                   { consumes< reco::BeamSpot > (iConfig.getParameter<edm::InputTag>("beamSpot")) },
+    conversionCollectionToken       { consumes< reco::ConversionCollection > (iConfig.getParameter<edm::InputTag>("conversionCollection")) },
+    primaryVerticesToken            { consumes< reco::VertexCollection > (iConfig.getParameter<edm::InputTag>("primaryVertices")) },
+    selectedMuonsToken              { consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuons")) },
+    selectedMuonsDLToken            { consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsDL")) },
+    selectedMuonsLooseToken         { consumes< std::vector<pat::Muon> >(iConfig.getParameter<edm::InputTag>("selectedMuonsLoose")) },
+    selectedElectronsToken          { consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons")) },
+    selectedElectronsDLToken        { consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL")) },
+    selectedElectronsLooseToken     { consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose")) },
 
-    boostedJetsToken                ( consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets")) ),
-    genInfoToken                    ( consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo")) ),
-    lheInfoToken                    ( consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo")) ),
-    lheInfoToken_source             ( consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo_source")) ),
-    genParticlesToken               ( consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles")) ),
-    genJetsToken                    ( consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets")) ),
-    LHERunInfoToken                 ( consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer")) )
+    boostedJetsToken                { consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets")) },
+    genInfoToken                    { consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo")) },
+    lheInfoToken                    { consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo")) },
+    lheInfoToken_source             { consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo_source")) },
+    genParticlesToken               { consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles")) },
+    genJetsToken                    { consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets")) },
+    LHERunInfoToken                 { consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer")) }
 
 {
   
@@ -346,16 +345,16 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     // REGISTER DATA ACCESS
     // This needs to be done in the constructor of this class or via the consumes collector in the constructor of helper classes
 
-    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJets")){
+    for(const auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJets")){
 	     selectedJetsTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
-    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsLoose")){
+    for(const auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsLoose")){
 	     selectedJetsLooseTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
-    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("AK8Jets")){
+    for(const auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("AK8Jets")){
         AK8Jets_Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
-    for(auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
+    for(const auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
 	     correctedMETsTokens.push_back(consumes< std::vector<pat::MET> >(tag));
     }
     
@@ -761,7 +760,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     else if(foundT&&foundTbar&&foundHiggs) sampleType = SampleType::tth;
     else if(foundT&&foundTbar){
 	sampleType =SampleType::ttl;
-	//if(ttid==51||ttid==52) sampleType = SampleType::ttb;
 	if(ttid==51) sampleType = SampleType::ttb;
 	else if(ttid==52) sampleType = SampleType::tt2b;
 	else if(ttid==53||ttid==54||ttid==55) sampleType = SampleType::ttbb;

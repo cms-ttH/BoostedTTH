@@ -39,7 +39,7 @@ options.parseArguments()
 
 # re-set some defaults
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 1000 # reset for testing
+    options.maxEvents = 1001 # reset for testing
 
 if options.isData:
     if "2016" in options.dataEra:
