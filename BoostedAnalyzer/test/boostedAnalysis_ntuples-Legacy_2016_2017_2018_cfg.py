@@ -422,10 +422,10 @@ process.SelectedJetProducerAK4=process.SelectedJetProducer.clone()
 # selection of the nominal jets
 process.SelectedJetProducerAK4.jets=cms.InputTag('patSmearedJetsAK4',"",process.name_())
 process.SelectedJetProducerAK4.applyCorrection=False
-process.SelectedJetProducerAK4.ptMins=[20,30]
+process.SelectedJetProducerAK4.ptMins=[30,30]
 if options.ProduceMemNtuples==True:
     process.SelectedJetProducerAK4.ptMins=[10,30]
-process.SelectedJetProducerAK4.etaMaxs=[2.4,2.4]
+process.SelectedJetProducerAK4.etaMaxs=[4.7,2.4]
 process.SelectedJetProducerAK4.collectionNames=["selectedJetsLooseAK4","selectedJetsAK4"]
 process.SelectedJetProducerAK4.systematics=[""]
 process.SelectedJetProducerAK4.PUJetIDMins=["loose","loose"]
