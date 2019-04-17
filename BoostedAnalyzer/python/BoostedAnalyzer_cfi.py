@@ -6,14 +6,14 @@ from BoostedTTH.BoostedAnalyzer.Weights_cff import *
 BoostedAnalyzer2017 = cms.EDAnalyzer(
     'BoostedAnalyzer',
     Inputs_tth_sl, # defined in Inputs_cff
-    LeptonSelectionMC2017, # defined in Selection_cff
     DiLeptonSelectionMC, # defined in Selection_cff
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
     # filtersMC, # defined in Selection_cff
     
-
+    LeptonSelection = LeptonSelectionMC2017,
+    
     # weight of one event: calculated as
     # cross section * lumi / (number of generated events with positive weight  -  number of generated events with negative weight )
     # so that the sum of weights corresponds to the number of events for the given lumi
@@ -61,9 +61,8 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
 )
 
 BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
-    
+    LeptonSelection = LeptonSelectionMC2016,    
     dataEra = cms.string("2016"),
-    LeptonSelectionMC = LeptonSelectionMC2016,
     bTagSFs = BTagSFs94XDeepJet2016,
     nominalPUWeight = NominalPUWeight2016,
     additionalPUWeights = AdditionalPUWeights2016,
@@ -71,9 +70,8 @@ BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
 )
 
 BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
-    
+    LeptonSelection = LeptonSelectionMC2018,
     dataEra = cms.string("2018"),
-    LeptonSelectionMC = LeptonSelectionMC2018,
     bTagSFs = BTagSFs94XDeepJet2018,
     nominalPUWeight = NominalPUWeight2018,
     additionalPUWeights = AdditionalPUWeights2018
