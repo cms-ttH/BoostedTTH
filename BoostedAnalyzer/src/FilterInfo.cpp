@@ -5,7 +5,7 @@ FilterInfo::FilterInfo(std::map<std::string, bool> filters_){
 }
 
 bool FilterInfo::Exists(std::string filtername) const {
-    if(filters.count(filtername)==0){ 
+    if(filters.find(filtername)==filters.end()){ 
 	return false;
     }
     return true;
