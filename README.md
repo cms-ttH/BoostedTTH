@@ -24,8 +24,15 @@ Do for example:
     # producer of deterministic seeds for physics objects to be able to do synchronization (needs 10X port)
     #git cms-merge-topic yrath:deterministicSeeds
     
-    # producer to apply JER to jets (needs 10X port)    
-    git cms-merge-topic michaelwassmer:CMSSW_10_2_X_changed_SmearedJetProducer
+    # producer to apply JER to jets
+    if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then    
+      git cms-merge-topic michaelwassmer:CMSSW_10_2_X_changed_SmearedJetProducer
+    elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
+      git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
+    else
+      echo "WRONG CMSSW VERSION"
+      return 1
+    fi      
 
     # adds function to easily recalculate electron/photon IDs and energy corrections
     git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier
@@ -33,8 +40,11 @@ Do for example:
     # mitigation of EE noise to MET in 2017 data
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
       git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
-    else
+    elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
       git cms-merge-topic cms-met:METFixEE2017_949_v2 # EE noise mitigation for 2017 data
+    else
+      echo "WRONG CMSSW VERSION"
+      return 1
     fi
     
     # needed to run ecalBadCalibReducedMINIAODFilter
@@ -47,8 +57,18 @@ Do for example:
     # install common classifier (currently work in progress)
     mkdir TTH
     cd TTH
-    git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
-    git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git -b 10_2_X MEIntegratorStandalone
+    if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
+      # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
+      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_MVAvars
+      git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
+    elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
+      # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier
+      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_MVAvars
+      git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone
+    else
+      echo "WRONG CMSSW VERSION"
+      return 1
+    fi
     git clone https://gitlab.cern.ch/kit-cn-cms-public/RecoLikelihoodReconstruction.git RecoLikelihoodReconstruction
     mkdir -p $CMSSW_BASE/lib/$SCRAM_ARCH/
     cp -R MEIntegratorStandalone/libs/* $CMSSW_BASE/lib/$SCRAM_ARCH/
@@ -92,7 +112,7 @@ Do for example:
     scram b -j 12
     
     ### only for crab use ###
-    cp /cvmfs/cms.cern.ch/slc6_amd64_gcc700/external/gsl/2.2.1/lib/* $CMSSWSRCDIR/../lib/slc6_amd64_gcc700
+    cp /cvmfs/cms.cern.ch/$SCRAM_ARCH/external/gsl/2.2.1/lib/* $CMSSWSRCDIR/../lib/$SCRAM_ARCH
     scram b -j 12
     
 ## Overview
