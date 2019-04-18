@@ -279,6 +279,7 @@ private:
 //
 BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig): 
     // initialize some helpers with consumes collector (allows to access data from file within this class)
+    leptonSFhelper{iConfig},   
     synchronizer{iConfig,consumesCollector()},
     genTopEvtProd{consumesCollector()},
     triggerInfoProd{iConfig,consumesCollector()},

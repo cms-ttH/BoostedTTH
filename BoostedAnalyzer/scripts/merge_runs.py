@@ -39,6 +39,23 @@ def print_all_bins(h1, h2):
 		for y in range(1, nbinsY+1):
 			print "\tbin {0},{1}:\t{2}/{3}\t({4}/{5})".format(x,y,h1.GetBinContent(x,y),h2.GetBinContent(x,y),h1.GetBinError(x,y),h2.GetBinError(x,y))
 
+def load_histonames(file, key, histnames = []):
+	h = file.Get(key)
+	if isinstance(h, ROOT.TH1):
+		print "saving %s" % key
+		histnames.append(key)
+	elif isinstance(h, ROOT.TDirectoryFile):
+		print "FOUND DIRECTORY"
+		keylist = load_keynames(h)
+		keylist = ["{}/{}".format(key,x) for x in keylist]
+		# print keylist
+		for k in keylist:
+			histnames = load_histonames(file=file, key = k, histnames = histnames)
+	return histnames
+
+def load_keynames(f):
+	return [x.GetName() for x in f.GetListOfKeys()]
+
 def merge_histograms(sample_lumi_pairs):
 	merged_histos = {}
 	lumi_ges = 0
@@ -56,27 +73,26 @@ def merge_histograms(sample_lumi_pairs):
 		f = ROOT.TFile.Open(filepath)
 		if not (f.IsOpen() and not f.IsZombie() and not f.TestBit(ROOT.TFile.kRecovered)):
 			sys.exit("File '%s' is corrupted, aborting..." % filepath)
-		keynames = [x.GetName() for x in f.GetListOfKeys()]
-		if not nsample == 0:
-			keys = merged_histos.keys()
-			if not all(k in keynames for k in keys):
-				sys.exit("ERROR: Not all keys from previous input file are present in file %s" % filepath)
+		keynames = load_keynames(f)
+		histnames = []
 		for k in keynames:
-			print "\tanalyzing key", k, "\t(lumi:%s)" % str(lumi)
-			h = f.Get(k)
-			if not isinstance(h, ROOT.TH1):
-				continue
+			histnames = load_histonames(file= f, key = k, histnames = histnames)
+		for name in histnames:
+			print "\tanalyzing histogram", name, "\t(lumi:%s)" % str(lumi)
+			h = f.Get(name)
 			if nsample == 0:
-				merged_histos[k] = h.Clone()
-				merged_histos[k].SetDirectory(0)
-				merged_histos[k].Reset()
+				merged_histos[name] = h.Clone()
+				merged_histos[name].SetDirectory(0)
+				merged_histos[name].Reset()
 			else:
-				if not k in merged_histos:
-					sys.exit("ERROR: keyname '%s' did not exist in previous input file!" % k)
+				keys = merged_histos.keys()
+				if not all(k in histnames for k in keys):
+					sys.exit("ERROR: Not all keys from previous input file are present in file %s" % filepath)
+				if not name in merged_histos:
+					sys.exit("ERROR: keyname '%s' did not exist in previous input file!" % name)
 			h.Scale(lumi)
-			# h.Print("range")
-			merged_histos[k].Add(h)
-			# merged_histos[k].Print("range")
+			merged_histos[name].Add(h)
+				# print merged_histos
 			# print_all_bins(h, merged_histos[k])
 		lumi_ges += lumi
 		f.Close()
@@ -84,6 +100,7 @@ def merge_histograms(sample_lumi_pairs):
 	for histname in merged_histos:
 		merged_histos[histname].Scale(1./lumi_ges)
 		# merged_histos[histname].Print("range")
+	print merged_histos
 	return merged_histos
 
 def get_ranges(axis):
@@ -144,12 +161,44 @@ def invert_axes(input_histo_dict):
 		out_histo_dict[hname] = h
 	return out_histo_dict
 
+def create_subdirs(directory, subdirs):
+	print "list of subdirs:"
+	print subdirs
+	current_dir = directory
+	keylist = load_keynames(directory)
+	print "list of keys for directory", directory.GetName()
+	print keylist
+	subdirname = subdirs[0]
+	if not subdirname in keylist:
+		print "creating new directory", subdirname
+		subdir = directory.mkdir(subdirname)
+		# directory.WriteTObject(subdir)
+		current_dir = subdir
+	else:
+		current_dir = directory.Get(subdirname)
+	print "current dir:", current_dir.GetPathStatic()
+	if not directory.cd(current_dir.GetPathStatic()):
+		sys.exit("COULD NOT CHANGE INTO DIR '{}'".format(current_dir.GetPathStatic()))
+	if len(subdirs) > 1:
+		current_dir = create_subdirs(directory = current_dir, subdirs = subdirs[1:])
+		# directory.WriteTObject(current_dir)
+	print current_dir.GetPathStatic()
+	# exit("IN SUBDIRS")
+	return current_dir
 
 def save_histos(histo_dict, outfilepath):
 	if len(histo_dict) > 0:
 		outfile = ROOT.TFile.Open(outfilepath, "RECREATE")
 		for n in histo_dict:
-			outfile.WriteTObject(histo_dict[n])
+			print n
+			current_dir = outfile.GetDirectory(outfile.GetPathStatic())
+			if "/" in n:
+				current_dir = create_subdirs(current_dir, subdirs = n.split("/")[:-1])
+				print load_keynames(outfile)
+			print "writing", n, "to directory", current_dir.GetPathStatic()
+			current_dir.WriteTObject(histo_dict[n], n.split("/")[-1])
+			# outfile.Close()
+			# exit(0)
 		outfile.Close()
 	else:
 		print "Did not receive any histograms to write, will not create '%s'" % outfilepath
@@ -161,6 +210,7 @@ def main(options):
 	switch_axes = options.switch_axes
 
 	merged_histos = merge_histograms(sample_lumi_pairs)
+	print merged_histos
 
 	if switch_axes:
 		merged_histos = invert_axes(merged_histos)
