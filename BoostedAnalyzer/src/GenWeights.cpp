@@ -8,7 +8,7 @@ GenWeights::GenWeights(){
 }
 
 
-void GenWeights::GetGenWeights(std::unordered_map<string, float>& weights,
+void GenWeights::GetGenWeights(std::map<string, float>& weights,
 			       const LHEEventProduct& LHEEvent
 			       ) const {
     if(!initialized) {
@@ -32,7 +32,7 @@ void GenWeights::GetGenWeights(std::unordered_map<string, float>& weights,
 }
 
 
-bool GenWeights::GetLHAPDFWeight( std::unordered_map<string, float>& weights,
+bool GenWeights::GetLHAPDFWeight( std::map<string, float>& weights,
 				  const GenEventInfoProduct& genInfos ) {
 
   if(!LHAPDFinitialized){

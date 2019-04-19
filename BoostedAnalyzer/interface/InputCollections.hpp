@@ -52,7 +52,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<reco::GenJet>&              genJets_,
                     const SampleType                              sampleType_,
                     const HiggsDecay::HiggsDecay                  higgsDecay_,
-                    const std::unordered_map<std::string,float>&            weights_,
+                    const std::map<std::string,float>&            weights_,
         const edm::Event&                             iEvent_,
         const edm::EventSetup&                        iSetup_,
                     const Systematics::Type&                      systematic_,
@@ -99,7 +99,7 @@ InputCollections(   const InputCollections&                       input,
                     const pat::MET&                               correctedMET_,
                     const boosted::BoostedJetCollection&          selectedBoostedJets_,
                     const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
-                    const std::unordered_map<std::string,float>&            weights_
+                    const std::map<std::string,float>&            weights_
                 ): 
                     eventInfo(input.eventInfo),
                     triggerInfo(input.triggerInfo),
@@ -149,7 +149,7 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<reco::GenJet>&              genJets;
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
-  const std::unordered_map<std::string,float>             weights;
+  const std::map<std::string,float>             weights;
   const edm::Event &                            iEvent;
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;

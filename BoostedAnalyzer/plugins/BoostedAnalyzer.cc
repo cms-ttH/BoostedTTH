@@ -137,9 +137,9 @@ private:
     
     float GetTopPtWeight(const float& toppt1, const float& toppt2);
     
-    std::unordered_map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt);
+    std::map<string,float> GetWeights(const GenEventInfoProduct& genEventInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs, const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt);
     
-    std::unordered_map<string,float> GetCSVWeights(const std::vector<pat::Jet>& selectedJets, const Systematics::Type& systype=Systematics::NA);
+    std::map<string,float> GetCSVWeights(const std::vector<pat::Jet>& selectedJets, const Systematics::Type& systype=Systematics::NA);
     
     static std::string outfileName(const std::string& basename,const Systematics::Type& sysType);
     static std::string systName(const Systematics::Type& sysType);
@@ -866,8 +866,8 @@ float BoostedAnalyzer::GetTopPtWeight(const float& toppt1,const float& toppt2){
     return sqrt(sf1*sf2);
 }
 
-std::unordered_map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs,  const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt){
-    std::unordered_map<string,float> weights;
+std::map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs,  const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt){
+    std::map<string,float> weights;
 
     if(isData){
 	weights["Weight"]          = 1.0;
@@ -932,8 +932,8 @@ std::unordered_map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoP
     return weights;
 }
 
-std::unordered_map<string,float> BoostedAnalyzer::GetCSVWeights(const std::vector<pat::Jet>& selectedJets, const Systematics::Type& systype){
-    std::unordered_map<string,float> weights;
+std::map<string,float> BoostedAnalyzer::GetCSVWeights(const std::vector<pat::Jet>& selectedJets, const Systematics::Type& systype){
+    std::map<string,float> weights;
     
     if(isData){
         weights["Weight_CSV"]      = 1.0;
