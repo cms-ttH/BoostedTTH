@@ -769,8 +769,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
     
     
-    // nominal weight and weights for reweighting
-    std::vector<map<string,float> >weightsVector;
     //selectiontags
     map<string, int> selectionTags;
 
@@ -781,7 +779,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         auto weights = eventweights;
         auto csvweights = GetCSVWeights(*(hs_selectedJets.at(isys)),jetSystematics.at(isys));
         weights.insert(csvweights.begin(),csvweights.end());
-	inputs.push_back(InputCollections(eventInfo,
+        inputs.emplace_back(eventInfo,
 					  triggerInfo,
 					  filterInfo,
 					  selectedPVs,
@@ -807,7 +805,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                                           jetSystematics.at(isys),
                       selectionTags,
                       era
-					  ));
+        );
 
     }
     // TODO: adapt to new synch exe
@@ -872,10 +870,8 @@ std::map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  g
     if(isData){
 	weights["Weight"]          = 1.0;
 	weights["Weight_XS"]       = 1.0;
-	
 	weights["Weight_PU"]       = 1.0;
  	weights["Weight_TopPt"]    = 1.0;
-	weights["Weight_PV"]       = 1.0;
 	weights["Weight_GenValue"] = 1.0;
 	return weights;
     }
@@ -889,7 +885,6 @@ std::map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  g
 
 
     float xsweight = eventWeight;
-    
     float puweight = 1.;
     float topptweight = genTopEvt.IsTTbar()? GetTopPtWeight(genTopEvt.GetHardTop().pt(),genTopEvt.GetHardTopBar().pt()) : 1.;
     float topptweightUp = 1.0 + 2.0*(topptweight-1.0);
