@@ -8,7 +8,7 @@ GenWeights::GenWeights(){
 }
 
 
-void GenWeights::GetGenWeights(map<string, float>& weights,
+void GenWeights::GetGenWeights(std::map<string, float>& weights,
 			       const LHEEventProduct& LHEEvent
 			       ) const {
     if(!initialized) {
@@ -23,7 +23,7 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
     //loop over every generator weight available and add the weight with its corresponding name to the weights map. the name is derived with the generator id and the lhe_weights map which maps the weight id to the corresponding name
     for (uint i = 0;i < weightnumber; i++) {
         std::string weight_id = LHEEvent.weights()[i].id;
-        if(!lhe_weights.count(weight_id)) continue;
+        if(lhe_weights.find(weight_id)==lhe_weights.end()) continue;
         std::string weight_name = lhe_weights.at(weight_id);
 //         cout << weight_id << "   " << weight_name << endl;
         weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
@@ -32,7 +32,7 @@ void GenWeights::GetGenWeights(map<string, float>& weights,
 }
 
 
-bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
+bool GenWeights::GetLHAPDFWeight( std::map<string, float>& weights,
 				  const GenEventInfoProduct& genInfos ) {
 
   if(!LHAPDFinitialized){
@@ -127,7 +127,7 @@ bool GenWeights::GetLHAPDFWeight( map<string, float>& weights,
     */
     std::vector<double> int_pdf_weights;
     for(size_t i=PDFSet.lhapdfID();i<(PDFSet.lhapdfID()+PDFSet.size());i++){
-         if(weights.count("Weight_pdf_variation_"+std::to_string(i))){
+         if(weights.find("Weight_pdf_variation_"+std::to_string(i))!=weights.end()){
             int_pdf_weights.push_back(weights["Weight_pdf_variation_"+std::to_string(i)]);
          }
     }
