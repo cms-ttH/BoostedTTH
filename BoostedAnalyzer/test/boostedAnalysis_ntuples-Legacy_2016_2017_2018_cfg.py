@@ -19,7 +19,7 @@ options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing
 options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "globalTag", "94X_mc2017_realistic_v17", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
-options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
+options.register( "useJson",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 datasets=['NA','mu','el','elel','elmu','mumu']
 options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing.varType.string, "flag to identify which dataset is used, can be "+','.join(datasets))
@@ -29,7 +29,7 @@ options.register( "systematicVariations","nominal", VarParsing.multiplicity.list
 options.register( "deterministicSeeds",False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
 options.register( "electronRegression","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
 options.register( "electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
-options.register( "useMuonRC", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
+options.register( "useMuonRC", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
 options.register( "recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
 options.register( "dataEra",     "2017",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period or mc campaign, e.g. '2016B' or '2017'" )
 options.register( "updatePUJetId",     False,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
@@ -607,11 +607,11 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
     if "2016" in options.dataEra:
-        process.source.lumisToProcess = LumiList.LumiList(filename = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt")).getVLuminosityBlockRange()
+        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt").getVLuminosityBlockRange()
     elif "2017" in options.dataEra:
-        process.source.lumisToProcess = LumiList.LumiList(filename = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt")).getVLuminosityBlockRange()
+        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt").getVLuminosityBlockRange()
     elif "2018" in options.dataEra:
-        process.source.lumisToProcess = LumiList.LumiList(filename = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt")).getVLuminosityBlockRange()
+        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt").getVLuminosityBlockRange()
 
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
