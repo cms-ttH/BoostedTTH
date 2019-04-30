@@ -865,7 +865,11 @@ float BoostedAnalyzer::GetTopPtWeight(const float& toppt1,const float& toppt2){
     return sqrt(sf1*sf2);
 }
 
-std::map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo, const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs,  const std::vector<pat::Electron>& selectedElectrons, const std::vector<pat::Muon>& selectedMuons, const GenTopEvent& genTopEvt){
+std::map<string,float> BoostedAnalyzer::GetWeights( const GenEventInfoProduct&  genInfo, const LHEEventProduct&  lheInfo,
+                                                    const EventInfo& eventInfo, const reco::VertexCollection& selectedPVs,
+                                                    const std::vector<pat::Electron>& selectedElectrons, 
+                                                    const std::vector<pat::Muon>& selectedMuons,
+                                                    const GenTopEvent& genTopEvt){
     std::map<string,float> weights;
 
     if(isData){
@@ -903,39 +907,6 @@ std::map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  g
     
     weights["Weight_PU"]       = puweight;
     weights["Weight_TopPt"]    = topptweight;
-
-
-    bool doSystematics=true;
-//     if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
-    if(doSystematics && systype == Systematics::NA) { // only do these for the nominal samples
-        //std::cout << "Do csv weights for csv systematics " << std::endl;
-	std::map<std::string,double> map = csvReweighter.getCSVWeightsDiff(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFup);
-	std::map<std::string,double> map2 = csvReweighter.getCSVWeightsDiff(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFdown);
-    for (auto const& x : map){
-        weights["Weight_" + x.first] = x.second/csvweight;
-    }
-    for (auto const& x : map2){
-        weights["Weight_" + x.first] = x.second/csvweight;
-    }
-	weights["Weight_CSVLFup"]          = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFup, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVLFdown"]        = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFdown, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVHFup"]          = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFup, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVHFdown"]        = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFdown, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVHFStats1up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVHFStats1down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVLFStats1up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVLFStats1down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVHFStats2up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVHFStats2down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVLFStats2up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVLFStats2down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVCErr1up"]       = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVCErr1down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVCErr2up"]       = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-	weights["Weight_CSVCErr2down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
- 	weights["Weight_TopPtup"]          = topptweightUp;
- 	weights["Weight_TopPtdown"]        = topptweightDown;
-    }
 
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
 
@@ -984,7 +955,9 @@ std::map<string,float> BoostedAnalyzer::GetCSVWeights(const std::vector<pat::Jet
     
     // calculate the csv weight for the desired systematic
     csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,systype, csvWgtHF, csvWgtLF, csvWgtCF);
+
     
+
     weights["Weight_CSV"]      = csvweight;
     
     if(systype == Systematics::NA) { // only do these for the nominal samples
@@ -1004,6 +977,37 @@ std::map<string,float> BoostedAnalyzer::GetCSVWeights(const std::vector<pat::Jet
         weights["Weight_CSVCErr1down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
         weights["Weight_CSVCErr2up"]       = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
         weights["Weight_CSVCErr2down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+    
+        // Get Weights differential in the Pt/Eta Bins they were created in
+        std::map<std::string, double> DiffSFmap;
+        std::vector<std::map<std::string, double>> diffSFMaps;
+
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFup));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFdown));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFup));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFdown));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFStats1up));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFStats1down));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFStats1up));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFStats1down));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFStats2up));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFStats2down));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFStats2up));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFStats2down));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVCErr1up));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVCErr1down));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVCErr2up));
+        diffSFMaps.push_back(csvReweighter.getCSVWeightsDiff(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVCErr2down));
+
+        for(auto map: diffSFMaps){
+            DiffSFmap.insert(map.begin(),map.end());
+        
+        }
+        for (auto const &x : DiffSFmap)
+        {
+            weights["Weight_" + x.first] = x.second / csvweight;
+        }
+    
     }
     
     return weights;
