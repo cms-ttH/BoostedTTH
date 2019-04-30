@@ -34,9 +34,9 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         throw std::exception();
     }
     
-    if( era.find("2016")==std::string::npos and era.find("2017")==std::string::npos){
+    if( era.find("2016")==std::string::npos and era.find("2017")==std::string::npos and era.find("2018")==std::string::npos){
         std::cerr << "\n\nERROR: Unknown era" << era << "in SelectedLeptonProducer " << std::endl;
-        std::cerr << "Please select '2016' or '2017'\n" << std::endl;
+        std::cerr << "Please select '2016' or '2017' or '2018'\n" << std::endl;
         throw std::exception();
     }
     
@@ -58,52 +58,52 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     // translate strings from config to nice C++ objects
     for(size_t i=0; i<ptMins_.size(); i++){
         if(leptonType_ == LeptonType::Electron){
-            if(      leptonIDs[i] == "loose"   )         electronIDs_[i] = ElectronID::Loose;
-            else if( leptonIDs[i] == "medium"  )         electronIDs_[i] = ElectronID::Medium;
-            else if( leptonIDs[i] == "tight"   )         electronIDs_[i] = ElectronID::Tight;
-            else if( leptonIDs[i] == "veto"   )          electronIDs_[i] = ElectronID::Veto;
-            else if( leptonIDs[i] == "none"   )          electronIDs_[i] = ElectronID::None;
+            if(      leptonIDs.at(i) == "loose"   )         electronIDs_.at(i) = ElectronID::Loose;
+            else if( leptonIDs.at(i) == "medium"  )         electronIDs_.at(i) = ElectronID::Medium;
+            else if( leptonIDs.at(i) == "tight"   )         electronIDs_.at(i) = ElectronID::Tight;
+            else if( leptonIDs.at(i) == "veto"   )          electronIDs_.at(i) = ElectronID::Veto;
+            else if( leptonIDs.at(i) == "none"   )          electronIDs_.at(i) = ElectronID::None;
             else {
-                std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonIDs[i] << std::endl;
+                std::cerr << "\n\nERROR: No matching electron ID type found for: " << leptonIDs.at(i) << std::endl;
                 throw std::exception();
             }
         }
         if(leptonType_ == LeptonType::Muon){
-            if(      leptonIDs[i] == "loose"  )   muonIDs_[i] = MuonID::Loose;
-            else if( leptonIDs[i] == "medium"  )   muonIDs_[i] = MuonID::Medium;
-            else if( leptonIDs[i] == "tight"  )   muonIDs_[i] = MuonID::Tight;
-            else if( leptonIDs[i] == "none"  )   muonIDs_[i] = MuonID::None;
+            if(      leptonIDs.at(i) == "loose"  )   muonIDs_.at(i) = MuonID::Loose;
+            else if( leptonIDs.at(i) == "medium"  )   muonIDs_.at(i) = MuonID::Medium;
+            else if( leptonIDs.at(i) == "tight"  )   muonIDs_.at(i) = MuonID::Tight;
+            else if( leptonIDs.at(i) == "none"  )   muonIDs_.at(i) = MuonID::None;
             else{
-                std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonIDs[i] << std::endl;
+                std::cerr << "\n\nERROR: No matching muon ID type found for: " << leptonIDs.at(i) << std::endl;
                 throw std::exception();
             }
            
-            if(      muonIsoTypes[i] == "loose"  )   muonIsos_[i] = MuonIsolation::Loose;
-            else if( muonIsoTypes[i] == "medium"  )   muonIsos_[i] = MuonIsolation::Medium;
-            else if( muonIsoTypes[i] == "tight"  )   muonIsos_[i] = MuonIsolation::Tight;
-            else if( muonIsoTypes[i] == "none"  )   muonIsos_[i] = MuonIsolation::None;
+            if(      muonIsoTypes.at(i) == "loose"  )   muonIsos_.at(i) = MuonIsolation::Loose;
+            else if( muonIsoTypes.at(i) == "medium"  )   muonIsos_.at(i) = MuonIsolation::Medium;
+            else if( muonIsoTypes.at(i) == "tight"  )   muonIsos_.at(i) = MuonIsolation::Tight;
+            else if( muonIsoTypes.at(i) == "none"  )   muonIsos_.at(i) = MuonIsolation::None;
             else{
-                std::cerr << "\n\nERROR: No matching muon isolation type found for: " << muonIsoTypes[i] << std::endl;
+                std::cerr << "\n\nERROR: No matching muon isolation type found for: " << muonIsoTypes.at(i) << std::endl;
                 throw std::exception();
             }
         }
         
-        if(      isoConeSizes[i] == "R03"  ) IsoConeSizes_[i] = IsoConeSize::R03;
-        else if( isoConeSizes[i] == "R04"  ) IsoConeSizes_[i] = IsoConeSize::R04;
+        if(      isoConeSizes.at(i) == "R03"  ) IsoConeSizes_.at(i) = IsoConeSize::R03;
+        else if( isoConeSizes.at(i) == "R04"  ) IsoConeSizes_.at(i) = IsoConeSize::R04;
         else {
-            std::cerr << "\n\nERROR: No matching isolation cone size found for: " << isoConeSizes[i] << std::endl;
+            std::cerr << "\n\nERROR: No matching isolation cone size found for: " << isoConeSizes.at(i) << std::endl;
             throw std::exception();
         }
         
-        if(      isoCorrTypes[i] == "deltaBeta" ) IsoCorrTypes_[i] = IsoCorrType::deltaBeta;
-        else if( isoCorrTypes[i] == "rhoEA"     ) IsoCorrTypes_[i] = IsoCorrType::rhoEA;
+        if(      isoCorrTypes.at(i) == "deltaBeta" ) IsoCorrTypes_.at(i) = IsoCorrType::deltaBeta;
+        else if( isoCorrTypes.at(i) == "rhoEA"     ) IsoCorrTypes_.at(i) = IsoCorrType::rhoEA;
         else {
-            std::cerr << "\n\nERROR: No matching isolation correction type found for: " << isoCorrTypes[i] << std::endl;
+            std::cerr << "\n\nERROR: No matching isolation correction type found for: " << isoCorrTypes.at(i) << std::endl;
             throw std::exception();
         }
         
-        if( leptonType_ == LeptonType::Electron ) produces<pat::ElectronCollection>(collectionNames_[i]);
-        else if( leptonType_ == LeptonType::Muon     ) produces<pat::MuonCollection>(collectionNames_[i]);
+        if( leptonType_ == LeptonType::Electron ) produces<pat::ElectronCollection>(collectionNames_.at(i));
+        else if( leptonType_ == LeptonType::Muon     ) produces<pat::MuonCollection>(collectionNames_.at(i));
         else {
             std::cerr << "\n\nERROR: Unknown lepton type " << leptonType << std::endl;
             std::cerr << "Please select 'electron' or 'muon'\n" << std::endl;
@@ -128,6 +128,42 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     // load muon scale factor histograms from given files
     else if(leptonType_==LeptonType::Muon){
         // put muon stuff here
+        TString filename;
+        TString histoname;
+        filename = std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_MuonIDSF");
+        histoname = iConfig.getParameter<std::string>("histname_MuonLooseIDSF");
+        MuonID_SF_Loose = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonID_SF_Loose->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonMediumIDSF");
+        MuonID_SF_Medium = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonID_SF_Medium->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonTightIDSF");
+        MuonID_SF_Tight = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonID_SF_Tight->SetDirectory(0);
+
+
+        filename = std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_MuonIsoSF");
+        histoname = iConfig.getParameter<std::string>("histname_MuonLooseISO_LooseIDSF");
+        MuonISO_SF_LooseRelIso_LooseID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_LooseRelIso_LooseID->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonLooseISO_MediumIDSF");
+        MuonISO_SF_LooseRelIso_MediumID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_LooseRelIso_MediumID->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonLooseISO_TightIDSF");
+        MuonISO_SF_LooseRelIso_TightID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_LooseRelIso_TightID->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonTightISO_MediumIDSF");
+        MuonISO_SF_TightRelIso_MediumID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_TightRelIso_MediumID->SetDirectory(0);
+
+        histoname = iConfig.getParameter<std::string>("histname_MuonTightISO_TightIDSF");
+        MuonISO_SF_TightRelIso_TightID = (TH2F*)TFile::Open(filename.Data())->Get(histoname.Data());
+        MuonISO_SF_TightRelIso_TightID->SetDirectory(0);    
     }
     
 }
@@ -151,7 +187,7 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         std::cerr << "\n\nERROR: retrieved vertex collection is not valid" << std::endl;
         throw std::exception();
     }
-    else if(not (hVtxs->size()>0)) {
+    else if(hVtxs->empty()) {
         std::cerr << "\n\nERROR: retrieved vertex collection is empty" << std::endl;
         throw std::exception();
     }
@@ -182,31 +218,33 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             std::vector<pat::Electron> updatedElectrons = *inputElectrons;
             
             // add the electron relative isolation as a userfloat, mainly for sync by now
-            AddElectronRelIsolation(updatedElectrons,IsoCorrTypes_[i],IsoConeSizes_[i]);
+            AddElectronRelIsolation(updatedElectrons,IsoCorrTypes_.at(i),IsoConeSizes_.at(i));
             
             // apply energy corrections (scale & smearing)
             for(auto& ele : updatedElectrons){
                 ele.addUserFloat("ptBeforeRun2Calibration",ele.pt());
-                ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
-                // only use combined systematics for scaling and smearing since we should not be very sensitive to electron energy scale
-                // as recommended by e/gamma pog only for MC
-                if(not isData){
-                    ele.addUserFloat("CorrFactor_ScaleUp",ele.userFloat("energyScaleUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
-                    ele.addUserFloat("CorrFactor_ScaleDown",ele.userFloat("energyScaleDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
-                    ele.addUserFloat("CorrFactor_SigmaUp",ele.userFloat("energySigmaUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
-                    ele.addUserFloat("CorrFactor_SigmaDown",ele.userFloat("energySigmaDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                if(ele.hasUserFloat("ecalTrkEnergyPostCorr")){
+                    ele.setP4(ele.p4()*ele.userFloat("ecalTrkEnergyPostCorr")/ele.energy());
+                    // only use combined systematics for scaling and smearing since we should not be very sensitive to electron energy scale
+                    // as recommended by e/gamma pog only for MC
+                    if(not isData){
+                        ele.addUserFloat("CorrFactor_ScaleUp",ele.userFloat("energyScaleUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                        ele.addUserFloat("CorrFactor_ScaleDown",ele.userFloat("energyScaleDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                        ele.addUserFloat("CorrFactor_SigmaUp",ele.userFloat("energySigmaUp")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                        ele.addUserFloat("CorrFactor_SigmaDown",ele.userFloat("energySigmaDown")/ele.userFloat("ecalTrkEnergyPostCorr"));
+                    }
                 }
             }
             
-            std::vector<pat::Electron> selectedElectrons = GetSortedByPt(GetSelectedElectrons(updatedElectrons,ptMins_[i],electronIDs_[i],etaMaxs_[i]));
+            std::vector<pat::Electron> selectedElectrons = GetSortedByPt(GetSelectedElectrons(updatedElectrons,ptMins_.at(i),electronIDs_.at(i),etaMaxs_.at(i)));
             
-            if(not isData) AddElectronSFs(selectedElectrons, electronIDs_[i]);
+            if(not isData) AddElectronSFs(selectedElectrons, electronIDs_.at(i));
             
             // produce the different electron collections and create a unique ptr to it      
             std::unique_ptr<pat::ElectronCollection> selectedLeptons =  std::make_unique<pat::ElectronCollection>(selectedElectrons);
             
             // put the collection into the event with help of the unique ptr
-            iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
+            iEvent.put(std::move(selectedLeptons),collectionNames_.at(i));
         }
 
     }
@@ -231,13 +269,16 @@ SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
         for(size_t i=0; i<ptMins_.size();i++){
             std::vector<pat::Muon> updatedMuons = correctedMuons;
             // add the muon relative isolation as a userfloat, mainly for sync by now
-            AddMuonRelIsolation(updatedMuons,IsoCorrTypes_[i],IsoConeSizes_[i]);
+            AddMuonRelIsolation(updatedMuons,IsoCorrTypes_.at(i),IsoConeSizes_.at(i));
+
+            //add muon scale factors
+
+            std::vector<pat::Muon> selectedMuons = GetSortedByPt(GetSelectedMuons(updatedMuons,ptMins_.at(i),muonIDs_.at(i),IsoConeSizes_.at(i),IsoCorrTypes_.at(i),etaMaxs_.at(i),muonIsos_.at(i)));
+            if(not isData) AddMuonSFs(selectedMuons, muonIDs_.at(i),muonIsos_.at(i));
             // produce the different muon collections and create a unique ptr to it      
-            std::unique_ptr<pat::MuonCollection> selectedLeptons =  std::make_unique<pat::MuonCollection>(
-                                                                    GetSortedByPt( 
-                                                                    GetSelectedMuons(updatedMuons,ptMins_[i],muonIDs_[i],IsoConeSizes_[i],IsoCorrTypes_[i],etaMaxs_[i],muonIsos_[i]))) ;
+            std::unique_ptr<pat::MuonCollection> selectedLeptons =  std::make_unique<pat::MuonCollection>(selectedMuons) ;
             // put the collection into the event with help of the unique ptr
-            iEvent.put(std::move(selectedLeptons),collectionNames_[i]);
+            iEvent.put(std::move(selectedLeptons),collectionNames_.at(i));
         }
     }
     else {
@@ -359,12 +400,12 @@ void SelectedLeptonProducer::AddElectronSFs(std::vector<pat::Electron>& inputEle
         auto RecoSFs = GetElectronRecoSF(ele);
         assert(IDSFs.size()==3);
         assert(RecoSFs.size()==3);
-        ele.addUserFloat("IdentificationSF",IDSFs[0]);
-        ele.addUserFloat("IdentificationSFUp",IDSFs[1]);
-        ele.addUserFloat("IdentificationSFDown",IDSFs[2]);
-        ele.addUserFloat("ReconstructionSF",RecoSFs[0]);
-        ele.addUserFloat("ReconstructionSFUp",RecoSFs[1]);
-        ele.addUserFloat("ReconstructionSFDown",RecoSFs[2]);
+        ele.addUserFloat("IdentificationSF",IDSFs.at(0));
+        ele.addUserFloat("IdentificationSFUp",IDSFs.at(1));
+        ele.addUserFloat("IdentificationSFDown",IDSFs.at(2));
+        ele.addUserFloat("ReconstructionSF",RecoSFs.at(0));
+        ele.addUserFloat("ReconstructionSFUp",RecoSFs.at(1));
+        ele.addUserFloat("ReconstructionSFDown",RecoSFs.at(2));
     }
 }
 
@@ -413,9 +454,9 @@ std::vector<float> SelectedLeptonProducer::GetElectronIDSF(const pat::Electron& 
     pt = std::min(ymax-0.1,pt);
     
     // calculate the scale factors
-    SFs[0]=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
-    SFs[1]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
-    SFs[2]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    SFs.at(0)=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
+    SFs.at(1)=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    SFs.at(2)=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
     
     return SFs;
 }
@@ -455,9 +496,9 @@ std::vector<float> SelectedLeptonProducer::GetElectronRecoSF(const pat::Electron
     pt = std::min(ymax-0.1,pt);
     
     // calculate the scale factors
-    SFs[0]=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
-    SFs[1]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
-    SFs[2]=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    SFs.at(0)=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
+    SFs.at(1)=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    SFs.at(2)=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
     
     
     return SFs;
@@ -526,33 +567,41 @@ SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMinPt, 
 // function to apply muon momentum correction (rochester correction)
 void SelectedLeptonProducer::ApplyMuonMomentumCorrection(std::vector<pat::Muon>& inputMuons){
     double momentum_sf;
+    double momentum_sfDelta;
     TRandom3 rnd;
     for(size_t i=0;i<inputMuons.size();i++) {
         momentum_sf=1.;
         if(deterministicSeeds) {
-            int32_t seed = inputMuons[i].userInt("deterministicSeed");
+            int32_t seed = inputMuons.at(i).userInt("deterministicSeed");
             rnd.SetSeed((uint32_t)seed);
         }
         double r1 = rnd.Rndm();
         int trackerLayersWithMeasurement=0;
-        if(!inputMuons[i].innerTrack().isNull()) {
-            trackerLayersWithMeasurement = inputMuons[i].innerTrack()->hitPattern().trackerLayersWithMeasurement();
+        if(!inputMuons.at(i).innerTrack().isNull()) {
+            trackerLayersWithMeasurement = inputMuons.at(i).innerTrack()->hitPattern().trackerLayersWithMeasurement();
         }
         if(isData) {
-            momentum_sf = rc.kScaleDT(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), 0, 0);
+            momentum_sf = rc.kScaleDT(inputMuons.at(i).charge(), inputMuons.at(i).pt(), inputMuons.at(i).eta(), inputMuons.at(i).phi(), 0, 0);
+            momentum_sfDelta = rc.kScaleDTerror(inputMuons.at(i).charge(), inputMuons.at(i).pt(), inputMuons.at(i).eta(), inputMuons.at(i).phi());
         }
         else {
-            if(inputMuons[i].genLepton()) {
-                momentum_sf = rc.kSpreadMC(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), inputMuons[i].genLepton()->pt(), 0, 0);
+            if(inputMuons.at(i).genLepton()) {
+                momentum_sf = rc.kSpreadMC(inputMuons.at(i).charge(), inputMuons.at(i).pt(), inputMuons.at(i).eta(), inputMuons.at(i).phi(), inputMuons.at(i).genLepton()->pt(), 0, 0);
+                momentum_sfDelta = rc.kSpreadMCerror(inputMuons.at(i).charge(), inputMuons.at(i).pt(), inputMuons.at(i).eta(), inputMuons.at(i).phi(), inputMuons.at(i).genLepton()->pt());
             }
             else {
-                momentum_sf = rc.kSmearMC(inputMuons[i].charge(), inputMuons[i].pt(), inputMuons[i].eta(), inputMuons[i].phi(), trackerLayersWithMeasurement, r1, 0, 0);
+                momentum_sf = rc.kSmearMC(inputMuons.at(i).charge(), inputMuons.at(i).pt(), inputMuons.at(i).eta(), inputMuons.at(i).phi(), trackerLayersWithMeasurement, r1, 0, 0);
+                momentum_sfDelta = rc.kSmearMCerror(inputMuons.at(i).charge(), inputMuons.at(i).pt(), inputMuons.at(i).eta(), inputMuons.at(i).phi(), trackerLayersWithMeasurement, r1);
             }
         }
-        auto tmp_vector = inputMuons[i].p4();
-        inputMuons[i].addUserFloat( "PtbeforeRC", tmp_vector.Pt());
-        tmp_vector.SetPxPyPzE(momentum_sf*tmp_vector.Px(),momentum_sf*tmp_vector.Py(),momentum_sf*tmp_vector.Pz(),TMath::Sqrt((1+(tmp_vector.P2()/(tmp_vector.E()*tmp_vector.E())*(momentum_sf*momentum_sf-1))))*tmp_vector.E());
-        inputMuons[i].setP4(tmp_vector);
+        auto tmp_vector = inputMuons.at(i).p4();
+        inputMuons.at(i).addUserFloat( "PtbeforeRC", tmp_vector.Pt());
+        inputMuons.at(i).addUserFloat( "roccorSF", momentum_sf);
+        inputMuons.at(i).addUserFloat( "roccorSFUp", momentum_sf+momentum_sfDelta);
+        inputMuons.at(i).addUserFloat( "roccorSFDown", momentum_sf-momentum_sfDelta);
+        // tmp_vector.SetPxPyPzE(momentum_sf*tmp_vector.Px(),momentum_sf*tmp_vector.Py(),momentum_sf*tmp_vector.Pz(),TMath::Sqrt((1+(tmp_vector.P2()/(tmp_vector.E()*tmp_vector.E())*(momentum_sf*momentum_sf-1))))*tmp_vector.E());
+        tmp_vector *= momentum_sf;
+        inputMuons.at(i).setP4(tmp_vector);
     }
 }
 // function to calculate muon relative isolation by hand. Mainly needed for sync purposes since isolation-checks are provided centrally
@@ -581,6 +630,153 @@ void SelectedLeptonProducer::AddMuonRelIsolation(std::vector<pat::Muon>& inputMu
     }
 }
 
+// function to add electron object scale factors to electron, currently reconstruction and identification
+void SelectedLeptonProducer::AddMuonSFs(std::vector<pat::Muon>& inputMuons, const MuonID& iMuonID, const MuonIsolation& iMuonIso) const{
+    for(auto& muon : inputMuons){
+        auto IDSFs = GetMuonIDSF(muon, iMuonID);
+        auto IsoSFs = GetMuonISOSF(muon, iMuonID, iMuonIso);
+        assert(IDSFs.size()==3);
+        assert(IsoSFs.size()==3);
+        muon.addUserFloat("IdentificationSF",IDSFs.at(0));
+        muon.addUserFloat("IdentificationSFUp",IDSFs.at(1));
+        muon.addUserFloat("IdentificationSFDown",IDSFs.at(2));
+        muon.addUserFloat("IsolationSF",IsoSFs.at(0));
+        muon.addUserFloat("IsolationSFUp",IsoSFs.at(1));
+        muon.addUserFloat("IsolationSFDown",IsoSFs.at(2));
+    }
+}
+
+std::vector<float> SelectedLeptonProducer::GetMuonIDSF(const pat::Muon& iMuon, const MuonID& iMuonID) const{
+    // get pt and eta of the electron
+    auto pt = iMuon.pt();
+    auto eta = abs(iMuon.eta());
+    TH2F* SF_hist = nullptr; 
+    std::vector<float> SFs{1.0,1.0,1.0};
+    // load the correct scale factor histogram
+    switch(iMuonID){
+        case MuonID::None:
+            break;
+        case MuonID::Loose:
+            SF_hist = MuonID_SF_Loose;
+            break;
+        case MuonID::Medium:
+            SF_hist = MuonID_SF_Medium;
+            break;
+        case MuonID::Tight:
+            SF_hist = MuonID_SF_Tight;
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidMuonID" <<  std::endl;
+            throw std::exception();
+    }
+    
+    if(SF_hist==nullptr){
+        std::cerr << "\n\nERROR: Muon ID Scale Factor File could not be loaded" <<  std::endl;
+        throw std::exception(); 
+    }
+    
+    // determine the ranges of the given TH2Fs
+    auto xmin = SF_hist->GetXaxis()->GetXmin();
+    auto xmax = SF_hist->GetXaxis()->GetXmax();
+    auto ymin = SF_hist->GetYaxis()->GetXmin();
+    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    
+    // make sure to stay within the range of the histograms
+    pt = std::max(xmin+0.1,pt);
+    pt = std::min(xmax-0.1,pt);
+    eta = std::max(ymin+0.1,eta);
+    eta = std::min(ymax-0.1,eta);
+
+    // find bin in the scale factor histogram
+    auto bin = SF_hist->FindBin(pt,eta);
+    
+    // calculate the scale factors
+    SFs.at(0)=SF_hist->GetBinContent(bin);
+    SFs.at(1)=(SF_hist->GetBinContent(bin))+(SF_hist->GetBinError(bin));
+    SFs.at(2)=(SF_hist->GetBinContent(bin))-(SF_hist->GetBinError(bin));
+    
+    return SFs;
+}
+
+std::vector<float> SelectedLeptonProducer::GetMuonISOSF(const pat::Muon& iMuon, const MuonID& iMuonID, const MuonIsolation& iMuonIso) const{
+    // get pt and eta of the electron
+    auto pt = iMuon.pt();
+    auto eta = abs(iMuon.eta());
+    TH2F* SF_hist = nullptr; 
+    std::vector<float> SFs{1.0,1.0,1.0};
+    // load the correct scale factor histogram
+    switch(iMuonIso){
+        case MuonIsolation::None:
+            break;
+        case MuonIsolation::Loose:
+            switch(iMuonID){
+                case MuonID::None:
+                    break;
+                case MuonID::Loose:
+                    SF_hist = MuonISO_SF_LooseRelIso_LooseID;
+                    break;
+                case MuonID::Medium:
+                    SF_hist = MuonISO_SF_LooseRelIso_MediumID;
+                    break;
+                case MuonID::Tight:
+                    SF_hist = MuonISO_SF_LooseRelIso_TightID;
+                    break;
+                default:
+                    std::cerr << "\n\nERROR: InvalidMuonID in GetMuonISOSF" <<  std::endl;
+                    throw std::exception();
+            }
+            break;
+        case MuonIsolation::Medium:
+            break;
+        case MuonIsolation::Tight:
+            switch(iMuonID){
+                case MuonID::None:
+                    break;
+                case MuonID::Loose:
+                    break;
+                case MuonID::Medium:
+                    SF_hist = MuonISO_SF_TightRelIso_MediumID;
+                    break;
+                case MuonID::Tight:
+                    SF_hist = MuonISO_SF_TightRelIso_TightID;
+                    break;
+                default:
+                    std::cerr << "\n\nERROR: InvalidMuonID in GetMuonISOSF" <<  std::endl;
+                    throw std::exception();
+            }
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidMuonIsolation" <<  std::endl;
+            throw std::exception();
+    }
+    
+    if(SF_hist==nullptr){
+        std::cerr << "\n\nERROR: Muon Isolation Scale Factor could not be loaded" <<  std::endl;
+        throw std::exception(); 
+    }
+    
+    // determine the ranges of the given TH2Fs
+    auto xmin = SF_hist->GetXaxis()->GetXmin();
+    auto xmax = SF_hist->GetXaxis()->GetXmax();
+    auto ymin = SF_hist->GetYaxis()->GetXmin();
+    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    
+    // make sure to stay within the range of the histograms
+    pt = std::max(xmin+0.1,pt);
+    pt = std::min(xmax-0.1,pt);
+    eta = std::max(ymin+0.1,eta);
+    eta = std::min(ymax-0.1,eta);
+
+    // find bin in the scale factor histogram
+    auto bin = SF_hist->FindBin(pt,eta);
+    
+    // calculate the scale factors
+    SFs.at(0)=SF_hist->GetBinContent(bin);
+    SFs.at(1)=(SF_hist->GetBinContent(bin))+(SF_hist->GetBinError(bin));
+    SFs.at(2)=(SF_hist->GetBinContent(bin))-(SF_hist->GetBinError(bin));
+    
+    return SFs;
+}
 
 // ------------ method called once each job just before starting event loop  ------------
 void

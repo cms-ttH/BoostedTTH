@@ -19,15 +19,11 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/JetTagSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/METSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonJetTagSelection.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/BDT_v3.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "MiniAOD/MiniAODHelper/interface/TopTagger.h"
 #include "MiniAOD/MiniAODHelper/interface/LeptonSFHelper.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "TTH/CommonClassifier/interface/BDTClassifier.h"
-#include "TTH/CommonClassifier/interface/DLBDTClassifier.h"
-#include "TTH/CommonClassifier/interface/DNNClassifier.h"
-#include "TTH/CommonClassifier/interface/MEMClassifier.h"
+#include "TTH/CommonClassifier/interface/MVAvars.h"
 
 
 class Synchronizer{
@@ -36,7 +32,7 @@ public:
     Synchronizer(const edm::ParameterSet& iConfig,edm::ConsumesCollector && iC);
     ~Synchronizer ();
     void DumpSyncExe(const std::vector<InputCollections>& inputs, bool dumpExtended, std::vector<int> dumpAlwaysEvents);
-    void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,BDTClassifier* bdtclassifier_,DLBDTClassifier* dlbdtclassifier_,DNNClassifier_SL* sldnnclassifier_,DNNClassifier_DL* dldnnclassifier_,MEMClassifier* memclassifier_,bool dumpExtended);
+    void Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,bool dumpExtended);
     void DumpSyncExeHeader(std::ostream &out, bool dumpExtended=false);
 
 
@@ -53,11 +49,11 @@ private:
 
     MiniAODHelper* helper;
     LeptonSFHelper* leptonsfhelper;
-    BDTClassifier* bdtclassifier;
-    DLBDTClassifier* dlbdtclassifier;
-    DNNClassifier_SL* sldnnclassifier;
-    DNNClassifier_DL* dldnnclassifier;
-    MEMClassifier* memclassifier;
+
+    //MVAvars from CommonClassifier classifier for sl channel
+    MVAvars *mvavars;
+    std::map<std::string, float> varMap;
+    std::shared_ptr<MVAvars> pointerToMVAvars = nullptr;
 
     bool initializedCutflowsWithSelections;
     std::string dataset;

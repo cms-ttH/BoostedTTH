@@ -4,6 +4,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 #include "TTH/CommonClassifier/interface/DNNClassifier.h"
+#include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
 class DNNVarProcessor: public TreeProcessor{
 public:

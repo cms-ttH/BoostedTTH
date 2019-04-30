@@ -57,9 +57,8 @@ bool JetTagSelection::IsSelected(const InputCollections& input,Cutflow& cutflow)
 
   int njets = input.selectedJets.size();
   int ntags = 0;
-  std::string era = input.era;
   for(size_t i=0; i<input.selectedJets.size();i++){
-    if(CSVHelper::PassesCSV(era, input.selectedJets.at(i), "DeepJet", CSVHelper::CSVwp::Medium)){
+    if(CSVHelper::PassesCSV(input.selectedJets.at(i), "DeepJet", CSVHelper::CSVwp::Medium, input.era)){
       ntags++;
     }
   }

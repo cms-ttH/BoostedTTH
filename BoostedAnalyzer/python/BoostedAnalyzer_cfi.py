@@ -3,17 +3,17 @@ from BoostedTTH.BoostedAnalyzer.Selection_cff import *
 from BoostedTTH.BoostedAnalyzer.Inputs_cff import *
 from BoostedTTH.BoostedAnalyzer.Weights_cff import *
 
-BoostedAnalyzer = cms.EDAnalyzer(
+BoostedAnalyzer2017 = cms.EDAnalyzer(
     'BoostedAnalyzer',
     Inputs_tth_sl, # defined in Inputs_cff
-    LeptonSelectionMC, # defined in Selection_cff
     DiLeptonSelectionMC, # defined in Selection_cff
     JetTagSelection, # defined in Selection_cff
     METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
-    filtersMC, # defined in Selection_cff
+    # filtersMC, # defined in Selection_cff
     
-
+    LeptonSelection = LeptonSelectionMC2017,
+    
     # weight of one event: calculated as
     # cross section * lumi / (number of generated events with positive weight  -  number of generated events with negative weight )
     # so that the sum of weights corresponds to the number of events for the given lumi
@@ -23,11 +23,17 @@ BoostedAnalyzer = cms.EDAnalyzer(
     dataEra = cms.string("2017"),
 
     # b-tag SF, defined in Weights_cff
-    bTagSFs = cms.PSet(BTagSFs94XDeepJet2017),
+    bTagSFs = BTagSFs94XDeepJet2017,
 
     # PU weights, defined in Weights_cff
-    nominalPUWeight = cms.PSet(NominalPUWeight),
-    additionalPUWeights = cms.VPSet(AdditionalPUWeights),
+    nominalPUWeight = NominalPUWeight2017,
+    additionalPUWeights = AdditionalPUWeights2017,
+
+    # information about lepton trigger SFs, defined in Weights_cff
+    leptonTriggerSFInfos = TriggerSFs2017,
+
+    #MET Filters
+    METfilters = filtersMC1718,
 
     systematics = cms.vstring(""),
     doJERsystematic = cms.bool(False),
@@ -55,4 +61,24 @@ BoostedAnalyzer = cms.EDAnalyzer(
     outfileName = cms.string("BoostedTTH"),
 
     taggingSelection=cms.bool(False),
+)
+
+BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
+    LeptonSelection = LeptonSelectionMC2016,    
+    dataEra = cms.string("2016"),
+    bTagSFs = BTagSFs94XDeepJet2016,
+    leptonTriggerSFInfos = TriggerSFs2016,
+    nominalPUWeight = NominalPUWeight2016,
+    additionalPUWeights = AdditionalPUWeights2016,
+    METfilters = filtersMC16   
+)
+
+BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
+    LeptonSelection = LeptonSelectionMC2018,
+    dataEra = cms.string("2018"),
+    bTagSFs = BTagSFs94XDeepJet2018,
+    leptonTriggerSFInfos = TriggerSFs2018,
+    nominalPUWeight = NominalPUWeight2018,
+    additionalPUWeights = AdditionalPUWeights2018
+    
 )

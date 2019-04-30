@@ -5,6 +5,8 @@ using namespace std;
 Synchronizer::Synchronizer (const edm::ParameterSet& iConfig,edm::ConsumesCollector && iC){
     rawElToken = iC.consumes< std::vector<pat::Electron> > (edm::InputTag("slimmedElectrons"));
     rawMuToken = iC.consumes< std::vector<pat::Muon> > (edm::InputTag("slimmedMuons"));
+    pointerToMVAvars.reset(new MVAvars());
+
 }
 
 
@@ -57,6 +59,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 			       Cutflow& cutflowDL,
 			       bool addExtendedInfo,
 			       std::vector<int> dumpAlwaysEvents){
+    
+    pointerToMVAvars->SetWP(CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, "DeepJet"));
 
     edm::Handle< std::vector<pat::Muon> > h_rawMu;
     input.iEvent.getByToken( rawMuToken,h_rawMu );
@@ -206,12 +210,12 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     int pass_METSelection=-1;
     
     // hack to use loose isolation scale factors for muons in case of dilepton channel
-    if(int(input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())>1) {
-        leptonsfhelper->ChangeMuIsoHistos(true);
-    }
-    else {
-        leptonsfhelper->ChangeMuIsoHistos(false);
-    }
+    // if(int(input.selectedElectronsLoose.size()+input.selectedMuonsLoose.size())>1) {
+    //     leptonsfhelper->ChangeMuIsoHistos(true);
+    // }
+    // else {
+    //     leptonsfhelper->ChangeMuIsoHistos(false);
+    // }
     
     std::map< std::string, float > leptonsfs = leptonsfhelper->GetLeptonSF(input.selectedElectronsLoose,input.selectedMuonsLoose);
 
@@ -362,7 +366,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet1_pt=input.selectedJets.at(0).pt();
 	jet1_eta=input.selectedJets.at(0).eta();
 	jet1_phi=input.selectedJets.at(0).phi();
-	jet1_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(0));
+	jet1_csv=CSVHelper::GetJetCSV(input.selectedJets.at(0),"DeepJet");
 	if(input.selectedJets.at(0).hasUserInt("deterministicSeed")) jet1_seed=(uint32_t)input.selectedJets.at(0).userInt("deterministicSeed");
 	if(input.selectedJets.at(0).hasUserInt("pileupJetId:fullId")) jet1_PUJetId=input.selectedJets.at(0).userInt("pileupJetId:fullId");
 	if(input.selectedJets.at(0).hasUserFloat("pileupJetId:fullDiscriminant")) { jet1_PUJetDiscriminant=input.selectedJets.at(0).userFloat("pileupJetId:fullDiscriminant");}
@@ -380,7 +384,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	jet2_pt=input.selectedJets.at(1).pt();
 	jet2_eta=input.selectedJets.at(1).eta();
 	jet2_phi=input.selectedJets.at(1).phi();
-	jet2_csv=MiniAODHelper::GetJetCSV(input.selectedJets.at(1));
+	jet2_csv=CSVHelper::GetJetCSV(input.selectedJets.at(1),"DeepJet");
 	if(input.selectedJets.at(1).hasUserInt("deterministicSeed")) jet2_seed=(uint32_t)input.selectedJets.at(1).userInt("deterministicSeed");
 	if(input.selectedJets.at(1).hasUserInt("pileupJetId:fullId")) jet2_PUJetId=input.selectedJets.at(1).userInt("pileupJetId:fullId");
 	if(input.selectedJets.at(1).hasUserFloat("pileupJetId:fullDiscriminant")){ jet2_PUJetDiscriminant=input.selectedJets.at(1).userFloat("pileupJetId:fullDiscriminant");}
@@ -396,27 +400,27 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if(input.selectedJetsLoose.size()>2){
 	jet3_pt=input.selectedJetsLoose.at(2).pt();
 	jet3_eta=input.selectedJetsLoose.at(2).eta();
-	jet3_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(2));
+	jet3_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(2),"DeepJet");
     }
     if(input.selectedJetsLoose.size()>3){
 	jet4_pt=input.selectedJetsLoose.at(3).pt();
 	jet4_eta=input.selectedJetsLoose.at(3).eta();
-	jet4_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(3));
+	jet4_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(3),"DeepJet");
     }
     if(input.selectedJetsLoose.size()>4){
 	jet5_pt=input.selectedJetsLoose.at(4).pt();
 	jet5_eta=input.selectedJetsLoose.at(4).eta();
-	jet5_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(4));
+	jet5_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(4),"DeepJet");
     }
     if(input.selectedJetsLoose.size()>5){
 	jet6_pt=input.selectedJetsLoose.at(5).pt();
 	jet6_eta=input.selectedJetsLoose.at(5).eta();
-	jet6_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(5));
+	jet6_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(5),"DeepJet");
     }
     if(input.selectedJetsLoose.size()>6){
 	jet7_pt=input.selectedJetsLoose.at(6).pt();
 	jet7_eta=input.selectedJetsLoose.at(6).eta();
-	jet7_csv=MiniAODHelper::GetJetCSV(input.selectedJetsLoose.at(6));
+	jet7_csv=CSVHelper::GetJetCSV(input.selectedJetsLoose.at(6),"DeepJet");
     }
     n_leps_tight=input.selectedMuons.size()+input.selectedElectrons.size();
     n_leps_dl=input.selectedMuonsDL.size()+input.selectedElectronsDL.size();
@@ -464,14 +468,14 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
 	n_jets=int(input.selectedJetsLoose.size());
 	n_btags=0;
 	for(auto jet=input.selectedJetsLoose.begin();jet!=input.selectedJetsLoose.end(); jet++){
-	    if(helper->PassesCSV(*jet,'M')) n_btags++;
+	    if(CSVHelper::PassesCSV(*jet,"DeepJet",CSVHelper::CSVwp::Medium,input.era)) n_btags++;
 	}
     }
     else{
 	n_jets=int(input.selectedJets.size());
 	n_btags=0;
 	for(auto jet=input.selectedJets.begin();jet!=input.selectedJets.end(); jet++){
-	    if(BoostedUtils::PassesCSV(*jet,'M')) n_btags++;
+	    if(CSVHelper::PassesCSV(*jet,"DeepJet",CSVHelper::CSVwp::Medium,input.era)) n_btags++;
 	}
     }
     //calculate mll
@@ -524,82 +528,75 @@ void Synchronizer::DumpSyncExe(const InputCollections& input,
     if(input.weights.count("GenWeight_7")>0) fsr_up=input.weights.at("GenWeight_7");
     if(input.weights.count("GenWeight_8")>0) isr_down=input.weights.at("GenWeight_8");
     if(input.weights.count("GenWeight_9")>0) fsr_down=input.weights.at("GenWeight_9");
+
+    ////////////////////////////////////////////////
+    // wait for final discriminators?             //
+    // no variables are written here otherwise    //
+    ////////////////////////////////////////////////
+
+    // if(is_SL) {
+    //     std::vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
+    //     std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
+    //     std::vector<TLorentzVector> loose_jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
+    //     TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
+    //     std::vector<double> jetcsvs;
+    //     std::vector<double> jetcsvs_dnn;
+    //     std::vector<double> loose_jetcsvs;
+    //     std::vector<double> add_features;
+    //     std::vector<unsigned int> out_best_perm;
+    //     for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
+    //         jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
+    //         jetcsvs_dnn.push_back(CSVHelper::GetJetCSV_DNN(*j,"DeepJet"));
+    //     }
+    //     for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
+    //         loose_jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
+    //     }
+
+    //     varMap = pointerToMVAvars->GetMVAvars(lepvecs, jetvecs, jetcsvs, metP4);
+    //     add_features.push_back(varMap["blr"]);
+    //     add_features.push_back(varMap["blr_transformed"]);
+    //     add_features.push_back(0.);
+    //     // bdt_output=bdtclassifier->GetBDTOutput(lepvecs, jetvecs, jetcsvs,metP4);
+    //     //DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs[0],metP4,add_features);
+    //     //dnn_ttbb_output = dnn_output.ttbb();
+    //     //dnn_ttH_output = dnn_output.ttH();
+    // }
     
-    if(is_SL) {
-        std::vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
-        std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
-        std::vector<TLorentzVector> loose_jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
-        TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
-        std::vector<double> jetcsvs;
-        std::vector<double> jetcsvs_dnn;
-        std::vector<double> loose_jetcsvs;
-        std::vector<double> add_features;
-        std::vector<unsigned int> out_best_perm;
-        for(auto j=input.selectedJets.begin(); j!=input.selectedJets.end(); j++){
-            jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
-            jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
-        }
-        for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
-            loose_jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
-        }
-        double out_P_4b=-1;
-        double out_P_2b=-1;
-        double eth_blr=-1;
-        double eth_blr_trans=-1;
-        if(jetvecs.size()>3){
-            eth_blr=memclassifier->GetBTagLikelihoodRatio(jetvecs,jetcsvs,out_best_perm,out_P_4b,out_P_2b);
-        }
-        eth_blr_trans=log(eth_blr/(1-eth_blr));
-        add_features.push_back(eth_blr);
-        add_features.push_back(eth_blr_trans);
-        add_features.push_back(0.);
-        bdt_output=bdtclassifier->GetBDTOutput(lepvecs, jetvecs, jetcsvs,metP4);
-        //DNNOutput dnn_output = sldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs[0],metP4,add_features);
-        //dnn_ttbb_output = dnn_output.ttbb();
-        //dnn_ttH_output = dnn_output.ttH();
-    }
-    
-    else if(is_DL) {
-        std::vector<TLorentzVector> lepvecs;
-        std::vector<double> lepcharges;
-        for(int i=0;i<int(input.selectedElectronsLoose.size());i++) {
-            lepvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedElectronsLoose[i].p4()));
-            lepcharges.push_back(input.selectedElectronsLoose[i].charge());
-        }
-        for(int i=0;i<int(input.selectedMuonsLoose.size());i++) {
-            lepvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedMuonsLoose[i].p4()));
-            lepcharges.push_back(input.selectedMuonsLoose[i].charge());
-        }
-        if(lepvecs[0].Pt()<lepvecs[1].Pt()) {
-            std::swap(lepvecs[0],lepvecs[1]);
-            std::swap(lepcharges[0],lepcharges[1]);
-        }
-        std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
-        std::vector<double> jetcsvs;
-        std::vector<double> jetcsvs_dnn;
-        std::vector<double> add_features;
-        std::vector<unsigned int> out_best_perm;
-        TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
-        for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
-            jetcsvs.push_back(MiniAODHelper::GetJetCSV(*j));
-            jetcsvs_dnn.push_back(MiniAODHelper::GetJetCSV_DNN(*j));
-        }
-        double out_P_4b=-1;
-        double out_P_2b=-1;
-        double eth_blr=-1;
-        double eth_blr_trans=-1;
-        if(jetvecs.size()>3){
-            eth_blr=memclassifier->GetBTagLikelihoodRatio(jetvecs,jetcsvs,out_best_perm,out_P_4b,out_P_2b);
-        }
-        eth_blr_trans=log(eth_blr/(1-eth_blr));
-        add_features.push_back(eth_blr);
-        add_features.push_back(eth_blr_trans);
-        add_features.push_back(0.);
-        bdt_output=dlbdtclassifier->GetBDTOutput(lepvecs,lepcharges,jetvecs,jetcsvs,metP4);
-        //DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs,metP4,add_features);
-        //dnn_ttbb_output = dnn_output.ttbb();
-        //dnn_ttH_output = dnn_output.ttH();
-    }
+    // else if(is_DL) {
+    //     std::vector<TLorentzVector> lepvecs;
+    //     std::vector<double> lepcharges;
+    //     for(int i=0;i<int(input.selectedElectronsLoose.size());i++) {
+    //         lepvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedElectronsLoose[i].p4()));
+    //         lepcharges.push_back(input.selectedElectronsLoose[i].charge());
+    //     }
+    //     for(int i=0;i<int(input.selectedMuonsLoose.size());i++) {
+    //         lepvecs.push_back(BoostedUtils::GetTLorentzVector(input.selectedMuonsLoose[i].p4()));
+    //         lepcharges.push_back(input.selectedMuonsLoose[i].charge());
+    //     }
+    //     if(lepvecs[0].Pt()<lepvecs[1].Pt()) {
+    //         std::swap(lepvecs[0],lepvecs[1]);
+    //         std::swap(lepcharges[0],lepcharges[1]);
+    //     }
+    //     std::vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
+    //     std::vector<double> jetcsvs;
+    //     std::vector<double> jetcsvs_dnn;
+    //     std::vector<double> add_features;
+    //     std::vector<unsigned int> out_best_perm;
+    //     TLorentzVector metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
+    //     for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
+    //         jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
+    //         jetcsvs_dnn.push_back(CSVHelper::GetJetCSV_DNN(*j,"DeepJet"));
+    //     }
+
+    //     varMap = pointerToMVAvars->GetMVAvars(lepvecs, jetvecs, jetcsvs, metP4);
+    //     add_features.push_back(varMap["blr"]);
+    //     add_features.push_back(varMap["blr_transformed"]);
+    //     add_features.push_back(0.);
+    //     // bdt_output=dlbdtclassifier->GetBDTOutput(lepvecs,lepcharges,jetvecs,jetcsvs,metP4);
+    //     //DNNOutput dnn_output = dldnnclassifier->evaluate(jetvecs,jetcsvs_dnn,lepvecs,metP4,add_features);
+    //     //dnn_ttbb_output = dnn_output.ttbb();
+    //     //dnn_ttH_output = dnn_output.ttH();
+    // }
     
 
     bool print=false;
@@ -669,15 +666,10 @@ void Synchronizer::DumpSyncExe(const std::vector< InputCollections>& inputs, boo
 
 
 
-void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,BDTClassifier* bdtclassifier_,DLBDTClassifier* dlbdtclassifier_,DNNClassifier_SL* sldnnclassifier_,DNNClassifier_DL* dldnnclassifier_,MEMClassifier* memclassifier_,bool dumpExtended){
+void Synchronizer::Init(std::string filename, const std::vector<std::string>& jetSystematics,const edm::ParameterSet& iConfig,MiniAODHelper* helper_,LeptonSFHelper* leptonsfhelper_,bool dumpExtended){
     systematics=jetSystematics;
     helper=helper_;
     leptonsfhelper=leptonsfhelper_;
-    bdtclassifier=bdtclassifier_;
-    dlbdtclassifier=dlbdtclassifier_;
-    sldnnclassifier=sldnnclassifier_;
-    dldnnclassifier=dldnnclassifier_;
-    memclassifier=memclassifier_;
     for(const auto & s : systematics){
 	cutflowsSL.push_back(Cutflow());
 	cutflowsSL.back().Init();

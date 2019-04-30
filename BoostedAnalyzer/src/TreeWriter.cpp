@@ -38,7 +38,7 @@ void TreeWriter::Init( std::string fileName){
   // experimentally setting autosave
   // might lead to larger trees or larger memory footprint
   // also more disk action
-  tree->SetAutoSave(-5000000);
+  tree->SetAutoSave(50000);
 //   tree->
 }
 

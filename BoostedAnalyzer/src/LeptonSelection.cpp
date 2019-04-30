@@ -10,9 +10,9 @@ LeptonSelection::LeptonSelection(std::vector<std::string> electronTriggers_, std
 LeptonSelection::LeptonSelection(std::string electronTrigger, std::string muonTrigger, std::string channel_, int step_):LeptonSelection(std::vector<std::string> (1,(electronTrigger)),std::vector<std::string> (1,muonTrigger),channel_,step_){
 }
 
-LeptonSelection::LeptonSelection(const edm::ParameterSet& iConfig, int step_):LeptonSelection(iConfig.getParameter< std::vector<std::string> >("electronTriggers"),
-											      iConfig.getParameter< std::vector<std::string> >("muonTriggers"),
-											      iConfig.getParameter<std::string>("channel"),
+LeptonSelection::LeptonSelection(const edm::ParameterSet& iConfig, int step_):LeptonSelection(iConfig.getParameter<edm::ParameterSet>("LeptonSelection").getParameter< std::vector<std::string> >("electronTriggers"),
+											      iConfig.getParameter<edm::ParameterSet>("LeptonSelection").getParameter< std::vector<std::string> >("muonTriggers"),
+											      iConfig.getParameter<edm::ParameterSet>("LeptonSelection").getParameter<std::string>("channel"),
 											      step_){
 }
 

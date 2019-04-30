@@ -16,12 +16,14 @@ SelectedJetProducer = cms.EDProducer(
     leptonJetDr = cms.double(0.4),
     collectionNames  = cms.vstring("selectedJets","selectedJetsLoose"),
     systematics = cms.vstring(""),
-    JetID = cms.string("none"),
-    JetType = cms.string("AK4PFchs"),
+    JetID = cms.vstring("none"),
+    JetType = cms.string("AK4PFCHS"),
     jecFileAK4_2016 = cms.string("Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"),
     jecFileAK8_2016 = cms.string("Summer16_07Aug2017_V11_MC_UncertaintySources_AK8PFchs.txt"),
     jecFileAK4_2017 = cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt"),
     jecFileAK8_2017 = cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK8PFchs.txt"),
+    jecFileAK4_2018 = cms.string("Autumn18_V8_MC_UncertaintySources_AK4PFchs.txt"),
+    jecFileAK8_2018 = cms.string("Autumn18_V8_MC_UncertaintySources_AK8PFchs.txt"),
     era = cms.string("2017")
 )
 
