@@ -904,10 +904,39 @@ std::map<string,float> BoostedAnalyzer::GetWeights(const GenEventInfoProduct&  g
     weights["Weight_PU"]       = puweight;
     weights["Weight_TopPt"]    = topptweight;
 
-    weights["Weight_TopPtup"]          = topptweightUp;
-    weights["Weight_TopPtdown"]        = topptweightDown;
-    
-    //Add Lepton Scalefactors to weight map
+
+    bool doSystematics=true;
+//     if(doSystematics && systype != Systematics::JESup && systype != Systematics::JESdown && systype != Systematics::JERup && systype != Systematics::JERdown) {
+    if(doSystematics && systype == Systematics::NA) { // only do these for the nominal samples
+        //std::cout << "Do csv weights for csv systematics " << std::endl;
+	std::map<std::string,double> map = csvReweighter.getCSVWeightsDiff(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFup);
+	std::map<std::string,double> map2 = csvReweighter.getCSVWeightsDiff(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFdown);
+    for (auto const& x : map){
+        weights["Weight_" + x.first] = x.second/csvweight;
+    }
+    for (auto const& x : map2){
+        weights["Weight_" + x.first] = x.second/csvweight;
+    }
+	weights["Weight_CSVLFup"]          = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFup, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVLFdown"]        = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFdown, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVHFup"]          = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFup, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVHFdown"]        = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFdown, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVHFStats1up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVHFStats1down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVLFStats1up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVLFStats1down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVHFStats2up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVHFStats2down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVLFStats2up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVLFStats2down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVCErr1up"]       = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVCErr1down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVCErr2up"]       = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+	weights["Weight_CSVCErr2down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+ 	weights["Weight_TopPtup"]          = topptweightUp;
+ 	weights["Weight_TopPtdown"]        = topptweightDown;
+    }
+
     std::map<std::string, float> selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons,selectedMuons);
 
     for(  auto sfit = selectedScaleFactors.begin() ; sfit != selectedScaleFactors.end() ; sfit++  ){
