@@ -26,13 +26,14 @@ void JABDTBaseProcessor::Init(const InputCollections& input,VariableContainer& v
 }
 
 void JABDTBaseProcessor::Process(const InputCollections& input,VariableContainer& vars){
-
   if(!initialized) 
   {
     cerr << "tree processor not initialized" << endl;
     return;
   }
   if(input.selectedMuons.size()+input.selectedElectrons.size()!=1) return;
+
+  pointerToHypothesisCombinatorics->SetBtagWP(CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, "DeepJet"));
 
   vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
   vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
