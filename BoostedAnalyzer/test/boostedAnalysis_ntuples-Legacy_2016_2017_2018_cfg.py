@@ -385,7 +385,7 @@ elif "2017" in options.dataEra:
     process.SelectedMuonProducer.ptMins=[15.,15.,29.]
 elif "2018" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2018
-    process.SelectedElectronProducer.ptMins=[15.,15.,34.]
+    process.SelectedElectronProducer.ptMins=[15.,15.,30.]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2018
     process.SelectedMuonProducer.ptMins=[15.,15.,26.]
