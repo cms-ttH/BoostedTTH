@@ -640,7 +640,7 @@ else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
 #  "MCMatchVarProcessor",
-  "essentialMCMatchVarProcessor",
+  "MCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
   "TriggerVarProcessor",
