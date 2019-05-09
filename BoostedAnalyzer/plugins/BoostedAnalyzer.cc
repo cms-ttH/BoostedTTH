@@ -753,7 +753,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	    }
 	}
     }
-    GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!(!isData&&foundT&&foundTbar));
+    GenTopEvent genTopEvt=genTopEvtProd.Produce(iEvent,useGenHadronMatch,!(!isData&&(foundT||foundTbar)));
     int ttid = genTopEvt.IsFilled()? genTopEvt.GetTTxIdFromProducer() : -1;
 
     SampleType sampleType= SampleType::nonttbkg;

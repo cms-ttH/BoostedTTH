@@ -205,6 +205,9 @@ private:
   const float ttxetacut=2.4;
   bool isTTbar=false;
   bool isTTH=false;
+  bool foundT = false;
+  bool foundTbar = false;
+  bool foundH = false;
   bool topIsHadronic;
   bool topbarIsHadronic;
   bool isFilled;
