@@ -522,12 +522,18 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
                     lastW = false;
             }
             bool fromT = false;
+            bool fromH = false;
             const reco::Candidate* mother = &(p);
             while (mother != 0 && abs(mother->pdgId()) == 24) {
                 if (abs(mother->mother()->pdgId()) == 6) {
                     fromT = true;
                     break;
-                } else
+                } 
+                else if(abs(mother->mother()->pdgId()) == 25) {
+                    fromH = true;
+                    break;
+                }
+                else
                     mother = mother->mother();
             }
             if (lastW && fromT) {
@@ -541,6 +547,15 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
                     }
                     else if (p.pdgId() == -24 && abs(p.daughter(i)->pdgId()) <= 16) {
                         wminus_decay_products.push_back(*(reco::GenParticle*)p.daughter(i));
+                    }
+                }
+            }
+            // for THW
+            else if (lastW && !fromT && !fromH && p.statusFlags().isPrompt()) {
+                w_not_from_top = p;
+                for (uint i = 0; i < p.numberOfDaughters(); i++) {
+                    if (abs(p.daughter(i)->pdgId()) <= 16) {
+                        w_not_from_top_decay_products.push_back(*(reco::GenParticle*)p.daughter(i));
                     }
                 }
             }
@@ -801,6 +816,20 @@ reco::GenParticle GenTopEvent::GetWlep() const
         std::cerr << "hadronic/leptonic function called in GenTopEvent, but not a semileptonic event" << std::endl;
         return reco::GenParticle();
     }
+}
+reco::GenParticle GenTopEvent::GetWNotFromTop() const
+{
+    assert(isFilled);
+    if (!isFilled)
+        std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+    return w_not_from_top;
+}
+std::vector<reco::GenParticle> GenTopEvent::GetWNotFromTopDecayProducts() const
+{
+    assert(isFilled);
+    if (!isFilled)
+        std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+    return w_not_from_top_decay_products;
 }
 std::vector<reco::GenParticle> GenTopEvent::GetWLeptons() const
 {

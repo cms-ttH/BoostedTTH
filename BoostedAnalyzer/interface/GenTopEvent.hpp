@@ -48,6 +48,10 @@ public:
     std::vector<reco::GenParticle> GetAllNeutrinos() const;
     std::vector<reco::GenParticle> GetAllWQuarks() const;
     std::vector<reco::GenParticle> GetAllWAntiQuarks() const;
+    
+    // for THW
+    reco::GenParticle GetWNotFromTop() const;
+    std::vector<reco::GenParticle> GetWNotFromTopDecayProducts() const;
 
     std::vector<reco::GenParticle> GetQuarks() const;
 
@@ -161,6 +165,10 @@ private:
     std::vector<reco::GenParticle> wplus_decay_products;
     std::vector<reco::GenParticle> wminus_decay_products;
     std::vector<reco::GenParticle> higgs_decay_products;
+    
+    // for THW
+    reco::GenParticle w_not_from_top;
+    std::vector<reco::GenParticle> w_not_from_top_decay_products;
 
     reco::GenJet higgs_b_genjet;
     reco::GenJet higgs_bbar_genjet;
