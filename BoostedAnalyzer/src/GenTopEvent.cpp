@@ -1,24 +1,25 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
-GenTopEventProducer::GenTopEventProducer(edm::ConsumesCollector&& iC)
+GenTopEventProducer::GenTopEventProducer(edm::ConsumesCollector&& iC) :
+
+    customGenJetsToken{ iC.consumes<std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom", "", "")) },
+    genBHadJetIndexToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron", "genBHadJetIndex", "")) },
+    genBHadFlavourToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron", "genBHadFlavour", "")) },
+    genBHadFromTopWeakDecayToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron", "genBHadFromTopWeakDecay", "")) },
+    genBHadPlusMothersToken{ iC.consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenBHadron", "genBHadPlusMothers", "")) },
+    genBHadPlusMothersIndicesToken{ iC.consumes<std::vector<std::vector<int> > >(edm::InputTag("matchGenBHadron", "genBHadPlusMothersIndices", "")) },
+    genBHadIndexToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron", "genBHadIndex")) },
+    genBHadLeptonHadronIndexToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron", "genBHadLeptonHadronIndex", "")) },
+    genBHadLeptonViaTauToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron", "genBHadLeptonViaTau", "")) },
+    genCHadJetIndexToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron", "genCHadJetIndex", "")) },
+    genCHadFlavourToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron", "genCHadFlavour", "")) },
+    genCHadFromTopWeakDecayToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron", "genCHadFromTopWeakDecay", "")) },
+    genCHadBHadronIdToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron", "genCHadBHadronId", "")) },
+    genCHadIndexToken{ iC.consumes<std::vector<int> >(edm::InputTag("matchGenCHadron", "genCHadIndex")) },
+    genCHadPlusMothersToken{ iC.consumes<std::vector<reco::GenParticle> >(edm::InputTag("matchGenCHadron", "genCHadPlusMothers", "")) },
+    genTtbarIdToken{ iC.consumes<int>(edm::InputTag("categorizeGenTtbar", "genTtbarId", "")) },
+    prunedGenParticlesToken{ iC.consumes<std::vector<reco::GenParticle> >(edm::InputTag("prunedGenParticles", "", "")) }
 {
-    customGenJetsToken = iC.consumes<std::vector<reco::GenJet>>(edm::InputTag("ak4GenJetsCustom", "", ""));
-    genBHadJetIndexToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenBHadron", "genBHadJetIndex", ""));
-    genBHadFlavourToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenBHadron", "genBHadFlavour", ""));
-    genBHadFromTopWeakDecayToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenBHadron", "genBHadFromTopWeakDecay", ""));
-    genBHadPlusMothersToken = iC.consumes<std::vector<reco::GenParticle>>(edm::InputTag("matchGenBHadron", "genBHadPlusMothers", ""));
-    genBHadPlusMothersIndicesToken = iC.consumes<std::vector<std::vector<int>>>(edm::InputTag("matchGenBHadron", "genBHadPlusMothersIndices", ""));
-    genBHadIndexToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenBHadron", "genBHadIndex"));
-    genBHadLeptonHadronIndexToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenBHadron", "genBHadLeptonHadronIndex", ""));
-    genBHadLeptonViaTauToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenBHadron", "genBHadLeptonViaTau", ""));
-    genCHadJetIndexToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenCHadron", "genCHadJetIndex", ""));
-    genCHadFlavourToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenCHadron", "genCHadFlavour", ""));
-    genCHadFromTopWeakDecayToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenCHadron", "genCHadFromTopWeakDecay", ""));
-    genCHadBHadronIdToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenCHadron", "genCHadBHadronId", ""));
-    genCHadIndexToken = iC.consumes<std::vector<int>>(edm::InputTag("matchGenCHadron", "genCHadIndex"));
-    genCHadPlusMothersToken = iC.consumes<std::vector<reco::GenParticle>>(edm::InputTag("matchGenCHadron", "genCHadPlusMothers", ""));
-    genTtbarIdToken = iC.consumes<int>(edm::InputTag("categorizeGenTtbar", "genTtbarId", ""));
-    prunedGenParticlesToken = iC.consumes<std::vector<reco::GenParticle>>(edm::InputTag("prunedGenParticles", "", ""));
 }
 GenTopEventProducer::~GenTopEventProducer() {}
 
@@ -27,24 +28,24 @@ GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHad
     GenTopEvent genTopEvt;
     if (returnDummy)
         return genTopEvt;
-    edm::Handle<std::vector<reco::GenJet>> h_customgenjets;
+    edm::Handle<std::vector<reco::GenJet> > h_customgenjets;
     iEvent.getByToken(customGenJetsToken, h_customgenjets);
-    edm::Handle<std::vector<int>> genBHadFlavour;
-    edm::Handle<std::vector<int>> genBHadJetIndex;
-    edm::Handle<std::vector<int>> genBHadFromTopWeakDecay;
-    edm::Handle<std::vector<reco::GenParticle>> genBHadPlusMothers;
-    edm::Handle<std::vector<std::vector<int>>> genBHadPlusMothersIndices;
-    edm::Handle<std::vector<reco::GenParticle>> genCHadPlusMothers;
-    edm::Handle<std::vector<int>> genBHadIndex;
-    edm::Handle<std::vector<int>> genBHadLeptonHadronIndex;
-    edm::Handle<std::vector<int>> genBHadLeptonViaTau;
-    edm::Handle<std::vector<int>> genCHadIndex;
-    edm::Handle<std::vector<int>> genCHadFlavour;
-    edm::Handle<std::vector<int>> genCHadJetIndex;
-    edm::Handle<std::vector<int>> genCHadFromTopWeakDecay;
-    edm::Handle<std::vector<int>> genCHadBHadronId;
+    edm::Handle<std::vector<int> > genBHadFlavour;
+    edm::Handle<std::vector<int> > genBHadJetIndex;
+    edm::Handle<std::vector<int> > genBHadFromTopWeakDecay;
+    edm::Handle<std::vector<reco::GenParticle> > genBHadPlusMothers;
+    edm::Handle<std::vector<std::vector<int> > > genBHadPlusMothersIndices;
+    edm::Handle<std::vector<reco::GenParticle> > genCHadPlusMothers;
+    edm::Handle<std::vector<int> > genBHadIndex;
+    edm::Handle<std::vector<int> > genBHadLeptonHadronIndex;
+    edm::Handle<std::vector<int> > genBHadLeptonViaTau;
+    edm::Handle<std::vector<int> > genCHadIndex;
+    edm::Handle<std::vector<int> > genCHadFlavour;
+    edm::Handle<std::vector<int> > genCHadJetIndex;
+    edm::Handle<std::vector<int> > genCHadFromTopWeakDecay;
+    edm::Handle<std::vector<int> > genCHadBHadronId;
     edm::Handle<int> genTtbarId;
-    edm::Handle<std::vector<reco::GenParticle>> prunedGenParticles;
+    edm::Handle<std::vector<reco::GenParticle> > prunedGenParticles;
     iEvent.getByToken(genCHadBHadronIdToken, genCHadBHadronId);
     iEvent.getByToken(genBHadFlavourToken, genBHadFlavour);
     iEvent.getByToken(genBHadJetIndexToken, genBHadJetIndex);
@@ -466,59 +467,62 @@ std::vector<int> GenTopEvent::GetAdditionalCHadronAfterTopType() const
     return additional_c_hadron_aftertop;
 }
 
+// function to reconstruct the top system (ttbar, ttH, single top, THQ/THW)
 void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenParticles, int ttXid_)
 {
     foundT = false;
     foundTbar = false;
     foundH = false;
     ttXid = ttXid_;
-    for (auto p = prunedGenParticles.begin(); p != prunedGenParticles.end(); p++) {
-        if (abs(p->pdgId()) == 6) {
-            if (p->pdgId() == 6)
+    // loop over all the gen particles
+    for (const auto& p : prunedGenParticles) {
+        // find the top quark/antiquark and its decay quark
+        if (abs(p.pdgId()) == 6) {
+            if (p.pdgId() == 6)
                 foundT = true;
-            if (p->pdgId() == -6)
+            else if (p.pdgId() == -6)
                 foundTbar = true;
-            if (p->pdgId() == 6 && p->isHardProcess())
-                hard_top = *p;
-            if (p->pdgId() == -6 && p->isHardProcess())
-                hard_topbar = *p;
+            if (p.pdgId() == 6 && p.isHardProcess())
+                hard_top = p;
+            else if (p.pdgId() == -6 && p.isHardProcess())
+                hard_topbar = p;
             bool lastTop = true;
-            for (uint i = 0; i < p->numberOfDaughters(); i++) {
-                if (abs(p->daughter(i)->pdgId()) == 6)
+            for (uint i = 0; i < p.numberOfDaughters(); i++) {
+                if (abs(p.daughter(i)->pdgId()) == 6)
                     lastTop = false;
             }
             if (lastTop) {
-                if (p->pdgId() == 6)
-                    top = *p;
-                if (p->pdgId() == -6)
-                    topbar = *p;
+                if (p.pdgId() == 6)
+                    top = p;
+                else if (p.pdgId() == -6)
+                    topbar = p;
                 bool setTDecay = false;
                 bool setTBarDecay = false;
-                for (uint i = 0; i < p->numberOfDaughters(); i++) {
-                    if (p->pdgId() == 6 && abs(p->daughter(i)->pdgId()) < 6) {
+                for (uint i = 0; i < p.numberOfDaughters(); i++) {
+                    if (p.pdgId() == 6 && abs(p.daughter(i)->pdgId()) < 6) {
                         if (setTDecay)
                             std::cerr << "GenTopEvent: error 1" << std::endl;
-                        top_decay_quark = *(reco::GenParticle*)p->daughter(i);
+                        top_decay_quark = *(reco::GenParticle*)p.daughter(i);
                         setTDecay = true;
                     }
-                    if (p->pdgId() == -6 && abs(p->daughter(i)->pdgId()) < 6) {
+                    else if (p.pdgId() == -6 && abs(p.daughter(i)->pdgId()) < 6) {
                         if (setTBarDecay)
                             std::cerr << "GenTopEvent: error 1" << std::endl;
-                        topbar_decay_quark = *(reco::GenParticle*)p->daughter(i);
+                        topbar_decay_quark = *(reco::GenParticle*)p.daughter(i);
                         setTBarDecay = true;
                     }
                 }
             }
         }
-
-        if (abs(p->pdgId()) == 24) {
+        // find the W bosons from the top decays
+        else if (abs(p.pdgId()) == 24) {
             bool lastW = true;
-            for (uint i = 0; i < p->numberOfDaughters(); i++) {
-                if (abs(p->daughter(i)->pdgId()) == 24)
+            for (uint i = 0; i < p.numberOfDaughters(); i++) {
+                if (abs(p.daughter(i)->pdgId()) == 24)
                     lastW = false;
             }
             bool fromT = false;
-            const reco::Candidate* mother = &(*p);
+            const reco::Candidate* mother = &(p);
             while (mother != 0 && abs(mother->pdgId()) == 24) {
                 if (abs(mother->mother()->pdgId()) == 6) {
                     fromT = true;
@@ -527,33 +531,33 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
                     mother = mother->mother();
             }
             if (lastW && fromT) {
-                if (p->pdgId() == 24)
-                    wplus = *p;
-                if (p->pdgId() == -24)
-                    wminus = *p;
-                for (uint i = 0; i < p->numberOfDaughters(); i++) {
-                    if (p->pdgId() == 24 && abs(p->daughter(i)->pdgId()) <= 16) {
-                        wplus_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
+                if (p.pdgId() == 24)
+                    wplus = p;
+                else if (p.pdgId() == -24)
+                    wminus = p;
+                for (uint i = 0; i < p.numberOfDaughters(); i++) {
+                    if (p.pdgId() == 24 && abs(p.daughter(i)->pdgId()) <= 16) {
+                        wplus_decay_products.push_back(*(reco::GenParticle*)p.daughter(i));
                     }
-                    if (p->pdgId() == -24 && abs(p->daughter(i)->pdgId()) <= 16) {
-                        wminus_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
+                    else if (p.pdgId() == -24 && abs(p.daughter(i)->pdgId()) <= 16) {
+                        wminus_decay_products.push_back(*(reco::GenParticle*)p.daughter(i));
                     }
                 }
             }
         }
-
-        if (abs(p->pdgId()) == 25) {
+        // find the Higgs boson and its decay products
+        else if (abs(p.pdgId()) == 25) {
             bool lastH = true;
             foundH = true;
-            for (uint i = 0; i < p->numberOfDaughters(); i++) {
-                if (abs(p->daughter(i)->pdgId()) == 25)
+            for (uint i = 0; i < p.numberOfDaughters(); i++) {
+                if (abs(p.daughter(i)->pdgId()) == 25)
                     lastH = false;
             }
             if (lastH) {
-                higgs = *p;
-                for (uint i = 0; i < p->numberOfDaughters(); i++) {
-                    if (p->pdgId() == 25 && abs(p->daughter(i)->pdgId()) != 25) {
-                        higgs_decay_products.push_back(*(reco::GenParticle*)p->daughter(i));
+                higgs = p;
+                for (uint i = 0; i < p.numberOfDaughters(); i++) {
+                    if (p.pdgId() == 25 && abs(p.daughter(i)->pdgId()) != 25) {
+                        higgs_decay_products.push_back(*(reco::GenParticle*)p.daughter(i));
                     }
                 }
             }
@@ -568,19 +572,22 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
     if ((top.energy() < 1 && topbar.energy() < 1) || (wplus.energy() < 1 && wminus.energy() < 1) || (top_decay_quark.energy() < 1 && topbar_decay_quark.energy() < 1))
         std::cerr << "GenTopEvent: error 4" << std::endl;
 
+    // check if the W+ from the top quark decayed into quarks
     int nquarks_from_wplus = 0;
-    for (auto p = wplus_decay_products.begin(); p != wplus_decay_products.end(); p++) {
-        if (abs(p->pdgId()) < 6)
+    for (const auto& p : wplus_decay_products) {
+        if (abs(p.pdgId()) < 6)
             nquarks_from_wplus++;
     }
+    // check if the W- from the top antiquark decayed into quarks
     int nquarks_from_wminus = 0;
-    for (auto p = wminus_decay_products.begin(); p != wminus_decay_products.end(); p++) {
-        if (abs(p->pdgId()) < 6)
+    for (const auto& p : wminus_decay_products) {
+        if (abs(p.pdgId()) < 6)
             nquarks_from_wminus++;
     }
-    isTTbar = foundT && foundTbar;
+    isTTbar = foundT && foundTbar && !foundH;
     isTTH = foundT && foundTbar && foundH;
 
+    // determine if the top quark/antiquark decayed hadronically
     if (isTTbar || isTTH) {
         topIsHadronic = nquarks_from_wplus == 2;
         topbarIsHadronic = nquarks_from_wminus == 2;
