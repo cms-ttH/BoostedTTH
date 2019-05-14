@@ -1,4 +1,4 @@
-<flags skip_files="BoostedJetVarProcessor.cpp BoostedMCMatchVarProcessor.cpp BoostedAk4VarProcessor.cpp BoostedSelection.cpp BoostedttHEvent.cpp ttHVarProcessor.cpp Ak4Cluster.cpp"/>
+<flags skip_files="BoostedJetVarProcessor.cpp BoostedMCMatchVarProcessor.cpp BoostedAk4VarProcessor.cpp BoostedSelection.cpp BoostedttHEvent.cpp ttHVarProcessor.cpp Ak4Cluster.cpp DarkMatterProcessor.cpp"/>
 <use name="root"/>
 <use name="LHAPDF"/>
 <lib name="TMVA"/>
