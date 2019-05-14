@@ -52,6 +52,9 @@ public:
     // for THW
     reco::GenParticle GetWNotFromTop() const;
     std::vector<reco::GenParticle> GetWNotFromTopDecayProducts() const;
+    
+    // for THQ
+    reco::GenParticle GetForwardQuark() const;
 
     std::vector<reco::GenParticle> GetQuarks() const;
 
@@ -169,6 +172,9 @@ private:
     // for THW
     reco::GenParticle w_not_from_top;
     std::vector<reco::GenParticle> w_not_from_top_decay_products;
+    
+    // for THQ
+    reco::GenParticle forward_quark;
 
     reco::GenJet higgs_b_genjet;
     reco::GenJet higgs_bbar_genjet;

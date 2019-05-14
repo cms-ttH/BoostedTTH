@@ -577,6 +577,10 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
                 }
             }
         }
+        // for THQ
+        else if(abs(p.pdgId()) < 5 && p.isLastCopy() && p.statusFlags().fromHardProcess()) {
+            forward_quark = p;
+        }
     }
     //   if(wminus_decay_products.size()!=2 || wplus_decay_products.size()!=2) {
     //       std::cerr << "GenTopEvent: error 2"<<std::endl;
@@ -817,6 +821,7 @@ reco::GenParticle GenTopEvent::GetWlep() const
         return reco::GenParticle();
     }
 }
+// for THW
 reco::GenParticle GenTopEvent::GetWNotFromTop() const
 {
     assert(isFilled);
@@ -830,6 +835,14 @@ std::vector<reco::GenParticle> GenTopEvent::GetWNotFromTopDecayProducts() const
     if (!isFilled)
         std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
     return w_not_from_top_decay_products;
+}
+// for THQ
+reco::GenParticle GenTopEvent::GetForwardQuark() const
+{
+    assert(isFilled);
+    if(!isFilled)
+        std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+    return forward_quark;
 }
 std::vector<reco::GenParticle> GenTopEvent::GetWLeptons() const
 {

@@ -136,6 +136,13 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenW_NotFromTop_DecProd_Phi",-9., "N_GenW_NotFromTop_DecProds" );
   vars.InitVars( "GenW_NotFromTop_DecProd_E",-9., "N_GenW_NotFromTop_DecProds" );
   vars.InitVars( "GenW_NotFromTop_DecProd_PDGID",-999, "N_GenW_NotFromTop_DecProds" );
+  
+  // for THQ
+  vars.InitVar( "GenForwardQuark_Pt",-9. );
+  vars.InitVar( "GenForwardQuark_Eta",-9. );
+  vars.InitVar( "GenForwardQuark_Phi",-9. );
+  vars.InitVar( "GenForwardQuark_E",-9. );
+  vars.InitVar( "GenForwardQuark_PDGID",-999 );
 
   initialized = true;
 }
@@ -180,8 +187,11 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   std::vector<reco::GenParticle> lep;
   std::vector<reco::GenParticle> nu;
   reco::GenParticle higgs;
+  // for THW
   reco::GenParticle w_not_from_top;
   std::vector<reco::GenParticle> w_not_from_top_decay_products;
+  // for THQ
+  reco::GenParticle forward_quark;
   std::vector<reco::GenParticle> higgs_bs;
   if(input.genTopEvt.IsFilled()){
     tophad=input.genTopEvt.GetAllTopHads();
@@ -199,6 +209,8 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     // for THW
     w_not_from_top = input.genTopEvt.GetWNotFromTop();
     w_not_from_top_decay_products = input.genTopEvt.GetWNotFromTopDecayProducts();
+    // for THQ
+    forward_quark = input.genTopEvt.GetForwardQuark();
   }
 
   reco::GenParticle b1;
@@ -444,5 +456,14 @@ bool dfirst=true;
     vars.FillVars("GenW_NotFromTop_DecProd_Phi",i,w_not_from_top_decay_products.at(i).phi() );
     vars.FillVars("GenW_NotFromTop_DecProd_E",i,w_not_from_top_decay_products.at(i).energy() );
     vars.FillVars("GenW_NotFromTop_DecProd_PDGID",i,w_not_from_top_decay_products.at(i).pdgId() );
+  }
+  
+  // for THQ
+  if(forward_quark.pt()>0.){
+    vars.FillVar( "GenForwardQuark_Pt",forward_quark.pt());
+    vars.FillVar( "GenForwardQuark_Eta",forward_quark.eta());
+    vars.FillVar( "GenForwardQuark_Phi",forward_quark.phi());
+    vars.FillVar( "GenForwardQuark_E",forward_quark.energy());
+    vars.FillVar( "GenForwardQuark_PDGID",forward_quark.pdgId());
   }
 }
