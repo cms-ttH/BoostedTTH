@@ -270,7 +270,7 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   }
   if (jetvecs.size() > 0)
   {
-    mJetsAverage /= (float)nPairsJets;
+    mJetsAverage /= (float)jetvecs.size();
     etaJetsAverage /= (float)jetvecs.size();
   }
   if (nPairsJets > 0)
