@@ -166,7 +166,7 @@ bool GenWeights::initLHAPDF(string name){
 bool GenWeights::initLHAPDF(vector<string> names){
   // initialize the LHAPDFs
   cout << "Initializing additional PDFs for reweighting:" << endl;
-  for( auto name: names ){
+  for(const auto& name: names ){
 
     LHAPDF::PDFSet PDFSet(name);
     std::vector<LHAPDF::PDF*> PDFs = PDFSet.mkPDFs();
@@ -341,6 +341,8 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
         }
         if(is_scale_var) line="Weight_"+name_string+"_muR_"+mur+"_muF_"+muf;
 //         cout << lineAsPrinted<<" " <<line << "   " << id << endl;
+        // hack to exclude all pdf variations not belonging to NNPDF31_nnlo_hessian_pdfas pdfset. They have lhaids 306000-306102
+        if(line.Contains("pdf_variation") && !line.Contains("_306")) continue;
         // add the unique weightid and the corresponding name to a map to use later when reading the weights from the events
         lhe_weights[std::string(id)]=line;
         }
