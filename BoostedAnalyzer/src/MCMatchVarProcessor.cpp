@@ -63,6 +63,7 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "GenHiggs_Eta",-9. );
   vars.InitVar( "GenHiggs_Phi",-9. );
   vars.InitVar( "GenHiggs_E",-9. );
+  vars.InitVar( "GenHiggs_Y",-9. );
   vars.InitVar( "GenHiggs_B1_Pt",-9. );
   vars.InitVar( "GenHiggs_B2_Pt",-9. );
   vars.InitVar( "GenHiggs_B1_Eta",-9. );
@@ -344,6 +345,7 @@ bool dfirst=true;
     vars.FillVar( "GenHiggs_Eta",higgs.eta());
     vars.FillVar( "GenHiggs_Phi",higgs.phi());
     vars.FillVar( "GenHiggs_E",higgs.energy());
+    vars.FillVar( "GenHiggs_Y",higgs.rapidity());
   }
   if(b1.pt()>0.){
     vars.FillVar("GenHiggs_B1_Pt",b1.pt());
