@@ -14,7 +14,7 @@ LeptonSelectionData2016 = cms.PSet(
 
 LeptonSelectionData2017 = cms.PSet(
     muonTriggers = cms.vstring("HLT_IsoMu27_v*"),
-    electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
+    electronTriggers = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
     channel = cms.string("both")
 )
 
@@ -33,7 +33,7 @@ LeptonSelectionMC2016 = cms.PSet(
 
 LeptonSelectionMC2017 = cms.PSet(
     muonTriggers = cms.vstring("HLT_IsoMu27_v*"),
-    electronTriggers = cms.vstring("HLT_Ele35_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
+    electronTriggers = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
     channel = cms.string("both")
 )
 
@@ -102,6 +102,8 @@ checkBasicDataTriggers= cms.PSet(
                                  "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
                                  "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*",
                                  "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v*",
+                                 "HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*",
+                                 "HLT_Ele32_WPTight_Gsf_2017Seeds*"
                                  )
 )
 checkBasicMCTriggers= cms.PSet(
@@ -122,6 +124,8 @@ checkBasicMCTriggers= cms.PSet(
                                  "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
                                  "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*",
                                  "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v*",
+                                 "HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*",
+                                 "HLT_Ele32_WPTight_Gsf_2017Seeds*"
                                  )
 )
 
