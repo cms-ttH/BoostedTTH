@@ -14,36 +14,11 @@ essentialMVAVarProcessor::~essentialMVAVarProcessor()
 void essentialMVAVarProcessor::Init(const InputCollections &input, VariableContainer &vars)
 {
   pointerToMVAvars->SetWP(CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, "DeepJet"));
-
-  vars.InitVar("Evt_E_PrimaryLepton");
-  vars.InitVar("Evt_M_PrimaryLepton");
-  vars.InitVar("Evt_Pt_PrimaryLepton");
-  vars.InitVar("Evt_Eta_PrimaryLepton");
-  vars.InitVar("Evt_Phi_PrimaryLepton");
-
-  vars.InitVar("Evt_M_MinDeltaRLeptonTaggedJet");
-  vars.InitVar("Evt_M_MinDeltaRLeptonJet");
-
-  vars.InitVar("Evt_Dr_MinDeltaRLeptonTaggedJet");
-  vars.InitVar("Evt_Dr_MinDeltaRLeptonJet");
-
-  vars.InitVar("Evt_M_JetsAverage");
-  vars.InitVar("Evt_M_TaggedJetsAverage");
-  vars.InitVar("Evt_M_UntaggedJetsAverage");
-
-  vars.InitVar("Evt_Eta_JetsAverage");
-  vars.InitVar("Evt_Eta_TaggedJetsAverage");
-  vars.InitVar("Evt_Eta_UntaggedJetsAverage");
-
-  vars.InitVar("Evt_JetPtOverJetE");
-
-  vars.InitVar("Evt_M_MedianTaggedJets");
-
-   // Vars from CommonClassifier:
+  // Vars from CommonClassifier:
   map<string, float> varMap = pointerToMVAvars->GetVariables();
   for (auto it = varMap.begin(); it != varMap.end(); it++)
   {
-    vars.InitVar("MVA_" + it->first);
+    vars.InitVar(it->first);
   }
 
   initialized = true;
@@ -54,138 +29,18 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   if (!initialized)
     cerr << "tree processor not initialized" << endl;
 
+  // which btagger to use
   std::string btagger = "DeepJet";
-  std::vector<pat::Jet> selectedTaggedJets;
-  std::vector<pat::Jet> selectedTaggedJetsT;
-  std::vector<pat::Jet> selectedTaggedJetsL;
-  std::vector<pat::Jet> selectedUntaggedJets;
-  for (std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet)
-  {
-    if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Medium, input.era))
-    {
-      selectedTaggedJets.push_back(*itJet);
-    }
-    else
-    {
-      selectedUntaggedJets.push_back(*itJet);
-    }
-    if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Loose, input.era))
-    {
-      selectedTaggedJetsL.push_back(*itJet);
-    }
-    if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Tight, input.era))
-    {
-      selectedTaggedJetsT.push_back(*itJet);
-    }
-  }
 
-  math::XYZTLorentzVector primLepVec = math::XYZTLorentzVector();
-  if (input.selectedElectrons.size() > 0 || input.selectedMuons.size() > 0)
-  {
-    primLepVec = BoostedUtils::GetPrimLepVec(input.selectedElectrons, input.selectedMuons);
-    vars.FillVar("Evt_E_PrimaryLepton", primLepVec.E());
-    vars.FillVar("Evt_M_PrimaryLepton", primLepVec.M());
-    vars.FillVar("Evt_Pt_PrimaryLepton", primLepVec.Pt());
-    vars.FillVar("Evt_Eta_PrimaryLepton", primLepVec.Eta());
-    vars.FillVar("Evt_Phi_PrimaryLepton", primLepVec.Phi());
-  }
-
-  // Fill CSV Variables
-  // All Jets
+  // csv ordered jets
   std::vector<double> csvJets;
   for (std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet)
   {
     csvJets.push_back(CSVHelper::GetJetCSV(*itJet, btagger));
   }
 
-  // Fill Variables for closest ak4 Jets
-  // Jet and Lepton
-  if (input.selectedJets.size() > 1 && (input.selectedElectrons.size() > 0 || input.selectedMuons.size() > 0))
-  {
-    int idClosestJet = -1;
-    float minDrLepJet = BoostedUtils::GetClosestLepJetID(idClosestJet, primLepVec, input.selectedJets);
-    math::XYZTLorentzVector closestJetVec = input.selectedJets[idClosestJet].p4();
-    vars.FillVar("Evt_M_MinDeltaRLeptonJet", (primLepVec + closestJetVec).M());
-    vars.FillVar("Evt_Dr_MinDeltaRLeptonJet", minDrLepJet);
-  }
-
-  // Tagged Jet and Lepton
-  if (selectedTaggedJets.size() > 1 && (input.selectedElectrons.size() > 0 || input.selectedMuons.size() > 0))
-  {
-    int idClosestTaggedJet = -1;
-    float minDrLepTaggedJet = BoostedUtils::GetClosestLepJetID(idClosestTaggedJet, primLepVec, selectedTaggedJets);
-    math::XYZTLorentzVector closestTaggedJetVec = selectedTaggedJets[idClosestTaggedJet].p4();
-    vars.FillVar("Evt_M_MinDeltaRLeptonTaggedJet", (primLepVec + closestTaggedJetVec).M());
-    vars.FillVar("Evt_Dr_MinDeltaRLeptonTaggedJet", minDrLepTaggedJet);
-  }
-
-  // JetRelation Variables
-  // All Jets
-  float mJetsAverage = 0;
-  float eJetsAverage = 0;
-  float ptJetsAverage = 0;
-  float etaJetsAverage = 0;
-
+  // jet vecs
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
-
-  for (std::vector<math::XYZTLorentzVector>::iterator itJetVec1 = jetvecs.begin(); itJetVec1 != jetvecs.end(); ++itJetVec1)
-  {
-    mJetsAverage += itJetVec1->M();
-    eJetsAverage += itJetVec1->E();
-    ptJetsAverage += itJetVec1->Pt();
-    etaJetsAverage += itJetVec1->Eta();
-  }
-  if (jetvecs.size() > 0)
-  {
-    mJetsAverage /= (float)jetvecs.size();
-    etaJetsAverage /= (float)jetvecs.size();
-  }
-  vars.FillVar("Evt_M_JetsAverage", mJetsAverage);
-  vars.FillVar("Evt_Eta_JetsAverage", etaJetsAverage);
-  vars.FillVar("Evt_JetPtOverJetE", ptJetsAverage / eJetsAverage);
-
-  // Tagged Jets
-  float mTaggedJetsAverage = 0;
-  float etaTaggedJetsAverage = 0;
-  vector<float> m2TaggedJets;
-
-  for (std::vector<pat::Jet>::iterator itTaggedJet1 = selectedTaggedJets.begin(); itTaggedJet1 != selectedTaggedJets.end(); ++itTaggedJet1)
-  {
-    math::XYZTLorentzVector taggedJetVec1 = itTaggedJet1->p4();
-
-    mTaggedJetsAverage += taggedJetVec1.M();
-    etaTaggedJetsAverage += taggedJetVec1.Eta();
-
-  }
-  if (selectedTaggedJets.size() > 0)
-  {
-    mTaggedJetsAverage /= (float)selectedTaggedJets.size();
-    etaTaggedJetsAverage /= (float)selectedTaggedJets.size();
-  }
-  sort(m2TaggedJets.begin(), m2TaggedJets.end(), std::greater<float>());
-
-  vars.FillVar("Evt_M_TaggedJetsAverage", mTaggedJetsAverage);
-  vars.FillVar("Evt_Eta_TaggedJetsAverage", etaTaggedJetsAverage);
-  if (m2TaggedJets.size() > 0)
-    vars.FillVar("Evt_M_MedianTaggedJets", m2TaggedJets.at(m2TaggedJets.size() / 2));
-
-  // Untagged Jets
-  float mUntaggedJetsAverage = 0;
-  float etaUntaggedJetsAverage = 0;
-  for (std::vector<pat::Jet>::iterator itUntaggedJet1 = selectedUntaggedJets.begin(); itUntaggedJet1 != selectedUntaggedJets.end(); ++itUntaggedJet1)
-  {
-    math::XYZTLorentzVector untaggedJetVec1 = itUntaggedJet1->p4();
-
-    mUntaggedJetsAverage += untaggedJetVec1.M();
-    etaUntaggedJetsAverage += untaggedJetVec1.Eta();
-  }
-  if (selectedUntaggedJets.size() > 0)
-  {
-    mUntaggedJetsAverage /= (float)selectedUntaggedJets.size();
-    etaUntaggedJetsAverage /= (float)selectedUntaggedJets.size();
-  }
-  vars.FillVar("Evt_M_UntaggedJetsAverage", mUntaggedJetsAverage);
-  vars.FillVar("Evt_Eta_UntaggedJetsAverage", etaUntaggedJetsAverage);
 
   // Ohio Variables
   std::vector<pat::Jet> selectedJetsLooseExclusive;
@@ -201,6 +56,7 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   }
   vector<TLorentzVector> jetvecsTL = BoostedUtils::GetTLorentzVectors(jetvecs);
   
+
   // Variables from CommonClassifier:
   vector<TLorentzVector> lepvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons, input.selectedMuons));
   TLorentzVector metP4 = BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
@@ -208,6 +64,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   varMap = pointerToMVAvars->GetMVAvars(lepvecs, jetvecsTL, csvJets, metP4);
   for (auto it = varMap.begin(); it != varMap.end(); it++)
   {
-    vars.FillVar("MVA_" + it->first, it->second);
+    vars.FillVar(it->first, it->second);
   }
 }
