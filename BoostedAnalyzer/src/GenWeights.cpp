@@ -24,13 +24,8 @@ void GenWeights::GetGenWeights(std::map<string, float>& weights,
     for (uint i = 0;i < weightnumber; i++) {
         const std::string& weight_id = LHEEvent.weights()[i].id;
         if(lhe_weights.find(weight_id)==lhe_weights.end()) continue;
-<<<<<<< HEAD
-        std::string weight_name = lhe_weights.at(weight_id);
-        // cout << weight_id << "   " << weight_name << endl;
-=======
         const std::string& weight_name = lhe_weights.at(weight_id);
 //         cout << weight_id << "   " << weight_name << endl;
->>>>>>> 4765b7c5879cf97bb96612c61e292d57272a058d
         weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
     }
     weights["Weight_LHECentral"]=LHE_central_weight;
