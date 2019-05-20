@@ -198,10 +198,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   
   
   vars.InitVar("Evt_MTW");
-  vars.InitVar("Evt_HT");
-  vars.InitVar("Evt_HT_Jets");
   vars.InitVar("Evt_M_Total");
-  vars.InitVar("Evt_MHT");
   
   vars.InitVars( "CSV","N_Jets" );
 //vars.InitVars( "CSV_DNN","N_Jets" );
@@ -515,35 +512,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     mtw = sqrt(2*(primLepVec.Pt()*input.correctedMET.corPt(pat::MET::Type1XY) - primLepVec.Px()*input.correctedMET.corPx(pat::MET::Type1XY) - primLepVec.Py()*input.correctedMET.corPy(pat::MET::Type1XY)));
   }
   vars.FillVar("Evt_MTW",mtw);
-  
-  // Fill Ht Variables
-  float ht = 0.;
-  float htjets = 0.;
-  float mht_px = 0.;
-  float mht_py = 0.;
-  for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
-    ht += itJet->pt();
-    htjets += itJet->pt();
-    mht_px += itJet->px();
-    mht_py += itJet->py();
-  }
-  for(std::vector<pat::Electron>::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle){
-    ht += itEle->pt();
-    mht_px += itEle->px();
-    mht_py += itEle->py();
-    
-  }
-  for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu){
-    ht += itMu->pt();
-    mht_px += itMu->px();
-    mht_py += itMu->py();
-    
-  }
-  ht += input.correctedMET.corPt(pat::MET::Type1XY);
-  
-  vars.FillVar("Evt_HT",ht);
-  vars.FillVar("Evt_MHT",sqrt( mht_px*mht_px + mht_py*mht_py ));
-  vars.FillVar("Evt_HT_Jets",htjets);
   
   // Fill Event Mass
   math::XYZTLorentzVector p4all;
