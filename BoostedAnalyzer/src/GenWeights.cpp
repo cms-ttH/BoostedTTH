@@ -25,7 +25,7 @@ void GenWeights::GetGenWeights(std::map<string, float>& weights,
         std::string weight_id = LHEEvent.weights()[i].id;
         if(lhe_weights.find(weight_id)==lhe_weights.end()) continue;
         std::string weight_name = lhe_weights.at(weight_id);
-//         cout << weight_id << "   " << weight_name << endl;
+        // cout << weight_id << "   " << weight_name << endl;
         weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
     }
     weights["Weight_LHECentral"]=LHE_central_weight;
@@ -78,10 +78,71 @@ bool GenWeights::GetLHAPDFWeight( std::map<string, float>& weights,
     weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_up"] = weight_up;
     weights["Weight_LHA_"+initializedPDFNames[p]/*+std::to_string(PDFs[0]->lhapdfID())*/+"_down"] = weight_down;
     
+
     // PS weights for samples containg ps weights
+    // see https://twiki.cern.ch/twiki/bin/view/CMS/TopModGen#Event_Generation
+    std::map<int,std::string> psweightsNameMap;
+    psweightsNameMap[0]="nominal"; 
+    psweightsNameMap[1]="nominal_replica"; 
+    
+    //reduced
+    psweightsNameMap[2]="isr_Red_up"; 
+    psweightsNameMap[3]="fsr_Red_up"; 
+    psweightsNameMap[4]="isr_Red_down"; 
+    psweightsNameMap[5]="fsr_Red_down"; 
+    //default
+    psweightsNameMap[6]="isr_Def_up"; 
+    psweightsNameMap[7]="fsr_Def_up"; 
+    psweightsNameMap[8]="isr_Def_down"; 
+    psweightsNameMap[9]="fsr_Def_down"; 
+    //conservative
+    psweightsNameMap[10]="isr_Con_up"; 
+    psweightsNameMap[11]="fsr_Con_up"; 
+    psweightsNameMap[12]="isr_Con_down"; 
+    psweightsNameMap[13]="fsr_Con_down"; 
+ 
+    //additional decorrelated weights
+    //see https://github.com/cms-sw/cmssw/blob/master/Configuration/Generator/python/PSweightsPythia/PythiaPSweightsSettings_cfi.py
+    // and https://indico.cern.ch/event/746817/contributions/3101385/attachments/1702410/2742087/psweights_mseidel.pdf
+    // 32
+    psweightsNameMap[13]="fsr_G2GG_muR_down";
+    psweightsNameMap[14]="fsr_G2GG_muR_up";
+    psweightsNameMap[16]="fsr_G2QQ_muR_down";
+    psweightsNameMap[16]="fsr_G2QQ_muR_up";
+    psweightsNameMap[17]="fsr_Q2QG_muR_down";
+    psweightsNameMap[18]="fsr_Q2QG_muR_up";
+    psweightsNameMap[19]="fsr_X2XG_muR_down";
+    psweightsNameMap[20]="fsr_X2XG_muR_up";
+    psweightsNameMap[21]="fsr_G2GG_cNS_down";
+    psweightsNameMap[22]="fsr_G2GG_cNS_up";
+    psweightsNameMap[23]="fsr_G2QQ_cNS_down";
+    psweightsNameMap[24]="fsr_G2QQ_cNS_up";
+    psweightsNameMap[25]="fsr_Q2QG_cNS_down";
+    psweightsNameMap[26]="fsr_Q2QG_cNS_up";
+    psweightsNameMap[27]="fsr_X2XG_cNS_down";
+    psweightsNameMap[28]="fsr_X2XG_cNS_up";
+    psweightsNameMap[29]="isr_G2GG_muR_down";
+    psweightsNameMap[30]="isr_G2GG_muR_up";
+    psweightsNameMap[31]="isr_G2QQ_muR_down";
+    psweightsNameMap[32]="isr_G2QQ_muR_up";
+    psweightsNameMap[33]="isr_Q2QG_muR_down";
+    psweightsNameMap[34]="isr_Q2QG_muR_up";
+    psweightsNameMap[35]="isr_X2XG_muR_down";
+    psweightsNameMap[36]="isr_X2XG_muR_up";
+    psweightsNameMap[37]="isr_G2GG_cNS_down";
+    psweightsNameMap[38]="isr_G2GG_cNS_up";
+    psweightsNameMap[39]="isr_G2QQ_cNS_down";
+    psweightsNameMap[40]="isr_G2QQ_cNS_up";
+    psweightsNameMap[41]="isr_Q2QG_cNS_down";
+    psweightsNameMap[42]="isr_Q2QG_cNS_up";
+    psweightsNameMap[43]="isr_X2XG_cNS_down";
+    psweightsNameMap[44]="isr_X2XG_cNS_up";   
+    
+    
     for(uint k=0;k<genInfos.weights().size();k++){
         auto index = std::to_string(k);
         weights["GenWeight_"+index] = genInfos.weights().at(k)/gen_weight;
+        weights["GenWeight_"+psweightsNameMap[k]] = genInfos.weights().at(k)/gen_weight;
     }
 
     //handle internal pdf weights
