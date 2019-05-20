@@ -21,15 +21,11 @@ void essentialMVAVarProcessor::Init(const InputCollections &input, VariableConta
   vars.InitVar("Evt_Eta_PrimaryLepton");
   vars.InitVar("Evt_Phi_PrimaryLepton");
 
-  vars.InitVar("Evt_M_MinDeltaRUntaggedJets");
   vars.InitVar("Evt_M_MinDeltaRLeptonTaggedJet");
   vars.InitVar("Evt_M_MinDeltaRLeptonJet");
 
-  vars.InitVar("Evt_Dr_MinDeltaRUntaggedJets");
   vars.InitVar("Evt_Dr_MinDeltaRLeptonTaggedJet");
   vars.InitVar("Evt_Dr_MinDeltaRLeptonJet");
-
-  vars.InitVar("Evt_Pt_MinDeltaRUntaggedJets");
 
   vars.InitVar("Evt_M_JetsAverage");
   vars.InitVar("Evt_M_TaggedJetsAverage");
@@ -38,12 +34,6 @@ void essentialMVAVarProcessor::Init(const InputCollections &input, VariableConta
   vars.InitVar("Evt_Eta_JetsAverage");
   vars.InitVar("Evt_Eta_TaggedJetsAverage");
   vars.InitVar("Evt_Eta_UntaggedJetsAverage");
-
-  vars.InitVar("Evt_M2_UntaggedJetsAverage");
-
-  vars.InitVar("Evt_Deta_UntaggedJetsAverage");
-
-  vars.InitVar("Evt_Dr_UntaggedJetsAverage");
 
   vars.InitVar("Evt_JetPtOverJetE");
 
@@ -109,18 +99,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   }
 
   // Fill Variables for closest ak4 Jets
-  // Untagged Jets
-  if (selectedUntaggedJets.size() > 1)
-  {
-    int idClosestUntaggedJet1 = -1;
-    int idClosestUntaggedJet2 = -1;
-    float minDrUntaggedJets = BoostedUtils::GetClosestJetIDs(idClosestUntaggedJet1, idClosestUntaggedJet2, selectedUntaggedJets);
-    math::XYZTLorentzVector closestUntaggedJetVec1 = selectedUntaggedJets[idClosestUntaggedJet1].p4();
-    math::XYZTLorentzVector closestUntaggedJetVec2 = selectedUntaggedJets[idClosestUntaggedJet2].p4();
-    vars.FillVar("Evt_M_MinDeltaRUntaggedJets", (closestUntaggedJetVec1 + closestUntaggedJetVec2).M());
-    vars.FillVar("Evt_Dr_MinDeltaRUntaggedJets", minDrUntaggedJets);
-    vars.FillVar("Evt_Pt_MinDeltaRUntaggedJets", (closestUntaggedJetVec1 + closestUntaggedJetVec2).Pt());
-  }
   // Jet and Lepton
   if (input.selectedJets.size() > 1 && (input.selectedElectrons.size() > 0 || input.selectedMuons.size() > 0))
   {
@@ -147,10 +125,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   float eJetsAverage = 0;
   float ptJetsAverage = 0;
   float etaJetsAverage = 0;
-  float m2JetsAverage = 0;
-  float detaJetsAverage = 0;
-  float drJetsAverage = 0;
-  int nPairsJets = 0;
 
   std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
 
@@ -160,14 +134,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
     eJetsAverage += itJetVec1->E();
     ptJetsAverage += itJetVec1->Pt();
     etaJetsAverage += itJetVec1->Eta();
-
-    for (std::vector<math::XYZTLorentzVector>::iterator itJetVec2 = itJetVec1 + 1; itJetVec2 != jetvecs.end(); ++itJetVec2)
-    {
-      m2JetsAverage += (*itJetVec1 + *itJetVec2).M();
-      detaJetsAverage += fabs(itJetVec1->Eta() - itJetVec2->Eta());
-      drJetsAverage += BoostedUtils::DeltaR(*itJetVec1, *itJetVec2);
-      nPairsJets++;
-    }
   }
   if (jetvecs.size() > 0)
   {
@@ -183,7 +149,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   float etaTaggedJetsAverage = 0;
   vector<float> m2TaggedJets;
 
-  int nPairsTaggedJets = 0;
   for (std::vector<pat::Jet>::iterator itTaggedJet1 = selectedTaggedJets.begin(); itTaggedJet1 != selectedTaggedJets.end(); ++itTaggedJet1)
   {
     math::XYZTLorentzVector taggedJetVec1 = itTaggedJet1->p4();
@@ -191,13 +156,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
     mTaggedJetsAverage += taggedJetVec1.M();
     etaTaggedJetsAverage += taggedJetVec1.Eta();
 
-    for (std::vector<pat::Jet>::iterator itTaggedJet2 = itTaggedJet1 + 1; itTaggedJet2 != selectedTaggedJets.end(); ++itTaggedJet2)
-    {
-      math::XYZTLorentzVector taggedJetVec2 = itTaggedJet2->p4();
-
-      m2TaggedJets.push_back((taggedJetVec1 + taggedJetVec2).M());
-      nPairsTaggedJets++;
-    }
   }
   if (selectedTaggedJets.size() > 0)
   {
@@ -214,44 +172,20 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   // Untagged Jets
   float mUntaggedJetsAverage = 0;
   float etaUntaggedJetsAverage = 0;
-  float m2UntaggedJetsAverage = 0;
-  float detaUntaggedJetsAverage = 0;
-  float drUntaggedJetsAverage = 0;
-  int nPairsUntaggedJets = 0;
   for (std::vector<pat::Jet>::iterator itUntaggedJet1 = selectedUntaggedJets.begin(); itUntaggedJet1 != selectedUntaggedJets.end(); ++itUntaggedJet1)
   {
     math::XYZTLorentzVector untaggedJetVec1 = itUntaggedJet1->p4();
 
     mUntaggedJetsAverage += untaggedJetVec1.M();
     etaUntaggedJetsAverage += untaggedJetVec1.Eta();
-
-    for (std::vector<pat::Jet>::iterator itUntaggedJet2 = itUntaggedJet1 + 1; itUntaggedJet2 != selectedUntaggedJets.end(); ++itUntaggedJet2)
-    {
-      math::XYZTLorentzVector untaggedJetVec2 = itUntaggedJet2->p4();
-      m2UntaggedJetsAverage += (untaggedJetVec1 + untaggedJetVec2).M();
-      detaUntaggedJetsAverage += fabs(untaggedJetVec1.Eta() - untaggedJetVec2.Eta());
-      drUntaggedJetsAverage += BoostedUtils::DeltaR(untaggedJetVec1, untaggedJetVec2);
-      //       dktUntaggedJetsAverage += BoostedUtils::DeltaKt(untaggedJetVec1,untaggedJetVec2);
-      nPairsUntaggedJets++;
-    }
   }
   if (selectedUntaggedJets.size() > 0)
   {
     mUntaggedJetsAverage /= (float)selectedUntaggedJets.size();
     etaUntaggedJetsAverage /= (float)selectedUntaggedJets.size();
   }
-  if (nPairsUntaggedJets > 0)
-  {
-    m2UntaggedJetsAverage /= nPairsUntaggedJets;
-    detaUntaggedJetsAverage /= nPairsUntaggedJets;
-    drUntaggedJetsAverage /= nPairsUntaggedJets;
-    //     dktUntaggedJetsAverage /= nPairsUntaggedJets;
-  }
   vars.FillVar("Evt_M_UntaggedJetsAverage", mUntaggedJetsAverage);
   vars.FillVar("Evt_Eta_UntaggedJetsAverage", etaUntaggedJetsAverage);
-  vars.FillVar("Evt_M2_UntaggedJetsAverage", m2UntaggedJetsAverage);
-  vars.FillVar("Evt_Deta_UntaggedJetsAverage", detaUntaggedJetsAverage);
-  vars.FillVar("Evt_Dr_UntaggedJetsAverage", drUntaggedJetsAverage);
 
   // Ohio Variables
   std::vector<pat::Jet> selectedJetsLooseExclusive;
