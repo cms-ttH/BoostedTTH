@@ -16,7 +16,7 @@ essentialMVAVarProcessor::~essentialMVAVarProcessor()
 void essentialMVAVarProcessor::Init(const InputCollections &input, VariableContainer &vars)
 {
     // which btagger to use
-    std::string btagger = "DeepJet";
+    btagger = "DeepJet";
 
     // set CSVWp 
     pointerToMVAvars->SetWP(CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, btagger));
