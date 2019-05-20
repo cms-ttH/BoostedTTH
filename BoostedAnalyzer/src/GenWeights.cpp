@@ -22,10 +22,15 @@ void GenWeights::GetGenWeights(std::map<string, float>& weights,
     const double LHE_central_weight = LHEEvent.originalXWGTUP();
     //loop over every generator weight available and add the weight with its corresponding name to the weights map. the name is derived with the generator id and the lhe_weights map which maps the weight id to the corresponding name
     for (uint i = 0;i < weightnumber; i++) {
-        std::string weight_id = LHEEvent.weights()[i].id;
+        const std::string& weight_id = LHEEvent.weights()[i].id;
         if(lhe_weights.find(weight_id)==lhe_weights.end()) continue;
+<<<<<<< HEAD
         std::string weight_name = lhe_weights.at(weight_id);
         // cout << weight_id << "   " << weight_name << endl;
+=======
+        const std::string& weight_name = lhe_weights.at(weight_id);
+//         cout << weight_id << "   " << weight_name << endl;
+>>>>>>> 4765b7c5879cf97bb96612c61e292d57272a058d
         weights[weight_name] = LHEEvent.weights()[i].wgt/LHE_central_weight;
     }
     weights["Weight_LHECentral"]=LHE_central_weight;
@@ -227,7 +232,7 @@ bool GenWeights::initLHAPDF(string name){
 bool GenWeights::initLHAPDF(vector<string> names){
   // initialize the LHAPDFs
   cout << "Initializing additional PDFs for reweighting:" << endl;
-  for( auto name: names ){
+  for(const auto& name: names ){
 
     LHAPDF::PDFSet PDFSet(name);
     std::vector<LHAPDF::PDF*> PDFs = PDFSet.mkPDFs();
@@ -402,6 +407,8 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
         }
         if(is_scale_var) line="Weight_"+name_string+"_muR_"+mur+"_muF_"+muf;
 //         cout << lineAsPrinted<<" " <<line << "   " << id << endl;
+        // hack to exclude all pdf variations not belonging to NNPDF31_nnlo_hessian_pdfas pdfset. They have lhaids 306000-306102
+        if(line.Contains("pdf_variation") && !line.Contains("_306")) continue;
         // add the unique weightid and the corresponding name to a map to use later when reading the weights from the events
         lhe_weights[std::string(id)]=line;
         }
