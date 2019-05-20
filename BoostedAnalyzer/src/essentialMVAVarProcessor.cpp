@@ -21,13 +21,6 @@ void essentialMVAVarProcessor::Init(const InputCollections &input, VariableConta
   vars.InitVar("Evt_Eta_PrimaryLepton");
   vars.InitVar("Evt_Phi_PrimaryLepton");
 
-  vars.InitVar("Evt_CSV_Average");
-  vars.InitVar("Evt_CSV_Min");
-  vars.InitVar("Evt_CSV_Dev");
-  vars.InitVar("Evt_CSV_Average_Tagged");
-  vars.InitVar("Evt_CSV_Min_Tagged");
-  vars.InitVar("Evt_CSV_Dev_Tagged");
-
   vars.InitVar("Evt_M_MinDeltaRJets");
   vars.InitVar("Evt_M_MinDeltaRTaggedJets");
   vars.InitVar("Evt_M_MinDeltaRUntaggedJets");
@@ -134,26 +127,7 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   }
   std::vector<double> csvJetsSorted = csvJets;
   std::sort(csvJetsSorted.begin(), csvJetsSorted.end(), std::greater<double>());
-  vars.FillVar("Evt_CSV_Min", csvJetsSorted.size() > 0 ? csvJetsSorted.back() : -.1);
 
-  float averageCSV = 0;
-  for (std::vector<double>::iterator itCSV = csvJetsSorted.begin(); itCSV != csvJetsSorted.end(); ++itCSV)
-  {
-    averageCSV += fmax(*itCSV, 0);
-  }
-  averageCSV /= csvJetsSorted.size();
-  vars.FillVar("Evt_CSV_Average", averageCSV);
-
-  float csvDev = 0;
-  for (std::vector<double>::iterator itCSV = csvJetsSorted.begin(); itCSV != csvJetsSorted.end(); ++itCSV)
-  {
-    csvDev += fabs(pow(*itCSV - averageCSV, 2));
-  }
-  if (csvJetsSorted.size() > 0)
-    csvDev /= csvJetsSorted.size();
-  else
-    csvDev = -1.;
-  vars.FillVar("Evt_CSV_Dev", csvDev);
 
   // Tagged Jets
   vector<float> csvTaggedJets;
@@ -162,27 +136,7 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
     csvTaggedJets.push_back(CSVHelper::GetJetCSV(*itTaggedJet, btagger));
   }
   sort(csvTaggedJets.begin(), csvTaggedJets.end(), std::greater<float>());
-  vars.FillVar("Evt_CSV_Min_Tagged", csvTaggedJets.size() > 0 ? csvTaggedJets.back() : -.1);
 
-  float averageCSVTagged = 0;
-  for (std::vector<float>::iterator itCSVTagged = csvTaggedJets.begin(); itCSVTagged != csvTaggedJets.end(); ++itCSVTagged)
-  {
-    averageCSVTagged += fmax(*itCSVTagged, 0);
-  }
-  averageCSVTagged /= csvTaggedJets.size();
-  vars.FillVar("Evt_CSV_Average_Tagged", averageCSVTagged);
-
-  float csvDevTagged = 0;
-  for (std::vector<float>::iterator itCSVTagged = csvTaggedJets.begin(); itCSVTagged != csvTaggedJets.end(); ++itCSVTagged)
-  {
-    csvDevTagged += fabs(pow(*itCSVTagged - averageCSVTagged, 2));
-  }
-  if (csvTaggedJets.size() > 0)
-    csvDevTagged /= csvTaggedJets.size();
-  else
-    csvDevTagged = -1.;
-
-  vars.FillVar("Evt_CSV_Dev_Tagged", csvDevTagged);
   // Fill Variables for closest ak4 Jets
   // All Jets
   if (input.selectedJets.size() > 1)
