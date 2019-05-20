@@ -40,7 +40,6 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "LooseJet_Phi","N_LooseJets" );
   vars.InitVars( "LooseJet_Eta","N_LooseJets" );
   vars.InitVars( "LooseJet_CSV","N_LooseJets" );
-  //vars.InitVars( "LooseJet_CSV_DNN","N_LooseJets" );
   vars.InitVars( "LooseJet_Flav","N_LooseJets" );
   vars.InitVars( "LooseJet_PartonFlav","N_LooseJets" );
   vars.InitVars( "LooseJet_Charge","N_LooseJets" );
@@ -69,7 +68,6 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   vars.InitVars( "Jet_Phi","N_Jets" );
   vars.InitVars( "Jet_Eta","N_Jets" );
   vars.InitVars( "Jet_CSV","N_Jets" );
-  //vars.InitVars( "Jet_CSV_DNN","N_Jets" );
   vars.InitVars( "Jet_Flav","N_Jets" );
   vars.InitVars( "Jet_PartonFlav","N_Jets" );
   vars.InitVars( "Jet_Charge","N_Jets" );
@@ -190,17 +188,13 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
   
   
   
-  vars.InitVar( "Evt_Pt_MET" );
-  vars.InitVar( "Evt_Phi_MET" );
-  vars.InitVar( "Evt_Pt_GenMET" );
-  vars.InitVar( "Evt_Phi_GenMET" );
-
+  vars.InitVar( "Evt_MET_Pt" );
+  vars.InitVar( "Evt_MET_Phi" );
+  vars.InitVar( "Gen_MET_Pt" );
+  vars.InitVar( "Gen_MET_Phi" );
   
-  
-  vars.InitVar("Evt_M_Total");
   
   vars.InitVars( "CSV","N_Jets" );
-//vars.InitVars( "CSV_DNN","N_Jets" );
   initialized=true;
 }
 
@@ -261,7 +255,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVars( "Jet_Eta",iJet,itJet->eta() );
     vars.FillVars( "Jet_Phi",iJet,itJet->phi() );
     vars.FillVars( "Jet_CSV",iJet,CSVHelper::GetJetCSV(*itJet,btagger) );
-    //vars.FillVars( "Jet_CSV_DNN",iJet,CSVHelper::GetJetCSV_DNN(*itJet,btagger) );
     vars.FillVars( "Jet_Flav",iJet,itJet->hadronFlavour() );
     vars.FillVars( "Jet_PartonFlav",iJet,itJet->partonFlavour() );
     vars.FillVars( "Jet_Charge",iJet,itJet->jetCharge() );
@@ -494,26 +487,15 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     }
   }
   
-  vars.FillVar( "Evt_Pt_MET",input.correctedMET.corPt(pat::MET::Type1XY) );
-  vars.FillVar( "Evt_Phi_MET",input.correctedMET.corPhi(pat::MET::Type1XY) );
+  vars.FillVar( "Evt_MET_Pt",input.correctedMET.corPt(pat::MET::Type1XY) );
+  vars.FillVar( "Evt_MET_Phi",input.correctedMET.corPhi(pat::MET::Type1XY) );
   if(input.correctedMET.genMET()!=0){
-      vars.FillVar( "Evt_Pt_GenMET",input.correctedMET.genMET()->pt() );
-      vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
+      vars.FillVar( "Gen_MET_Pt",input.correctedMET.genMET()->pt() );
+      vars.FillVar( "Gen_MET_Phi",input.correctedMET.genMET()->phi() );
   }
   
-  std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
-  math::XYZTLorentzVector metvec = input.correctedMET.corP4(pat::MET::Type1XY);
-
-  // Fill Event Mass
-  math::XYZTLorentzVector p4all;
-  for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin() ; itJetVec != jetvecs.end(); ++itJetVec){
-    p4all += *itJetVec;
-  }
-  for(std::vector<math::XYZTLorentzVector>::iterator itLep = looseLeptonVecs.begin() ; itLep != looseLeptonVecs.end(); ++itLep){
-    p4all += *itLep;
-  }
-  p4all += metvec;
-  vars.FillVar("Evt_M_Total",p4all.M());
+  //std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
+  //math::XYZTLorentzVector metvec = input.correctedMET.corP4(pat::MET::Type1XY);
   
   // Fill Number of b Tags
   vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );  
@@ -521,25 +503,17 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
   vars.FillVar( "N_BTagsT",selectedTaggedJetsT.size() );
   
   // Fill CSV Variables
-  // All Jets
   std::vector<double> csvJets;
-  //std::vector<double> csvJets_DNN;
   for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet){
     csvJets.push_back(CSVHelper::GetJetCSV(*itJet,btagger));
-    //csvJets_DNN.push_back(CSVHelper::GetJetCSV_DNN(*itJet,btagger));
   }
+
   std::vector<double> csvJetsSorted=csvJets;
-  //std::vector<double> csvJetsSorted_DNN=csvJets_DNN;
   std::sort(csvJetsSorted.begin(),csvJetsSorted.end(),std::greater<double>());
-  //std::sort(csvJetsSorted_DNN.begin(),csvJetsSorted_DNN.end(),std::greater<double>());
   
   for(std::vector<double>::iterator itCSV = csvJetsSorted.begin() ; itCSV != csvJetsSorted.end(); ++itCSV){
     int iCSV = itCSV - csvJetsSorted.begin();
     vars.FillVars("CSV" ,iCSV,*itCSV);
   }
-  //for(std::vector<double>::iterator itCSV = csvJetsSorted_DNN.begin() ; itCSV != csvJetsSorted_DNN.end(); ++itCSV){
-  //  int iCSV = itCSV - csvJetsSorted_DNN.begin();
-  //  vars.FillVars("CSV" ,iCSV,*itCSV);
-  //}
 
 }
