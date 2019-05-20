@@ -21,20 +21,14 @@ void essentialMVAVarProcessor::Init(const InputCollections &input, VariableConta
   vars.InitVar("Evt_Eta_PrimaryLepton");
   vars.InitVar("Evt_Phi_PrimaryLepton");
 
-  vars.InitVar("Evt_M_MinDeltaRJets");
-  vars.InitVar("Evt_M_MinDeltaRTaggedJets");
   vars.InitVar("Evt_M_MinDeltaRUntaggedJets");
   vars.InitVar("Evt_M_MinDeltaRLeptonTaggedJet");
   vars.InitVar("Evt_M_MinDeltaRLeptonJet");
 
-  vars.InitVar("Evt_Dr_MinDeltaRJets");
-  vars.InitVar("Evt_Dr_MinDeltaRTaggedJets");
   vars.InitVar("Evt_Dr_MinDeltaRUntaggedJets");
   vars.InitVar("Evt_Dr_MinDeltaRLeptonTaggedJet");
   vars.InitVar("Evt_Dr_MinDeltaRLeptonJet");
 
-  vars.InitVar("Evt_Pt_MinDeltaRJets");
-  vars.InitVar("Evt_Pt_MinDeltaRTaggedJets");
   vars.InitVar("Evt_Pt_MinDeltaRUntaggedJets");
 
   vars.InitVar("Evt_M_JetsAverage");
@@ -45,25 +39,13 @@ void essentialMVAVarProcessor::Init(const InputCollections &input, VariableConta
   vars.InitVar("Evt_Eta_TaggedJetsAverage");
   vars.InitVar("Evt_Eta_UntaggedJetsAverage");
 
-  vars.InitVar("Evt_M2_JetsAverage");
-  vars.InitVar("Evt_M2_TaggedJetsAverage");
   vars.InitVar("Evt_M2_UntaggedJetsAverage");
 
-  vars.InitVar("Evt_Deta_JetsAverage");
-  vars.InitVar("Evt_Deta_TaggedJetsAverage");
   vars.InitVar("Evt_Deta_UntaggedJetsAverage");
 
-  vars.InitVar("Evt_Dr_JetsAverage");
-  vars.InitVar("Evt_Dr_TaggedJetsAverage");
   vars.InitVar("Evt_Dr_UntaggedJetsAverage");
 
-  vars.InitVar("Evt_M_TaggedJetsClosestTo125");
-
   vars.InitVar("Evt_JetPtOverJetE");
-
-  vars.InitVar("Evt_Jet_MaxDeta_Jets");
-  vars.InitVar("Evt_TaggedJet_MaxDeta_Jets");
-  vars.InitVar("Evt_TaggedJet_MaxDeta_TaggedJets");
 
   vars.InitVar("Evt_M_MedianTaggedJets");
 
@@ -127,30 +109,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   }
 
   // Fill Variables for closest ak4 Jets
-  // All Jets
-  if (input.selectedJets.size() > 1)
-  {
-    int idClosestJet1 = -1;
-    int idClosestJet2 = -1;
-    float minDrJets = BoostedUtils::GetClosestJetIDs(idClosestJet1, idClosestJet2, input.selectedJets);
-    math::XYZTLorentzVector closestJetVec1 = input.selectedJets[idClosestJet1].p4();
-    math::XYZTLorentzVector closestJetVec2 = input.selectedJets[idClosestJet2].p4();
-    vars.FillVar("Evt_M_MinDeltaRJets", (closestJetVec1 + closestJetVec2).M());
-    vars.FillVar("Evt_Dr_MinDeltaRJets", minDrJets);
-    vars.FillVar("Evt_Pt_MinDeltaRJets", (closestJetVec1 + closestJetVec2).Pt());
-  }
-  // Tagged Jets
-  if (selectedTaggedJets.size() > 1)
-  {
-    int idClosestTaggedJet1 = -1;
-    int idClosestTaggedJet2 = -1;
-    float minDrTaggedJets = BoostedUtils::GetClosestJetIDs(idClosestTaggedJet1, idClosestTaggedJet2, selectedTaggedJets);
-    math::XYZTLorentzVector closestTaggedJetVec1 = selectedTaggedJets[idClosestTaggedJet1].p4();
-    math::XYZTLorentzVector closestTaggedJetVec2 = selectedTaggedJets[idClosestTaggedJet2].p4();
-    vars.FillVar("Evt_M_MinDeltaRTaggedJets", (closestTaggedJetVec1 + closestTaggedJetVec2).M());
-    vars.FillVar("Evt_Dr_MinDeltaRTaggedJets", minDrTaggedJets);
-    vars.FillVar("Evt_Pt_MinDeltaRTaggedJets", (closestTaggedJetVec1 + closestTaggedJetVec2).Pt());
-  }
   // Untagged Jets
   if (selectedUntaggedJets.size() > 1)
   {
@@ -216,27 +174,14 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
     mJetsAverage /= (float)jetvecs.size();
     etaJetsAverage /= (float)jetvecs.size();
   }
-  if (nPairsJets > 0)
-  {
-    m2JetsAverage /= (float)nPairsJets;
-    detaJetsAverage /= (float)nPairsJets;
-    drJetsAverage /= (float)nPairsJets;
-  }
   vars.FillVar("Evt_M_JetsAverage", mJetsAverage);
   vars.FillVar("Evt_Eta_JetsAverage", etaJetsAverage);
-  vars.FillVar("Evt_M2_JetsAverage", m2JetsAverage);
-  vars.FillVar("Evt_Deta_JetsAverage", detaJetsAverage);
-  vars.FillVar("Evt_Dr_JetsAverage", drJetsAverage);
   vars.FillVar("Evt_JetPtOverJetE", ptJetsAverage / eJetsAverage);
 
   // Tagged Jets
   float mTaggedJetsAverage = 0;
   float etaTaggedJetsAverage = 0;
-  float m2TaggedJetsAverage = 0;
   vector<float> m2TaggedJets;
-  float m2TaggedJetsClosestTo125 = -999;
-  float detaTaggedJetsAverage = 0;
-  float drTaggedJetsAverage = 0;
 
   int nPairsTaggedJets = 0;
   for (std::vector<pat::Jet>::iterator itTaggedJet1 = selectedTaggedJets.begin(); itTaggedJet1 != selectedTaggedJets.end(); ++itTaggedJet1)
@@ -251,11 +196,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
       math::XYZTLorentzVector taggedJetVec2 = itTaggedJet2->p4();
 
       m2TaggedJets.push_back((taggedJetVec1 + taggedJetVec2).M());
-      m2TaggedJetsAverage += m2TaggedJets.back();
-      if (fabs(m2TaggedJets.back() - 125) < fabs(m2TaggedJetsClosestTo125 - 125))
-        m2TaggedJetsClosestTo125 = m2TaggedJets.back();
-      detaTaggedJetsAverage += fabs(taggedJetVec1.Eta() - taggedJetVec2.Eta());
-      drTaggedJetsAverage += BoostedUtils::DeltaR(taggedJetVec1, taggedJetVec2);
       nPairsTaggedJets++;
     }
   }
@@ -264,22 +204,12 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
     mTaggedJetsAverage /= (float)selectedTaggedJets.size();
     etaTaggedJetsAverage /= (float)selectedTaggedJets.size();
   }
-  if (nPairsTaggedJets > 0)
-  {
-    m2TaggedJetsAverage /= (float)nPairsTaggedJets;
-    detaTaggedJetsAverage /= (float)nPairsTaggedJets;
-    drTaggedJetsAverage /= (float)nPairsTaggedJets;
-  }
   sort(m2TaggedJets.begin(), m2TaggedJets.end(), std::greater<float>());
 
   vars.FillVar("Evt_M_TaggedJetsAverage", mTaggedJetsAverage);
   vars.FillVar("Evt_Eta_TaggedJetsAverage", etaTaggedJetsAverage);
-  vars.FillVar("Evt_M2_TaggedJetsAverage", m2TaggedJetsAverage);
   if (m2TaggedJets.size() > 0)
     vars.FillVar("Evt_M_MedianTaggedJets", m2TaggedJets.at(m2TaggedJets.size() / 2));
-  vars.FillVar("Evt_M_TaggedJetsClosestTo125", m2TaggedJetsClosestTo125);
-  vars.FillVar("Evt_Deta_TaggedJetsAverage", detaTaggedJetsAverage);
-  vars.FillVar("Evt_Dr_TaggedJetsAverage", drTaggedJetsAverage);
 
   // Untagged Jets
   float mUntaggedJetsAverage = 0;
@@ -322,11 +252,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   vars.FillVar("Evt_M2_UntaggedJetsAverage", m2UntaggedJetsAverage);
   vars.FillVar("Evt_Deta_UntaggedJetsAverage", detaUntaggedJetsAverage);
   vars.FillVar("Evt_Dr_UntaggedJetsAverage", drUntaggedJetsAverage);
-
-  // DeltaEta of Jets
-  vars.FillVar("Evt_Jet_MaxDeta_Jets", BoostedUtils::GetJetAverageJetEtaMax(input.selectedJets, input.selectedJets));
-  vars.FillVar("Evt_TaggedJet_MaxDeta_Jets", BoostedUtils::GetJetAverageJetEtaMax(input.selectedJets, selectedTaggedJets));
-  vars.FillVar("Evt_TaggedJet_MaxDeta_TaggedJets", BoostedUtils::GetJetAverageJetEtaMax(selectedTaggedJets, selectedTaggedJets));
 
   // Ohio Variables
   std::vector<pat::Jet> selectedJetsLooseExclusive;
