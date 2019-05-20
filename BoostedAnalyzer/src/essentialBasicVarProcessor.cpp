@@ -197,8 +197,6 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
 
   
   
-  vars.InitVar("Evt_M3");
-//vars.InitVar("Evt_M3_OneJetTagged");
   vars.InitVar("Evt_MTW");
   vars.InitVar("Evt_HT");
   vars.InitVar("Evt_HT_Jets");
@@ -507,43 +505,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
   }
   
-  std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
-  math::XYZTLorentzVector metvec = input.correctedMET.corP4(pat::MET::Type1XY);
-  
-  // Fill M3 Variables
-  float m3 = -1.;
-  float maxpt=-1;
-  for(std::vector<math::XYZTLorentzVector>::iterator itJetVec1 = jetvecs.begin() ; itJetVec1 != jetvecs.end(); ++itJetVec1){
-    for(std::vector<math::XYZTLorentzVector>::iterator itJetVec2 = itJetVec1+1 ; itJetVec2 != jetvecs.end(); ++itJetVec2){
-      for(std::vector<math::XYZTLorentzVector>::iterator itJetVec3 = itJetVec2+1 ; itJetVec3 != jetvecs.end(); ++itJetVec3){
-    
-        math::XYZTLorentzVector m3vec = *itJetVec1 + *itJetVec2 + *itJetVec3;
-        
-	      if(m3vec.Pt() > maxpt){
-	        maxpt = m3vec.Pt();
-	        m3 = m3vec.M();
-	      }
-      } 
-    }
-  }
-  vars.FillVar("Evt_M3",m3);
-//   float m3tagged = -1.;
-  float maxpttagged=-1.;
-  for(std::vector<pat::Jet>::iterator itJetUntagged1 = selectedUntaggedJets.begin() ; itJetUntagged1 != selectedUntaggedJets.end(); ++itJetUntagged1){
-    for(std::vector<pat::Jet>::iterator itJetUntagged2 = itJetUntagged1+1 ; itJetUntagged2 != selectedUntaggedJets.end(); ++itJetUntagged2){
-      for(std::vector<pat::Jet>::iterator itJetTagged = selectedTaggedJets.begin() ; itJetTagged != selectedTaggedJets.end(); ++itJetTagged){
-        
-        math::XYZTLorentzVector m3vec = itJetUntagged1->p4() + itJetUntagged2->p4() + itJetTagged->p4();
-	      
-        if(m3vec.Pt() > maxpttagged){
-	        maxpttagged = m3vec.Pt();
-// 	        m3tagged = m3vec.M();
-	      }
-      } 
-    }
-  }
- 
-//   vars.FillVar("Evt_M3_OneJetTagged",m3tagged);
   // Fill MTW
   math::XYZTLorentzVector primLepVec = math::XYZTLorentzVector();
   float mtw = -1.;
