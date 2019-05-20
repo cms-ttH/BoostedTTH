@@ -505,6 +505,9 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
       vars.FillVar( "Evt_Phi_GenMET",input.correctedMET.genMET()->phi() );
   }
   
+  std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
+  math::XYZTLorentzVector metvec = input.correctedMET.corP4(pat::MET::Type1XY);
+
   // Fill MTW
   math::XYZTLorentzVector primLepVec = math::XYZTLorentzVector();
   float mtw = -1.;
