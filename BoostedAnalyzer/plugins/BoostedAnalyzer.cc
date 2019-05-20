@@ -93,6 +93,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DNNVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/essentialRecoVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedAk4VarProcessor.hpp"
@@ -471,6 +472,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
         }
         if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
+        }
+        if(std::find(processorNames.begin(),processorNames.end(),"essentialRecoVarProcessor")!=processorNames.end()) {
+            treewriter->AddTreeProcessor(new essentialRecoVarProcessor(),"essentialRecoVarProcessor");
         }
        
     if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
