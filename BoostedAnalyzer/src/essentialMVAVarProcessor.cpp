@@ -125,17 +125,6 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
   {
     csvJets.push_back(CSVHelper::GetJetCSV(*itJet, btagger));
   }
-  std::vector<double> csvJetsSorted = csvJets;
-  std::sort(csvJetsSorted.begin(), csvJetsSorted.end(), std::greater<double>());
-
-
-  // Tagged Jets
-  vector<float> csvTaggedJets;
-  for (std::vector<pat::Jet>::iterator itTaggedJet = selectedTaggedJets.begin(); itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet)
-  {
-    csvTaggedJets.push_back(CSVHelper::GetJetCSV(*itTaggedJet, btagger));
-  }
-  sort(csvTaggedJets.begin(), csvTaggedJets.end(), std::greater<float>());
 
   // Fill Variables for closest ak4 Jets
   // All Jets
