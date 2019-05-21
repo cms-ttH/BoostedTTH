@@ -141,7 +141,7 @@ bool GenWeights::GetLHAPDFWeight( std::map<string, float>& weights,
     
     for(uint k=0;k<genInfos.weights().size();k++){
         auto index = std::to_string(k);
-        weights["GenWeight_"+index] = genInfos.weights().at(k)/gen_weight;
+        // weights["GenWeight_"+index] = genInfos.weights().at(k)/gen_weight;
         weights["GenWeight_"+psweightsNameMap[k]] = genInfos.weights().at(k)/gen_weight;
     }
 
