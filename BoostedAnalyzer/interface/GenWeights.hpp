@@ -40,6 +40,8 @@ private:
   std::map<std::string,std::string> lhe_weights;
   bool LHAPDFinitialized;
   bool initialized;
+  std::map<int,std::string> psweightsNameMap;
+
   
 };
 
