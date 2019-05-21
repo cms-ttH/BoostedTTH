@@ -57,13 +57,10 @@ Do for example:
     # install common classifier (currently work in progress)
     mkdir TTH
     cd TTH
+    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git CommonClassifier -b 10_2X_MVAvars
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
-      # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
-      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_MVAvars
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
     elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
-      # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier
-      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_MVAvars
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone
     else
       echo "WRONG CMSSW VERSION"
@@ -78,7 +75,7 @@ Do for example:
     sed -i '6i#include "LHAPDF/LHAPDF.h"' MEIntegratorStandalone/interface/Integrand.h
     sed -i '32i /*' MEIntegratorStandalone/interface/Integrand.h
     sed -i '44i */' MEIntegratorStandalone/interface/Integrand.h
-    # install reco likelihood variables
+    # install reco likelihood variables (deprecated?)
     source CommonClassifier/setup/install_recoLikelihood.sh
     
     # install miniaod and boostedtth
