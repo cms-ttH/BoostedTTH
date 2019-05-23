@@ -21,6 +21,7 @@ public:
 
 private:
   std::map<std::string, float> varMap;
+  std::string btagger;
   //MVAvars from CommonClassifier classifier for sl channel
   std::unique_ptr<MVAvars> pointerToMVAvars = nullptr;
 };
