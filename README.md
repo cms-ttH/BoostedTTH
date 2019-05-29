@@ -59,17 +59,16 @@ Do for example:
     cd TTH
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
       # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
-      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_MVAvars
+      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_ttZReconstruction
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
     elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
       # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier
-      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_MVAvars
+      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_ttZReconstruction
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone
     else
       echo "WRONG CMSSW VERSION"
       return 1
     fi
-    git clone https://gitlab.cern.ch/kit-cn-cms-public/RecoLikelihoodReconstruction.git RecoLikelihoodReconstruction
     mkdir -p $CMSSW_BASE/lib/$SCRAM_ARCH/
     cp -R MEIntegratorStandalone/libs/* $CMSSW_BASE/lib/$SCRAM_ARCH/
     scram setup lhapdf
