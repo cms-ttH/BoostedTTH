@@ -145,6 +145,10 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "GenForwardQuark_E",-9. );
   vars.InitVar( "GenForwardQuark_PDGID",-999 );
 
+
+  // for ttbar dR matching
+  vars.InitVar("Gen_ttbar_matched", 0, "I");
+  vars.InitVar("Gen_ttH_matched", 0, "I");
   initialized = true;
 }
 
@@ -468,4 +472,115 @@ bool dfirst=true;
     vars.FillVar( "GenForwardQuark_E",forward_quark.energy());
     vars.FillVar( "GenForwardQuark_PDGID",forward_quark.pdgId());
   }
+
+    if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()&&input.genTopEvt.IsSemiLepton()) {
+        // get gen particles
+        // b quark from had top
+        //std::vector<reco::GenParticle> bhad_quark=input.genTopEvt.GetAllTopHadDecayQuarks();
+        // b quark from lep top    
+        //std::vector<reco::GenParticle> blep_quark=input.genTopEvt.GetAllTopLepDecayQuarks();
+        //b quarks from higgs
+        //std::vector<reco::GenParticle> bhiggs_quarks = input.genTopEvt.GetHiggsDecayProducts();
+        // quarks from W decay
+        //std::vector<reco::GenParticle> hadw_quarks=input.genTopEvt.GetWQuarks();
+
+        double dR_bhad;
+        double dR_blep;
+        double dR_q1;
+        double dR_q2;
+
+        double dR_b1;
+        double dR_b2;
+        bool found_ttbar = false;
+        bool found_ttH = false;
+        double dR_threshold_match = 0.5;
+        int it_i, it_j, it_k, it_l, it_m, it_n;
+
+        it_i = 0;
+        for( auto i = input.selectedJets.begin(); i!=input.selectedJets.end(); i++ )
+        {   
+            if(found_ttH) break;
+            it_i++;
+
+            if (!CSVHelper::PassesCSV(*i, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
+            // search for a dR that matches the hadronic b
+            dR_bhad = std::abs(BoostedUtils::DeltaR(i->p4(), bhad[0].p4()));
+            if (dR_bhad > dR_threshold_match) continue;
+
+            it_j = 0;
+            for( auto j = input.selectedJets.begin(); j!=input.selectedJets.end(); j++ )
+            {
+                if(found_ttH) break;
+                it_j++;
+                if(it_i==it_j) continue;
+
+                if (!CSVHelper::PassesCSV(*j, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
+                // search for a dR that matches the leptonic b
+                dR_blep = std::abs(BoostedUtils::DeltaR(j->p4(), blep[0].p4()));
+                if( dR_blep > dR_threshold_match) continue;
+
+                it_k = 0;
+                for( auto k = input.selectedJets.begin(); k!=input.selectedJets.end(); k++ )
+                {
+                    if(found_ttH) break;
+                    it_k++;
+                    if(it_k==it_i || it_k==it_j) continue;
+
+                    // search for first hadronic W jet
+                    dR_q1 = std::abs(BoostedUtils::DeltaR(k->p4(), q1[0].p4()));
+                    if( dR_q1 > dR_threshold_match) continue;
+
+                    it_l = 0;
+                    for( auto l = input.selectedJets.begin(); l!=input.selectedJets.end(); l++ )
+                    {
+                        if(found_ttH) break;
+                        it_l++;
+                        if(it_l==it_i||it_l==it_j||it_l==it_k) continue;
+
+                        // search for second hadronic W jet
+                        dR_q2 = std::abs(BoostedUtils::DeltaR(l->p4(), q2[0].p4()));
+                        if( dR_q2 > dR_threshold_match) continue;
+
+                        // successfully found ttbar config
+                        found_ttbar = true;
+
+                        it_m = 0;
+                        for( auto m = input.selectedJets.begin(); m!=input.selectedJets.end(); m++ )
+                        {
+                            if(found_ttH) break;
+                            it_m++;
+                            if(it_m==it_i||it_m==it_j||it_m==it_k||it_m==it_l) continue;
+
+                            //if (!CSVHelper::PassesCSV(*m, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
+                            // search for first higgs b
+                            dR_b1 = std::abs(BoostedUtils::DeltaR(m->p4(), b1.p4()));
+                            if( dR_b1 > dR_threshold_match) continue;
+
+                            it_n = 0;
+                            for( auto n = input.selectedJets.begin(); n!=input.selectedJets.end(); n++ )
+                            {
+                                if(found_ttH) break;
+                                it_n++;
+                                if(it_n==it_i||it_n==it_j||it_n==it_k||it_n==it_l||it_n==it_m) continue;
+
+                                //if (!CSVHelper::PassesCSV(*n, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
+                                // search for first higgs b
+                                dR_b2 = std::abs(BoostedUtils::DeltaR(n->p4(), b2.p4()));
+                                if( dR_b2 > dR_threshold_match) continue;
+
+                                // successfully found ttH config
+                                found_ttH = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (found_ttbar) 
+            vars.FillVar("Gen_ttbar_matched", 1);
+        if (found_ttH)   
+            vars.FillVar("Gen_ttH_matched", 1);
+
+    }
+
 }
