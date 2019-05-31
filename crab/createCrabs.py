@@ -6,6 +6,9 @@ from subprocess import call
 
 csvfile=open(sys.argv[1],'r') 
 reader = csv.DictReader(csvfile, delimiter=',')
+outname = sys.argv[1].partition('.')[0]+"_configs"
+print outname
+os.system("mkdir -p " + outname)
 
 def repl(old,new,filename):
     cmd=" ".join(["sed","-i","'s|"+old+"|"+new+"|g'",filename])
@@ -50,11 +53,13 @@ def split_for_systematic_variations(variations,nvariations):
         systs.append(syst_str)
     return systs
 
+
+ 
 for row in reader:
-    variation_list = get_list_of_systematics("systematicVariations.txt")
+    variation_list = get_list_of_systematics("common/systematicVariations.txt")
     #print variation_list
     variations_list = split_for_systematic_variations(variation_list,100)
-    src='template_cfg.py'
+    src='common/template_cfg.py'
     if row['isData']=='True':
         variations_list = ['nominal']
     datasets=row['dataset'].split(",")
@@ -62,7 +67,8 @@ for row in reader:
         print "looking at systematic sources ",variations
         for dataset,i in zip(datasets,range(len(datasets))):
             print "looking at dataset ",dataset
-            out='configs_ntuples/'+row['name']+'_'+str(i)+"_"+str(l)+'_crab.py'
+            # out='configs_ntuples/'+row['name']+'_'+str(i)+"_"+str(l)+'_crab.py'
+            out= outname+'/'+row['name']+'_'+str(i)+"_"+str(l)+'_crab.py'
             filenames = []
             for filename in variations.split(","):
                 if filename=="nominal":
@@ -79,7 +85,7 @@ for row in reader:
             else:
                 dataSetTag = 'KIT_tthbb_sl_skims_MC_94X_LEG_DATAERA'
                 splitting = 'FileBased'
-                units = '3'
+                units = '2'
 
             repl('THEREQUESTNAME',row['name']+"_"+str(i)+"_"+str(l),out)
             repl('OUTPUTDATASETTAG',dataSetTag,out)
