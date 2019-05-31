@@ -1,5 +1,5 @@
-#ifndef SelectedJetProducer_h
-#define SelectedJetProducer_h
+#ifndef CorrectedMETProducer_h
+#define CorrectedMETProducer_h
 
 #include <memory>
 #include <vector>

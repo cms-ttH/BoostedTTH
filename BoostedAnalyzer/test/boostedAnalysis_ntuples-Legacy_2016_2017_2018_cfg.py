@@ -352,20 +352,18 @@ if options.deterministicSeeds:
     process.deterministicSeeds.produceValueMaps   = cms.bool(False)
     process.deterministicSeeds.electronCollection = electronCollection
     process.deterministicSeeds.muonCollection     = muonCollection
-    process.deterministicSeeds.tauCollection      = tauCollection
+    # process.deterministicSeeds.tauCollection      = tauCollection
     process.deterministicSeeds.photonCollection   = photonCollection
     process.deterministicSeeds.jetCollection      = jetCollection
     process.deterministicSeeds.METCollection      = METCollection
-    #process.deterministicSeeds.AK8jetCollection   = AK8jetCollection
 
     # overwrite output collections
     electronCollection = cms.InputTag("deterministicSeeds", "electronsWithSeed", process.name_())
     muonCollection     = cms.InputTag("deterministicSeeds", "muonsWithSeed", process.name_())
-    tauCollection      = cms.InputTag("deterministicSeeds", "tausWithSeed", process.name_())
+    # tauCollection      = cms.InputTag("deterministicSeeds", "tausWithSeed", process.name_())
     photonCollection   = cms.InputTag("deterministicSeeds", "photonsWithSeed", process.name_())
     jetCollection      = cms.InputTag("deterministicSeeds", "jetsWithSeed", process.name_())
     METCollection      = cms.InputTag("deterministicSeeds", "METsWithSeed", process.name_())
-    #AK8jetCollection   = cms.InputTag("deterministicSeeds", "AK8jetsWithSeed", process.name_())
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 # lepton selection
@@ -635,7 +633,6 @@ if options.isData:
   "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
-  #"AK8JetProcessor"
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
@@ -647,7 +644,6 @@ else:
   "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
-  #"AK8JetProcessor"
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
 
@@ -679,7 +675,6 @@ if options.ProduceMemNtuples==True:
 
 ##### DEFINE PATH ##########
 process.p = cms.Path()
-
 # rerun DeepJet
 process.p.associate(process.updateJets)
 
