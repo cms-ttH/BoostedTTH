@@ -73,7 +73,24 @@ if not options.inputFiles:
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
         elif "2018" in options.dataEra:
             # options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/40000/EAA9C941-768D-164B-B5C1-C12306823C6E.root']
-        	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_7.root']
+            #options.inputFiles=[
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_1.root',
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_2.root',
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_3.root',
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_4.root',
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_5.root']
+            #options.inputFiles=[
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTZToBB_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_135752/0000/Skim_1.root',
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTZToBB_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_135752/0000/Skim_2.root',
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTZToBB_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_135752/0000/Skim_3.root',
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTZToBB_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_135752/0000/Skim_4.root',
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTZToBB_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_135752/0000/Skim_5.root']
+            options.inputFiles=[
+                'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_1.root',
+                'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_2.root',
+                'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_3.root',
+                'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_4.root',
+                'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_5.root']
     else:
         if "2016" in options.dataEra: # CAREFUL: NO 2016 Data Skims ready yet
             # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
@@ -640,7 +657,6 @@ if options.isData:
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-#  "MCMatchVarProcessor",
   "MCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
