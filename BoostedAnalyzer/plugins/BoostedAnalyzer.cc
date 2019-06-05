@@ -93,6 +93,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DNNVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/JABDTttbarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedAk4VarProcessor.hpp"
@@ -476,6 +477,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     }
     if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"JABDTttbarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new JABDTttbarProcessor(iConfig),"JABDTttbarProcessor");
     }
     //if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
     //    treewriter->AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");

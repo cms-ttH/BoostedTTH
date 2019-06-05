@@ -1,6 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 from BoostedTTH.BoostedAnalyzer.Selection_cff import *
 from BoostedTTH.BoostedAnalyzer.Inputs_cff import *
+from BoostedTTH.BoostedAnalyzer.JetAssignment_cff import *
+
 
 BoostedAnalyzer2017 = cms.EDAnalyzer(
     'BoostedAnalyzer',
@@ -21,6 +23,9 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
     isData = cms.bool(True),
     datasetFlag=cms.int32(0),
     dataEra = cms.string("2017"),
+
+    # information about jet assignment weight .xml file
+    JetAssignmentOptions = JetAssignment2017,
 
    #MET Filters
     METfilters = filtersData1718,
