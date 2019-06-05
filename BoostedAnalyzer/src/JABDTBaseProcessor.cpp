@@ -14,7 +14,8 @@ void JABDTBaseProcessor::Init(const InputCollections& input,VariableContainer& v
     std::vector<std::string> BDT_variables = pointerToHypothesisCombinatorics->GetVariableNames();
     for(auto varname : BDT_variables)
     {
-      vars.InitVar( (hypothesis + "_" + varname).c_str() );
+      std::cout << "booking variable " << varname << std::endl;
+      vars.InitVar( varname.c_str() );
       initialized=true;
     }
   }
@@ -33,7 +34,7 @@ void JABDTBaseProcessor::Process(const InputCollections& input,VariableContainer
   }
   if(input.selectedMuons.size()+input.selectedElectrons.size()!=1) return;
 
-  pointerToHypothesisCombinatorics->SetBtagWP(CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, "DeepJet"));
+  pointerToHypothesisCombinatorics->SetBtagWP( CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, "DeepJet"));
 
   vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
   vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
@@ -48,10 +49,11 @@ void JABDTBaseProcessor::Process(const InputCollections& input,VariableContainer
       loose_jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
   }
 
-  std::map<std::string, float> bestestimate = pointerToHypothesisCombinatorics->GetBestPermutation(lepvecs, jetvecs, jetcsvs, metP4);
+  std::map<std::string, float> bestestimate = pointerToHypothesisCombinatorics->GetBestPermutation(lepvecs, loose_jetvecs, loose_jetcsvs, metP4);
   
   for(auto it=bestestimate.begin(); it!=bestestimate.end(); it++){
-    vars.FillVar(hypothesis + "_" +it->first,it->second);
+    std::cout << "filling variables\n";
+    vars.FillVar(it->first,it->second);
   }
   
 }
