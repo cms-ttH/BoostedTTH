@@ -197,6 +197,19 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVars( "Electron_ReconstructionSF","N_TightElectrons");
     vars.InitVars( "Electron_ReconstructionSFUp","N_TightElectrons");
     vars.InitVars( "Electron_ReconstructionSFDown","N_TightElectrons");
+
+
+    // particle-level quantities!
+    vars.InitVar( "particleW_Pt");
+    vars.InitVar( "particleW_Phi");
+    vars.InitVar( "particleW_Eta");
+    vars.InitVar( "particleW_Mass");
+    vars.InitVar( "particleW_Energy");
+    vars.InitVar( "particleZ_Pt");
+    vars.InitVar( "particleZ_Phi");
+    vars.InitVar( "particleZ_Eta");
+    vars.InitVar( "particleZ_Mass");
+    vars.InitVar( "particleZ_Energy");
     
     
     
@@ -563,6 +576,27 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     {
         int iCSV = itCSV - csvJetsSorted.begin();
         vars.FillVars("CSV" ,iCSV,*itCSV);
+    }
+
+    // get particle-level W/Z pt for later usage in V boson reweighting
+    if(input.genEWevt.WBosonIsFilled()){
+        const GenEWevent& EW_Evt = input.genEWevt;
+        math::XYZTLorentzVector WBoson = EW_Evt.ReturnWBoson();
+        vars.FillVar( "particleW_Pt", WBoson.Pt() );
+        vars.FillVar( "particleW_Phi", WBoson.Phi() );
+        vars.FillVar( "particleW_Eta", WBoson.Eta() );
+        vars.FillVar( "particleW_Energy", WBoson.E() );
+        vars.FillVar( "particleW_Mass", WBoson.M() );
+    }
+
+    if(input.genEWevt.ZBosonIsFilled()){
+        const GenEWevent& EW_Evt = input.genEWevt;
+        math::XYZTLorentzVector ZBoson = EW_Evt.ReturnZBoson();
+        vars.FillVar( "particleZ_Pt", ZBoson.Pt() );
+        vars.FillVar( "particleZ_Phi", ZBoson.Phi() );
+        vars.FillVar( "particleZ_Eta", ZBoson.Eta() );
+        vars.FillVar( "particleZ_Energy", ZBoson.E() );
+        vars.FillVar( "particleZ_Mass", ZBoson.M() );
     }
 
 }
