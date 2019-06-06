@@ -647,6 +647,7 @@ else:
   "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
+#   "BosonWeightProcessor"
   #"AK8JetProcessor"
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
