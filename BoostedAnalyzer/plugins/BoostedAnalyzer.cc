@@ -101,6 +101,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenEWevent.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
@@ -115,6 +116,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AK8JetProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SelectionTagProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BosonWeightProcessor.hpp"
 
 //
 // class declaration
@@ -164,6 +166,8 @@ private:
     GenWeights genweights;
     /** produces MC truth information for ttbar and ttH samples (genTopEvent)*/
     GenTopEventProducer genTopEvtProd;
+    // /** produces MC truth information for ttbar and ttH samples (genTopEvent)*/
+    // GenTopEventProducer genEWProd;
     /** produces trigger information */
     TriggerInfoProducer triggerInfoProd;
     /** produces filter information */
@@ -553,6 +557,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     if(std::find(processorNames.begin(),processorNames.end(),"SelectionTagProcessor")!=processorNames.end()) {
       treewriter->AddTreeProcessor(new SelectionTagProcessor(),"SelectionTagProcessor");
     }
+    if(std::find(processorNames.begin(),processorNames.end(),"BosonWeightProcessor")!=processorNames.end()) {
+      treewriter->AddTreeProcessor(new BosonWeightProcessor(),"BosonWeightProcessor");
+    }
     }
 
     // Genweights: Initialize the weightnames for the generator, that was used for this sample
@@ -774,6 +781,17 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
     else if(((foundT&&!foundTbar)||(!foundT&&foundTbar))&&foundHiggs) sampleType = SampleType::thq;
     
+    // create GenEWevent object
+    GenEWevent genEWevt;
+    // create empty packedGenParticle dummy since this collection is not yet needed, but maybe later
+    std::vector<pat::PackedGenParticle> packedGenParticles_dummy;
+    // initialze the GenEWevent object with the collections of genparticles
+    if(!isData){
+        genEWevt.Initialize(*h_genParticles,packedGenParticles_dummy);
+        // fill the event
+        genEWevt.FillBoson();
+    }
+
     
     //selectiontags
     map<string, int> selectionTags;
@@ -802,6 +820,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  //selectedBoostedJets[isys],
                                           //selectedAk4Cluster,
 					  genTopEvt,
+					  genEWevt,
 					  *h_genJets,
 					  sampleType,
 					  higgsdecay,
