@@ -18,7 +18,7 @@ config.Data.splitting = 'SPLITTING'
 config.Data.unitsPerJob = UNITSPERJOB
 config.Data.publication = True
 config.Data.publishDBS = 'phys03'
-config.Data.outputDatasetTag = 'KIT_tthbb_sl_skims_MC_LEG_DATAERA'
+config.Data.outputDatasetTag = 'OUTPUTDATASETTAG'
 
 config.User.voGroup = 'dcms'
 
