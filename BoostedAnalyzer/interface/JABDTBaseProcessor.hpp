@@ -16,8 +16,12 @@ public:
   void Process(const InputCollections& input,VariableContainer& var);
 
 protected:
+  std::string loadWeightPath(const edm::ParameterSet& jaoptions, const char* keyword) const;
+  std::string loadVariables(const edm::ParameterSet& jaoptions, const char* keyword) const;
   std::string hypothesis;
-  std::unique_ptr<HypothesisCombinatorics> pointerToHypothesisCombinatorics = nullptr;
+  std::unique_ptr<HypothesisCombinatorics> pointerToEvenHypothesisCombinatorics = nullptr;
+  std::unique_ptr<HypothesisCombinatorics> pointerToOddHypothesisCombinatorics = nullptr;
+
   bool initialized = false;
 };
 

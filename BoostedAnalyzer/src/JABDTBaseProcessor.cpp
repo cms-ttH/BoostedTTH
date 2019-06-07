@@ -8,10 +8,35 @@ JABDTBaseProcessor::~JABDTBaseProcessor(){
 
 }
 
+std::string JABDTBaseProcessor::loadVariables(const edm::ParameterSet& jaoptions, const char* keyword) const{
+  std::string returnstring = "";
+  TString helper;
+  if (jaoptions.existsAs<std::string>(keyword, true)){
+    helper = jaoptions.getParameter<std::string>(keyword);
+    if(helper.EndsWith(".csv")) returnstring = std::string(getenv("CMSSW_BASE")) + "/src/" + helper.Data();
+    else returnstring = helper.Data();
+  }
+  else{
+    std::cerr << "ERROR: Could not load keyword '" << keyword << "'\n";
+  }
+  return returnstring;
+}
+std::string JABDTBaseProcessor::loadWeightPath(const edm::ParameterSet& jaoptions, const char* keyword) const{
+  std::string weightpath = "";
+  try{
+        weightpath = std::string(getenv("CMSSW_BASE")) + "/src/" +jaoptions.getParameter<std::string>(keyword);
+      }
+  catch(const std::exception& e){
+      std::cerr << "ERROR: variable '"<<keyword <<"' does not exist in ParameterSet 'JetAssignentOptions'\n";
+      std::cerr << e.what() << std::endl;
+  }
+  return weightpath;
+}
+
 void JABDTBaseProcessor::Init(const InputCollections& input,VariableContainer& vars){
-  if( pointerToHypothesisCombinatorics != nullptr )
+  if( pointerToEvenHypothesisCombinatorics != nullptr and pointerToOddHypothesisCombinatorics != nullptr )
   {
-    std::vector<std::string> BDT_variables = pointerToHypothesisCombinatorics->GetVariableNames();
+    std::vector<std::string> BDT_variables = pointerToEvenHypothesisCombinatorics->GetVariableNames();
     for(auto varname : BDT_variables)
     {
       std::cout << "booking variable " << varname << std::endl;
@@ -34,7 +59,8 @@ void JABDTBaseProcessor::Process(const InputCollections& input,VariableContainer
   }
   if(input.selectedMuons.size()+input.selectedElectrons.size()!=1) return;
 
-  pointerToHypothesisCombinatorics->SetBtagWP( CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, "DeepJet"));
+  pointerToEvenHypothesisCombinatorics->SetBtagWP( CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, "DeepJet"));
+  pointerToOddHypothesisCombinatorics->SetBtagWP( CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, "DeepJet"));
 
   vector<TLorentzVector> lepvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons));
   vector<TLorentzVector> jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
@@ -48,12 +74,18 @@ void JABDTBaseProcessor::Process(const InputCollections& input,VariableContainer
   for(auto j=input.selectedJetsLoose.begin(); j!=input.selectedJetsLoose.end(); j++){
       loose_jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
   }
-
-  std::map<std::string, float> bestestimate = pointerToHypothesisCombinatorics->GetBestPermutation(lepvecs, loose_jetvecs, loose_jetcsvs, metP4);
-  
+  //do cross evaluation
+  std::map<std::string, float> bestestimate;
+  long evt_id = input.eventInfo.evt;
+  if(evt_id % 2 == 0){
+   bestestimate= pointerToOddHypothesisCombinatorics->GetBestPermutation(lepvecs, loose_jetvecs, loose_jetcsvs, metP4);
+  }
+  else{
+    bestestimate= pointerToEvenHypothesisCombinatorics->GetBestPermutation(lepvecs, loose_jetvecs, loose_jetcsvs, metP4);
+  }
   for(auto it=bestestimate.begin(); it!=bestestimate.end(); it++){
-    std::cout << "filling variables\n";
     vars.FillVar(it->first,it->second);
   }
   
 }
+
