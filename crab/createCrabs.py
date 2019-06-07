@@ -56,46 +56,47 @@ def split_for_systematic_variations(variations,nvariations):
 
  
 for row in reader:
-    variation_list = get_list_of_systematics("common/systematicVariations.txt")
-    #print variation_list
-    variations_list = split_for_systematic_variations(variation_list,100)
-    src='common/template_cfg.py'
-    if row['isData']=='True':
-        variations_list = ['nominal']
-    datasets=row['dataset'].split(",")
-    for variations,l in zip(variations_list,range(len(variations_list))):
-        print "looking at systematic sources ",variations
-        for dataset,i in zip(datasets,range(len(datasets))):
-            print "looking at dataset ",dataset
-            # out='configs_ntuples/'+row['name']+'_'+str(i)+"_"+str(l)+'_crab.py'
-            out= outname+'/'+row['name']+'_'+str(i)+"_"+str(l)+'_crab.py'
-            filenames = []
-            for filename in variations.split(","):
-                if filename=="nominal":
-                    filenames.append("ntuples_"+filename+"_Tree.root")
-                else: 
-                    filenames.append("ntuples_"+filename+"up"+"_Tree.root")
-                    filenames.append("ntuples_"+filename+"down"+"_Tree.root")
-            shutil.copy(src,out)
-            
-            if row['isData']=='TRUE':
-                dataSetTag = 'KIT_tthbb_sl_skims_DATA_94X_LEG_DATAERA'
-                splitting = 'EventAwareLumiBased'
-                units = '80000'
-            else:
-                dataSetTag = 'KIT_tthbb_sl_skims_MC_94X_LEG_DATAERA'
-                splitting = 'FileBased'
-                units = '2'
+    if not "#" in row["name"]:
+        variation_list = get_list_of_systematics("common/systematicVariations.txt")
+        #print variation_list
+        variations_list = split_for_systematic_variations(variation_list,100)
+        src='common/template_cfg.py'
+        if row['isData']=='True':
+            variations_list = ['nominal']
+        datasets=row['dataset'].split(",")
+        for variations,l in zip(variations_list,range(len(variations_list))):
+            print "looking at systematic sources ",variations
+            for dataset,i in zip(datasets,range(len(datasets))):
+                print "looking at dataset ",dataset
+                # out='configs_ntuples/'+row['name']+'_'+str(i)+"_"+str(l)+'_crab.py'
+                out= outname+'/'+row['name']+'_'+str(i)+"_"+str(l)+'_crab.py'
+                filenames = []
+                for filename in variations.split(","):
+                    if filename=="nominal":
+                        filenames.append("ntuples_"+filename+"_Tree.root")
+                    else: 
+                        filenames.append("ntuples_"+filename+"up"+"_Tree.root")
+                        filenames.append("ntuples_"+filename+"down"+"_Tree.root")
+                shutil.copy(src,out)
+                
+                if row['isData']=='TRUE':
+                    dataSetTag = 'KIT_tthbb_sl_skims_DATA_94X_LEG_DATAERA'
+                    splitting = 'EventAwareLumiBased'
+                    units = '80000'
+                else:
+                    dataSetTag = 'KIT_tthbb_sl_skims_MC_94X_LEG_DATAERA'
+                    splitting = 'FileBased'
+                    units = '2'
 
-            repl('THEREQUESTNAME',row['name']+"_"+str(i)+"_"+str(l),out)
-            repl('OUTPUTDATASETTAG',dataSetTag,out)
-            repl('THEINPUTDATASET',dataset,out)
-            repl('DATAERA',row['run'],out)
-            repl('GLOBALTAG',row['globalTag'],out)
-            repl('ISDATA',row['isData'],out)
-            repl('SPLITTING',splitting,out)
-            repl('UNITSPERJOB',units,out)
-            #repl('GENERATORNAME',row['generator'],out)
-            #repl('WEIGHT',row['weight'],out)
-            repl('SYSTEMATICVARIATIONS',variations,out)
-            #repl('OUTPUTFILES',str(filenames).replace("'",'"'),out)
+                repl('THEREQUESTNAME',row['name']+"_"+str(i)+"_"+str(l),out)
+                repl('OUTPUTDATASETTAG',dataSetTag,out)
+                repl('THEINPUTDATASET',dataset,out)
+                repl('DATAERA',row['run'],out)
+                repl('GLOBALTAG',row['globalTag'],out)
+                repl('ISDATA',row['isData'],out)
+                repl('SPLITTING',splitting,out)
+                repl('UNITSPERJOB',units,out)
+                #repl('GENERATORNAME',row['generator'],out)
+                #repl('WEIGHT',row['weight'],out)
+                repl('SYSTEMATICVARIATIONS',variations,out)
+                #repl('OUTPUTFILES',str(filenames).replace("'",'"'),out)
