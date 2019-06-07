@@ -10,6 +10,8 @@ outname = sys.argv[1].partition('.')[0]+"_configs"
 print outname
 os.system("mkdir -p " + outname)
 
+release = "CMSSW_9_4_13"
+
 def repl(old,new,filename):
     cmd=" ".join(["sed","-i","'s|"+old+"|"+new+"|g'",filename])
     call(cmd,shell=True)
@@ -87,6 +89,8 @@ for row in reader:
                     dataSetTag = 'KIT_tthbb_sl_skims_MC_94X_LEG_DATAERA'
                     splitting = 'FileBased'
                     units = '2'
+                if "2018" in row["run"]:
+                    release = "CMSSW_10_2_13"
 
                 repl('THEREQUESTNAME',row['name']+"_"+str(i)+"_"+str(l),out)
                 repl('OUTPUTDATASETTAG',dataSetTag,out)
@@ -99,4 +103,5 @@ for row in reader:
                 #repl('GENERATORNAME',row['generator'],out)
                 #repl('WEIGHT',row['weight'],out)
                 repl('SYSTEMATICVARIATIONS',variations,out)
+                repl('RELEASE',release,out)
                 #repl('OUTPUTFILES',str(filenames).replace("'",'"'),out)
