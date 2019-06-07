@@ -11,6 +11,7 @@ print outname
 os.system("mkdir -p " + outname)
 
 release = "CMSSW_9_4_13"
+rel = "94X"
 
 def repl(old,new,filename):
     cmd=" ".join(["sed","-i","'s|"+old+"|"+new+"|g'",filename])
@@ -81,16 +82,19 @@ for row in reader:
                         filenames.append("ntuples_"+filename+"down"+"_Tree.root")
                 shutil.copy(src,out)
                 
+                if "2018" in row["run"]:
+                    release = "CMSSW_10_2_13"
+                    rel = "102X"
+
                 if row['isData']=='TRUE':
-                    dataSetTag = 'KIT_tthbb_sl_skims_DATA_94X_LEG_DATAERA'
+                    dataSetTag = 'KIT_tthbb_sl_skims_DATA_'+rel+'_LEG_DATAERA'
                     splitting = 'EventAwareLumiBased'
                     units = '80000'
                 else:
-                    dataSetTag = 'KIT_tthbb_sl_skims_MC_94X_LEG_DATAERA'
+                    dataSetTag = 'KIT_tthbb_sl_skims_MC_'+rel+'_LEG_DATAERA'
                     splitting = 'FileBased'
                     units = '2'
-                if "2018" in row["run"]:
-                    release = "CMSSW_10_2_13"
+
 
                 repl('THEREQUESTNAME',row['name']+"_"+str(i)+"_"+str(l),out)
                 repl('OUTPUTDATASETTAG',dataSetTag,out)
