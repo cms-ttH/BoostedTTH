@@ -107,12 +107,12 @@ selection = ['drop *','keep *_*_*_PAT','keep *_*_*_DQM','keep *_*_*_RECO','keep 
                     'drop *_*slimmedMETsNoHF*_*_*']
 
 if "2017" in options.dataEra:
-    selection.append("slimmedPatTrigger")
+    selection.append("keep *_*slimmedPatTrigger*_*_*")
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Skim.root'),
-    outputCommands = cms.untracked.vstring(),
+    outputCommands = cms.untracked.vstring(selection),
    SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skimmed")
     )
