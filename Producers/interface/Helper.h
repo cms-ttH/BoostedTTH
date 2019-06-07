@@ -48,10 +48,8 @@ bool Helper::isGoodJet(const pat::Jet &iJet, const float iMinPt, const float iMa
   //   CheckVertexSetUp(); // What is this?
 
   // Transverse momentum requirement
-  std::cout <<"before " << iMinPt << std::endl;
   if (iJet.pt() < iMinPt)
     return false;
-  std::cout <<"after " << iJet.pt() << std::endl;
 
   // Absolute eta requirement
   if (fabs(iJet.eta()) > iMaxAbsEta)

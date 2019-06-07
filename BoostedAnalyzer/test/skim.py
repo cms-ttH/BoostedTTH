@@ -57,7 +57,7 @@ if options.isData:
         else:
             options.globalTag="102X_dataRun2_Sep2018ABC_v2"
     else:
-        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
+        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017/2018")
 elif not options.isData:
     if "2016" in options.dataEra:
         options.globalTag="94X_mcRun2_asymptotic_v3"
@@ -66,7 +66,7 @@ elif not options.isData:
     elif "2018" in options.dataEra:
         options.globalTag="102X_upgrade2018_realistic_v18"
     else:
-        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
+        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017/2018")
 else:
     raise Exception("Problem with isData option! This should never happen!")
 
@@ -101,13 +101,18 @@ process.LeptonJetsSkim.era=options.dataEra
 
 process.skimmed=cms.Path(process.LeptonJetsSkim)
 
+selection = ['drop *','keep *_*_*_PAT','keep *_*_*_DQM','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM',
+                    'keep *_*_*_LHE','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*', 
+                    'drop *_*AK8*_*_*', 'drop *_*Puppi*_*_*', 'drop *_*slimmedTausBoosted*_*_*', 'drop *_*oniaPhotonCandidates*_*_*',
+                    'drop *_*slimmedMETsNoHF*_*_*']
+
+if "2017" in options.dataEra:
+    selection.append("slimmedPatTrigger")
+
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Skim.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_DQM','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM',
-                    'keep *_*_*_LHE','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*', 
-                    'drop *_*AK8*_*_*', 'drop *_*Puppi*_*_*', 'drop *_*slimmedTausBoosted*_*_*', 'drop *_*oniaPhotonCandidates*_*_*',
-                    'drop *_*slimmedMETsNoHF*_*_*']),
+    outputCommands = cms.untracked.vstring(),
    SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skimmed")
     )
