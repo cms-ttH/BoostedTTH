@@ -632,6 +632,7 @@ if options.isData:
   "WeightProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
+  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
@@ -643,6 +644,7 @@ else:
   "MCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
+  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"

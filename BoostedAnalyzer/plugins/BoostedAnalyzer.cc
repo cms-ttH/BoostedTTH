@@ -93,6 +93,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DNNVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/essentialRecoVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedAk4VarProcessor.hpp"
@@ -340,6 +341,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     ResMon.reset(new ResourceMonitor());
 
     if(isData) useGenHadronMatch=false;
+    
     std::vector<std::string> systematicsNames = iConfig.getParameter<std::vector<std::string> >("systematics");
 
     for (auto const &s : systematicsNames){
@@ -390,7 +392,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
 
     // initialize cutflows
     for (size_t i=0; i<jetSystematics.size();i++){
-        cutflows.push_back(Cutflow());
+        cutflows.emplace_back();
         cutflows.back().Init();
     }
     
@@ -402,21 +404,21 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
         std::unique_ptr<Selection> selection = nullptr;
 	if(itSel == "VertexSelection")                        selection.reset(new VertexSelection());
 	else if(itSel == "FilterSelection")                   selection.reset(new FilterSelection(iConfig));
+    else if(itSel == "LeptonSelection")                   selection.reset(new LeptonSelection(iConfig));
+    else if(itSel == "JetTagSelection")                   selection.reset(new JetTagSelection(iConfig));
+    else if(itSel == "METSelection")                      selection.reset(new METSelection(iConfig));
 	else if(itSel == "EvenSelection")                     selection.reset(new EvenOddSelection(true));
 	else if(itSel == "OddSelection")                      selection.reset(new EvenOddSelection(false));
 	else if(itSel == "GenTopFHSelection")                 selection.reset(new GenTopFHSelection());
 	else if(itSel == "GenTopSLSelection")                 selection.reset(new GenTopSLSelection());
 	else if(itSel == "GenTopDLSelection")                 selection.reset(new GenTopDLSelection());
-	else if(itSel == "LeptonSelection")                   selection.reset(new LeptonSelection(iConfig));
-        else if(itSel == "LeptonSelection_QCDControlregion")  selection.reset(new LeptonSelection_QCDControlregion(iConfig));
+    else if(itSel == "LeptonSelection_QCDControlregion")  selection.reset(new LeptonSelection_QCDControlregion(iConfig));
 	else if(itSel == "LooseLeptonSelection")              selection.reset(new LooseLeptonSelection(iConfig));
-	else if(itSel == "JetTagSelection")                   selection.reset(new JetTagSelection(iConfig));
 	else if(itSel == "DiLeptonJetTagSelection")           selection.reset(new DiLeptonJetTagSelection(iConfig));
 	else if(itSel == "DiLeptonSelection")                 selection.reset(new DiLeptonSelection(iConfig));
 	else if(itSel == "MinDiLeptonMassSelection")          selection.reset(new DiLeptonMassSelection(20.,9999.));
 	else if(itSel == "ZVetoSelection")                    selection.reset(new DiLeptonMassSelection(76.,106,true,false));
 	else if(itSel == "ZWindowSelection")                  selection.reset(new DiLeptonMassSelection(76.,106,false));
-	else if(itSel == "METSelection")                      selection.reset(new METSelection(iConfig));
 	else if(itSel == "DiLeptonMETSelection")              selection.reset(new DiLeptonMETSelection(iConfig));
 	else if(itSel == "HbbSelection")                      selection.reset(new HbbSelection());
 	else if(itSel == "4JetSelection")                     selection.reset(new JetTagSelection(4,-1));
@@ -472,6 +474,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
         }
         if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
+        }
+        if(std::find(processorNames.begin(),processorNames.end(),"essentialRecoVarProcessor")!=processorNames.end()) {
+            treewriter->AddTreeProcessor(new essentialRecoVarProcessor(),"essentialRecoVarProcessor");
         }
        
     if(std::find(processorNames.begin(),processorNames.end(),"essentialMVAVarProcessor")!=processorNames.end()) {
@@ -743,8 +748,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	std::vector<reco::GenParticle> const &genParticles = *h_genParticles;
 	for(size_t i=0; i<genParticles.size();i++){
 	    if(genParticles[i].pdgId()==6) foundT=true;
-	    if(genParticles[i].pdgId()==-6) foundTbar=true;
-	    if(genParticles[i].pdgId()==25){
+	    else if(genParticles[i].pdgId()==-6) foundTbar=true;
+	    else if(genParticles[i].pdgId()==25){
 		foundHiggs=true;
 		if(higgsdecay==HiggsDecay::NA)higgsdecay=HiggsDecay::nonbb;
 		for(size_t j=0;j<genParticles[i].numberOfDaughters();j++){
