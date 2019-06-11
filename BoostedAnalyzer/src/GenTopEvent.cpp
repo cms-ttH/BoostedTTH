@@ -221,6 +221,8 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     }
     // skip light jets
     if(nb_per_genjet[i]>0){ 
+      // all genjets with b flavor
+      b_genjets.push_back(customGenJets[i]);
       // associate genjet with tth decay products
       if(mother_of_genjet_b[i]==25){
 	higgs_b_genjet=customGenJets[i];
@@ -293,6 +295,10 @@ std::vector<reco::GenJet> GenTopEvent::GetAllTopLepBGenJets() const{
   if(ttxIsFilled&&!topIsHadronic) toplepbs.push_back(top_b_genjet);
   if(ttxIsFilled&&!topbarIsHadronic) toplepbs.push_back(topbar_bbar_genjet);
   return toplepbs;
+}
+std::vector<reco::GenJet> GenTopEvent::GetBGenJets() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  return b_genjets;
 }
 reco::GenJet GenTopEvent::GetTopBarBBarGenJet() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
