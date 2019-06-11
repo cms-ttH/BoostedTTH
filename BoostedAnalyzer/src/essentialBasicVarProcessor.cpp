@@ -91,7 +91,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVars( "Jet_DeepJet_g","N_Jets");
 
     vars.InitVars( "TaggedJet_E","N_BTagsM" );
-    ars.InitVars( "TaggedJet_M","N_BTagsM" );
+    vars.InitVars( "TaggedJet_M","N_BTagsM" );
     vars.InitVars( "TaggedJet_Pt","N_BTagsM" );
     vars.InitVars( "TaggedJet_Phi","N_BTagsM" );
     vars.InitVars( "TaggedJet_Eta","N_BTagsM" );
