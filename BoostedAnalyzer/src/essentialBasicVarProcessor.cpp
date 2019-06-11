@@ -54,7 +54,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVars( "LooseJet_DeepCSV_c","N_LooseJets");
     vars.InitVars( "LooseJet_DeepCSV_udsg","N_LooseJets");
 
-    vars.InitVars( "LooseJet_DeepJetCSV","N_LooseJets");    
+    vars.InitVars( "LooseJet_DeepJetCSV","N_LooseJets");
     vars.InitVars( "LooseJet_DeepJet_b","N_LooseJets");
     vars.InitVars( "LooseJet_DeepJet_bb","N_LooseJets");
     vars.InitVars( "LooseJet_DeepJet_lepb","N_LooseJets");

@@ -12,7 +12,9 @@ public:
     ~GenTopEvent();
 
     reco::GenParticle GetHiggs() const;
+    reco::GenParticle GetZ() const;
     std::vector<reco::GenParticle> GetHiggsDecayProducts() const;
+    std::vector<reco::GenParticle> GetZDecayProducts() const;
     bool IsFilled() const;
     bool TTxIsFilled() const;
     reco::GenParticle GetTop() const;
@@ -168,6 +170,10 @@ private:
     std::vector<reco::GenParticle> wplus_decay_products;
     std::vector<reco::GenParticle> wminus_decay_products;
     std::vector<reco::GenParticle> higgs_decay_products;
+
+    // for ttZ
+    reco::GenParticle Z;
+    std::vector<reco::GenParticle> Z_decay_products;
     
     // for THW
     reco::GenParticle w_not_from_top;
@@ -220,6 +226,7 @@ private:
     bool foundT = false;
     bool foundTbar = false;
     bool foundH = false;
+    bool foundZ = false;
     bool topIsHadronic;
     bool topbarIsHadronic;
     bool isFilled;

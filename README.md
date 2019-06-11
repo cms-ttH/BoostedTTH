@@ -66,7 +66,6 @@ Do for example:
       echo "WRONG CMSSW VERSION"
       return 1
     fi
-    git clone https://gitlab.cern.ch/kit-cn-cms-public/RecoLikelihoodReconstruction.git RecoLikelihoodReconstruction
     mkdir -p $CMSSW_BASE/lib/$SCRAM_ARCH/
     cp -R MEIntegratorStandalone/libs/* $CMSSW_BASE/lib/$SCRAM_ARCH/
     scram setup lhapdf

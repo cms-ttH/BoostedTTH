@@ -473,6 +473,7 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
     foundT = false;
     foundTbar = false;
     foundH = false;
+    foundZ = false;
     ttXid = ttXid_;
     // loop over all the gen particles
     for (const auto& p : prunedGenParticles) {
@@ -573,6 +574,23 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
                 for (uint i = 0; i < p.numberOfDaughters(); i++) {
                     if (p.pdgId() == 25 && abs(p.daughter(i)->pdgId()) != 25) {
                         higgs_decay_products.push_back(*(reco::GenParticle*)p.daughter(i));
+                    }
+                }
+            }
+        }
+        // find Z boson and its decay products
+        else if (abs(p.pdgId()) == 23) {
+            bool lastZ = true;
+            foundZ = true;
+            for (uint i = 0; i < p.numberOfDaughters(); i++) {
+                if (abs(p.daughter(i)->pdgId()) == 23)
+                    lastZ = false;
+            }
+            if (lastZ) {
+                Z = p;
+                for (uint i = 0; i < p.numberOfDaughters(); i++) {
+                    if (p.pdgId() == 23 && abs(p.daughter(i)->pdgId()) != 23) {
+                        Z_decay_products.push_back(*(reco::GenParticle*)p.daughter(i));               
                     }
                 }
             }
@@ -722,6 +740,13 @@ reco::GenParticle GenTopEvent::GetHiggs() const
     if (!isFilled)
         std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
     return higgs;
+}
+reco::GenParticle GenTopEvent::GetZ() const
+{
+    assert(isFilled);
+    if (!isFilled)
+        std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+    return Z;
 }
 reco::GenParticle GenTopEvent::GetTop() const
 {
@@ -926,6 +951,13 @@ std::vector<reco::GenParticle> GenTopEvent::GetHiggsDecayProducts() const
     if (!isFilled)
         std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
     return higgs_decay_products;
+}
+std::vector<reco::GenParticle> GenTopEvent::GetZDecayProducts() const
+{
+    assert(isFilled);
+    if (!isFilled)
+        std::cerr << "Trying to access GenTopEvent but it is not filled" << std::endl;
+    return Z_decay_products;
 }
 reco::GenParticle GenTopEvent::GetTopDecayQuark() const
 {
