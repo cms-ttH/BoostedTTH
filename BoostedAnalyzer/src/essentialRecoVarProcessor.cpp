@@ -4,7 +4,8 @@ using namespace std;
 
 essentialRecoVarProcessor::essentialRecoVarProcessor()
 {
-    // reconstruct ttH, reconstruct ttZ
+    // ReconstructedVars(bool ttH, bool ttZ)
+    // arguments activate chi2based ttH and ttZ reconstruction
     pointerToRecoVars.reset(new ReconstructedVars(true, false));
 }
 
