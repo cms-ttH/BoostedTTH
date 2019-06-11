@@ -6,9 +6,9 @@ JetAssignment2017 = cms.PSet(
     ttbar_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/ttbar_odd_weights.xml"),
     ttbar_varlist = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/ttbar_variables.csv"),
 
-    # ttH_even_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/ttbar_even_weights.xml"),
-    # ttH_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/ttbar_odd_weights.xml"),
-    # ttH_varlist = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/tth_variables.csv"),
+    ttH_even_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/ttH_even_weights.xml"),
+    ttH_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/ttH_odd_weights.xml"),
+    ttH_varlist = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/ttH_variables.csv"),
 
     thq_even_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/tHq_even_weights.xml"),
     thq_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/tHq_odd_weights.xml"),

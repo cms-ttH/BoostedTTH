@@ -96,6 +96,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/JABDTttbarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JABDTthqProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JABDTthwProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/JABDTtthProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedAk4VarProcessor.hpp"
@@ -489,9 +490,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     if(std::find(processorNames.begin(),processorNames.end(),"JABDTthwProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new JABDTthwProcessor(iConfig),"JABDTthwProcessor");
     }
-    // if(std::find(processorNames.begin(),processorNames.end(),"JABDTtthProcessor")!=processorNames.end()) {
-    //     treewriter->AddTreeProcessor(new JABDTtthProcessor(iConfig),"JABDTtthProcessor");
-    // }
+    if(std::find(processorNames.begin(),processorNames.end(),"JABDTtthProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new JABDTtthProcessor(iConfig),"JABDTtthProcessor");
+    }
 
     //if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
     //    treewriter->AddTreeProcessor(new BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");

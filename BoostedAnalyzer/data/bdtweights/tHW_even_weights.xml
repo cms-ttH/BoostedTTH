@@ -4,11 +4,11 @@
     <Info name="TMVA Release" value="4.2.1 [262657]"/>
     <Info name="ROOT Release" value="6.10/09 [395785]"/>
     <Info name="Creator" value="mlink"/>
-    <Info name="Date" value="Tue Jun  4 18:45:40 2019"/>
+    <Info name="Date" value="Fri Jun  7 17:25:47 2019"/>
     <Info name="Host" value="Linux cmsbuild76.cern.ch 2.6.32-696.30.1.el6.x86_64 #1 SMP Tue May 22 06:09:36 CEST 2018 x86_64 x86_64 x86_64 GNU/Linux"/>
     <Info name="Dir" value="/storage/b/mlink/tHW/even/even_tHW"/>
     <Info name="Training events" value="17326590"/>
-    <Info name="TrainingTime" value="1.05925511e+04"/>
+    <Info name="TrainingTime" value="1.26137027e+04"/>
     <Info name="AnalysisType" value="Classification"/>
   </GeneralInfo>
   <Options>
