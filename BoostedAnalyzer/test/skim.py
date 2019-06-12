@@ -4,15 +4,15 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('analysis')
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
-
+options.register( "globalTag", "102X_upgrade2018_realistic_v18", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
 options.parseArguments()
 
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
-    options.maxEvents = 10000 # reset for testing
+    options.maxEvents = 1001 # reset for testing
 
 if not options.inputFiles:
     if not options.isData:
-        options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/10000/968BB369-8542-E811-A8CF-002481CFE864.root']
+        options.inputFiles=['root://xrootd-cms.infn.it///store/mc/RunIIAutumn18MiniAOD/ZJetsToNuNu_HT-400To600_13TeV-madgraph/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/260000/5423A771-D3D4-BB4D-8289-91DF6108FA78.root']
     else:
         options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2017B/SingleElectron/MINIAOD/31Mar2018-v1/90000/6052A1DF-9B37-E811-AA01-008CFA110C88.root']
 
@@ -34,10 +34,7 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-if not options.isData:
-    process.GlobalTag.globaltag = "94X_mc2017_realistic_v13"
-else:
-    process.GlobalTag.globaltag = "94X_dataRun2_ReReco_EOY17_v6"
+process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
 
 
@@ -72,7 +69,7 @@ process.skimmed=cms.Path(process.LeptonJetsSkim)
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Skim.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*']),
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE']),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skimmed")
     )

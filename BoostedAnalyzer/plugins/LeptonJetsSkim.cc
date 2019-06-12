@@ -31,12 +31,13 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 #include "DataFormats/PatCandidates/interface/Lepton.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
 
 //
 // class declaration
@@ -56,27 +57,32 @@ class LeptonJetsSkim : public edm::EDFilter {
       bool setUpHelper(const edm::Event& iEvent);
       
       // ----------member data ---------------------------
-    MiniAODHelper helper_;
-    int minJets_;
-    double jetPtMin_;
-    double jetEtaMax_;
+    int minJetsAK4_;
+    int minJetsAK8_;
+    int maxJetsAK4_;
+    int maxJetsAK8_;
+    double AK4jetPtMin_;
+    double AK4jetEtaMax_;
+    double AK8jetPtMin_;
+    double AK8jetEtaMax_;
     double muonPtMin_;
     double muonEtaMax_;
     double electronPtMin_;
     double electronEtaMax_;
-    muonID::muonID muonID_;
-    electronID::electronID electronID_;
-    coneSize::coneSize muonIsoConeSize_;
-    corrType::corrType muonIsoCorrType_;
-    muonIso::muonIso muonIso_;
+    double photonPtMin_;
+    double photonEtaMax_;
+    double metPtMin_;
 
   
   // data access tokens
     edm::EDGetTokenT< double >                    EDMRhoToken; //  pileup density
     edm::EDGetTokenT< reco::VertexCollection >    EDMVertexToken; // vertex
     edm::EDGetTokenT< pat::MuonCollection >       EDMMuonsToken;  // muons
-    edm::EDGetTokenT< pat::ElectronCollection > EDMElectronsToken;  // electrons
-    edm::EDGetTokenT< pat::JetCollection >        EDMJetsToken;  // jets
+    edm::EDGetTokenT< pat::ElectronCollection >   EDMElectronsToken;  // electrons
+    edm::EDGetTokenT< pat::PhotonCollection >     EDMPhotonsToken;     // photons
+    edm::EDGetTokenT< pat::JetCollection >        EDMAK4JetsToken;  // AK4 jets
+    edm::EDGetTokenT< pat::JetCollection >        EDMAK8JetsToken;  // AK8 jets
+    edm::EDGetTokenT< std::vector<pat::MET> >        EDMMETToken; // MET
 
 
 };
@@ -88,30 +94,36 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
 {
    //now do what ever initialization is needed
   const std::string era = iConfig.getParameter<std::string>("era");
-  analysisType::analysisType iAnalysisType = analysisType::LJ;
   
   EDMElectronsToken         = consumes <pat::ElectronCollection >  (iConfig.getParameter<edm::InputTag>("electrons"));
   EDMMuonsToken             = consumes< pat::MuonCollection >       (iConfig.getParameter<edm::InputTag>("muons"));
-  EDMJetsToken              = consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("jets"));
+  EDMPhotonsToken           = consumes< std::vector<pat::Photon> >     (iConfig.getParameter<edm::InputTag>("photons"));
+  EDMAK4JetsToken           = consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK4jets"));
+  EDMAK8JetsToken           = consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK8jets"));
   EDMVertexToken            = consumes< reco::VertexCollection >    (iConfig.getParameter<edm::InputTag>("vertices"));
   EDMRhoToken               = consumes< double >                    (iConfig.getParameter<edm::InputTag>("rho"));
+  EDMMETToken               = consumes< std::vector<pat::MET> > (iConfig.getParameter<edm::InputTag>("met"));
 
-
-  minJets_        = iConfig.getParameter<int>("minJets");
-  jetPtMin_       = iConfig.getParameter<double>("jetPtMin");
-  jetEtaMax_      = iConfig.getParameter<double>("jetEtaMax");
-  muonPtMin_      = iConfig.getParameter<double>("muonPtMin");
-  muonEtaMax_     = iConfig.getParameter<double>("muonEtaMax");
-  electronPtMin_  = iConfig.getParameter<double>("electronPtMin");
-  electronEtaMax_ = iConfig.getParameter<double>("electronEtaMax");
-  electronID_     = electronID::skimming;
-  muonID_         = muonID::muonLoose;
-  muonIso_        = muonIso::PFIsoLoose;
-  muonIsoConeSize_ = coneSize::R04;
-  muonIsoCorrType_ = corrType::deltaBeta;
-  const bool isData = iConfig.getParameter<bool>("isData");
-  const int sampleID = isData? -1 : 1;
-  helper_.SetUp(era,sampleID,iAnalysisType,isData);
+  minJetsAK4_           = iConfig.getParameter<int>("minJetsAK4");
+  minJetsAK8_           = iConfig.getParameter<int>("minJetsAK8");
+  maxJetsAK4_           = iConfig.getParameter<int>("maxJetsAK4");
+  maxJetsAK8_           = iConfig.getParameter<int>("maxJetsAK8");
+  AK4jetPtMin_          = iConfig.getParameter<double>("AK4jetPtMin");
+  AK4jetEtaMax_         = iConfig.getParameter<double>("AK4jetEtaMax");
+  AK8jetPtMin_          = iConfig.getParameter<double>("AK8jetPtMin");
+  AK8jetEtaMax_         = iConfig.getParameter<double>("AK8jetEtaMax");
+  
+  muonPtMin_            = iConfig.getParameter<double>("muonPtMin");
+  muonEtaMax_           = iConfig.getParameter<double>("muonEtaMax");
+  electronPtMin_        = iConfig.getParameter<double>("electronPtMin");
+  electronEtaMax_       = iConfig.getParameter<double>("electronEtaMax");
+  photonPtMin_          = iConfig.getParameter<double>("photonPtMin");
+  photonEtaMax_         = iConfig.getParameter<double>("photonEtaMax");
+  
+  metPtMin_             = iConfig.getParameter<double>("metPtMin");
+  
+  const bool isData     = iConfig.getParameter<bool>("isData");
+  const int sampleID    = isData? -1 : 1;
 
 }
 
@@ -133,56 +145,79 @@ LeptonJetsSkim::~LeptonJetsSkim()
 bool
 LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-    if( setUpHelper(iEvent) ) {
-	
+	// get slimmedElectrons
 	edm::Handle< pat::ElectronCollection > h_electrons;
-	iEvent.getByToken(EDMElectronsToken,h_electrons);	    
-	// select electrons
-	pat::ElectronCollection selectedElectrons = helper_.GetSelectedElectrons(*h_electrons,electronPtMin_,electronID_,electronEtaMax_);
+	iEvent.getByToken(EDMElectronsToken,h_electrons);
+    
+    // select those electrons satifsying pt and eta cuts
+    std::vector<pat::Electron> selectedElectrons = *h_electrons;
+    selectedElectrons.erase(std::remove_if(selectedElectrons.begin(),selectedElectrons.end(),[&](pat::Electron ele){return !(ele.pt()>=electronPtMin_ && fabs(ele.eta())<=electronEtaMax_);}),selectedElectrons.end());
 
+    // get slimmedMuons
 	edm::Handle<pat::MuonCollection> hMuons;
 	iEvent.getByToken(EDMMuonsToken,hMuons);
-	pat::MuonCollection selectedMuons = helper_.GetSelectedMuons(*hMuons,muonPtMin_,muonID_,muonIsoConeSize_,muonIsoCorrType_,muonEtaMax_,muonIso_);
+    
+    // select those muons satisfying pt and eta cuts
+    std::vector<pat::Muon> selectedMuons = *hMuons;
+    selectedMuons.erase(std::remove_if(selectedMuons.begin(),selectedMuons.end(),[&](pat::Muon mu){return !(mu.pt()>=muonPtMin_ && fabs(mu.eta())<=muonEtaMax_);}),selectedMuons.end());
+    
+    // get slimmedPhotons
+	edm::Handle<pat::PhotonCollection> hPhotons;
+	iEvent.getByToken(EDMPhotonsToken,hPhotons);
+    
+    // select those photons satisfying pt and eta cuts
+    std::vector<pat::Photon> selectedPhotons = *hPhotons;
+    selectedPhotons.erase(std::remove_if(selectedPhotons.begin(),selectedPhotons.end(),[&](pat::Photon ph){return !(ph.pt()>=photonPtMin_ && fabs(ph.eta())<=photonEtaMax_);}),selectedPhotons.end());
 	
-	edm::Handle<pat::JetCollection> hJets;
-	iEvent.getByToken(EDMJetsToken,hJets);	    
-	pat::JetCollection selectedJets =  helper_.GetSelectedJets(*hJets,jetPtMin_,jetEtaMax_,jetID::jetTight,'-');
-	// TODO: correct jets (maybe even with JESUP) to make sure the jetcuts are loose enough
-
-	if( (selectedMuons.size()+selectedElectrons.size())>=1 && int(selectedJets.size())>minJets_){
-	    return true;
-	}
-	
+    // get AK4 jets
+	edm::Handle<pat::JetCollection> ak4Jets;
+	iEvent.getByToken(EDMAK4JetsToken,ak4Jets);
+    
+    // get AK8 jets
+    edm::Handle<pat::JetCollection> ak8Jets;
+	iEvent.getByToken(EDMAK8JetsToken,ak8Jets);
+    
+    // get slimmedMETs
+    edm::Handle<std::vector<pat::MET>> hMETs;
+	iEvent.getByToken(EDMMETToken,hMETs);
+    
+	int n_ak4jets = 0;
+    int n_ak8jets = 0;
+    
+    // count ak4 and ak8 jets satisfying pt and eta cuts
+	n_ak4jets = std::count_if(ak4Jets->begin(),ak4Jets->end(),[&](pat::Jet jet){return (jet.pt()>=AK4jetPtMin_ && fabs(jet.eta())<=AK4jetEtaMax_);});
+    n_ak8jets = std::count_if(ak8Jets->begin(),ak8Jets->end(),[&](pat::Jet jet){return (jet.pt()>=AK8jetPtMin_ && fabs(jet.eta())<=AK8jetEtaMax_);});
+    
+    
+    // calculate approximate hadronic recoil
+    auto hadr_recoil = hMETs->at(0).p4();
+    
+    for(const auto& ele : selectedElectrons){
+        hadr_recoil+=ele.p4();
     }
-    return false;
+    for(const auto& mu : selectedMuons){
+        hadr_recoil+=mu.p4();
+    }
+    for(const auto& ph : selectedPhotons){
+        hadr_recoil+=ph.p4();
+    }
+    
+    // apply skimming selection
+    if(n_ak4jets<minJetsAK4_ && n_ak8jets<minJetsAK8_) return false;
+    if(hMETs->at(0).pt()<metPtMin_ && hadr_recoil.pt()<metPtMin_) return false;
+    if(n_ak4jets>maxJetsAK4_ || n_ak8jets > maxJetsAK8_) return false;
+    
+    std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
+    std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
+    std::cout << "MET: " << hMETs->at(0).pt() << std::endl;
+    std::cout << "Hadronic recoil: " << hadr_recoil.pt() << std::endl;
+    std::cout << "Number of selected electrons: " << selectedElectrons.size() << std::endl;
+    std::cout << "Number of selected muons: " << selectedMuons.size() << std::endl;
+    std::cout << "Number of selected photons: " << selectedPhotons.size() << std::endl;
+
+	return true;
 }
 
-// Do event-wise setup of MiniAODHelper
-// Return true if successful, false otherwise
-bool
-LeptonJetsSkim::setUpHelper(const edm::Event& iEvent)
-{
-  // get RHO
-  edm::Handle<double> hRho;
-  iEvent.getByToken(EDMRhoToken,hRho);
-  if( hRho.isValid() ) {
-    helper_.SetRho(*hRho);
-  } else {
-    cout << "could not find rho" << endl;
-    return false;
-  }
-
-  // get PRIMARY VERTICES
-  edm::Handle<reco::VertexCollection> hVtxs;
-  iEvent.getByToken(EDMVertexToken,hVtxs);
-  if( hVtxs->size()>0 ) {
-    helper_.SetVertex( hVtxs->at(0) );
-  } else {
-    cout << "could not find vertices" << endl;
-    return false;
-  }
-  return true;
-}
 
 
 // ------------ method called once each job just before starting event loop  ------------
