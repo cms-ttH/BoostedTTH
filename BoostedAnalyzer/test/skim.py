@@ -14,7 +14,7 @@ if not options.inputFiles:
     if not options.isData:
         options.inputFiles=['root://xrootd-cms.infn.it///store/mc/RunIIAutumn18MiniAOD/ZJetsToNuNu_HT-400To600_13TeV-madgraph/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/260000/5423A771-D3D4-BB4D-8289-91DF6108FA78.root']
     else:
-        options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2017B/SingleElectron/MINIAOD/31Mar2018-v1/90000/6052A1DF-9B37-E811-AA01-008CFA110C88.root']
+        options.inputFiles=['root://xrootd-cms.infn.it///store/data/Run2018B/MET/MINIAOD/17Sep2018-v1/100000/84F4D3C4-7275-834A-ADDF-E34194D17EB3.root']
 
 process = cms.Process("p")
 #set some defaults

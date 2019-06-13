@@ -57,32 +57,34 @@ class LeptonJetsSkim : public edm::EDFilter {
       bool setUpHelper(const edm::Event& iEvent);
       
       // ----------member data ---------------------------
-    int minJetsAK4_;
-    int minJetsAK8_;
-    int maxJetsAK4_;
-    int maxJetsAK8_;
-    double AK4jetPtMin_;
-    double AK4jetEtaMax_;
-    double AK8jetPtMin_;
-    double AK8jetEtaMax_;
-    double muonPtMin_;
-    double muonEtaMax_;
-    double electronPtMin_;
-    double electronEtaMax_;
-    double photonPtMin_;
-    double photonEtaMax_;
-    double metPtMin_;
-
-  
-  // data access tokens
-    edm::EDGetTokenT< double >                    EDMRhoToken; //  pileup density
-    edm::EDGetTokenT< reco::VertexCollection >    EDMVertexToken; // vertex
-    edm::EDGetTokenT< pat::MuonCollection >       EDMMuonsToken;  // muons
+      
+    // data access tokens
     edm::EDGetTokenT< pat::ElectronCollection >   EDMElectronsToken;  // electrons
+    edm::EDGetTokenT< pat::MuonCollection >       EDMMuonsToken;  // muons
     edm::EDGetTokenT< pat::PhotonCollection >     EDMPhotonsToken;     // photons
     edm::EDGetTokenT< pat::JetCollection >        EDMAK4JetsToken;  // AK4 jets
     edm::EDGetTokenT< pat::JetCollection >        EDMAK8JetsToken;  // AK8 jets
-    edm::EDGetTokenT< std::vector<pat::MET> >        EDMMETToken; // MET
+    edm::EDGetTokenT< std::vector<pat::MET> >     EDMMETToken; // MET
+    edm::EDGetTokenT< reco::VertexCollection >    EDMVertexToken; // vertex
+    edm::EDGetTokenT< double >                    EDMRhoToken; //  pileup density
+      
+    const int minJetsAK4_;
+    const int minJetsAK8_;
+    const int maxJetsAK4_;
+    const int maxJetsAK8_;
+    const double AK4jetPtMin_;
+    const double AK4jetEtaMax_;
+    const double AK8jetPtMin_;
+    const double AK8jetEtaMax_;
+    const double muonPtMin_;
+    const double muonEtaMax_;
+    const double electronPtMin_;
+    const double electronEtaMax_;
+    const double photonPtMin_;
+    const double photonEtaMax_;
+    const double metPtMin_;
+    
+    const bool isData;
 
 
 };
@@ -90,42 +92,39 @@ class LeptonJetsSkim : public edm::EDFilter {
 //
 // constructors and destructor
 //
-LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig)
-{
+LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig) :
    //now do what ever initialization is needed
-  const std::string era = iConfig.getParameter<std::string>("era");
   
-  EDMElectronsToken         = consumes <pat::ElectronCollection >  (iConfig.getParameter<edm::InputTag>("electrons"));
-  EDMMuonsToken             = consumes< pat::MuonCollection >       (iConfig.getParameter<edm::InputTag>("muons"));
-  EDMPhotonsToken           = consumes< std::vector<pat::Photon> >     (iConfig.getParameter<edm::InputTag>("photons"));
-  EDMAK4JetsToken           = consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK4jets"));
-  EDMAK8JetsToken           = consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK8jets"));
-  EDMVertexToken            = consumes< reco::VertexCollection >    (iConfig.getParameter<edm::InputTag>("vertices"));
-  EDMRhoToken               = consumes< double >                    (iConfig.getParameter<edm::InputTag>("rho"));
-  EDMMETToken               = consumes< std::vector<pat::MET> > (iConfig.getParameter<edm::InputTag>("met"));
+  EDMElectronsToken         { consumes <pat::ElectronCollection >  (iConfig.getParameter<edm::InputTag>("electrons")) },
+  EDMMuonsToken             { consumes< pat::MuonCollection >       (iConfig.getParameter<edm::InputTag>("muons")) },
+  EDMPhotonsToken           { consumes< std::vector<pat::Photon> >     (iConfig.getParameter<edm::InputTag>("photons")) },
+  EDMAK4JetsToken           { consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK4jets")) },
+  EDMAK8JetsToken           { consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK8jets")) },
+  EDMMETToken               { consumes< std::vector<pat::MET> > (iConfig.getParameter<edm::InputTag>("met")) },
+  EDMVertexToken            { consumes< reco::VertexCollection >    (iConfig.getParameter<edm::InputTag>("vertices")) },
+  EDMRhoToken               { consumes< double >                    (iConfig.getParameter<edm::InputTag>("rho")) },
 
-  minJetsAK4_           = iConfig.getParameter<int>("minJetsAK4");
-  minJetsAK8_           = iConfig.getParameter<int>("minJetsAK8");
-  maxJetsAK4_           = iConfig.getParameter<int>("maxJetsAK4");
-  maxJetsAK8_           = iConfig.getParameter<int>("maxJetsAK8");
-  AK4jetPtMin_          = iConfig.getParameter<double>("AK4jetPtMin");
-  AK4jetEtaMax_         = iConfig.getParameter<double>("AK4jetEtaMax");
-  AK8jetPtMin_          = iConfig.getParameter<double>("AK8jetPtMin");
-  AK8jetEtaMax_         = iConfig.getParameter<double>("AK8jetEtaMax");
+  minJetsAK4_           { iConfig.getParameter<int>("minJetsAK4") },
+  minJetsAK8_           { iConfig.getParameter<int>("minJetsAK8") },
+  maxJetsAK4_           { iConfig.getParameter<int>("maxJetsAK4") },
+  maxJetsAK8_           { iConfig.getParameter<int>("maxJetsAK8") },
+  AK4jetPtMin_          { iConfig.getParameter<double>("AK4jetPtMin") },
+  AK4jetEtaMax_         { iConfig.getParameter<double>("AK4jetEtaMax") },
+  AK8jetPtMin_          { iConfig.getParameter<double>("AK8jetPtMin") },
+  AK8jetEtaMax_         { iConfig.getParameter<double>("AK8jetEtaMax") },
   
-  muonPtMin_            = iConfig.getParameter<double>("muonPtMin");
-  muonEtaMax_           = iConfig.getParameter<double>("muonEtaMax");
-  electronPtMin_        = iConfig.getParameter<double>("electronPtMin");
-  electronEtaMax_       = iConfig.getParameter<double>("electronEtaMax");
-  photonPtMin_          = iConfig.getParameter<double>("photonPtMin");
-  photonEtaMax_         = iConfig.getParameter<double>("photonEtaMax");
+  muonPtMin_            { iConfig.getParameter<double>("muonPtMin") },
+  muonEtaMax_           { iConfig.getParameter<double>("muonEtaMax") },
+  electronPtMin_        { iConfig.getParameter<double>("electronPtMin") },
+  electronEtaMax_       { iConfig.getParameter<double>("electronEtaMax") },
+  photonPtMin_          { iConfig.getParameter<double>("photonPtMin") },
+  photonEtaMax_         { iConfig.getParameter<double>("photonEtaMax") },
   
-  metPtMin_             = iConfig.getParameter<double>("metPtMin");
+  metPtMin_             { iConfig.getParameter<double>("metPtMin") },
   
-  const bool isData     = iConfig.getParameter<bool>("isData");
-  const int sampleID    = isData? -1 : 1;
+  isData     { iConfig.getParameter<bool>("isData") }
 
-}
+{}
 
 
 LeptonJetsSkim::~LeptonJetsSkim()
@@ -146,11 +145,11 @@ bool
 LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	// get slimmedElectrons
-	edm::Handle< pat::ElectronCollection > h_electrons;
-	iEvent.getByToken(EDMElectronsToken,h_electrons);
+	edm::Handle< pat::ElectronCollection > hElectrons;
+	iEvent.getByToken(EDMElectronsToken,hElectrons);
     
     // select those electrons satifsying pt and eta cuts
-    std::vector<pat::Electron> selectedElectrons = *h_electrons;
+    std::vector<pat::Electron> selectedElectrons = *hElectrons;
     selectedElectrons.erase(std::remove_if(selectedElectrons.begin(),selectedElectrons.end(),[&](pat::Electron ele){return !(ele.pt()>=electronPtMin_ && fabs(ele.eta())<=electronEtaMax_);}),selectedElectrons.end());
 
     // get slimmedMuons
@@ -205,7 +204,6 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // apply skimming selection
     if(n_ak4jets<minJetsAK4_ && n_ak8jets<minJetsAK8_) return false;
     if(hMETs->at(0).pt()<metPtMin_ && hadr_recoil.pt()<metPtMin_) return false;
-    if(n_ak4jets>maxJetsAK4_ || n_ak8jets > maxJetsAK8_) return false;
     
     std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
     std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
