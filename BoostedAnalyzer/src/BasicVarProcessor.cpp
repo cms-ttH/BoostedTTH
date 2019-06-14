@@ -95,7 +95,9 @@ void BasicVarProcessor::Init(const InputCollections& input,VariableContainer& va
   vars.InitVar("Evt_M3_OneJetTagged");
   vars.InitVar("Evt_MTW");
   vars.InitVar("Evt_HT");
+  vars.InitVar("Evt_HT_Gen");
   vars.InitVar("Evt_HT_Jets");
+  vars.InitVar("Evt_HT_GenJets");
   vars.InitVar("Evt_M_Total");
   vars.InitVar("Evt_MHT");
 
@@ -334,10 +336,29 @@ void BasicVarProcessor::Process(const InputCollections& input,VariableContainer&
 
   }
   ht += input.correctedMET.corP4(pat::MET::Type1XY).pt();
+  
+  float ht_gen = 0.;
+  float ht_genjets = 0.;
+  for(std::vector<reco::GenJet>::const_iterator itJet = input.genJets.begin() ; itJet != input.genJets.end(); ++itJet){
+      ht_gen += itJet->pt();
+      ht_genjets += itJet->pt();
+  }
+  for(std::vector<reco::GenParticle>::const_iterator itEle = input.customGenElectrons.begin(); itEle != input.customGenElectrons.end(); ++itEle){
+      ht_gen += itEle->pt();
+  }
+  for(std::vector<reco::GenParticle>::const_iterator itMu = input.customGenMuons.begin(); itMu != input.customGenMuons.end(); ++itMu){
+      ht_gen += itMu->pt();
+  }
+  //~ for(std::vector<reco::GenParticle>::const_iterator itGamma = input.customGenPhotons.begin(); itGamma != input.customGenPhotons.end(); ++itGamma){
+      //~ ht_gen += itGamma->pt();
+  //~ }
+  ht_gen += input.correctedMET.genMET()->pt();
 
   vars.FillVar("Evt_HT",ht);
   vars.FillVar("Evt_MHT",sqrt( mht_px*mht_px + mht_py*mht_py ));
   vars.FillVar("Evt_HT_Jets",htjets);
+  vars.FillVar("Evt_HT_GenJets",ht_genjets);
+  vars.FillVar("Evt_HT_Gen",ht_gen);
 
   // Fill Event Mass
   math::XYZTLorentzVector p4all;

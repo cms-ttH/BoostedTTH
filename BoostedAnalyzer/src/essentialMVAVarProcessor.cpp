@@ -559,7 +559,7 @@ void essentialMVAVarProcessor::Process(const InputCollections& input,VariableCon
   float detamax_j4j=-1;
 //   float costhetamax_jcm=-1;
   for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin();itJetVec != jetvecs.end();++itJetVec){
-    int iJetVec = itJetVec - jetvecs.begin();
+    //int iJetVec = itJetVec - jetvecs.begin();
     
 //     float c_lj=-1.5;
 //     float c_j1j=-1.5;
