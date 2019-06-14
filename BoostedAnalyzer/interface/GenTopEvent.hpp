@@ -91,6 +91,8 @@ public:
   reco::GenJet GetHiggsBGenJet() const;
   reco::GenJet GetHiggsBBarGenJet() const;
 
+  std::vector<reco::GenJet> GetBGenJets() const;
+  
   std::vector<reco::GenJet> GetAdditionalBGenJets() const;
   std::vector<reco::GenJet> GetAdditionalCGenJets() const;
   std::vector<reco::GenJet> GetAdditionalLightGenJets() const;
@@ -101,6 +103,8 @@ public:
   std::vector<reco::GenParticle> GetAdditionalCGenJetsHadron2() const;
 
 
+  std::vector<int> GetBGenJetsNHadrons() const;
+  
   std::vector<int> GetAdditionalCGenJetsFromTopType() const;
   std::vector<int> GetAdditionalBGenJetsFromTopType() const;
   std::vector<int> GetAdditionalCGenJetsNHadrons() const;
@@ -164,6 +168,9 @@ private:
   std::vector<reco::GenParticle> wminus_decay_products;
   std::vector<reco::GenParticle> higgs_decay_products;
 
+  std::vector<reco::GenJet> b_genjets;
+  std::vector<int> b_genjet_nb;
+  
   reco::GenJet higgs_b_genjet;
   reco::GenJet higgs_bbar_genjet;
   reco::GenJet top_b_genjet;

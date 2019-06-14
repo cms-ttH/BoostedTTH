@@ -44,6 +44,7 @@ class BoostedUtils{
     static float DeltaPhi(const pat::Jet& jet1,const pat::Jet& jet2);
     static float DeltaR(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2);
     static float DeltaR(const pat::Jet& jet1,const pat::Jet& jet2);
+    static float DeltaR(const reco::GenJet& jet1,const reco::GenJet& jet2);
     static float DeltaKt(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2);
     static float DeltaKt(const pat::Jet& jet1,const pat::Jet& jet2);
 
@@ -58,12 +59,14 @@ class BoostedUtils{
     static void GetNuVecs(const math::XYZTLorentzVector& lepvec, const TVector2& metvec, math::XYZTLorentzVector& nu1, math::XYZTLorentzVector& nu2);
 
     static std::vector<math::XYZTLorentzVector> GetJetVecs(const std::vector<pat::Jet>& jets);
+    static std::vector<math::XYZTLorentzVector> GetJetVecs(const std::vector<reco::GenJet>& genjets);
 
     static boosted::BoostedJetCollection GetSortedByPt(boosted::BoostedJetCollection const &boostedjets);
 
     static bool PassesCSV(const pat::Jet& jet, const char workingPoint='M');
 
     static float GetClosestJetIDs(int& idJet1, int& idJet2, const std::vector<pat::Jet>& jets);
+    static float GetClosestJetIDs(int& idJet1, int& idJet2, const std::vector<reco::GenJet>& genjets);
     static float GetClosestLepJetID(int& idJet, const math::XYZTLorentzVector& lepVec, const std::vector<pat::Jet>& jets);
 
     static float GetJetAverageJetEtaMax(const std::vector<pat::Jet>& jets1, const std::vector<pat::Jet>& jets2);

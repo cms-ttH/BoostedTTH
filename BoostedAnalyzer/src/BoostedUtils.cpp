@@ -130,6 +130,16 @@ float BoostedUtils::DeltaR(const pat::Jet& jet1,const pat::Jet& jet2){
   return dr;
 }
 
+float BoostedUtils::DeltaR(const reco::GenJet& jet1,const reco::GenJet& jet2){
+
+  math::XYZTLorentzVector vec1 = jet1.p4();
+  math::XYZTLorentzVector vec2 = jet2.p4();
+
+  float dr = BoostedUtils::DeltaR(vec1,vec2);
+
+  return dr;
+}
+
 
 float BoostedUtils::DeltaKt(const math::XYZTLorentzVector& vec1,const math::XYZTLorentzVector& vec2){
 
@@ -239,6 +249,15 @@ vector<math::XYZTLorentzVector> BoostedUtils::GetJetVecs(const std::vector<pat::
 
   return jetVecs;
 }
+vector<math::XYZTLorentzVector> BoostedUtils::GetJetVecs(const std::vector<reco::GenJet>& genjets){
+  std::vector<math::XYZTLorentzVector> genjetVecs;
+
+  for(std::vector<reco::GenJet>::const_iterator itJet=genjets.begin();itJet!=genjets.end();++itJet){
+    genjetVecs.push_back(itJet->p4());
+  }
+
+  return genjetVecs;
+}
 
 
 boosted::BoostedJetCollection BoostedUtils::GetSortedByPt(boosted::BoostedJetCollection const &boostedJets){
@@ -282,6 +301,25 @@ float BoostedUtils::GetClosestJetIDs(int& idJet1, int& idJet2, const std::vector
       if(BoostedUtils::DeltaR(jetVec1,jetVec2)<minDr){
 	      idJet1 = itJet1 - jets.begin();
 	      idJet2 = itJet2 - jets.begin();
+	      minDr = BoostedUtils::DeltaR(jetVec1,jetVec2);
+      }
+    }
+  }
+
+  return minDr;
+}
+
+float BoostedUtils::GetClosestJetIDs(int& idJet1, int& idJet2, const std::vector<reco::GenJet>& genjets){
+
+  float minDr = 9.;
+  for(std::vector<reco::GenJet>::const_iterator itJet1 = genjets.begin();itJet1 != genjets.end();++itJet1){
+    for(std::vector<reco::GenJet>::const_iterator itJet2 = itJet1+1;itJet2 != genjets.end();++itJet2){
+      math::XYZTLorentzVector jetVec1 = itJet1->p4();
+      math::XYZTLorentzVector jetVec2 = itJet2->p4();
+
+      if(BoostedUtils::DeltaR(jetVec1,jetVec2)<minDr){
+	      idJet1 = itJet1 - genjets.begin();
+	      idJet2 = itJet2 - genjets.begin();
 	      minDr = BoostedUtils::DeltaR(jetVec1,jetVec2);
       }
     }
