@@ -53,10 +53,14 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const SampleType                              sampleType_,
                     const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
-        const edm::Event&                             iEvent_,
-        const edm::EventSetup&                        iSetup_,
+                    const edm::Event&                             iEvent_,
+                    const edm::EventSetup&                        iSetup_,
                     const Systematics::Type&                      systematic_,
-                    const std::map<std::string, int>&             selectionTags_
+                    const std::map<std::string, int>&             selectionTags_,
+                    const std::vector<reco::GenParticle>&         customGenElectrons_,
+                    const std::vector<reco::GenParticle>&         customGenMuons_,
+                    const std::vector<reco::GenParticle>&         customGenTaus_,
+                    const std::vector<reco::GenParticle>& customGenPhotons_
                     
           /**** bjetness code ****/
                 ):
@@ -84,7 +88,11 @@ InputCollections(   const EventInfo&                              eventInfo_,
         iEvent(iEvent_),
         iSetup(iSetup_),
         systematic(systematic_),
-        selectionTags(selectionTags_)
+        selectionTags(selectionTags_),
+        customGenElectrons(customGenElectrons_),
+        customGenMuons(customGenMuons_),
+        customGenTaus(customGenTaus_),
+        customGenPhotons(customGenPhotons_)
                     {}
 
 /**
@@ -123,7 +131,11 @@ InputCollections(   const InputCollections&                       input,
         iEvent(input.iEvent),
         iSetup(input.iSetup),
         systematic(input.systematic),
-        selectionTags(input.selectionTags)
+        selectionTags(input.selectionTags),
+        customGenElectrons(input.customGenElectrons),
+        customGenMuons(input.customGenMuons),
+        customGenTaus(input.customGenTaus),
+        customGenPhotons(input.customGenPhotons)
                     {}
 
   const EventInfo&                              eventInfo;
@@ -150,7 +162,11 @@ InputCollections(   const InputCollections&                       input,
   const edm::Event &                            iEvent;
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;
-  const std::map<std::string, int>&              selectionTags;
+  const std::map<std::string, int>&             selectionTags;
+  const std::vector<reco::GenParticle>&         customGenElectrons;
+  const std::vector<reco::GenParticle>&         customGenMuons;
+  const std::vector<reco::GenParticle>&         customGenTaus;
+  const std::vector<reco::GenParticle>&         customGenPhotons;
 };
 
 #endif

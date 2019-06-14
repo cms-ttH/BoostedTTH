@@ -377,7 +377,15 @@ for s in systsJES:
 
 ###############################################
 
+# GenCollectionProducer
+process.load("BoostedTTH.GenCollectionProducer.GenCollectionProducer_cfi")
+process.GenCollectionProducer.collection_name=["CustomGenElectrons","CustomGenMuons","CustomGenTaus","CustomGenPhotons"]
+process.GenCollectionProducer.collection_type=["Electron","Muon","Tau","Photon"]
+process.GenCollectionProducer.pt_min=[10.,10.,18.,15.]
+process.GenCollectionProducer.eta_max=[2.4,2.4,2.3,2.5]
+process.GenCollectionProducer.doDeltaRCleaning=False
 
+################################################
 
 ### correct MET manually ###
 #process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
@@ -461,7 +469,7 @@ else:
   "essentialMCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
- "BDTVarProcessor",
+  "BDTVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
    
@@ -515,6 +523,8 @@ for s in [""]+systs:
     process.p *= getattr(process,'SelectedJetProducerAK4'+s)
     process.p *= getattr(process,'SelectedJetProducerAK8'+s)
 
+if not options.isData:
+    process.p*=process.GenCollectionProducer
 
 if not options.isData and not options.isBoostedMiniAOD:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
