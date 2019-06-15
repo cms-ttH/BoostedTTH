@@ -208,8 +208,8 @@ private:
   std::vector<reco::GenJet> w_genjets;
   std::vector<reco::GenJet> additional_light_genjets;
   const float wMatchR=0.4;
-  const float ttxptcut=20;
-  const float ttxetacut=2.4;
+  const float ttxptcut=25;
+  const float ttxetacut=2.5;
   bool isTTbar=false;
   bool isTTH=false;
   bool topIsHadronic;
