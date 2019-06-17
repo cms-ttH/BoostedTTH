@@ -39,16 +39,33 @@ process.load("CondCore.CondDB.CondDB_cfi")
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
+#process.load('RecoVertex.AdaptiveVertexFinder.inclusiveCandidateVertexFinder_cfi')
+#process.load('RecoVertex.AdaptiveVertexFinder.candidateVertexMerger_cfi')
+#process.load('RecoVertex.AdaptiveVertexFinder.candidateVertexArbitrator_cfi')
+#process.load('RecoVertex.AdaptiveVertexFinder.inclusiveVertexing_cff')
 
-jetToolbox( process, 'ak15', 'ak15JetSubs', 'out',
+jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
   PUMethod='Puppi',
   addPruning=True, addSoftDrop=True ,           # add basic grooming
   addTrimming=True, addFiltering=True,
   addSoftDropSubjets=True,
+  addPrunedSubjets=True,
   addNsub=True, maxTau=4,                       # add Nsubjettiness tau1, tau2, tau3, tau4
-  JETCorrPayload = 'AK8PFPuppi', JETCorrLevels = ['L2Relative', 'L3Absolute'],
+  JETCorrPayload = 'AK8PFPuppi', #JETCorrLevels = ['L2Relative', 'L3Absolute'],
   runOnMC=not options.isData,
-  Cut='pt > 100 && abs(eta) < 2.5'
+  miniAOD=True,
+  #bTagDiscriminators=[
+            #'pfDeepFlavourJetTags:probb',
+			#'pfDeepFlavourJetTags:probbb',
+			#'pfDeepFlavourJetTags:problepb',
+			#'pfDeepFlavourJetTags:probc',
+			#'pfDeepFlavourJetTags:probuds',
+			#'pfDeepFlavourJetTags:probg',    
+  #],
+  Cut='pt > 100 && abs(eta) < 2.5',
+  GetJetMCFlavour=True,
+  #GetSubJetMCFlavour=True,
+  addHEPTopTagger=True
   )
 
 process.load("BoostedTTH.BoostedAnalyzer.LeptonJetsSkim_cfi")
@@ -61,14 +78,20 @@ process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Skim.root'),
     outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE',
-        #'keep *_ak15PFJetsPuppiSoftDropMass_*_*', 
-        #'keep *_selectedPatJetsAK15PFPuppiSoftDropPacked_SubJets_*', 
-        #'keep *_packedPatJetsAK15PFPuppiSoftDrop_*_*', 
-        #'keep *_ak15PFJetsPuppiPrunedMass_*_*', 
-        #'keep *_ak15PFJetsPuppiTrimmedMass_*_*', 
-        #'keep *_ak15PFJetsPuppiFilteredMass_*_*', 
-        #'keep *_NjettinessAK15Puppi_*_*', 
-        #'keep *_selectedPatJetsAK15PFPuppi_*_*'
+        'keep *_ak15PFJetsPuppiSoftDropMass_*_*', 
+        'keep *_selectedPatJetsAK15PFPuppiSoftDropPacked_SubJets_*', 
+        'keep *_packedPatJetsAK15PFPuppiSoftDrop_*_*', 
+        'keep *_ak15PFJetsPuppiPrunedMass_*_*', 
+        'keep *_selectedPatJetsAK15PFPuppiPrunedPacked_SubJets_*', 
+        'keep *_packedPatJetsAK15PFPuppiPrunedSubjets_*_*', 
+        'keep *_ak15PFJetsPuppiTrimmedMass_*_*', 
+        'keep *_ak15PFJetsPuppiFilteredMass_*_*', 
+        'keep *_hepTopTagPFJetsPuppi_*_*', 
+        'keep *_hepTopTagPFJetsPuppiMassAK15_*_*', 
+        'keep *_NjettinessAK15Puppi_*_*', 
+        'keep *_selectedPatJetsAK15PFPuppi_*_*', 
+        'drop *_selectedPatJetsAK15PFPuppi_calo*_*', 
+        'drop *_selectedPatJetsAK15PFPuppi_tagInfos_*'
         ]),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skim")
