@@ -67,6 +67,7 @@ class LeptonJetsSkim : public edm::EDFilter {
     edm::EDGetTokenT< std::vector<pat::MET> >     EDMMETToken; // MET
     edm::EDGetTokenT< reco::VertexCollection >    EDMVertexToken; // vertex
     edm::EDGetTokenT< double >                    EDMRhoToken; //  pileup density
+    edm::EDGetTokenT<pat::JetCollection>          EDMAK15JetsToken_;
       
     const int minJetsAK4_;
     const int minJetsAK8_;
@@ -103,6 +104,7 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig) :
   EDMMETToken               { consumes< std::vector<pat::MET> > (iConfig.getParameter<edm::InputTag>("met")) },
   EDMVertexToken            { consumes< reco::VertexCollection >    (iConfig.getParameter<edm::InputTag>("vertices")) },
   EDMRhoToken               { consumes< double >                    (iConfig.getParameter<edm::InputTag>("rho")) },
+  EDMAK15JetsToken_         { consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK15jets")) },
 
   minJetsAK4_           { iConfig.getParameter<int>("minJetsAK4") },
   minJetsAK8_           { iConfig.getParameter<int>("minJetsAK8") },
@@ -176,17 +178,22 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     edm::Handle<pat::JetCollection> ak8Jets;
 	iEvent.getByToken(EDMAK8JetsToken,ak8Jets);
     
+    // get AK15 jets
+    edm::Handle<pat::JetCollection> ak15Jets;
+    iEvent.getByToken(EDMAK15JetsToken_, ak15Jets);
+    
     // get slimmedMETs
     edm::Handle<std::vector<pat::MET>> hMETs;
 	iEvent.getByToken(EDMMETToken,hMETs);
     
 	int n_ak4jets = 0;
     int n_ak8jets = 0;
+    int n_ak15jets = 0;
     
     // count ak4 and ak8 jets satisfying pt and eta cuts
 	n_ak4jets = std::count_if(ak4Jets->begin(),ak4Jets->end(),[&](pat::Jet jet){return (jet.pt()>=AK4jetPtMin_ && fabs(jet.eta())<=AK4jetEtaMax_);});
     n_ak8jets = std::count_if(ak8Jets->begin(),ak8Jets->end(),[&](pat::Jet jet){return (jet.pt()>=AK8jetPtMin_ && fabs(jet.eta())<=AK8jetEtaMax_);});
-    
+    n_ak15jets = ak15Jets->size();
     
     // calculate approximate hadronic recoil
     auto hadr_recoil = hMETs->at(0).p4();
@@ -207,6 +214,7 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
     std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
+    std::cout << "Number of AK15 jets: " << n_ak15jets << std::endl;
     std::cout << "MET: " << hMETs->at(0).pt() << std::endl;
     std::cout << "Hadronic recoil: " << hadr_recoil.pt() << std::endl;
     std::cout << "Number of selected electrons: " << selectedElectrons.size() << std::endl;

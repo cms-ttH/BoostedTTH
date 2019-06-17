@@ -1,5 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
+from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 
 options = VarParsing ('analysis')
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
@@ -16,9 +17,7 @@ if not options.inputFiles:
     else:
         options.inputFiles=['root://xrootd-cms.infn.it///store/data/Run2018B/MET/MINIAOD/17Sep2018-v1/100000/84F4D3C4-7275-834A-ADDF-E34194D17EB3.root']
 
-process = cms.Process("p")
-#set some defaults
-
+process = cms.Process("skim")
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(options.inputFiles),
@@ -31,47 +30,53 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.options.allowUnscheduled = cms.untracked.bool(True)
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
 
+# these are needed to write the new AK15 jet collections - dont know why ...
+process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
+process.load('Configuration.StandardSequences.MagneticField_38T_cff')
+process.load('Configuration.Geometry.GeometryRecoDB_cff')
 
-# Set up JetCorrections chain to be used in MiniAODHelper
-# Note: name is hard-coded to ak4PFchsL1L2L3 and does not
-# necessarily reflect actual corrections level
-from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
-process.ak4PFCHSL1Fastjet = cms.ESProducer(
-  'L1FastjetCorrectionESProducer',
-  level = cms.string('L1FastJet'),
-  algorithm = cms.string('AK4PFchs'),
-  srcRho = cms.InputTag( 'fixedGridRhoFastjetAll' )
+jetToolbox( process, 'ak15', 'ak15JetSubs', 'out',
+  PUMethod='Puppi',
+  addPruning=True, addSoftDrop=True ,           # add basic grooming
+  addTrimming=True, addFiltering=True,
+  addSoftDropSubjets=True,
+  addNsub=True, maxTau=4,                       # add Nsubjettiness tau1, tau2, tau3, tau4
+  JETCorrPayload = 'AK8PFPuppi', JETCorrLevels = ['L2Relative', 'L3Absolute'],
+  runOnMC=not options.isData,
+  Cut='pt > 100 && abs(eta) < 2.5'
   )
-process.ak4PFchsL2Relative = ak4CaloL2Relative.clone( algorithm = 'AK4PFchs' )
-process.ak4PFchsL3Absolute = ak4CaloL3Absolute.clone( algorithm = 'AK4PFchs' )
-process.ak4PFchsResidual = ak4CaloResidual.clone( algorithm = 'AK4PFchs' )
-process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
-  correctors = cms.vstring(
-    'ak4PFCHSL1Fastjet',
-    'ak4PFchsL2Relative',
-    'ak4PFchsL3Absolute')
-)
-if options.isData==True:
-  process.ak4PFchsL1L2L3.correctors.append('ak4PFchsResidual') # add residual JEC for data
-
 
 process.load("BoostedTTH.BoostedAnalyzer.LeptonJetsSkim_cfi")
 process.LeptonJetsSkim.isData=cms.bool(options.isData)
 
-process.skimmed=cms.Path(process.LeptonJetsSkim)
+process.content = cms.EDAnalyzer("EventContentAnalyzer")
+
 
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Skim.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE']),
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE',
+        #'keep *_ak15PFJetsPuppiSoftDropMass_*_*', 
+        #'keep *_selectedPatJetsAK15PFPuppiSoftDropPacked_SubJets_*', 
+        #'keep *_packedPatJetsAK15PFPuppiSoftDrop_*_*', 
+        #'keep *_ak15PFJetsPuppiPrunedMass_*_*', 
+        #'keep *_ak15PFJetsPuppiTrimmedMass_*_*', 
+        #'keep *_ak15PFJetsPuppiFilteredMass_*_*', 
+        #'keep *_NjettinessAK15Puppi_*_*', 
+        #'keep *_selectedPatJetsAK15PFPuppi_*_*'
+        ]),
     SelectEvents = cms.untracked.PSet(
-        SelectEvents = cms.vstring("skimmed")
+        SelectEvents = cms.vstring("skim")
     )
 )
-process.endpath = cms.EndPath(process.OUT)
+process.skim = cms.Path()
+#process.skim*=process.content
+process.skim*=process.LeptonJetsSkim
+process.write_skimmed = cms.EndPath(process.OUT)
+
+print process.dumpPython()
