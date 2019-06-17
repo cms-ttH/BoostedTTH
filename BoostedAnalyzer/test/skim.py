@@ -1,6 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+
 
 options = VarParsing ('analysis')
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
@@ -55,6 +57,10 @@ jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
   runOnMC=not options.isData,
   miniAOD=True,
   #bTagDiscriminators=[
+            #'pfDeepCSVJetTags:probb',
+			#'pfDeepCSVJetTags:probbb',
+			#'pfDeepCSVJetTags:probc',
+			#'pfDeepCSVJetTags:probudsg',
             #'pfDeepFlavourJetTags:probb',
 			#'pfDeepFlavourJetTags:probbb',
 			#'pfDeepFlavourJetTags:problepb',
@@ -68,6 +74,40 @@ jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
   addHEPTopTagger=True
   )
 
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiPrunedSubjets'),
+   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   svSource = cms.InputTag('slimmedSecondaryVertices'),
+   jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
+   btagDiscriminators = [
+      'pfDeepFlavourJetTags:probb',
+      'pfDeepFlavourJetTags:probbb',
+      'pfDeepFlavourJetTags:problepb',
+      'pfDeepFlavourJetTags:probc',
+      'pfDeepFlavourJetTags:probuds',
+      'pfDeepFlavourJetTags:probg'
+      ],
+   postfix='AK15PFPuppiPrunedSubjetsNewDFTraining'
+)
+   
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiSoftDropSubjets'),
+   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   svSource = cms.InputTag('slimmedSecondaryVertices'),
+   jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
+   btagDiscriminators = [
+      'pfDeepFlavourJetTags:probb',
+      'pfDeepFlavourJetTags:probbb',
+      'pfDeepFlavourJetTags:problepb',
+      'pfDeepFlavourJetTags:probc',
+      'pfDeepFlavourJetTags:probuds',
+      'pfDeepFlavourJetTags:probg'
+      ],
+   postfix='AK15PFPuppiSoftDropSubjetsNewDFTraining'
+)
+
 process.load("BoostedTTH.BoostedAnalyzer.LeptonJetsSkim_cfi")
 process.LeptonJetsSkim.isData=cms.bool(options.isData)
 
@@ -77,21 +117,9 @@ process.content = cms.EDAnalyzer("EventContentAnalyzer")
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Skim.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE',
-        'keep *_ak15PFJetsPuppiSoftDropMass_*_*', 
-        'keep *_selectedPatJetsAK15PFPuppiSoftDropPacked_SubJets_*', 
-        'keep *_packedPatJetsAK15PFPuppiSoftDrop_*_*', 
-        'keep *_ak15PFJetsPuppiPrunedMass_*_*', 
-        'keep *_selectedPatJetsAK15PFPuppiPrunedPacked_SubJets_*', 
-        'keep *_packedPatJetsAK15PFPuppiPrunedSubjets_*_*', 
-        'keep *_ak15PFJetsPuppiTrimmedMass_*_*', 
-        'keep *_ak15PFJetsPuppiFilteredMass_*_*', 
-        'keep *_hepTopTagPFJetsPuppi_*_*', 
-        'keep *_hepTopTagPFJetsPuppiMassAK15_*_*', 
-        'keep *_NjettinessAK15Puppi_*_*', 
-        'keep *_selectedPatJetsAK15PFPuppi_*_*', 
-        'drop *_selectedPatJetsAK15PFPuppi_calo*_*', 
-        'drop *_selectedPatJetsAK15PFPuppi_tagInfos_*'
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_selected*AK15*_*_skim',
+        'drop *_selected*AK15*_*calo*_skim', 
+        'drop *_selected*AK15*_*tagInfos*_skim',
         ]),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skim")
@@ -102,4 +130,4 @@ process.skim = cms.Path()
 process.skim*=process.LeptonJetsSkim
 process.write_skimmed = cms.EndPath(process.OUT)
 
-print process.dumpPython()
+#print process.dumpPython()
