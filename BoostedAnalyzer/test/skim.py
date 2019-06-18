@@ -82,8 +82,8 @@ jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
   PUMethod='Puppi',
   addPruning=True, addSoftDrop=True ,           # add basic grooming
   addTrimming=True, addFiltering=True,
-  addSoftDropSubjets=True,
-  addPrunedSubjets=True,
+  addSoftDropSubjets=False,
+  addPrunedSubjets=False,
   addNsub=True, maxTau=4,                       # add Nsubjettiness tau1, tau2, tau3, tau4
   JETCorrPayload = 'AK8PFPuppi', #JETCorrLevels = ['L2Relative', 'L3Absolute'],
   runOnMC=not options.isData,
@@ -101,44 +101,44 @@ jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
 			#'pfDeepFlavourJetTags:probg',    
   #],
   Cut='pt > 100 && abs(eta) < 2.5',
-  GetJetMCFlavour=True,
+  GetJetMCFlavour=not options.isData,
   #GetSubJetMCFlavour=True,
   addHEPTopTagger=True
   )
 
-updateJetCollection(
-   process,
-   jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiPrunedSubjets'),
-   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-   svSource = cms.InputTag('slimmedSecondaryVertices'),
-   jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
-   btagDiscriminators = [
-      'pfDeepFlavourJetTags:probb',
-      'pfDeepFlavourJetTags:probbb',
-      'pfDeepFlavourJetTags:problepb',
-      'pfDeepFlavourJetTags:probc',
-      'pfDeepFlavourJetTags:probuds',
-      'pfDeepFlavourJetTags:probg'
-      ],
-   postfix='AK15PFPuppiPrunedSubjetsNewDFTraining'
-)
+#updateJetCollection(
+   #process,
+   #jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiPrunedSubjets'),
+   #pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   #svSource = cms.InputTag('slimmedSecondaryVertices'),
+   #jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
+   #btagDiscriminators = [
+      #'pfDeepFlavourJetTags:probb',
+      #'pfDeepFlavourJetTags:probbb',
+      #'pfDeepFlavourJetTags:problepb',
+      #'pfDeepFlavourJetTags:probc',
+      #'pfDeepFlavourJetTags:probuds',
+      #'pfDeepFlavourJetTags:probg'
+      #],
+   #postfix='AK15PFPuppiPrunedSubjetsNewDFTraining'
+#)
    
-updateJetCollection(
-   process,
-   jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiSoftDropSubjets'),
-   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-   svSource = cms.InputTag('slimmedSecondaryVertices'),
-   jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
-   btagDiscriminators = [
-      'pfDeepFlavourJetTags:probb',
-      'pfDeepFlavourJetTags:probbb',
-      'pfDeepFlavourJetTags:problepb',
-      'pfDeepFlavourJetTags:probc',
-      'pfDeepFlavourJetTags:probuds',
-      'pfDeepFlavourJetTags:probg'
-      ],
-   postfix='AK15PFPuppiSoftDropSubjetsNewDFTraining'
-)
+#updateJetCollection(
+   #process,
+   #jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiSoftDropSubjets'),
+   #pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   #svSource = cms.InputTag('slimmedSecondaryVertices'),
+   #jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
+   #btagDiscriminators = [
+      #'pfDeepFlavourJetTags:probb',
+      #'pfDeepFlavourJetTags:probbb',
+      #'pfDeepFlavourJetTags:problepb',
+      #'pfDeepFlavourJetTags:probc',
+      #'pfDeepFlavourJetTags:probuds',
+      #'pfDeepFlavourJetTags:probg'
+      #],
+   #postfix='AK15PFPuppiSoftDropSubjetsNewDFTraining'
+#)
    
 ####################### EGamma stuff ##########################   
    
@@ -212,14 +212,25 @@ process.OUT = cms.OutputModule(
         SelectEvents = cms.vstring("skim")
     )
 )
+    
 process.skim = cms.Path()
-#process.skim*=process.content
-process.skim*=process.LeptonJetsSkim
 
+# these are MET filters which can be run on any era (data and mc) and do not need special recipes
+process.skim *= process.HBHENoiseFilterResultProducer*process.HBHENoiseFilter*process.HBHENoiseIsoFilter
+process.skim *= process.primaryVertexFilter
+process.skim *= process.globalSuperTightHalo2016Filter
+process.skim *= process.EcalDeadCellTriggerPrimitiveFilter
+#if options.isData:
+    #process.skim *= process.eeBadScFilter
+process.skim *= process.LeptonJetsSkim
+
+# egamma sequence to recalculate electron/photon IDs
 process.egamma = cms.Path(process.egammaPostRecoSeq)
-process.met = cms.Path(process.fullPatMetSequence)
-process.metfilters=cms.Path(process.HBHENoiseFilterResultProducer*process.HBHENoiseFilter*process.HBHENoiseIsoFilter*process.primaryVertexFilter*process.globalSuperTightHalo2016Filter*process.EcalDeadCellTriggerPrimitiveFilter)
 
+# met sequence to recalculate MET
+process.met = cms.Path(process.fullPatMetSequence)
+
+# write the events which pass the skimming selection and only keep the specified file content
 process.write_skimmed = cms.EndPath(process.OUT)
 
 #print process.dumpPython()
