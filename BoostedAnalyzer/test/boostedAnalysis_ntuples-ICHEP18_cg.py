@@ -464,16 +464,14 @@ if options.isData:
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-
-#  "MCMatchVarProcessor",
   "essentialMCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
   "BDTVarProcessor",
   "TriggerVarProcessor",
-  #"ReconstructionMEvarProcessor",
-   
-  "AdditionalJetProcessor"
+  "AdditionalJetProcessor",
+  "GenBJetProcessor",
+  "GenLeptonProcessor"
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
 
