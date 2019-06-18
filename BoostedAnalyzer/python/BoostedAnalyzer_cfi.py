@@ -2,6 +2,7 @@ import FWCore.ParameterSet.Config as cms
 from BoostedTTH.BoostedAnalyzer.Selection_cff import *
 from BoostedTTH.BoostedAnalyzer.Inputs_cff import *
 from BoostedTTH.BoostedAnalyzer.Weights_cff import *
+from BoostedTTH.BoostedAnalyzer.JetAssignment_cff import *
 
 BoostedAnalyzer2017 = cms.EDAnalyzer(
     'BoostedAnalyzer',
@@ -31,7 +32,8 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
 
     # information about lepton trigger SFs, defined in Weights_cff
     leptonTriggerSFInfos = TriggerSFs2017,
-
+    # information about jet assignment weight .xml file
+    JetAssignmentOptions = JetAssignment2017,
     #MET Filters
     METfilters = filtersMC1718,
 
@@ -57,7 +59,7 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
     minTagsForMEM = cms.int32(3),
 
     selectionNames = cms.vstring("VertexSelection","LeptonSelection"),
-    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor", "AK8JetProcessor", "SelectionTagProcessor"),
+    processorNames = cms.vstring("WeightProcessor","MCMatchVarProcessor","BoostedMCMatchVarProcessor","BasicVarProcessor","MVAVarProcessor","BDTVarProcessor","TriggerVarProcessor","BoostedJetVarProcessor","BoostedTopHiggsVarProcessor", "AK8JetProcessor", "SelectionTagProcessor", "JABDTttbarProcessor"),
     outfileName = cms.string("BoostedTTH"),
 
     taggingSelection=cms.bool(False),

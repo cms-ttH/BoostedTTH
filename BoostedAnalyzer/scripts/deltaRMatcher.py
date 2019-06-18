@@ -137,16 +137,27 @@ def check_variables(variable_list, cuts, tree):
         phi = v+"_Phi"
         eta = v+"_Eta"
         print("\tchecking {}".format(v))
-        if not hasattr(tree, phi):
+        phi = check_single_var(v, ["Phi", "phi"], tree)
+        if phi == "":
             sys.exit("phi variable {} not found".format(phi))
-        if not hasattr(tree, eta):
+        eta = check_single_var(v, ["Eta", "eta"], tree)
+        if eta == "":
             sys.exit("eta variable {} not found".format(eta))
     for cut in cuts:
         if not hasattr(tree, cut.getVariable()):
             sys.exit("cut variable {} not found".format(cut.getVariable()))
 
     print("variable check successfull")
+    return phi, eta
 
+def check_single_var(varname, alternatives, tree):
+    realname = ""
+    for alt in alternatives:
+        tmp = "_".join([varname, alt])
+        if hasattr(tmp, tree):
+            realname = tmp
+            break
+    return realname
 
 def match_events(tree, match_groups, cuts, options):
     number_matched_events = 0
@@ -181,15 +192,24 @@ def match_events(tree, match_groups, cuts, options):
         all_groups_matched = True
         one_match = False
         tmp_hist_dict = {}
+        eta_alts = ["Eta", "eta"]
+        phi_alts = ["Phi", "phi"]
+
         for group in match_groups:
             # iterate over all neccesary matches in group
             dRs = []
             for match in group:
                 name = match[0]
-                phi1 = tree.GetLeaf(match[1]+"_Phi").GetValue()
-                eta1 = tree.GetLeaf(match[1]+"_Eta").GetValue()
-                phi2 = tree.GetLeaf(match[2]+"_Phi").GetValue()
-                eta2 = tree.GetLeaf(match[2]+"_Eta").GetValue()
+                phivar_1 = check_single_var(math[1], phi_alts, tree)
+                etavar_1 = check_single_var(math[1], eta_alts, tree)
+                phivar_2 = check_single_var(math[2], phi_alts, tree)
+                etavar_2 = check_single_var(math[2], eta_alts, tree) 
+                
+                phi1 = tree.GetLeaf(phivar_1).GetValue()
+                eta1 = tree.GetLeaf(etavar_1).GetValue()
+                phi2 = tree.GetLeaf(phivar_2).GetValue()
+                eta2 = tree.GetLeaf(etavar_2).GetValue()
+
                 # get deltaR
                 dR = get_dR(phi1, phi2, eta1, eta2)
                 if options.plot:
@@ -298,7 +318,7 @@ if __name__ == "__main__":
     tree = f.Get("MVATree")
 
     # check if all variables exist
-    check_variables(variable_list, cuts, tree)
+    phi, eta = check_variables(variable_list, cuts, tree)
 
     # match stuff
     match_events(tree, match_groups, cuts, options)

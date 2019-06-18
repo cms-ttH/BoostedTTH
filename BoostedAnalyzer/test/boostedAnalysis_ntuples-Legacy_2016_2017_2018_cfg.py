@@ -638,6 +638,10 @@ if options.isData:
   "essentialMVAVarProcessor",
   "essentialRecoVarProcessor",
   "TriggerVarProcessor",
+  "JABDTttbarProcessor",
+  "JABDTthqProcessor",
+  "JABDTthwProcessor",
+  "JABDTtthProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )
@@ -649,6 +653,10 @@ else:
   "essentialMVAVarProcessor",
   "essentialRecoVarProcessor",
   "TriggerVarProcessor",
+  "JABDTttbarProcessor",
+  "JABDTthqProcessor",
+  "JABDTthwProcessor",
+  "JABDTtthProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )
