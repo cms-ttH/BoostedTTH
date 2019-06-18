@@ -36,6 +36,10 @@ Do for example:
 
     # adds function to easily recalculate electron/photon IDs and energy corrections
     git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier
+    git cms-merge-topic cms-egamma:PhotonIDValueMapSpeedup1029 #optional but speeds up the photon ID value module so things run faster
+    git cms-addpkg EgammaAnalysis/ElectronTools
+    rm EgammaAnalysis/ElectronTools/data -rf
+    git clone git@github.com:cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
     
     # mitigation of EE noise to MET in 2017 data
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
