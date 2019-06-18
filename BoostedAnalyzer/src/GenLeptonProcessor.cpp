@@ -59,49 +59,58 @@ void GenLeptonProcessor::Process(const InputCollections& input,VariableContainer
   
   
   std::vector<reco::GenParticle> electrons = input.customGenElectrons;
-  std::vector<reco::GenParticle> muons = input.customGenMuons;
+  //std::cout << "Size Input collection customGenElectrons: " << electrons.size() << std::endl;
   
-  std::vector<const pat::Electron*> electrons_reco;
-  for(auto electron = electrons.begin(); electron != electrons.end(); electron++){
-    electrons_reco.push_back(GetPatElectron(*electron,input.selectedElectronsLoose));
-  }
-  std::vector<const pat::Muon*> muons_reco;
-  for(auto muon = muons.begin(); muon != muons.end(); muon++){
-    muons_reco.push_back(GetPatMuon(*muon,input.selectedMuonsLoose));
-  }
-  
-  
-  vars.FillVar( "N_GenElectrons", electrons.size());
-  vars.FillVar( "N_GenMuons", muons.size());
-  
-  reco::GenParticle leadingelectron = electrons[0];  
-  for(uint i=0; i<electrons.size(); i++){
-    if(electrons[i].pt() > leadingelectron.pt()){
-      leadingelectron = electrons[i];
+  if(electrons.size()>0){
+    std::vector<const pat::Electron*> electrons_reco;
+    for(auto electron = electrons.begin(); electron != electrons.end(); electron++){
+      electrons_reco.push_back(GetPatElectron(*electron,input.selectedElectronsLoose));
+    }
+        
+    vars.FillVar( "N_GenElectrons", electrons.size());
+      
+    reco::GenParticle leadingelectron = electrons.at(0);  
+    for(uint i=0; i<electrons.size(); i++){
+      if(electrons[i].pt() > leadingelectron.pt()){
+        leadingelectron = electrons[i];
+        }
+      vars.FillVars( "GenElectron_Pt", i, electrons[i].pt());
+      vars.FillVars( "GenElectron_Eta", i, electrons[i].eta());
+      vars.FillVars( "GenElectron_Phi", i, electrons[i].phi());
+      vars.FillVars( "GenElectron_E", i, electrons[i].energy());
+      vars.FillVars( "GenElectron_RecoLeptonPt", i, electrons_reco[i]!=0 ? electrons_reco[i]->pt() : -1);
+      vars.FillVars( "GenElectron_RecoLeptonEta", i, electrons_reco[i]!=0 ? electrons_reco[i]->eta() : -1);
+      vars.FillVars( "GenElectron_RecoLeptonPhi", i, electrons_reco[i]!=0 ? electrons_reco[i]->phi() : -1);
+      vars.FillVars( "GenElectron_RecoLeptonE", i, electrons_reco[i]!=0 ? electrons_reco[i]->energy() : -1);
       }
-    vars.FillVars( "GenElectron_Pt", i, electrons[i].pt());
-    vars.FillVars( "GenElectron_Eta", i, electrons[i].eta());
-    vars.FillVars( "GenElectron_Phi", i, electrons[i].phi());
-    vars.FillVars( "GenElectron_E", i, electrons[i].energy());
-    vars.FillVars( "GenElectron_RecoLeptonPt", i, electrons_reco[i]!=0 ? electrons_reco[i]->pt() : -1);
-    vars.FillVars( "GenElectron_RecoLeptonEta", i, electrons_reco[i]!=0 ? electrons_reco[i]->eta() : -1);
-    vars.FillVars( "GenElectron_RecoLeptonPhi", i, electrons_reco[i]!=0 ? electrons_reco[i]->phi() : -1);
-    vars.FillVars( "GenElectron_RecoLeptonE", i, electrons_reco[i]!=0 ? electrons_reco[i]->energy() : -1);
+  }
+  
+  
+  std::vector<reco::GenParticle> muons = input.customGenMuons;
+  //std::cout << "Size Input collection customGenMuons: " << muons.size() << std::endl;
+  
+  if(muons.size()>0){
+    std::vector<const pat::Muon*> muons_reco;
+    for(auto muon = muons.begin(); muon != muons.end(); muon++){
+    muons_reco.push_back(GetPatMuon(*muon,input.selectedMuonsLoose));
     }
     
-  reco::GenParticle leadingmuon = muons[0];
-  for(uint i=0; i<muons.size(); i++){
-    if(muons[i].pt() > leadingmuon.pt()){
-      leadingmuon = muons[i];
+    vars.FillVar( "N_GenMuons", muons.size());
+    
+    reco::GenParticle leadingmuon = muons.at(0);
+    for(uint i=0; i<muons.size(); i++){
+      if(muons[i].pt() > leadingmuon.pt()){
+        leadingmuon = muons[i];
+        }
+      vars.FillVars( "GenMuon_Pt", i, muons[i].pt());
+      vars.FillVars( "GenMuon_Eta", i, muons[i].eta());
+      vars.FillVars( "GenMuon_Phi", i, muons[i].phi());
+      vars.FillVars( "GenMuon_E", i, muons[i].energy());
+      vars.FillVars( "GenMuon_RecoLeptonPt", i, muons_reco[i]!=0 ? muons_reco[i]->pt() : -1);
+      vars.FillVars( "GenMuon_RecoLeptonEta", i, muons_reco[i]!=0 ? muons_reco[i]->eta() : -1);
+      vars.FillVars( "GenMuon_RecoLeptonPhi", i, muons_reco[i]!=0 ? muons_reco[i]->phi() : -1);
+      vars.FillVars( "GenMuon_RecoLeptonE", i, muons_reco[i]!=0 ? muons_reco[i]->energy() : -1);
       }
-    vars.FillVars( "GenMuon_Pt", i, muons[i].pt());
-    vars.FillVars( "GenMuon_Eta", i, muons[i].eta());
-    vars.FillVars( "GenMuon_Phi", i, muons[i].phi());
-    vars.FillVars( "GenMuon_E", i, muons[i].energy());
-    vars.FillVars( "GenMuon_RecoLeptonPt", i, muons_reco[i]!=0 ? muons_reco[i]->pt() : -1);
-    vars.FillVars( "GenMuon_RecoLeptonEta", i, muons_reco[i]!=0 ? muons_reco[i]->eta() : -1);
-    vars.FillVars( "GenMuon_RecoLeptonPhi", i, muons_reco[i]!=0 ? muons_reco[i]->phi() : -1);
-    vars.FillVars( "GenMuon_RecoLeptonE", i, muons_reco[i]!=0 ? muons_reco[i]->energy() : -1);
-    }
+  }
   
   }
