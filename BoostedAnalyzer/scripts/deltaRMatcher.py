@@ -194,6 +194,7 @@ def match_events(tree, match_groups, cuts, options):
         tmp_hist_dict = {}
         eta_alts = ["Eta", "eta"]
         phi_alts = ["Phi", "phi"]
+
         for group in match_groups:
             # iterate over all neccesary matches in group
             dRs = []
@@ -208,6 +209,7 @@ def match_events(tree, match_groups, cuts, options):
                 eta1 = tree.GetLeaf(etavar_1).GetValue()
                 phi2 = tree.GetLeaf(phivar_2).GetValue()
                 eta2 = tree.GetLeaf(etavar_2).GetValue()
+
                 # get deltaR
                 dR = get_dR(phi1, phi2, eta1, eta2)
                 if options.plot:

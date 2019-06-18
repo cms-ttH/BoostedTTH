@@ -19,7 +19,7 @@ options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing
 options.register( "isBoostedMiniAOD", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "has the file been prepared with the BoostedProducer ('custom' MiniAOD)?" )
 options.register( "generatorName", "POWHEG", VarParsing.multiplicity.singleton, VarParsing.varType.string, "'POWHEG','aMC', 'MadGraph' or 'pythia8'" )
 options.register( "globalTag", "94X_mc2017_realistic_v17", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
-options.register( "useJson",False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
+options.register( "useJson",True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "apply the json filter (on the grid there are better ways to do this)" )
 options.register( "additionalSelection","NONE", VarParsing.multiplicity.singleton, VarParsing.varType.string, "addition Selection to use for this sample" )
 datasets=['NA','mu','el','elel','elmu','mumu']
 options.register( "dataset", "NA", VarParsing.multiplicity.singleton, VarParsing.varType.string, "flag to identify which dataset is used, can be "+','.join(datasets))
@@ -29,7 +29,7 @@ options.register( "systematicVariations","nominal", VarParsing.multiplicity.list
 options.register( "deterministicSeeds",False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,"create collections with deterministic seeds")
 options.register( "electronRegression","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"'GT' or an absolute path to a sqlite file for electron energy regression")
 options.register( "electronSmearing","",VarParsing.multiplicity.singleton,VarParsing.varType.string,"correction type for electron energy smearing")
-options.register( "useMuonRC", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
+options.register( "useMuonRC", True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "use Rochester Correction for muons" )
 options.register( "recorrectMET",     True,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "recorrect MET using latest JES and e/g corrections" )
 options.register( "dataEra",     "2017",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period or mc campaign, e.g. '2016B' or '2017'" )
 options.register( "updatePUJetId",     False,     VarParsing.multiplicity.singleton,     VarParsing.varType.bool,     "update the PUJetId values" )
@@ -72,8 +72,12 @@ if not options.inputFiles:
         elif "2017" in options.dataEra: 
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
         elif "2018" in options.dataEra:
-            # options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/40000/EAA9C941-768D-164B-B5C1-C12306823C6E.root']
-        	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_7.root']
+            #options.inputFiles=[
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_1.root']
+            #options.inputFiles=[
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTZToBB_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_135752/0000/Skim_1.root']
+            options.inputFiles=[
+                'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_1.root']
     else:
         if "2016" in options.dataEra: # CAREFUL: NO 2016 Data Skims ready yet
             # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
@@ -385,7 +389,7 @@ elif "2017" in options.dataEra:
     process.SelectedMuonProducer.ptMins=[15.,15.,29.]
 elif "2018" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2018
-    process.SelectedElectronProducer.ptMins=[15.,15.,34.]
+    process.SelectedElectronProducer.ptMins=[15.,15.,30.]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2018
     process.SelectedMuonProducer.ptMins=[15.,15.,26.]
@@ -607,11 +611,11 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
     if "2016" in options.dataEra:
-        process.source.lumisToProcess = LumiList.LumiList(filename = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt")).getVLuminosityBlockRange()
+        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt").getVLuminosityBlockRange()
     elif "2017" in options.dataEra:
-        process.source.lumisToProcess = LumiList.LumiList(filename = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt")).getVLuminosityBlockRange()
+        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt").getVLuminosityBlockRange()
     elif "2018" in options.dataEra:
-        process.source.lumisToProcess = LumiList.LumiList(filename = cms.FileInPath("BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt")).getVLuminosityBlockRange()
+        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt").getVLuminosityBlockRange()
 
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
@@ -632,6 +636,7 @@ if options.isData:
   "WeightProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
+  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   "JABDTttbarProcessor",
   "JABDTthqProcessor",
@@ -643,10 +648,10 @@ if options.isData:
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-#  "MCMatchVarProcessor",
-  "essentialMCMatchVarProcessor",
+  "MCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
+  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   "JABDTttbarProcessor",
   "JABDTthqProcessor",

@@ -6,7 +6,7 @@ TriggerInfo::TriggerInfo(std::map<std::string, bool> triggers_,std::map<std::str
 }
 
 bool TriggerInfo::Exists(std::string triggername) const {
-    if(triggers.count(triggername)==0){
+    if(triggers.find(triggername)==triggers.end()){
 	return false;
     }
     return true;

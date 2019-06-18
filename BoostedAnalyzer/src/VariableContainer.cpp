@@ -15,7 +15,7 @@ VariableContainer::~VariableContainer(){
     }
 }
 bool VariableContainer::DoesVarExist( const TString& name ) const {
-  return (intMap.count(name)>0||floatMap.count(name)>0||arrayMap.count(name)>0);
+  return (intMap.find(name)!=intMap.end()||floatMap.find(name)!=floatMap.end()||arrayMap.find(name)!=arrayMap.end());
 }
 
 bool VariableContainer::IsVarFilled( const TString& name ) const {
@@ -50,8 +50,8 @@ void VariableContainer::InitVar( const TString& name, const std::string& type ) 
 
 
 void VariableContainer::FillVar( const TString& name, double value ) {
-  bool isInt=intMap.count(name)!=0;
-  bool isFloat=floatMap.count(name)!=0;
+  bool isInt=intMap.find(name)!=intMap.end();
+  bool isFloat=floatMap.find(name)!=floatMap.end();
   if(isFloat){
     FillFloatVar( name, value, false);
   }
@@ -64,7 +64,7 @@ void VariableContainer::FillVar( const TString& name, double value ) {
 }
 
 void VariableContainer::FillIntVar( const TString& name, long value, bool checkIfExists) {
-    if(checkIfExists&&intMap.count(name)==0){
+    if(checkIfExists&&intMap.find(name)==intMap.end()){
         cerr << name << " does not exist!" << endl;
         return;
     }
@@ -76,7 +76,7 @@ void VariableContainer::FillIntVar( const TString& name, long value, bool checkI
 }
 
 void VariableContainer::FillFloatVar( const TString& name, float value, bool checkIfExists) {
-    if(checkIfExists&&floatMap.count(name)==0){
+    if(checkIfExists&&floatMap.find(name)==floatMap.end()){
         cerr << name << " does not exist!" << endl;
         return;
     }
@@ -110,7 +110,7 @@ void VariableContainer::InitVars( const TString& name, const TString& nEntryVari
 
 
 void VariableContainer::FillVars( const TString& name, int index, float value ) {
-  if(arrayMap.count(name)==0){
+  if(arrayMap.find(name)==arrayMap.end()){
     cerr << name << " does not exist!" << endl;
   }
   else if(maxEntriesArrays[name]<index){
@@ -214,7 +214,7 @@ void VariableContainer::Dump() const {
 
 
 float* VariableContainer::GetFloatVarPointer(const TString& name){
-  if(floatMap.count(name)==0){
+  if(floatMap.find(name)==floatMap.end()){
     cerr << name << " does not exist!" << endl;
     return 0;
   }
@@ -222,7 +222,7 @@ float* VariableContainer::GetFloatVarPointer(const TString& name){
 }
 
 float* VariableContainer::GetArrayVarPointer(const TString& name, int entry){
-  if(arrayMap.count(name)==0){
+  if(arrayMap.find(name)==arrayMap.end()){
     cerr << name << " does not exist!" << endl;
     return 0;
   }
@@ -231,7 +231,7 @@ float* VariableContainer::GetArrayVarPointer(const TString& name, int entry){
 
 
 long* VariableContainer::GetIntVarPointer(const TString& name){
-  if(intMap.count(name)==0&&floatMap.count(name)==0&&arrayMap.count(name)==0){
+  if(intMap.find(name)==intMap.end()&&floatMap.find(name)==floatMap.end()&&arrayMap.find(name)==arrayMap.end()){
     cerr << name << " does not exist!" << endl;
     return 0;
   }
@@ -267,7 +267,7 @@ long VariableContainer::GetIntVar(const TString& name) {
 
 
 void VariableContainer::checkIfVariableAlreadyInit(const TString& name) const {
-  if( intMap.count(name)>0 || floatMap.count(name)>0 || arrayMap.count(name)>0 ) {
+  if( intMap.find(name)!=intMap.end() || floatMap.find(name)!=floatMap.end() || arrayMap.find(name)!=arrayMap.end() ) {
     throw cms::Exception("BadProcessor") << "Variable '" << name << "' already initialized!";
   }
 }

@@ -1,28 +1,28 @@
-#include "BoostedTTH/BoostedAnalyzer/interface/essentialMVAVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/essentialRecoVarProcessor.hpp"
 
 using namespace std;
 
-essentialMVAVarProcessor::essentialMVAVarProcessor()
+essentialRecoVarProcessor::essentialRecoVarProcessor()
 {
-  pointerToMVAvars.reset(new MVAvars());
+    // ReconstructedVars(bool ttH, bool ttZ)
+    // arguments activate chi2based ttH and ttZ reconstruction
+    pointerToRecoVars.reset(new ReconstructedVars(true, false));
 }
 
-essentialMVAVarProcessor::~essentialMVAVarProcessor()
-{
-}
+essentialRecoVarProcessor::~essentialRecoVarProcessor() {}
 
 
 
-void essentialMVAVarProcessor::Init(const InputCollections &input, VariableContainer &vars)
+void essentialRecoVarProcessor::Init(const InputCollections &input, VariableContainer &vars)
 {
     // which btagger to use
     btagger = "DeepJet";
 
     // set CSVWp 
-    pointerToMVAvars->SetWP(CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, btagger));
+    pointerToRecoVars->SetWP(CSVHelper::GetWP(input.era, CSVHelper::CSVwp::Medium, btagger));
 
     // initialize vars from common classifier
-    map<string, float> varMap = pointerToMVAvars->GetVariables();
+    map<string, double> varMap = pointerToRecoVars->GetVariables();
     for (auto it = varMap.begin(); it != varMap.end(); it++)
         vars.InitVar(it->first);
 
@@ -31,7 +31,7 @@ void essentialMVAVarProcessor::Init(const InputCollections &input, VariableConta
 
 
 
-void essentialMVAVarProcessor::Process(const InputCollections &input, VariableContainer &vars)
+void essentialRecoVarProcessor::Process(const InputCollections &input, VariableContainer &vars)
 {
     if (!initialized) cerr << "tree processor not initialized" << endl;
 
@@ -51,7 +51,7 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
     TLorentzVector metP4 = BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
   
     // fill variables from common classifier
-    varMap = pointerToMVAvars->GetMVAvars(lepvecs, jetvecsTL, csvJets, metP4);
+    varMap = pointerToRecoVars->GetReconstructedVars(lepvecs, jetvecsTL, csvJets, metP4);
     for (auto it = varMap.begin(); it != varMap.end(); it++)
         vars.FillVar(it->first, it->second);
 }

@@ -20,7 +20,7 @@ LeptonSelectionData2017 = cms.PSet(
 
 LeptonSelectionData2018 = cms.PSet(
     muonTriggers = cms.vstring("HLT_IsoMu24_v*"),
-    electronTriggers = cms.vstring("HLT_Ele32_WPTight_Gsf_v*"),
+    electronTriggers = cms.vstring("HLT_Ele32_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
     channel = cms.string("both")
 )
 
@@ -39,7 +39,7 @@ LeptonSelectionMC2017 = cms.PSet(
 
 LeptonSelectionMC2018 = cms.PSet(
     muonTriggers = cms.vstring("HLT_IsoMu24_v*"),
-    electronTriggers = cms.vstring("HLT_Ele32_WPTight_Gsf_v*"),
+    electronTriggers = cms.vstring("HLT_Ele32_WPTight_Gsf_v*","HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
     channel = cms.string("both")
 )
 
@@ -80,7 +80,7 @@ DiLeptonMETSelection = cms.PSet(
 JetTagSelection = cms.PSet(
     minJets = cms.vint32(4),
     maxJets = cms.vint32(-1),
-    minTags = cms.vint32(2),
+    minTags = cms.vint32(3),
     maxTags = cms.vint32(-1)
 )
 
