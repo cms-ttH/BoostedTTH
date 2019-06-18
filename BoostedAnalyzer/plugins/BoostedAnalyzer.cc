@@ -100,6 +100,8 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/DiJetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenBJetProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/GenLeptonProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/Synchronizer.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DiLeptonVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerVarProcessor.hpp"
@@ -572,6 +574,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     }
     if(std::find(processorNames.begin(),processorNames.end(),"GenJetOrderedJetCollectionProcessor")!=processorNames.end()) {
       treewriter->AddTreeProcessor(new GenJetOrderedJetCollectionProcessor,"GenJetOrderedJetCollectionProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"GenBJetProcessor")!=processorNames.end()) {
+      treewriter->AddTreeProcessor(new GenBJetProcessor,"GenBJetProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"GenLeptonProcessor")!=processorNames.end()) {
+      treewriter->AddTreeProcessor(new GenLeptonProcessor,"GenLeptonProcessor");
     }
     if(std::find(processorNames.begin(),processorNames.end(),"TTBBStudienProcessor")!=processorNames.end()) {
       treewriter->AddTreeProcessor(new TTBBStudienProcessor,"TTBBStudienProcessor");
