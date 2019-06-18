@@ -8,16 +8,52 @@ options = VarParsing ('analysis')
 options.register( "isData", False, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "is it data or MC?" )
 options.register( "skipEvents", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to skip" )
 options.register( "globalTag", "102X_upgrade2018_realistic_v18", VarParsing.multiplicity.singleton, VarParsing.varType.string, "global tag" )
+options.register( "dataEra",     "2018",     VarParsing.multiplicity.singleton,     VarParsing.varType.string,     "the era of the data taking period or mc campaign, e.g. '2016B' or '2017'" )
 options.parseArguments()
 
 if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to -1
     options.maxEvents = 1001 # reset for testing
+    
+if options.isData:
+    if "2016" in options.dataEra:
+        options.globalTag="94X_dataRun2_v10"
+    elif "2017" in options.dataEra:
+        options.globalTag="94X_dataRun2_v11"
+    elif "2018" in options.dataEra:
+        if "D" in options.dataEra:
+            options.globalTag="102X_dataRun2_Prompt_v13"
+        else:
+            options.globalTag="102X_dataRun2_Sep2018ABC_v2"
+    else:
+        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
+elif not options.isData:
+    if "2016" in options.dataEra:
+        options.globalTag="94X_mcRun2_asymptotic_v3"
+    elif "2017" in options.dataEra:
+        options.globalTag="94X_mc2017_realistic_v17"
+    elif "2018" in options.dataEra:
+        options.globalTag="102X_upgrade2018_realistic_v18"
+    else:
+        raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
+else:
+    raise Exception("Problem with isData option! This should never happen!")
 
 if not options.inputFiles:
     if not options.isData:
         options.inputFiles=['root://xrootd-cms.infn.it///store/mc/RunIIAutumn18MiniAOD/ZJetsToNuNu_HT-400To600_13TeV-madgraph/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/260000/5423A771-D3D4-BB4D-8289-91DF6108FA78.root']
     else:
         options.inputFiles=['root://xrootd-cms.infn.it///store/data/Run2018B/MET/MINIAOD/17Sep2018-v1/100000/84F4D3C4-7275-834A-ADDF-E34194D17EB3.root']
+        
+# checks for correct values and consistency
+if "data" in options.globalTag.lower() and not options.isData:
+    print "\n\nConfig ERROR: GT contains seems to be for data but isData==False\n\n"
+    sys.exit()
+if "mc" in options.globalTag.lower() and options.isData:
+    print "\n\nConfig ERROR: GT contains seems to be for MC but isData==True\n\n"
+    sys.exit()
+if not options.inputFiles:
+    print "\n\nConfig ERROR: no inputFiles specified\n\n"
+    sys.exit()
 
 process = cms.Process("skim")
 
@@ -38,13 +74,9 @@ process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
 
 # these are needed to write the new AK15 jet collections - dont know why ...
-process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
-#process.load('RecoVertex.AdaptiveVertexFinder.inclusiveCandidateVertexFinder_cfi')
-#process.load('RecoVertex.AdaptiveVertexFinder.candidateVertexMerger_cfi')
-#process.load('RecoVertex.AdaptiveVertexFinder.candidateVertexArbitrator_cfi')
-#process.load('RecoVertex.AdaptiveVertexFinder.inclusiveVertexing_cff')
+
 
 jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
   PUMethod='Puppi',
@@ -107,9 +139,64 @@ updateJetCollection(
       ],
    postfix='AK15PFPuppiSoftDropSubjetsNewDFTraining'
 )
+   
+####################### EGamma stuff ##########################   
+   
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+EG_era = None
+EG_corrections = None
+EG_vid = None
+if "2016" in options.dataEra:
+    EG_era = '2016-Legacy'
+    EG_corrections = False
+    EG_vid = True
+elif "2017" in options.dataEra:
+    EG_era = '2017-Nov17ReReco'
+    EG_corrections = True
+    EG_vid = True
+elif "2018" in options.dataEra:
+    EG_era = '2018-Prompt'
+    EG_corrections = False
+    EG_vid = True
+else:
+    raise Exception( "dataEra "+options.dataEra+" not supported for Egamma tools: USE dataEra=2016/2017/2018")
+
+setupEgammaPostRecoSeq(process,
+                       runVID=EG_vid,
+                       runEnergyCorrections=EG_corrections,
+                       era=EG_era
+                       )   
+   
+###############################################################  
+
+####################### MET stuff #############################
+
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process,
+                           isData=options.isData,
+                           fixEE2017 = True if "2017" in options.dataEra else False,
+                           fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} 
+                           )
+process.load("RecoMET.METFilters.primaryVertexFilter_cfi")
+process.primaryVertexFilter.vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.load("RecoMET.METFilters.globalSuperTightHalo2016Filter_cfi")
+process.load("CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi")
+process.load("CommonTools.RecoAlgos.HBHENoiseFilter_cfi")
+process.load("RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi")
+process.load("RecoMET.METFilters.BadPFMuonFilter_cfi")
+process.load("RecoMET.METFilters.eeBadScFilter_cfi")
+
+###############################################################
+
+####################### configure skimming process #############################
 
 process.load("BoostedTTH.BoostedAnalyzer.LeptonJetsSkim_cfi")
 process.LeptonJetsSkim.isData=cms.bool(options.isData)
+process.LeptonJetsSkim.electrons = cms.InputTag("slimmedElectrons", "", process.name_())
+process.LeptonJetsSkim.photons = cms.InputTag("slimmedPhotons", "", process.name_())
+process.LeptonJetsSkim.met = cms.InputTag("slimmedMETs","",process.name_())
+
+###############################################################
 
 process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
@@ -128,6 +215,11 @@ process.OUT = cms.OutputModule(
 process.skim = cms.Path()
 #process.skim*=process.content
 process.skim*=process.LeptonJetsSkim
+
+process.egamma = cms.Path(process.egammaPostRecoSeq)
+process.met = cms.Path(process.fullPatMetSequence)
+process.metfilters=cms.Path(process.HBHENoiseFilterResultProducer*process.HBHENoiseFilter*process.HBHENoiseIsoFilter*process.primaryVertexFilter*process.globalSuperTightHalo2016Filter*process.EcalDeadCellTriggerPrimitiveFilter)
+
 process.write_skimmed = cms.EndPath(process.OUT)
 
 #print process.dumpPython()

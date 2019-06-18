@@ -152,7 +152,7 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // select those electrons satifsying pt and eta cuts
     std::vector<pat::Electron> selectedElectrons = *hElectrons;
-    selectedElectrons.erase(std::remove_if(selectedElectrons.begin(),selectedElectrons.end(),[&](pat::Electron ele){return !(ele.pt()>=electronPtMin_ && fabs(ele.eta())<=electronEtaMax_);}),selectedElectrons.end());
+    selectedElectrons.erase(std::remove_if(selectedElectrons.begin(),selectedElectrons.end(),[&](pat::Electron ele){return !(ele.pt()>=electronPtMin_ && fabs(ele.eta())<=electronEtaMax_ && ele.electronID("cutBasedElectronID-Fall17-94X-V2-loose"));}),selectedElectrons.end());
 
     // get slimmedMuons
 	edm::Handle<pat::MuonCollection> hMuons;
@@ -160,7 +160,7 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // select those muons satisfying pt and eta cuts
     std::vector<pat::Muon> selectedMuons = *hMuons;
-    selectedMuons.erase(std::remove_if(selectedMuons.begin(),selectedMuons.end(),[&](pat::Muon mu){return !(mu.pt()>=muonPtMin_ && fabs(mu.eta())<=muonEtaMax_);}),selectedMuons.end());
+    selectedMuons.erase(std::remove_if(selectedMuons.begin(),selectedMuons.end(),[&](pat::Muon mu){return !(mu.pt()>=muonPtMin_ && fabs(mu.eta())<=muonEtaMax_ && muon::isLooseMuon(mu) && mu.passed(pat::Muon::PFIsoLoose));}),selectedMuons.end());
     
     // get slimmedPhotons
 	edm::Handle<pat::PhotonCollection> hPhotons;
@@ -168,7 +168,7 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // select those photons satisfying pt and eta cuts
     std::vector<pat::Photon> selectedPhotons = *hPhotons;
-    selectedPhotons.erase(std::remove_if(selectedPhotons.begin(),selectedPhotons.end(),[&](pat::Photon ph){return !(ph.pt()>=photonPtMin_ && fabs(ph.eta())<=photonEtaMax_);}),selectedPhotons.end());
+    selectedPhotons.erase(std::remove_if(selectedPhotons.begin(),selectedPhotons.end(),[&](pat::Photon ph){return !(ph.pt()>=photonPtMin_ && fabs(ph.eta())<=photonEtaMax_ && ph.photonID("cutBasedPhotonID-Fall17-94X-V2-loose"));}),selectedPhotons.end());
 	
     // get AK4 jets
 	edm::Handle<pat::JetCollection> ak4Jets;
@@ -209,7 +209,7 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
     
     // apply skimming selection
-    if(n_ak4jets<minJetsAK4_ && n_ak8jets<minJetsAK8_) return false;
+    if(n_ak4jets<minJetsAK4_ && n_ak8jets<minJetsAK8_ && n_ak15jets<1) return false;
     if(hMETs->at(0).pt()<metPtMin_ && hadr_recoil.pt()<metPtMin_) return false;
     
     std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
