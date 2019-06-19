@@ -40,7 +40,7 @@ else:
 
 if not options.inputFiles:
     if not options.isData:
-        options.inputFiles=['root://xrootd-cms.infn.it///store/mc/RunIIAutumn18MiniAOD/ZJetsToNuNu_HT-400To600_13TeV-madgraph/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/260000/5423A771-D3D4-BB4D-8289-91DF6108FA78.root']
+        options.inputFiles=['root://xrootd-cms.infn.it///store/mc/RunIIAutumn18MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/40000/E26C264E-6FAE-BA4B-B729-1FDD04B0B2AC.root']
     else:
         options.inputFiles=['root://xrootd-cms.infn.it///store/data/Run2018B/MET/MINIAOD/17Sep2018-v1/100000/84F4D3C4-7275-834A-ADDF-E34194D17EB3.root']
         
