@@ -55,7 +55,7 @@ if not options.inputFiles:
     print "\n\nConfig ERROR: no inputFiles specified\n\n"
     sys.exit()
 
-process = cms.Process("skim")
+process = cms.Process("SKIM")
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(options.inputFiles),
@@ -204,9 +204,9 @@ process.content = cms.EDAnalyzer("EventContentAnalyzer")
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Skim.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_selected*AK15*_*_skim',
-        'drop *_selected*AK15*_*calo*_skim', 
-        'drop *_selected*AK15*_*tagInfos*_skim',
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_selected*AK15*_*_SKIM',
+        'drop *_selected*AK15*_*calo*_SKIM', 
+        'drop *_selected*AK15*_*tagInfos*_SKIM',
         ]),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skim")
