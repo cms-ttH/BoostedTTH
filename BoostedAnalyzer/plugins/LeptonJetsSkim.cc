@@ -65,6 +65,7 @@ class LeptonJetsSkim : public edm::EDFilter {
     edm::EDGetTokenT< pat::JetCollection >        EDMAK4JetsToken;  // AK4 jets
     edm::EDGetTokenT< pat::JetCollection >        EDMAK8JetsToken;  // AK8 jets
     edm::EDGetTokenT< std::vector<pat::MET> >     EDMMETToken; // MET
+    edm::EDGetTokenT< std::vector<pat::MET> >     EDMPuppiMETToken;
     edm::EDGetTokenT< reco::VertexCollection >    EDMVertexToken; // vertex
     edm::EDGetTokenT< double >                    EDMRhoToken; //  pileup density
     edm::EDGetTokenT<pat::JetCollection>          EDMAK15JetsToken_;
@@ -102,6 +103,7 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig) :
   EDMAK4JetsToken           { consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK4jets")) },
   EDMAK8JetsToken           { consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK8jets")) },
   EDMMETToken               { consumes< std::vector<pat::MET> > (iConfig.getParameter<edm::InputTag>("met")) },
+  EDMPuppiMETToken          { consumes< std::vector<pat::MET> > (iConfig.getParameter<edm::InputTag>("met_puppi")) },
   EDMVertexToken            { consumes< reco::VertexCollection >    (iConfig.getParameter<edm::InputTag>("vertices")) },
   EDMRhoToken               { consumes< double >                    (iConfig.getParameter<edm::InputTag>("rho")) },
   EDMAK15JetsToken_         { consumes< pat::JetCollection >        (iConfig.getParameter<edm::InputTag>("AK15jets")) },
@@ -182,9 +184,13 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     edm::Handle<pat::JetCollection> ak15Jets;
     iEvent.getByToken(EDMAK15JetsToken_, ak15Jets);
     
-    // get slimmedMETs
+    // get slimmedMETs CHS
     edm::Handle<std::vector<pat::MET>> hMETs;
 	iEvent.getByToken(EDMMETToken,hMETs);
+    
+    // get slimmedMETs Puppi
+    edm::Handle<std::vector<pat::MET>> hPuppiMETs;
+	iEvent.getByToken(EDMPuppiMETToken,hPuppiMETs);
     
 	int n_ak4jets = 0;
     int n_ak8jets = 0;
@@ -210,12 +216,13 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // apply skimming selection
     if(n_ak4jets<minJetsAK4_ && n_ak8jets<minJetsAK8_ && n_ak15jets<1) return false;
-    if(hMETs->at(0).pt()<metPtMin_ && hadr_recoil.pt()<metPtMin_) return false;
+    if(hMETs->at(0).pt()<metPtMin_ && hPuppiMETs->at(0).pt()<metPtMin_ && hadr_recoil.pt()<metPtMin_) return false;
     
     std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
     std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
     std::cout << "Number of AK15 jets: " << n_ak15jets << std::endl;
     std::cout << "MET: " << hMETs->at(0).pt() << std::endl;
+    std::cout << "Puppi MET: " << hPuppiMETs->at(0).pt() << std::endl;
     std::cout << "Hadronic recoil: " << hadr_recoil.pt() << std::endl;
     std::cout << "Number of selected electrons: " << selectedElectrons.size() << std::endl;
     std::cout << "Number of selected muons: " << selectedMuons.size() << std::endl;

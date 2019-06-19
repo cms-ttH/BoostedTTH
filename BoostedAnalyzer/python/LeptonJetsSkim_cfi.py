@@ -13,6 +13,7 @@ LeptonJetsSkim = cms.EDFilter(
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     met = cms.InputTag("slimmedMETs"),
+    met_puppi = cms.InputTag("slimmedMETsPuppi"),
     muonPtMin   = cms.double(15),
     muonEtaMax  = cms.double(2.5),
     electronPtMin   = cms.double(15),
