@@ -72,8 +72,10 @@ class LeptonJetsSkim : public edm::EDFilter {
       
     const int minJetsAK4_;
     const int minJetsAK8_;
+    const int minJetsAK15_;
     const int maxJetsAK4_;
     const int maxJetsAK8_;
+    const int maxJetsAK15_;
     const double AK4jetPtMin_;
     const double AK4jetEtaMax_;
     const double AK8jetPtMin_;
@@ -110,8 +112,10 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig) :
 
   minJetsAK4_           { iConfig.getParameter<int>("minJetsAK4") },
   minJetsAK8_           { iConfig.getParameter<int>("minJetsAK8") },
+  minJetsAK15_           { iConfig.getParameter<int>("minJetsAK15") },
   maxJetsAK4_           { iConfig.getParameter<int>("maxJetsAK4") },
   maxJetsAK8_           { iConfig.getParameter<int>("maxJetsAK8") },
+  maxJetsAK15_           { iConfig.getParameter<int>("maxJetsAK15") },
   AK4jetPtMin_          { iConfig.getParameter<double>("AK4jetPtMin") },
   AK4jetEtaMax_         { iConfig.getParameter<double>("AK4jetEtaMax") },
   AK8jetPtMin_          { iConfig.getParameter<double>("AK8jetPtMin") },
@@ -220,7 +224,8 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
     
     // apply skimming selection
-    if(n_ak4jets<minJetsAK4_ && n_ak8jets<minJetsAK8_ && n_ak15jets<1) return false;
+    if(n_ak4jets<minJetsAK4_ && n_ak8jets<minJetsAK8_ && n_ak15jets<minJetsAK15_) return false;
+    if(n_ak4jets>maxJetsAK4_ || n_ak8jets>maxJetsAK8_ || n_ak15jets>maxJetsAK15_) return false;
     // met selection in general
     if(hMETs->at(0).pt()<metPtMin_ && hPuppiMETs->at(0).pt()<metPtMin_ && hadr_recoil.pt()<metPtMin_ && hadr_recoil_puppi.pt()<metPtMin_) return false;
     

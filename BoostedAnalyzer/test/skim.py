@@ -82,8 +82,8 @@ jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
   PUMethod='Puppi',
   addPruning=True, addSoftDrop=True ,           # add basic grooming
   addTrimming=True, addFiltering=True,
-  addSoftDropSubjets=False,
-  addPrunedSubjets=False,
+  addSoftDropSubjets=True,
+  addPrunedSubjets=True,
   addNsub=True, maxTau=4,                       # add Nsubjettiness tau1, tau2, tau3, tau4
   JETCorrPayload = 'AK8PFPuppi', #JETCorrLevels = ['L2Relative', 'L3Absolute'],
   runOnMC=not options.isData,
