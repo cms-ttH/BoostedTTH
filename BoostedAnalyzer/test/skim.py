@@ -134,6 +134,19 @@ jetToolbox( process, 'ak8', 'ak8JetSubs', 'noOutput',
   addHEPTopTagger=True
   )
 
+jetToolbox( process, 'ak4', 'ak4Jet', 'noOutput',
+           updateCollection='slimmedJets',
+           JETCorrPayload='AK4PFchs',
+           bTagDiscriminators= [
+                'pfDeepFlavourJetTags:probb',
+                'pfDeepFlavourJetTags:probbb',
+                'pfDeepFlavourJetTags:problepb',
+                'pfDeepFlavourJetTags:probc',
+                'pfDeepFlavourJetTags:probuds',
+                'pfDeepFlavourJetTags:probg'
+           ]
+  )
+
 #updateJetCollection(
    #process,
    #jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiPrunedSubjets'),
