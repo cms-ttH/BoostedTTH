@@ -42,7 +42,7 @@ Do for example:
     git cms-merge-topic cms-egamma:PhotonIDValueMapSpeedup1029 #optional but speeds up the photon ID value module so things run faster
     git cms-addpkg EgammaAnalysis/ElectronTools
     rm EgammaAnalysis/ElectronTools/data -rf
-    git clone git@github.com:cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
+    git clone https://github.com/cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
     
     # mitigation of EE noise to MET in 2017 data
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
