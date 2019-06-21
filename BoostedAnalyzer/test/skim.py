@@ -134,7 +134,7 @@ jetToolbox( process, 'ak8', 'ak8JetSubs', 'noOutput',
   addHEPTopTagger=True
   )
 
-jetToolbox( process, 'ak4', 'ak4Jet', 'noOutput',
+jetToolbox( process, 'ak4', 'ak4Jetchs', 'noOutput',
            updateCollection='slimmedJets',
            JETCorrPayload='AK4PFchs',
            bTagDiscriminators= [
@@ -144,7 +144,24 @@ jetToolbox( process, 'ak4', 'ak4Jet', 'noOutput',
                 'pfDeepFlavourJetTags:probc',
                 'pfDeepFlavourJetTags:probuds',
                 'pfDeepFlavourJetTags:probg'
-           ]
+           ],
+           runOnMC=not options.isData,
+           Cut='pt > 20 && abs(eta) < 2.5'
+  )
+           
+jetToolbox( process, 'ak4', 'ak4Jetpuppi', 'noOutput',
+           updateCollection='slimmedJetsPuppi',
+           JETCorrPayload='AK4PFPuppi',
+           bTagDiscriminators= [
+                'pfDeepFlavourJetTags:probb',
+                'pfDeepFlavourJetTags:probbb',
+                'pfDeepFlavourJetTags:problepb',
+                'pfDeepFlavourJetTags:probc',
+                'pfDeepFlavourJetTags:probuds',
+                'pfDeepFlavourJetTags:probg'
+           ],
+           runOnMC=not options.isData,
+           Cut='pt > 20 && abs(eta) < 2.5'
   )
 
 #updateJetCollection(
@@ -251,7 +268,10 @@ process.OUT = cms.OutputModule(
         'drop *_selected*AK15*_*tagInfos*_SKIM',
         'keep *_selected*AK8*_*_SKIM',
         'drop *_selected*AK8*_*calo*_SKIM', 
-        'drop *_selected*AK8*_*tagInfos*_SKIM'
+        'drop *_selected*AK8*_*tagInfos*_SKIM',
+        'keep *_selected*AK4*_*_SKIM',
+        'drop *_selected*AK4*_*calo*_SKIM', 
+        'drop *_selected*AK4*_*tagInfos*_SKIM'
         ]),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skim")
