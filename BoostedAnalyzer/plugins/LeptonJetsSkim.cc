@@ -202,7 +202,8 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // count ak4 and ak8 jets satisfying pt and eta cuts
 	n_ak4jets = std::count_if(ak4Jets->begin(),ak4Jets->end(),[&](pat::Jet jet){return (jet.pt()>=AK4jetPtMin_ && fabs(jet.eta())<=AK4jetEtaMax_);});
-    n_ak8jets = std::count_if(ak8Jets->begin(),ak8Jets->end(),[&](pat::Jet jet){return (jet.pt()>=AK8jetPtMin_ && fabs(jet.eta())<=AK8jetEtaMax_);});
+    //n_ak8jets = std::count_if(ak8Jets->begin(),ak8Jets->end(),[&](pat::Jet jet){return (jet.pt()>=AK8jetPtMin_ && fabs(jet.eta())<=AK8jetEtaMax_);});
+    n_ak8jets = ak8Jets->size();
     n_ak15jets = ak15Jets->size();
     
     // calculate approximate hadronic recoil

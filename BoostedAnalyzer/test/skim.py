@@ -106,6 +106,34 @@ jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
   addHEPTopTagger=True
   )
 
+jetToolbox( process, 'ak8', 'ak8JetSubs', 'noOutput',
+  PUMethod='Puppi',
+  addPruning=True, addSoftDrop=True ,           # add basic grooming
+  addTrimming=True, addFiltering=True,
+  addSoftDropSubjets=True,
+  addPrunedSubjets=True,
+  addNsub=True, maxTau=4,                       # add Nsubjettiness tau1, tau2, tau3, tau4
+  JETCorrPayload = 'AK8PFPuppi', #JETCorrLevels = ['L2Relative', 'L3Absolute'],
+  runOnMC=not options.isData,
+  miniAOD=True,
+  #bTagDiscriminators=[
+            #'pfDeepCSVJetTags:probb',
+			#'pfDeepCSVJetTags:probbb',
+			#'pfDeepCSVJetTags:probc',
+			#'pfDeepCSVJetTags:probudsg',
+            #'pfDeepFlavourJetTags:probb',
+			#'pfDeepFlavourJetTags:probbb',
+			#'pfDeepFlavourJetTags:problepb',
+			#'pfDeepFlavourJetTags:probc',
+			#'pfDeepFlavourJetTags:probuds',
+			#'pfDeepFlavourJetTags:probg',    
+  #],
+  Cut='pt > 60 && abs(eta) < 2.5',
+  GetJetMCFlavour=not options.isData,
+  #GetSubJetMCFlavour=True,
+  addHEPTopTagger=True
+  )
+
 #updateJetCollection(
    #process,
    #jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiPrunedSubjets'),
@@ -204,9 +232,13 @@ process.content = cms.EDAnalyzer("EventContentAnalyzer")
 process.OUT = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Skim.root'),
-    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE','keep *_selected*AK15*_*_SKIM',
+    outputCommands = cms.untracked.vstring(['drop *','keep *_*_*_PAT','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM','keep *_*_*_LHE',
+        'keep *_selected*AK15*_*_SKIM',
         'drop *_selected*AK15*_*calo*_SKIM', 
         'drop *_selected*AK15*_*tagInfos*_SKIM',
+        'keep *_selected*AK8*_*_SKIM',
+        'drop *_selected*AK8*_*calo*_SKIM', 
+        'drop *_selected*AK8*_*tagInfos*_SKIM'
         ]),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skim")
