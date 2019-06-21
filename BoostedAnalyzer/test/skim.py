@@ -222,7 +222,8 @@ else:
 setupEgammaPostRecoSeq(process,
                        runVID=EG_vid,
                        runEnergyCorrections=EG_corrections,
-                       era=EG_era
+                       era=EG_era,
+                       isMiniAOD=True
                        )   
    
 ###############################################################  
