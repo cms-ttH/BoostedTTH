@@ -198,6 +198,41 @@ jetToolbox( process, 'ak4', 'ak4Jetpuppi', 'noOutput',
    #postfix='AK15PFPuppiSoftDropSubjetsNewDFTraining'
 #)
    
+  
+
+####################### MET stuff #############################
+
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+makePuppiesFromMiniAOD( process, False )
+
+runMetCorAndUncFromMiniAOD(process,
+                           isData=options.isData,
+                           fixEE2017 = True if "2017" in options.dataEra else False,
+                           fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} 
+                           )
+
+runMetCorAndUncFromMiniAOD(process,
+                           isData=options.isData,
+                           metType="Puppi",
+                           postfix="Puppi",
+                           jetFlavor="AK4PFPuppi",
+                           )
+
+process.puppiNoLep.useExistingWeights = True
+process.puppi.useExistingWeights = True
+
+process.load("RecoMET.METFilters.primaryVertexFilter_cfi")
+process.primaryVertexFilter.vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.load("RecoMET.METFilters.globalSuperTightHalo2016Filter_cfi")
+process.load("CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi")
+process.load("CommonTools.RecoAlgos.HBHENoiseFilter_cfi")
+process.load("RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi")
+process.load("RecoMET.METFilters.BadPFMuonFilter_cfi")
+process.load("RecoMET.METFilters.eeBadScFilter_cfi")
+
+###############################################################
+
 ####################### EGamma stuff ##########################   
    
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
@@ -226,25 +261,6 @@ setupEgammaPostRecoSeq(process,
                        isMiniAOD=True
                        )   
    
-###############################################################  
-
-####################### MET stuff #############################
-
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD(process,
-                           isData=options.isData,
-                           fixEE2017 = True if "2017" in options.dataEra else False,
-                           fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} 
-                           )
-process.load("RecoMET.METFilters.primaryVertexFilter_cfi")
-process.primaryVertexFilter.vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices")
-process.load("RecoMET.METFilters.globalSuperTightHalo2016Filter_cfi")
-process.load("CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi")
-process.load("CommonTools.RecoAlgos.HBHENoiseFilter_cfi")
-process.load("RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi")
-process.load("RecoMET.METFilters.BadPFMuonFilter_cfi")
-process.load("RecoMET.METFilters.eeBadScFilter_cfi")
-
 ###############################################################
 
 ####################### configure skimming process #############################
@@ -254,6 +270,7 @@ process.LeptonJetsSkim.isData=cms.bool(options.isData)
 process.LeptonJetsSkim.electrons = cms.InputTag("slimmedElectrons", "", process.name_())
 process.LeptonJetsSkim.photons = cms.InputTag("slimmedPhotons", "", process.name_())
 process.LeptonJetsSkim.met = cms.InputTag("slimmedMETs","",process.name_())
+process.LeptonJetsSkim.met_puppi = cms.InputTag("slimmedMETsPuppi","",process.name_())
 
 ###############################################################
 
@@ -272,7 +289,8 @@ process.OUT = cms.OutputModule(
         'drop *_selected*AK8*_*tagInfos*_SKIM',
         'keep *_selected*AK4*_*_SKIM',
         'drop *_selected*AK4*_*calo*_SKIM', 
-        'drop *_selected*AK4*_*tagInfos*_SKIM'
+        'drop *_selected*AK4*_*tagInfos*_SKIM',
+        'keep *_*slimmedMET*_*_SKIM'
         ]),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skim")
