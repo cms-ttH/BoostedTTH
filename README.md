@@ -24,6 +24,9 @@ Do for example:
     # producer of deterministic seeds for physics objects to be able to do synchronization (needs 10X port)
     #git cms-merge-topic yrath:deterministicSeeds
     
+    # add JetToolbox
+    git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v1
+    
     # producer to apply JER to jets
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then    
       git cms-merge-topic michaelwassmer:CMSSW_10_2_X_changed_SmearedJetProducer
