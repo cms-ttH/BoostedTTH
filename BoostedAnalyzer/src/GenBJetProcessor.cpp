@@ -55,6 +55,8 @@ void GenBJetProcessor::Process(const InputCollections& input,VariableContainer& 
       
       std::vector<reco::GenJet> b_genjets = input.genTopEvt.GetBGenJets();
       
+      vars.FillVar( "N_GenBJets", b_genjets.size());
+      
       if(b_genjets.size()>0){
         
         std::vector<const pat::Jet*> b_genjets_recojets;
@@ -65,7 +67,6 @@ void GenBJetProcessor::Process(const InputCollections& input,VariableContainer& 
         
         
         // B-genjets kinematic variables
-        vars.FillVar( "N_GenBJets", b_genjets.size());
         reco::GenJet leadingbjet = b_genjets.at(0);
         reco::GenJet subleadingbjet = b_genjets.at(0);
         for(uint i=0; i<b_genjets.size(); i++){
