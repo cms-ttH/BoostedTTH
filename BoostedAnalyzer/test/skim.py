@@ -245,7 +245,7 @@ if "2016" in options.dataEra:
     EG_vid = True
 elif "2017" in options.dataEra:
     EG_era = '2017-Nov17ReReco'
-    EG_corrections = True
+    EG_corrections = False
     EG_vid = True
 elif "2018" in options.dataEra:
     EG_era = '2018-Prompt'
@@ -312,7 +312,7 @@ process.skim *= process.LeptonJetsSkim
 process.egamma = cms.Path(process.egammaPostRecoSeq)
 
 # met sequence to recalculate MET
-process.met = cms.Path(process.fullPatMetSequence)
+#process.met = cms.Path(process.fullPatMetSequence)
 
 # write the events which pass the skimming selection and only keep the specified file content
 process.write_skimmed = cms.EndPath(process.OUT)
