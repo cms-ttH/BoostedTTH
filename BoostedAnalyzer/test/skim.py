@@ -104,18 +104,6 @@ jetToolbox( process, 'ak8', 'ak8JetSubs', 'noOutput',
   JETCorrPayload = 'AK8PFPuppi', #JETCorrLevels = ['L2Relative', 'L3Absolute'],
   runOnMC=not options.isData,
   miniAOD=True,
-  #bTagDiscriminators=[
-            #'pfDeepCSVJetTags:probb',
-			#'pfDeepCSVJetTags:probbb',
-			#'pfDeepCSVJetTags:probc',
-			#'pfDeepCSVJetTags:probudsg',
-            #'pfDeepFlavourJetTags:probb',
-			#'pfDeepFlavourJetTags:probbb',
-			#'pfDeepFlavourJetTags:problepb',
-			#'pfDeepFlavourJetTags:probc',
-			#'pfDeepFlavourJetTags:probuds',
-			#'pfDeepFlavourJetTags:probg',    
-  #],
   Cut='pt > 60 && abs(eta) < 2.5',
   GetJetMCFlavour=not options.isData,
   #GetSubJetMCFlavour=True,
@@ -153,13 +141,15 @@ jetToolbox( process, 'ak4', 'ak4Jetpuppi', 'noOutput',
   )
 
 from RecoBTag.MXNet.pfDeepBoostedJet_cff import _pfMassDecorrelatedDeepBoostedJetTagsProbs as pfMassDecorrelatedDeepBoostedJetTagsProbs
+from RecoBTag.MXNet.pfDeepBoostedJet_cff import _pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs as pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs
 print pfMassDecorrelatedDeepBoostedJetTagsProbs
+print pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs
 updateJetCollection(
         process,
         jetSource=cms.InputTag('packedPatJetsAK15PFPuppiSoftDrop'),
         rParam=1.5,
         jetCorrections=('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
-        btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs,
+        btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs+pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs,
         postfix='AK15WithPuppiDaughters',
 )
 
@@ -170,6 +160,15 @@ process.pfMassDecorrelatedDeepBoostedJetTagsAK15WithPuppiDaughters.preprocessPar
 process.pfMassDecorrelatedDeepBoostedJetTagsAK15WithPuppiDaughters.model_path = 'BoostedTTH/BoostedAnalyzer/data/deepak15/resnet-symbol.json'
 process.pfMassDecorrelatedDeepBoostedJetTagsAK15WithPuppiDaughters.param_path = 'BoostedTTH/BoostedAnalyzer/data/deepak15/resnet.params'
 
+
+updateJetCollection(
+        process,
+        jetSource=cms.InputTag('packedPatJetsAK8PFPuppiSoftDrop'),
+        rParam=0.8,
+        jetCorrections=('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
+        btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs+pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs,
+        postfix='AK8WithPuppiDaughters',
+)
 #updateJetCollection(
    #process,
    #jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiPrunedSubjets'),
