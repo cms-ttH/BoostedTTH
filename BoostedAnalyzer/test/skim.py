@@ -77,7 +77,9 @@ process.load("CondCore.CondDB.CondDB_cfi")
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 
+####################### Jet stuff #############################
 
+# cluster AK15 jets and use PUPPI pileup mitigation method
 jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
   PUMethod='Puppi',
   addPruning=True, addSoftDrop=True ,           # add basic grooming
@@ -94,6 +96,7 @@ jetToolbox( process, 'ak15', 'ak15JetSubs', 'noOutput',
   addHEPTopTagger=True
   )
 
+# cluster AK8 jets and use PUPPI pileup mitigation method
 jetToolbox( process, 'ak8', 'ak8JetSubs', 'noOutput',
   PUMethod='Puppi',
   addPruning=True, addSoftDrop=True ,           # add basic grooming
@@ -110,6 +113,7 @@ jetToolbox( process, 'ak8', 'ak8JetSubs', 'noOutput',
   addHEPTopTagger=True
   )
 
+# update slimmedJets collection with DeepJet variables and update JECs
 jetToolbox( process, 'ak4', 'ak4Jetchs', 'noOutput',
            updateCollection='slimmedJets',
            JETCorrPayload='AK4PFchs',
@@ -124,7 +128,9 @@ jetToolbox( process, 'ak4', 'ak4Jetchs', 'noOutput',
            runOnMC=not options.isData,
            Cut='pt > 20 && abs(eta) < 2.5'
   )
-           
+
+# update slimmedJetsPuppi collection with DeepJet variables and update JECs
+# WARNING DeepJet has been trained on AK4PFchs jets, so the tagging variables might not make sense
 jetToolbox( process, 'ak4', 'ak4Jetpuppi', 'noOutput',
            updateCollection='slimmedJetsPuppi',
            JETCorrPayload='AK4PFPuppi',
@@ -140,10 +146,13 @@ jetToolbox( process, 'ak4', 'ak4Jetpuppi', 'noOutput',
            Cut='pt > 20 && abs(eta) < 2.5'
   )
 
+# load DeepBoostedJet outputs
 from RecoBTag.MXNet.pfDeepBoostedJet_cff import _pfMassDecorrelatedDeepBoostedJetTagsProbs as pfMassDecorrelatedDeepBoostedJetTagsProbs
 from RecoBTag.MXNet.pfDeepBoostedJet_cff import _pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs as pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs
 print pfMassDecorrelatedDeepBoostedJetTagsProbs
 print pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs
+
+# update the new AK15 jet collection with DeepAK15 tagger outputs
 updateJetCollection(
         process,
         jetSource=cms.InputTag('packedPatJetsAK15PFPuppiSoftDrop'),
@@ -152,15 +161,16 @@ updateJetCollection(
         btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs+pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs,
         postfix='AK15WithPuppiDaughters',
 )
-
+# since DeepAK15 is not standard, preprocessing parameters have to be provided -> from LPC-DM colleagues
 from BoostedTTH.BoostedAnalyzer.pfDeepBoostedJetPreprocessParamsAK15_cfi import pfDeepBoostedJetPreprocessParams as params
 
+# provide parameter and model file for DeepAK15 tagger -> from LPC-DM colleagues
 process.pfDeepBoostedJetTagInfosAK15WithPuppiDaughters.jet_radius = 1.5
 process.pfMassDecorrelatedDeepBoostedJetTagsAK15WithPuppiDaughters.preprocessParams = params
 process.pfMassDecorrelatedDeepBoostedJetTagsAK15WithPuppiDaughters.model_path = 'BoostedTTH/BoostedAnalyzer/data/deepak15/resnet-symbol.json'
 process.pfMassDecorrelatedDeepBoostedJetTagsAK15WithPuppiDaughters.param_path = 'BoostedTTH/BoostedAnalyzer/data/deepak15/resnet.params'
 
-
+# update the new AK8 jet collection with DeepAK8 tagger outputs
 updateJetCollection(
         process,
         jetSource=cms.InputTag('packedPatJetsAK8PFPuppiSoftDrop'),
@@ -169,6 +179,7 @@ updateJetCollection(
         btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs+pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs,
         postfix='AK8WithPuppiDaughters',
 )
+
 #updateJetCollection(
    #process,
    #jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiPrunedSubjets'),
@@ -203,7 +214,7 @@ updateJetCollection(
    #postfix='AK15PFPuppiSoftDropSubjetsNewDFTraining'
 #)
    
-  
+######################################################  
 
 ####################### MET stuff #############################
 
