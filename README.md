@@ -19,13 +19,10 @@ Do for example:
     scram project $CMSSW_VERSION
     cd $CMSSW_VERSION/src
     export CMSSWSRCDIR="$( pwd )"
-    eval `scramv1 runtime -sh` 
+    cmsenv 
     
     # producer of deterministic seeds for physics objects to be able to do synchronization (needs 10X port)
     #git cms-merge-topic yrath:deterministicSeeds
-    
-    # add JetToolbox
-    git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v1
     
     # producer to apply JER to jets
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then    
@@ -38,11 +35,8 @@ Do for example:
     fi      
 
     # adds function to easily recalculate electron/photon IDs and energy corrections
+    #git-cms-init
     git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier
-    git cms-merge-topic cms-egamma:PhotonIDValueMapSpeedup1029 #optional but speeds up the photon ID value module so things run faster
-    git cms-addpkg EgammaAnalysis/ElectronTools
-    rm EgammaAnalysis/ElectronTools/data -rf
-    git clone https://github.com/cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
     
     # mitigation of EE noise to MET in 2017 data
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
@@ -111,6 +105,13 @@ Do for example:
     wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Autumn18_V1_MC/Autumn18_V1_MC_PtResolution_AK8PFchs.txt"
 
     cd $CMSSWSRCDIR
+
+    # add JetToolbox
+    git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v1
+
+    git cms-addpkg EgammaAnalysis/ElectronTools
+    rm EgammaAnalysis/ElectronTools/data -rf
+    git clone https://github.com/cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
    
     #compile
     scram b -j 12
