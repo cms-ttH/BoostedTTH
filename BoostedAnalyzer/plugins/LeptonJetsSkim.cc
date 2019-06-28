@@ -231,16 +231,16 @@ LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // met selection in general
     if(hMETs->at(0).pt()<metPtMin_ && hPuppiMETs->at(0).pt()<metPtMin_ && hadr_recoil.pt()<metPtMin_ && hadr_recoil_puppi.pt()<metPtMin_) return false;
     
-    std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
-    std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
-    std::cout << "Number of AK15 jets: " << n_ak15jets << std::endl;
-    std::cout << "MET: " << hMETs->at(0).pt() << std::endl;
-    std::cout << "Puppi MET: " << hPuppiMETs->at(0).pt() << std::endl;
-    std::cout << "Hadronic recoil: " << hadr_recoil.pt() << std::endl;
-    std::cout << "Puppi Hadronic recoil: " << hadr_recoil_puppi.pt() << std::endl;
-    std::cout << "Number of selected electrons: " << selectedElectrons.size() << std::endl;
-    std::cout << "Number of selected muons: " << selectedMuons.size() << std::endl;
-    std::cout << "Number of selected photons: " << selectedPhotons.size() << std::endl;
+//     std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
+//     std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
+//     std::cout << "Number of AK15 jets: " << n_ak15jets << std::endl;
+//     std::cout << "MET: " << hMETs->at(0).pt() << std::endl;
+//     std::cout << "Puppi MET: " << hPuppiMETs->at(0).pt() << std::endl;
+//     std::cout << "Hadronic recoil: " << hadr_recoil.pt() << std::endl;
+//     std::cout << "Puppi Hadronic recoil: " << hadr_recoil_puppi.pt() << std::endl;
+//     std::cout << "Number of selected electrons: " << selectedElectrons.size() << std::endl;
+//     std::cout << "Number of selected muons: " << selectedMuons.size() << std::endl;
+//     std::cout << "Number of selected photons: " << selectedPhotons.size() << std::endl;
 
 	return true;
 }
