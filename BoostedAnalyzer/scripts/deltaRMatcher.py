@@ -154,7 +154,7 @@ def check_single_var(varname, alternatives, tree):
     realname = ""
     for alt in alternatives:
         tmp = "_".join([varname, alt])
-        if hasattr(tmp, tree):
+	if hasattr(tree,tmp):
             realname = tmp
             break
     return realname
@@ -200,10 +200,10 @@ def match_events(tree, match_groups, cuts, options):
             dRs = []
             for match in group:
                 name = match[0]
-                phivar_1 = check_single_var(math[1], phi_alts, tree)
-                etavar_1 = check_single_var(math[1], eta_alts, tree)
-                phivar_2 = check_single_var(math[2], phi_alts, tree)
-                etavar_2 = check_single_var(math[2], eta_alts, tree) 
+                phivar_1 = check_single_var(match[1], phi_alts, tree)
+                etavar_1 = check_single_var(match[1], eta_alts, tree)
+                phivar_2 = check_single_var(match[2], phi_alts, tree)
+                etavar_2 = check_single_var(match[2], eta_alts, tree) 
                 
                 phi1 = tree.GetLeaf(phivar_1).GetValue()
                 eta1 = tree.GetLeaf(etavar_1).GetValue()
