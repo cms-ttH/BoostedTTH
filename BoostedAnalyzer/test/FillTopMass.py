@@ -4,6 +4,7 @@ from DataFormats.FWLite import Events, Handle
 from math import *
 
 ROOT.gROOT.SetBatch(True)
+ROOT.gStyle.SetOptStat(0)
 
 events = Events (sys.argv[1:])
 
@@ -14,8 +15,8 @@ labelJetsAK15 = "selectedUpdatedPatJetsAK15WithPuppiDaughters"
 labelJetsAK8 = "selectedUpdatedPatJetsAK8WithPuppiDaughters"
 labelJetsAK4 = "selectedPatJetsAK4PFPuppi"
 
-top_mass_ak15_hist = ROOT.TH1D("ak15_softdrop_jet_mass","AK15 SoftDrop Jet Mass",100,40,240)
-top_mass_ak8_hist = ROOT.TH1D("ak8_softdrop_jet_mass","AK8 SoftDrop Jet Mass",100,40,240)
+top_mass_ak15_hist = ROOT.TH1D("ak15_softdrop_jet_mass","SoftDrop Jet Mass",100,40,240)
+top_mass_ak8_hist = ROOT.TH1D("ak8_softdrop_jet_mass","SoftDrop Jet Mass",100,40,240)
 
 # loop over events
 count= 0
@@ -35,22 +36,22 @@ for event in events:
     for jet in JetsAK15:
         if(jet.userFloat("NjettinessAK15Puppi:tau2")==0. or jet.userFloat("NjettinessAK15Puppi:tau3")==0.):
             continue
-        if(#jet.bDiscriminator('pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD')>0.8 and 
-           jet.pt()>200 #and 
-           #jet.userFloat("NjettinessAK15Puppi:tau3")/jet.userFloat("NjettinessAK15Puppi:tau2")<0.6
+        if(jet.bDiscriminator('pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD')>0.8 and 
+           jet.pt()>200 and 
+           jet.userFloat("NjettinessAK15Puppi:tau3")/jet.userFloat("NjettinessAK15Puppi:tau2")<0.6
            ):
             top_mass_ak15_hist.Fill(jet.userFloat("ak15PFJetsPuppiSoftDropMass"))
     for jet in JetsAK8:
         if(jet.userFloat("NjettinessAK8Puppi:tau2")==0. or jet.userFloat("NjettinessAK8Puppi:tau3")==0.):
             continue
-        if(#jet.bDiscriminator('pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD')>0.8 and 
-           jet.pt()>200 #and 
-           #jet.userFloat("NjettinessAK8Puppi:tau3")/jet.userFloat("NjettinessAK8Puppi:tau2")<0.6
+        if(jet.bDiscriminator('pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD')>0.8 and 
+           jet.pt()>200 and 
+           jet.userFloat("NjettinessAK8Puppi:tau3")/jet.userFloat("NjettinessAK8Puppi:tau2")<0.6
            ):
             top_mass_ak8_hist.Fill(jet.userFloat("ak8PFJetsPuppiSoftDropMass"))
 
 c=ROOT.TCanvas()
-l=ROOT.TLegend()
+l=ROOT.TLegend(0.3,0.3)
 l.AddEntry(top_mass_ak15_hist,"AK15 PFPuppi SoftDrop Jets","l")
 l.AddEntry(top_mass_ak8_hist,"AK8 PFPuppi SoftDrop Jets","l")
 top_mass_ak15_hist.SetLineColor(ROOT.kRed)
