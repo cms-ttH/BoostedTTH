@@ -86,6 +86,7 @@ public:
   {
       AK4PFCHS,
       AK8PFCHS,
+      AK8PFPUPPI,
       AK15PFPUPPI
   };
 

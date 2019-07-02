@@ -31,6 +31,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : jet
   // do this for getJetCorrector call with JetType as argument, because it needs ak4... or ak8 ... instead of AK4... or AK8...
   if(jetType=="AK4PFCHS") JetType_ = JetType::AK4PFCHS;
   else if(jetType=="AK8PFCHS") JetType_ = JetType::AK8PFCHS;
+  else if(jetType=="AK8PFPUPPI") JetType_ = JetType::AK8PFPUPPI;
   else if(jetType=="AK15PFPUPPI") JetType_ = JetType::AK15PFPUPPI;
   else {
       std::cerr << "\n\nERROR: Unknown Jet type " << jetType << std::endl;
@@ -85,6 +86,20 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : jet
   else if (JetType_==JetType::AK8PFCHS)
   {
     jetTypeLabelForJECUncertainty = "AK8PFchs";
+    // change File for 2016
+    if (era.find("2016")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2016;
+    }
+    else if(era.find("2017")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2017;
+    }
+    else if(era.find("2018")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2018;
+    }
+  }
+  else if (JetType_==JetType::AK8PFPUPPI)
+  {
+    jetTypeLabelForJECUncertainty = "AK8PFPuppi";
     // change File for 2016
     if (era.find("2016")!=std::string::npos){ 
       jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2016;
@@ -158,6 +173,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : jet
   
   if(JetType_ == JetType::AK4PFCHS) correctorlabel = "ak4PFchs";
   else if(JetType_ == JetType::AK8PFCHS) correctorlabel = "ak8PFchs";
+  else if(JetType_ == JetType::AK8PFPUPPI) correctorlabel = "ak8PFPuppi";
   else if(JetType_ == JetType::AK15PFPUPPI) correctorlabel = "ak8PFPuppi";
   else {
         std::cerr << "\n\nERROR: Jet Type not recognized" << std::endl;
