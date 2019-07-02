@@ -85,7 +85,8 @@ public:
   enum class JetType
   {
       AK4PFCHS,
-      AK8PFCHS
+      AK8PFCHS,
+      AK15PFPUPPI
   };
 
 private:
@@ -163,10 +164,13 @@ private:
   //JEC files
   const std::string jecFileAK4_2016;
   const std::string jecFileAK8_2016;
+  const std::string jecFileAK15_2016;
   const std::string jecFileAK4_2017;
   const std::string jecFileAK8_2017;
+  const std::string jecFileAK15_2017;
   const std::string jecFileAK4_2018;
   const std::string jecFileAK8_2018;
+  const std::string jecFileAK15_2018;
 
   const std::string era;
 
