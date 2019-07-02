@@ -292,33 +292,33 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   
   // fill leptonic Top system
   for(size_t i=0;i<toplep.size();i++){
-    vars.FillVars( "GenTopLep_Pt",i,toplep[i].pt());
-    vars.FillVars( "GenTopLep_Eta",i,toplep[i].eta());
-    vars.FillVars( "GenTopLep_Phi",i,toplep[i].phi());
-    vars.FillVars( "GenTopLep_E",i,toplep[i].energy());
-    vars.FillVars( "GenTopLep_W_Pt",i,wlep[i].pt());
-    vars.FillVars( "GenTopLep_B_Pt",i,blep[i].pt());
-    vars.FillVars( "GenTopLep_Lep_Pt",i,lep[i].pt());
-    vars.FillVars( "GenTopLep_Nu_Pt",i,nu[i].pt());
-    vars.FillVars( "GenTopLep_W_Eta",i,wlep[i].eta());
-    vars.FillVars( "GenTopLep_B_Eta",i,blep[i].eta());
-    vars.FillVars( "GenTopLep_Lep_Eta",i,lep[i].eta());
-    vars.FillVars( "GenTopLep_Nu_Eta",i,nu[i].eta());
-    vars.FillVars( "GenTopLep_W_Phi",i,wlep[i].phi());
-    vars.FillVars( "GenTopLep_B_Phi",i,blep[i].phi());
-    vars.FillVars( "GenTopLep_Lep_Phi",i,lep[i].phi());
-    vars.FillVars( "GenTopLep_Nu_Phi",i,nu[i].phi());
-    vars.FillVars( "GenTopLep_W_E",i,wlep[i].energy());
-    vars.FillVars( "GenTopLep_B_E",i,blep[i].energy());
-    vars.FillVars( "GenTopLep_Lep_E",i,lep[i].energy());
-    vars.FillVars( "GenTopLep_Nu_E",i,nu[i].energy());
+    vars.FillVars( "GenTopLep_Pt",i,toplep.at(i).pt());
+    vars.FillVars( "GenTopLep_Eta",i,toplep.at(i).eta());
+    vars.FillVars( "GenTopLep_Phi",i,toplep.at(i).phi());
+    vars.FillVars( "GenTopLep_E",i,toplep.at(i).energy());
+    vars.FillVars( "GenTopLep_W_Pt",i,wlep.at(i).pt());
+    vars.FillVars( "GenTopLep_B_Pt",i,blep.at(i).pt());
+    vars.FillVars( "GenTopLep_Lep_Pt",i,lep.at(i).pt());
+    vars.FillVars( "GenTopLep_Nu_Pt",i,nu.at(i).pt());
+    vars.FillVars( "GenTopLep_W_Eta",i,wlep.at(i).eta());
+    vars.FillVars( "GenTopLep_B_Eta",i,blep.at(i).eta());
+    vars.FillVars( "GenTopLep_Lep_Eta",i,lep.at(i).eta());
+    vars.FillVars( "GenTopLep_Nu_Eta",i,nu.at(i).eta());
+    vars.FillVars( "GenTopLep_W_Phi",i,wlep.at(i).phi());
+    vars.FillVars( "GenTopLep_B_Phi",i,blep.at(i).phi());
+    vars.FillVars( "GenTopLep_Lep_Phi",i,lep.at(i).phi());
+    vars.FillVars( "GenTopLep_Nu_Phi",i,nu.at(i).phi());
+    vars.FillVars( "GenTopLep_W_E",i,wlep.at(i).energy());
+    vars.FillVars( "GenTopLep_B_E",i,blep.at(i).energy());
+    vars.FillVars( "GenTopLep_Lep_E",i,lep.at(i).energy());
+    vars.FillVars( "GenTopLep_Nu_E",i,nu.at(i).energy());
     
     int idxblep = -1;
     double minDrTopLep = 999;
     for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin() ; itJetVec != jetvecs.end(); ++itJetVec){
-      if(BoostedUtils::DeltaR(*itJetVec,blep[i].p4())<minDrTopLep){
+      if(BoostedUtils::DeltaR(*itJetVec,blep.at(i).p4())<minDrTopLep){
         idxblep = itJetVec-jetvecs.begin();
-        minDrTopLep = BoostedUtils::DeltaR(*itJetVec,blep[i].p4());
+        minDrTopLep = BoostedUtils::DeltaR(*itJetVec,blep.at(i).p4());
       }
     }
     
@@ -330,26 +330,26 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
 
   // fill hadronic top system
   for(size_t i=0;i<tophad.size();i++){
-    vars.FillVars( "GenTopHad_Pt",i,tophad[i].pt());
-    vars.FillVars( "GenTopHad_Eta",i,tophad[i].eta());
-    vars.FillVars( "GenTopHad_Phi",i,tophad[i].phi());
-    vars.FillVars( "GenTopHad_E",i,tophad[i].energy());
-    vars.FillVars( "GenTopHad_W_Pt",i,whad[i].pt());
-    vars.FillVars( "GenTopHad_B_Pt",i,bhad[i].pt());
-    vars.FillVars( "GenTopHad_Q1_Pt",i,q1[i].pt());
-    vars.FillVars( "GenTopHad_Q2_Pt",i,q2[i].pt());
-    vars.FillVars( "GenTopHad_W_Eta",i,whad[i].eta());
-    vars.FillVars( "GenTopHad_B_Eta",i,bhad[i].eta());
-    vars.FillVars( "GenTopHad_Q1_Eta",i,q1[i].eta());
-    vars.FillVars( "GenTopHad_Q2_Eta",i,q2[i].eta());
-    vars.FillVars( "GenTopHad_W_Phi",i,whad[i].phi());
-    vars.FillVars( "GenTopHad_B_Phi",i,bhad[i].phi());
-    vars.FillVars( "GenTopHad_Q1_Phi",i,q1[i].phi());
-    vars.FillVars( "GenTopHad_Q2_Phi",i,q2[i].phi());
-    vars.FillVars( "GenTopHad_W_E",i,whad[i].energy());
-    vars.FillVars( "GenTopHad_B_E",i,bhad[i].energy());
-    vars.FillVars( "GenTopHad_Q1_E",i,q1[i].energy());
-    vars.FillVars( "GenTopHad_Q2_E",i,q2[i].energy());
+    vars.FillVars( "GenTopHad_Pt",i,tophad.at(i).pt());
+    vars.FillVars( "GenTopHad_Eta",i,tophad.at(i).eta());
+    vars.FillVars( "GenTopHad_Phi",i,tophad.at(i).phi());
+    vars.FillVars( "GenTopHad_E",i,tophad.at(i).energy());
+    vars.FillVars( "GenTopHad_W_Pt",i,whad.at(i).pt());
+    vars.FillVars( "GenTopHad_B_Pt",i,bhad.at(i).pt());
+    vars.FillVars( "GenTopHad_Q1_Pt",i,q1.at(i).pt());
+    vars.FillVars( "GenTopHad_Q2_Pt",i,q2.at(i).pt());
+    vars.FillVars( "GenTopHad_W_Eta",i,whad.at(i).eta());
+    vars.FillVars( "GenTopHad_B_Eta",i,bhad.at(i).eta());
+    vars.FillVars( "GenTopHad_Q1_Eta",i,q1.at(i).eta());
+    vars.FillVars( "GenTopHad_Q2_Eta",i,q2.at(i).eta());
+    vars.FillVars( "GenTopHad_W_Phi",i,whad.at(i).phi());
+    vars.FillVars( "GenTopHad_B_Phi",i,bhad.at(i).phi());
+    vars.FillVars( "GenTopHad_Q1_Phi",i,q1.at(i).phi());
+    vars.FillVars( "GenTopHad_Q2_Phi",i,q2.at(i).phi());
+    vars.FillVars( "GenTopHad_W_E",i,whad.at(i).energy());
+    vars.FillVars( "GenTopHad_B_E",i,bhad.at(i).energy());
+    vars.FillVars( "GenTopHad_Q1_E",i,q1.at(i).energy());
+    vars.FillVars( "GenTopHad_Q2_E",i,q2.at(i).energy());
     int idxbhad=-1;
     int idxq1=-1;
     int idxq2=-1;
@@ -358,17 +358,17 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     double minDrTopHadQ2 = 999;
     
     for(size_t j=0; j<jetvecs.size(); j++){
-            if(BoostedUtils::DeltaR(jetvecs[j],bhad[i].p4())<minDrTopHadB){
+            if(BoostedUtils::DeltaR(jetvecs.at(j),bhad.at(i).p4())<minDrTopHadB){
         idxbhad = j;
-        minDrTopHadB = BoostedUtils::DeltaR(jetvecs[j],bhad[i].p4());
+        minDrTopHadB = BoostedUtils::DeltaR(jetvecs.at(j),bhad.at(i).p4());
       }
-      if(BoostedUtils::DeltaR(jetvecs[j],q1[i].p4())<minDrTopHadQ1){
+      if(BoostedUtils::DeltaR(jetvecs.at(j),q1.at(i).p4())<minDrTopHadQ1){
         idxq1 = j;
-        minDrTopHadQ1 = BoostedUtils::DeltaR(jetvecs[j],q1[i].p4());
+        minDrTopHadQ1 = BoostedUtils::DeltaR(jetvecs.at(j),q1.at(i).p4());
       }
-      if(BoostedUtils::DeltaR(jetvecs[j],q2[i].p4())<minDrTopHadQ2){
+      if(BoostedUtils::DeltaR(jetvecs.at(j),q2.at(i).p4())<minDrTopHadQ2){
         idxq2 = j;
-        minDrTopHadQ2 = BoostedUtils::DeltaR(jetvecs[j],q2[i].p4());
+        minDrTopHadQ2 = BoostedUtils::DeltaR(jetvecs.at(j),q2.at(i).p4());
       }
     }
     
@@ -544,32 +544,32 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVar( "GenHiggs_B2_Hadron_E",b2_hadron.energy() );
     
     for(uint i=0;i<bhad_genjet.size();i++){
-      if(bhad_genjet[i].pt()>1){
-              vars.FillVars( "GenTopHad_B_GenJet_Pt",i,bhad_genjet[i].pt() );
-              vars.FillVars( "GenTopHad_B_GenJet_Eta",i,bhad_genjet[i].eta() );
-              vars.FillVars( "GenTopHad_B_GenJet_Phi",i,bhad_genjet[i].phi());
-              vars.FillVars( "GenTopHad_B_GenJet_E",i,bhad_genjet[i].energy());
+      if(bhad_genjet.at(i).pt()>1){
+              vars.FillVars( "GenTopHad_B_GenJet_Pt",i,bhad_genjet.at(i).pt() );
+              vars.FillVars( "GenTopHad_B_GenJet_Eta",i,bhad_genjet.at(i).eta() );
+              vars.FillVars( "GenTopHad_B_GenJet_Phi",i,bhad_genjet.at(i).phi());
+              vars.FillVars( "GenTopHad_B_GenJet_E",i,bhad_genjet.at(i).energy());
       }
-      if(bhad_hadron[i].pt()>1){
-              vars.FillVars( "GenTopHad_B_Hadron_Pt",i,bhad_hadron[i].pt() );
-              vars.FillVars( "GenTopHad_B_Hadron_Eta",i,bhad_hadron[i].eta() );
-              vars.FillVars( "GenTopHad_B_Hadron_Phi",i,bhad_hadron[i].phi());
-              vars.FillVars( "GenTopHad_B_Hadron_E",i,bhad_hadron[i].energy());
+      if(bhad_hadron.at(i).pt()>1){
+              vars.FillVars( "GenTopHad_B_Hadron_Pt",i,bhad_hadron.at(i).pt() );
+              vars.FillVars( "GenTopHad_B_Hadron_Eta",i,bhad_hadron.at(i).eta() );
+              vars.FillVars( "GenTopHad_B_Hadron_Phi",i,bhad_hadron.at(i).phi());
+              vars.FillVars( "GenTopHad_B_Hadron_E",i,bhad_hadron.at(i).energy());
       }
           }
     
     for(uint i=0;i<blep_genjet.size();i++){
-      if(blep_genjet[i].pt()>1){
-              vars.FillVars( "GenTopLep_B_GenJet_Pt",i,blep_genjet[i].pt() );
-              vars.FillVars( "GenTopLep_B_GenJet_Eta",i,blep_genjet[i].eta());
-              vars.FillVars( "GenTopLep_B_GenJet_Phi",i,blep_genjet[i].phi());
-              vars.FillVars( "GenTopLep_B_GenJet_E",i,blep_genjet[i].energy());
+      if(blep_genjet.at(i).pt()>1){
+              vars.FillVars( "GenTopLep_B_GenJet_Pt",i,blep_genjet.at(i).pt() );
+              vars.FillVars( "GenTopLep_B_GenJet_Eta",i,blep_genjet.at(i).eta());
+              vars.FillVars( "GenTopLep_B_GenJet_Phi",i,blep_genjet.at(i).phi());
+              vars.FillVars( "GenTopLep_B_GenJet_E",i,blep_genjet.at(i).energy());
       }
-      if(blep_hadron[i].pt()>1){
-              vars.FillVars( "GenTopLep_B_Hadron_Pt",i,blep_hadron[i].pt() );
-              vars.FillVars( "GenTopLep_B_Hadron_Eta",i,blep_hadron[i].eta());
-              vars.FillVars( "GenTopLep_B_Hadron_Phi",i,blep_hadron[i].phi());
-              vars.FillVars( "GenTopLep_B_Hadron_E",i,blep_hadron[i].energy());
+      if(blep_hadron.at(i).pt()>1){
+              vars.FillVars( "GenTopLep_B_Hadron_Pt",i,blep_hadron.at(i).pt() );
+              vars.FillVars( "GenTopLep_B_Hadron_Eta",i,blep_hadron.at(i).eta());
+              vars.FillVars( "GenTopLep_B_Hadron_Phi",i,blep_hadron.at(i).phi());
+              vars.FillVars( "GenTopLep_B_Hadron_E",i,blep_hadron.at(i).energy());
       }
     }
   }
@@ -599,7 +599,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   //  vars.FillVar( "GenForwardQuark_PDGID",forward_quark.pdgId());
   //}
 
-    if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()&&input.genTopEvt.IsSemiLepton()) {
+    if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()&&input.genTopEvt.IsSemiLepton()&&toplep.size()>0&&tophad.size()>0) {
 
         double dR_bhad;
         double dR_blep;
@@ -621,7 +621,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
 
             if (!CSVHelper::PassesCSV(*i, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
             // search for a dR that matches the hadronic b
-            dR_bhad = std::abs(BoostedUtils::DeltaR(i->p4(), bhad[0].p4()));
+            dR_bhad = std::abs(BoostedUtils::DeltaR(i->p4(), bhad.at(0).p4()));
             if (dR_bhad > dR_threshold_match) continue;
 
             it_j = 0;
@@ -633,7 +633,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
 
                 if (!CSVHelper::PassesCSV(*j, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
                 // search for a dR that matches the leptonic b
-                dR_blep = std::abs(BoostedUtils::DeltaR(j->p4(), blep[0].p4()));
+                dR_blep = std::abs(BoostedUtils::DeltaR(j->p4(), blep.at(0).p4()));
                 if( dR_blep > dR_threshold_match) continue;
 
                 it_k = 0;
@@ -644,7 +644,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
                     if(it_k==it_i || it_k==it_j) continue;
 
                     // search for first hadronic W jet
-                    dR_q1 = std::abs(BoostedUtils::DeltaR(k->p4(), q1[0].p4()));
+                    dR_q1 = std::abs(BoostedUtils::DeltaR(k->p4(), q1.at(0).p4()));
                     if( dR_q1 > dR_threshold_match) continue;
 
                     it_l = 0;
@@ -655,7 +655,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
                         if(it_l==it_i||it_l==it_j||it_l==it_k) continue;
 
                         // search for second hadronic W jet
-                        dR_q2 = std::abs(BoostedUtils::DeltaR(l->p4(), q2[0].p4()));
+                        dR_q2 = std::abs(BoostedUtils::DeltaR(l->p4(), q2.at(0).p4()));
                         if( dR_q2 > dR_threshold_match) continue;
 
                         // successfully found ttbar config
