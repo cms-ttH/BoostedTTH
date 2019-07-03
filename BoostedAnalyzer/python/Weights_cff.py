@@ -165,16 +165,15 @@ TriggerSFs2016 = cms.PSet(
 )
 
 TriggerSFs2017 = cms.PSet(
-    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/2017_SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Data_MC_v5.0.root"),
-    elecHistName = cms.string("SFs_ele_pt_ele_sceta_ele28_ht150_OR_ele35_2017BCDEF"),
+    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Legacy2017_v1.root"),
+    elecHistName = cms.string("ele28_ht150_OR_ele32_ele_pt_ele_sceta"),
     muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_RunBtoF_Nov17Nov2017.root"),
     muonHistName = cms.string("IsoMu27_PtEtaBins/pt_abseta_ratio"),
 )
 
 TriggerSFs2018 = cms.PSet(
-    #TODO: electron histos need to be updated!
-    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/2017_SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Data_MC_v5.0.root"),
-    elecHistName = cms.string("SFs_ele_pt_ele_sceta_ele28_ht150_OR_ele35_2017BCDEF"),
+    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Legacy2018_v1.root"),
+    elecHistName = cms.string("ele28_ht150_OR_ele32_ele_pt_ele_sceta"),
     muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_2018_RunAtoD.root"),
     muonHistName = cms.string("IsoMu24_PtEtaBins/pt_abseta_ratio"),
 )
