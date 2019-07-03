@@ -72,7 +72,9 @@ BoostedAnalyzer2016 = BoostedAnalyzer2017.clone(
     leptonTriggerSFInfos = TriggerSFs2016,
     nominalPUWeight = NominalPUWeight2016,
     additionalPUWeights = AdditionalPUWeights2016,
-    METfilters = filtersMC16   
+    METfilters = filtersMC16,
+    JetAssignmentOptions = JetAssignment2016,
+
 )
 
 BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
@@ -81,6 +83,8 @@ BoostedAnalyzer2018 = BoostedAnalyzer2017.clone(
     bTagSFs = BTagSFs94XDeepJet2018,
     leptonTriggerSFInfos = TriggerSFs2018,
     nominalPUWeight = NominalPUWeight2018,
-    additionalPUWeights = AdditionalPUWeights2018
+    additionalPUWeights = AdditionalPUWeights2018,
+    JetAssignmentOptions = JetAssignment2018,
+
     
 )
