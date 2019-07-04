@@ -153,6 +153,7 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 # ReRun DeepJet
+"""
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 updateJetCollection(
    process,
@@ -182,7 +183,7 @@ process.updateJets = cms.Task(
                     process.selectedUpdatedPatJetsNewDFTraining,
                     process.updatedPatJetsNewDFTraining,
                     process.updatedPatJetsTransientCorrectedNewDFTraining)
-
+"""
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 #jec_mc_data = 'DATA' if options.isData else 'MC'
@@ -340,7 +341,7 @@ photonCollection   = cms.InputTag("slimmedPhotons")
 muonCollection     = cms.InputTag("slimmedMuons")
 tauCollection      = cms.InputTag("slimmedTaus")
 METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
-jetCollection      = cms.InputTag("selectedUpdatedPatJetsNewDFTraining", "", process.name_())
+jetCollection      = cms.InputTag("selectedPatJetsAK4PFCHS", "", "SKIM")
 # AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
 
 
@@ -620,9 +621,9 @@ if options.isData:
 process.BoostedAnalyzer.selectionNames = [
 "FilterSelection",
 "VertexSelection",
-"LeptonSelection",
-"JetTagSelection",
-"METSelection"
+#"LeptonSelection",
+#"JetTagSelection",
+#"METSelection"
 ]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
@@ -631,8 +632,8 @@ if options.isData:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
   "essentialBasicVarProcessor",
-  "essentialMVAVarProcessor",
-  "essentialRecoVarProcessor",
+#  "essentialMVAVarProcessor",
+#  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
@@ -643,8 +644,8 @@ else:
 #  "MCMatchVarProcessor",
   "MCMatchVarProcessor",
   "essentialBasicVarProcessor",
-  "essentialMVAVarProcessor",
-  "essentialRecoVarProcessor",
+#  "essentialMVAVarProcessor",
+#  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
@@ -681,7 +682,7 @@ if options.ProduceMemNtuples==True:
 process.p = cms.Path()
 
 # rerun DeepJet
-process.p.associate(process.updateJets)
+#process.p.associate(process.updateJets)
 
 # run ecalBadCalibReducedMINIAODFilter for 2017/2018 data
 if "2017" or "2018" in options.dataEra:
