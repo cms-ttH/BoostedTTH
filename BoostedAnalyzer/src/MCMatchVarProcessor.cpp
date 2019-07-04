@@ -125,6 +125,23 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopLep_B_Hadron_E",-9., "N_GenTopLep" );
   vars.InitVars( "GenTopHad_B_Hadron_E",-9., "N_GenTopHad");
 
+  // ttH variables
+  vars.InitVar( "Gen_ttH_M", -9. );
+  vars.InitVar( "Gen_ttH_Pt", -9. );
+  vars.InitVar( "Gen_ttH_Mt", -9. );
+  vars.InitVar( "Gen_ttH_E", -9. );
+  vars.InitVar( "Gen_ttH_Et", -9. );
+  vars.InitVar( "Gen_ttH_Additional_Jets_M", -9. );
+  vars.InitVar( "Gen_ttH_Additional_Jets_Pt", -9. );
+  vars.InitVar( "Gen_ttH_Additional_Jets_Mt", -9. );
+  vars.InitVar( "Gen_ttH_Additional_Jets_E", -9. );
+  vars.InitVar( "Gen_ttH_Additional_Jets_Et", -9. );
+
+  // HT variables
+  vars.InitVar( "Gen_Ht_ttH", -9. );
+  vars.InitVar( "Gen_Ht_ttH_Additional_Jets", -9. );
+  vars.InitVar( "Gen_Ht_Jets", -9. );
+
   initialized = true;
 }
 
@@ -167,6 +184,9 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   std::vector<reco::GenParticle> blep;
   std::vector<reco::GenParticle> lep;
   std::vector<reco::GenParticle> nu;
+  std::vector<reco::GenJet> addBJet;
+  std::vector<reco::GenJet> addCJet;
+  std::vector<reco::GenJet> addLFJet;
   reco::GenParticle higgs;
   std::vector<reco::GenParticle> higgs_bs;
   if(input.genTopEvt.IsFilled()){
@@ -180,6 +200,9 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     blep=input.genTopEvt.GetAllTopLepDecayQuarks();
     lep=input.genTopEvt.GetAllLeptons();
     nu=input.genTopEvt.GetAllNeutrinos();
+    addBJet=input.genTopEvt.GetAdditionalBGenJets();
+    addCJet=input.genTopEvt.GetAdditionalCGenJets();
+    addLFJet=input.genTopEvt.GetAdditionalLightGenJets();
     higgs=input.genTopEvt.GetHiggs();
     higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
   }
@@ -189,7 +212,13 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   reco::GenParticle decProd1;
   reco::GenParticle decProd2;
 
-//if(higgs_bs.size()>2)std::cout<<"MORE THAN TWO HIGGS PRODUCTS"<<std::endl;
+  //create a TLorentzVector for the ttH system
+  math::XYZTLorentzVector ttH;
+  double ttH_HT=0.;
+  double ttH_HT_addJet=0.;
+  double ttH_HT_Jets=0.;
+
+//if(higgs_bs.size()>2)std:://cout<<"MORE THAN TWO HIGGS PRODUCTS"<<std::endl;
 bool dfirst=true;
   for(auto p =higgs_bs.begin(); p!=higgs_bs.end(); p++){
     if(p->pdgId()==5) b1=*p;
@@ -221,6 +250,12 @@ bool dfirst=true;
   vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
   
   for(size_t i=0;i<toplep.size();i++){
+    math::XYZTLorentzVector gen_top=toplep[i].p4();
+    ttH+=gen_top;
+    ttH_HT+=toplep[i].pt();
+    //cout<<"\n\t>>>>>\tadded leptnic top\t<<<<<\n";
+    //cout<<gen_top.pt()<<"__"<<gen_top.px()<<"__"<<gen_top.py()<<"__"<<gen_top.pz()<<"__mass:_"<<gen_top.mass()<<endl;
+    //cout<<ttH.pt()<<"__"<<ttH.px()<<"__"<<ttH.py()<<"__"<<ttH.pz()<<"__mass:_"<<ttH.mass()<<endl;
     vars.FillVars( "GenTopLep_Pt",i,toplep[i].pt());
     vars.FillVars( "GenTopLep_Eta",i,toplep[i].eta());
     vars.FillVars( "GenTopLep_Phi",i,toplep[i].phi());
@@ -257,6 +292,12 @@ bool dfirst=true;
   }
   
   for(size_t i=0;i<tophad.size();i++){
+    math::XYZTLorentzVector gen_top=tophad[i].p4();
+    ttH+=gen_top;
+    ttH_HT+=tophad[i].pt();
+    //cout<<"\n\t>>>>>\tadded hadronic top\t<<<<<\n";
+    //cout<<gen_top.pt()<<"__"<<gen_top.px()<<"__"<<gen_top.py()<<"__"<<gen_top.pz()<<"__mass:_"<<gen_top.mass()<<endl;
+    //cout<<ttH.pt()<<"__"<<ttH.px()<<"__"<<ttH.py()<<"__"<<ttH.pz()<<"__mass:_"<<ttH.mass()<<endl;
     vars.FillVars( "GenTopHad_Pt",i,tophad[i].pt());
     vars.FillVars( "GenTopHad_Eta",i,tophad[i].eta());
     vars.FillVars( "GenTopHad_Phi",i,tophad[i].phi());
@@ -315,7 +356,54 @@ bool dfirst=true;
     vars.FillVar( "GenHiggs_Eta",higgs.eta());
     vars.FillVar( "GenHiggs_Phi",higgs.phi());
     vars.FillVar( "GenHiggs_E",higgs.energy());
+    math::XYZTLorentzVector gen_higgs=higgs.p4();
+    ttH+=gen_higgs;
+    ttH_HT+=gen_higgs.pt();
+    //cout<<"\n\t>>>>>\tadded higgs\t<<<<<\n";
+    //cout<<gen_higgs.pt()<<"__"<<gen_higgs.px()<<"__"<<gen_higgs.py()<<"__"<<gen_higgs.pz()<<"__mass:_"<<gen_higgs.mass()<<endl;
+    //cout<<ttH.pt()<<"__"<<ttH.px()<<"__"<<ttH.py()<<"__"<<ttH.pz()<<"__mass:_"<<ttH.mass()<<endl;
+
   }
+  ttH_HT_addJet+=ttH_HT;
+  math::XYZTLorentzVector ttH_addJet = ttH;
+  for(size_t i=0;i<<addBJet.size();i++){
+    ttH_addJet+=addBJet[i].p4();
+    ttH_HT_addJet+=addBJet[i].pt();
+    //cout<<"\n\t>>>>>\tadditional b-jet added\t<<<<<\n";
+    //cout<<ttH_addJet.pt()<<"__"<<ttH_addJet.px()<<"__"<<ttH_addJet.py()<<"__"<<ttH_addJet.pz()<<"__mass:_"<<ttH_addJet.mass()<<endl;
+  }
+  for(size_t i=0;i<<addCJet.size();i++){
+    ttH_addJet+=addCJet[i].p4();
+    ttH_HT_addJet+=addCJet[i].pt();
+    //cout<<"\n\t>>>>>\tadditional c-jet added\t<<<<<\n";
+    //cout<<ttH_addJet.pt()<<"__"<<ttH_addJet.px()<<"__"<<ttH_addJet.py()<<"__"<<ttH_addJet.pz()<<"__mass:_"<<ttH_addJet.mass()<<endl;
+  }
+  for(size_t i=0;i<<addLFJet.size();i++){
+    ttH_addJet+=addLFJet[i].p4();
+    ttH_HT_addJet+=addLFJet[i].pt();
+    //cout<<"\n\t>>>>>\tadditional lf-jet added\t<<<<<\n";
+    //cout<<ttH_addJet.pt()<<"__"<<ttH_addJet.px()<<"__"<<ttH_addJet.py()<<"__"<<ttH_addJet.pz()<<"__mass:_"<<ttH_addJet.mass()<<endl;
+  }
+
+  // build HT from Jets and leptons
+  for(std::vector<reco::GenJet>::const_iterator itJet = input.genJets.begin() ; itJet != input.genJets.end(); ++itJet){
+      ttH_HT_Jets += itJet->pt();
+      //cout<<ttH_HT_Jets<<endl;
+  }
+  for(std::vector<reco::GenParticle>::const_iterator itEle = input.customGenElectrons.begin(); itEle != input.customGenElectrons.end(); ++itEle){
+      ttH_HT_Jets += itEle->pt();
+      //cout<<ttH_HT_Jets<<endl;
+  }
+  for(std::vector<reco::GenParticle>::const_iterator itMu = input.customGenMuons.begin(); itMu != input.customGenMuons.end(); ++itMu){
+      ttH_HT_Jets += itMu->pt();
+      //cout<<ttH_HT_Jets<<endl;
+  }
+  for(std::vector<reco::GenParticle>::const_iterator itGamma = input.customGenPhotons.begin(); itGamma != input.customGenPhotons.end(); ++itGamma){
+      ttH_HT_Jets += itGamma->pt();
+      //cout<<ttH_HT_Jets<<endl;
+  }
+
+
   if(b1.pt()>0.){
     vars.FillVar("GenHiggs_B1_Pt",b1.pt());
     vars.FillVar("GenHiggs_B2_Pt",b2.pt());
@@ -381,7 +469,8 @@ bool dfirst=true;
     vars.FillVar( "GenHiggs_B2_Hadron_Phi",b2_hadron.phi() );
     vars.FillVar( "GenHiggs_B1_Hadron_E",b1_hadron.energy() );
     vars.FillVar( "GenHiggs_B2_Hadron_E",b2_hadron.energy() );
-    
+
+
     for(uint i=0;i<bhad_genjet.size();i++){
       if(bhad_genjet[i].pt()>1){
               vars.FillVars( "GenTopHad_B_GenJet_Pt",i,bhad_genjet[i].pt() );
@@ -412,4 +501,20 @@ bool dfirst=true;
       }
     }
   }
+  //fill m_ttH 
+  vars.FillVar( "Gen_ttH_M",ttH.mass() );
+  vars.FillVar( "Gen_ttH_Pt",ttH.pt() );
+  vars.FillVar( "Gen_ttH_Mt", ttH.Mt() );
+  vars.FillVar( "Gen_ttH_E", ttH.E() );
+  vars.FillVar( "Gen_ttH_Et", ttH.Et() );
+  vars.FillVar( "Gen_ttH_Additional_Jets_M", ttH_addJet.mass() );
+  vars.FillVar( "Gen_ttH_Additional_Jets_Pt", ttH_addJet.pt() );
+  vars.FillVar( "Gen_ttH_Additional_Jets_Mt", ttH_addJet.Mt() );
+  vars.FillVar( "Gen_ttH_Additional_Jets_E", ttH_addJet.E() );
+  vars.FillVar( "Gen_ttH_Additional_Jets_Et", ttH_addJet.Et() );
+
+  //fill HT vars
+  vars.FillVar( "Gen_Ht_ttH", ttH_HT );
+  vars.FillVar( "Gen_Ht_ttH_Additional_Jets", ttH_HT_addJet );
+  vars.FillVar( "Gen_Ht_Jets", ttH_HT_Jets );
 }
