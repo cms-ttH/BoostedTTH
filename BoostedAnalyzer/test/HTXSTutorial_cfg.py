@@ -380,6 +380,14 @@ process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
   ProductionMode = cms.string('AUTO'),
 )
 
+# GenCollectionProducer
+process.load("BoostedTTH.GenCollectionProducer.GenCollectionProducer_cfi")
+process.GenCollectionProducer.collection_name=["CustomGenElectrons","CustomGenMuons","CustomGenTaus","CustomGenPhotons"]
+process.GenCollectionProducer.collection_type=["Electron","Muon","Tau","Photon"]
+process.GenCollectionProducer.pt_min=[10.,10.,18.,15.]
+process.GenCollectionProducer.eta_max=[2.4,2.4,2.3,2.5]
+process.GenCollectionProducer.doDeltaRCleaning=False
+
 # up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
 for s in systsJER:
     v=0
@@ -471,15 +479,15 @@ if options.isData:
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
-  #"WeightProcessor",
-#  "MCMatchVarProcessor",
-  #"essentialMCMatchVarProcessor",
-  #"essentialBasicVarProcessor",
-  #"essentialMVAVarProcessor",
-  #"BDTVarProcessor",
-  #"TriggerVarProcessor",
-  #"ReconstructionMEvarProcessor",
-  #"AK8JetProcessor",
+  "WeightProcessor",
+  "MCMatchVarProcessor",
+#  "essentialMCMatchVarProcessor",
+  "essentialBasicVarProcessor",
+  "essentialMVAVarProcessor",
+  "BDTVarProcessor",
+  "TriggerVarProcessor",
+  "ReconstructionMEvarProcessor",
+  "AK8JetProcessor",
   "HTXSProcessor"
   )
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
@@ -529,12 +537,13 @@ for s in [""]+systs:
     process.p *= getattr(process,'patSmearedJetsAK8'+s)
     process.p *= getattr(process,'SelectedJetProducerAK4'+s)
     process.p *= getattr(process,'SelectedJetProducerAK8'+s)
-    process.p *= getattr(process,'mergedGenParticles'+s)
-    process.p *= getattr(process,'myGenerator'+s)
-    process.p *= getattr(process,'rivetProducerHTXS'+s)
+    process.p *= getattr(process,'mergedGenParticles')
+    process.p *= getattr(process,'myGenerator')
+    process.p *= getattr(process,'rivetProducerHTXS')
 
 
 if not options.isData and not options.isBoostedMiniAOD:
+    process.p*=process.GenCollectionProducer
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
 
 if printContent:

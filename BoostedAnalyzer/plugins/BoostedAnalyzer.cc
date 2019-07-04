@@ -255,6 +255,11 @@ private:
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsDLToken;
     /** loose electrons data access token **/
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsLooseToken;
+    /** custom gen objects **/
+    edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenElectrons;
+    edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenMuons;
+    edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenTaus;
+    edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenPhotons;
     /** loose jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsTokens;
     /** tight jets data access token **/
@@ -333,6 +338,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     selectedElectronsToken          ( consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons")) ),
     selectedElectronsDLToken        ( consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL")) ),
     selectedElectronsLooseToken     ( consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose")) ),
+
+    customGenElectrons ( consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenElectrons")) ),
+    customGenMuons ( consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenMuons")) ),
+    customGenTaus (consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenTaus"))),
+    customGenPhotons (consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("customGenPhotons"))),
 
     boostedJetsToken                ( consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets")) ),
     genInfoToken                    ( consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo")) ),
@@ -706,6 +716,17 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 	iEvent.getByToken( genJetsToken,h_genJets );
     }
 
+    edm::Handle< std::vector<reco::GenParticle> > CustomGenElectrons;
+    edm::Handle< std::vector<reco::GenParticle> > CustomGenMuons;
+    edm::Handle< std::vector<reco::GenParticle> > CustomGenTaus;
+    edm::Handle< std::vector<reco::GenParticle> > CustomGenPhotons;
+    if(!isData){
+        iEvent.getByToken( customGenElectrons,CustomGenElectrons );
+        iEvent.getByToken( customGenMuons,CustomGenMuons );
+        iEvent.getByToken( customGenTaus,CustomGenTaus );
+        iEvent.getByToken( customGenPhotons,CustomGenPhotons );
+    }
+
     // selected vertices and set vertex for MiniAODhelper
     // TODO: vertex selection in external producer
     reco::VertexCollection const &vtxs = *h_primaryVertices;
@@ -830,16 +851,20 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                       *(hs_AK8Jets[isys]),
 					  (*(hs_correctedMETs[isys]))[0],
 					  selectedBoostedJets[isys],
-                                          selectedAk4Cluster,
+                      selectedAk4Cluster,
 					  genTopEvt,
 					  *h_genJets,
-					  sampleType,
+                      selectionTags,
+                      *CustomGenElectrons,
+                      *CustomGenMuons,
+                      *CustomGenTaus,
+                      *CustomGenPhotons,					  
+                      sampleType,
 					  higgsdecay,
 					  weights,
 					  iEvent,
 					  iSetup,
-                                          jetSystematics[isys],
-                      selectionTags,
+                      jetSystematics[isys],
                       *htxs 
 					  ));
 

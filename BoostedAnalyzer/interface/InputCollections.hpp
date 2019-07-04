@@ -34,10 +34,9 @@ struct InputCollections{
    Constructor in which all references to the objects that are analyzed are set
  */
 InputCollections(   const EventInfo&                              eventInfo_,
-        const TriggerInfo&                            triggerInfo_,
-        const FilterInfo&                             filterInfo_,
-        const std::vector<reco::Vertex>&              selectedPVs_,
-
+                    const TriggerInfo&                            triggerInfo_,
+                    const FilterInfo&                             filterInfo_,
+                    const std::vector<reco::Vertex>&              selectedPVs_,
                     const std::vector<pat::Muon>&                 selectedMuons_,
                     const std::vector<pat::Muon>&                 selectedMuonsDL_,
                     const std::vector<pat::Muon>&                 selectedMuonsLoose_,
@@ -52,13 +51,17 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
                     const GenTopEvent&                            genTopEvt_,
                     const std::vector<reco::GenJet>&              genJets_,
+                    const std::map<std::string, int>&             selectionTags_,
+                    const std::vector<reco::GenParticle>&         customGenElectrons_,
+                    const std::vector<reco::GenParticle>&         customGenMuons_,
+                    const std::vector<reco::GenParticle>&         customGenTaus_,
+                    const std::vector<reco::GenParticle>&         customGenPhotons_,
                     const SampleType                              sampleType_,
                     const HiggsDecay::HiggsDecay                  higgsDecay_,
                     const std::map<std::string,float>&            weights_,
-        const edm::Event&                             iEvent_,
-        const edm::EventSetup&                        iSetup_,
+                    const edm::Event&                             iEvent_,
+                    const edm::EventSetup&                        iSetup_,
                     const Systematics::Type&                      systematic_,
-                    const std::map<std::string, int>&             selectionTags_,
                     const HTXS::HiggsClassification               htxs_
     
           /**** bjetness code ****/
@@ -81,13 +84,17 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(genTopEvt_),
                     genJets(genJets_),
+                    selectionTags(selectionTags_),
+                    customGenElectrons(customGenElectrons_),
+                    customGenMuons(customGenMuons_),
+                    customGenTaus(customGenTaus_),
+                    customGenPhotons(customGenPhotons_),
                     sampleType(sampleType_),
                     higgsDecay(higgsDecay_),
                     weights(weights_),
         iEvent(iEvent_),
         iSetup(iSetup_),
         systematic(systematic_),
-        selectionTags(selectionTags_),
         htxs(htxs_)
                     {}
 
@@ -121,13 +128,17 @@ InputCollections(   const InputCollections&                       input,
                     selectedAk4Cluster(selectedAk4Cluster_),
                     genTopEvt(input.genTopEvt),
                     genJets(input.genJets),
+                    selectionTags(input.selectionTags),
+                    customGenElectrons(input.customGenElectrons),
+                    customGenMuons(input.customGenMuons),
+                    customGenTaus(input.customGenTaus),
+                    customGenPhotons(input.customGenPhotons),
                     sampleType(input.sampleType),
                     higgsDecay(input.higgsDecay),
                     weights(weights_),
         iEvent(input.iEvent),
         iSetup(input.iSetup),
         systematic(input.systematic),
-        selectionTags(input.selectionTags),
         htxs(input.htxs)
                     {}
 
@@ -149,13 +160,17 @@ InputCollections(   const InputCollections&                       input,
   const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
   const GenTopEvent&                            genTopEvt;
   const std::vector<reco::GenJet>&              genJets;
+  const std::map<std::string, int>&             selectionTags;
+  const std::vector<reco::GenParticle>&         customGenElectrons;
+  const std::vector<reco::GenParticle>&         customGenMuons;
+  const std::vector<reco::GenParticle>&         customGenTaus;
+  const std::vector<reco::GenParticle>&         customGenPhotons;
   const SampleType                              sampleType;
   const HiggsDecay::HiggsDecay                  higgsDecay;
   const std::map<std::string,float>             weights;
   const edm::Event &                            iEvent;
   const edm::EventSetup &                       iSetup;
   const Systematics::Type&                      systematic;
-  const std::map<std::string, int>&             selectionTags;
   const HTXS::HiggsClassification&              htxs;
 };
 
