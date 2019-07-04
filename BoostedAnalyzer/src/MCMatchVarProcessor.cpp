@@ -164,13 +164,14 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "GenForwardQuark_PDGID",-999 );
 
 
-  // for ttbar dR matching
-  //vars.InitVar("Gen_ttbar_matched", 0, "I");
-  //vars.InitVar("Gen_ttH_matched", 0, "I");
-  vars.InitVar("GenHiggsMassFromMatchedJets",-9.);
-  //vars.InitVar("GenZMassFromMatchedJets",-9.);
-  vars.InitVars("GenHadTopMassFromMatchedJets",-9.,"N_GenTopHad");
-  vars.InitVars("GenHadWMassFromMatchedJets",-9.,"N_GenTopHad");
+  // ttH variables
+  vars.InitVar( "Gen_ttH_M", -9. );
+  vars.InitVar( "Gen_ttH_Pt", -9. );
+
+  // HT variables
+  vars.InitVar( "Gen_Ht_ttH", -9. );
+  vars.InitVar( "Gen_Ht_Jets", -9. );
+
   initialized = true;
 }
 
@@ -213,6 +214,9 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   std::vector<reco::GenParticle> blep;
   std::vector<reco::GenParticle> lep;
   std::vector<reco::GenParticle> nu;
+  std::vector<reco::GenJet> addBJet;
+  std::vector<reco::GenJet> addCJet;
+  std::vector<reco::GenJet> addLFJet;
   reco::GenParticle higgs;
   // for ttZ
   reco::GenParticle Z;
@@ -234,6 +238,9 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     blep=input.genTopEvt.GetAllTopLepDecayQuarks();
     lep=input.genTopEvt.GetAllLeptons();
     nu=input.genTopEvt.GetAllNeutrinos();
+    addBJet=input.genTopEvt.GetAdditionalBGenJets();
+    addCJet=input.genTopEvt.GetAdditionalCGenJets();
+    addLFJet=input.genTopEvt.GetAdditionalLightGenJets();
     higgs=input.genTopEvt.GetHiggs();
     higgs_bs=input.genTopEvt.GetHiggsDecayProducts();
     Z_bs=input.genTopEvt.GetZDecayProducts();
@@ -253,8 +260,13 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   reco::GenParticle decProd1;
   reco::GenParticle decProd2;
 
-  // find Higgs decay products
-  bool dfirst=true;
+  //create a TLorentzVector for the ttH system
+  math::XYZTLorentzVector ttH;
+  double ttH_HT=0.;
+  double Gen_Jets_HT=0.;
+
+//if(higgs_bs.size()>2)std:://cout<<"MORE THAN TWO HIGGS PRODUCTS"<<std::endl;
+bool dfirst=true;
   for(auto p =higgs_bs.begin(); p!=higgs_bs.end(); p++){
     if(p->pdgId()==5) b1=*p;
     if(p->pdgId()==-5) b2=*p;
@@ -292,6 +304,12 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   
   // fill leptonic Top system
   for(size_t i=0;i<toplep.size();i++){
+    math::XYZTLorentzVector gen_top=toplep[i].p4();
+    ttH+=gen_top;
+    ttH_HT+=toplep[i].pt();
+    //cout<<"\n\t>>>>>\tadded leptnic top\t<<<<<\n";
+    //cout<<gen_top.pt()<<"__"<<gen_top.px()<<"__"<<gen_top.py()<<"__"<<gen_top.pz()<<"__mass:_"<<gen_top.mass()<<endl;
+    //cout<<ttH.pt()<<"__"<<ttH.px()<<"__"<<ttH.py()<<"__"<<ttH.pz()<<"__mass:_"<<ttH.mass()<<endl;
     vars.FillVars( "GenTopLep_Pt",i,toplep[i].pt());
     vars.FillVars( "GenTopLep_Eta",i,toplep[i].eta());
     vars.FillVars( "GenTopLep_Phi",i,toplep[i].phi());
@@ -330,6 +348,12 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
 
   // fill hadronic top system
   for(size_t i=0;i<tophad.size();i++){
+    math::XYZTLorentzVector gen_top=tophad[i].p4();
+    ttH+=gen_top;
+    ttH_HT+=tophad[i].pt();
+    //cout<<"\n\t>>>>>\tadded hadronic top\t<<<<<\n";
+    //cout<<gen_top.pt()<<"__"<<gen_top.px()<<"__"<<gen_top.py()<<"__"<<gen_top.pz()<<"__mass:_"<<gen_top.mass()<<endl;
+    //cout<<ttH.pt()<<"__"<<ttH.px()<<"__"<<ttH.py()<<"__"<<ttH.pz()<<"__mass:_"<<ttH.mass()<<endl;
     vars.FillVars( "GenTopHad_Pt",i,tophad[i].pt());
     vars.FillVars( "GenTopHad_Eta",i,tophad[i].eta());
     vars.FillVars( "GenTopHad_Phi",i,tophad[i].phi());
@@ -408,7 +432,34 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVar( "GenHiggs_Phi",higgs.phi());
     vars.FillVar( "GenHiggs_E",higgs.energy());
     vars.FillVar( "GenHiggs_Y",higgs.rapidity());
+    math::XYZTLorentzVector gen_higgs=higgs.p4();
+    ttH+=gen_higgs;
+    ttH_HT+=gen_higgs.pt();
+    //cout<<"\n\t>>>>>\tadded higgs\t<<<<<\n";
+    //cout<<gen_higgs.pt()<<"__"<<gen_higgs.px()<<"__"<<gen_higgs.py()<<"__"<<gen_higgs.pz()<<"__mass:_"<<gen_higgs.mass()<<endl;
+    //cout<<ttH.pt()<<"__"<<ttH.px()<<"__"<<ttH.py()<<"__"<<ttH.pz()<<"__mass:_"<<ttH.mass()<<endl;
+
   }
+
+  // build HT from Jets and leptons
+  for(std::vector<reco::GenJet>::const_iterator itJet = input.genJets.begin() ; itJet != input.genJets.end(); ++itJet){
+      Gen_Jets_HT += itJet->pt();
+      //cout<<Gen_Jets_HT<<endl;
+  }
+  // for(std::vector<reco::GenParticle>::const_iterator itEle = input.customGenElectrons.begin(); itEle != input.customGenElectrons.end(); ++itEle){
+  //     Gen_Jets_HT += itEle->pt();
+  //     //cout<<Gen_Jets_HT<<endl;
+  // }
+  // for(std::vector<reco::GenParticle>::const_iterator itMu = input.customGenMuons.begin(); itMu != input.customGenMuons.end(); ++itMu){
+  //     Gen_Jets_HT += itMu->pt();
+  //     //cout<<Gen_Jets_HT<<endl;
+  // }
+  // for(std::vector<reco::GenParticle>::const_iterator itGamma = input.customGenPhotons.begin(); itGamma != input.customGenPhotons.end(); ++itGamma){
+  //     Gen_Jets_HT += itGamma->pt();
+  //     //cout<<Gen_Jets_HT<<endl;
+  // }
+
+
   if(b1.pt()>0.){
     vars.FillVar("GenHiggs_B1_Pt",b1.pt());
     vars.FillVar("GenHiggs_B2_Pt",b2.pt());
@@ -542,7 +593,8 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     vars.FillVar( "GenHiggs_B2_Hadron_Phi",b2_hadron.phi() );
     vars.FillVar( "GenHiggs_B1_Hadron_E",b1_hadron.energy() );
     vars.FillVar( "GenHiggs_B2_Hadron_E",b2_hadron.energy() );
-    
+
+
     for(uint i=0;i<bhad_genjet.size();i++){
       if(bhad_genjet[i].pt()>1){
               vars.FillVars( "GenTopHad_B_GenJet_Pt",i,bhad_genjet[i].pt() );
@@ -573,132 +625,11 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
       }
     }
   }
-  
-  // for THW
-  if(w_not_from_top.pt()>0.){
-    vars.FillVar( "GenW_NotFromTop_Pt",w_not_from_top.pt());
-    vars.FillVar( "GenW_NotFromTop_Eta",w_not_from_top.eta());
-    vars.FillVar( "GenW_NotFromTop_Phi",w_not_from_top.phi());
-    vars.FillVar( "GenW_NotFromTop_E",w_not_from_top.energy());
-  }
-  vars.FillVar( "N_GenW_NotFromTop_DecProds",w_not_from_top_decay_products.size() );
-  for(size_t i=0;i<w_not_from_top_decay_products.size();i++){
-    vars.FillVars("GenW_NotFromTop_DecProd_Pt",i,w_not_from_top_decay_products.at(i).pt() );
-    vars.FillVars("GenW_NotFromTop_DecProd_Eta",i,w_not_from_top_decay_products.at(i).eta() );
-    vars.FillVars("GenW_NotFromTop_DecProd_Phi",i,w_not_from_top_decay_products.at(i).phi() );
-    vars.FillVars("GenW_NotFromTop_DecProd_E",i,w_not_from_top_decay_products.at(i).energy() );
-    vars.FillVars("GenW_NotFromTop_DecProd_PDGID",i,w_not_from_top_decay_products.at(i).pdgId() );
-  }
-  
-  // for THQ
-  if(forward_quark.pt()>0.){
-    vars.FillVar( "GenForwardQuark_Pt",forward_quark.pt());
-    vars.FillVar( "GenForwardQuark_Eta",forward_quark.eta());
-    vars.FillVar( "GenForwardQuark_Phi",forward_quark.phi());
-    vars.FillVar( "GenForwardQuark_E",forward_quark.energy());
-    vars.FillVar( "GenForwardQuark_PDGID",forward_quark.pdgId());
-  }
+  //fill m_ttH 
+  vars.FillVar( "Gen_ttH_M",ttH.mass() );
+  vars.FillVar( "Gen_ttH_Pt",ttH.pt() );
 
-
-    //if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()&&input.genTopEvt.IsSemiLepton()) {
-
-    //    double dR_bhad;
-    //    double dR_blep;
-    //    double dR_q1;
-    //    double dR_q2;
-
-    //    double dR_b1;
-    //    double dR_b2;
-    //    bool found_ttbar = false;
-    //    bool found_ttH = false;
-    //    double dR_threshold_match = 0.5;
-    //    int it_i, it_j, it_k, it_l, it_m, it_n;
-
-    //    it_i = 0;
-    //    for( auto i = input.selectedJets.begin(); i!=input.selectedJets.end(); i++ )
-    //    {   
-    //        if(found_ttH) break;
-    //        it_i++;
-
-    //        if (!CSVHelper::PassesCSV(*i, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
-    //        // search for a dR that matches the hadronic b
-    //        dR_bhad = std::abs(BoostedUtils::DeltaR(i->p4(), bhad[0].p4()));
-    //        if (dR_bhad > dR_threshold_match) continue;
-
-    //        it_j = 0;
-    //        for( auto j = input.selectedJets.begin(); j!=input.selectedJets.end(); j++ )
-    //        {
-    //            if(found_ttH) break;
-    //            it_j++;
-    //            if(it_i==it_j) continue;
-
-    //            if (!CSVHelper::PassesCSV(*j, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
-    //            // search for a dR that matches the leptonic b
-    //            dR_blep = std::abs(BoostedUtils::DeltaR(j->p4(), blep[0].p4()));
-    //            if( dR_blep > dR_threshold_match) continue;
-
-    //            it_k = 0;
-    //            for( auto k = input.selectedJets.begin(); k!=input.selectedJets.end(); k++ )
-    //            {
-    //                if(found_ttH) break;
-    //                it_k++;
-    //                if(it_k==it_i || it_k==it_j) continue;
-
-    //                // search for first hadronic W jet
-    //                dR_q1 = std::abs(BoostedUtils::DeltaR(k->p4(), q1[0].p4()));
-    //                if( dR_q1 > dR_threshold_match) continue;
-
-    //                it_l = 0;
-    //                for( auto l = input.selectedJets.begin(); l!=input.selectedJets.end(); l++ )
-    //                {
-    //                    if(found_ttH) break;
-    //                    it_l++;
-    //                    if(it_l==it_i||it_l==it_j||it_l==it_k) continue;
-
-    //                    // search for second hadronic W jet
-    //                    dR_q2 = std::abs(BoostedUtils::DeltaR(l->p4(), q2[0].p4()));
-    //                    if( dR_q2 > dR_threshold_match) continue;
-
-    //                    // successfully found ttbar config
-    //                    found_ttbar = true;
-
-    //                    it_m = 0;
-    //                    for( auto m = input.selectedJets.begin(); m!=input.selectedJets.end(); m++ )
-    //                    {
-    //                        if(found_ttH) break;
-    //                        it_m++;
-    //                        if(it_m==it_i||it_m==it_j||it_m==it_k||it_m==it_l) continue;
-
-    //                        //if (!CSVHelper::PassesCSV(*m, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
-    //                        // search for first higgs b
-    //                        dR_b1 = std::abs(BoostedUtils::DeltaR(m->p4(), b1.p4()));
-    //                        if( dR_b1 > dR_threshold_match) continue;
-
-    //                        it_n = 0;
-    //                        for( auto n = input.selectedJets.begin(); n!=input.selectedJets.end(); n++ )
-    //                        {
-    //                            if(found_ttH) break;
-    //                            it_n++;
-    //                            if(it_n==it_i||it_n==it_j||it_n==it_k||it_n==it_l||it_n==it_m) continue;
-
-    //                            //if (!CSVHelper::PassesCSV(*n, "DeepJet", CSVHelper::CSVwp::Medium,input.era)) continue;
-    //                            // search for first higgs b
-    //                            dR_b2 = std::abs(BoostedUtils::DeltaR(n->p4(), b2.p4()));
-    //                            if( dR_b2 > dR_threshold_match) continue;
-
-    //                            // successfully found ttH config
-    //                            found_ttH = true;
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //    if (found_ttbar) 
-    //        vars.FillVar("Gen_ttbar_matched", 1);
-    //    if (found_ttH)   
-    //        vars.FillVar("Gen_ttH_matched", 1);
-
-    //}
-
+  //fill HT vars
+  vars.FillVar( "Gen_Ht_ttH", ttH_HT );
+  vars.FillVar( "Gen_Ht_Jets", Gen_Jets_HT );
 }
