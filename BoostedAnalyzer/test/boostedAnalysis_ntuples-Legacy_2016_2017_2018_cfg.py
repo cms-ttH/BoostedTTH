@@ -358,7 +358,7 @@ photonCollection   = cms.InputTag("slimmedPhotons")
 muonCollection     = cms.InputTag("slimmedMuons")
 tauCollection      = cms.InputTag("slimmedTaus")
 METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
-jetCollection      = cms.InputTag("selectedPatJetsAK4PFCHS", "", "SKIM")
+jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
 #AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
 AK8jetCollection   = cms.InputTag("selectedUpdatedPatJetsAK8WithPuppiDaughters","","SKIM")
 AK15jetCollection   = cms.InputTag("selectedUpdatedPatJetsAK15WithPuppiDaughters","","SKIM")
@@ -472,7 +472,7 @@ process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8je
                                                                 collectionNames=["correctedJetsAK8"],
                                                                 applyCorrection=True,
                                                                 systematics=[""]+systsJES,
-                                                                JetID=["none"],
+                                                                JetID=["tight"],
                                                                 PUJetIDMins=["none"],
                                                                 miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
                                                                 leptonJetDr=0.8,
@@ -497,7 +497,7 @@ process.CorrectedJetProducerAK15=process.CorrectedJetProducerAK8.clone(jets=AK15
                                                                 collectionNames=["correctedJetsAK15"],
                                                                 applyCorrection=True,
                                                                 systematics=[""]+systsJES,
-                                                                JetID=["none"],
+                                                                JetID=["tight"],
                                                                 PUJetIDMins=["none"],
                                                                 miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
                                                                 leptonJetDr=1.5,

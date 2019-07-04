@@ -301,11 +301,13 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
   switch (iJetID)
   {
   case JetID::Loose:
-    passesID = iJet.neutralHadronEnergyFraction() < 0.99 && iJet.neutralEmEnergyFraction() < 0.99 && iJet.numberOfDaughters() > 1;
+    passesID = iJet.neutralHadronEnergyFraction() < 0.99 && iJet.neutralEmEnergyFraction() < 0.99;
+    if(not (JetType_==JetType::AK8PFPUPPI || JetType_==JetType::AK15PFPUPPI)) passesID = passesID && iJet.numberOfDaughters() > 1;
     if (fabs(iJet.eta()) < 2.4) passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0 && iJet.chargedMultiplicity() > 0 && iJet.chargedEmEnergyFraction() < 0.99);
     break;
   case JetID::Tight:
-    passesID = iJet.neutralHadronEnergyFraction() < 0.90 && iJet.neutralEmEnergyFraction() < 0.90 && iJet.numberOfDaughters() > 1;
+    passesID = iJet.neutralHadronEnergyFraction() < 0.90 && iJet.neutralEmEnergyFraction() < 0.90;
+    if(not (JetType_==JetType::AK8PFPUPPI || JetType_==JetType::AK15PFPUPPI)) passesID = passesID && iJet.numberOfDaughters() > 1;
     if (fabs(iJet.eta()) < 2.4) passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0 && iJet.chargedMultiplicity() > 0);
     if (era.find("2016")!=std::string::npos) passesID = passesID && iJet.chargedEmEnergyFraction() < 0.99;
     break;
