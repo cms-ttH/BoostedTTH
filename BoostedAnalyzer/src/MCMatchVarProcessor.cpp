@@ -172,6 +172,11 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "Gen_Ht_ttH", -9. );
   vars.InitVar( "Gen_Ht_Jets", -9. );
 
+   vars.InitVar("GenHiggsMassFromMatchedJets",-9.);	
+   //vars.InitVar("GenZMassFromMatchedJets",-9.);	  // HT variables
+  vars.InitVars("GenHadTopMassFromMatchedJets",-9.,"N_GenTopHad");
+  vars.InitVars("GenHadWMassFromMatchedJets",-9.,"N_GenTopHad");
+
   initialized = true;
 }
 
