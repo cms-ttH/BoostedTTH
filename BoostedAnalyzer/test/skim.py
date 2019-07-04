@@ -306,7 +306,9 @@ process.OUT = cms.OutputModule(
         'keep *_selected*AK4*_*_SKIM',
         'drop *_selected*AK4*_*calo*_SKIM', 
         'drop *_selected*AK4*_*tagInfos*_SKIM',
-        'keep *_*slimmedMET*_*_SKIM'
+        'keep *_*slimmedMET*_*_SKIM',
+        'keep patPackedCandidates_puppi__SKIM',
+        'keep patPackedCandidates_puppiNoLep__SKIM'
         ]),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("skim")
