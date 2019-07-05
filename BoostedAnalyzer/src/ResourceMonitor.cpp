@@ -99,8 +99,9 @@ void ResourceMonitor::PrintSystemMemory(){
   }
   
   long realFree = std::stol(sFreeMem) - std::stol(sBufferedMem) + std::stol(sCachedMem);
-  std::cout<<"Total system memory: "<<sTotalMem<<std::endl;
-  std::cout<<"Free system memory: "<<realFree<<std::endl;
+  std::cout<<"Total system memory: "<<std::stoi(sTotalMem)/ 1000 << " MB" << std::endl;
+  std::cout<<"Free system memory: "<<realFree/1000 << " MB" << std::endl;
+  std::cout<<"Used system memory: "<<std::stoi(sTotalMem)/ 1000 - realFree/1000 << " MB" << std::endl;
   meminfoFile.close();
 }
   
