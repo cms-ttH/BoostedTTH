@@ -25,7 +25,7 @@ bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     
     // 4-vector for MET and hadronic recoil
     math::XYZTLorentzVector met_p4(0.,0.,0.,0.);
-    //math::XYZTLorentzVector hadr_recoil_p4(0.,0.,0.,0.);
+    math::XYZTLorentzVector hadr_recoil_p4(0.,0.,0.,0.);
     
     // check if are jet systematic is being used and if so use the correct method to extract the 4-vector from the pat::MET object
     if(input.systematic==Systematics::JESup) {
@@ -53,20 +53,20 @@ bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     // after the correct pat::MET method has been used, get the pt of the MET 4-vector
     double met = met_p4.pt();
     
-    // set the 4-vector of the hadronic recoil equals to the MET 4-vector and correct it in the following for leptons and photons
-    //hadr_recoil_p4 = met_p4;
-    //for(const auto& el : input.selectedElectronsLoose){
-    //    hadr_recoil_p4 += el.p4();
-    //}
-    //for(const auto& mu : input.selectedMuonsLoose){
-    //    hadr_recoil_p4 += mu.p4();
-    //}
+    //set the 4-vector of the hadronic recoil equals to the MET 4-vector and correct it in the following for leptons and photons
+    hadr_recoil_p4 = met_p4;
+    for(const auto& el : input.selectedElectronsLoose){
+       hadr_recoil_p4 += el.p4();
+    }
+    for(const auto& mu : input.selectedMuonsLoose){
+       hadr_recoil_p4 += mu.p4();
+    }
     //for(const auto& ph : input.selectedPhotonsLoose){
     //    hadr_recoil_p4 += ph.p4();
     //}
     
-    // after correcting the MET to obtain the correct hadronic recoil, get the pt
-    //double hadr_recoil = hadr_recoil_p4.pt();
+    //after correcting the MET to obtain the correct hadronic recoil, get the pt
+    double hadr_recoil = hadr_recoil_p4.pt();
     //double uncormet = input.correctedMET.uncorPt();
     
     // get the pt of the calorimeter MET
@@ -76,7 +76,7 @@ bool METSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
     // check in addition if a quality criteria for MET is fulfilled to reduce fake MET events
     // if the events satisfies the conditions, return true
     // if((hadr_recoil>minMET&&hadr_recoil<maxMET)&&(fabs(calomet-met)/calomet<0.5)){
-    if(met>minMET && met<maxMET){
+    if(met>minMET || hadr_recoil>minMET){
     	cutflow.EventSurvivedStep(selectionName ,input.weights.at("Weight"));
 	   return true;
     }
