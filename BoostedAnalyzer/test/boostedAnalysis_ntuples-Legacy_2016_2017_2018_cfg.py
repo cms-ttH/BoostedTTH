@@ -72,8 +72,7 @@ if not options.inputFiles:
         elif "2017" in options.dataEra: 
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
         elif "2018" in options.dataEra:
-            # options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/40000/EAA9C941-768D-164B-B5C1-C12306823C6E.root']
-        	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_7.root']
+        	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_Monotop_skims_102X/190624_131536/0000/Skim_1.root']
     else:
         if "2016" in options.dataEra: # CAREFUL: NO 2016 Data Skims ready yet
             # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
@@ -81,8 +80,7 @@ if not options.inputFiles:
         elif "2017" in options.dataEra:
         	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
         elif "2018" in options.dataEra:
-            # options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2018B/EGamma/MINIAOD/17Sep2018-v1/60000/37FD0663-1A14-2647-A16B-0ABB87234B43.root']
-        	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mschrode/SingleMuon/KIT_tthbb_skims_DATA_94X_LEG_2018A/190406_082949/0000/Skim_1.root']
+        	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_102X/190704_101037/0000/Skim_1.root']
     
  
 
@@ -358,7 +356,7 @@ photonCollection   = cms.InputTag("slimmedPhotons")
 muonCollection     = cms.InputTag("slimmedMuons")
 tauCollection      = cms.InputTag("slimmedTaus")
 METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
-jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
+jetCollection      = cms.InputTag("selectedPatJetsAK4PFCHS")
 #AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
 AK8jetCollection   = cms.InputTag("selectedUpdatedPatJetsAK8WithPuppiDaughters","","SKIM")
 AK15jetCollection   = cms.InputTag("selectedUpdatedPatJetsAK15WithPuppiDaughters","","SKIM")
