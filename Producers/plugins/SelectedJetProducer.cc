@@ -19,15 +19,20 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : jet
                                                                              rhoToken{consumes<double>(iConfig.getParameter<edm::InputTag>("rho"))},
                                                                              jecFileAK4_2016{iConfig.getParameter<std::string>("jecFileAK4_2016")},
                                                                              jecFileAK8_2016{iConfig.getParameter<std::string>("jecFileAK8_2016")},
+                                                                             jecFileAK15_2016{iConfig.getParameter<std::string>("jecFileAK15_2016")},
                                                                              jecFileAK4_2017{iConfig.getParameter<std::string>("jecFileAK4_2017")},
                                                                              jecFileAK8_2017{iConfig.getParameter<std::string>("jecFileAK8_2017")},
+                                                                             jecFileAK15_2017{iConfig.getParameter<std::string>("jecFileAK15_2017")},
                                                                              jecFileAK4_2018{iConfig.getParameter<std::string>("jecFileAK4_2018")},
                                                                              jecFileAK8_2018{iConfig.getParameter<std::string>("jecFileAK8_2018")},
+                                                                             jecFileAK15_2018{iConfig.getParameter<std::string>("jecFileAK15_2018")},
                                                                              era{iConfig.getParameter<std::string>("era")}
 {
   // do this for getJetCorrector call with JetType as argument, because it needs ak4... or ak8 ... instead of AK4... or AK8...
   if(jetType=="AK4PFCHS") JetType_ = JetType::AK4PFCHS;
   else if(jetType=="AK8PFCHS") JetType_ = JetType::AK8PFCHS;
+  else if(jetType=="AK8PFPUPPI") JetType_ = JetType::AK8PFPUPPI;
+  else if(jetType=="AK15PFPUPPI") JetType_ = JetType::AK15PFPUPPI;
   else {
       std::cerr << "\n\nERROR: Unknown Jet type " << jetType << std::endl;
       std::cerr << "Please select 'AK4PFCHS' or 'AK8PFCHS'\n" << std::endl;
@@ -92,6 +97,34 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : jet
       jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2018;
     }
   }
+  else if (JetType_==JetType::AK8PFPUPPI)
+  {
+    jetTypeLabelForJECUncertainty = "AK8PFPuppi";
+    // change File for 2016
+    if (era.find("2016")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2016;
+    }
+    else if(era.find("2017")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2017;
+    }
+    else if(era.find("2018")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2018;
+    }
+  }
+  else if (JetType_==JetType::AK15PFPUPPI)
+  {
+    jetTypeLabelForJECUncertainty = "AK8PFPuppi";
+    // change File for 2016
+    if (era.find("2016")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK15_2016;
+    }
+    else if(era.find("2017")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK15_2017;
+    }
+    else if(era.find("2018")!=std::string::npos){ 
+      jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK15_2018;
+    }
+  }
 
   if (jecUncertaintyTxtFileName != "")
   {
@@ -140,6 +173,8 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) : jet
   
   if(JetType_ == JetType::AK4PFCHS) correctorlabel = "ak4PFchs";
   else if(JetType_ == JetType::AK8PFCHS) correctorlabel = "ak8PFchs";
+  else if(JetType_ == JetType::AK8PFPUPPI) correctorlabel = "ak8PFPuppi";
+  else if(JetType_ == JetType::AK15PFPUPPI) correctorlabel = "ak8PFPuppi";
   else {
         std::cerr << "\n\nERROR: Jet Type not recognized" << std::endl;
         throw std::exception();
@@ -266,11 +301,13 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
   switch (iJetID)
   {
   case JetID::Loose:
-    passesID = iJet.neutralHadronEnergyFraction() < 0.99 && iJet.neutralEmEnergyFraction() < 0.99 && iJet.numberOfDaughters() > 1;
+    passesID = iJet.neutralHadronEnergyFraction() < 0.99 && iJet.neutralEmEnergyFraction() < 0.99;
+    if(not (JetType_==JetType::AK8PFPUPPI || JetType_==JetType::AK15PFPUPPI)) passesID = passesID && iJet.numberOfDaughters() > 1;
     if (fabs(iJet.eta()) < 2.4) passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0 && iJet.chargedMultiplicity() > 0 && iJet.chargedEmEnergyFraction() < 0.99);
     break;
   case JetID::Tight:
-    passesID = iJet.neutralHadronEnergyFraction() < 0.90 && iJet.neutralEmEnergyFraction() < 0.90 && iJet.numberOfDaughters() > 1;
+    passesID = iJet.neutralHadronEnergyFraction() < 0.90 && iJet.neutralEmEnergyFraction() < 0.90;
+    if(not (JetType_==JetType::AK8PFPUPPI || JetType_==JetType::AK15PFPUPPI)) passesID = passesID && iJet.numberOfDaughters() > 1;
     if (fabs(iJet.eta()) < 2.4) passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0 && iJet.chargedMultiplicity() > 0);
     if (era.find("2016")!=std::string::npos) passesID = passesID && iJet.chargedEmEnergyFraction() < 0.99;
     break;
