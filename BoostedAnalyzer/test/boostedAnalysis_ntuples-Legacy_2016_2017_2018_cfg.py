@@ -139,7 +139,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = options.globalTag
 process.load("CondCore.CondDB.CondDB_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.options.allowUnscheduled = cms.untracked.bool(False)
+#process.options.allowUnscheduled = cms.untracked.bool(False)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(int(options.maxEvents)))
 process.source = cms.Source(  "PoolSource",
                               fileNames = cms.untracked.vstring(options.inputFiles),
@@ -738,46 +738,43 @@ if options.ProduceMemNtuples==True:
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
-##### DEFINE PATH ##########
-process.p = cms.Path()
+##### DEFINE PATHS ##########
 
-# rerun DeepJet
-#process.p.associate(process.updateJets)
 
 # run ecalBadCalibReducedMINIAODFilter for 2017/2018 data
 if "2017" or "2018" in options.dataEra:
     process.BoostedAnalyzer.additionalFilters = cms.VInputTag(["ecalBadCalibReducedMINIAODFilter"])
-    process.p *= process.ecalBadCalibReducedMINIAODFilter
+    process.metfilters = cms.Path(process.ecalBadCalibReducedMINIAODFilter)
 
 if options.recorrectMET:
-    process.p *= process.fullPatMetSequence
+    process.met = cms.Path(process.fullPatMetSequence)
 
 # electron scale and smearing corrections    
-process.p *= process.egammaPostRecoSeq
+process.egamma = cms.Path(process.egammaPostRecoSeq)
 
 if options.deterministicSeeds:
-    process.p*=process.deterministicSeeds
+    process.seeds=cms.Path(process.deterministicSeeds)
 
-process.p*=process.SelectedElectronProducer*process.SelectedMuonProducer
+process.leptons=cms.Path()
+process.leptons*=process.SelectedElectronProducer*process.SelectedMuonProducer
 
-if printContent:
-    process.p *= process.content
-
-process.p*=process.CorrectedJetProducerAK4
-process.p*=process.CorrectedJetProducerAK8
-process.p*=process.CorrectedJetProducerAK15
+process.jets=cms.Path()
+process.jets*=process.CorrectedJetProducerAK4
+process.jets*=process.CorrectedJetProducerAK8
+process.jets*=process.CorrectedJetProducerAK15
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed                                    
 for s in [""]+systs:
-    process.p *= getattr(process,'patSmearedJetsAK4'+s)
-    process.p *= getattr(process,'patSmearedJetsAK8'+s)
-    process.p *= getattr(process,'patSmearedJetsAK15'+s)
-    process.p *= getattr(process,'SelectedJetProducerAK4'+s)
-    process.p *= getattr(process,'SelectedJetProducerAK8'+s)
-    process.p *= getattr(process,'SelectedJetProducerAK15'+s)
+    process.jets *= getattr(process,'patSmearedJetsAK4'+s)
+    process.jets *= getattr(process,'patSmearedJetsAK8'+s)
+    process.jets *= getattr(process,'patSmearedJetsAK15'+s)
+    process.jets *= getattr(process,'SelectedJetProducerAK4'+s)
+    process.jets *= getattr(process,'SelectedJetProducerAK8'+s)
+    process.jets *= getattr(process,'SelectedJetProducerAK15'+s)
 
 
 if not options.isData and not options.isBoostedMiniAOD:
-    process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+    process.tthfmatcher = cms.Path()
+    process.tthfmatcher *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
 
 
-process.p *= process.BoostedAnalyzer
+process.final = cms.EndPath(process.BoostedAnalyzer)
