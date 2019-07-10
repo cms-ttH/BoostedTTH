@@ -91,6 +91,7 @@ public:
   reco::GenJet GetHiggsBGenJet() const;
   reco::GenJet GetHiggsBBarGenJet() const;
 
+  std::vector<reco::GenJet> GetAllGenJets() const;
   std::vector<reco::GenJet> GetBGenJets() const;
   
   std::vector<reco::GenJet> GetAdditionalBGenJets() const;
@@ -167,7 +168,8 @@ private:
   std::vector<reco::GenParticle> wplus_decay_products;
   std::vector<reco::GenParticle> wminus_decay_products;
   std::vector<reco::GenParticle> higgs_decay_products;
-
+  
+  std::vector<reco::GenJet> all_genjets;
   std::vector<reco::GenJet> b_genjets;
   std::vector<int> b_genjet_nb;
   
@@ -208,8 +210,8 @@ private:
   std::vector<reco::GenJet> w_genjets;
   std::vector<reco::GenJet> additional_light_genjets;
   const float wMatchR=0.4;
-  const float ttxptcut=25;
-  const float ttxetacut=2.5;
+  const float ttxptcut=20;
+  const float ttxetacut=2.4;
   bool isTTbar=false;
   bool isTTH=false;
   bool topIsHadronic;

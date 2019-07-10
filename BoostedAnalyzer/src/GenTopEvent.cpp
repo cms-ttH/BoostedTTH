@@ -219,6 +219,8 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     if(customGenJets[i].pt()<ttxptcut || fabs(customGenJets[i].eta())>ttxetacut){
       continue;
     }
+    // all genjets
+    all_genjets.push_back(customGenJets[i]);
     // skip light jets
     if(nb_per_genjet[i]>0){ 
       // all genjets with b flavor
@@ -296,6 +298,10 @@ std::vector<reco::GenJet> GenTopEvent::GetAllTopLepBGenJets() const{
   if(ttxIsFilled&&!topIsHadronic) toplepbs.push_back(top_b_genjet);
   if(ttxIsFilled&&!topbarIsHadronic) toplepbs.push_back(topbar_bbar_genjet);
   return toplepbs;
+}
+std::vector<reco::GenJet> GenTopEvent::GetAllGenJets() const{
+  if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
+  return all_genjets;
 }
 std::vector<reco::GenJet> GenTopEvent::GetBGenJets() const{
   if(!ttxIsFilled) std::cerr << "Trying to access GenTopEvent ttX info but it is not filled" << std::endl;
