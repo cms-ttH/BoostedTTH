@@ -68,7 +68,7 @@ DiLeptonSelectionData = cms.PSet(
 )
 
 METSelection = cms.PSet(
-    minMET = cms.double(20.),
+    minMET = cms.double(250.),
     maxMET = cms.double(100000.),
 )
 
@@ -166,3 +166,9 @@ filtersMC16=cms.vstring("Flag_goodVertices",
                     )
 
 # process.BoostedAnalyzer.additionalFilters = cms.VInputTag(["ecalBadCalibReducedMINIAODFilter"])
+MonoTopSelection=cms.PSet(
+    AK15Jet_Pt=cms.double(250.),
+    AK15Jet_Eta=cms.double(2.4),
+    AK15Jet_Chf=cms.double(0.1),
+    AK15Jet_Nhf=cms.double(0.8)
+)

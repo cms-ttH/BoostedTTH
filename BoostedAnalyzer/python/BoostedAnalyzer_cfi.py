@@ -11,6 +11,7 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
     METSelection, # defined in Selection_cff
     checkBasicMCTriggers, # defined in Selection_cff
     # filtersMC, # defined in Selection_cff
+    MonoTopSelection,
     
     LeptonSelection = LeptonSelectionMC2017,
     

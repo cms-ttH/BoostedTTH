@@ -591,7 +591,14 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
   for (size_t i = 0; i < ptMins.size(); i++)
   {
       // selected jets with jet ID cuts ( do this before jet energy correction !!! )
-      const std::vector<pat::Jet> idJets = GetSelectedJets(*inputJets, 0., 9999., Jet_ID.at(i));
+      std::vector<pat::Jet> idJets = GetSelectedJets(*inputJets, 0., 9999., Jet_ID.at(i));
+      
+      for(auto& jet : idJets){
+          if(!jet.hasUserFloat("neutralHadronEnergyFraction") && !jet.hasUserFloat("chargedHadronEnergyFraction")){
+              jet.addUserFloat("neutralHadronEnergyFraction",jet.neutralHadronEnergyFraction());
+              jet.addUserFloat("chargedHadronEnergyFraction",jet.chargedHadronEnergyFraction());
+          }
+      }
       
       for (size_t j = 0; j < systematics.size(); j++)
       {

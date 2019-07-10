@@ -116,6 +116,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TTBBStudienProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AK8JetProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SelectionTagProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/MonoTopSelection.hpp"
 
 //
 // class declaration
@@ -408,15 +409,16 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
         std::unique_ptr<Selection> selection = nullptr;
 	if(itSel == "VertexSelection")                        selection.reset(new VertexSelection());
 	else if(itSel == "FilterSelection")                   selection.reset(new FilterSelection(iConfig));
-    else if(itSel == "LeptonSelection")                   selection.reset(new LeptonSelection(iConfig));
-    else if(itSel == "JetTagSelection")                   selection.reset(new JetTagSelection(iConfig));
-    else if(itSel == "METSelection")                      selection.reset(new METSelection(iConfig));
+	else if(itSel == "METSelection")                      selection.reset(new METSelection(iConfig));
+	else if(itSel == "MonoTopSelection")                  selection.reset(new MonoTopSelection(iConfig));
+        else if(itSel == "LeptonSelection")                   selection.reset(new LeptonSelection(iConfig));
+        else if(itSel == "JetTagSelection")                   selection.reset(new JetTagSelection(iConfig));
 	else if(itSel == "EvenSelection")                     selection.reset(new EvenOddSelection(true));
 	else if(itSel == "OddSelection")                      selection.reset(new EvenOddSelection(false));
 	else if(itSel == "GenTopFHSelection")                 selection.reset(new GenTopFHSelection());
 	else if(itSel == "GenTopSLSelection")                 selection.reset(new GenTopSLSelection());
 	else if(itSel == "GenTopDLSelection")                 selection.reset(new GenTopDLSelection());
-    else if(itSel == "LeptonSelection_QCDControlregion")  selection.reset(new LeptonSelection_QCDControlregion(iConfig));
+        else if(itSel == "LeptonSelection_QCDControlregion")  selection.reset(new LeptonSelection_QCDControlregion(iConfig));
 	else if(itSel == "LooseLeptonSelection")              selection.reset(new LooseLeptonSelection(iConfig));
 	else if(itSel == "DiLeptonJetTagSelection")           selection.reset(new DiLeptonJetTagSelection(iConfig));
 	else if(itSel == "DiLeptonSelection")                 selection.reset(new DiLeptonSelection(iConfig));
