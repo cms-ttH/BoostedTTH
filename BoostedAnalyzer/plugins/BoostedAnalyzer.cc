@@ -257,8 +257,6 @@ private:
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK15_Tokens;
     /** mets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::MET> > > correctedMETsTokens;
-    /** boosted jets data access token **/
-    edm::EDGetTokenT< boosted::BoostedJetCollection > boostedJetsToken;
     /** gen info data access token **/
     edm::EDGetTokenT< GenEventInfoProduct > genInfoToken;
     /** LHE data access token **/
@@ -329,7 +327,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     selectedElectronsDLToken        { consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL")) },
     selectedElectronsLooseToken     { consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose")) },
 
-    boostedJetsToken                { consumes< boosted::BoostedJetCollection >(iConfig.getParameter<edm::InputTag>("boostedJets")) },
     genInfoToken                    { consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo")) },
     lheInfoToken                    { consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo")) },
     lheInfoToken_source             { consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo_source")) },
