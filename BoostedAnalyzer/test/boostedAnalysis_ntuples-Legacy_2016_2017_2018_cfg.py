@@ -335,7 +335,7 @@ elif "2017" in options.dataEra:
 elif "2018" in options.dataEra:
     EG_era = '2018-Prompt'
     EG_corrections = False
-    EG_vid = False
+    EG_vid = True
 else:
     raise Exception( "dataEra "+options.dataEra+" not supported for Egamma tools: USE dataEra=2016/2017/2018")
 
@@ -389,24 +389,32 @@ if options.deterministicSeeds:
 # lepton selection
 #process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 from BoostedTTH.Producers.SelectedLeptonProducers_cfi import *
+from BoostedTTH.Producers.SelectedPhotonProducers_cfi import *
+
 if "2016" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2016
     process.SelectedElectronProducer.ptMins=[15.,15.,29.]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2016
     process.SelectedMuonProducer.ptMins=[15.,15.,26.]
+    ###
+    process.SelectedPhotonProducer = SelectedPhotonProducer2016
 elif "2017" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2017
     process.SelectedElectronProducer.ptMins=[15.,15.,30.]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2017
     process.SelectedMuonProducer.ptMins=[15.,15.,29.]
+    ###
+    process.SelectedPhotonProducer = SelectedPhotonProducer2017
 elif "2018" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2018
     process.SelectedElectronProducer.ptMins=[15.,15.,30.]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2018
     process.SelectedMuonProducer.ptMins=[15.,15.,26.]
+    ###
+    process.SelectedPhotonProducer = SelectedPhotonProducer2018
     
 
 process.SelectedElectronProducer.leptons=electronCollection
@@ -431,6 +439,13 @@ process.SelectedMuonProducer.useDeterministicSeeds=options.deterministicSeeds
 process.SelectedMuonProducer.isData=options.isData
 process.SelectedMuonProducer.era=options.dataEra
 
+
+process.SelectedPhotonProducer.ptMins=[20.]
+process.SelectedPhotonProducer.etaMaxs=[2.4]
+process.SelectedPhotonProducer.IDs=["loose"]
+process.SelectedPhotonProducer.collectionNames=["selectedPhotons"]
+process.SelectedPhotonProducer.isData=options.isData
+process.SelectedPhotonProducer.era=options.dataEra
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 # jet selection
@@ -758,7 +773,7 @@ if options.deterministicSeeds:
     process.seeds=cms.Path(process.deterministicSeeds)
 
 process.leptons=cms.Path()
-process.leptons*=process.SelectedElectronProducer*process.SelectedMuonProducer
+process.leptons*=process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedPhotonProducer
 
 process.jets=cms.Path()
 process.jets*=process.CorrectedJetProducerAK4

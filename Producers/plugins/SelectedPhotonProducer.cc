@@ -1,7 +1,7 @@
 #include "BoostedTTH/Producers/interface/SelectedPhotonProducer.h"
 
 SelectedPhotonProducer::SelectedPhotonProducer(const edm::ParameterSet& iConfig) :
-
+    era {iConfig.getParameter<std::string>("era")},
     ptMins_ {iConfig.getParameter< std::vector<double> >("ptMins")},
     etaMaxs_ {iConfig.getParameter< std::vector<double> >("etaMaxs")},
     collectionNames_ {iConfig.getParameter< std::vector<std::string> >("collectionNames")},
@@ -14,7 +14,7 @@ SelectedPhotonProducer::SelectedPhotonProducer(const edm::ParameterSet& iConfig)
 
 {    
     if( era.find("2016")==std::string::npos and era.find("2017")==std::string::npos and era.find("2018")==std::string::npos){
-        std::cerr << "\n\nERROR: Unknown era" << era << "in SelectedPhotonProducer " << std::endl;
+        std::cerr << "\n\nERROR: Unknown era" << era << " in SelectedPhotonProducer " << std::endl;
         std::cerr << "Please select '2016' or '2017' or '2018'\n" << std::endl;
         throw std::exception();
     }
