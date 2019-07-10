@@ -2,6 +2,7 @@
 
 SelectedPhotonProducer::SelectedPhotonProducer(const edm::ParameterSet& iConfig) :
     era {iConfig.getParameter<std::string>("era")},
+    isData {iConfig.getParameter<bool>("isData")},
     ptMins_ {iConfig.getParameter< std::vector<double> >("ptMins")},
     etaMaxs_ {iConfig.getParameter< std::vector<double> >("etaMaxs")},
     collectionNames_ {iConfig.getParameter< std::vector<std::string> >("collectionNames")},
@@ -40,6 +41,14 @@ SelectedPhotonProducer::SelectedPhotonProducer(const edm::ParameterSet& iConfig)
     for(size_t i=0;i<ptMins_.size();i++){
         produces<pat::PhotonCollection>(collectionNames_[i]);
     }
+    
+    PhoID_SF_Loose = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_PhoLooseIDSF")))->Get("EGamma_SF2D");
+    PhoID_SF_Loose->SetDirectory(0);
+    PhoID_SF_Medium = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_PhoMediumIDSF")))->Get("EGamma_SF2D");
+    PhoID_SF_Medium->SetDirectory(0);
+    PhoID_SF_Tight = (TH2F*)TFile::Open(TString(std::string(getenv("CMSSW_BASE"))+"/src/"+iConfig.getParameter<std::string>("file_PhoTightIDSF")))->Get("EGamma_SF2D");
+    PhoID_SF_Tight->SetDirectory(0);
+    
 }
 
 SelectedPhotonProducer::~SelectedPhotonProducer() {}
@@ -81,6 +90,7 @@ SelectedPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     for(size_t i=0; i<ptMins_.size(); i++) {
         std::vector<pat::Photon> updatedPhotons = *inputPhotons;
         std::vector<pat::Photon> selectedPhotons = GetSortedByPt(GetSelectedPhotons(updatedPhotons,ptMins_.at(i),etaMaxs_.at(i),photonIDs_.at(i)));
+        if(not isData) AddPhotonSFs(selectedPhotons, photonIDs_.at(i));
         // produce the different photon collections and create a unique ptr to it      
         std::unique_ptr<pat::PhotonCollection> selectedPhotons_ptr =  std::make_unique<pat::PhotonCollection>(selectedPhotons);
         
@@ -156,6 +166,69 @@ bool SelectedPhotonProducer::isGoodPhoton(const pat::Photon& iPhoton, const floa
     }
     
     return passesKinematics and (not inCrack) and passesID;
+}
+
+// function to add electron object scale factors to electron, currently reconstruction and identification
+void SelectedPhotonProducer::AddPhotonSFs(std::vector<pat::Photon>& inputPhotons, const PhotonID iPhotonID) const{
+    for(auto& ph : inputPhotons){
+        auto IDSFs = GetPhotonIDSF(ph, iPhotonID);
+        assert(IDSFs.size()==3);
+        ph.addUserFloat("IdentificationSF",IDSFs.at(0));
+        ph.addUserFloat("IdentificationSFUp",IDSFs.at(1));
+        ph.addUserFloat("IdentificationSFDown",IDSFs.at(2));
+    }
+}
+
+// function to calculate photon ID scale factors and return them as a triplet
+std::vector<float> SelectedPhotonProducer::GetPhotonIDSF(const pat::Photon& iPhoton, const PhotonID iPhotonID) const{
+    // get pt and eta of the electron
+    auto pt = iPhoton.hasUserFloat("ptBeforeRun2Calibration") ? iPhoton.userFloat("ptBeforeRun2Calibration") : iPhoton.pt();
+    auto eta = iPhoton.superCluster().isAvailable() ? iPhoton.superCluster()->position().eta() : iPhoton.eta();
+    TH2F* SF_hist = nullptr; 
+    std::vector<float> SFs{1.0,1.0,1.0};
+    // load the correct scale factor histogram
+    switch(iPhotonID){
+        case PhotonID::None:
+            break;
+        case PhotonID::Veto:
+            break;
+        case PhotonID::Loose:
+            SF_hist = PhoID_SF_Loose;
+            break;
+        case PhotonID::Medium:
+            SF_hist = PhoID_SF_Medium;
+            break;
+        case PhotonID::Tight:
+            SF_hist = PhoID_SF_Tight;
+            break;
+        default:
+            std::cerr << "\n\nERROR: InvalidPhotonID" <<  std::endl;
+            throw std::exception();
+    }
+    
+    if(SF_hist==nullptr){
+        std::cerr << "\n\nERROR: Photon ID Scale Factor File could not be loaded" <<  std::endl;
+        throw std::exception(); 
+    }
+    
+    // determine the ranges of the given TH2Fs
+    auto xmin = SF_hist->GetXaxis()->GetXmin();
+    auto xmax = SF_hist->GetXaxis()->GetXmax();
+    auto ymin = SF_hist->GetYaxis()->GetXmin();
+    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    
+    // make sure to stay within the range ot the histograms
+    eta = std::max(xmin+0.1,eta);
+    eta = std::min(xmax-0.1,eta);
+    pt = std::max(ymin+0.1,pt);
+    pt = std::min(ymax-0.1,pt);
+    
+    // calculate the scale factors
+    SFs.at(0)=SF_hist->GetBinContent(SF_hist->FindBin(eta,pt));
+    SFs.at(1)=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))+(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    SFs.at(2)=(SF_hist->GetBinContent(SF_hist->FindBin(eta,pt)))-(SF_hist->GetBinError(SF_hist->FindBin(eta,pt)));
+    
+    return SFs;
 }
 
 template <typename T> T SelectedPhotonProducer::GetSortedByPt(const T& collection){

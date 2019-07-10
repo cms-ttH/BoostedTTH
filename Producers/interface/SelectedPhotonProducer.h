@@ -18,6 +18,9 @@
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
+#include "TH2F.h"
+#include "TFile.h"
+
 class SelectedPhotonProducer : public edm::EDProducer {
 public:
   explicit SelectedPhotonProducer(const edm::ParameterSet&);
@@ -37,8 +40,11 @@ private:
   virtual void endJob() override;
   std::vector<pat::Photon> GetSelectedPhotons(const std::vector<pat::Photon>& inputPhotons, const float iMinPt, const float iMaxEta, const PhotonID photonID);
   bool isGoodPhoton(const pat::Photon& iPhoton, const float iMinPt, const float iMaxEta, const PhotonID iPhotonID);
+  void AddPhotonSFs(std::vector<pat::Photon>& inputPhotons, const PhotonID iPhotonID) const;
+  std::vector<float> GetPhotonIDSF(const pat::Photon& iPhoton, const PhotonID iPhotonID) const;
   // ----------member data ---------------------------
   const std::string era;
+  const bool isData;
   std::vector<double> ptMins_;
   std::vector<double> etaMaxs_;
   std::vector<std::string> collectionNames_;
@@ -58,5 +64,9 @@ private:
     
   // event-specific average pile-up energy density per unit area in the phi-eta plane
   double rho;
+  
+  TH2F* PhoID_SF_Loose = nullptr;
+  TH2F* PhoID_SF_Medium = nullptr;
+  TH2F* PhoID_SF_Tight = nullptr;
   
 };
