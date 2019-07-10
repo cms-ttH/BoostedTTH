@@ -91,7 +91,7 @@ void GenBJetProcessor::Process(const InputCollections& input,VariableContainer& 
           // Fill Variables for hardest GenBJets
           math::XYZTLorentzVector leadingJetVec = leadingbjet.p4();
           math::XYZTLorentzVector subleadingJetVec = subleadingbjet.p4();
-          float DrHardest = BoostedUtils::DeltaR(leadingJetVec,subleadingJetVec);
+          float DrHardest = BoostedUtils::DeltaR(b_genjets[0].p4(),b_genjets[1].p4());
           vars.FillVar("Evt_M_HardestGenBJets",(leadingJetVec+subleadingJetVec).M());
           vars.FillVar("Evt_Dr_HardestGenBJets",DrHardest);
           // Fill Variables for closest GenBJets
