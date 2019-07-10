@@ -650,7 +650,8 @@ if writeNominal:
     variations.insert(0,"") # also store nominal case
 process.BoostedAnalyzer.selectedJets=[cms.InputTag("SelectedJetProducerAK4"+s+":selectedJetsAK4"+s) for s in variations]
 process.BoostedAnalyzer.selectedJetsLoose=[cms.InputTag("SelectedJetProducerAK4"+s+":selectedJetsLooseAK4"+s) for s in variations]
-process.BoostedAnalyzer.AK8Jets=[cms.InputTag("slimmedJets") for s in variations]
+process.BoostedAnalyzer.selectedJetsAK8=[cms.InputTag("SelectedJetProducerAK8"+s+":selectedJetsAK8"+s) for s in variations]
+process.BoostedAnalyzer.selectedJetsAK15=[cms.InputTag("SelectedJetProducerAK15"+s+":selectedJetsAK15"+s) for s in variations]
 process.BoostedAnalyzer.correctedMETs=[METCollection]*(len(variations))
 
 if options.isBoostedMiniAOD:

@@ -251,7 +251,9 @@ private:
     /** tight jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsLooseTokens;
     /** AK8Jet jets data access token **/
-    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > AK8Jets_Tokens;
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK8_Tokens;
+    /** AK15Jet jets data access token **/
+    std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsAK15_Tokens;
     /** mets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::MET> > > correctedMETsTokens;
     /** boosted jets data access token **/
@@ -360,8 +362,11 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     for(const auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsLoose")){
 	     selectedJetsLooseTokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
-    for(const auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("AK8Jets")){
-        AK8Jets_Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    for(const auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK8")){
+        selectedJetsAK8_Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
+    }
+    for(const auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("selectedJetsAK15")){
+        selectedJetsAK15_Tokens.push_back(consumes< std::vector<pat::Jet> >(tag));
     }
     for(const auto &tag : iConfig.getParameter<std::vector<edm::InputTag> >("correctedMETs")){
 	     correctedMETsTokens.push_back(consumes< std::vector<pat::MET> >(tag));
@@ -567,6 +572,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     assert(selectedJetsTokens.size()==selectedJetsLooseTokens.size());
     assert(selectedJetsTokens.size()==jetSystematics.size());
     assert(selectedJetsTokens.size()==AK8Jets_Tokens.size());
+    assert(selectedJetsTokens.size()==AK15Jets_Tokens.size());
     assert(selectedJetsTokens.size()==correctedMETsTokens.size());
     assert(selectedJetsTokens.size()==cutflows.size());
 }
@@ -630,21 +636,25 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // JETs
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJets;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsLoose;
-    std::vector<edm::Handle< pat::JetCollection > > hs_AK8Jets;
+    std::vector<edm::Handle< pat::JetCollection > > hs_selectedJetsAK8;
+    std::vector<edm::Handle< pat::JetCollection > > hs_selectedJetsAK15;
     std::vector<edm::Handle< pat::METCollection > > hs_correctedMETs;
     
     for(size_t i=0;i<selectedJetsTokens.size();i++){
         edm::Handle< pat::JetCollection > h_selectedJets;
         edm::Handle< pat::JetCollection > h_selectedJetsLoose;
-        edm::Handle< pat::JetCollection > h_AK8Jets;
+        edm::Handle< pat::JetCollection > h_selectedJetsAK8;
+        edm::Handle< pat::JetCollection > h_selectedJetsAK15;
         edm::Handle< pat::METCollection > h_correctedMETs;
         iEvent.getByToken( selectedJetsTokens.at(i),h_selectedJets);
         iEvent.getByToken( selectedJetsLooseTokens.at(i),h_selectedJetsLoose);
-        iEvent.getByToken( AK8Jets_Tokens.at(i),h_AK8Jets );
+        iEvent.getByToken( selectedJetsAK8_Tokens.at(i),h_selectedJetsAK8 );
+        iEvent.getByToken( selectedJetsAK15_Tokens.at(i),h_selectedJetsAK15 );
         iEvent.getByToken( correctedMETsTokens.at(i),h_correctedMETs );
         hs_selectedJets.push_back(h_selectedJets);
         hs_selectedJetsLoose.push_back(h_selectedJetsLoose);
-        hs_AK8Jets.push_back(h_AK8Jets);
+        hs_selectedJetsAK8.push_back(h_selectedJetsAK8);
+        hs_selectedJetsAK15.push_back(h_selectedJetsAK15);
         hs_correctedMETs.push_back(h_correctedMETs);
     }
     
@@ -809,7 +819,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectronsLoose,
 					  *(hs_selectedJets.at(isys)),
 					  *(hs_selectedJetsLoose.at(isys)),
-                      *(hs_AK8Jets.at(isys)),
+                                          *(hs_selectedJetsAK8.at(isys)),
+                                          *(hs_selectedJetsAK15.at(isys)),
 					  (*(hs_correctedMETs.at(isys))).at(0),
 					  //selectedBoostedJets[isys],
                                           //selectedAk4Cluster,

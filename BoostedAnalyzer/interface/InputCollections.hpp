@@ -44,7 +44,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
-                    const std::vector<pat::Jet>&                  AK8Jets_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK8_,
+                    const std::vector<pat::Jet>&                  selectedJetsAK15_,
                     const pat::MET&                               correctedMET_,
 //                    const boosted::BoostedJetCollection&          selectedBoostedJets_,
 //                    const boosted::Ak4ClusterCollection&          selectedAk4Cluster_,
@@ -74,7 +75,8 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedElectronsLoose(selectedElectronsLoose_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
-                    AK8Jets(AK8Jets_), 
+                    selectedJetsAK8(selectedJetsAK8_),
+                    selectedJetsAK15(selectedJetsAK15_), 
                     correctedMET(correctedMET_),
 //                    selectedBoostedJets(selectedBoostedJets_),
 //                    selectedAk4Cluster(selectedAk4Cluster_),
@@ -115,7 +117,8 @@ InputCollections(   const InputCollections&                       input,
                     selectedElectronsLoose(input.selectedElectronsLoose),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
-                    AK8Jets(input.AK8Jets), 
+                    selectedJetsAK8(input.selectedJetsAK8),
+                    selectedJetsAK15(input.selectedJetsAK15), 
                     correctedMET(correctedMET_),
 //                    selectedBoostedJets(selectedBoostedJets_),
 //                    selectedAk4Cluster(selectedAk4Cluster_),
@@ -144,7 +147,8 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Electron>&             selectedElectronsLoose;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
-  const std::vector<pat::Jet>&                  AK8Jets;
+  const std::vector<pat::Jet>&                  selectedJetsAK8;
+  const std::vector<pat::Jet>&                  selectedJetsAK15;
   const pat::MET&                               correctedMET;
 //  const boosted::BoostedJetCollection&          selectedBoostedJets;
 //  const boosted::Ak4ClusterCollection&          selectedAk4Cluster;

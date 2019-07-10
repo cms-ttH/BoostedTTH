@@ -65,14 +65,14 @@ void AK8JetProcessor::Process(const InputCollections& input, VariableContainer& 
   if (!initialized) cerr << "tree processor not initialized" << endl;
 
   // Fill Multiplicity Variables
-  vars.FillVar( "N_AK8Jets", input.AK8Jets.size());
+  vars.FillVar( "N_AK8Jets", input.selectedJetsAK8.size());
 
   const char* btagger="DeepJet";
 
   // Fill Jet Variables
   // All Jets
-  for (std::vector<pat::Jet>::const_iterator itJet = input.AK8Jets.begin() ; itJet != input.AK8Jets.end(); ++itJet) {
-    int iJet = itJet - input.AK8Jets.begin();
+  for (std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsAK8.begin() ; itJet != input.selectedJetsAK8.end(); ++itJet) {
+    int iJet = itJet - input.selectedJetsAK8.begin();
     vars.FillVars( "AK8Jet_E", iJet, itJet->energy() );
     vars.FillVars( "AK8Jet_M", iJet, itJet->mass() );
     vars.FillVars( "AK8Jet_Pt", iJet, itJet->pt() );
@@ -201,12 +201,12 @@ void AK8JetProcessor::Process(const InputCollections& input, VariableContainer& 
   }
 
   // Match TopLep jets
-  for (size_t i = 0; i < input.AK8Jets.size(); i++) {
+  for (size_t i = 0; i < input.selectedJetsAK8.size(); i++) {
 
     float minDr_TopLep = 999;
 
     for (size_t j = 0; j < toplep.size(); j++) {
-      float Dr_temp = BoostedUtils::DeltaR(toplep[j].p4(), input.AK8Jets[i].p4());
+      float Dr_temp = BoostedUtils::DeltaR(toplep[j].p4(), input.selectedJetsAK8[i].p4());
       if (Dr_temp < minDr_TopLep) minDr_TopLep = Dr_temp;
     }
 
@@ -216,7 +216,7 @@ void AK8JetProcessor::Process(const InputCollections& input, VariableContainer& 
   }
 
   // Match TopHad jets
-  for (size_t i = 0; i < input.AK8Jets.size(); i++) {
+  for (size_t i = 0; i < input.selectedJetsAK8.size(); i++) {
 
     float minDr_TopHad = 999;
     float minDr_WHad = 999;
@@ -225,13 +225,13 @@ void AK8JetProcessor::Process(const InputCollections& input, VariableContainer& 
     float minDr_TopQ2 = 999;
 
     for (size_t j = 0; j < tophad.size(); j++) {
-      float Dr_temp = BoostedUtils::DeltaR(tophad[j].p4(), input.AK8Jets[i].p4());
+      float Dr_temp = BoostedUtils::DeltaR(tophad[j].p4(), input.selectedJetsAK8[i].p4());
       if (Dr_temp < minDr_TopHad) {
         minDr_TopHad = Dr_temp;
-        minDr_WHad = BoostedUtils::DeltaR(whad[j].p4(), input.AK8Jets[i].p4());
-        minDr_TopB = BoostedUtils::DeltaR(bhad[j].p4(), input.AK8Jets[i].p4());
-        minDr_TopQ1 = BoostedUtils::DeltaR(q1[j].p4(), input.AK8Jets[i].p4());
-        minDr_TopQ2 = BoostedUtils::DeltaR(q2[j].p4(), input.AK8Jets[i].p4());
+        minDr_WHad = BoostedUtils::DeltaR(whad[j].p4(), input.selectedJetsAK8[i].p4());
+        minDr_TopB = BoostedUtils::DeltaR(bhad[j].p4(), input.selectedJetsAK8[i].p4());
+        minDr_TopQ1 = BoostedUtils::DeltaR(q1[j].p4(), input.selectedJetsAK8[i].p4());
+        minDr_TopQ2 = BoostedUtils::DeltaR(q2[j].p4(), input.selectedJetsAK8[i].p4());
       }
     }
 
@@ -242,11 +242,11 @@ void AK8JetProcessor::Process(const InputCollections& input, VariableContainer& 
     if (minDr_TopQ2 < 999) vars.FillVars("AK8Jet_Dr_GenQ2", i, minDr_TopQ2);
   }
 
-  for (size_t i = 0; i < input.AK8Jets.size(); i++) {
+  for (size_t i = 0; i < input.selectedJetsAK8.size(); i++) {
     if (higgs.pt() > 0.) {
-      vars.FillVars("AK8Jet_Dr_GenHiggs", i, BoostedUtils::DeltaR(higgs.p4(), input.AK8Jets[i].p4()));
+      vars.FillVars("AK8Jet_Dr_GenHiggs", i, BoostedUtils::DeltaR(higgs.p4(), input.selectedJetsAK8[i].p4()));
     }
-    if (b1.pt() > 0.) vars.FillVars("AK8Jet_Dr_GenB1", i, BoostedUtils::DeltaR(b1.p4(), input.AK8Jets[i].p4()));
-    if (b2.pt() > 0.) vars.FillVars("AK8Jet_Dr_GenB2", i, BoostedUtils::DeltaR(b2.p4(), input.AK8Jets[i].p4()));
+    if (b1.pt() > 0.) vars.FillVars("AK8Jet_Dr_GenB1", i, BoostedUtils::DeltaR(b1.p4(), input.selectedJetsAK8[i].p4()));
+    if (b2.pt() > 0.) vars.FillVars("AK8Jet_Dr_GenB2", i, BoostedUtils::DeltaR(b2.p4(), input.selectedJetsAK8[i].p4()));
   }
 }
