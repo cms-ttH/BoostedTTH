@@ -247,6 +247,8 @@ private:
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsDLToken;
     /** loose electrons data access token **/
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsLooseToken;
+    /** photon collection **/
+    edm::EDGetTokenT< pat::PhotonCollection > selectedPhotonsToken;
     /** loose jets data access token **/
     std::vector<edm::EDGetTokenT< std::vector<pat::Jet> > > selectedJetsTokens;
     /** tight jets data access token **/
@@ -326,6 +328,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     selectedElectronsToken          { consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectrons")) },
     selectedElectronsDLToken        { consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsDL")) },
     selectedElectronsLooseToken     { consumes< pat::ElectronCollection >(iConfig.getParameter<edm::InputTag>("selectedElectronsLoose")) },
+    selectedPhotonsToken            { consumes< pat::PhotonCollection >(iConfig.getParameter<edm::InputTag>("selectedPhotons")) },
 
     genInfoToken                    { consumes< GenEventInfoProduct >(iConfig.getParameter<edm::InputTag>("genInfo")) },
     lheInfoToken                    { consumes< LHEEventProduct >(iConfig.getParameter<edm::InputTag>("lheInfo")) },
@@ -632,6 +635,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken( selectedElectronsDLToken,h_selectedElectronsDL );
     iEvent.getByToken( selectedElectronsLooseToken,h_selectedElectronsLoose );
     
+    // PHOTONS
+    edm::Handle< pat::PhotonCollection > h_selectedPhotons;
+    iEvent.getByToken( selectedPhotonsToken,h_selectedPhotons );
+    
     // JETs
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJets;
     std::vector<edm::Handle< pat::JetCollection > >hs_selectedJetsLoose;
@@ -816,6 +823,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 					  *h_selectedElectrons,
 					  *h_selectedElectronsDL,
 					  *h_selectedElectronsLoose,
+					  *h_selectedPhotons,
 					  *(hs_selectedJets.at(isys)),
 					  *(hs_selectedJetsLoose.at(isys)),
                                           *(hs_selectedJetsAK8.at(isys)),

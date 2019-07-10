@@ -42,6 +42,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     const std::vector<pat::Electron>&             selectedElectrons_,
                     const std::vector<pat::Electron>&             selectedElectronsDL_,
                     const std::vector<pat::Electron>&             selectedElectronsLoose_,
+                    const std::vector<pat::Photon>&               selectedPhotons_,
                     const std::vector<pat::Jet>&                  selectedJets_,
                     const std::vector<pat::Jet>&                  selectedJetsLoose_,
                     const std::vector<pat::Jet>&                  selectedJetsAK8_,
@@ -73,6 +74,7 @@ InputCollections(   const EventInfo&                              eventInfo_,
                     selectedElectrons(selectedElectrons_),
                     selectedElectronsDL(selectedElectronsDL_),
                     selectedElectronsLoose(selectedElectronsLoose_),
+                    selectedPhotons(selectedPhotons_),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
                     selectedJetsAK8(selectedJetsAK8_),
@@ -115,6 +117,7 @@ InputCollections(   const InputCollections&                       input,
                     selectedElectrons(input.selectedElectrons),
                     selectedElectronsDL(input.selectedElectronsDL),
                     selectedElectronsLoose(input.selectedElectronsLoose),
+                    selectedPhotons(input.selectedPhotons),
                     selectedJets(selectedJets_),
                     selectedJetsLoose(selectedJetsLoose_),
                     selectedJetsAK8(input.selectedJetsAK8),
@@ -145,6 +148,7 @@ InputCollections(   const InputCollections&                       input,
   const std::vector<pat::Electron>&             selectedElectrons;
   const std::vector<pat::Electron>&             selectedElectronsDL;
   const std::vector<pat::Electron>&             selectedElectronsLoose;
+  const std::vector<pat::Photon>&               selectedPhotons;
   const std::vector<pat::Jet>&                  selectedJets;
   const std::vector<pat::Jet>&                  selectedJetsLoose;
   const std::vector<pat::Jet>&                  selectedJetsAK8;
