@@ -712,6 +712,7 @@ if options.isData:
 #  "essentialMVAVarProcessor",
 #  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
+  "PhotonVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )
@@ -724,6 +725,7 @@ else:
 #  "essentialMVAVarProcessor",
 #  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
+  "PhotonVarProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )
