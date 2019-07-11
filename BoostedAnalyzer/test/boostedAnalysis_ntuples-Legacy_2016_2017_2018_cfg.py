@@ -150,40 +150,6 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
-# ReRun DeepJet
-"""
-from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-updateJetCollection(
-   process,
-   jetSource = cms.InputTag('slimmedJets'),
-   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-   svSource = cms.InputTag('slimmedSecondaryVertices'),
-   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
-   btagDiscriminators = [
-      'pfDeepFlavourJetTags:probb',
-      'pfDeepFlavourJetTags:probbb',
-      'pfDeepFlavourJetTags:problepb',
-      'pfDeepFlavourJetTags:probc',
-      'pfDeepFlavourJetTags:probuds',
-      'pfDeepFlavourJetTags:probg'
-      ],
-   postfix='NewDFTraining'
-)
-
-process.updateJets = cms.Task(
-                    process.patJetCorrFactorsNewDFTraining,
-                    process.patJetCorrFactorsTransientCorrectedNewDFTraining,
-                    process.pfDeepCSVTagInfosNewDFTraining, 
-                    process.pfDeepFlavourJetTagsNewDFTraining,
-                    process.pfDeepFlavourTagInfosNewDFTraining,
-                    process.pfImpactParameterTagInfosNewDFTraining,
-                    process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining,
-                    process.selectedUpdatedPatJetsNewDFTraining,
-                    process.updatedPatJetsNewDFTraining,
-                    process.updatedPatJetsTransientCorrectedNewDFTraining)
-"""
-# ------------------------------------------------------------------------------------------------------------------------------------------------- #
-
 #jec_mc_data = 'DATA' if options.isData else 'MC'
 #print jec_mc_data
 #process.CondDB.connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
@@ -240,21 +206,6 @@ process.ak4PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 if options.isData:
   process.ak4PFchsL1L2L3.correctors.append('ak4PFchsResidual') # add residual JEC for data
 
-process.ak8PFCHSL1Fastjet = cms.ESProducer(
-  'L1FastjetCorrectionESProducer',
-  level = cms.string('L1FastJet'),
-  algorithm = cms.string('AK8PFchs'),
-  srcRho = cms.InputTag( 'fixedGridRhoFastjetAll' )
-  )
-process.ak8PFchsL2Relative = ak4CaloL2Relative.clone( algorithm = 'AK8PFchs' )
-process.ak8PFchsL3Absolute = ak4CaloL3Absolute.clone( algorithm = 'AK8PFchs' )
-process.ak8PFchsResidual = ak4CaloResidual.clone( algorithm = 'AK8PFchs' )
-process.ak8PFchsL1L2L3 = cms.ESProducer("JetCorrectionESChain",
-  correctors = cms.vstring(
-    'ak8PFCHSL1Fastjet',
-    'ak8PFchsL2Relative',
-    'ak8PFchsL3Absolute')
-)
 
 process.ak8PFPUPPIL1Fastjet = cms.ESProducer(
   'L1FastjetCorrectionESProducer',
@@ -273,9 +224,7 @@ process.ak8PFPuppiL1L2L3 = cms.ESProducer("JetCorrectionESChain",
 )
 
 if options.isData:
-  process.ak8PFchsL1L2L3.correctors.append('ak8PFchsResidual') # add residual JEC for data
   process.ak8PFPuppiL1L2L3.correctors.append('ak8PFPuppiResidual') # add residual JEC for data
-
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
   
@@ -351,13 +300,12 @@ setupEgammaPostRecoSeq(process,
 
 ### some standard collections ####
 #if not options.isData:
-electronCollection = cms.InputTag("slimmedElectrons", "", process.name_()) if not "2018" in options.dataEra else cms.InputTag("slimmedElectrons")
-photonCollection   = cms.InputTag("slimmedPhotons")
+electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
+photonCollection   = cms.InputTag("slimmedPhotons","",process.name_())
 muonCollection     = cms.InputTag("slimmedMuons")
 tauCollection      = cms.InputTag("slimmedTaus")
 METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
-jetCollection      = cms.InputTag("selectedPatJetsAK4PFCHS")
-#AK8jetCollection   = cms.InputTag("slimmedJetsAK8","","PAT")
+jetCollection      = cms.InputTag("selectedPatJetsAK4PFCHS","","SKIM")
 AK8jetCollection   = cms.InputTag("selectedUpdatedPatJetsAK8WithPuppiDaughters","","SKIM")
 AK15jetCollection   = cms.InputTag("selectedUpdatedPatJetsAK15WithPuppiDaughters","","SKIM")
 
@@ -386,7 +334,7 @@ if options.deterministicSeeds:
     #AK8jetCollection   = cms.InputTag("deterministicSeeds", "AK8jetsWithSeed", process.name_())
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
-# lepton selection
+# lepton and photon selection
 #process.load('BoostedTTH.Producers.SelectedLeptonProducers_cfi')
 from BoostedTTH.Producers.SelectedLeptonProducers_cfi import *
 from BoostedTTH.Producers.SelectedPhotonProducers_cfi import *
@@ -774,8 +722,8 @@ process.egamma = cms.Path(process.egammaPostRecoSeq)
 if options.deterministicSeeds:
     process.seeds=cms.Path(process.deterministicSeeds)
 
-process.leptons=cms.Path()
-process.leptons*=process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedPhotonProducer
+process.leptons_photons=cms.Path()
+process.leptons_photons*=process.SelectedElectronProducer*process.SelectedMuonProducer*process.SelectedPhotonProducer
 
 process.jets=cms.Path()
 process.jets*=process.CorrectedJetProducerAK4
