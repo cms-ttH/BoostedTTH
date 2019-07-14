@@ -216,7 +216,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
   // loop over all genjets
   for(uint i=0; i<customGenJets.size();i++){
     // skip jets that aren't selected
-    if(customGenJets[i].pt()<ttxptcut || fabs(customGenJets[i].eta())>ttxetacut){
+    if(customGenJets[i].pt()<=ttxptcut || fabs(customGenJets[i].eta())>=ttxetacut){
       continue;
     }
     // all genjets
