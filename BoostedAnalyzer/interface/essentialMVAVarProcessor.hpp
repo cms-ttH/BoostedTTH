@@ -8,10 +8,8 @@
 
 #include "TTH/CommonClassifier/interface/MVAvars.h"
 
-class essentialMVAVarProcessor : public TreeProcessor
-{
-
-public:
+class essentialMVAVarProcessor : public TreeProcessor {
+ public:
   essentialMVAVarProcessor();
 
   ~essentialMVAVarProcessor();
@@ -19,10 +17,10 @@ public:
   void Init(const InputCollections &input, VariableContainer &var);
   void Process(const InputCollections &input, VariableContainer &var);
 
-private:
+ private:
   std::map<std::string, float> varMap;
   std::string btagger;
-  //MVAvars from CommonClassifier classifier for sl channel
+  // MVAvars from CommonClassifier classifier for sl channel
   std::unique_ptr<MVAvars> pointerToMVAvars = nullptr;
 };
 

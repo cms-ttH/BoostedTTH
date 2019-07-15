@@ -6,17 +6,16 @@
 #include <iostream>
 #include <fstream>
 
-class ResourceMonitor{
-public:
+class ResourceMonitor {
+ public:
   ResourceMonitor();
   ~ResourceMonitor();
   void PrintMemoryUsage();
   void PrintSystemMemory();
-  
-private:
+
+ private:
   long PID;
   std::string procfilename;
 };
 
 #endif
-

@@ -11,32 +11,30 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 class FilterInfo {
-  
-public:
-    FilterInfo(std::map<std::string, bool> filters);
-    bool Pass(std::string triggername) const ; 
-    bool Exists(std::string triggername) const ; 
-    void Print() const ; 
-    bool PassAll(std::vector< std::string > triggers) const ;
-    std::map<std::string, bool> GetFilters() const;
-private:
-    std::map<std::string, bool> filters;
+ public:
+  FilterInfo(std::map<std::string, bool> filters);
+  bool Pass(std::string triggername) const;
+  bool Exists(std::string triggername) const;
+  void Print() const;
+  bool PassAll(std::vector<std::string> triggers) const;
+  std::map<std::string, bool> GetFilters() const;
+
+ private:
+  std::map<std::string, bool> filters;
 };
 
-
 class FilterInfoProducer {
-  
-public:
-    FilterInfoProducer(const edm::ParameterSet& iConfig,
-		       edm::ConsumesCollector && iC);
-    FilterInfo Produce(const edm::Event& iEvent) const;
+ public:
+  FilterInfoProducer(const edm::ParameterSet& iConfig,
+                     edm::ConsumesCollector&& iC);
+  FilterInfo Produce(const edm::Event& iEvent) const;
 
-private:
-    /** filter results data access token **/
-    edm::EDGetTokenT<edm::TriggerResults> filterBitsToken;
-    /** additional filter bools **/
-    std::vector<edm::EDGetTokenT<bool> > additionalFiltersTokens;
-    std::vector<std::string> additionalFiltersNames;
+ private:
+  /** filter results data access token **/
+  edm::EDGetTokenT<edm::TriggerResults> filterBitsToken;
+  /** additional filter bools **/
+  std::vector<edm::EDGetTokenT<bool> > additionalFiltersTokens;
+  std::vector<std::string> additionalFiltersNames;
 };
 
 #endif

@@ -7,16 +7,15 @@
 #include "TTH/RecoLikelihoodReconstruction/interface/ReconstructionQuality.hpp"
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
 
-class MVAVarProcessor: public TreeProcessor{
-  
-public:
-  
+class MVAVarProcessor : public TreeProcessor {
+ public:
   MVAVarProcessor();
   MVAVarProcessor(MEMClassifier* mem_);
-  
-  void Init(const InputCollections& input,VariableContainer& var);
-  void Process(const InputCollections& input,VariableContainer& var);
-private:
+
+  void Init(const InputCollections& input, VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
+
+ private:
   BDTvars bdtvar;
   ReconstructionQuality quality;
   MEMClassifier* mem;

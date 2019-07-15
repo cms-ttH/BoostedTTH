@@ -6,15 +6,15 @@
 #include "TTH/CommonClassifier/interface/DNNClassifier.h"
 #include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
-class DNNVarProcessor: public TreeProcessor{
-public:
+class DNNVarProcessor : public TreeProcessor {
+ public:
   DNNVarProcessor();
   DNNVarProcessor(DNNClassifier_SL* sldnnclassifier_);
   ~DNNVarProcessor();
   void Init(const InputCollections& input, VariableContainer& var);
-  void Process(const InputCollections& input,VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
 
-private:
+ private:
   DNNClassifier_SL* sldnnclassifier;
   DNNOutput dnn_output;
   bool classifier_created_inside;

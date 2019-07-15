@@ -12,55 +12,72 @@
 
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
 
-enum BoostedRecoType {BoostedTop,BoostedTopHiggs,BoostedHiggs,BoostedTopAk4Higgs,BoostedTopAk4HiggsFromAk4C};
+enum BoostedRecoType {
+  BoostedTop,
+  BoostedTopHiggs,
+  BoostedHiggs,
+  BoostedTopAk4Higgs,
+  BoostedTopAk4HiggsFromAk4C
+};
 
+class ttHVarProcessor : public TreeProcessor {
+ public:
+  ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_,
+                  TopTag::Mode topTaggerMode_,
+                  TopTag::SubjetAssign subjetAssign_,
+                  std::string topTaggerfilePath_,
+                  const boosted::SubjetType subjettype_,
+                  HiggsTag::Mode higgsTaggerMode_,
+                  std::string higgsTaggerFilePath_, std::string prefix = "",
+                  bool doMEM = true);
+  ~ttHVarProcessor();
 
-class ttHVarProcessor: public TreeProcessor{
+  void Init(const InputCollections& input, VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
 
-  public:
+  void InitHiggsCandidateVars(VariableContainer& vars);
+  void InitTopHadCandidateVars(VariableContainer& vars);
+  void InitTopLepCandidateVars(VariableContainer& vars);
+  void InitAk5JetsVars(VariableContainer& vars);
+  void InitCombinationVars(VariableContainer& vars);
+  void InitMCVars(VariableContainer& vars);
+  // void InitMEMVars(VariableContainer& vars);
+  void InitHiggsCandidateAk4Vars(VariableContainer& vars);
+  void InitTopHadCandidateAk4Vars(VariableContainer& vars);
+  void InitTopLepCandidateAk4Vars(VariableContainer& vars);
 
-    ttHVarProcessor(BoostedRecoType recotype_, MiniAODHelper* helper_, TopTag::Mode topTaggerMode_, TopTag::SubjetAssign subjetAssign_, std::string topTaggerfilePath_, const boosted::SubjetType subjettype_, HiggsTag::Mode higgsTaggerMode_, std::string higgsTaggerFilePath_, std::string prefix="",bool doMEM=true);
-    ~ttHVarProcessor();
+  void FillHiggsCandidateVars(VariableContainer& vars,
+                              BoostedttHEvent& ttHevent);
+  void FillTopHadCandidateVars(VariableContainer& vars,
+                               BoostedttHEvent& ttHevent);
+  void FillTopLepCandidateVars(VariableContainer& vars,
+                               BoostedttHEvent& ttHevent);
+  void FillHiggsCandidateAk4Vars(VariableContainer& vars,
+                                 BoostedttHEvent& ttHevent);
+  void FillTopHadCandidateAk4Vars(VariableContainer& vars,
+                                  BoostedttHEvent& ttHevent);
+  void FillTopLepCandidateAk4Vars(VariableContainer& vars,
+                                  BoostedttHEvent& ttHevent);
+  void FillAk5JetsVars(VariableContainer& vars, BoostedttHEvent& ttHevent);
+  void FillCombinationVars(VariableContainer& vars, BoostedttHEvent& ttHevent);
+  void FillMCVars(VariableContainer& vars, BoostedttHEvent& ttHevent,
+                  const InputCollections& input);
+  // void FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHEvent, const
+  // InputCollections& input);
 
-    void Init(const InputCollections& input,VariableContainer& var);
-    void Process(const InputCollections& input,VariableContainer& var);
+ private:
+  BoostedRecoType recotype;
+  std::string prefix;
+  const char* btagger;
 
-    void InitHiggsCandidateVars(VariableContainer& vars);
-    void InitTopHadCandidateVars(VariableContainer& vars);
-    void InitTopLepCandidateVars(VariableContainer& vars);
-    void InitAk5JetsVars(VariableContainer& vars);
-    void InitCombinationVars(VariableContainer& vars);
-    void InitMCVars(VariableContainer& vars);
-    //void InitMEMVars(VariableContainer& vars);
-    void InitHiggsCandidateAk4Vars(VariableContainer& vars);
-    void InitTopHadCandidateAk4Vars(VariableContainer& vars);
-    void InitTopLepCandidateAk4Vars(VariableContainer& vars);
+  TopTagger toptagger;
+  boosted::SubjetType subjettype;
+  HiggsTagger higgstagger;
 
-    void FillHiggsCandidateVars(VariableContainer& vars, BoostedttHEvent& ttHevent);
-    void FillTopHadCandidateVars(VariableContainer& vars, BoostedttHEvent& ttHevent);
-    void FillTopLepCandidateVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
-    void FillHiggsCandidateAk4Vars(VariableContainer& vars, BoostedttHEvent& ttHevent);
-    void FillTopHadCandidateAk4Vars(VariableContainer& vars, BoostedttHEvent& ttHevent);
-    void FillTopLepCandidateAk4Vars(VariableContainer& vars,BoostedttHEvent& ttHevent);
-    void FillAk5JetsVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
-    void FillCombinationVars(VariableContainer& vars,BoostedttHEvent& ttHevent);
-    void FillMCVars(VariableContainer& vars,BoostedttHEvent& ttHevent,const InputCollections& input);
-    //void FillMEMVars(VariableContainer& vars, BoostedttHEvent& ttHEvent, const InputCollections& input);
+  BoostedttHEvent ttHEvent;
 
-  private:
-
-    BoostedRecoType     recotype;
-    std::string         prefix;
-    const char*         btagger;
-
-    TopTagger           toptagger;
-    boosted::SubjetType subjettype;
-    HiggsTagger         higgstagger;
-
-    BoostedttHEvent     ttHEvent;
-
-    MEMClassifier       mem;
-    bool                doMEM;
+  MEMClassifier mem;
+  bool doMEM;
 };
 
 #endif

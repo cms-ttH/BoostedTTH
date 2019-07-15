@@ -7,16 +7,13 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
-class essentialMCMatchVarProcessor: public TreeProcessor{
-  
-  public:
-  
-    essentialMCMatchVarProcessor();
-    ~essentialMCMatchVarProcessor();
-    
-    void Init(const InputCollections& input,VariableContainer& var);
-    void Process(const InputCollections& input,VariableContainer& var);
-  
+class essentialMCMatchVarProcessor : public TreeProcessor {
+ public:
+  essentialMCMatchVarProcessor();
+  ~essentialMCMatchVarProcessor();
+
+  void Init(const InputCollections& input, VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
 };
 
 #endif

@@ -5,19 +5,15 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 
-class EvenOddSelection: public Selection{
-  
-  public:
-    
-    EvenOddSelection(bool selEven_);
-    ~EvenOddSelection();
-    void InitCutflow(Cutflow& cutflow);
-    bool IsSelected(const InputCollections& input,Cutflow& cutflow);
+class EvenOddSelection : public Selection {
+ public:
+  EvenOddSelection(bool selEven_);
+  ~EvenOddSelection();
+  void InitCutflow(Cutflow& cutflow);
+  bool IsSelected(const InputCollections& input, Cutflow& cutflow);
 
-
-  private:
-    bool selEven;
-
+ private:
+  bool selEven;
 };
 
 #endif

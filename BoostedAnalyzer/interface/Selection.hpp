@@ -11,33 +11,34 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/Cutflow.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
-
 /*
- Selection is the base class for all selections. All selections have two functions, one that initializes a Cutflow with the selection steps of the selection ("e.g. >=1 loose lepton" etc) and one that deduces from a InputCollection which selection steps an event survives 
+ Selection is the base class for all selections. All selections have two
+ functions, one that initializes a Cutflow with the selection steps of the
+ selection ("e.g. >=1 loose lepton" etc) and one that deduces from a
+ InputCollection which selection steps an event survives
  */
-class Selection{
-
-public:
+class Selection {
+ public:
   virtual ~Selection() {}
 
   /**
-     Initialize a Cutflow, i.e., write all the selection steps that will be performed in it
+     Initialize a Cutflow, i.e., write all the selection steps that will be
+     performed in it
      @param cutflow the cutflow that is being initialized
   */
-  virtual void InitCutflow(Cutflow& cutflow)=0;
+  virtual void InitCutflow(Cutflow& cutflow) = 0;
   /**
      Figure out if an event is selected and write result into the cutflow
      @param input the input collections of the analyzed event
-     @param cutflow the cutflow 
+     @param cutflow the cutflow
   */
 
-  virtual bool IsSelected(const InputCollections& input,Cutflow& cutflow)=0;
+  virtual bool IsSelected(const InputCollections& input, Cutflow& cutflow) = 0;
 
-protected:
+ protected:
   void checkIfIsInit(const std::string& name) const;
 
   bool initialized;
 };
-
 
 #endif

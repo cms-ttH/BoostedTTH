@@ -8,19 +8,17 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 #include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
-class AdditionalJetProcessor: public TreeProcessor{
-  
-  public:
-  
-    AdditionalJetProcessor();
-    ~AdditionalJetProcessor();
-    
-    void Init(const InputCollections& input,VariableContainer& var);
-    void Process(const InputCollections& input,VariableContainer& var);
+class AdditionalJetProcessor : public TreeProcessor {
+ public:
+  AdditionalJetProcessor();
+  ~AdditionalJetProcessor();
 
-  private:
-    const pat::Jet* GetPatJet(const reco::GenJet& genjet,const std::vector<pat::Jet>& patjets);
-  
+  void Init(const InputCollections& input, VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
+
+ private:
+  const pat::Jet* GetPatJet(const reco::GenJet& genjet,
+                            const std::vector<pat::Jet>& patjets);
 };
 
 #endif

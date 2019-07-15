@@ -8,23 +8,20 @@
 #include "TTH/RecoLikelihoodReconstruction/interface/ReconstructionMCMatching.hpp"
 #include "TLorentzVector.h"
 
-class TTbarReconstructionVarProcessor: public TreeProcessor{
+class TTbarReconstructionVarProcessor : public TreeProcessor {
+ public:
+  TTbarReconstructionVarProcessor();
 
-public:
+  ~TTbarReconstructionVarProcessor();
 
-    TTbarReconstructionVarProcessor();
+  void Init(const InputCollections& input, VariableContainer& var);
 
-    ~TTbarReconstructionVarProcessor();
-    
-    void Init(const InputCollections& input,VariableContainer& var);
-    
-    void Process(const InputCollections& input,VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
 
-private:
-    ReconstructionQuality quality;
-    InterpretationGenerator generator;
-    ReconstructionMCMatching mcmatcher;
-
+ private:
+  ReconstructionQuality quality;
+  InterpretationGenerator generator;
+  ReconstructionMCMatching mcmatcher;
 };
 
 #endif

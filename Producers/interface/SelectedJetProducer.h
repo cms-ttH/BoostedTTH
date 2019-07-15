@@ -3,7 +3,8 @@
 // Package:    BoostedTTH/SelectedJetProducer
 // Class:      SelectedJetProducer
 //
-/**\class SelectedJetProducer SelectedJetProducer.cc BoostedTTH/SelectedJetProducer/plugins/SelectedJetProducer.cc
+/**\class SelectedJetProducer SelectedJetProducer.cc
+ BoostedTTH/SelectedJetProducer/plugins/SelectedJetProducer.cc
 
  Description: [one line class summary]
 
@@ -15,7 +16,6 @@
 //         Created:  Tue, 05 Apr 2016 09:53:41 GMT
 //
 //
-
 
 #ifndef SelectedJetProducer_h
 #define SelectedJetProducer_h
@@ -52,80 +52,97 @@
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 
-//To use when the object is either a reference or a pointer
+// To use when the object is either a reference or a pointer
 template <typename T>
-T *ptr(T &obj) { return &obj; } //turn reference into pointer!
+T *ptr(T &obj) {
+  return &obj;
+}  // turn reference into pointer!
 template <typename T>
-T *ptr(T *obj) { return obj; } //obj is already pointer, return it!
+T *ptr(T *obj) {
+  return obj;
+}  // obj is already pointer, return it!
 
 //
 // class declaration
 //
 
-class SelectedJetProducer : public edm::stream::EDProducer<>
-{
-public:
+class SelectedJetProducer : public edm::stream::EDProducer<> {
+ public:
   explicit SelectedJetProducer(const edm::ParameterSet &);
   ~SelectedJetProducer();
 
   static void fillDescriptions(edm::ConfigurationDescriptions &descriptions);
-  enum class JetID
-  {
-    None,
-    Loose,
-    Tight
-  };
-  enum class PUJetIDWP
-  {
-    None,
-    Loose,
-    Medium,
-    Tight
-  };
-  enum class JetType
-  {
-      AK4PFCHS,
-      AK8PFCHS,
-      AK8PFPUPPI,
-      AK15PFPUPPI
-  };
+  enum class JetID { None, Loose, Tight };
+  enum class PUJetIDWP { None, Loose, Medium, Tight };
+  enum class JetType { AK4PFCHS, AK8PFCHS, AK8PFPUPPI, AK15PFPUPPI };
 
-private:
+ private:
   // some enums to make things nicer
 
   // member functions
   virtual void beginStream(edm::StreamID) override;
   virtual void produce(edm::Event &, const edm::EventSetup &) override;
   virtual void endStream() override;
-  
+
   std::string systName(std::string name, SystematicsHelper::Type) const;
-  
+
   bool fileExists(const std::string &fileName) const;
-  
+
   void UpdateJetCorrectorUncertainties(const edm::EventSetup &iSetup);
-  JetCorrectionUncertainty *CreateJetCorrectorUncertainty(const edm::EventSetup &iSetup, const std::string &jetTypeLabel, const std::string &uncertaintyLabel) const;
-  
-  std::vector<pat::Jet> GetSelectedJets(const std::vector<pat::Jet> &, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP = PUJetIDWP::None) const;
-  bool isGoodJet(const pat::Jet &iJet, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP wp) const;
-  std::vector<pat::Jet> GetUncorrectedJets(const std::vector<pat::Jet> &inputJets) const;
-  std::vector<pat::Jet> GetDeltaRCleanedJets(const std::vector<pat::Jet> &inputJets, const std::vector<pat::Muon> &inputMuons, const std::vector<pat::Electron> &inputElectrons, const double deltaRCut) const;
-  std::vector<pat::Jet> GetCorrectedJets(const std::vector<pat::Jet> &, const edm::Event &, const edm::EventSetup &, const edm::Handle<reco::GenJetCollection> &, const SystematicsHelper::Type iSysType = SystematicsHelper::NA, const bool &doJES = true, const bool &doJER = true, const float &corrFactor = 1, const float &uncFactor = 1);
-  
-  pat::Jet GetCorrectedJet(const pat::Jet &, const edm::Event &, const edm::EventSetup &, const edm::Handle<reco::GenJetCollection> &, const SystematicsHelper::Type iSysType = SystematicsHelper::NA, const bool doJES = true, const bool doJER = true, const float corrFactor = 1, const float uncFactor = 1);
-  
-  void ApplyJetEnergyCorrection(pat::Jet &jet, double &totalCorrFactor, const edm::Event &event, const edm::EventSetup &setup, const edm::Handle<reco::GenJetCollection> &genjets, const SystematicsHelper::Type iSysType, const bool doJES, const bool doJER, const bool addUserFloats, const float corrFactor, const float uncFactor);
-  
-  double GetJECUncertainty(const pat::Jet &jet, const edm::EventSetup &iSetup, const SystematicsHelper::Type iSysType);
-  void AddJetCorrectorUncertainty(const edm::EventSetup &iSetup, const std::string &uncertaintyLabel);
-  
-  template <typename T> T GetSortedByPt(const T &) const;
-  
+  JetCorrectionUncertainty *CreateJetCorrectorUncertainty(
+      const edm::EventSetup &iSetup, const std::string &jetTypeLabel,
+      const std::string &uncertaintyLabel) const;
+
+  std::vector<pat::Jet> GetSelectedJets(
+      const std::vector<pat::Jet> &, const float iMinPt, const float iMaxAbsEta,
+      const JetID, const PUJetIDWP = PUJetIDWP::None) const;
+  bool isGoodJet(const pat::Jet &iJet, const float iMinPt,
+                 const float iMaxAbsEta, const JetID, const PUJetIDWP wp) const;
+  std::vector<pat::Jet> GetUncorrectedJets(
+      const std::vector<pat::Jet> &inputJets) const;
+  std::vector<pat::Jet> GetDeltaRCleanedJets(
+      const std::vector<pat::Jet> &inputJets,
+      const std::vector<pat::Muon> &inputMuons,
+      const std::vector<pat::Electron> &inputElectrons,
+      const double deltaRCut) const;
+  std::vector<pat::Jet> GetCorrectedJets(
+      const std::vector<pat::Jet> &, const edm::Event &,
+      const edm::EventSetup &, const edm::Handle<reco::GenJetCollection> &,
+      const SystematicsHelper::Type iSysType = SystematicsHelper::NA,
+      const bool &doJES = true, const bool &doJER = true,
+      const float &corrFactor = 1, const float &uncFactor = 1);
+
+  pat::Jet GetCorrectedJet(
+      const pat::Jet &, const edm::Event &, const edm::EventSetup &,
+      const edm::Handle<reco::GenJetCollection> &,
+      const SystematicsHelper::Type iSysType = SystematicsHelper::NA,
+      const bool doJES = true, const bool doJER = true,
+      const float corrFactor = 1, const float uncFactor = 1);
+
+  void ApplyJetEnergyCorrection(
+      pat::Jet &jet, double &totalCorrFactor, const edm::Event &event,
+      const edm::EventSetup &setup,
+      const edm::Handle<reco::GenJetCollection> &genjets,
+      const SystematicsHelper::Type iSysType, const bool doJES,
+      const bool doJER, const bool addUserFloats, const float corrFactor,
+      const float uncFactor);
+
+  double GetJECUncertainty(const pat::Jet &jet, const edm::EventSetup &iSetup,
+                           const SystematicsHelper::Type iSysType);
+  void AddJetCorrectorUncertainty(const edm::EventSetup &iSetup,
+                                  const std::string &uncertaintyLabel);
+
+  template <typename T>
+  T GetSortedByPt(const T &) const;
+
   int TranslateJetPUIDtoInt(PUJetIDWP wp) const;
 
-  //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
-  //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
-  //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-  //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+  // virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
+  // virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
+  // virtual void beginLuminosityBlock(edm::LuminosityBlock const&,
+  // edm::EventSetup const&) override; virtual void
+  // endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+  // override;
   const std::string jetType;
   JetType JetType_;
   const bool isData;
@@ -162,7 +179,7 @@ private:
   /** rho data access token (for jet cleaning)**/
   edm::EDGetTokenT<double> rhoToken;
 
-  //JEC files
+  // JEC files
   const std::string jecFileAK4_2016;
   const std::string jecFileAK8_2016;
   const std::string jecFileAK15_2016;
@@ -175,7 +192,6 @@ private:
 
   const std::string era;
 
-
   // selection criterias
   std::vector<JetID> Jet_ID;
   std::vector<PUJetIDWP> PUJetID_WP;
@@ -183,11 +199,11 @@ private:
   // some variables neccessary for systematics
   std::string jetTypeLabelForJECUncertainty;
   std::string jecUncertaintyTxtFileName;
-  std::map<std::string, std::unique_ptr<JetCorrectionUncertainty>> jecUncertainties_;
+  std::map<std::string, std::unique_ptr<JetCorrectionUncertainty>>
+      jecUncertainties_;
   const JetCorrector *corrector;
   std::string correctorlabel = "";
   const bool doJES = true;
-
 };
 
 #endif

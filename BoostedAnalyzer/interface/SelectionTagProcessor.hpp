@@ -4,19 +4,16 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
-class SelectionTagProcessor: public TreeProcessor {
+class SelectionTagProcessor : public TreeProcessor {
+ public:
+  SelectionTagProcessor();
+  ~SelectionTagProcessor();
 
-public:
+  void Init(const InputCollections& input, VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
 
-	SelectionTagProcessor();
-	~SelectionTagProcessor();
-
-	void Init(const InputCollections& input, VariableContainer& var);
-	void Process(const InputCollections& input, VariableContainer& var);
-
-private:
-	bool isSelected;
-
+ private:
+  bool isSelected;
 };
 
 #endif

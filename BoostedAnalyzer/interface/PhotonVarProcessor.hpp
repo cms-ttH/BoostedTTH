@@ -5,16 +5,15 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 #include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
-class PhotonVarProcessor: public TreeProcessor{
-  
-public:
-  
+class PhotonVarProcessor : public TreeProcessor {
+ public:
   PhotonVarProcessor();
   ~PhotonVarProcessor();
-  
-  void Init(const InputCollections& input,VariableContainer& var);
-  void Process(const InputCollections& input,VariableContainer& var);
-private:
+
+  void Init(const InputCollections& input, VariableContainer& var);
+  void Process(const InputCollections& input, VariableContainer& var);
+
+ private:
   std::string era;
 };
 

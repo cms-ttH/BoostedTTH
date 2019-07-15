@@ -9,9 +9,8 @@
 #include <algorithm>
 #include "BoostedTTH/BoostedAnalyzer/interface/InputCollections.hpp"
 
-class Cutflow{
-public:
-
+class Cutflow {
+ public:
   Cutflow();
   ~Cutflow();
   void AddStep(std::string name);
@@ -20,13 +19,11 @@ public:
   void Init();
   int GetNSelected();
 
-private:
+ private:
   bool initialized;
   std::vector<int> eventsAfterSelectionSteps;
   std::vector<float> yieldsAfterSelectionSteps;
   std::vector<std::string> selectionStepNames;
-  
-
 };
 
 #endif
