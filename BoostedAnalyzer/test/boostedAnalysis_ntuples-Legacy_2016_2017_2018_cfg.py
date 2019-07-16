@@ -388,10 +388,10 @@ process.SelectedMuonProducer.isData=options.isData
 process.SelectedMuonProducer.era=options.dataEra
 
 
-process.SelectedPhotonProducer.ptMins=[20.]
-process.SelectedPhotonProducer.etaMaxs=[2.4]
-process.SelectedPhotonProducer.IDs=["loose"]
-process.SelectedPhotonProducer.collectionNames=["selectedPhotons"]
+process.SelectedPhotonProducer.ptMins=[20.,175.]
+process.SelectedPhotonProducer.etaMaxs=[2.4,2.4]
+process.SelectedPhotonProducer.IDs=["loose","tight"]
+process.SelectedPhotonProducer.collectionNames=["selectedPhotonsLoose","selectedPhotons"]
 process.SelectedPhotonProducer.isData=options.isData
 process.SelectedPhotonProducer.era=options.dataEra
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #

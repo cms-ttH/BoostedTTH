@@ -43,9 +43,9 @@ struct InputCollections {
                      const std::vector< pat::Muon >& selectedMuons_, const std::vector< pat::Muon >& selectedMuonsDL_,
                      const std::vector< pat::Muon >& selectedMuonsLoose_, const std::vector< pat::Electron >& selectedElectrons_,
                      const std::vector< pat::Electron >& selectedElectronsDL_, const std::vector< pat::Electron >& selectedElectronsLoose_,
-                     const std::vector< pat::Photon >& selectedPhotons_, const std::vector< pat::Jet >& selectedJets_,
-                     const std::vector< pat::Jet >& selectedJetsLoose_, const std::vector< pat::Jet >& selectedJetsAK8_,
-                     const std::vector< pat::Jet >& selectedJetsAK15_, const pat::MET& correctedMET_,
+                     const std::vector< pat::Photon >& selectedPhotons_, const std::vector< pat::Photon >& selectedPhotonsLoose_,
+                     const std::vector< pat::Jet >& selectedJets_, const std::vector< pat::Jet >& selectedJetsLoose_,
+                     const std::vector< pat::Jet >& selectedJetsAK8_, const std::vector< pat::Jet >& selectedJetsAK15_, const pat::MET& correctedMET_,
                      //                    const boosted::BoostedJetCollection&
                      //                    selectedBoostedJets_, const
                      //                    boosted::Ak4ClusterCollection& selectedAk4Cluster_,
@@ -67,6 +67,7 @@ struct InputCollections {
         selectedElectronsDL(selectedElectronsDL_),
         selectedElectronsLoose(selectedElectronsLoose_),
         selectedPhotons(selectedPhotons_),
+        selectedPhotonsLoose(selectedPhotonsLoose_),
         selectedJets(selectedJets_),
         selectedJetsLoose(selectedJetsLoose_),
         selectedJetsAK8(selectedJetsAK8_),
@@ -107,6 +108,7 @@ struct InputCollections {
         selectedElectronsDL(input.selectedElectronsDL),
         selectedElectronsLoose(input.selectedElectronsLoose),
         selectedPhotons(input.selectedPhotons),
+        selectedPhotonsLoose(input.selectedPhotonsLoose),
         selectedJets(selectedJets_),
         selectedJetsLoose(selectedJetsLoose_),
         selectedJetsAK8(input.selectedJetsAK8),
@@ -139,6 +141,7 @@ struct InputCollections {
     const std::vector< pat::Electron >& selectedElectronsDL;
     const std::vector< pat::Electron >& selectedElectronsLoose;
     const std::vector< pat::Photon >&   selectedPhotons;
+    const std::vector< pat::Photon >&   selectedPhotonsLoose;
     const std::vector< pat::Jet >&      selectedJets;
     const std::vector< pat::Jet >&      selectedJetsLoose;
     const std::vector< pat::Jet >&      selectedJetsAK8;

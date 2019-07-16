@@ -252,6 +252,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsLooseToken;
     /** photon collection **/
     edm::EDGetTokenT< pat::PhotonCollection > selectedPhotonsToken;
+    /** loose photon collection **/
+    edm::EDGetTokenT< pat::PhotonCollection > selectedPhotonsLooseToken;
     /** loose jets data access token **/
     std::vector< edm::EDGetTokenT< std::vector< pat::Jet > > > selectedJetsTokens;
     /** tight jets data access token **/
@@ -332,6 +334,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     selectedElectronsDLToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("selectedElectronsDL"))},
     selectedElectronsLooseToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("selectedElectronsLoose"))},
     selectedPhotonsToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("selectedPhotons"))},
+    selectedPhotonsLooseToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("selectedPhotonsLoose"))},
 
     genInfoToken{consumes< GenEventInfoProduct >(iConfig.getParameter< edm::InputTag >("genInfo"))},
     lheInfoToken{consumes< LHEEventProduct >(iConfig.getParameter< edm::InputTag >("lheInfo"))},
@@ -674,6 +677,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // PHOTONS
     edm::Handle< pat::PhotonCollection > h_selectedPhotons;
     iEvent.getByToken(selectedPhotonsToken, h_selectedPhotons);
+    edm::Handle< pat::PhotonCollection > h_selectedPhotonsLoose;
+    iEvent.getByToken(selectedPhotonsLooseToken, h_selectedPhotonsLoose);
 
     // JETs
     std::vector< edm::Handle< pat::JetCollection > > hs_selectedJets;
@@ -862,8 +867,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         weights.insert(csvweights.begin(), csvweights.end());
         inputs.emplace_back(
             eventInfo, triggerInfo, filterInfo, selectedPVs, *h_selectedMuons, *h_selectedMuonsDL, *h_selectedMuonsLoose, *h_selectedElectrons,
-            *h_selectedElectronsDL, *h_selectedElectronsLoose, *h_selectedPhotons, *(hs_selectedJets.at(isys)), *(hs_selectedJetsLoose.at(isys)),
-            *(hs_selectedJetsAK8.at(isys)), *(hs_selectedJetsAK15.at(isys)), (*(hs_correctedMETs.at(isys))).at(0),
+            *h_selectedElectronsDL, *h_selectedElectronsLoose, *h_selectedPhotons, *h_selectedPhotonsLoose, *(hs_selectedJets.at(isys)),
+            *(hs_selectedJetsLoose.at(isys)), *(hs_selectedJetsAK8.at(isys)), *(hs_selectedJetsAK15.at(isys)), (*(hs_correctedMETs.at(isys))).at(0),
             // selectedBoostedJets[isys],
             // selectedAk4Cluster,
             genTopEvt, genDarkMatterEvent, *h_genJets, sampleType, higgsdecay, weights, iEvent, iSetup, jetSystematics.at(isys), selectionTags, era);

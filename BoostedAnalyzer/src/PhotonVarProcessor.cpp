@@ -19,6 +19,16 @@ void PhotonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     vars.InitVars("Photon_IdentificationSF", "N_Photons");
     vars.InitVars("Photon_IdentificationSFUp", "N_Photons");
     vars.InitVars("Photon_IdentificationSFDown", "N_Photons");
+    
+    vars.InitVar("N_LoosePhotons", "I");
+    vars.InitVars("LoosePhoton_Pt", "N_LoosePhotons");
+    vars.InitVars("LoosePhoton_Eta", "N_LoosePhotons");
+    vars.InitVars("LoosePhoton_Phi", "N_LoosePhotons");
+    vars.InitVars("LoosePhoton_E", "N_LoosePhotons");
+    vars.InitVars("LoosePhoton_M", "N_LoosePhotons");
+    vars.InitVars("LoosePhoton_IdentificationSF", "N_LoosePhotons");
+    vars.InitVars("LoosePhoton_IdentificationSFUp", "N_LoosePhotons");
+    vars.InitVars("LoosePhoton_IdentificationSFDown", "N_LoosePhotons");
 
     initialized = true;
 }
@@ -38,6 +48,20 @@ void PhotonVarProcessor::Process(const InputCollections& input, VariableContaine
             vars.FillVars("Photon_IdentificationSF", i, input.selectedPhotons.at(i).userFloat("IdentificationSF"));
             vars.FillVars("Photon_IdentificationSFUp", i, input.selectedPhotons.at(i).userFloat("IdentificationSFUp"));
             vars.FillVars("Photon_IdentificationSFDown", i, input.selectedPhotons.at(i).userFloat("IdentificationSFDown"));
+        }
+    }
+    
+    vars.FillVar("N_LoosePhotons", input.selectedPhotonsLoose.size());
+    for (size_t i = 0; i < input.selectedPhotonsLoose.size(); i++) {
+        vars.FillVars("LoosePhoton_Pt", i, input.selectedPhotonsLoose.at(i).pt());
+        vars.FillVars("LoosePhoton_Eta", i, input.selectedPhotonsLoose.at(i).eta());
+        vars.FillVars("LoosePhoton_Phi", i, input.selectedPhotonsLoose.at(i).phi());
+        vars.FillVars("LoosePhoton_E", i, input.selectedPhotonsLoose.at(i).energy());
+        vars.FillVars("LoosePhoton_M", i, input.selectedPhotonsLoose.at(i).mass());
+        if (input.selectedPhotonsLoose.at(i).hasUserFloat("IdentificationSF")) {
+            vars.FillVars("LoosePhoton_IdentificationSF", i, input.selectedPhotonsLoose.at(i).userFloat("IdentificationSF"));
+            vars.FillVars("LoosePhoton_IdentificationSFUp", i, input.selectedPhotonsLoose.at(i).userFloat("IdentificationSFUp"));
+            vars.FillVars("LoosePhoton_IdentificationSFDown", i, input.selectedPhotonsLoose.at(i).userFloat("IdentificationSFDown"));
         }
     }
 }
