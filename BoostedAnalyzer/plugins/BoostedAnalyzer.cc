@@ -117,6 +117,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/SelectionTagProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MonoTopSelection.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/PhotonVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/JetVarProcessor.hpp"
 
 //
 // class declaration
@@ -497,6 +498,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
         }
         if (std::find(processorNames.begin(), processorNames.end(), "PhotonVarProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new PhotonVarProcessor(), "PhotonVarProcessor");
+        }
+        if (std::find(processorNames.begin(), processorNames.end(), "JetVarProcessor") != processorNames.end()) {
+            treewriter->AddTreeProcessor(new JetVarProcessor(), "JetVarProcessor");
         }
 
         if (std::find(processorNames.begin(), processorNames.end(), "essentialMVAVarProcessor") != processorNames.end()) {
