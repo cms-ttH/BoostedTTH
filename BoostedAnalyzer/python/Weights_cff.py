@@ -105,32 +105,6 @@ AdditionalPUWeights2016 = cms.VPSet(
 
 # B-tagging SF
 # ------------------------------------------------------------
-# The 76X SF
-BTagSFs76X = cms.PSet(
-    fileNameHF = cms.string("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_76x_2016_02_08.root"),
-    nHFPtBins = cms.int32(5),
-    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_76x_2016_02_08.root")
-)
-
-# The 80X SF
-BTagSFs80X = cms.PSet(
-    fileNameHF = cms.string("MiniAOD/MiniAODHelper/data/factorized_jes/csv_rwt_fit_hf_v2_final_2017_6_7_all.root"),
-    #fileNameHF = cms.string("MiniAOD/MiniAODHelper/data/csv_rwt_fit_hf_v2_final_2017_3_29test.root"),
-    nHFPtBins = cms.int32(5),
-    nLFPtBins = cms.int32(4),
-    nLFEtaBins = cms.int32(3),
-    #fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/csv_rwt_fit_lf_v2_final_2017_3_29test.root"),
-    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/factorized_jes/csv_rwt_fit_lf_v2_final_2017_6_7_all.root")
-)
-
-# The 94X DeepCSV SF
-BTagSFs94XDeepCSV = cms.PSet(
-    fileNameHF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepcsv_2017_hf.root"),
-    nHFPtBins = cms.int32(5),
-    nLFPtBins = cms.int32(4),
-    nLFEtaBins = cms.int32(3),
-    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepcsv_2017_lf.root")
-)
 
 # The 94X DeepJet SF
 BTagSFs94XDeepJet2018 = cms.PSet(
