@@ -8,12 +8,12 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/GenTopEvent.hpp"
 
 class BoostedMCMatchVarProcessor : public TreeProcessor {
- public:
-  BoostedMCMatchVarProcessor();
-  ~BoostedMCMatchVarProcessor();
+   public:
+    BoostedMCMatchVarProcessor();
+    ~BoostedMCMatchVarProcessor();
 
-  void Init(const InputCollections& input, VariableContainer& var);
-  void Process(const InputCollections& input, VariableContainer& var);
+    void Init(const InputCollections& input, VariableContainer& var);
+    void Process(const InputCollections& input, VariableContainer& var);
 };
 
 #endif

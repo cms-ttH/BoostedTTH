@@ -14,229 +14,212 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
 class BoostedttHEvent {
- public:
-  // Constructor & Destructor
-  BoostedttHEvent();
-  ~BoostedttHEvent();
+   public:
+    // Constructor & Destructor
+    BoostedttHEvent();
+    ~BoostedttHEvent();
 
-  void SetInput(const InputCollections* input);
+    void SetInput(const InputCollections* input);
 
-  // Manage Event
-  void ResetEvent();
+    // Manage Event
+    void ResetEvent();
 
-  // Reconstruction Functions
+    // Reconstruction Functions
 
-  // Charged Lepton Reconstruction
-  void LeptonRec();
+    // Charged Lepton Reconstruction
+    void LeptonRec();
 
-  // Neutrino Reconstruction
-  void NeutrinoRec();
+    // Neutrino Reconstruction
+    void NeutrinoRec();
 
-  // Anti-kt 5 Jets Reconstruction
-  void ak5JetsRec();
-  void ak5JetsIdentifyHiggsCand(const float jetMatchingThreshold = .3);
-  void ak5JetsIdentifyTopHadCand(const float jetMatchingThreshold = .3);
-  void ak5JetsIdentifyTopLepCand(const float jetMatchingThreshold = .3);
-  void ak5JetsClean(bool cleanHiggsCand = false, bool cleanTopHadCand = false,
-                    bool cleanTopLepCand = false);
+    // Anti-kt 5 Jets Reconstruction
+    void ak5JetsRec();
+    void ak5JetsIdentifyHiggsCand(const float jetMatchingThreshold = .3);
+    void ak5JetsIdentifyTopHadCand(const float jetMatchingThreshold = .3);
+    void ak5JetsIdentifyTopLepCand(const float jetMatchingThreshold = .3);
+    void ak5JetsClean(bool cleanHiggsCand = false, bool cleanTopHadCand = false, bool cleanTopLepCand = false);
 
-  // Anti-kt 4 Reconstruction
-  void ak4JetsHiggsCandBoostedRec(const bool cleanTopHadCand = false,
-                                  const bool cleanTopLepCand = false,
-                                  const float subjetCleaningThreshold = .4);
-  void ak4ClusterHiggsCandBoostedRec(const bool cleanTopHadCand,
-                                     const bool cleanTopLepCand,
-                                     const float subjetCleaningThreshold);
+    // Anti-kt 4 Reconstruction
+    void ak4JetsHiggsCandBoostedRec(const bool cleanTopHadCand = false, const bool cleanTopLepCand = false, const float subjetCleaningThreshold = .4);
+    void ak4ClusterHiggsCandBoostedRec(const bool cleanTopHadCand, const bool cleanTopLepCand, const float subjetCleaningThreshold);
 
-  // Higgs Candidate Reconstruction
-  void HiggsCandBoostedRec(const boosted::SubjetType subjettype,
-                           HiggsTagger higgstagger,
-                           bool cleanTopHadCand = false,
-                           bool cleanTopLepCand = false,
-                           const float subjetCleaningThreshold = .4);
-  void HiggsCandRec();
+    // Higgs Candidate Reconstruction
+    void HiggsCandBoostedRec(const boosted::SubjetType subjettype, HiggsTagger higgstagger, bool cleanTopHadCand = false, bool cleanTopLepCand = false,
+                             const float subjetCleaningThreshold = .4);
+    void HiggsCandRec();
 
-  // Hadronic Top Candidate Reconstruction
-  void TopHadCandBoostedRec(TopTagger toptagger, bool cleanTopLepCand = false,
-                            bool cleanHiggsCand = false,
-                            const float subjetCleaningThreshold = .4);
-  void TopHadCandRec();
+    // Hadronic Top Candidate Reconstruction
+    void TopHadCandBoostedRec(TopTagger toptagger, bool cleanTopLepCand = false, bool cleanHiggsCand = false, const float subjetCleaningThreshold = .4);
+    void TopHadCandRec();
 
-  // Leptonic Top Candidate Reconstruction
-  void TopLepCandRec();
+    // Leptonic Top Candidate Reconstruction
+    void TopLepCandRec();
 
-  // Top Pair Candidate Reconstruction
-  void TopPairCandRec();
+    // Top Pair Candidate Reconstruction
+    void TopPairCandRec();
 
-  // Event Reconstruction
-  void BoostedTopHiggsEventRec(TopTagger toptagger,
-                               const boosted::SubjetType subjettype,
-                               HiggsTagger higgstagger);
-  void BoostedHiggsEventRec(const boosted::SubjetType subjettype,
-                            HiggsTagger higgstagger);
-  void BoostedTopEventRec(TopTagger toptagger);
-  void BoostedTopAk4HiggsEventRec(TopTagger toptagger,
-                                  const boosted::SubjetType subjettype,
-                                  HiggsTagger higgstagger);
-  void BoostedTopAk4HiggsFromAk4CEventRec(TopTagger toptagger,
-                                          const boosted::SubjetType subjettype,
-                                          HiggsTagger higgstagger);
+    // Event Reconstruction
+    void BoostedTopHiggsEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger);
+    void BoostedHiggsEventRec(const boosted::SubjetType subjettype, HiggsTagger higgstagger);
+    void BoostedTopEventRec(TopTagger toptagger);
+    void BoostedTopAk4HiggsEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger);
+    void BoostedTopAk4HiggsFromAk4CEventRec(TopTagger toptagger, const boosted::SubjetType subjettype, HiggsTagger higgstagger);
 
-  // Get Functions
-  // Input Collection
-  const InputCollections& GetInput();
+    // Get Functions
+    // Input Collection
+    const InputCollections& GetInput();
 
-  // Charged Lepton Reconstruction
-  math::XYZTLorentzVector GetLeptonVec();
+    // Charged Lepton Reconstruction
+    math::XYZTLorentzVector GetLeptonVec();
 
-  // Neutrino Reconstruction
-  math::XYZTLorentzVector GetNeutrinoVec();
-  math::XYZTLorentzVector GetNeutrino1Vec();
-  math::XYZTLorentzVector GetNeutrino2Vec();
+    // Neutrino Reconstruction
+    math::XYZTLorentzVector GetNeutrinoVec();
+    math::XYZTLorentzVector GetNeutrino1Vec();
+    math::XYZTLorentzVector GetNeutrino2Vec();
 
-  // Anti-kt 5 Jets
-  pat::JetCollection Getak5JetsAll();
-  int GetNJets();
-  int GetNBTagL();
-  int GetNBTagM();
-  int GetNBTagT();
-  float GetAverageCSV();
+    // Anti-kt 5 Jets
+    pat::JetCollection Getak5JetsAll();
+    int                GetNJets();
+    int                GetNBTagL();
+    int                GetNBTagM();
+    int                GetNBTagT();
+    float              GetAverageCSV();
 
-  int GetNHiggsak5Jets();
-  int GetNHiggsCandBTagL();
-  int GetNHiggsCandBTagM();
-  int GetNHiggsCandBTagT();
-  float GetAverageCSVHiggsCand();
+    int   GetNHiggsak5Jets();
+    int   GetNHiggsCandBTagL();
+    int   GetNHiggsCandBTagM();
+    int   GetNHiggsCandBTagT();
+    float GetAverageCSVHiggsCand();
 
-  int GetNTopHadak5Jets();
-  int GetNTopHadCandBTagL();
-  int GetNTopHadCandBTagM();
-  int GetNTopHadCandBTagT();
-  float GetAverageCSVTopHadCand();
+    int   GetNTopHadak5Jets();
+    int   GetNTopHadCandBTagL();
+    int   GetNTopHadCandBTagM();
+    int   GetNTopHadCandBTagT();
+    float GetAverageCSVTopHadCand();
 
-  int GetNTopLepak5Jets();
-  int GetNTopLepCandBTagL();
-  int GetNTopLepCandBTagM();
-  int GetNTopLepCandBTagT();
-  float GetAverageCSVTopLepCand();
+    int   GetNTopLepak5Jets();
+    int   GetNTopLepCandBTagL();
+    int   GetNTopLepCandBTagM();
+    int   GetNTopLepCandBTagT();
+    float GetAverageCSVTopLepCand();
 
-  pat::JetCollection Getak5JetsCleaned();
-  int GetNCleanedak5Jets();
-  int GetNCleanedBTagL();
-  int GetNCleanedBTagM();
-  int GetNCleanedBTagT();
-  float GetAverageCSVClean();
+    pat::JetCollection Getak5JetsCleaned();
+    int                GetNCleanedak5Jets();
+    int                GetNCleanedBTagL();
+    int                GetNCleanedBTagM();
+    int                GetNCleanedBTagT();
+    float              GetAverageCSVClean();
 
-  // Higgs Candidate
-  bool GetFoundHiggsCand();
-  int GetHiggsCandIndex();
-  float GetHiggsCandTag();
-  boosted::BoostedJet GetHiggsCandBoosted();
-  boosted::Ak4Cluster GetHiggsCandFromAk4C();
-  pat::Jet GetHiggsB1Cand();
-  pat::Jet GetHiggsB2Cand();
-  pat::Jet GetHiggsGCand();
-  math::XYZTLorentzVector GetHiggsCandVec3();
-  math::XYZTLorentzVector GetHiggsCandVec2();
-  bool GetUseAk4Cluster();
+    // Higgs Candidate
+    bool                    GetFoundHiggsCand();
+    int                     GetHiggsCandIndex();
+    float                   GetHiggsCandTag();
+    boosted::BoostedJet     GetHiggsCandBoosted();
+    boosted::Ak4Cluster     GetHiggsCandFromAk4C();
+    pat::Jet                GetHiggsB1Cand();
+    pat::Jet                GetHiggsB2Cand();
+    pat::Jet                GetHiggsGCand();
+    math::XYZTLorentzVector GetHiggsCandVec3();
+    math::XYZTLorentzVector GetHiggsCandVec2();
+    bool                    GetUseAk4Cluster();
 
-  // Hadronic Top Candidate
-  bool GetFoundTopHadCand();
-  int GetTopHadCandIndex();
-  float GetTopHadCandTag();
-  boosted::BoostedJet GetTopHadCandBoosted();
-  pat::Jet GetTopHadBCand();
-  pat::Jet GetTopHadW1Cand();
-  pat::Jet GetTopHadW2Cand();
-  math::XYZTLorentzVector GetTopHadCandVec();
-  math::XYZTLorentzVector GetWHadCandVec();
+    // Hadronic Top Candidate
+    bool                    GetFoundTopHadCand();
+    int                     GetTopHadCandIndex();
+    float                   GetTopHadCandTag();
+    boosted::BoostedJet     GetTopHadCandBoosted();
+    pat::Jet                GetTopHadBCand();
+    pat::Jet                GetTopHadW1Cand();
+    pat::Jet                GetTopHadW2Cand();
+    math::XYZTLorentzVector GetTopHadCandVec();
+    math::XYZTLorentzVector GetWHadCandVec();
 
-  // Leptonic Top Candidate
-  bool GetFoundTopLepCand();
-  pat::Jet GetTopLepBCand();
-  math::XYZTLorentzVector GetTopLepCandVec();
-  math::XYZTLorentzVector GetWLepCandVec();
+    // Leptonic Top Candidate
+    bool                    GetFoundTopLepCand();
+    pat::Jet                GetTopLepBCand();
+    math::XYZTLorentzVector GetTopLepCandVec();
+    math::XYZTLorentzVector GetWLepCandVec();
 
-  // Matrix Element
-  float GetTTHBB_ME();
-  float GetTTBB_ME();
-  float Get_MEratio();
+    // Matrix Element
+    float GetTTHBB_ME();
+    float GetTTBB_ME();
+    float Get_MEratio();
 
- private:
-  // Inhput Collection
-  const InputCollections* input;
+   private:
+    // Inhput Collection
+    const InputCollections* input;
 
-  // Analysis Settings
+    // Analysis Settings
 
-  // Charged Lepton
-  math::XYZTLorentzVector lepVecCand;
+    // Charged Lepton
+    math::XYZTLorentzVector lepVecCand;
 
-  // Neutrino
-  math::XYZTLorentzVector nuVecCand;
-  math::XYZTLorentzVector nu1VecCand;
-  math::XYZTLorentzVector nu2VecCand;
+    // Neutrino
+    math::XYZTLorentzVector nuVecCand;
+    math::XYZTLorentzVector nu1VecCand;
+    math::XYZTLorentzVector nu2VecCand;
 
-  // Anti-kt 5 Jets
-  pat::JetCollection selectedJets;
-  std::vector<bool> BTagL;
-  std::vector<bool> BTagM;
-  std::vector<bool> BTagT;
-  int nJets;
-  int nBTagL;
-  int nBTagM;
-  int nBTagT;
+    // Anti-kt 5 Jets
+    pat::JetCollection  selectedJets;
+    std::vector< bool > BTagL;
+    std::vector< bool > BTagM;
+    std::vector< bool > BTagT;
+    int                 nJets;
+    int                 nBTagL;
+    int                 nBTagM;
+    int                 nBTagT;
 
-  std::vector<bool> HiggsCandak5Jet;
-  int nHiggsak5Jets;
-  int nHiggsCandBTagL;
-  int nHiggsCandBTagM;
-  int nHiggsCandBTagT;
+    std::vector< bool > HiggsCandak5Jet;
+    int                 nHiggsak5Jets;
+    int                 nHiggsCandBTagL;
+    int                 nHiggsCandBTagM;
+    int                 nHiggsCandBTagT;
 
-  std::vector<bool> TopHadCandak5Jet;
-  int nTopHadak5Jets;
-  int nTopHadCandBTagL;
-  int nTopHadCandBTagM;
-  int nTopHadCandBTagT;
+    std::vector< bool > TopHadCandak5Jet;
+    int                 nTopHadak5Jets;
+    int                 nTopHadCandBTagL;
+    int                 nTopHadCandBTagM;
+    int                 nTopHadCandBTagT;
 
-  std::vector<bool> TopLepCandak5Jet;
-  int nTopLepak5Jets;
-  int nTopLepCandBTagL;
-  int nTopLepCandBTagM;
-  int nTopLepCandBTagT;
+    std::vector< bool > TopLepCandak5Jet;
+    int                 nTopLepak5Jets;
+    int                 nTopLepCandBTagL;
+    int                 nTopLepCandBTagM;
+    int                 nTopLepCandBTagT;
 
-  pat::JetCollection cleanedak5Jets;
-  int nCleanedak5Jets;
-  int nCleanedBTagL;
-  int nCleanedBTagM;
-  int nCleanedBTagT;
+    pat::JetCollection cleanedak5Jets;
+    int                nCleanedak5Jets;
+    int                nCleanedBTagL;
+    int                nCleanedBTagM;
+    int                nCleanedBTagT;
 
-  // Higgs Candidate
-  bool foundHiggsCand;
-  int higgsCandIndex;
-  float higgsCandTag;
-  boosted::BoostedJet higgsCand;
-  boosted::Ak4Cluster higgsCandFromAk4C;
-  pat::Jet higgsB1Cand;
-  pat::Jet higgsB2Cand;
-  pat::Jet higgsGCand;
-  bool useAk4Cluster;
+    // Higgs Candidate
+    bool                foundHiggsCand;
+    int                 higgsCandIndex;
+    float               higgsCandTag;
+    boosted::BoostedJet higgsCand;
+    boosted::Ak4Cluster higgsCandFromAk4C;
+    pat::Jet            higgsB1Cand;
+    pat::Jet            higgsB2Cand;
+    pat::Jet            higgsGCand;
+    bool                useAk4Cluster;
 
-  // Hadronic Top Candidate
-  bool foundTopHadCand;
-  int topHadCandIndex;
-  float topHadCandTag;
-  boosted::BoostedJet topHadCand;
-  pat::Jet topHadBCand;
-  pat::Jet topHadW1Cand;
-  pat::Jet topHadW2Cand;
+    // Hadronic Top Candidate
+    bool                foundTopHadCand;
+    int                 topHadCandIndex;
+    float               topHadCandTag;
+    boosted::BoostedJet topHadCand;
+    pat::Jet            topHadBCand;
+    pat::Jet            topHadW1Cand;
+    pat::Jet            topHadW2Cand;
 
-  // Leptonic Top Candidate
-  bool foundTopLepCand;
-  pat::Jet topLepBCand;
+    // Leptonic Top Candidate
+    bool     foundTopLepCand;
+    pat::Jet topLepBCand;
 
-  bool verbose;
-  const char* btagger;
-  MECalculator recoME;
+    bool         verbose;
+    const char*  btagger;
+    MECalculator recoME;
 };
 
 #endif

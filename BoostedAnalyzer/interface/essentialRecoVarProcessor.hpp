@@ -9,19 +9,19 @@
 #include "TTH/CommonClassifier/interface/ReconstructedVars.h"
 
 class essentialRecoVarProcessor : public TreeProcessor {
- public:
-  essentialRecoVarProcessor();
+   public:
+    essentialRecoVarProcessor();
 
-  ~essentialRecoVarProcessor();
+    ~essentialRecoVarProcessor();
 
-  void Init(const InputCollections &input, VariableContainer &var);
-  void Process(const InputCollections &input, VariableContainer &var);
+    void Init(const InputCollections &input, VariableContainer &var);
+    void Process(const InputCollections &input, VariableContainer &var);
 
- private:
-  std::map<std::string, double> varMap;
-  std::string btagger;
-  // RecoVars from CommonClassifier classifier for sl channel
-  std::unique_ptr<ReconstructedVars> pointerToRecoVars = nullptr;
+   private:
+    std::map< std::string, double > varMap;
+    std::string                     btagger;
+    // RecoVars from CommonClassifier classifier for sl channel
+    std::unique_ptr< ReconstructedVars > pointerToRecoVars = nullptr;
 };
 
 #endif

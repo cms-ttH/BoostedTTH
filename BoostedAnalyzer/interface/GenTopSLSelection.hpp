@@ -6,13 +6,13 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/Selection.hpp"
 
 class GenTopSLSelection : public Selection {
- public:
-  GenTopSLSelection();
-  ~GenTopSLSelection();
-  void InitCutflow(Cutflow& cutflow);
-  bool IsSelected(const InputCollections& input, Cutflow& cutflow);
+   public:
+    GenTopSLSelection();
+    ~GenTopSLSelection();
+    void InitCutflow(Cutflow& cutflow);
+    bool IsSelected(const InputCollections& input, Cutflow& cutflow);
 
- private:
+   private:
 };
 
 #endif

@@ -33,41 +33,30 @@ enum HiggsDecay { NA, bb, nonbb };
   shifted jets).
  */
 struct InputCollections {
-  /**
-     Constructor in which all references to the objects that are analyzed are
-     set
-   */
-  InputCollections(
-      const EventInfo& eventInfo_, const TriggerInfo& triggerInfo_,
-      const FilterInfo& filterInfo_,
-      const std::vector<reco::Vertex>& selectedPVs_,
+    /**
+       Constructor in which all references to the objects that are analyzed are
+       set
+     */
+    InputCollections(const EventInfo& eventInfo_, const TriggerInfo& triggerInfo_, const FilterInfo& filterInfo_,
+                     const std::vector< reco::Vertex >& selectedPVs_,
 
-      const std::vector<pat::Muon>& selectedMuons_,
-      const std::vector<pat::Muon>& selectedMuonsDL_,
-      const std::vector<pat::Muon>& selectedMuonsLoose_,
-      const std::vector<pat::Electron>& selectedElectrons_,
-      const std::vector<pat::Electron>& selectedElectronsDL_,
-      const std::vector<pat::Electron>& selectedElectronsLoose_,
-      const std::vector<pat::Photon>& selectedPhotons_,
-      const std::vector<pat::Jet>& selectedJets_,
-      const std::vector<pat::Jet>& selectedJetsLoose_,
-      const std::vector<pat::Jet>& selectedJetsAK8_,
-      const std::vector<pat::Jet>& selectedJetsAK15_,
-      const pat::MET& correctedMET_,
-      //                    const boosted::BoostedJetCollection&
-      //                    selectedBoostedJets_, const
-      //                    boosted::Ak4ClusterCollection& selectedAk4Cluster_,
-      const GenTopEvent& genTopEvt_,
-      const GenDarkMatterEvent& genDarkMatterEvt_,
-      const std::vector<reco::GenJet>& genJets_, const SampleType sampleType_,
-      const HiggsDecay::HiggsDecay higgsDecay_,
-      const std::map<std::string, float>& weights_, const edm::Event& iEvent_,
-      const edm::EventSetup& iSetup_, const Systematics::Type& systematic_,
-      const std::map<std::string, int>& selectionTags_, const std::string& era_
+                     const std::vector< pat::Muon >& selectedMuons_, const std::vector< pat::Muon >& selectedMuonsDL_,
+                     const std::vector< pat::Muon >& selectedMuonsLoose_, const std::vector< pat::Electron >& selectedElectrons_,
+                     const std::vector< pat::Electron >& selectedElectronsDL_, const std::vector< pat::Electron >& selectedElectronsLoose_,
+                     const std::vector< pat::Photon >& selectedPhotons_, const std::vector< pat::Jet >& selectedJets_,
+                     const std::vector< pat::Jet >& selectedJetsLoose_, const std::vector< pat::Jet >& selectedJetsAK8_,
+                     const std::vector< pat::Jet >& selectedJetsAK15_, const pat::MET& correctedMET_,
+                     //                    const boosted::BoostedJetCollection&
+                     //                    selectedBoostedJets_, const
+                     //                    boosted::Ak4ClusterCollection& selectedAk4Cluster_,
+                     const GenTopEvent& genTopEvt_, const GenDarkMatterEvent& genDarkMatterEvt_, const std::vector< reco::GenJet >& genJets_,
+                     const SampleType sampleType_, const HiggsDecay::HiggsDecay higgsDecay_, const std::map< std::string, float >& weights_,
+                     const edm::Event& iEvent_, const edm::EventSetup& iSetup_, const Systematics::Type& systematic_,
+                     const std::map< std::string, int >& selectionTags_, const std::string& era_
 
-      /**** bjetness code ****/
-      )
-      : eventInfo(eventInfo_),
+                     /**** bjetness code ****/
+                     ) :
+        eventInfo(eventInfo_),
         triggerInfo(triggerInfo_),
         filterInfo(filterInfo_),
         selectedPVs(selectedPVs_),
@@ -95,21 +84,19 @@ struct InputCollections {
         iSetup(iSetup_),
         systematic(systematic_),
         selectionTags(selectionTags_),
-        era(era_) {}
+        era(era_)
+    {
+    }
 
-  /**
-     Constructor that replaces all variables related to jets and copies the
-     remaining ones from a different input colection
-   */
-  InputCollections(const InputCollections& input,
-                   const std::vector<pat::Jet>& rawJets_,
-                   const std::vector<pat::Jet>& selectedJets_,
-                   const std::vector<pat::Jet>& selectedJetsLoose_,
-                   const pat::MET& correctedMET_,
-                   const boosted::BoostedJetCollection& selectedBoostedJets_,
-                   const boosted::Ak4ClusterCollection& selectedAk4Cluster_,
-                   const std::map<std::string, float>& weights_)
-      : eventInfo(input.eventInfo),
+    /**
+       Constructor that replaces all variables related to jets and copies the
+       remaining ones from a different input colection
+     */
+    InputCollections(const InputCollections& input, const std::vector< pat::Jet >& rawJets_, const std::vector< pat::Jet >& selectedJets_,
+                     const std::vector< pat::Jet >& selectedJetsLoose_, const pat::MET& correctedMET_,
+                     const boosted::BoostedJetCollection& selectedBoostedJets_, const boosted::Ak4ClusterCollection& selectedAk4Cluster_,
+                     const std::map< std::string, float >& weights_) :
+        eventInfo(input.eventInfo),
         triggerInfo(input.triggerInfo),
         filterInfo(input.filterInfo),
         selectedPVs(input.selectedPVs),
@@ -137,37 +124,39 @@ struct InputCollections {
         iSetup(input.iSetup),
         systematic(input.systematic),
         selectionTags(input.selectionTags),
-        era(input.era) {}
+        era(input.era)
+    {
+    }
 
-  const EventInfo& eventInfo;
-  const TriggerInfo& triggerInfo;
-  const FilterInfo& filterInfo;
-  const std::vector<reco::Vertex>& selectedPVs;
-  const std::vector<pat::Muon>& selectedMuons;
-  const std::vector<pat::Muon>& selectedMuonsDL;
-  const std::vector<pat::Muon>& selectedMuonsLoose;
-  const std::vector<pat::Electron>& selectedElectrons;
-  const std::vector<pat::Electron>& selectedElectronsDL;
-  const std::vector<pat::Electron>& selectedElectronsLoose;
-  const std::vector<pat::Photon>& selectedPhotons;
-  const std::vector<pat::Jet>& selectedJets;
-  const std::vector<pat::Jet>& selectedJetsLoose;
-  const std::vector<pat::Jet>& selectedJetsAK8;
-  const std::vector<pat::Jet>& selectedJetsAK15;
-  const pat::MET& correctedMET;
-  //  const boosted::BoostedJetCollection&          selectedBoostedJets;
-  //  const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
-  const GenTopEvent& genTopEvt;
-  const GenDarkMatterEvent& genDarkMatterEvt;
-  const std::vector<reco::GenJet>& genJets;
-  const SampleType sampleType;
-  const HiggsDecay::HiggsDecay higgsDecay;
-  const std::map<std::string, float> weights;
-  const edm::Event& iEvent;
-  const edm::EventSetup& iSetup;
-  const Systematics::Type& systematic;
-  const std::map<std::string, int>& selectionTags;
-  const std::string& era;
+    const EventInfo&                    eventInfo;
+    const TriggerInfo&                  triggerInfo;
+    const FilterInfo&                   filterInfo;
+    const std::vector< reco::Vertex >&  selectedPVs;
+    const std::vector< pat::Muon >&     selectedMuons;
+    const std::vector< pat::Muon >&     selectedMuonsDL;
+    const std::vector< pat::Muon >&     selectedMuonsLoose;
+    const std::vector< pat::Electron >& selectedElectrons;
+    const std::vector< pat::Electron >& selectedElectronsDL;
+    const std::vector< pat::Electron >& selectedElectronsLoose;
+    const std::vector< pat::Photon >&   selectedPhotons;
+    const std::vector< pat::Jet >&      selectedJets;
+    const std::vector< pat::Jet >&      selectedJetsLoose;
+    const std::vector< pat::Jet >&      selectedJetsAK8;
+    const std::vector< pat::Jet >&      selectedJetsAK15;
+    const pat::MET&                     correctedMET;
+    //  const boosted::BoostedJetCollection&          selectedBoostedJets;
+    //  const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
+    const GenTopEvent&                   genTopEvt;
+    const GenDarkMatterEvent&            genDarkMatterEvt;
+    const std::vector< reco::GenJet >&   genJets;
+    const SampleType                     sampleType;
+    const HiggsDecay::HiggsDecay         higgsDecay;
+    const std::map< std::string, float > weights;
+    const edm::Event&                    iEvent;
+    const edm::EventSetup&               iSetup;
+    const Systematics::Type&             systematic;
+    const std::map< std::string, int >&  selectionTags;
+    const std::string&                   era;
 };
 
 #endif

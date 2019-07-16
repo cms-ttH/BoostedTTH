@@ -5,21 +5,20 @@ using namespace std;
 VertexSelection::VertexSelection() {}
 VertexSelection::~VertexSelection() {}
 
-void VertexSelection::InitCutflow(Cutflow& cutflow) {
-  cutflow.AddStep("First PV is good PV");
+void VertexSelection::InitCutflow(Cutflow& cutflow)
+{
+    cutflow.AddStep("First PV is good PV");
 
-  initialized = true;
+    initialized = true;
 }
 
-bool VertexSelection::IsSelected(const InputCollections& input,
-                                 Cutflow& cutflow) {
-  if (!initialized) cerr << "VertexSelection not initialized" << endl;
+bool VertexSelection::IsSelected(const InputCollections& input, Cutflow& cutflow)
+{
+    if (!initialized) cerr << "VertexSelection not initialized" << endl;
 
-  if (!input.eventInfo.firstVertexIsGood) {
-    return false;
-  } else {
-    cutflow.EventSurvivedStep("First PV is good PV",
-                              input.weights.at("Weight"));
-    return true;
-  }
+    if (!input.eventInfo.firstVertexIsGood) { return false; }
+    else {
+        cutflow.EventSurvivedStep("First PV is good PV", input.weights.at("Weight"));
+        return true;
+    }
 }

@@ -10,26 +10,26 @@
 #include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 
 class ReconstructionMEvarProcessor : public TreeProcessor {
- public:
-  ReconstructionMEvarProcessor();
+   public:
+    ReconstructionMEvarProcessor();
 
-  ~ReconstructionMEvarProcessor();
+    ~ReconstructionMEvarProcessor();
 
-  void Init(const InputCollections& input, VariableContainer& var);
+    void Init(const InputCollections& input, VariableContainer& var);
 
-  void Process(const InputCollections& input, VariableContainer& var);
+    void Process(const InputCollections& input, VariableContainer& var);
 
- private:
-  ReconstructionQuality quality;
-  InterpretationGenerator generator;
-  ReconstructionMCMatching mcmatcher;
-  std::vector<std::string> tags_tt;
-  std::vector<std::string> tags_ttbb;
-  std::vector<std::string> tags_tth;
-  std::vector<std::string> alltags;
-  std::vector<std::string> ratiotags_name;
-  std::vector<std::string> ratiotags_tth;
-  std::vector<std::string> ratiotags_ttbb;
+   private:
+    ReconstructionQuality      quality;
+    InterpretationGenerator    generator;
+    ReconstructionMCMatching   mcmatcher;
+    std::vector< std::string > tags_tt;
+    std::vector< std::string > tags_ttbb;
+    std::vector< std::string > tags_tth;
+    std::vector< std::string > alltags;
+    std::vector< std::string > ratiotags_name;
+    std::vector< std::string > ratiotags_tth;
+    std::vector< std::string > ratiotags_ttbb;
 };
 
 #endif

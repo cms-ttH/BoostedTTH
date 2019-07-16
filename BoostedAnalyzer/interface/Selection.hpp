@@ -18,27 +18,27 @@
  InputCollection which selection steps an event survives
  */
 class Selection {
- public:
-  virtual ~Selection() {}
+   public:
+    virtual ~Selection() {}
 
-  /**
-     Initialize a Cutflow, i.e., write all the selection steps that will be
-     performed in it
-     @param cutflow the cutflow that is being initialized
-  */
-  virtual void InitCutflow(Cutflow& cutflow) = 0;
-  /**
-     Figure out if an event is selected and write result into the cutflow
-     @param input the input collections of the analyzed event
-     @param cutflow the cutflow
-  */
+    /**
+       Initialize a Cutflow, i.e., write all the selection steps that will be
+       performed in it
+       @param cutflow the cutflow that is being initialized
+    */
+    virtual void InitCutflow(Cutflow& cutflow) = 0;
+    /**
+       Figure out if an event is selected and write result into the cutflow
+       @param input the input collections of the analyzed event
+       @param cutflow the cutflow
+    */
 
-  virtual bool IsSelected(const InputCollections& input, Cutflow& cutflow) = 0;
+    virtual bool IsSelected(const InputCollections& input, Cutflow& cutflow) = 0;
 
- protected:
-  void checkIfIsInit(const std::string& name) const;
+   protected:
+    void checkIfIsInit(const std::string& name) const;
 
-  bool initialized;
+    bool initialized;
 };
 
 #endif

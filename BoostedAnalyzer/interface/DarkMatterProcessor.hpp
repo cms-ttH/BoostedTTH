@@ -5,14 +5,14 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
 class DarkMatterProcessor : public TreeProcessor {
- public:
-  DarkMatterProcessor();
-  ~DarkMatterProcessor();
+   public:
+    DarkMatterProcessor();
+    ~DarkMatterProcessor();
 
-  void Init(const InputCollections& input, VariableContainer& var);
-  void Process(const InputCollections& input, VariableContainer& var);
+    void Init(const InputCollections& input, VariableContainer& var);
+    void Process(const InputCollections& input, VariableContainer& var);
 
- private:
+   private:
 };
 
 #endif

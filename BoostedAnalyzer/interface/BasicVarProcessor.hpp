@@ -5,14 +5,14 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
 class BasicVarProcessor : public TreeProcessor {
- public:
-  BasicVarProcessor();
-  ~BasicVarProcessor();
+   public:
+    BasicVarProcessor();
+    ~BasicVarProcessor();
 
-  void Init(const InputCollections& input, VariableContainer& var);
-  void Process(const InputCollections& input, VariableContainer& var);
+    void Init(const InputCollections& input, VariableContainer& var);
+    void Process(const InputCollections& input, VariableContainer& var);
 
- private:
+   private:
 };
 
 #endif

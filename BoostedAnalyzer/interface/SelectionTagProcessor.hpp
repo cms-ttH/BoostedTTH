@@ -5,15 +5,15 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
 class SelectionTagProcessor : public TreeProcessor {
- public:
-  SelectionTagProcessor();
-  ~SelectionTagProcessor();
+   public:
+    SelectionTagProcessor();
+    ~SelectionTagProcessor();
 
-  void Init(const InputCollections& input, VariableContainer& var);
-  void Process(const InputCollections& input, VariableContainer& var);
+    void Init(const InputCollections& input, VariableContainer& var);
+    void Process(const InputCollections& input, VariableContainer& var);
 
- private:
-  bool isSelected;
+   private:
+    bool isSelected;
 };
 
 #endif

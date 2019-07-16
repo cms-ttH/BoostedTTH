@@ -7,12 +7,12 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
 class WeightProcessor : public TreeProcessor {
- public:
-  WeightProcessor();
-  ~WeightProcessor();
+   public:
+    WeightProcessor();
+    ~WeightProcessor();
 
-  void Init(const InputCollections& input, VariableContainer& var);
-  void Process(const InputCollections& input, VariableContainer& var);
+    void Init(const InputCollections& input, VariableContainer& var);
+    void Process(const InputCollections& input, VariableContainer& var);
 };
 
 #endif

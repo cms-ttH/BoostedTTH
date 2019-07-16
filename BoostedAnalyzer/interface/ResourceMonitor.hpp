@@ -7,15 +7,15 @@
 #include <fstream>
 
 class ResourceMonitor {
- public:
-  ResourceMonitor();
-  ~ResourceMonitor();
-  void PrintMemoryUsage();
-  void PrintSystemMemory();
+   public:
+    ResourceMonitor();
+    ~ResourceMonitor();
+    void PrintMemoryUsage();
+    void PrintSystemMemory();
 
- private:
-  long PID;
-  std::string procfilename;
+   private:
+    long        PID;
+    std::string procfilename;
 };
 
 #endif

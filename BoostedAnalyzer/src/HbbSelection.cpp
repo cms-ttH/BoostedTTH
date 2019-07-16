@@ -5,19 +5,20 @@ using namespace std;
 HbbSelection::HbbSelection() {}
 HbbSelection::~HbbSelection() {}
 
-void HbbSelection::InitCutflow(Cutflow& cutflow) {
-  cutflow.AddStep("Higgs to bb");
+void HbbSelection::InitCutflow(Cutflow& cutflow)
+{
+    cutflow.AddStep("Higgs to bb");
 
-  initialized = true;
+    initialized = true;
 }
 
-bool HbbSelection::IsSelected(const InputCollections& input, Cutflow& cutflow) {
-  if (!initialized) cerr << "HbbSelection not initialized" << endl;
+bool HbbSelection::IsSelected(const InputCollections& input, Cutflow& cutflow)
+{
+    if (!initialized) cerr << "HbbSelection not initialized" << endl;
 
-  if (input.higgsDecay == HiggsDecay::bb ||
-      input.higgsDecay == HiggsDecay::NA) {
-    cutflow.EventSurvivedStep("Higgs to bb", input.weights.at("Weight"));
-    return true;
-  }
-  return false;
+    if (input.higgsDecay == HiggsDecay::bb || input.higgsDecay == HiggsDecay::NA) {
+        cutflow.EventSurvivedStep("Higgs to bb", input.weights.at("Weight"));
+        return true;
+    }
+    return false;
 }
