@@ -4,25 +4,25 @@ using namespace std;
 
 MonoTopSelection::MonoTopSelection(const edm::ParameterSet& iConfig) :
     MonoTopSelection(iConfig.getParameter< double >("AK15Jet_Pt"), iConfig.getParameter< double >("AK15Jet_Eta"), iConfig.getParameter< double >("AK15Jet_Chf"),
-                     iConfig.getParameter< double >("AK15Jet_Nhf"), iConfig.getParameter< double >("minMET"), iConfig.getParameter< double >("maxMET"))
+                     iConfig.getParameter< double >("AK15Jet_Nhf"), iConfig.getParameter< double >("minMET"), iConfig.getParameter< double >("maxMET"),
+                     iConfig.getParameter< double >("DeltaR_MET_AK15Jet"))
 {
 }
-MonoTopSelection::MonoTopSelection(double pt_min_, double eta_max_, double chf_min_, double nhf_max_, double min_MET_, double max_MET_) :
+MonoTopSelection::MonoTopSelection(double pt_min_, double eta_max_, double chf_min_, double nhf_max_, double min_MET_, double max_MET_,
+                                   double deltaR_MET_AK15Jet_) :
     pt_min(pt_min_),
     eta_max(eta_max_),
     charged_hadron_fraction_min(chf_min_),
     neutral_hadron_fraction_max(nhf_max_),
     minMET(min_MET_),
-    maxMET(max_MET_)
+    maxMET(max_MET_),
+    deltaR_MET_AK15Jet(deltaR_MET_AK15Jet_)
 {
 }
 MonoTopSelection::~MonoTopSelection() {}
 
 void MonoTopSelection::InitCutflow(Cutflow& cutflow)
 {
-    // create string for cutflow
-    pt_str  = std::to_string(pt_min);
-    eta_str = std::to_string(eta_max);
     cutflow.AddStep("MonoTopSelection");
 
     initialized = true;
@@ -84,7 +84,7 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     //}
 
     // Delta phi criterium between AK15 jet and MET
-    if (fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJetsAK15.at(0).phi())) < 1.5) return false;
+    if (fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJetsAK15.at(0).phi())) < deltaR_MET_AK15Jet) return false;
 
     cutflow.EventSurvivedStep("MonoTopSelection", input.weights.at("Weight"));
     return true;
