@@ -343,24 +343,24 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 # necessarily reflect actual corrections level
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
 
-process.ak4PFCHSL1Fastjet = cms.ESProducer(
+process.ak4PFPUPPIL1Fastjet = cms.ESProducer(
     "L1FastjetCorrectionESProducer",
     level=cms.string("L1FastJet"),
-    algorithm=cms.string("AK4PFchs"),
+    algorithm=cms.string("AK4PFPuppi"),
     srcRho=cms.InputTag("fixedGridRhoFastjetAll"),
 )
-process.ak4PFchsL2Relative = ak4CaloL2Relative.clone(algorithm="AK4PFchs")
-process.ak4PFchsL3Absolute = ak4CaloL3Absolute.clone(algorithm="AK4PFchs")
-process.ak4PFchsResidual = ak4CaloResidual.clone(algorithm="AK4PFchs")
-process.ak4PFchsL1L2L3 = cms.ESProducer(
+process.ak4PFPuppiL2Relative = ak4CaloL2Relative.clone(algorithm="AK4PFPuppi")
+process.ak4PFPuppiL3Absolute = ak4CaloL3Absolute.clone(algorithm="AK4PFPuppi")
+process.ak4PFPuppiResidual = ak4CaloResidual.clone(algorithm="AK4PFPuppi")
+process.ak4PFPuppiL1L2L3 = cms.ESProducer(
     "JetCorrectionESChain",
     correctors=cms.vstring(
-        "ak4PFCHSL1Fastjet", "ak4PFchsL2Relative", "ak4PFchsL3Absolute"
+        "ak4PFPUPPIL1Fastjet", "ak4PFPuppiL2Relative", "ak4PFPuppiL3Absolute"
     ),
 )
 if options.isData:
-    process.ak4PFchsL1L2L3.correctors.append(
-        "ak4PFchsResidual"
+    process.ak4PFPuppiL1L2L3.correctors.append(
+        "ak4PFPuppiResidual"
     )  # add residual JEC for data
 
 
@@ -520,7 +520,7 @@ muonCollection = cms.InputTag("slimmedMuons")
 tauCollection = cms.InputTag("slimmedTaus")
 METCollection = cms.InputTag("slimmedMETs", "", process.name_())
 PuppiMETCollection = cms.InputTag("slimmedMETsPuppi", "", process.name_())
-jetCollection = cms.InputTag("selectedPatJetsAK4PFCHS", "", "SKIM")
+jetCollection = cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM")
 AK8jetCollection = cms.InputTag(
     "selectedUpdatedPatJetsAK8WithPuppiDaughters", "", "SKIM"
 )
@@ -637,7 +637,7 @@ from BoostedTTH.Producers.SelectedJetProducer_cfi import *
 
 process.CorrectedJetProducerAK4 = SelectedJetProducer
 process.CorrectedJetProducerAK4.era = cms.string(options.dataEra)
-process.CorrectedJetProducerAK4.JetType = cms.string("AK4PFCHS")
+process.CorrectedJetProducerAK4.JetType = cms.string("AK4PFPUPPI")
 process.CorrectedJetProducerAK4.jets = jetCollection
 process.CorrectedJetProducerAK4.ptMins = cms.vdouble(-1.0)
 process.CorrectedJetProducerAK4.etaMaxs = cms.vdouble(999.0)
@@ -753,19 +753,19 @@ for syst in systs:
 # smearing of corrected jets -- producers that create the nominal and up/down JER correction
 # jer shift of nominal sample
 if "2016" in options.dataEra:
-    jerResFileAK4 = "Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"
+    jerResFileAK4 = "Summer16_25nsV1_MC_PtResolution_AK4PFPuppi.txt"
     jerResFileAK8 = "Summer16_25nsV1_MC_PtResolution_AK8PFPuppi.txt"
-    jerSFFileAK4 = "Summer16_25nsV1_MC_SF_AK4PFchs.txt"
+    jerSFFileAK4 = "Summer16_25nsV1_MC_SF_AK4PFPuppi.txt"
     jerSFFileAK8 = "Summer16_25nsV1_MC_SF_AK8PFPuppi.txt"
 elif "2017" in options.dataEra:
-    jerResFileAK4 = "Fall17_V3_MC_PtResolution_AK4PFchs.txt"
+    jerResFileAK4 = "Fall17_V3_MC_PtResolution_AK4PFPuppi.txt"
     jerResFileAK8 = "Fall17_V3_MC_PtResolution_AK8PFPuppi.txt"
-    jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFchs.txt"
+    jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFPuppi.txt"
     jerSFFileAK8 = "Fall17_V3_MC_SF_AK8PFPuppi.txt"
 elif "2018" in options.dataEra:
-    jerResFileAK4 = "Autumn18_V1_MC_PtResolution_AK4PFchs.txt"
+    jerResFileAK4 = "Autumn18_V1_MC_PtResolution_AK4PFPuppi.txt"
     jerResFileAK8 = "Autumn18_V1_MC_PtResolution_AK8PFPuppi.txt"
-    jerSFFileAK4 = "Autumn18_V1_MC_SF_AK4PFchs.txt"
+    jerSFFileAK4 = "Autumn18_V1_MC_SF_AK4PFPuppi.txt"
     jerSFFileAK8 = "Autumn18_V1_MC_SF_AK8PFPuppi.txt"
 else:
     raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017/2018")

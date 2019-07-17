@@ -33,6 +33,8 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
     // ak4... or ak8 ... instead of AK4... or AK8...
     if (jetType == "AK4PFCHS")
         JetType_ = JetType::AK4PFCHS;
+    else if (jetType == "AK4PFPUPPI")
+        JetType_ = JetType::AK4PFPUPPI;
     else if (jetType == "AK8PFCHS")
         JetType_ = JetType::AK8PFCHS;
     else if (jetType == "AK8PFPUPPI")
@@ -41,7 +43,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
         JetType_ = JetType::AK15PFPUPPI;
     else {
         std::cerr << "\n\nERROR: Unknown Jet type " << jetType << std::endl;
-        std::cerr << "Please select 'AK4PFCHS' or 'AK8PFCHS'\n" << std::endl;
+        std::cerr << "Please select 'AK4PFCHS/PUPPI' or 'AK8PFCHS/PUPPI' or 'AK15PFPUPPI'\n" << std::endl;
         throw std::exception();
     }
 
@@ -71,6 +73,19 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
     // set JEC File
     if (JetType_ == JetType::AK4PFCHS) {
         jetTypeLabelForJECUncertainty = "AK4PFchs";
+        // change File for 2016
+        if (era.find("2016") != std::string::npos) {
+            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2016;
+        }
+        else if (era.find("2017") != std::string::npos) {
+            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2017;
+        }
+        else if (era.find("2018") != std::string::npos) {
+            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2018;
+        }
+    }
+    else if (JetType_ == JetType::AK4PFPUPPI) {
+        jetTypeLabelForJECUncertainty = "AK4PFPuppi";
         // change File for 2016
         if (era.find("2016") != std::string::npos) {
             jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2016;
@@ -164,6 +179,8 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
 
     if (JetType_ == JetType::AK4PFCHS)
         correctorlabel = "ak4PFchs";
+    else if (JetType_ == JetType::AK4PFPUPPI)
+        correctorlabel = "ak4PFPuppi";
     else if (JetType_ == JetType::AK8PFCHS)
         correctorlabel = "ak8PFchs";
     else if (JetType_ == JetType::AK8PFPUPPI)
