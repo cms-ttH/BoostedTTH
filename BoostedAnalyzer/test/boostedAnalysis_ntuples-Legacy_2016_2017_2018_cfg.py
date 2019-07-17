@@ -86,25 +86,25 @@ if not options.inputFiles:
 
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
-    print "\n\nConfig ERROR: GT contains seems to be for data but isData==False\n\n"
+    print("\n\nConfig ERROR: GT contains seems to be for data but isData==False\n\n")
     sys.exit()
 if "mc" in options.globalTag.lower() and options.isData:
-    print "\n\nConfig ERROR: GT contains seems to be for MC but isData==True\n\n"
+    print("\n\nConfig ERROR: GT contains seems to be for MC but isData==True\n\n")
     sys.exit()
 if not options.inputFiles:
-    print "\n\nConfig ERROR: no inputFiles specified\n\n"
+    print("\n\nConfig ERROR: no inputFiles specified\n\n")
     sys.exit()
 if not options.dataset in datasets:
-    print options.dataset,'not an allowed dataset, options are',datasets
+    print(options.dataset,'not an allowed dataset, options are',datasets)
     sys.exit()
 
 # print settings
-print "\n\n***** JOB SETUP *************************"
+print("\n\n***** JOB SETUP *************************")
 for key in options._register:
     # do not print unused default options
     if key not in ["secondaryInputFiles","section","tag","totalSections","outputFile","secondaryOutputFile","filePrepend"]:
-        print str(key)+" : "+str( options.__getattr__(key) )
-print "*****************************************\n\n"
+        print(str(key)+" : "+str( options.__getattr__(key) ))
+print("*****************************************\n\n")
 
 writeNominal=False
 systsJES=[] 
@@ -120,7 +120,7 @@ if options.systematicVariations:
             systsJER.append( var+"up" )
             systsJER.append( var+"down")
         else:
-            print "ERROR: unknown variation '"+var+"'"
+            print("ERROR: unknown variation '"+var+"'")
             sys.exit()
 systs=systsJER+systsJES
 
