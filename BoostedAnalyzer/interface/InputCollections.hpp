@@ -46,6 +46,7 @@ struct InputCollections {
                      const std::vector< pat::Photon >& selectedPhotons_, const std::vector< pat::Photon >& selectedPhotonsLoose_,
                      const std::vector< pat::Jet >& selectedJets_, const std::vector< pat::Jet >& selectedJetsLoose_,
                      const std::vector< pat::Jet >& selectedJetsAK8_, const std::vector< pat::Jet >& selectedJetsAK15_, const pat::MET& correctedMET_,
+                     const pat::MET& correctedMETPuppi_,
                      //                    const boosted::BoostedJetCollection&
                      //                    selectedBoostedJets_, const
                      //                    boosted::Ak4ClusterCollection& selectedAk4Cluster_,
@@ -73,6 +74,7 @@ struct InputCollections {
         selectedJetsAK8(selectedJetsAK8_),
         selectedJetsAK15(selectedJetsAK15_),
         correctedMET(correctedMET_),
+        correctedMETPuppi(correctedMETPuppi_),
         //                    selectedBoostedJets(selectedBoostedJets_),
         //                    selectedAk4Cluster(selectedAk4Cluster_),
         genTopEvt(genTopEvt_),
@@ -94,7 +96,7 @@ struct InputCollections {
        remaining ones from a different input colection
      */
     InputCollections(const InputCollections& input, const std::vector< pat::Jet >& rawJets_, const std::vector< pat::Jet >& selectedJets_,
-                     const std::vector< pat::Jet >& selectedJetsLoose_, const pat::MET& correctedMET_,
+                     const std::vector< pat::Jet >& selectedJetsLoose_, const pat::MET& correctedMET_, const pat::MET& correctedMETPuppi_,
                      const boosted::BoostedJetCollection& selectedBoostedJets_, const boosted::Ak4ClusterCollection& selectedAk4Cluster_,
                      const std::map< std::string, float >& weights_) :
         eventInfo(input.eventInfo),
@@ -114,6 +116,7 @@ struct InputCollections {
         selectedJetsAK8(input.selectedJetsAK8),
         selectedJetsAK15(input.selectedJetsAK15),
         correctedMET(correctedMET_),
+        correctedMETPuppi(correctedMETPuppi_),
         //                    selectedBoostedJets(selectedBoostedJets_),
         //                    selectedAk4Cluster(selectedAk4Cluster_),
         genTopEvt(input.genTopEvt),
@@ -147,6 +150,7 @@ struct InputCollections {
     const std::vector< pat::Jet >&      selectedJetsAK8;
     const std::vector< pat::Jet >&      selectedJetsAK15;
     const pat::MET&                     correctedMET;
+    const pat::MET&                     correctedMETPuppi;
     //  const boosted::BoostedJetCollection&          selectedBoostedJets;
     //  const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
     const GenTopEvent&                   genTopEvt;

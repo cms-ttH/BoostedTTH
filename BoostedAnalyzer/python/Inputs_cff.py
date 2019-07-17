@@ -26,6 +26,7 @@ Inputs_tth_sl = cms.PSet(
     selectedJetsAK8=cms.VInputTag("SelectedJetProducerAK8:selectedJetsAK8"),
     selectedJetsAK15=cms.VInputTag("SelectedJetProducerAK15:selectedJetsAK15"),
     correctedMETs=cms.VInputTag("slimmedMETs"),
+    correctedMETsPuppi=cms.VInputTag("slimmedMETsPuppi"),
     genInfo=cms.InputTag("generator"),
     lheInfo=cms.InputTag("externalLHEProducer"),
     lheInfo_source=cms.InputTag("source"),

@@ -264,6 +264,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
     std::vector< edm::EDGetTokenT< std::vector< pat::Jet > > > selectedJetsAK15_Tokens;
     /** mets data access token **/
     std::vector< edm::EDGetTokenT< std::vector< pat::MET > > > correctedMETsTokens;
+    /** puppi mets data access token **/
+    std::vector< edm::EDGetTokenT< std::vector< pat::MET > > > correctedMETsPuppiTokens;
     /** gen info data access token **/
     edm::EDGetTokenT< GenEventInfoProduct > genInfoToken;
     /** LHE data access token **/
@@ -373,6 +375,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     }
     for (const auto& tag : iConfig.getParameter< std::vector< edm::InputTag > >("correctedMETs")) {
         correctedMETsTokens.push_back(consumes< std::vector< pat::MET > >(tag));
+    }
+    for (const auto& tag : iConfig.getParameter< std::vector< edm::InputTag > >("correctedMETsPuppi")) {
+        correctedMETsPuppiTokens.push_back(consumes< std::vector< pat::MET > >(tag));
     }
 
     // initialize helper classes
@@ -618,6 +623,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     assert(selectedJetsTokens.size() == AK8Jets_Tokens.size());
     assert(selectedJetsTokens.size() == AK15Jets_Tokens.size());
     assert(selectedJetsTokens.size() == correctedMETsTokens.size());
+    assert(selectedJetsTokens.size() == correctedMETsPuppiTokens.size());
     assert(selectedJetsTokens.size() == cutflows.size());
 }
 
@@ -686,6 +692,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     std::vector< edm::Handle< pat::JetCollection > > hs_selectedJetsAK8;
     std::vector< edm::Handle< pat::JetCollection > > hs_selectedJetsAK15;
     std::vector< edm::Handle< pat::METCollection > > hs_correctedMETs;
+    std::vector< edm::Handle< pat::METCollection > > hs_correctedMETsPuppi;
 
     for (size_t i = 0; i < selectedJetsTokens.size(); i++) {
         edm::Handle< pat::JetCollection > h_selectedJets;
@@ -693,16 +700,19 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         edm::Handle< pat::JetCollection > h_selectedJetsAK8;
         edm::Handle< pat::JetCollection > h_selectedJetsAK15;
         edm::Handle< pat::METCollection > h_correctedMETs;
+        edm::Handle< pat::METCollection > h_correctedMETsPuppi;
         iEvent.getByToken(selectedJetsTokens.at(i), h_selectedJets);
         iEvent.getByToken(selectedJetsLooseTokens.at(i), h_selectedJetsLoose);
         iEvent.getByToken(selectedJetsAK8_Tokens.at(i), h_selectedJetsAK8);
         iEvent.getByToken(selectedJetsAK15_Tokens.at(i), h_selectedJetsAK15);
         iEvent.getByToken(correctedMETsTokens.at(i), h_correctedMETs);
+        iEvent.getByToken(correctedMETsPuppiTokens.at(i), h_correctedMETsPuppi);
         hs_selectedJets.push_back(h_selectedJets);
         hs_selectedJetsLoose.push_back(h_selectedJetsLoose);
         hs_selectedJetsAK8.push_back(h_selectedJetsAK8);
         hs_selectedJetsAK15.push_back(h_selectedJetsAK15);
         hs_correctedMETs.push_back(h_correctedMETs);
+        hs_correctedMETsPuppi.push_back(h_correctedMETsPuppi);
     }
 
     // MC only (generator weights for example)
@@ -865,13 +875,14 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         auto weights    = eventweights;
         auto csvweights = GetCSVWeights(*(hs_selectedJets.at(isys)), jetSystematics.at(isys));
         weights.insert(csvweights.begin(), csvweights.end());
-        inputs.emplace_back(
-            eventInfo, triggerInfo, filterInfo, selectedPVs, *h_selectedMuons, *h_selectedMuonsDL, *h_selectedMuonsLoose, *h_selectedElectrons,
-            *h_selectedElectronsDL, *h_selectedElectronsLoose, *h_selectedPhotons, *h_selectedPhotonsLoose, *(hs_selectedJets.at(isys)),
-            *(hs_selectedJetsLoose.at(isys)), *(hs_selectedJetsAK8.at(isys)), *(hs_selectedJetsAK15.at(isys)), (*(hs_correctedMETs.at(isys))).at(0),
-            // selectedBoostedJets[isys],
-            // selectedAk4Cluster,
-            genTopEvt, genDarkMatterEvent, *h_genJets, sampleType, higgsdecay, weights, iEvent, iSetup, jetSystematics.at(isys), selectionTags, era);
+        inputs.emplace_back(eventInfo, triggerInfo, filterInfo, selectedPVs, *h_selectedMuons, *h_selectedMuonsDL, *h_selectedMuonsLoose, *h_selectedElectrons,
+                            *h_selectedElectronsDL, *h_selectedElectronsLoose, *h_selectedPhotons, *h_selectedPhotonsLoose, *(hs_selectedJets.at(isys)),
+                            *(hs_selectedJetsLoose.at(isys)), *(hs_selectedJetsAK8.at(isys)), *(hs_selectedJetsAK15.at(isys)),
+                            (*(hs_correctedMETs.at(isys))).at(0), (*(hs_correctedMETsPuppi.at(isys))).at(0),
+                            // selectedBoostedJets[isys],
+                            // selectedAk4Cluster,
+                            genTopEvt, genDarkMatterEvent, *h_genJets, sampleType, higgsdecay, weights, iEvent, iSetup, jetSystematics.at(isys), selectionTags,
+                            era);
     }
     // TODO: adapt to new synch exe
 

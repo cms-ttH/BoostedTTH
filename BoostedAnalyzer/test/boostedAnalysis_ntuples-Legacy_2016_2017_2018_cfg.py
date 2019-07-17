@@ -391,6 +391,9 @@ if options.recorrectMET:
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import (
         runMetCorAndUncFromMiniAOD,
     )
+    from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+
+    makePuppiesFromMiniAOD(process, True)
 
     runMetCorAndUncFromMiniAOD(
         process,
@@ -403,6 +406,17 @@ if options.recorrectMET:
             "maxEtaThreshold": 3.139,
         },
     )
+
+    runMetCorAndUncFromMiniAOD(
+        process,
+        isData=options.isData,
+        metType="Puppi",
+        postfix="Puppi",
+        jetFlavor="AK4PFPuppi",
+    )
+    process.puppiNoLep.useExistingWeights = True
+    process.puppi.useExistingWeights = True
+
 # METCollection      = cms.InputTag("slimmedMETs", "", process.name_())
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
@@ -505,6 +519,7 @@ photonCollection = cms.InputTag("slimmedPhotons", "", process.name_())
 muonCollection = cms.InputTag("slimmedMuons")
 tauCollection = cms.InputTag("slimmedTaus")
 METCollection = cms.InputTag("slimmedMETs", "", process.name_())
+PuppiMETCollection = cms.InputTag("slimmedMETsPuppi", "", process.name_())
 jetCollection = cms.InputTag("selectedPatJetsAK4PFCHS", "", "SKIM")
 AK8jetCollection = cms.InputTag(
     "selectedUpdatedPatJetsAK8WithPuppiDaughters", "", "SKIM"
@@ -956,6 +971,7 @@ process.BoostedAnalyzer.selectedJetsAK15 = [
     for s in variations
 ]
 process.BoostedAnalyzer.correctedMETs = [METCollection] * (len(variations))
+process.BoostedAnalyzer.correctedMETsPuppi = [PuppiMETCollection] * (len(variations))
 
 process.BoostedAnalyzer.outfileName = options.outName
 if not options.isData:
@@ -1054,6 +1070,9 @@ if "2017" or "2018" in options.dataEra:
 
 if options.recorrectMET:
     process.met = cms.Path(process.fullPatMetSequence)
+    process.met_puppi = cms.Path(
+        process.puppiMETSequence * process.fullPatMetSequencePuppi
+    )
 
 # electron scale and smearing corrections
 process.egamma = cms.Path(process.egammaPostRecoSeq)
