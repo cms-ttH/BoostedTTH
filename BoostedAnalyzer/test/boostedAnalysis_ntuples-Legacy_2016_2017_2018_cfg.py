@@ -394,53 +394,56 @@ process.SelectedPhotonProducer.IDs=["loose","tight"]
 process.SelectedPhotonProducer.collectionNames=["selectedPhotonsLoose","selectedPhotons"]
 process.SelectedPhotonProducer.isData=options.isData
 process.SelectedPhotonProducer.era=options.dataEra
-# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
-# jet selection
-process.load("BoostedTTH.Producers.SelectedJetProducer_cfi")
-process.SelectedJetProducerAK4=process.SelectedJetProducer.clone()
-# selection of corrected and smeared jets -- one producer for every jet systematic that selects two collections (regular and loose jets) each
-# selection of the nominal jets
-process.SelectedJetProducerAK4.jets=cms.InputTag('patSmearedJetsAK4',"",process.name_())
-process.SelectedJetProducerAK4.applyCorrection=False
-process.SelectedJetProducerAK4.ptMins=[20,30]
-if options.ProduceMemNtuples==True:
-    process.SelectedJetProducerAK4.ptMins=[10,30]
-process.SelectedJetProducerAK4.etaMaxs=[2.4,2.4]
-process.SelectedJetProducerAK4.collectionNames=["selectedJetsLooseAK4","selectedJetsAK4"]
-process.SelectedJetProducerAK4.systematics=[""]
-process.SelectedJetProducerAK4.PUJetIDMins=["loose","loose"]
-process.SelectedJetProducerAK4.JetID=["none","none"]
-process.SelectedJetProducerAK4.era= options.dataEra
-process.SelectedJetProducerAK4.isData= options.isData
-# selection of the systematically shifted jets
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
+# apply JES correction to AK4 jets
+from BoostedTTH.Producers.SelectedJetProducer_cfi import *
+process.CorrectedJetProducerAK4=SelectedJetProducer
+process.CorrectedJetProducerAK4.era = cms.string(options.dataEra)
+process.CorrectedJetProducerAK4.JetType = cms.string("AK4PFCHS")
+process.CorrectedJetProducerAK4.jets=jetCollection
+process.CorrectedJetProducerAK4.ptMins=cms.vdouble(-1.)
+process.CorrectedJetProducerAK4.etaMaxs=cms.vdouble(999.)
+process.CorrectedJetProducerAK4.applyCorrection=cms.bool(True)
+process.CorrectedJetProducerAK4.collectionNames=cms.vstring("correctedJetsAK4")
+process.CorrectedJetProducerAK4.systematics=cms.vstring([""]+systsJES)
+process.CorrectedJetProducerAK4.JetID=cms.vstring("tight")
+process.CorrectedJetProducerAK4.PUJetIDMins=cms.vstring("none")
+process.CorrectedJetProducerAK4.isData=cms.bool(options.isData)
+process.CorrectedJetProducerAK4.doJER=cms.bool(False)
+process.CorrectedJetProducerAK4.electrons = cms.InputTag("SelectedElectronProducer:selectedElectronsLoose")
+process.CorrectedJetProducerAK4.muons = cms.InputTag("SelectedMuonProducer:selectedMuonsLoose")
+process.CorrectedJetProducerAK4.leptonJetDr = cms.double(0.4)
+                                                
+
+# nominal AK4 jet selection
+process.SelectedJetProducerAK4=process.CorrectedJetProducerAK4.clone(
+                                                                     jets=cms.InputTag('patSmearedJetsAK4',"",process.name_()),
+                                                                     applyCorrection=False,
+                                                                     ptMins=[20,30],
+                                                                     etaMaxs=[2.4,2.4],
+                                                                     collectionNames=["selectedJetsLooseAK4","selectedJetsAK4"],
+                                                                     systematics=[""],
+                                                                     PUJetIDMins=["loose","loose"],
+                                                                     JetID=["none","none"]
+                                                                    )
+
+# selection of the systematically shifted (JES) AK4 jets
 for syst in systs:
     setattr(process,'SelectedJetProducerAK4'+syst,process.SelectedJetProducerAK4.clone(jets='patSmearedJetsAK4'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK4.collectionNames)]))
 
-# correction of  miniAOD jets -- one producer creates a jet collection for nominal JES and every JES systematic
-process.CorrectedJetProducerAK4=process.SelectedJetProducerAK4.clone(jets=jetCollection, 
-                                                               ptMins=[-1.],
-                                                               etaMaxs=[999.],
-                                                               collectionNames=["correctedJetsAK4"],
-                                                               applyCorrection=True,
-                                                               systematics=[""]+systsJES,
-                                                               JetID=["tight"],
-                                                               PUJetIDMins=["none"])
+# apply JES correction to AK8 jets
+process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(
+                                                                      jets=AK8jetCollection,
+                                                                      JetType="AK8PFPUPPI",
+                                                                      collectionNames=["correctedJetsAK8"],
+                                                                      miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
+                                                                      leptonJetDr=0.8,
+                                                                      )
 
-process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8jetCollection, 
-                                                                ptMins=[-1.],
-                                                                etaMaxs=[999.],
-                                                                collectionNames=["correctedJetsAK8"],
-                                                                applyCorrection=True,
-                                                                systematics=[""]+systsJES,
-                                                                JetID=["tight"],
-                                                                PUJetIDMins=["none"],
-                                                                miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
-                                                                leptonJetDr=0.8,
-                                                                JetType="AK8PFPUPPI"
-                                                                )
-
-process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.InputTag('patSmearedJetsAK8',"",process.name_()),
+# nominal AK8 jet selection
+process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone( 
+                                                                      jets=cms.InputTag('patSmearedJetsAK8',"",process.name_()),
                                                                       ptMins=[170.],
                                                                       etaMaxs=[2.4],
                                                                       collectionNames=["selectedJetsAK8"],
@@ -449,31 +452,33 @@ process.SelectedJetProducerAK8=process.CorrectedJetProducerAK8.clone(jets=cms.In
                                                                       JetID=["none"],
                                                                       PUJetIDMins=["loose"]
                                                                      )
+
+# selection of the systematically shifted (JES) AK8 jets
 for syst in systs:
     setattr(process,'SelectedJetProducerAK8'+syst,process.SelectedJetProducerAK8.clone(jets='patSmearedJetsAK8'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK8.collectionNames)]))
-    
-process.CorrectedJetProducerAK15=process.CorrectedJetProducerAK8.clone(jets=AK15jetCollection, 
-                                                                ptMins=[-1.],
-                                                                etaMaxs=[999.],
-                                                                collectionNames=["correctedJetsAK15"],
-                                                                applyCorrection=True,
-                                                                systematics=[""]+systsJES,
-                                                                JetID=["tight"],
-                                                                PUJetIDMins=["none"],
-                                                                miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
-                                                                leptonJetDr=1.5,
-                                                                JetType="AK15PFPUPPI"
-                                                                )
 
-process.SelectedJetProducerAK15=process.CorrectedJetProducerAK15.clone(jets=cms.InputTag('patSmearedJetsAK15',"",process.name_()),
-                                                                      ptMins=[250.],
-                                                                      etaMaxs=[2.4],
-                                                                      collectionNames=["selectedJetsAK15"],
-                                                                      applyCorrection=False,
-                                                                      systematics=[""],
-                                                                      JetID=["none"],
-                                                                      PUJetIDMins=["none"]
-                                                                     )
+# apply JES correction to AK15 jets
+process.CorrectedJetProducerAK15=process.CorrectedJetProducerAK8.clone(
+                                                                        jets=AK15jetCollection,
+                                                                        JetType="AK15PFPUPPI",
+                                                                        collectionNames=["correctedJetsAK15"],
+                                                                        miniAODGenJets=cms.InputTag("slimmedGenJetsAK8","","PAT"),
+                                                                        leptonJetDr=1.5
+                                                                        )
+
+# nominal AK15 jet selection
+process.SelectedJetProducerAK15=process.CorrectedJetProducerAK15.clone(
+                                                                        jets=cms.InputTag('patSmearedJetsAK15',"",process.name_()),
+                                                                        ptMins=[250.],
+                                                                        etaMaxs=[2.4],
+                                                                        collectionNames=["selectedJetsAK15"],
+                                                                        applyCorrection=False,
+                                                                        systematics=[""],
+                                                                        JetID=["none"],
+                                                                        PUJetIDMins=["none"]
+                                                                       )
+
+# selection of the systematically shifted (JES) AK15 jets
 for syst in systs:
     setattr(process,'SelectedJetProducerAK15'+syst,process.SelectedJetProducerAK15.clone(jets='patSmearedJetsAK15'+syst,collectionNames=[n+syst for n in list(process.SelectedJetProducerAK15.collectionNames)]))
 
@@ -617,11 +622,6 @@ process.BoostedAnalyzer.selectedJetsAK8=[cms.InputTag("SelectedJetProducerAK8"+s
 process.BoostedAnalyzer.selectedJetsAK15=[cms.InputTag("SelectedJetProducerAK15"+s+":selectedJetsAK15"+s) for s in variations]
 process.BoostedAnalyzer.correctedMETs=[METCollection]*(len(variations))
 
-if options.isBoostedMiniAOD:
-    process.BoostedAnalyzer.useFatJets=True
-else:
-    process.BoostedAnalyzer.useFatJets=False
-
 process.BoostedAnalyzer.outfileName=options.outName
 if not options.isData:
     process.BoostedAnalyzer.eventWeight = options.weight
@@ -645,9 +645,6 @@ if options.isData:
 process.BoostedAnalyzer.selectionNames = [
 "FilterSelection",
 "VertexSelection",
-#"LeptonSelection",
-#"JetTagSelection",
-#"METSelection",
 "MonoTopSelection"
 ]
 if options.additionalSelection!="NONE":
@@ -657,28 +654,20 @@ if options.isData:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
   "essentialBasicVarProcessor",
-#  "essentialMVAVarProcessor",
-#  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   "PhotonVarProcessor",
-  "JetVarProcessor",
-  #"ReconstructionMEvarProcessor",
-  #"AK8JetProcessor"
+  "JetVarProcessor"
   )
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-#  "MCMatchVarProcessor",
   "MCMatchVarProcessor",
   "essentialBasicVarProcessor",
-#  "essentialMVAVarProcessor",
-#  "essentialRecoVarProcessor",
   "TriggerVarProcessor",
   "PhotonVarProcessor",
-  "JetVarProcessor",
-  #"ReconstructionMEvarProcessor",
-  #"AK8JetProcessor"
+  "JetVarProcessor"
   )
+
 if (process.BoostedAnalyzer.taggingSelection): process.BoostedAnalyzer.processorNames.append("SelectionTagProcessor")
 
 
