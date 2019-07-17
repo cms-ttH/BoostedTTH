@@ -1,4 +1,3 @@
 import FWCore.ParameterSet.Config as cms
 
-demo = cms.EDAnalyzer('BoostedAnalyzer'
-)
+demo = cms.EDAnalyzer("BoostedAnalyzer")

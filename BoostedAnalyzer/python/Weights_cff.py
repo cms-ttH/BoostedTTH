@@ -3,103 +3,141 @@ import FWCore.ParameterSet.Config as cms
 # PU weights
 # ------------------------------------------------------------
 
-#2018
+# 2018
 NominalPUWeight2018 = cms.PSet(
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
-    histNameMCNPU = cms.string("N_True"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasNominal-69200.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
+    fileNameMCNPU=cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
+    histNameMCNPU=cms.string("N_True"),
+    fileNameDataNPUEstimated=cms.string(
+        "MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasNominal-69200.root"
+    ),
+    histNameDataNPUEstimated=cms.string("pileup"),
 )
 AdditionalPUWeights2018 = cms.VPSet(
-  cms.PSet(
-    namePUWeight = cms.string("Weight_pu69p2"),
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
-    histNameMCNPU = cms.string("N_True"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasNominal-69200.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
-  ),
-
-  cms.PSet(
-    namePUWeight = cms.string("Weight_pu69p2Up"),
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
-    histNameMCNPU = cms.string("N_True"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasUp-72383.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
-  ),
-
-  cms.PSet(
-    namePUWeight = cms.string("Weight_pu69p2Down"),
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"),
-    histNameMCNPU = cms.string("N_True"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasDown-66017.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
-  ),
+    cms.PSet(
+        namePUWeight=cms.string("Weight_pu69p2"),
+        fileNameMCNPU=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"
+        ),
+        histNameMCNPU=cms.string("N_True"),
+        fileNameDataNPUEstimated=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasNominal-69200.root"
+        ),
+        histNameDataNPUEstimated=cms.string("pileup"),
+    ),
+    cms.PSet(
+        namePUWeight=cms.string("Weight_pu69p2Up"),
+        fileNameMCNPU=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"
+        ),
+        histNameMCNPU=cms.string("N_True"),
+        fileNameDataNPUEstimated=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasUp-72383.root"
+        ),
+        histNameDataNPUEstimated=cms.string("pileup"),
+    ),
+    cms.PSet(
+        namePUWeight=cms.string("Weight_pu69p2Down"),
+        fileNameMCNPU=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/MC/N_True2018.root"
+        ),
+        histNameMCNPU=cms.string("N_True"),
+        fileNameDataNPUEstimated=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/Run2018/DataPileupHistogram_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_MinBiasDown-66017.root"
+        ),
+        histNameDataNPUEstimated=cms.string("pileup"),
+    ),
 )
 
-#2017
+# 2017
 NominalPUWeight2017 = cms.PSet(
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/MCNPUTrue.root"),
-    histNameMCNPU = cms.string("MCPUDistributionProducer/NumTruePU"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasNominal-69200.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
+    fileNameMCNPU=cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/MCNPUTrue.root"),
+    histNameMCNPU=cms.string("MCPUDistributionProducer/NumTruePU"),
+    fileNameDataNPUEstimated=cms.string(
+        "MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasNominal-69200.root"
+    ),
+    histNameDataNPUEstimated=cms.string("pileup"),
 )
 AdditionalPUWeights2017 = cms.VPSet(
-  cms.PSet(
-    namePUWeight = cms.string("Weight_pu69p2"),
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/MCNPUTrue.root"),
-    histNameMCNPU = cms.string("MCPUDistributionProducer/NumTruePU"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasNominal-69200.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
-  ),
-
-  cms.PSet(
-    namePUWeight = cms.string("Weight_pu69p2Up"),
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/MCNPUTrue.root"),
-    histNameMCNPU = cms.string("MCPUDistributionProducer/NumTruePU"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasUp-72383.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
-  ),
-
-  cms.PSet(
-    namePUWeight = cms.string("Weight_pu69p2Down"),
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/MCNPUTrue.root"),
-    histNameMCNPU = cms.string("MCPUDistributionProducer/NumTruePU"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasDown-66017.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
-  ),
+    cms.PSet(
+        namePUWeight=cms.string("Weight_pu69p2"),
+        fileNameMCNPU=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/MC/MCNPUTrue.root"
+        ),
+        histNameMCNPU=cms.string("MCPUDistributionProducer/NumTruePU"),
+        fileNameDataNPUEstimated=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasNominal-69200.root"
+        ),
+        histNameDataNPUEstimated=cms.string("pileup"),
+    ),
+    cms.PSet(
+        namePUWeight=cms.string("Weight_pu69p2Up"),
+        fileNameMCNPU=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/MC/MCNPUTrue.root"
+        ),
+        histNameMCNPU=cms.string("MCPUDistributionProducer/NumTruePU"),
+        fileNameDataNPUEstimated=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasUp-72383.root"
+        ),
+        histNameDataNPUEstimated=cms.string("pileup"),
+    ),
+    cms.PSet(
+        namePUWeight=cms.string("Weight_pu69p2Down"),
+        fileNameMCNPU=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/MC/MCNPUTrue.root"
+        ),
+        histNameMCNPU=cms.string("MCPUDistributionProducer/NumTruePU"),
+        fileNameDataNPUEstimated=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/Run2017/DataPileupHistogram_Run2017_294927-306462_13TeV_EOY2017ReReco_MinBiasDown-66017.root"
+        ),
+        histNameDataNPUEstimated=cms.string("pileup"),
+    ),
 )
 
 # 2016
 NominalPUWeight2016 = cms.PSet(
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/Summer16_NumTruePU.root"),
-    histNameMCNPU = cms.string("hNumTruePUPdf"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-Complete_MinBias69200.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
+    fileNameMCNPU=cms.string(
+        "MiniAOD/MiniAODHelper/data/puweights/MC/Summer16_NumTruePU.root"
+    ),
+    histNameMCNPU=cms.string("hNumTruePUPdf"),
+    fileNameDataNPUEstimated=cms.string(
+        "MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-Complete_MinBias69200.root"
+    ),
+    histNameDataNPUEstimated=cms.string("pileup"),
 )
 AdditionalPUWeights2016 = cms.VPSet(
-  cms.PSet(
-    namePUWeight = cms.string("Weight_pu69p2"),
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/Summer16_NumTruePU.root"),
-    histNameMCNPU = cms.string("hNumTruePUPdf"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-Complete_MinBias69200.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
-  ),
-
-  cms.PSet(
-    namePUWeight = cms.string("Weight_pu69p2Up"),
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/Summer16_NumTruePU.root"),
-    histNameMCNPU = cms.string("hNumTruePUPdf"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-Complete_MinBias72383.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
-  ),
-
-  cms.PSet(
-    namePUWeight = cms.string("Weight_pu69p2Down"),
-    fileNameMCNPU = cms.string("MiniAOD/MiniAODHelper/data/puweights/MC/Summer16_NumTruePU.root"),
-    histNameMCNPU = cms.string("hNumTruePUPdf"),
-    fileNameDataNPUEstimated = cms.string("MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-Complete_MinBias66017.root"),
-    histNameDataNPUEstimated = cms.string("pileup")
-  ),  
+    cms.PSet(
+        namePUWeight=cms.string("Weight_pu69p2"),
+        fileNameMCNPU=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/MC/Summer16_NumTruePU.root"
+        ),
+        histNameMCNPU=cms.string("hNumTruePUPdf"),
+        fileNameDataNPUEstimated=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-Complete_MinBias69200.root"
+        ),
+        histNameDataNPUEstimated=cms.string("pileup"),
+    ),
+    cms.PSet(
+        namePUWeight=cms.string("Weight_pu69p2Up"),
+        fileNameMCNPU=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/MC/Summer16_NumTruePU.root"
+        ),
+        histNameMCNPU=cms.string("hNumTruePUPdf"),
+        fileNameDataNPUEstimated=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-Complete_MinBias72383.root"
+        ),
+        histNameDataNPUEstimated=cms.string("pileup"),
+    ),
+    cms.PSet(
+        namePUWeight=cms.string("Weight_pu69p2Down"),
+        fileNameMCNPU=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/MC/Summer16_NumTruePU.root"
+        ),
+        histNameMCNPU=cms.string("hNumTruePUPdf"),
+        fileNameDataNPUEstimated=cms.string(
+            "MiniAOD/MiniAODHelper/data/puweights/Run2016/DataPileupHistogram_Run2016-Complete_MinBias66017.root"
+        ),
+        histNameDataNPUEstimated=cms.string("pileup"),
+    ),
 )
 
 
@@ -108,50 +146,59 @@ AdditionalPUWeights2016 = cms.VPSet(
 
 # The 94X DeepJet SF
 BTagSFs94XDeepJet2018 = cms.PSet(
-    fileNameHF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2018_hf.root"),
-    nHFPtBins = cms.int32(5),
-    nLFPtBins = cms.int32(4),
-    nLFEtaBins = cms.int32(3),
-    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2018_lf.root")
+    fileNameHF=cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2018_hf.root"),
+    nHFPtBins=cms.int32(5),
+    nLFPtBins=cms.int32(4),
+    nLFEtaBins=cms.int32(3),
+    fileNameLF=cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2018_lf.root"),
 )
 BTagSFs94XDeepJet2017 = cms.PSet(
-    fileNameHF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2017_hf.root"),
-    nHFPtBins = cms.int32(5),
-    nLFPtBins = cms.int32(4),
-    nLFEtaBins = cms.int32(3),
-    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2017_lf.root")
+    fileNameHF=cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2017_hf.root"),
+    nHFPtBins=cms.int32(5),
+    nLFPtBins=cms.int32(4),
+    nLFEtaBins=cms.int32(3),
+    fileNameLF=cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2017_lf.root"),
 )
 BTagSFs94XDeepJet2016 = cms.PSet(
-    fileNameHF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2016_hf.root"),
-    nHFPtBins = cms.int32(5),
-    nLFPtBins = cms.int32(4),
-    nLFEtaBins = cms.int32(3),
-    fileNameLF = cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2016_lf.root")
+    fileNameHF=cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2016_hf.root"),
+    nHFPtBins=cms.int32(5),
+    nLFPtBins=cms.int32(4),
+    nLFEtaBins=cms.int32(3),
+    fileNameLF=cms.string("MiniAOD/MiniAODHelper/data/sfs_deepjet_2016_lf.root"),
 )
 
 # Trigger SFs
 
 TriggerSFs2016 = cms.PSet(
-    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEleTriggerSF_Run2016All_v1.root"),
-    elecHistName = cms.string("Ele27_WPTight_Gsf"),
-    muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_2016_RunBtoH.root"),
-    muonHistName = cms.string("IsoMu24_OR_IsoTkMu24_PtEtaBins/pt_abseta_ratio"),
+    elecFileName=cms.string(
+        "MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEleTriggerSF_Run2016All_v1.root"
+    ),
+    elecHistName=cms.string("Ele27_WPTight_Gsf"),
+    muonFileName=cms.string(
+        "MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_2016_RunBtoH.root"
+    ),
+    muonHistName=cms.string("IsoMu24_OR_IsoTkMu24_PtEtaBins/pt_abseta_ratio"),
 )
 
 TriggerSFs2017 = cms.PSet(
-    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/2017_SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Data_MC_v5.0.root"),
-    elecHistName = cms.string("SFs_ele_pt_ele_sceta_ele28_ht150_OR_ele35_2017BCDEF"),
-    muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_RunBtoF_Nov17Nov2017.root"),
-    muonHistName = cms.string("IsoMu27_PtEtaBins/pt_abseta_ratio"),
+    elecFileName=cms.string(
+        "MiniAOD/MiniAODHelper/data/Run2Legacy/2017_SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Data_MC_v5.0.root"
+    ),
+    elecHistName=cms.string("SFs_ele_pt_ele_sceta_ele28_ht150_OR_ele35_2017BCDEF"),
+    muonFileName=cms.string(
+        "MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_RunBtoF_Nov17Nov2017.root"
+    ),
+    muonHistName=cms.string("IsoMu27_PtEtaBins/pt_abseta_ratio"),
 )
 
 TriggerSFs2018 = cms.PSet(
-    #TODO: electron histos need to be updated!
-    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/2017_SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Data_MC_v5.0.root"),
-    elecHistName = cms.string("SFs_ele_pt_ele_sceta_ele28_ht150_OR_ele35_2017BCDEF"),
-    muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_2018_RunAtoD.root"),
-    muonHistName = cms.string("IsoMu24_PtEtaBins/pt_abseta_ratio"),
+    # TODO: electron histos need to be updated!
+    elecFileName=cms.string(
+        "MiniAOD/MiniAODHelper/data/Run2Legacy/2017_SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Data_MC_v5.0.root"
+    ),
+    elecHistName=cms.string("SFs_ele_pt_ele_sceta_ele28_ht150_OR_ele35_2017BCDEF"),
+    muonFileName=cms.string(
+        "MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_2018_RunAtoD.root"
+    ),
+    muonHistName=cms.string("IsoMu24_PtEtaBins/pt_abseta_ratio"),
 )
-
-
-

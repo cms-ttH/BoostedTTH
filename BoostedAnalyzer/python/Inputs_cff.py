@@ -1,5 +1,6 @@
 import FWCore.ParameterSet.Config as cms
-Inputs_tth_sl= cms.PSet(
+
+Inputs_tth_sl = cms.PSet(
     puInfo=cms.InputTag("slimmedAddPileupInfo"),
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     hcalNoise=cms.InputTag("hcalnoise"),
@@ -15,7 +16,9 @@ Inputs_tth_sl= cms.PSet(
     selectedMuonsLoose=cms.InputTag("SelectedMuonProducer:selectedMuonsLoose"),
     selectedElectrons=cms.InputTag("SelectedElectronProducer:selectedElectrons"),
     selectedElectronsDL=cms.InputTag("SelectedElectronProducer:selectedElectronsDL"),
-    selectedElectronsLoose=cms.InputTag("SelectedElectronProducer:selectedElectronsLoose"),
+    selectedElectronsLoose=cms.InputTag(
+        "SelectedElectronProducer:selectedElectronsLoose"
+    ),
     selectedPhotons=cms.InputTag("SelectedPhotonProducer:selectedPhotons"),
     selectedPhotonsLoose=cms.InputTag("SelectedPhotonProducer:selectedPhotonsLoose"),
     selectedJets=cms.VInputTag("SelectedJetProducer:selectedJets"),
@@ -28,5 +31,5 @@ Inputs_tth_sl= cms.PSet(
     lheInfo_source=cms.InputTag("source"),
     genParticles=cms.InputTag("prunedGenParticles"),
     genJets=cms.InputTag("slimmedGenJets"),
-    conversionCollection= cms.InputTag("reducedEgamma:reducedConversions"),
+    conversionCollection=cms.InputTag("reducedEgamma:reducedConversions"),
 )
