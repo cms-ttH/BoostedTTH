@@ -1060,13 +1060,15 @@ if options.ProduceMemNtuples == True:
 
 ##### DEFINE PATHS ##########
 
+process.final = cms.EndPath(process.BoostedAnalyzer)
 
 # run ecalBadCalibReducedMINIAODFilter for 2017/2018 data
 if "2017" or "2018" in options.dataEra:
     process.BoostedAnalyzer.additionalFilters = cms.VInputTag(
         ["ecalBadCalibReducedMINIAODFilter"]
     )
-    process.metfilters = cms.Path(process.ecalBadCalibReducedMINIAODFilter)
+    process.metfilters = cms.Task(process.ecalBadCalibReducedMINIAODFilter)
+    process.final.associate(process.metfilters)
 
 if options.recorrectMET:
     process.met = cms.Path(process.fullPatMetSequence)
@@ -1078,40 +1080,41 @@ if options.recorrectMET:
 process.egamma = cms.Path(process.egammaPostRecoSeq)
 
 if options.deterministicSeeds:
-    process.seeds = cms.Path(process.deterministicSeeds)
+    process.seeds = cms.Task(process.deterministicSeeds)
+    process.final.associate(process.seeds)
 
-process.leptons_photons = cms.Path()
-process.leptons_photons *= (
-    process.SelectedElectronProducer
-    * process.SelectedMuonProducer
-    * process.SelectedPhotonProducer
+process.leptons_photons = cms.Task()
+process.leptons_photons.add(
+    process.SelectedElectronProducer,process.SelectedMuonProducer,process.SelectedPhotonProducer
 )
+process.final.associate(process.leptons_photons)
 
-process.jets = cms.Path()
-process.jets *= process.CorrectedJetProducerAK4
-process.jets *= process.CorrectedJetProducerAK8
-process.jets *= process.CorrectedJetProducerAK15
+process.jets = cms.Task()
+process.jets.add(process.CorrectedJetProducerAK4)
+process.jets.add(process.CorrectedJetProducerAK8)
+process.jets.add(process.CorrectedJetProducerAK15)
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed
 for s in [""] + systs:
-    process.jets *= getattr(process, "patSmearedJetsAK4" + s)
-    process.jets *= getattr(process, "patSmearedJetsAK8" + s)
-    process.jets *= getattr(process, "patSmearedJetsAK15" + s)
-    process.jets *= getattr(process, "SelectedJetProducerAK4" + s)
-    process.jets *= getattr(process, "SelectedJetProducerAK8" + s)
-    process.jets *= getattr(process, "SelectedJetProducerAK15" + s)
+    process.jets.add(getattr(process, "patSmearedJetsAK4" + s))
+    process.jets.add(getattr(process, "patSmearedJetsAK8" + s))
+    process.jets.add(getattr(process, "patSmearedJetsAK15" + s))
+    process.jets.add(getattr(process, "SelectedJetProducerAK4" + s))
+    process.jets.add(getattr(process, "SelectedJetProducerAK8" + s))
+    process.jets.add(getattr(process, "SelectedJetProducerAK15" + s))
 
+process.final.associate(process.jets)
 
 if not options.isData and not options.isBoostedMiniAOD:
-    process.tthfmatcher = cms.Path()
-    process.tthfmatcher *= (
+    process.tthfmatcher = cms.Task()
+    process.tthfmatcher.add(
         process.genParticlesForJetsNoNu
-        * process.ak4GenJetsCustom
-        * process.selectedHadronsAndPartons
-        * process.genJetFlavourInfos
-        * process.matchGenBHadron
-        * process.matchGenCHadron
-        * process.categorizeGenTtbar
+        ,process.ak4GenJetsCustom
+        ,process.selectedHadronsAndPartons
+        ,process.genJetFlavourInfos
+        ,process.matchGenBHadron
+        ,process.matchGenCHadron
+        ,process.categorizeGenTtbar
     )
+    process.final.associate(process.tthfmatcher)
 
 
-process.final = cms.EndPath(process.BoostedAnalyzer)
