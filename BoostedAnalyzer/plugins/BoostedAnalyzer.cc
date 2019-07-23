@@ -278,6 +278,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
     edm::EDGetTokenT< std::vector< reco::GenJet > > genJetsToken;
     // LHERunInfo data access token
     edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoToken;
+    edm::EDGetTokenT< LHERunInfoProduct > LHERunInfoToken_source;
 
     /** time counter */
     TStopwatch watch;
@@ -343,7 +344,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     lheInfoToken_source{consumes< LHEEventProduct >(iConfig.getParameter< edm::InputTag >("lheInfo_source"))},
     genParticlesToken{consumes< std::vector< reco::GenParticle > >(iConfig.getParameter< edm::InputTag >("genParticles"))},
     genJetsToken{consumes< std::vector< reco::GenJet > >(iConfig.getParameter< edm::InputTag >("genJets"))},
-    LHERunInfoToken{consumes< LHERunInfoProduct, edm::InRun >(edm::InputTag("externalLHEProducer"))}
+    LHERunInfoToken{consumes< LHERunInfoProduct, edm::InRun >(edm::InputTag("externalLHEProducer"))},
+    LHERunInfoToken_source{consumes< LHERunInfoProduct, edm::InRun >(edm::InputTag("source"))}
 
 {
     // set up resource monitor
