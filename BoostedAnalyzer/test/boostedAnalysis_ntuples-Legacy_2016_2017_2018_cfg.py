@@ -386,43 +386,43 @@ if options.isData:
     )  # add residual JEC for data
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
-#from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+# from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
-#updateJetCollection(
-   #process,
-   #labelName = 'AK15SoftDropSubjetsWithDeepJet',
-   #jetSource = cms.InputTag("selectedPatJetsAK15PFPuppiSoftDropPacked","SubJets","SKIM"),
-   #jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet','L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),# Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
-   #btagDiscriminators = ['pfDeepFlavourJetTags:probb',
-                #'pfDeepFlavourJetTags:probbb',
-                #'pfDeepFlavourJetTags:problepb',
-                #'pfDeepFlavourJetTags:probc',
-                #'pfDeepFlavourJetTags:probuds',
-                #'pfDeepFlavourJetTags:probg'],
-   #explicitJTA = True,          # needed for subjet b tagging
-   #svClustering = False,        # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
-   #fatJets = cms.InputTag("selectedUpdatedPatJetsAK15WithPuppiDaughters", "", "SKIM"), # needed for subjet b tagging
-   #rParam = 1.5,                # needed for subjet b tagging
-   #algo = 'ak'                  # has to be defined but is not used with svClustering=False
-#)
+# updateJetCollection(
+# process,
+# labelName = 'AK15SoftDropSubjetsWithDeepJet',
+# jetSource = cms.InputTag("selectedPatJetsAK15PFPuppiSoftDropPacked","SubJets","SKIM"),
+# jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet','L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),# Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+# btagDiscriminators = ['pfDeepFlavourJetTags:probb',
+#'pfDeepFlavourJetTags:probbb',
+#'pfDeepFlavourJetTags:problepb',
+#'pfDeepFlavourJetTags:probc',
+#'pfDeepFlavourJetTags:probuds',
+#'pfDeepFlavourJetTags:probg'],
+# explicitJTA = True,          # needed for subjet b tagging
+# svClustering = False,        # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
+# fatJets = cms.InputTag("selectedUpdatedPatJetsAK15WithPuppiDaughters", "", "SKIM"), # needed for subjet b tagging
+# rParam = 1.5,                # needed for subjet b tagging
+# algo = 'ak'                  # has to be defined but is not used with svClustering=False
+# )
 
-## this producer merges the ak15 fat jets (groomed with softdrop) with the softdrop subjets   
-#process.MergeAK15FatjetsAndSubjets=cms.EDProducer("BoostedJetMerger",
-                               #jetSrc=cms.InputTag("selectedPatJetsAK15PFPuppiSoftDrop", "", "SKIM"),
-                               #subjetSrc=cms.InputTag("selectedUpdatedPatJetsAK15SoftDropSubjetsWithDeepJet"))
+## this producer merges the ak15 fat jets (groomed with softdrop) with the softdrop subjets
+# process.MergeAK15FatjetsAndSubjets=cms.EDProducer("BoostedJetMerger",
+# jetSrc=cms.InputTag("selectedPatJetsAK15PFPuppiSoftDrop", "", "SKIM"),
+# subjetSrc=cms.InputTag("selectedUpdatedPatJetsAK15SoftDropSubjetsWithDeepJet"))
 
 ## this producer puts all information from the ak15 fat jets (groomed and ungroomed) and the subjets into one collection containing everything
-#process.AK15PFPuppiWithDeepAK15WithSoftDropSubjetsWithDeepJet=cms.EDProducer("JetSubstructurePacker",
-                                           #jetSrc = cms.InputTag("selectedUpdatedPatJetsAK15WithPuppiDaughters", "", "SKIM"),
-                                           #distMax = cms.double(1.5),
-                                           #algoTags = cms.VInputTag(
-                                               #cms.InputTag("MergeAK15FatjetsAndSubjets")
-                                           #),
-                                           #algoLabels = cms.vstring(
-                                               #'SoftDropWithDeepJet'
-                                           #),
-                                          #fixDaughters = cms.bool(False),
-                                            #)
+# process.AK15PFPuppiWithDeepAK15WithSoftDropSubjetsWithDeepJet=cms.EDProducer("JetSubstructurePacker",
+# jetSrc = cms.InputTag("selectedUpdatedPatJetsAK15WithPuppiDaughters", "", "SKIM"),
+# distMax = cms.double(1.5),
+# algoTags = cms.VInputTag(
+# cms.InputTag("MergeAK15FatjetsAndSubjets")
+# ),
+# algoLabels = cms.vstring(
+#'SoftDropWithDeepJet'
+# ),
+# fixDaughters = cms.bool(False),
+# )
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
@@ -1057,7 +1057,7 @@ if options.isData:
         "TriggerVarProcessor",
         "PhotonVarProcessor",
         "JetVarProcessor",
-        "DarkMatterProcessor"
+        "DarkMatterProcessor",
     )
 else:
     process.BoostedAnalyzer.processorNames = cms.vstring(
@@ -1067,7 +1067,7 @@ else:
         "TriggerVarProcessor",
         "PhotonVarProcessor",
         "JetVarProcessor",
-        "DarkMatterProcessor"
+        "DarkMatterProcessor",
     )
 
 if process.BoostedAnalyzer.taggingSelection:
@@ -1126,13 +1126,15 @@ if options.deterministicSeeds:
 
 process.leptons_photons = cms.Task()
 process.leptons_photons.add(
-    process.SelectedElectronProducer,process.SelectedMuonProducer,process.SelectedPhotonProducer
+    process.SelectedElectronProducer,
+    process.SelectedMuonProducer,
+    process.SelectedPhotonProducer,
 )
 process.final.associate(process.leptons_photons)
 
 process.jets = cms.Task()
-#process.jets.add(process.MergeAK15FatjetsAndSubjets)
-#process.jets.add(process.AK15PFPuppiWithDeepAK15WithSoftDropSubjetsWithDeepJet)
+# process.jets.add(process.MergeAK15FatjetsAndSubjets)
+# process.jets.add(process.AK15PFPuppiWithDeepAK15WithSoftDropSubjetsWithDeepJet)
 process.jets.add(process.CorrectedJetProducerAK4)
 process.jets.add(process.CorrectedJetProducerAK8)
 process.jets.add(process.CorrectedJetProducerAK15)
@@ -1144,20 +1146,20 @@ for s in [""] + systs:
     process.jets.add(getattr(process, "SelectedJetProducerAK4" + s))
     process.jets.add(getattr(process, "SelectedJetProducerAK8" + s))
     process.jets.add(getattr(process, "SelectedJetProducerAK15" + s))
-#process.final.associate(process.patAlgosToolsTask)
+# process.final.associate(process.patAlgosToolsTask)
 process.final.associate(process.jets)
 
 if not options.isData and not options.isBoostedMiniAOD:
     process.tthfmatcher = cms.Task()
     process.tthfmatcher.add(
-        process.genParticlesForJetsNoNu
-        ,process.ak4GenJetsCustom
-        ,process.selectedHadronsAndPartons
-        ,process.genJetFlavourInfos
-        ,process.matchGenBHadron
-        ,process.matchGenCHadron
-        ,process.categorizeGenTtbar
+        process.genParticlesForJetsNoNu,
+        process.ak4GenJetsCustom,
+        process.selectedHadronsAndPartons,
+        process.genJetFlavourInfos,
+        process.matchGenBHadron,
+        process.matchGenCHadron,
+        process.categorizeGenTtbar,
     )
     process.final.associate(process.tthfmatcher)
 
-#print process.dumpPython()
+# print process.dumpPython()
