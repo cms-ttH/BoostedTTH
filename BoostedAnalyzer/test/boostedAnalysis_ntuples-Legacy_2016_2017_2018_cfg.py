@@ -1057,6 +1057,7 @@ if options.isData:
         "TriggerVarProcessor",
         "PhotonVarProcessor",
         "JetVarProcessor",
+        "DarkMatterProcessor"
     )
 else:
     process.BoostedAnalyzer.processorNames = cms.vstring(
@@ -1066,6 +1067,7 @@ else:
         "TriggerVarProcessor",
         "PhotonVarProcessor",
         "JetVarProcessor",
+        "DarkMatterProcessor"
     )
 
 if process.BoostedAnalyzer.taggingSelection:

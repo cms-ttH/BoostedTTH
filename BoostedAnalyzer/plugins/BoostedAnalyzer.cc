@@ -510,7 +510,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
         if (std::find(processorNames.begin(), processorNames.end(), "JetVarProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new JetVarProcessor(), "JetVarProcessor");
         }
-
+        if (std::find(processorNames.begin(), processorNames.end(), "DarkMatterProcessor") != processorNames.end()) {
+            treewriter->AddTreeProcessor(new DarkMatterProcessor(), "DarkMatterProcessor");
+        }
         if (std::find(processorNames.begin(), processorNames.end(), "essentialMVAVarProcessor") != processorNames.end()) {
             if (std::find(processorNames.begin(), processorNames.end(), "essentialBasicVarProcessor") == processorNames.end()) {
                 cout << "adding essentialBasicVarProcessor, needed for "
