@@ -36,9 +36,9 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     if (input.selectedJetsAK15.size() != 1) return false;
 
     // AK15 jet has to fulfill pt,eta and several quality criteria
-    bool leading_jet_criterium = input.selectedJetsAK15.at(0).pt() > pt_min && fabs(input.selectedJetsAK15.at(0).eta()) < eta_max &&
-                                 charged_hadron_fraction_min < input.selectedJetsAK15.at(0).userFloat("chargedHadronEnergyFraction") &&
-                                 neutral_hadron_fraction_max > input.selectedJetsAK15.at(0).userFloat("neutralHadronEnergyFraction");
+    bool leading_jet_criterium = input.selectedJetsAK15.at(0).pt() > pt_min && fabs(input.selectedJetsAK15.at(0).eta()) < eta_max;  //&&
+    //                                  charged_hadron_fraction_min < input.selectedJetsAK15.at(0).userFloat("chargedHadronEnergyFraction") &&
+    //                                  neutral_hadron_fraction_max > input.selectedJetsAK15.at(0).userFloat("neutralHadronEnergyFraction");
 
     if (!leading_jet_criterium) return false;
 
@@ -70,8 +70,8 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     }
 
     hadr_recoil_p4 = met_p4;
-    for (const auto& el : input.selectedElectronsLoose) { hadr_recoil_p4 += el.p4(); }
-    for (const auto& mu : input.selectedMuonsLoose) { hadr_recoil_p4 += mu.p4(); }
+    for (const auto& el : input.selectedElectrons) { hadr_recoil_p4 += el.p4(); }
+    for (const auto& mu : input.selectedMuons) { hadr_recoil_p4 += mu.p4(); }
     for (const auto& ph : input.selectedPhotons) { hadr_recoil_p4 += ph.p4(); }
 
     if (met_p4.pt() < minMET && hadr_recoil_p4.pt() < minMET) return false;
