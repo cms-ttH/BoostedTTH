@@ -57,19 +57,19 @@ void MCMatchVarProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("GenTopLep_Lep_E", -9., "N_GenTopLep");
     vars.InitVars("GenTopLep_Nu_E", -9., "N_GenTopLep");
 
-    vars.InitVar("GenHiggs_Pt", -9.);
-    vars.InitVar("GenHiggs_Eta", -9.);
-    vars.InitVar("GenHiggs_Phi", -9.);
-    vars.InitVar("GenHiggs_E", -9.);
-    vars.InitVar("GenHiggs_Y", -9.);
-    vars.InitVar("GenHiggs_B1_Pt", -9.);
-    vars.InitVar("GenHiggs_B2_Pt", -9.);
-    vars.InitVar("GenHiggs_B1_Eta", -9.);
-    vars.InitVar("GenHiggs_B2_Eta", -9.);
-    vars.InitVar("GenHiggs_B1_Phi", -9.);
-    vars.InitVar("GenHiggs_B2_Phi", -9.);
-    vars.InitVar("GenHiggs_B1_E", -9.);
-    vars.InitVar("GenHiggs_B2_E", -9.);
+    //     vars.InitVar("GenHiggs_Pt", -9.);
+    //     vars.InitVar("GenHiggs_Eta", -9.);
+    //     vars.InitVar("GenHiggs_Phi", -9.);
+    //     vars.InitVar("GenHiggs_E", -9.);
+    //     vars.InitVar("GenHiggs_Y", -9.);
+    //     vars.InitVar("GenHiggs_B1_Pt", -9.);
+    //     vars.InitVar("GenHiggs_B2_Pt", -9.);
+    //     vars.InitVar("GenHiggs_B1_Eta", -9.);
+    //     vars.InitVar("GenHiggs_B2_Eta", -9.);
+    //     vars.InitVar("GenHiggs_B1_Phi", -9.);
+    //     vars.InitVar("GenHiggs_B2_Phi", -9.);
+    //     vars.InitVar("GenHiggs_B1_E", -9.);
+    //     vars.InitVar("GenHiggs_B2_E", -9.);
 
     vars.InitVars("GenTopHad_B_Idx", -1, "N_GenTopHad");
     vars.InitVars("GenTopHad_Q1_Idx", -1, "N_GenTopHad");
@@ -78,23 +78,23 @@ void MCMatchVarProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("GenHiggs_B1_Idx", -1);
     vars.InitVar("GenHiggs_B2_Idx", -1);
 
-    vars.InitVar("GenHiggs_DecProd1_Pt", -9.);
-    vars.InitVar("GenHiggs_DecProd1_Eta", -9.);
-    vars.InitVar("GenHiggs_DecProd1_E", -9.);
-    vars.InitVar("GenHiggs_DecProd1_PDGID", -999);
-    vars.InitVar("GenHiggs_DecProd2_Pt", -9.);
-    vars.InitVar("GenHiggs_DecProd2_Eta", -9.);
-    vars.InitVar("GenHiggs_DecProd2_E", -9.);
-    vars.InitVar("GenHiggs_DecProd2_PDGID", -999);
-
-    vars.InitVar("GenHiggs_B1_GenJet_Pt", -9.);
-    vars.InitVar("GenHiggs_B2_GenJet_Pt", -9.);
-    vars.InitVar("GenHiggs_B1_GenJet_Eta", -9.);
-    vars.InitVar("GenHiggs_B2_GenJet_Eta", -9.);
-    vars.InitVar("GenHiggs_B1_GenJet_Phi", -9.);
-    vars.InitVar("GenHiggs_B2_GenJet_Phi", -9.);
-    vars.InitVar("GenHiggs_B1_GenJet_E", -9.);
-    vars.InitVar("GenHiggs_B2_GenJet_E", -9.);
+    //     vars.InitVar("GenHiggs_DecProd1_Pt", -9.);
+    //     vars.InitVar("GenHiggs_DecProd1_Eta", -9.);
+    //     vars.InitVar("GenHiggs_DecProd1_E", -9.);
+    //     vars.InitVar("GenHiggs_DecProd1_PDGID", -999);
+    //     vars.InitVar("GenHiggs_DecProd2_Pt", -9.);
+    //     vars.InitVar("GenHiggs_DecProd2_Eta", -9.);
+    //     vars.InitVar("GenHiggs_DecProd2_E", -9.);
+    //     vars.InitVar("GenHiggs_DecProd2_PDGID", -999);
+    //
+    //     vars.InitVar("GenHiggs_B1_GenJet_Pt", -9.);
+    //     vars.InitVar("GenHiggs_B2_GenJet_Pt", -9.);
+    //     vars.InitVar("GenHiggs_B1_GenJet_Eta", -9.);
+    //     vars.InitVar("GenHiggs_B2_GenJet_Eta", -9.);
+    //     vars.InitVar("GenHiggs_B1_GenJet_Phi", -9.);
+    //     vars.InitVar("GenHiggs_B2_GenJet_Phi", -9.);
+    //     vars.InitVar("GenHiggs_B1_GenJet_E", -9.);
+    //     vars.InitVar("GenHiggs_B2_GenJet_E", -9.);
 
     vars.InitVars("GenTopLep_B_GenJet_Pt", -9., "N_GenTopLep");
     vars.InitVars("GenTopHad_B_GenJet_Pt", -9., "N_GenTopHad");
@@ -105,14 +105,14 @@ void MCMatchVarProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("GenTopLep_B_GenJet_E", -9., "N_GenTopLep");
     vars.InitVars("GenTopHad_B_GenJet_E", -9., "N_GenTopHad");
 
-    vars.InitVar("GenHiggs_B1_Hadron_Pt", -9.);
-    vars.InitVar("GenHiggs_B2_Hadron_Pt", -9.);
-    vars.InitVar("GenHiggs_B1_Hadron_Eta", -9.);
-    vars.InitVar("GenHiggs_B2_Hadron_Eta", -9.);
-    vars.InitVar("GenHiggs_B1_Hadron_Phi", -9.);
-    vars.InitVar("GenHiggs_B2_Hadron_Phi", -9.);
-    vars.InitVar("GenHiggs_B1_Hadron_E", -9.);
-    vars.InitVar("GenHiggs_B2_Hadron_E", -9.);
+    //     vars.InitVar("GenHiggs_B1_Hadron_Pt", -9.);
+    //     vars.InitVar("GenHiggs_B2_Hadron_Pt", -9.);
+    //     vars.InitVar("GenHiggs_B1_Hadron_Eta", -9.);
+    //     vars.InitVar("GenHiggs_B2_Hadron_Eta", -9.);
+    //     vars.InitVar("GenHiggs_B1_Hadron_Phi", -9.);
+    //     vars.InitVar("GenHiggs_B2_Hadron_Phi", -9.);
+    //     vars.InitVar("GenHiggs_B1_Hadron_E", -9.);
+    //     vars.InitVar("GenHiggs_B2_Hadron_E", -9.);
 
     vars.InitVars("GenTopLep_B_Hadron_Pt", -9., "N_GenTopLep");
     vars.InitVars("GenTopHad_B_Hadron_Pt", -9., "N_GenTopHad");
@@ -213,29 +213,29 @@ void MCMatchVarProcessor::Process(const InputCollections& input, VariableContain
     reco::GenParticle decProd2;
 
     // if(higgs_bs.size()>2)std::cout<<"MORE THAN TWO HIGGS PRODUCTS"<<std::endl;
-    bool dfirst = true;
-    for (auto p = higgs_bs.begin(); p != higgs_bs.end(); p++) {
-        if (p->pdgId() == 5) b1 = *p;
-        if (p->pdgId() == -5) b2 = *p;
-        if (dfirst) {
-            decProd1 = *p;
-            dfirst   = false;
-        }
-        else {
-            decProd2 = *p;
-        }
-    }
+    //     bool dfirst = true;
+    //     for (auto p = higgs_bs.begin(); p != higgs_bs.end(); p++) {
+    //         if (p->pdgId() == 5) b1 = *p;
+    //         if (p->pdgId() == -5) b2 = *p;
+    //         if (dfirst) {
+    //             decProd1 = *p;
+    //             dfirst   = false;
+    //         }
+    //         else {
+    //             decProd2 = *p;
+    //         }
+    //     }
 
-    if (decProd1.pt() > 0.) {
-        vars.FillVar("GenHiggs_DecProd1_Pt", decProd1.pt());
-        vars.FillVar("GenHiggs_DecProd2_Pt", decProd2.pt());
-        vars.FillVar("GenHiggs_DecProd1_Eta", decProd1.eta());
-        vars.FillVar("GenHiggs_DecProd2_Eta", decProd2.eta());
-        vars.FillVar("GenHiggs_DecProd1_E", decProd1.energy());
-        vars.FillVar("GenHiggs_DecProd2_E", decProd2.energy());
-        vars.FillVar("GenHiggs_DecProd1_PDGID", decProd1.pdgId());
-        vars.FillVar("GenHiggs_DecProd2_PDGID", decProd2.pdgId());
-    }
+    //     if (decProd1.pt() > 0.) {
+    //         vars.FillVar("GenHiggs_DecProd1_Pt", decProd1.pt());
+    //         vars.FillVar("GenHiggs_DecProd2_Pt", decProd2.pt());
+    //         vars.FillVar("GenHiggs_DecProd1_Eta", decProd1.eta());
+    //         vars.FillVar("GenHiggs_DecProd2_Eta", decProd2.eta());
+    //         vars.FillVar("GenHiggs_DecProd1_E", decProd1.energy());
+    //         vars.FillVar("GenHiggs_DecProd2_E", decProd2.energy());
+    //         vars.FillVar("GenHiggs_DecProd1_PDGID", decProd1.pdgId());
+    //         vars.FillVar("GenHiggs_DecProd2_PDGID", decProd2.pdgId());
+    //     }
     // std::cout<<decProd1.pdgId()<<" "<<decProd2.pdgId()<<std::endl;
 
     vars.FillVar("N_GenTopLep", toplep.size());
@@ -325,46 +325,46 @@ void MCMatchVarProcessor::Process(const InputCollections& input, VariableContain
         if (minDrTopHadQ2 < .25) { vars.FillVars("GenTopHad_Q2_Idx", i, idxq2); }
     }
 
-    if (higgs.pt() > 0.) {
-        vars.FillVar("GenHiggs_Pt", higgs.pt());
-        vars.FillVar("GenHiggs_Eta", higgs.eta());
-        vars.FillVar("GenHiggs_Phi", higgs.phi());
-        vars.FillVar("GenHiggs_E", higgs.energy());
-        vars.FillVar("GenHiggs_Y", higgs.rapidity());
-    }
-    if (b1.pt() > 0.) {
-        vars.FillVar("GenHiggs_B1_Pt", b1.pt());
-        vars.FillVar("GenHiggs_B2_Pt", b2.pt());
-        vars.FillVar("GenHiggs_B1_Eta", b1.eta());
-        vars.FillVar("GenHiggs_B2_Eta", b2.eta());
-        vars.FillVar("GenHiggs_B1_Phi", b1.phi());
-        vars.FillVar("GenHiggs_B2_Phi", b2.phi());
-        vars.FillVar("GenHiggs_B1_E", b1.energy());
-        vars.FillVar("GenHiggs_B2_E", b2.energy());
-
-        int idxb1 = -1;
-        int idxb2 = -1;
-
-        double minDrB1 = 999;
-        double minDrB2 = 999;
-
-        for (std::vector< math::XYZTLorentzVector >::iterator itJetVec = jetvecs.begin(); itJetVec != jetvecs.end(); ++itJetVec) {
-            assert(itJetVec->pt() > 0);
-            assert(b1.pt() > 0);
-            assert(b2.pt() > 0);
-            if (BoostedUtils::DeltaR(*itJetVec, b1.p4()) < minDrB1) {
-                idxb1   = itJetVec - jetvecs.begin();
-                minDrB1 = BoostedUtils::DeltaR(*itJetVec, b1.p4());
-            }
-            if (BoostedUtils::DeltaR(*itJetVec, b2.p4()) < minDrB2) {
-                idxb2   = itJetVec - jetvecs.begin();
-                minDrB2 = BoostedUtils::DeltaR(*itJetVec, b2.p4());
-            }
-        }
-
-        if (minDrB1 < .25) { vars.FillVar("GenHiggs_B1_Idx", idxb1); }
-        if (minDrB2 < .25) { vars.FillVar("GenHiggs_B2_Idx", idxb2); }
-    }
+    //     if (higgs.pt() > 0.) {
+    //         vars.FillVar("GenHiggs_Pt", higgs.pt());
+    //         vars.FillVar("GenHiggs_Eta", higgs.eta());
+    //         vars.FillVar("GenHiggs_Phi", higgs.phi());
+    //         vars.FillVar("GenHiggs_E", higgs.energy());
+    //         vars.FillVar("GenHiggs_Y", higgs.rapidity());
+    //     }
+    //     if (b1.pt() > 0.) {
+    //         vars.FillVar("GenHiggs_B1_Pt", b1.pt());
+    //         vars.FillVar("GenHiggs_B2_Pt", b2.pt());
+    //         vars.FillVar("GenHiggs_B1_Eta", b1.eta());
+    //         vars.FillVar("GenHiggs_B2_Eta", b2.eta());
+    //         vars.FillVar("GenHiggs_B1_Phi", b1.phi());
+    //         vars.FillVar("GenHiggs_B2_Phi", b2.phi());
+    //         vars.FillVar("GenHiggs_B1_E", b1.energy());
+    //         vars.FillVar("GenHiggs_B2_E", b2.energy());
+    //
+    //         int idxb1 = -1;
+    //         int idxb2 = -1;
+    //
+    //         double minDrB1 = 999;
+    //         double minDrB2 = 999;
+    //
+    //         for (std::vector< math::XYZTLorentzVector >::iterator itJetVec = jetvecs.begin(); itJetVec != jetvecs.end(); ++itJetVec) {
+    //             assert(itJetVec->pt() > 0);
+    //             assert(b1.pt() > 0);
+    //             assert(b2.pt() > 0);
+    //             if (BoostedUtils::DeltaR(*itJetVec, b1.p4()) < minDrB1) {
+    //                 idxb1   = itJetVec - jetvecs.begin();
+    //                 minDrB1 = BoostedUtils::DeltaR(*itJetVec, b1.p4());
+    //             }
+    //             if (BoostedUtils::DeltaR(*itJetVec, b2.p4()) < minDrB2) {
+    //                 idxb2   = itJetVec - jetvecs.begin();
+    //                 minDrB2 = BoostedUtils::DeltaR(*itJetVec, b2.p4());
+    //             }
+    //         }
+    //
+    //         if (minDrB1 < .25) { vars.FillVar("GenHiggs_B1_Idx", idxb1); }
+    //         if (minDrB2 < .25) { vars.FillVar("GenHiggs_B2_Idx", idxb2); }
+    //     }
     if (input.genTopEvt.IsFilled() && input.genTopEvt.TTxIsFilled() && input.genTopEvt.IsSemiLepton()) {
         std::vector< reco::GenJet > bhad_genjet = input.genTopEvt.GetAllTopHadBGenJets();
         std::vector< reco::GenJet > blep_genjet = input.genTopEvt.GetAllTopLepBGenJets();
@@ -376,23 +376,23 @@ void MCMatchVarProcessor::Process(const InputCollections& input, VariableContain
         reco::GenParticle                b1_hadron   = input.genTopEvt.GetHiggsBBarHadron();
         reco::GenParticle                b2_hadron   = input.genTopEvt.GetHiggsBHadron();
 
-        vars.FillVar("GenHiggs_B1_GenJet_Pt", b1_genjet.pt());
-        vars.FillVar("GenHiggs_B2_GenJet_Pt", b2_genjet.pt());
-        vars.FillVar("GenHiggs_B1_GenJet_Eta", b1_genjet.eta());
-        vars.FillVar("GenHiggs_B2_GenJet_Eta", b2_genjet.eta());
-        vars.FillVar("GenHiggs_B1_GenJet_Phi", b1_genjet.phi());
-        vars.FillVar("GenHiggs_B2_GenJet_Phi", b2_genjet.phi());
-        vars.FillVar("GenHiggs_B1_GenJet_E", b1_genjet.energy());
-        vars.FillVar("GenHiggs_B2_GenJet_E", b2_genjet.energy());
-
-        vars.FillVar("GenHiggs_B1_Hadron_Pt", b1_hadron.pt());
-        vars.FillVar("GenHiggs_B2_Hadron_Pt", b2_hadron.pt());
-        vars.FillVar("GenHiggs_B1_Hadron_Eta", b1_hadron.eta());
-        vars.FillVar("GenHiggs_B2_Hadron_Eta", b2_hadron.eta());
-        vars.FillVar("GenHiggs_B1_Hadron_Phi", b1_hadron.phi());
-        vars.FillVar("GenHiggs_B2_Hadron_Phi", b2_hadron.phi());
-        vars.FillVar("GenHiggs_B1_Hadron_E", b1_hadron.energy());
-        vars.FillVar("GenHiggs_B2_Hadron_E", b2_hadron.energy());
+        //         vars.FillVar("GenHiggs_B1_GenJet_Pt", b1_genjet.pt());
+        //         vars.FillVar("GenHiggs_B2_GenJet_Pt", b2_genjet.pt());
+        //         vars.FillVar("GenHiggs_B1_GenJet_Eta", b1_genjet.eta());
+        //         vars.FillVar("GenHiggs_B2_GenJet_Eta", b2_genjet.eta());
+        //         vars.FillVar("GenHiggs_B1_GenJet_Phi", b1_genjet.phi());
+        //         vars.FillVar("GenHiggs_B2_GenJet_Phi", b2_genjet.phi());
+        //         vars.FillVar("GenHiggs_B1_GenJet_E", b1_genjet.energy());
+        //         vars.FillVar("GenHiggs_B2_GenJet_E", b2_genjet.energy());
+        //
+        //         vars.FillVar("GenHiggs_B1_Hadron_Pt", b1_hadron.pt());
+        //         vars.FillVar("GenHiggs_B2_Hadron_Pt", b2_hadron.pt());
+        //         vars.FillVar("GenHiggs_B1_Hadron_Eta", b1_hadron.eta());
+        //         vars.FillVar("GenHiggs_B2_Hadron_Eta", b2_hadron.eta());
+        //         vars.FillVar("GenHiggs_B1_Hadron_Phi", b1_hadron.phi());
+        //         vars.FillVar("GenHiggs_B2_Hadron_Phi", b2_hadron.phi());
+        //         vars.FillVar("GenHiggs_B1_Hadron_E", b1_hadron.energy());
+        //         vars.FillVar("GenHiggs_B2_Hadron_E", b2_hadron.energy());
 
         for (uint i = 0; i < bhad_genjet.size(); i++) {
             if (bhad_genjet[i].pt() > 1) {
