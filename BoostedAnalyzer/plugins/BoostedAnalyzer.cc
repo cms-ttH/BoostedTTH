@@ -853,20 +853,18 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     else if (((foundT && !foundTbar) || (!foundT && foundTbar)) && foundHiggs)
         sampleType = SampleType::thq;
 
-    // create GenDarkMatterEvent object
-    GenDarkMatterEvent genDarkMatterEvent;
     // create empty packedGenParticle dummy since this collection is not yet
     // needed, but maybe later
     std::vector< pat::PackedGenParticle > packedGenParticles_dummy;
+    // create GenDarkMatterEvent object
+    GenDarkMatterEvent genDarkMatterEvent(*h_genParticles, packedGenParticles_dummy);
     // initialze the GenDarkMatterEvent object with the collections of
     // genparticles
     if (!isData) {
-        genDarkMatterEvent.Initialize(*h_genParticles, packedGenParticles_dummy);
+        genDarkMatterEvent.Initialize();
         // fill the event
         genDarkMatterEvent.Fill();
         // genDarkMatterEvent.FillBoson();
-        // cout << "DarkMatterEvent MET: " <<
-        // genDarkMatterEvent.ReturnNaiveMET() << endl;
     }
 
     // selectiontags

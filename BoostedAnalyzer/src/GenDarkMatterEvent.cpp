@@ -2,17 +2,22 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
 
 // constructor
-GenDarkMatterEvent::GenDarkMatterEvent() {}
+GenDarkMatterEvent::GenDarkMatterEvent(const std::vector< reco::GenParticle >&      prunedGenParticles_,
+                                       const std::vector< pat::PackedGenParticle >& packedGenParticles_) :
+    prunedGenParticles{prunedGenParticles_},
+    packedGenParticles{packedGenParticles_}
+{
+}
 
 // destructor
 GenDarkMatterEvent::~GenDarkMatterEvent() {}
 
 // take the given genparticle collections and save a copy of them as member
 // variables
-void GenDarkMatterEvent::Initialize(std::vector< reco::GenParticle > prunedGenParticles_, std::vector< pat::PackedGenParticle > packedGenParticles_)
+void GenDarkMatterEvent::Initialize()
 {
-    prunedGenParticles = prunedGenParticles_;
-    packedGenParticles = packedGenParticles_;
+    // prunedGenParticles = prunedGenParticles_;
+    // packedGenParticles = packedGenParticles_;
 
     hasDarkMatter = false;
     isFilled      = false;
@@ -38,10 +43,10 @@ void GenDarkMatterEvent::Initialize(std::vector< reco::GenParticle > prunedGenPa
 }
 
 // return the prunedGenParticles collection
-std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnPrunedGenParticles() const { return prunedGenParticles; }
+const std::vector< reco::GenParticle >& GenDarkMatterEvent::ReturnPrunedGenParticles() const { return prunedGenParticles; }
 
 // return the packedGenParticles collection
-std::vector< pat::PackedGenParticle > GenDarkMatterEvent::ReturnPackedGenParticles() const { return packedGenParticles; }
+const std::vector< pat::PackedGenParticle >& GenDarkMatterEvent::ReturnPackedGenParticles() const { return packedGenParticles; }
 
 // fill the DarkMatter Event by retrieving all the needed information from the
 // genparticle collections
@@ -56,7 +61,7 @@ void GenDarkMatterEvent::Fill()
 
     // find the lightest neutralinos in the event, the mediator, and neutrinos
     for (size_t i = 0; i < prunedGenParticles.size(); i++) {
-        reco::GenParticle genparticle = prunedGenParticles[i];
+        const reco::GenParticle& genparticle = prunedGenParticles[i];
         if ((genparticle.pdgId() == 1000022 or abs(genparticle.pdgId()) == 18) and genparticle.status() == 1) { Neutralinos.push_back(genparticle); }
         if ((genparticle.pdgId() == 23 || genparticle.pdgId() == 25 || genparticle.pdgId() == 55) and genparticle.isLastCopy()) { Mediator = genparticle; }
         if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16) and genparticle.status() == 1) {

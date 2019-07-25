@@ -8,14 +8,14 @@
 class GenDarkMatterEvent {
    public:
     // constructor
-    GenDarkMatterEvent();
+    GenDarkMatterEvent(const std::vector< reco::GenParticle >& prunedGenParticles_, const std::vector< pat::PackedGenParticle >& packedGenParticles_);
     // destructor
     ~GenDarkMatterEvent();
-    void Initialize(std::vector< reco::GenParticle > prunedGenParticles_, std::vector< pat::PackedGenParticle > packedGenParticles_);
+    void Initialize();
     void Fill();
 
-    std::vector< reco::GenParticle >      ReturnPrunedGenParticles() const;
-    std::vector< pat::PackedGenParticle > ReturnPackedGenParticles() const;
+    const std::vector< reco::GenParticle >&      ReturnPrunedGenParticles() const;
+    const std::vector< pat::PackedGenParticle >& ReturnPackedGenParticles() const;
 
     reco::GenParticle                ReturnMediator() const;
     std::vector< reco::GenParticle > ReturnNeutralinos() const;
@@ -45,11 +45,11 @@ class GenDarkMatterEvent {
     bool hasDarkMatter = false;
     bool isFilled      = false;
 
-    std::vector< reco::GenParticle >      prunedGenParticles;
-    std::vector< pat::PackedGenParticle > packedGenParticles;
-    std::vector< reco::GenParticle >      Neutralinos;
-    reco::GenParticle                     Mediator;
-    std::vector< reco::GenParticle >      Neutrinos;
+    const std::vector< reco::GenParticle >&      prunedGenParticles;
+    const std::vector< pat::PackedGenParticle >& packedGenParticles;
+    std::vector< reco::GenParticle >             Neutralinos;
+    reco::GenParticle                            Mediator;
+    std::vector< reco::GenParticle >             Neutrinos;
 
     // for MC reweighting of Z/W boson + jets events
     bool                    hasVectorBoson = false;
