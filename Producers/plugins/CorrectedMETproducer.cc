@@ -68,7 +68,7 @@ std::vector< pat::MET > CorrectedMETproducer::CorrectMET(const std::vector< pat:
         pat::MET outMET = *oldMET;
         // cout << "before: uncor pt " << outMET.uncorPt() << " cor pt (type1) " <<
         // outMET.corPt(pat::MET::Type1) << " cor pt (type1XY) " <<
-        // outMET.corPt(pat::MET::Type1XY) << endl;
+        // outMET.corPt(pat::MET::Type1) << endl;
         if (oldMET - pfMETs.begin() == 0) {
             // get old MET p4
             reco::Candidate::LorentzVector oldMETVec(oldMET->corPx(pat::MET::Type1), oldMET->corPy(pat::MET::Type1), oldMET->pz(),
@@ -109,7 +109,7 @@ std::vector< pat::MET > CorrectedMETproducer::CorrectMET(const std::vector< pat:
             outMET.setP4(oldMETVec);
             // cout << "after: uncor pt " << outMET.uncorPt() << " cor pt (type1) " <<
             // outMET.corPt(pat::MET::Type1) << " cor pt (type1XY) " <<
-            // outMET.corPt(pat::MET::Type1XY) << endl;
+            // outMET.corPt(pat::MET::Type1) << endl;
         }
 
         outputMets.push_back(outMET);

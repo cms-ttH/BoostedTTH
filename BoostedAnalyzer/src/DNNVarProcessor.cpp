@@ -42,7 +42,7 @@ void DNNVarProcessor::Process(const InputCollections& input, VariableContainer& 
 
     std::vector< TLorentzVector > lepvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons, input.selectedMuons));
     std::vector< TLorentzVector > jetvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJets));
-    TLorentzVector                metP4   = BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
+    TLorentzVector                metP4   = BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1));
     std::vector< double >         jetcsvs;
     for (auto j = input.selectedJets.begin(); j != input.selectedJets.end(); j++) { jetcsvs.push_back(CSVHelper::GetJetCSV_DNN(*j, "DeepJet")); }
     dnn_output = sldnnclassifier->evaluate(jetvecs, jetcsvs, lepvecs[0], metP4, add_features);

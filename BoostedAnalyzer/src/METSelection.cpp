@@ -30,26 +30,26 @@ bool METSelection::IsSelected(const InputCollections& input, Cutflow& cutflow)
 
     // check if are jet systematic is being used and if so use the correct method
     // to extract the 4-vector from the pat::MET object
-    if (input.systematic == Systematics::JESup) { met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnUp, pat::MET::Type1XY); }
+    if (input.systematic == Systematics::JESup) { met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnUp, pat::MET::Type1); }
     else if (input.systematic == Systematics::JESdown) {
-        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnDown, pat::MET::Type1XY);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnDown, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::JERup) {
-        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResUp, pat::MET::Type1XY);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResUp, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::JERdown) {
-        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResDown, pat::MET::Type1XY);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResDown, pat::MET::Type1);
     }
     // else if(input.systematic==Systematics::METUnclENup) {
     //    met_p4 =
-    //    input.correctedMET.shiftedP4(pat::MET::UnclusteredEnUp,pat::MET::Type1XY);
+    //    input.correctedMET.shiftedP4(pat::MET::UnclusteredEnUp,pat::MET::Type1);
     //}
     // else if(input.systematic==Systematics::METUnclENdown) {
     //    met_p4 =
-    //    input.correctedMET.shiftedP4(pat::MET::UnclusteredEnDown,pat::MET::Type1XY);
+    //    input.correctedMET.shiftedP4(pat::MET::UnclusteredEnDown,pat::MET::Type1);
     //}
     else {
-        met_p4 = input.correctedMET.corP4(pat::MET::Type1XY);
+        met_p4 = input.correctedMET.corP4(pat::MET::Type1);
     }
 
     // after the correct pat::MET method has been used, get the pt of the MET

@@ -104,7 +104,7 @@ bool DiLeptonMETSelection::IsSelected(const InputCollections& input, Cutflow& cu
         return true;
     }
 
-    double met = input.correctedMET.corPt(pat::MET::Type1XY);
+    double met = input.correctedMET.corPt(pat::MET::Type1);
     if (met > minMET && met < maxMET) {
         cutflow.EventSurvivedStep(selectionName, input.weights.at("Weight"));
         return true;

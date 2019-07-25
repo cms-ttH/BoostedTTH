@@ -79,7 +79,7 @@ void BoostedttHEvent::LeptonRec() { lepVecCand = BoostedUtils::GetPrimLepVec(inp
 
 void BoostedttHEvent::NeutrinoRec()
 {
-    TVector2 metvec(input->correctedMET.corPx(pat::MET::Type1XY), input->correctedMET.corPy(pat::MET::Type1XY));
+    TVector2 metvec(input->correctedMET.corPx(pat::MET::Type1), input->correctedMET.corPy(pat::MET::Type1));
 
     if (lepVecCand.Pt() <= 0.001) return;
 

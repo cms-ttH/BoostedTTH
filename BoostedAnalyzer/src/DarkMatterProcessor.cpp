@@ -9,8 +9,8 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
 {
     vars.InitVar("Evt_Pt_MET");
     vars.InitVar("Evt_Phi_MET");
-    vars.InitVar("Evt_Pt_MET_T1");
-    vars.InitVar("Evt_Phi_MET_T1");
+    vars.InitVar("Evt_Pt_MET_T1XY");
+    vars.InitVar("Evt_Phi_MET_T1XY");
     vars.InitVar("Evt_Pt_MET_UnclEnUp");
     vars.InitVar("Evt_Pt_MET_UnclEnDown");
     vars.InitVar("Evt_Pt_GenMET");
@@ -139,32 +139,32 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     math::XYZTLorentzVector hadr_recoil_p4(0., 0., 0., 0.);
 
     // get reco MET
-    if (input.systematic == Systematics::JESup) { met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetEnUp, pat::MET::Type1XY); }
+    if (input.systematic == Systematics::JESup) { met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetEnUp, pat::MET::Type1); }
     else if (input.systematic == Systematics::JESdown) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetEnDown, pat::MET::Type1XY);
+        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetEnDown, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::JERup) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResUp, pat::MET::Type1XY);
+        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResUp, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::JERdown) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResDown, pat::MET::Type1XY);
+        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResDown, pat::MET::Type1);
     }
     //     else if (input.systematic == Systematics::METUnclENup) {
-    //         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp, pat::MET::Type1XY);
+    //         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp, pat::MET::Type1);
     //     }
     //     else if (input.systematic == Systematics::METUnclENdown) {
-    //         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown, pat::MET::Type1XY);
+    //         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown, pat::MET::Type1);
     //     }
     else {
-        met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1XY);
+        met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
     }
 
     vars.FillVar("Evt_Pt_MET", met_p4.pt());
     vars.FillVar("Evt_Phi_MET", met_p4.phi());
-    vars.FillVar("Evt_Pt_MET_T1", input.correctedMETPuppi.corPt(pat::MET::Type1));
-    vars.FillVar("Evt_Phi_MET_T1", input.correctedMETPuppi.corPhi(pat::MET::Type1));
-    vars.FillVar("Evt_Pt_MET_UnclEnUp", input.correctedMETPuppi.shiftedPt(pat::MET::UnclusteredEnUp, pat::MET::Type1XY));
-    vars.FillVar("Evt_Pt_MET_UnclEnDown", input.correctedMETPuppi.shiftedPt(pat::MET::UnclusteredEnDown, pat::MET::Type1XY));
+    vars.FillVar("Evt_Pt_MET_T1XY", input.correctedMETPuppi.corPt(pat::MET::Type1XY));
+    vars.FillVar("Evt_Phi_MET_T1XY", input.correctedMETPuppi.corPhi(pat::MET::Type1XY));
+    vars.FillVar("Evt_Pt_MET_UnclEnUp", input.correctedMETPuppi.shiftedPt(pat::MET::UnclusteredEnUp, pat::MET::Type1));
+    vars.FillVar("Evt_Pt_MET_UnclEnDown", input.correctedMETPuppi.shiftedPt(pat::MET::UnclusteredEnDown, pat::MET::Type1));
     vars.FillVar("CaloMET", input.correctedMETPuppi.caloMETPt());
     vars.FillVar("CaloMET_PFMET_ratio", fabs(met_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
 

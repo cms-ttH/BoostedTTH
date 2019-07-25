@@ -137,8 +137,8 @@ void SlimmedNtuples::Process(const std::vector< InputCollections >& input, Varia
     vars.FillIntVar("njets", iJet);
     vars.FillIntVar("nbtags", iBtag);
     // met properties
-    vars.FillVar("met_pt", input_nom.correctedMET.corPt(pat::MET::Type1XY));
-    vars.FillVar("met_phi", input_nom.correctedMET.corPhi(pat::MET::Type1XY));
+    vars.FillVar("met_pt", input_nom.correctedMET.corPt(pat::MET::Type1));
+    vars.FillVar("met_phi", input_nom.correctedMET.corPhi(pat::MET::Type1));
 
     // loop over all systematic jec sources
     for (uint i_sys = 1; i_sys < uint(input.size()); i_sys++) {

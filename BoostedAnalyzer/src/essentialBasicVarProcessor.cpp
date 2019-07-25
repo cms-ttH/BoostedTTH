@@ -191,12 +191,10 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Electron_ReconstructionSFUp", "N_TightElectrons");
     vars.InitVars("Electron_ReconstructionSFDown", "N_TightElectrons");
 
-    vars.InitVar("Evt_MET_Pt");
-    vars.InitVar("Evt_MET_Phi");
-    vars.InitVar("Evt_PuppiMET_Pt");
-    vars.InitVar("Evt_PuppiMET_Phi");
-    vars.InitVar("Gen_MET_Pt");
-    vars.InitVar("Gen_MET_Phi");
+    vars.InitVar("Evt_chsMET_Pt");
+    vars.InitVar("Evt_chsMET_Phi");
+    vars.InitVar("Gen_chsMET_Pt");
+    vars.InitVar("Gen_chsMET_Phi");
 
     vars.InitVars("CSV", "N_Jets");
     initialized = true;
@@ -483,18 +481,17 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         }
     }
 
-    vars.FillVar("Evt_MET_Pt", input.correctedMET.corPt(pat::MET::Type1XY));
-    vars.FillVar("Evt_MET_Phi", input.correctedMET.corPhi(pat::MET::Type1XY));
-    vars.FillVar("Evt_PuppiMET_Pt", input.correctedMETPuppi.corPt(pat::MET::Type1XY));
-    vars.FillVar("Evt_PuppiMET_Phi", input.correctedMETPuppi.corPhi(pat::MET::Type1XY));
+    vars.FillVar("Evt_chsMET_Pt", input.correctedMET.corPt(pat::MET::Type1));
+    vars.FillVar("Evt_chsMET_Phi", input.correctedMET.corPhi(pat::MET::Type1));
+
     if (input.correctedMET.genMET() != 0) {
-        vars.FillVar("Gen_MET_Pt", input.correctedMET.genMET()->pt());
-        vars.FillVar("Gen_MET_Phi", input.correctedMET.genMET()->phi());
+        vars.FillVar("Gen_chsMET_Pt", input.correctedMET.genMET()->pt());
+        vars.FillVar("Gen_chsMET_Phi", input.correctedMET.genMET()->phi());
     }
 
     // std::vector<math::XYZTLorentzVector> jetvecs =
     // BoostedUtils::GetJetVecs(input.selectedJets); math::XYZTLorentzVector metvec
-    // = input.correctedMET.corP4(pat::MET::Type1XY);
+    // = input.correctedMET.corP4(pat::MET::Type1);
 
     // Fill Number of b Tags
     vars.FillVar("N_BTagsM", selectedTaggedJets.size());

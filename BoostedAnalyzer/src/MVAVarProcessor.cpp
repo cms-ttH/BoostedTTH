@@ -636,7 +636,7 @@ void MVAVarProcessor::Process(const InputCollections& input, VariableContainer& 
 
         p4all += primLepVec;
 
-        p4all += input.correctedMET.corP4(pat::MET::Type1XY);
+        p4all += input.correctedMET.corP4(pat::MET::Type1);
 
         float costheta_jcm = BoostedUtils::CosThetaCM(*itJetVec, p4all);
         vars.FillVars("Jet_CosTheta_cm", iJetVec, costheta_jcm);
@@ -678,8 +678,8 @@ void MVAVarProcessor::Process(const InputCollections& input, VariableContainer& 
     float          aplanarity   = -1;
     float          sphericity   = -1;
     TLorentzVector primLepVecTL = BoostedUtils::GetTLorentzVector(primLepVec);
-    TLorentzVector metvecTL(input.correctedMET.corPx(pat::MET::Type1XY), input.correctedMET.corPy(pat::MET::Type1XY), 0,
-                            input.correctedMET.corP4(pat::MET::Type1XY).energy());
+    TLorentzVector metvecTL(input.correctedMET.corPx(pat::MET::Type1), input.correctedMET.corPy(pat::MET::Type1), 0,
+                            input.correctedMET.corP4(pat::MET::Type1).energy());
     // workaround to avoid bdtvar crashing
     if (jetvecsTL.size() > 0) bdtvar.getSp(primLepVecTL, metvecTL, jetvecsTL, aplanarity, sphericity);
     vars.FillVar("Evt_Aplanarity", aplanarity);
@@ -700,7 +700,7 @@ void MVAVarProcessor::Process(const InputCollections& input, VariableContainer& 
         pxpypzE.push_back(jet->energy());
         jets_vvdouble.push_back(pxpypzE);
     }
-    bdtvar.study_tops_bb_syst(input.correctedMET.corPt(pat::MET::Type1XY), input.correctedMET.corP4(pat::MET::Type1XY).phi(), dummy_metv, primLepVecTL,
+    bdtvar.study_tops_bb_syst(input.correctedMET.corPt(pat::MET::Type1), input.correctedMET.corP4(pat::MET::Type1).phi(), dummy_metv, primLepVecTL,
                               jets_vvdouble, csvJets, minChiStudy, chi2lepW, chi2leptop, chi2hadW, chi2hadtop, mass_lepW, mass_leptop, mass_hadW, mass_hadtop,
                               dRbbStudy, testquant1, testquant2, testquant3, testquant4, testquant5, testquant6, testquant7, b1, b2);
     float dEta_fn = testquant6;

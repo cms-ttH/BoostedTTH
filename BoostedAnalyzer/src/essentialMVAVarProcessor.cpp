@@ -38,7 +38,7 @@ void essentialMVAVarProcessor::Process(const InputCollections &input, VariableCo
     vector< TLorentzVector > lepvecs = BoostedUtils::GetTLorentzVectors(BoostedUtils::GetLepVecs(input.selectedElectrons, input.selectedMuons));
 
     // met vec
-    TLorentzVector metP4 = BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
+    TLorentzVector metP4 = BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1));
 
     // fill variables from common classifier
     varMap = pointerToMVAvars->GetMVAvars(lepvecs, jetvecsTL, csvJets, metP4);

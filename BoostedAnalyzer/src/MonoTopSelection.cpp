@@ -47,26 +47,26 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     math::XYZTLorentzVector met_p4(0., 0., 0., 0.);
     math::XYZTLorentzVector hadr_recoil_p4(0., 0., 0., 0.);
 
-    if (input.systematic == Systematics::JESup) { met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnUp, pat::MET::Type1XY); }
+    if (input.systematic == Systematics::JESup) { met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnUp, pat::MET::Type1); }
     else if (input.systematic == Systematics::JESdown) {
-        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnDown, pat::MET::Type1XY);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnDown, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::JERup) {
-        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResUp, pat::MET::Type1XY);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResUp, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::JERdown) {
-        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResDown, pat::MET::Type1XY);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResDown, pat::MET::Type1);
     }
     //     else if(input.systematic==Systematics::METUnclENup) {
     //       met_p4 =
-    //       input.correctedMET.shiftedP4(pat::MET::UnclusteredEnUp,pat::MET::Type1XY);
+    //       input.correctedMET.shiftedP4(pat::MET::UnclusteredEnUp,pat::MET::Type1);
     //     }
     //     else if(input.systematic==Systematics::METUnclENdown) {
     //         met_p4 =
-    //         input.correctedMET.shiftedP4(pat::MET::UnclusteredEnDown,pat::MET::Type1XY);
+    //         input.correctedMET.shiftedP4(pat::MET::UnclusteredEnDown,pat::MET::Type1);
     //     }
     else {
-        met_p4 = input.correctedMET.corP4(pat::MET::Type1XY);
+        met_p4 = input.correctedMET.corP4(pat::MET::Type1);
     }
 
     hadr_recoil_p4 = met_p4;

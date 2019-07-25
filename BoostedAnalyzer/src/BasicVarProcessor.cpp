@@ -226,15 +226,15 @@ void BasicVarProcessor::Process(const InputCollections& input, VariableContainer
         vars.FillVars("Muon_Charge", iMu, itMu->charge());
     }
 
-    vars.FillVar("Evt_Pt_MET", input.correctedMET.corP4(pat::MET::Type1XY).pt());
-    vars.FillVar("Evt_Phi_MET", input.correctedMET.corP4(pat::MET::Type1XY).phi());
+    vars.FillVar("Evt_Pt_MET", input.correctedMET.corP4(pat::MET::Type1).pt());
+    vars.FillVar("Evt_Phi_MET", input.correctedMET.corP4(pat::MET::Type1).phi());
     if (input.correctedMET.genMET() != 0) {
         vars.FillVar("Evt_Pt_GenMET", input.correctedMET.genMET()->pt());
         vars.FillVar("Evt_Phi_GenMET", input.correctedMET.genMET()->phi());
     }
 
     std::vector< math::XYZTLorentzVector > jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
-    math::XYZTLorentzVector                metvec  = input.correctedMET.corP4(pat::MET::Type1XY);
+    math::XYZTLorentzVector                metvec  = input.correctedMET.corP4(pat::MET::Type1);
 
     // Fill M3 Variables
     float m3    = -1.;
@@ -272,8 +272,8 @@ void BasicVarProcessor::Process(const InputCollections& input, VariableContainer
     float                   mtw        = -1.;
     if (input.selectedElectrons.size() > 0 || input.selectedMuons.size() > 0) {
         mtw =
-            sqrt(2 * (primLepVec.Pt() * input.correctedMET.corP4(pat::MET::Type1XY).pt() - primLepVec.Px() * input.correctedMET.corP4(pat::MET::Type1XY).px() -
-                      primLepVec.Py() * input.correctedMET.corP4(pat::MET::Type1XY).py()));
+            sqrt(2 * (primLepVec.Pt() * input.correctedMET.corP4(pat::MET::Type1).pt() - primLepVec.Px() * input.correctedMET.corP4(pat::MET::Type1).px() -
+                      primLepVec.Py() * input.correctedMET.corP4(pat::MET::Type1).py()));
     }
     vars.FillVar("Evt_MTW", mtw);
 
@@ -298,7 +298,7 @@ void BasicVarProcessor::Process(const InputCollections& input, VariableContainer
         mht_px += itMu->px();
         mht_py += itMu->py();
     }
-    ht += input.correctedMET.corP4(pat::MET::Type1XY).pt();
+    ht += input.correctedMET.corP4(pat::MET::Type1).pt();
 
     vars.FillVar("Evt_HT", ht);
     vars.FillVar("Evt_MHT", sqrt(mht_px * mht_px + mht_py * mht_py));

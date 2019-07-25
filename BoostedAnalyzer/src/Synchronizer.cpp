@@ -511,8 +511,8 @@ void Synchronizer::DumpSyncExe(const InputCollections& input, std::ostream& out,
         if (calculateMll) { mll = (vec1 + vec2).M(); }
     }
 
-    MET_pt  = input.correctedMET.corPt(pat::MET::Type1XY);
-    MET_phi = input.correctedMET.corPhi(pat::MET::Type1XY);
+    MET_pt  = input.correctedMET.corPt(pat::MET::Type1);
+    MET_phi = input.correctedMET.corPhi(pat::MET::Type1);
 
     if (input.weights.count("Weight_PU") > 0) puWeight = input.weights.at("Weight_PU");
     ttHFCategory   = input.genTopEvt.GetTTxIdFromProducerLong();
@@ -546,7 +546,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input, std::ostream& out,
     //     std::vector<TLorentzVector>
     //     loose_jetvecs=BoostedUtils::GetTLorentzVectors(BoostedUtils::GetJetVecs(input.selectedJetsLoose));
     //     TLorentzVector
-    //     metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
+    //     metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1));
     //     std::vector<double> jetcsvs;
     //     std::vector<double> jetcsvs_dnn;
     //     std::vector<double> loose_jetcsvs;
@@ -596,7 +596,7 @@ void Synchronizer::DumpSyncExe(const InputCollections& input, std::ostream& out,
     //     std::vector<double> add_features;
     //     std::vector<unsigned int> out_best_perm;
     //     TLorentzVector
-    //     metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1XY));
+    //     metP4=BoostedUtils::GetTLorentzVector(input.correctedMET.corP4(pat::MET::Type1));
     //     for(auto j=input.selectedJetsLoose.begin();
     //     j!=input.selectedJetsLoose.end(); j++){
     //         jetcsvs.push_back(CSVHelper::GetJetCSV(*j,"DeepJet"));
