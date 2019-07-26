@@ -24,8 +24,12 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Gen_Hadr_Recoil_Phi");
     vars.InitVar("CaloMET_Hadr_Recoil_ratio");
 
-    vars.InitVars("DeltaPhi_Jet_MET", "N_Jets");
-    vars.InitVars("DeltaPhi_Jet_Hadr_Recoil", "N_Jets");
+    vars.InitVars("DeltaPhi_AK4Jet_MET", "N_Jets");
+    vars.InitVars("DeltaPhi_AK4Jet_Hadr_Recoil", "N_Jets");
+    vars.InitVars("DeltaPhi_AK8Jet_MET", "N_AK8Jets");
+    vars.InitVars("DeltaPhi_AK8Jet_Hadr_Recoil", "N_AK8Jets");
+    vars.InitVars("DeltaPhi_AK15Jet_MET", "N_AK15Jets");
+    vars.InitVars("DeltaPhi_AK15Jet_Hadr_Recoil", "N_AK15Jets");
 
     vars.InitVar("N_Neutralinos", "I");
     vars.InitVar("N_Neutrinos", "I");
@@ -169,7 +173,13 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     vars.FillVar("CaloMET_PFMET_ratio", fabs(met_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
 
     for (size_t i = 0; i < input.selectedJets.size(); i++) {
-        vars.FillVars("DeltaPhi_Jet_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJets.at(i).phi())));
+        vars.FillVars("DeltaPhi_AK4Jet_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJets.at(i).phi())));
+    }
+    for (size_t i = 0; i < input.selectedJetsAK8.size(); i++) {
+        vars.FillVars("DeltaPhi_AK8Jet_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJetsAK8.at(i).phi())));
+    }
+    for (size_t i = 0; i < input.selectedJetsAK15.size(); i++) {
+        vars.FillVars("DeltaPhi_AK15Jet_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJetsAK15.at(i).phi())));
     }
 
     // calculate hadronic recoil from reco MET
@@ -183,7 +193,13 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     vars.FillVar("CaloMET_Hadr_Recoil_ratio", fabs(hadr_recoil_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
 
     for (size_t i = 0; i < input.selectedJets.size(); i++) {
-        vars.FillVars("DeltaPhi_Jet_Hadr_Recoil", i, fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi() - input.selectedJets.at(i).phi())));
+        vars.FillVars("DeltaPhi_AK4Jet_Hadr_Recoil", i, fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi() - input.selectedJets.at(i).phi())));
+    }
+    for (size_t i = 0; i < input.selectedJetsAK8.size(); i++) {
+        vars.FillVars("DeltaPhi_AK8Jet_Hadr_Recoil", i, fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi() - input.selectedJetsAK8.at(i).phi())));
+    }
+    for (size_t i = 0; i < input.selectedJetsAK15.size(); i++) {
+        vars.FillVars("DeltaPhi_AK15Jet_Hadr_Recoil", i, fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi() - input.selectedJetsAK15.at(i).phi())));
     }
 
     // get particle-level W/Z pt for later usage in V boson reweighting

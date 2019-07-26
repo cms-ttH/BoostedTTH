@@ -34,6 +34,16 @@ void MCMatchVarProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("GenTopHad_B_E", -9., "N_GenTopHad");
     vars.InitVars("GenTopHad_Q1_E", -9., "N_GenTopHad");
     vars.InitVars("GenTopHad_Q2_E", -9., "N_GenTopHad");
+    vars.InitVars("GenTopHad_Q1_Q2_DR",-9.,"N_GenTopHad");
+    vars.InitVars("GenTopHad_B_Q1_DR",-9.,"N_GenTopHad");
+    vars.InitVars("GenTopHad_B_Q2_DR",-9.,"N_GenTopHad");
+    vars.InitVars("GenTopHad_B_DR",-9.,"N_GenTopHad");
+    vars.InitVars("GenTopHad_Q1_DR",-9.,"N_GenTopHad");
+    vars.InitVars("GenTopHad_Q2_DR",-9.,"N_GenTopHad");
+    vars.InitVars("GenTopHad_W_DR",-9.,"N_GenTopHad");
+    vars.InitVars("GenTopHad_W_Q1_DR",-9.,"N_GenTopHad");
+    vars.InitVars("GenTopHad_W_Q2_DR",-9.,"N_GenTopHad");
+    
 
     vars.InitVar("N_GenTopLep", -1, "I");
     vars.InitVars("GenTopLep_Pt", -9., "N_GenTopLep");
@@ -323,6 +333,16 @@ void MCMatchVarProcessor::Process(const InputCollections& input, VariableContain
         if (minDrTopHadB < .25) { vars.FillVars("GenTopHad_B_Idx", i, idxbhad); }
         if (minDrTopHadQ1 < .25) { vars.FillVars("GenTopHad_Q1_Idx", i, idxq1); }
         if (minDrTopHadQ2 < .25) { vars.FillVars("GenTopHad_Q2_Idx", i, idxq2); }
+        
+        vars.FillVars("GenTopHad_Q1_Q2_DR", i, BoostedUtils::DeltaR(q1[i].p4(),q2[i].p4()));
+        vars.FillVars("GenTopHad_B_Q1_DR", i, BoostedUtils::DeltaR(bhad[i].p4(),q1[i].p4()));
+        vars.FillVars("GenTopHad_B_Q2_DR", i, BoostedUtils::DeltaR(bhad[i].p4(),q2[i].p4()));
+        vars.FillVars("GenTopHad_B_DR", i, BoostedUtils::DeltaR(tophad[i].p4(),bhad[i].p4()));
+        vars.FillVars("GenTopHad_Q1_DR", i, BoostedUtils::DeltaR(tophad[i].p4(),q1[i].p4()));
+        vars.FillVars("GenTopHad_Q2_DR", i, BoostedUtils::DeltaR(tophad[i].p4(),q2[i].p4()));
+        vars.FillVars("GenTopHad_W_DR", i, BoostedUtils::DeltaR(tophad[i].p4(),whad[i].p4()));
+        vars.FillVars("GenTopHad_W_Q1_DR", i, BoostedUtils::DeltaR(whad[i].p4(),q1[i].p4()));
+        vars.FillVars("GenTopHad_W_Q2_DR", i, BoostedUtils::DeltaR(whad[i].p4(),q2[i].p4()));
     }
 
     //     if (higgs.pt() > 0.) {
