@@ -84,7 +84,7 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     //}
 
     // Delta phi criterium between AK15 jet and MET
-    if (fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJetsAK15.at(0).phi())) < deltaR_MET_AK15Jet) return false;
+    //if (fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJetsAK15.at(0).phi())) < deltaR_MET_AK15Jet) return false;
 
     cutflow.EventSurvivedStep("MonoTopSelection", input.weights.at("Weight"));
     return true;
