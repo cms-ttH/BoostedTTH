@@ -82,13 +82,6 @@ options.register(
     "flag to identify which dataset is used, can be " + ",".join(datasets),
 )
 options.register(
-    "calcBJetness",
-    False,
-    VarParsing.multiplicity.singleton,
-    VarParsing.varType.bool,
-    "Calculate BJetness variables",
-)
-options.register(
     "dumpSyncExe",
     False,
     VarParsing.multiplicity.singleton,
