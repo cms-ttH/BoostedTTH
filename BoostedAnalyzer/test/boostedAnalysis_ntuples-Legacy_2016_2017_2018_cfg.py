@@ -598,26 +598,26 @@ from BoostedTTH.Producers.SelectedPhotonProducers_cfi import *
 
 if "2016" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2016
-    process.SelectedElectronProducer.ptMins = [15.0, 15.0, 29.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 15.0, 29.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2016
-    process.SelectedMuonProducer.ptMins = [15.0, 15.0, 26.0]
+    process.SelectedMuonProducer.ptMins = [10.0, 15.0, 26.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2016
 elif "2017" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2017
-    process.SelectedElectronProducer.ptMins = [15.0, 15.0, 30.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 15.0, 30.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2017
-    process.SelectedMuonProducer.ptMins = [15.0, 15.0, 29.0]
+    process.SelectedMuonProducer.ptMins = [10.0, 15.0, 29.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2017
 elif "2018" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2018
-    process.SelectedElectronProducer.ptMins = [15.0, 15.0, 30.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 15.0, 30.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2018
-    process.SelectedMuonProducer.ptMins = [15.0, 15.0, 26.0]
+    process.SelectedMuonProducer.ptMins = [10.0, 15.0, 26.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2018
 
@@ -653,7 +653,7 @@ process.SelectedMuonProducer.isData = options.isData
 process.SelectedMuonProducer.era = options.dataEra
 
 
-process.SelectedPhotonProducer.ptMins = [20.0, 175.0]
+process.SelectedPhotonProducer.ptMins = [15.0, 175.0]
 process.SelectedPhotonProducer.etaMaxs = [2.4, 2.4]
 process.SelectedPhotonProducer.IDs = ["loose", "tight"]
 process.SelectedPhotonProducer.collectionNames = [
