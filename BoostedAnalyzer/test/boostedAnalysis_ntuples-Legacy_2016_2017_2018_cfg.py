@@ -118,6 +118,8 @@ systsJES=[]
 systsJER=[]
 if options.systematicVariations:
     for var in options.systematicVariations:
+        if var == '':
+            continue
         if var.lower() == "nominal":
             writeNominal=True
         elif var.startswith("JES"):
