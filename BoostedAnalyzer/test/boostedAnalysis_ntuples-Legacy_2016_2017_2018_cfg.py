@@ -83,7 +83,8 @@ if not options.inputFiles:
             # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
         	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
         elif "2017" in options.dataEra:
-        	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
+            options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2017C/SingleElectron/MINIAOD/31Mar2018-v1/60000/C4A6A084-6737-E811-85F8-001F2908AF38.root']
+            # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root']
         elif "2018" in options.dataEra:
             # options.inputFiles=['root://xrootd-cms.infn.it//store/data/Run2018B/EGamma/MINIAOD/17Sep2018-v1/60000/37FD0663-1A14-2647-A16B-0ABB87234B43.root']
         	options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mschrode/SingleMuon/KIT_tthbb_skims_DATA_94X_LEG_2018A/190406_082949/0000/Skim_1.root']
