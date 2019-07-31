@@ -17,12 +17,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
 
     vars.InitVar("N_Jets", "I");
     vars.InitVar("N_LooseJets", "I");
-    vars.InitVar("N_TightLeptons", "I");
-    vars.InitVar("N_LooseLeptons", "I");
-    vars.InitVar("N_TightElectrons", "I");
-    vars.InitVar("N_LooseElectrons", "I");
-    vars.InitVar("N_TightMuons", "I");
-    vars.InitVar("N_LooseMuons", "I");
+
     vars.InitVar("N_BTagsL", "I");
     vars.InitVar("N_BTagsM", "I");
     vars.InitVar("N_BTagsT", "I");
@@ -99,98 +94,6 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     //     vars.InitVars("TaggedJet_DeepJet_uds", "N_BTagsM");
     //     vars.InitVars("TaggedJet_DeepJet_g", "N_BTagsM");
 
-    //     vars.InitVars("TightLepton_E", "N_TightLeptons");
-    //     vars.InitVars("TightLepton_M", "N_TightLeptons");
-    //     vars.InitVars("TightLepton_Pt", "N_TightLeptons");
-    //     vars.InitVars("TightLepton_Eta", "N_TightLeptons");
-    //     vars.InitVars("TightLepton_Phi", "N_TightLeptons");
-
-    //     vars.InitVars("LooseLepton_E", "N_LooseLeptons");
-    //     vars.InitVars("LooseLepton_M", "N_LooseLeptons");
-    //     vars.InitVars("LooseLepton_Pt", "N_LooseLeptons");
-    //     vars.InitVars("LooseLepton_Eta", "N_LooseLeptons");
-    //     vars.InitVars("LooseLepton_Phi", "N_LooseLeptons");
-
-    vars.InitVars("LooseMuon_E", "N_LooseMuons");
-    vars.InitVars("LooseMuon_M", "N_LooseMuons");
-    vars.InitVars("LooseMuon_Pt", "N_LooseMuons");
-    vars.InitVars("LooseMuon_Eta", "N_LooseMuons");
-    vars.InitVars("LooseMuon_Phi", "N_LooseMuons");
-    vars.InitVars("LooseMuon_RelIso", "N_LooseMuons");
-    vars.InitVars("LooseMuon_Charge", "N_LooseMuons");
-    vars.InitVars("LooseMuon_Pt_BeForeRC", "N_LooseMuons");
-    vars.InitVars("LooseMuon_roccorSF", "N_LooseMuons");
-    vars.InitVars("LooseMuon_roccorSFUp", "N_LooseMuons");
-    vars.InitVars("LooseMuon_roccorSFDown", "N_LooseMuons");
-    vars.InitVars("LooseMuon_IdentificationSF", "N_LooseMuons");
-    vars.InitVars("LooseMuon_IdentificationSFUp", "N_LooseMuons");
-    vars.InitVars("LooseMuon_IdentificationSFDown", "N_LooseMuons");
-    vars.InitVars("LooseMuon_IsolationSF", "N_LooseMuons");
-    vars.InitVars("LooseMuon_IsolationSFUp", "N_LooseMuons");
-    vars.InitVars("LooseMuon_IsolationSFDown", "N_LooseMuons");
-
-    vars.InitVars("Muon_E", "N_TightMuons");
-    vars.InitVars("Muon_M", "N_TightMuons");
-    vars.InitVars("Muon_Pt", "N_TightMuons");
-    vars.InitVars("Muon_Eta", "N_TightMuons");
-    vars.InitVars("Muon_Phi", "N_TightMuons");
-    vars.InitVars("Muon_RelIso", "N_TightMuons");
-    vars.InitVars("Muon_Charge", "N_TightMuons");
-    vars.InitVars("Muon_Pt_BeForeRC", "N_TightMuons");
-    vars.InitVars("Muon_roccorSF", "N_TightMuons");
-    vars.InitVars("Muon_roccorSFUp", "N_TightMuons");
-    vars.InitVars("Muon_roccorSFDown", "N_TightMuons");
-    vars.InitVars("Muon_IdentificationSF", "N_TightMuons");
-    vars.InitVars("Muon_IdentificationSFUp", "N_TightMuons");
-    vars.InitVars("Muon_IdentificationSFDown", "N_TightMuons");
-    vars.InitVars("Muon_IsolationSF", "N_TightMuons");
-    vars.InitVars("Muon_IsolationSFUp", "N_TightMuons");
-    vars.InitVars("Muon_IsolationSFDown", "N_TightMuons");
-
-    vars.InitVars("LooseElectron_E", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_M", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_Pt", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_Eta", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_Phi", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_RelIso", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_Charge", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_Pt_BeforeRun2Calibration", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_Eta_Supercluster", "N_LooseElectrons");
-    // electron energy scale combined up/down
-    vars.InitVars("LooseElectron_CorrFactor_ScaleUp", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_CorrFactor_ScaleDown", "N_LooseElectrons");
-    // electron energy smearing combined up/down
-    vars.InitVars("LooseElectron_CorrFactor_SigmaUp", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_CorrFactor_SigmaDown", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_IdentificationSF", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_IdentificationSFUp", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_IdentificationSFDown", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_ReconstructionSF", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_ReconstructionSFUp", "N_LooseElectrons");
-    vars.InitVars("LooseElectron_ReconstructionSFDown", "N_LooseElectrons");
-
-    vars.InitVars("Electron_E", "N_TightElectrons");
-    vars.InitVars("Electron_M", "N_TightElectrons");
-    vars.InitVars("Electron_Pt", "N_TightElectrons");
-    vars.InitVars("Electron_Eta", "N_TightElectrons");
-    vars.InitVars("Electron_Phi", "N_TightElectrons");
-    vars.InitVars("Electron_RelIso", "N_TightElectrons");
-    vars.InitVars("Electron_Charge", "N_TightElectrons");
-    vars.InitVars("Electron_Pt_BeforeRun2Calibration", "N_TightElectrons");
-    vars.InitVars("Electron_Eta_Supercluster", "N_TightElectrons");
-    // electron energy scale combined up/down
-    vars.InitVars("Electron_CorrFactor_ScaleUp", "N_TightElectrons");
-    vars.InitVars("Electron_CorrFactor_ScaleDown", "N_TightElectrons");
-    // electron energy smearing combined up/down
-    vars.InitVars("Electron_CorrFactor_SigmaUp", "N_TightElectrons");
-    vars.InitVars("Electron_CorrFactor_SigmaDown", "N_TightElectrons");
-    vars.InitVars("Electron_IdentificationSF", "N_TightElectrons");
-    vars.InitVars("Electron_IdentificationSFUp", "N_TightElectrons");
-    vars.InitVars("Electron_IdentificationSFDown", "N_TightElectrons");
-    vars.InitVars("Electron_ReconstructionSF", "N_TightElectrons");
-    vars.InitVars("Electron_ReconstructionSFUp", "N_TightElectrons");
-    vars.InitVars("Electron_ReconstructionSFDown", "N_TightElectrons");
-
     vars.InitVar("Evt_chsMET_Pt");
     vars.InitVar("Evt_chsMET_Phi");
     vars.InitVar("Gen_chsMET_Pt");
@@ -236,10 +139,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_LooseJets", input.selectedJetsLoose.size());
     vars.FillVar("N_TightLeptons", input.selectedElectrons.size() + input.selectedMuons.size());
     vars.FillVar("N_LooseLeptons", input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size());
-    vars.FillVar("N_TightElectrons", input.selectedElectrons.size());
-    vars.FillVar("N_LooseElectrons", input.selectedElectronsLoose.size());
-    vars.FillVar("N_TightMuons", input.selectedMuons.size());
-    vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
 
     // Fill Jet Variables
     // All Jets
@@ -338,148 +237,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     //         vars.FillVars("TaggedJet_DeepJet_uds", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probuds"));
     //         vars.FillVars("TaggedJet_DeepJet_g", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probg"));
     //     }
-
-    // Fill Lepton Variables
-    //     std::vector< math::XYZTLorentzVector > tightLeptonVecs = BoostedUtils::GetLepVecs(input.selectedElectrons, input.selectedMuons);
-    //     for (auto itLep = tightLeptonVecs.begin(); itLep != tightLeptonVecs.end(); ++itLep) {
-    //         int iLep = itLep - tightLeptonVecs.begin();
-    //         vars.FillVars("TightLepton_E", iLep, itLep->E());
-    //         vars.FillVars("TightLepton_M", iLep, itLep->M());
-    //         vars.FillVars("TightLepton_Pt", iLep, itLep->Pt());
-    //         vars.FillVars("TightLepton_Eta", iLep, itLep->Eta());
-    //         vars.FillVars("TightLepton_Phi", iLep, itLep->Phi());
-    //     }
-    //     std::vector< math::XYZTLorentzVector > looseLeptonVecs = BoostedUtils::GetLepVecs(input.selectedElectronsLoose, input.selectedMuonsLoose);
-    //     for (std::vector< math::XYZTLorentzVector >::iterator itLep = looseLeptonVecs.begin(); itLep != looseLeptonVecs.end(); ++itLep) {
-    //         int iLep = itLep - looseLeptonVecs.begin();
-    //         vars.FillVars("LooseLepton_E", iLep, itLep->E());
-    //         vars.FillVars("LooseLepton_M", iLep, itLep->M());
-    //         vars.FillVars("LooseLepton_Pt", iLep, itLep->Pt());
-    //         vars.FillVars("LooseLepton_Eta", iLep, itLep->Eta());
-    //         vars.FillVars("LooseLepton_Phi", iLep, itLep->Phi());
-    //     }
-
-    for (std::vector< pat::Electron >::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle) {
-        int iEle = itEle - input.selectedElectronsLoose.begin();
-        vars.FillVars("LooseElectron_E", iEle, itEle->energy());
-        vars.FillVars("LooseElectron_M", iEle, itEle->mass());
-        vars.FillVars("LooseElectron_Pt", iEle, itEle->pt());
-        vars.FillVars("LooseElectron_Eta", iEle, itEle->eta());
-        vars.FillVars("LooseElectron_Phi", iEle, itEle->phi());
-        if (itEle->hasUserFloat("relIso")) vars.FillVars("LooseElectron_RelIso", iEle, itEle->userFloat("relIso"));
-
-        vars.FillVars("LooseElectron_Charge", iEle, itEle->charge());
-        if (itEle->hasUserFloat("ptBeforeRun2Calibration"))
-            vars.FillVars("LooseElectron_Pt_BeforeRun2Calibration", iEle, itEle->userFloat("ptBeforeRun2Calibration"));
-
-        vars.FillVars("LooseElectron_Eta_Supercluster", iEle, itEle->superCluster()->eta());
-        if (itEle->hasUserFloat("CorrFactor_ScaleUp")) {
-            // electron energy scale combined up/down
-            vars.FillVars("LooseElectron_CorrFactor_ScaleUp", iEle, itEle->userFloat("CorrFactor_ScaleUp"));
-            vars.FillVars("LooseElectron_CorrFactor_ScaleDown", iEle, itEle->userFloat("CorrFactor_ScaleDown"));
-            // electron energy smearing combined up/down
-            vars.FillVars("LooseElectron_CorrFactor_SigmaUp", iEle, itEle->userFloat("CorrFactor_SigmaUp"));
-            vars.FillVars("LooseElectron_CorrFactor_SigmaDown", iEle, itEle->userFloat("CorrFactor_SigmaDown"));
-        }
-        if (itEle->hasUserFloat("IdentificationSF")) {
-            vars.FillVars("LooseElectron_IdentificationSF", iEle, itEle->userFloat("IdentificationSF"));
-            vars.FillVars("LooseElectron_IdentificationSFUp", iEle, itEle->userFloat("IdentificationSFUp"));
-            vars.FillVars("LooseElectron_IdentificationSFDown", iEle, itEle->userFloat("IdentificationSFDown"));
-            vars.FillVars("LooseElectron_ReconstructionSF", iEle, itEle->userFloat("ReconstructionSF"));
-            vars.FillVars("LooseElectron_ReconstructionSFUp", iEle, itEle->userFloat("ReconstructionSFUp"));
-            vars.FillVars("LooseElectron_ReconstructionSFDown", iEle, itEle->userFloat("ReconstructionSFDown"));
-        }
-    }
-    for (std::vector< pat::Electron >::const_iterator itEle = input.selectedElectrons.begin(); itEle != input.selectedElectrons.end(); ++itEle) {
-        int iEle = itEle - input.selectedElectrons.begin();
-        vars.FillVars("Electron_E", iEle, itEle->energy());
-        vars.FillVars("Electron_M", iEle, itEle->mass());
-        vars.FillVars("Electron_Pt", iEle, itEle->pt());
-        vars.FillVars("Electron_Eta", iEle, itEle->eta());
-        vars.FillVars("Electron_Phi", iEle, itEle->phi());
-        if (itEle->hasUserFloat("relIso")) vars.FillVars("Electron_RelIso", iEle, itEle->userFloat("relIso"));
-
-        vars.FillVars("Electron_Charge", iEle, itEle->charge());
-        if (itEle->hasUserFloat("ptBeforeRun2Calibration"))
-            vars.FillVars("Electron_Pt_BeforeRun2Calibration", iEle, itEle->userFloat("ptBeforeRun2Calibration"));
-
-        vars.FillVars("Electron_Eta_Supercluster", iEle, itEle->superCluster()->eta());
-        if (itEle->hasUserFloat("CorrFactor_ScaleUp")) {
-            // electron energy scale combined up/down
-            vars.FillVars("Electron_CorrFactor_ScaleUp", iEle, itEle->userFloat("CorrFactor_ScaleUp"));
-            vars.FillVars("Electron_CorrFactor_ScaleDown", iEle, itEle->userFloat("CorrFactor_ScaleDown"));
-            // electron energy smearing combined up/down
-            vars.FillVars("Electron_CorrFactor_SigmaUp", iEle, itEle->userFloat("CorrFactor_SigmaUp"));
-            vars.FillVars("Electron_CorrFactor_SigmaDown", iEle, itEle->userFloat("CorrFactor_SigmaDown"));
-        }
-        if (itEle->hasUserFloat("IdentificationSF")) {
-            vars.FillVars("Electron_IdentificationSF", iEle, itEle->userFloat("IdentificationSF"));
-            vars.FillVars("Electron_IdentificationSFUp", iEle, itEle->userFloat("IdentificationSFUp"));
-            vars.FillVars("Electron_IdentificationSFDown", iEle, itEle->userFloat("IdentificationSFDown"));
-            vars.FillVars("Electron_ReconstructionSF", iEle, itEle->userFloat("ReconstructionSF"));
-            vars.FillVars("Electron_ReconstructionSFUp", iEle, itEle->userFloat("ReconstructionSFUp"));
-            vars.FillVars("Electron_ReconstructionSFDown", iEle, itEle->userFloat("ReconstructionSFDown"));
-        }
-    }
-
-    for (std::vector< pat::Muon >::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu) {
-        int iMu = itMu - input.selectedMuonsLoose.begin();
-        vars.FillVars("LooseMuon_E", iMu, itMu->energy());
-        vars.FillVars("LooseMuon_M", iMu, itMu->mass());
-        vars.FillVars("LooseMuon_Pt", iMu, itMu->pt());
-        vars.FillVars("LooseMuon_Eta", iMu, itMu->eta());
-        vars.FillVars("LooseMuon_Phi", iMu, itMu->phi());
-        if (itMu->hasUserFloat("relIso")) vars.FillVars("LooseMuon_RelIso", iMu, itMu->userFloat("relIso"));
-
-        vars.FillVars("LooseMuon_Charge", iMu, itMu->charge());
-        if (itMu->hasUserFloat("PtbeforeRC")) vars.FillVars("LooseMuon_Pt_BeForeRC", iMu, itMu->userFloat("PtbeforeRC"));
-
-        if (itMu->hasUserFloat("roccorSF")) vars.FillVars("LooseMuon_roccorSF", iMu, itMu->userFloat("roccorSF"));
-
-        if (itMu->hasUserFloat("roccorSFUp")) vars.FillVars("LooseMuon_roccorSFUp", iMu, itMu->userFloat("roccorSFUp"));
-
-        if (itMu->hasUserFloat("roccorSFDown")) vars.FillVars("LooseMuon_roccorSFDown", iMu, itMu->userFloat("roccorSFDown"));
-
-        if (itMu->hasUserFloat("IdentificationSF")) {
-            vars.FillVars("LooseMuon_IdentificationSF", iMu, itMu->userFloat("IdentificationSF"));
-            vars.FillVars("LooseMuon_IdentificationSFUp", iMu, itMu->userFloat("IdentificationSFUp"));
-            vars.FillVars("LooseMuon_IdentificationSFDown", iMu, itMu->userFloat("IdentificationSFDown"));
-        }
-        if (itMu->hasUserFloat("IsolationSF")) {
-            vars.FillVars("LooseMuon_IsolationSF", iMu, itMu->userFloat("IsolationSF"));
-            vars.FillVars("LooseMuon_IsolationSFUp", iMu, itMu->userFloat("IsolationSFUp"));
-            vars.FillVars("LooseMuon_IsolationSFDown", iMu, itMu->userFloat("IsolationSFDown"));
-        }
-    }
-    for (std::vector< pat::Muon >::const_iterator itMu = input.selectedMuons.begin(); itMu != input.selectedMuons.end(); ++itMu) {
-        int iMu = itMu - input.selectedMuons.begin();
-        vars.FillVars("Muon_E", iMu, itMu->energy());
-        vars.FillVars("Muon_M", iMu, itMu->mass());
-        vars.FillVars("Muon_Pt", iMu, itMu->pt());
-        vars.FillVars("Muon_Eta", iMu, itMu->eta());
-        vars.FillVars("Muon_Phi", iMu, itMu->phi());
-        if (itMu->hasUserFloat("relIso")) vars.FillVars("Muon_RelIso", iMu, itMu->userFloat("relIso"));
-
-        vars.FillVars("Muon_Charge", iMu, itMu->charge());
-        if (itMu->hasUserFloat("PtbeforeRC")) vars.FillVars("Muon_Pt_BeForeRC", iMu, itMu->userFloat("PtbeforeRC"));
-
-        if (itMu->hasUserFloat("roccorSF")) vars.FillVars("Muon_roccorSF", iMu, itMu->userFloat("roccorSF"));
-
-        if (itMu->hasUserFloat("roccorSFUp")) vars.FillVars("Muon_roccorSFUp", iMu, itMu->userFloat("roccorSFUp"));
-
-        if (itMu->hasUserFloat("roccorSFDown")) vars.FillVars("Muon_roccorSFDown", iMu, itMu->userFloat("roccorSFDown"));
-
-        if (itMu->hasUserFloat("IdentificationSF")) {
-            vars.FillVars("Muon_IdentificationSF", iMu, itMu->userFloat("IdentificationSF"));
-            vars.FillVars("Muon_IdentificationSFUp", iMu, itMu->userFloat("IdentificationSFUp"));
-            vars.FillVars("Muon_IdentificationSFDown", iMu, itMu->userFloat("IdentificationSFDown"));
-        }
-        if (itMu->hasUserFloat("IsolationSF")) {
-            vars.FillVars("Muon_IsolationSF", iMu, itMu->userFloat("IsolationSF"));
-            vars.FillVars("Muon_IsolationSFUp", iMu, itMu->userFloat("IsolationSFUp"));
-            vars.FillVars("Muon_IsolationSFDown", iMu, itMu->userFloat("IsolationSFDown"));
-        }
-    }
 
     vars.FillVar("Evt_chsMET_Pt", input.correctedMET.corPt(pat::MET::Type1));
     vars.FillVar("Evt_chsMET_Phi", input.correctedMET.corPhi(pat::MET::Type1));
