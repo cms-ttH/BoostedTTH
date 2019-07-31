@@ -11,8 +11,8 @@ void LeptonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     vars.InitVar("N_LooseElectrons", "I");
     vars.InitVar("N_TightMuons", "I");
     vars.InitVar("N_LooseMuons", "I");
-    vars.InitVar("N_TightLeptons", "I");
-    vars.InitVar("N_LooseLeptons", "I");
+    //vars.InitVar("N_TightLeptons", "I");
+    //vars.InitVar("N_LooseLeptons", "I");
 
     vars.InitVars("LooseMuon_E", "N_LooseMuons");
     vars.InitVars("LooseMuon_M", "N_LooseMuons");
@@ -117,6 +117,8 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
     vars.FillVar("N_LooseElectrons", input.selectedElectronsLoose.size());
     vars.FillVar("N_TightMuons", input.selectedMuons.size());
     vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
+    //vars.FillVar("N_TightLeptons", input.selectedElectrons.size() + input.selectedMuons.size());
+    //vars.FillVar("N_LooseLeptons", input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size());
 
     for (std::vector< pat::Electron >::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle) {
         int iEle = itEle - input.selectedElectronsLoose.begin();

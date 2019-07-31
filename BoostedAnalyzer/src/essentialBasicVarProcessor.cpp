@@ -137,8 +137,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_PrimaryVertices", input.selectedPVs.size());
     vars.FillVar("N_Jets", input.selectedJets.size());
     vars.FillVar("N_LooseJets", input.selectedJetsLoose.size());
-    vars.FillVar("N_TightLeptons", input.selectedElectrons.size() + input.selectedMuons.size());
-    vars.FillVar("N_LooseLeptons", input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size());
+    
 
     // Fill Jet Variables
     // All Jets
