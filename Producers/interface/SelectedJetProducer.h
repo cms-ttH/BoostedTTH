@@ -73,7 +73,8 @@ public:
   {
     None,
     Loose,
-    Tight
+    Tight,
+    TightLepVeto
   };
   enum class PUJetIDWP
   {
