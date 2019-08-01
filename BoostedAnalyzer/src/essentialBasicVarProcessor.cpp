@@ -16,7 +16,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVar("Evt_Lumi", "I");
 
     vars.InitVar("N_Jets", "I");
-    vars.InitVar("N_LooseJets", "I");
+    // vars.InitVar("N_LooseJets", "I");
 
     vars.InitVar("N_BTagsL", "I");
     vars.InitVar("N_BTagsM", "I");
@@ -24,33 +24,33 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVar("N_PrimaryVertices", "I");
     vars.InitVar("N_GenPVs", "I");
 
-    vars.InitVars("LooseJet_E", "N_LooseJets");
-    vars.InitVars("LooseJet_M", "N_LooseJets");
-    vars.InitVars("LooseJet_Pt", "N_LooseJets");
-    vars.InitVars("LooseJet_Phi", "N_LooseJets");
-    vars.InitVars("LooseJet_Eta", "N_LooseJets");
-    vars.InitVars("LooseJet_CSV", "N_LooseJets");
-    vars.InitVars("LooseJet_Flav", "N_LooseJets");
-    vars.InitVars("LooseJet_PartonFlav", "N_LooseJets");
-    vars.InitVars("LooseJet_Charge", "N_LooseJets");
-    vars.InitVars("LooseJet_PileUpID", "N_LooseJets");
-    vars.InitVars("LooseJet_PileUpMVA", "N_LooseJets");
-
-    vars.InitVars("LooseJet_GenJet_Pt", "N_LooseJets");
-    vars.InitVars("LooseJet_GenJet_Eta", "N_LooseJets");
-
-    vars.InitVars("LooseJet_DeepCSV_b", "N_LooseJets");
-    vars.InitVars("LooseJet_DeepCSV_bb", "N_LooseJets");
-    vars.InitVars("LooseJet_DeepCSV_c", "N_LooseJets");
-    vars.InitVars("LooseJet_DeepCSV_udsg", "N_LooseJets");
-
-    vars.InitVars("LooseJet_DeepJetCSV", "N_LooseJets");
-    vars.InitVars("LooseJet_DeepJet_b", "N_LooseJets");
-    vars.InitVars("LooseJet_DeepJet_bb", "N_LooseJets");
-    vars.InitVars("LooseJet_DeepJet_lepb", "N_LooseJets");
-    vars.InitVars("LooseJet_DeepJet_c", "N_LooseJets");
-    vars.InitVars("LooseJet_DeepJet_uds", "N_LooseJets");
-    vars.InitVars("LooseJet_DeepJet_g", "N_LooseJets");
+    //     vars.InitVars("LooseJet_E", "N_LooseJets");
+    //     vars.InitVars("LooseJet_M", "N_LooseJets");
+    //     vars.InitVars("LooseJet_Pt", "N_LooseJets");
+    //     vars.InitVars("LooseJet_Phi", "N_LooseJets");
+    //     vars.InitVars("LooseJet_Eta", "N_LooseJets");
+    //     vars.InitVars("LooseJet_CSV", "N_LooseJets");
+    //     vars.InitVars("LooseJet_Flav", "N_LooseJets");
+    //     vars.InitVars("LooseJet_PartonFlav", "N_LooseJets");
+    //     vars.InitVars("LooseJet_Charge", "N_LooseJets");
+    //     vars.InitVars("LooseJet_PileUpID", "N_LooseJets");
+    //     vars.InitVars("LooseJet_PileUpMVA", "N_LooseJets");
+    //
+    //     vars.InitVars("LooseJet_GenJet_Pt", "N_LooseJets");
+    //     vars.InitVars("LooseJet_GenJet_Eta", "N_LooseJets");
+    //
+    //     vars.InitVars("LooseJet_DeepCSV_b", "N_LooseJets");
+    //     vars.InitVars("LooseJet_DeepCSV_bb", "N_LooseJets");
+    //     vars.InitVars("LooseJet_DeepCSV_c", "N_LooseJets");
+    //     vars.InitVars("LooseJet_DeepCSV_udsg", "N_LooseJets");
+    //
+    //     vars.InitVars("LooseJet_DeepJetCSV", "N_LooseJets");
+    //     vars.InitVars("LooseJet_DeepJet_b", "N_LooseJets");
+    //     vars.InitVars("LooseJet_DeepJet_bb", "N_LooseJets");
+    //     vars.InitVars("LooseJet_DeepJet_lepb", "N_LooseJets");
+    //     vars.InitVars("LooseJet_DeepJet_c", "N_LooseJets");
+    //     vars.InitVars("LooseJet_DeepJet_uds", "N_LooseJets");
+    //     vars.InitVars("LooseJet_DeepJet_g", "N_LooseJets");
 
     vars.InitVars("Jet_E", "N_Jets");
     vars.InitVars("Jet_M", "N_Jets");
@@ -136,8 +136,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_GenPVs", input.eventInfo.numTruePV);
     vars.FillVar("N_PrimaryVertices", input.selectedPVs.size());
     vars.FillVar("N_Jets", input.selectedJets.size());
-    vars.FillVar("N_LooseJets", input.selectedJetsLoose.size());
-    
+    //     vars.FillVar("N_LooseJets", input.selectedJetsLoose.size());
 
     // Fill Jet Variables
     // All Jets
@@ -179,45 +178,45 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("Jet_DeepJet_g", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probg"));
     }
 
-    for (std::vector< pat::Jet >::const_iterator itJet = input.selectedJetsLoose.begin(); itJet != input.selectedJetsLoose.end(); ++itJet) {
-        int iJet = itJet - input.selectedJetsLoose.begin();
-        vars.FillVars("LooseJet_E", iJet, itJet->energy());
-        vars.FillVars("LooseJet_M", iJet, itJet->mass());
-        vars.FillVars("LooseJet_Pt", iJet, itJet->pt());
-        vars.FillVars("LooseJet_Eta", iJet, itJet->eta());
-        vars.FillVars("LooseJet_Phi", iJet, itJet->phi());
-        vars.FillVars("LooseJet_CSV", iJet, CSVHelper::GetJetCSV(*itJet, btagger));
-        // vars.FillVars(
-        // "LooseJet_CSV_DNN",iJet,CSVHelper::GetJetCSV_DNN(*itJet,btagger) );
-        vars.FillVars("LooseJet_Flav", iJet, itJet->hadronFlavour());
-        vars.FillVars("LooseJet_PartonFlav", iJet, itJet->partonFlavour());
-        vars.FillVars("LooseJet_Charge", iJet, itJet->jetCharge());
-        if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("LooseJet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));
-        if (itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant"))
-            vars.FillVars("LooseJet_PileUpMVA", iJet, itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
-
-        if (itJet->genJet() != NULL) {
-            vars.FillVars("LooseJet_GenJet_Pt", iJet, itJet->genJet()->pt());
-            vars.FillVars("LooseJet_GenJet_Eta", iJet, itJet->genJet()->eta());
-        }
-        else {
-            vars.FillVars("LooseJet_GenJet_Pt", iJet, -9.0);
-            vars.FillVars("LooseJet_GenJet_Eta", iJet, -9.0);
-        }
-
-        vars.FillVars("LooseJet_DeepCSV_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probb"));
-        vars.FillVars("LooseJet_DeepCSV_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probbb"));
-        vars.FillVars("LooseJet_DeepCSV_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probc"));
-        vars.FillVars("LooseJet_DeepCSV_udsg", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probudsg"));
-
-        vars.FillVars("LooseJet_DeepJetCSV", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "DeepJet"));
-        vars.FillVars("LooseJet_DeepJet_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probb"));
-        vars.FillVars("LooseJet_DeepJet_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probbb"));
-        vars.FillVars("LooseJet_DeepJet_lepb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:problepb"));
-        vars.FillVars("LooseJet_DeepJet_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probc"));
-        vars.FillVars("LooseJet_DeepJet_uds", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probuds"));
-        vars.FillVars("LooseJet_DeepJet_g", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probg"));
-    }
+    //     for (std::vector< pat::Jet >::const_iterator itJet = input.selectedJetsLoose.begin(); itJet != input.selectedJetsLoose.end(); ++itJet) {
+    //         int iJet = itJet - input.selectedJetsLoose.begin();
+    //         vars.FillVars("LooseJet_E", iJet, itJet->energy());
+    //         vars.FillVars("LooseJet_M", iJet, itJet->mass());
+    //         vars.FillVars("LooseJet_Pt", iJet, itJet->pt());
+    //         vars.FillVars("LooseJet_Eta", iJet, itJet->eta());
+    //         vars.FillVars("LooseJet_Phi", iJet, itJet->phi());
+    //         vars.FillVars("LooseJet_CSV", iJet, CSVHelper::GetJetCSV(*itJet, btagger));
+    //         // vars.FillVars(
+    //         // "LooseJet_CSV_DNN",iJet,CSVHelper::GetJetCSV_DNN(*itJet,btagger) );
+    //         vars.FillVars("LooseJet_Flav", iJet, itJet->hadronFlavour());
+    //         vars.FillVars("LooseJet_PartonFlav", iJet, itJet->partonFlavour());
+    //         vars.FillVars("LooseJet_Charge", iJet, itJet->jetCharge());
+    //         if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("LooseJet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));
+    //         if (itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant"))
+    //             vars.FillVars("LooseJet_PileUpMVA", iJet, itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
+    //
+    //         if (itJet->genJet() != NULL) {
+    //             vars.FillVars("LooseJet_GenJet_Pt", iJet, itJet->genJet()->pt());
+    //             vars.FillVars("LooseJet_GenJet_Eta", iJet, itJet->genJet()->eta());
+    //         }
+    //         else {
+    //             vars.FillVars("LooseJet_GenJet_Pt", iJet, -9.0);
+    //             vars.FillVars("LooseJet_GenJet_Eta", iJet, -9.0);
+    //         }
+    //
+    //         vars.FillVars("LooseJet_DeepCSV_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probb"));
+    //         vars.FillVars("LooseJet_DeepCSV_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probbb"));
+    //         vars.FillVars("LooseJet_DeepCSV_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probc"));
+    //         vars.FillVars("LooseJet_DeepCSV_udsg", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probudsg"));
+    //
+    //         vars.FillVars("LooseJet_DeepJetCSV", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "DeepJet"));
+    //         vars.FillVars("LooseJet_DeepJet_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probb"));
+    //         vars.FillVars("LooseJet_DeepJet_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probbb"));
+    //         vars.FillVars("LooseJet_DeepJet_lepb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:problepb"));
+    //         vars.FillVars("LooseJet_DeepJet_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probc"));
+    //         vars.FillVars("LooseJet_DeepJet_uds", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probuds"));
+    //         vars.FillVars("LooseJet_DeepJet_g", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probg"));
+    //     }
 
     //     // Tagged Jets
     //     for (std::vector< pat::Jet >::iterator itTaggedJet = selectedTaggedJets.begin(); itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet) {
