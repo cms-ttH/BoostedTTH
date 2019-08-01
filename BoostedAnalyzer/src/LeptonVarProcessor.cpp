@@ -11,8 +11,8 @@ void LeptonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     vars.InitVar("N_LooseElectrons", "I");
     vars.InitVar("N_TightMuons", "I");
     vars.InitVar("N_LooseMuons", "I");
-    //vars.InitVar("N_TightLeptons", "I");
-    //vars.InitVar("N_LooseLeptons", "I");
+    // vars.InitVar("N_TightLeptons", "I");
+    // vars.InitVar("N_LooseLeptons", "I");
 
     vars.InitVars("LooseMuon_E", "N_LooseMuons");
     vars.InitVars("LooseMuon_M", "N_LooseMuons");
@@ -49,6 +49,12 @@ void LeptonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     vars.InitVars("Muon_IsolationSF", "N_TightMuons");
     vars.InitVars("Muon_IsolationSFUp", "N_TightMuons");
     vars.InitVars("Muon_IsolationSFDown", "N_TightMuons");
+
+    vars.InitVar("DiMuon_Pt");
+    vars.InitVar("DiMuon_Phi");
+    vars.InitVar("DiMuon_Eta");
+    vars.InitVar("DiMuon_Energy");
+    vars.InitVar("DiMuon_Mass");
 
     vars.InitVars("LooseElectron_E", "N_LooseElectrons");
     vars.InitVars("LooseElectron_M", "N_LooseElectrons");
@@ -94,6 +100,12 @@ void LeptonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     vars.InitVars("Electron_ReconstructionSFUp", "N_TightElectrons");
     vars.InitVars("Electron_ReconstructionSFDown", "N_TightElectrons");
 
+    vars.InitVar("DiElectron_Pt");
+    vars.InitVar("DiElectron_Phi");
+    vars.InitVar("DiElectron_Eta");
+    vars.InitVar("DiElectron_Energy");
+    vars.InitVar("DiElectron_Mass");
+
     //     vars.InitVars("TightLepton_E", "N_TightLeptons");
     //     vars.InitVars("TightLepton_M", "N_TightLeptons");
     //     vars.InitVars("TightLepton_Pt", "N_TightLeptons");
@@ -117,8 +129,8 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
     vars.FillVar("N_LooseElectrons", input.selectedElectronsLoose.size());
     vars.FillVar("N_TightMuons", input.selectedMuons.size());
     vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
-    //vars.FillVar("N_TightLeptons", input.selectedElectrons.size() + input.selectedMuons.size());
-    //vars.FillVar("N_LooseLeptons", input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size());
+    // vars.FillVar("N_TightLeptons", input.selectedElectrons.size() + input.selectedMuons.size());
+    // vars.FillVar("N_LooseLeptons", input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size());
 
     for (std::vector< pat::Electron >::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle) {
         int iEle = itEle - input.selectedElectronsLoose.begin();
@@ -183,6 +195,15 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
         }
     }
 
+    if (input.selectedElectronsLoose.size() >= 2) {
+        auto dielectron = input.selectedElectronsLoose.at(0).p4() + input.selectedElectronsLoose.at(1).p4();
+        vars.FillVar("DiElectron_Pt", dielectron.pt());
+        vars.FillVar("DiElectron_Phi", dielectron.phi());
+        vars.FillVar("DiElectron_Eta", dielectron.eta());
+        vars.FillVar("DiElectron_Energy", dielectron.energy());
+        vars.FillVar("DiElectron_Mass", dielectron.mass());
+    }
+
     for (std::vector< pat::Muon >::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu) {
         int iMu = itMu - input.selectedMuonsLoose.begin();
         vars.FillVars("LooseMuon_E", iMu, itMu->energy());
@@ -240,6 +261,15 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
             vars.FillVars("Muon_IsolationSFUp", iMu, itMu->userFloat("IsolationSFUp"));
             vars.FillVars("Muon_IsolationSFDown", iMu, itMu->userFloat("IsolationSFDown"));
         }
+    }
+
+    if (input.selectedMuonsLoose.size() >= 2) {
+        auto dimuon = input.selectedMuonsLoose.at(0).p4() + input.selectedMuonsLoose.at(1).p4();
+        vars.FillVar("DiMuon_Pt", dimuon.pt());
+        vars.FillVar("DiMuon_Phi", dimuon.phi());
+        vars.FillVar("DiMuon_Eta", dimuon.eta());
+        vars.FillVar("DiMuon_Energy", dimuon.energy());
+        vars.FillVar("DiMuon_Mass", dimuon.mass());
     }
 
     // Fill Lepton Variables

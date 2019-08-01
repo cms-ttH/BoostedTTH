@@ -93,13 +93,7 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Z_Eta");
     vars.InitVar("Z_Mass");
     vars.InitVar("Z_Energy");
-    //
-    //     vars.InitVar("Zmumu_Pt");
-    //     vars.InitVar("Zmumu_Phi");
-    //     vars.InitVar("Zmumu_Eta");
-    //     vars.InitVar("Zmumu_Energy");
-    //     vars.InitVar("Zmumu_Mass");
-    //
+
     //     vars.InitVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio");
 
     initialized = true;
@@ -222,17 +216,9 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
         vars.FillVar("Z_Energy", ZBoson.E());
         vars.FillVar("Z_Mass", ZBoson.M());
     }
-    //
-    //     if (input.selectedMuonsLoose.size() == 2) {
-    //         auto Zmumu = input.selectedMuonsLoose[0].p4() + input.selectedMuonsLoose[1].p4();
-    //         vars.FillVar("Zmumu_Pt", Zmumu.Pt());
-    //         vars.FillVar("Zmumu_Phi", Zmumu.Phi());
-    //         vars.FillVar("Zmumu_Eta", Zmumu.Eta());
-    //         vars.FillVar("Zmumu_Energy", Zmumu.E());
-    //         vars.FillVar("Zmumu_Mass", Zmumu.M());
+
     //         vars.FillVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio", fabs(Zmumu.Pt() - hadr_recoil_p4.pt()) / hadr_recoil_p4.pt());
-    //     }
-    //
+
     // get and fill some gen level information
     if (input.genDarkMatterEvt.IsFilled()) {
         const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
