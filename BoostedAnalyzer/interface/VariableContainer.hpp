@@ -24,7 +24,7 @@ class VariableContainer {
     bool   IsVarFilled(const TString& name) const;
     void   InitVar(const TString& name, const std::string& type = "F");
     void   InitVar(const TString& name, float defaultValue, const std::string& type = "F");
-    void   FillVar(const TString& name, double value);
+    void   FillVar(const TString& name, float value);
     void   FillFloatVar(const TString& name, float value, bool checkIfExists = true);
     void   FillIntVar(const TString& name, long value, bool checkIfExists = true);
     void   InitVars(const TString& name, float defaultValue, const TString& nEntryVariable, int maxentries = 100);

@@ -47,7 +47,7 @@ void VariableContainer::InitVar(const TString& name, const std::string& type)
     InitVar(name, -9., type);
 }
 
-void VariableContainer::FillVar(const TString& name, double value)
+void VariableContainer::FillVar(const TString& name, float value)
 {
     bool isInt   = intMap.find(name) != intMap.end();
     bool isFloat = floatMap.find(name) != floatMap.end();
