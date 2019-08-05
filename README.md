@@ -22,7 +22,7 @@ Do for example:
     eval `scramv1 runtime -sh` 
     
     # producer of deterministic seeds for physics objects to be able to do synchronization (needs 10X port)
-    #git cms-merge-topic yrath:deterministicSeeds
+    #git cms-merge-topic yrath:deterministicSeeds_102X
     
     # producer to apply JER to jets
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then    
