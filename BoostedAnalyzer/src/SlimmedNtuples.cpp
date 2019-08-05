@@ -115,7 +115,7 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
     vars.FillVars( "jet_pt" , iJet , jet.pt() );
     vars.FillVars( "jet_eta" , iJet , jet.eta() );
     vars.FillVars( "jet_phi" , iJet , jet.phi() );
-    vars.FillVars( "jet_csv" , iJet , CSVHelper::GetJetCSV(jet,"pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+    vars.FillVars( "jet_csv" , iJet , CSVHelper::GetJetCSV(jet,"CSVv2") );
     vars.FillVars( "jet_deepcsv" , iJet , CSVHelper::GetJetCSV(jet,"DeepCSV") );
     vars.FillVars( "jet_deepjet" , iJet , CSVHelper::GetJetCSV(jet,"DeepJet") );
     if(CSVHelper::PassesCSV(jet,"DeepJet",CSVHelper::CSVwp::Medium,input_nom.era)) iBtag++;
@@ -139,7 +139,9 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
         std::vector<pat::Jet> jets = GetSortedBySeed(input_used.selectedJetsLoose);
         const Systematics::Type& systematic = input_used.systematic;
         TString syst_str = Systematics::toString(systematic);
-        syst_str.ReplaceAll("JES","");
+        if (syst_str != "JES") {
+          syst_str.ReplaceAll("JES","");
+        }
         //vars.FillIntVar("njets"+syst_str,jets.size());
         iJet=0;
         for(std::vector<pat::Jet>::const_iterator itJet = jets.begin() ; itJet != jets.end(); ++itJet){
