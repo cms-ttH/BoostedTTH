@@ -57,7 +57,8 @@ Do for example:
     # install common classifier (currently work in progress)
     mkdir TTH
     cd TTH
-    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git CommonClassifier -b 10_2X_MVAvars
+    # use 10_2X_KIT_MEMproduction branch for now since updates on MEMclassifier are also needed for standard ntupling
+    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git CommonClassifier -b 10_2X_KIT_MEMproduction
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
     elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
