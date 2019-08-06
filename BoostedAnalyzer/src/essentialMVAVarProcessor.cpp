@@ -4,7 +4,7 @@ using namespace std;
 
 essentialMVAVarProcessor::essentialMVAVarProcessor()
 {
-  pointerToMVAvars.reset(new MVAvars());
+//   pointerToMVAvars.reset(new MVAvars());
 }
 
 essentialMVAVarProcessor::~essentialMVAVarProcessor()
@@ -15,6 +15,9 @@ essentialMVAVarProcessor::~essentialMVAVarProcessor()
 
 void essentialMVAVarProcessor::Init(const InputCollections &input, VariableContainer &vars)
 {
+
+    pointerToMVAvars.reset(new MVAvars(input.era.c_str()));
+
     // which btagger to use
     btagger = "DeepJet";
 
