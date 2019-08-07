@@ -48,9 +48,9 @@ if options.isData:
         options.globalTag="94X_dataRun2_v11"
     elif "2018" in options.dataEra:
         if "D" in options.dataEra:
-            options.globalTag="102X_dataRun2_Prompt_v13"
+            options.globalTag="102X_dataRun2_Prompt_v14"
         else:
-            options.globalTag="102X_dataRun2_Sep2018ABC_v2"
+            options.globalTag="102X_dataRun2_v11"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 elif not options.isData:
@@ -59,7 +59,7 @@ elif not options.isData:
     elif "2017" in options.dataEra:
         options.globalTag="94X_mc2017_realistic_v17"
     elif "2018" in options.dataEra:
-        options.globalTag="102X_upgrade2018_realistic_v18"
+        options.globalTag="102X_upgrade2018_realistic_v19"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 else:
@@ -71,6 +71,7 @@ if not options.inputFiles:
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
         elif "2017" in options.dataEra: 
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
+            # options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/60000/AC628CE7-0169-E811-9C5E-00010100096B.root']
         elif "2018" in options.dataEra:
             #options.inputFiles=[
             #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_1.root']
