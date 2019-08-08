@@ -52,9 +52,9 @@ if options.isData:
         options.globalTag = "94X_dataRun2_v11"
     elif "2018" in options.dataEra:
         if "D" in options.dataEra:
-            options.globalTag = "102X_dataRun2_Prompt_v13"
+            options.globalTag = "102X_dataRun2_Prompt_v14"
         else:
-            options.globalTag = "102X_dataRun2_Sep2018ABC_v2"
+            options.globalTag = "102X_dataRun2_v11"
     else:
         raise Exception(
             "dataEra "
@@ -67,7 +67,7 @@ elif not options.isData:
     elif "2017" in options.dataEra:
         options.globalTag = "94X_mc2017_realistic_v17"
     elif "2018" in options.dataEra:
-        options.globalTag = "102X_upgrade2018_realistic_v18"
+        options.globalTag = "102X_upgrade2018_realistic_v19"
     else:
         raise Exception(
             "dataEra "
