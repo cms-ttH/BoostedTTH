@@ -11,6 +11,7 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
  
   vars.InitVar( "GenEvt_I_TTPlusCC",-1,"I" );
   vars.InitVar( "GenEvt_I_TTPlusBB",-1,"I" );
+  vars.InitVar( "GenEvt_I_TTZ",-1,"I");
   vars.InitVar( "GenEvt_TTxId_FromProducer",-1,"I" );
   vars.InitVar( "N_GoodTagsM",-1,"I" );
   vars.InitVar( "N_MisTagsM",-1,"I" );
@@ -187,6 +188,12 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   if(input.sampleType == SampleType::tt2b) iBB = 2;
   if(input.sampleType == SampleType::ttcc) iCC = 1;
   
+  int iZdecay = -1;
+  if (input.genTopEvt.IsZbb() and !input.genTopEvt.IsZnonbb()) iZdecay = 1;
+  if (!input.genTopEvt.IsZbb() and input.genTopEvt.IsZnonbb()) iZdecay = 0;
+  if (input.genTopEvt.IsZbb() and input.genTopEvt.IsZnonbb())  iZdecay = 2;
+
+  vars.FillVar( "GenEvt_I_TTZ",iZdecay);
   vars.FillVar( "GenEvt_I_TTPlusCC",iCC );
   vars.FillVar( "GenEvt_I_TTPlusBB",iBB );
   if(input.genTopEvt.IsFilled()){

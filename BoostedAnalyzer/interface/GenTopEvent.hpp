@@ -133,6 +133,8 @@ public:
     int GetTTxIdFromProducer() const;
     int GetTTxIdFromProducerLong() const;
 
+    bool IsZbb() const;
+    bool IsZnonbb() const;
     bool IsTTbar() const;
     bool IsTTH() const;
     bool IsAllHadron() const;
@@ -227,6 +229,8 @@ private:
     bool foundTbar = false;
     bool foundH = false;
     bool foundZ = false;
+    bool isZbb = false;
+    bool isZnonbb = false;
     bool topIsHadronic;
     bool topbarIsHadronic;
     bool isFilled;

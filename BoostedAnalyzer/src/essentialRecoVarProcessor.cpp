@@ -5,7 +5,7 @@ using namespace std;
 essentialRecoVarProcessor::essentialRecoVarProcessor()
 {
     // reconstruct ttH, reconstruct ttZ
-    pointerToRecoVars.reset(new ReconstructedVars(true, true));
+    pointerToRecoVars.reset(new ReconstructedVars(false, true));
 }
 
 essentialRecoVarProcessor::~essentialRecoVarProcessor() {}

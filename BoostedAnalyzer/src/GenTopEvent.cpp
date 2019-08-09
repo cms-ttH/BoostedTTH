@@ -593,7 +593,16 @@ void GenTopEvent::FillTTdecay(const std::vector<reco::GenParticle>& prunedGenPar
                         Z_decay_products.push_back(*(reco::GenParticle*)p.daughter(i));               
                     }
                 }
+
+                // filter Zbb decay
+                for (uint i = 0; i < Z_decay_products.size(); i++) {
+                    if (abs(Z_decay_products.at(i).pdgId()) == 5)
+                        isZbb = true;
+                    if (abs(Z_decay_products.at(i).pdgId()) != 5)
+                        isZnonbb = true;
+                }
             }
+
         }
         // for THQ
         else if(abs(p.pdgId()) < 5 && p.isLastCopy() && p.statusFlags().fromHardProcess()) {
@@ -1329,6 +1338,16 @@ std::vector<math::XYZTLorentzVector> GenTopEvent::GetWplusDecayProductsVecs() co
 std::vector<math::XYZTLorentzVector> GenTopEvent::GetWminusDecayProductsVecs() const
 {
     return GetLVs(GetWminusDecayProducts());
+}
+
+bool GenTopEvent::IsZbb() const
+{
+    return isZbb;
+}
+
+bool GenTopEvent::IsZnonbb() const
+{
+    return isZnonbb;
 }
 
 bool GenTopEvent::IsTTbar() const

@@ -32,6 +32,12 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVar( "N_PrimaryVertices","I" );
     vars.InitVar( "N_GenPVs", "I");
 
+    vars.InitVar(  "N_GenJets","I" );
+    vars.InitVars( "GenJet_E","N_GenJets" );
+    vars.InitVars( "GenJet_Pt","N_GenJets" );
+    vars.InitVars( "GenJet_Phi","N_GenJets" );
+    vars.InitVars( "GenJet_Eta","N_GenJets" );
+
 
     
     //vars.InitVars( "LooseJet_E","N_LooseJets" );
@@ -256,6 +262,19 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVar( "N_TightMuons",input.selectedMuons.size());    
     vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());    
     
+
+    // jet variables
+    vars.FillVar( "N_GenJets", input.genJets.size() );
+    size_t iGenJet = 0;
+    for( auto& genJet: input.genJets ) {
+        vars.FillVars( "GenJet_E",iGenJet,genJet.energy() );
+        vars.FillVars( "GenJet_Pt",iGenJet,genJet.pt() );
+        vars.FillVars( "GenJet_Eta",iGenJet,genJet.eta() );
+        vars.FillVars( "GenJet_Phi",iGenJet,genJet.phi() );
+        ++iGenJet;
+    }
+
+
     // Fill Jet Variables
     // All Jets
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet)
