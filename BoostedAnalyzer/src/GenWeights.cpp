@@ -187,6 +187,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
     bool is_pdf_var=false;
     bool is_scale_var=false;
     bool is_hdamp_var=false;
+    bool special_shit=false;
     TString mur = "";
     TString muf = "";
     double mur_d = 0;
@@ -195,23 +196,25 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
     int split=0;
     for (auto iter=myLHERunInfoProduct.begin(); iter!=myLHERunInfoProduct.end(); iter++) {
         TString line = *iter;
-//         std::cout<<line<<std::endl;
         // first remove some characters which complicate everything
         line.ToLower();
         line.ReplaceAll("\n","");
         line.ReplaceAll(" ","");
         line.ReplaceAll("<","");
+        line.ReplaceAll("&lt;","");
+        line.ReplaceAll("&gt;","");
         line.ReplaceAll(">","");
         line.ReplaceAll("/","");
         line.ReplaceAll('"',"");
         line.ReplaceAll("=","");
         line.ReplaceAll("+","");
+        line.ReplaceAll("#","");
         // check if this line has anything to do with generator weights
         if(!line.Contains("weight")) continue;
         // check if a new weighgroup begins
 //         std::cout << line << std::endl;
         TString lineAsPrinted=line;
-        if(line.Contains("weightgroupcombine")) {
+        if(line.Contains("weightgroup") and line.Contains("combine") ) {
             // pdf weights?
             if(line.Contains("pdf")) {
                 is_pdf_var=true;
@@ -255,15 +258,28 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             name_string.ReplaceAll("centralscalevariation","scale_variation");
             name_string.ReplaceAll("pdf_variation1","pdf_variation");
             name_string.ReplaceAll("pdf_variation2","pdf_variation");
+            name_string.ReplaceAll("-1","");
+            //std::cout << "name_string" << " " << name_string << std::endl;
             //cout << "blablabla " << split << "       " << pdf_string << endl;
 //             cout<<name_string<<endl;
             continue;
         }
+        // special case for broken mg 2.6 header
+        if( line.Contains("1001mur") )
+        {   
+            is_scale_var = true;
+            is_pdf_var = false;
+            is_hdamp_var = false;
+        }
+
         // only use matrix element scale and pdf weights for now
         if(is_hdamp_var) continue;
         if(!is_pdf_var&&!is_scale_var) continue;
         // only use lines which have something to do with actual weights
         if(!line.Contains("weightid")) continue;
+
+        // special flag for especially stupid MG header files and pdf variations
+        special_shit = false;
         
         //cout << line << endl;
         // remove substrings to extract the weightids
@@ -302,48 +318,80 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
             split=line.Index("lhapdf");
             line.ReplaceAll(line(split,line.Length()),"");
         }
-        if(line.Contains("mur") and line.Contains("muf")) {
+        if(line.Contains("mur") and line.Contains("muf") and is_pdf_var) {
+            int pdfIndex = line.Index("pdf");
+            name_string = line(pdfIndex+3,line.Length());
+            pdfIndex = name_string.Index("pdf");
+            if(!(pdfIndex==-1)) name_string = name_string(0,pdfIndex);
+            split = line.Index("mur");
+            line.ReplaceAll(line(split,line.Length()),"");
+            split = -1;
+            special_shit = true;
+        }
+        else if(is_pdf_var) {
+            int pdfIndex = line.Index("pdf");
+            name_string = line(pdfIndex+3,line.Length());
+            line.ReplaceAll(line(pdfIndex, line.Length()),"");
+            line.ReplaceAll("lha","");
+            pdfIndex = name_string.Index("nnpdf");
+            if(!(pdfIndex==-1)) name_string = name_string(0,pdfIndex);
+            pdfIndex = name_string.Index("ct");
+            if(!(pdfIndex==-1)) name_string = name_string(0,pdfIndex);
+            pdfIndex = name_string.Index("luxqed");
+            if(!(pdfIndex==-1)) name_string = name_string(0,pdfIndex);
+            split = -1;
+            special_shit = true; 
+        }
+        else if(line.Contains("mur") and line.Contains("muf")) {
             //cout << "-----------------------------------" << endl;
             //cout << line << endl;
+            //if(line.Contains("dyn-1")) line.ReplaceAll("dyn-1","");
             split=line.Index("hdamp");
             line.ReplaceAll(line(split,line.Length()),"");
-//             cout << line << endl;
+            line.ReplaceAll("dyn-1","");
+             //cout << line << endl;
             split=line.Index("muf");
             muf = line(split,line.Length());
             line.ReplaceAll(muf,"");
             muf.ReplaceAll("muf","");
-//             cout << line << endl;
+             //cout << line << endl;
             split=line.Index("mur");
             mur = line(split,line.Length());
             line.ReplaceAll(mur,"");
             mur.ReplaceAll("mur","");
-//             cout << line << endl;
-//             std::string mur_ = mur.Data();
-//             std::string muf_ = muf.Data();
+             //cout << line << endl;
+             std::string mur_ = mur.Data();
+             std::string muf_ = muf.Data();
             mur_d = mur.Atof();
-//             cout << mur_d << " "<< mur <<" "<< TString::Format("%.1f",mur_d)<<endl;
+             //cout << mur_d << " "<< mur <<" "<< TString::Format("%.1f",mur_d)<<endl;
             muf_d = muf.Atof();
             mur = TString::Format("%.1f",mur_d);
             mur.ReplaceAll(".","p");
             muf = TString::Format("%.1f",muf_d);
             muf.ReplaceAll(".","p");
-//             split=line.Index("lhapdf");
-//             line.ReplaceAll(line(split,line.Length()),"");
+             split=line.Index("lhapdf");
+             line.ReplaceAll(line(split,line.Length()),"");
+            name_string = "scale_variation";
         }
         // get the id of the weight
-        TString id=TString(line,split);
+        TString id = TString(line);
+        if(!(split==-1 and (is_scale_var or is_pdf_var))) id=TString(line,int(split));
         line.ReplaceAll(TString(id),"");
         // some more string acrobatics to get a nice identifier string for the weights
-        if(is_pdf_var) {
+        if(is_pdf_var and special_shit) {
+            line = "Weight_pdf_variation_"+name_string;
+        }
+        else if(is_pdf_var) {
             line.ReplaceAll("lhapdf","Weight_"+name_string+"_");
             line.ReplaceAll("pdfset","Weight_"+name_string+"_");
             line.ReplaceAll("member","Weight_"+name_string+"_");
         }
         if(is_scale_var) line="Weight_"+name_string+"_muR_"+mur+"_muF_"+muf;
-//         cout << lineAsPrinted<<" " <<line << "   " << id << endl;
         // hack to exclude all pdf variations not belonging to NNPDF31_nnlo_hessian_pdfas pdfset. They have lhaids 306000-306102
         if(line.Contains("pdf_variation") && !line.Contains("_306")) continue;
+        if (line == "") continue;       
         // add the unique weightid and the corresponding name to a map to use later when reading the weights from the events
+        std::cout << "id " << std::string(id) << " | name " << line << std::endl;
         lhe_weights[std::string(id)]=line;
         }
         
