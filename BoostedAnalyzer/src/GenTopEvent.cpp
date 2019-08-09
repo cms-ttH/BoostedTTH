@@ -2,6 +2,8 @@
 
 GenTopEventProducer::GenTopEventProducer (edm::ConsumesCollector && iC){
   customGenJetsToken             = iC.consumes< std::vector<reco::GenJet> >(edm::InputTag("ak4GenJetsCustom","",""));
+  customGenElectronsToken        = iC.consumes<std::vector<reco::GenParticle>>(edm::InputTag("GenCollectionProducer:CustomGenElectrons"));
+  customGenMuonsToken            = iC.consumes<std::vector<reco::GenParticle>>(edm::InputTag("GenCollectionProducer:CustomGenMuons"));
   genBHadJetIndexToken           = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadJetIndex",""));
   genBHadFlavourToken            = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFlavour",""));
   genBHadFromTopWeakDecayToken   = iC.consumes<std::vector<int> >(edm::InputTag("matchGenBHadron","genBHadFromTopWeakDecay",""));
@@ -25,7 +27,11 @@ GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHad
     GenTopEvent genTopEvt;
     if(returnDummy) return genTopEvt;
     edm::Handle< std::vector<reco::GenJet> > h_customgenjets;
+    edm::Handle< std::vector<reco::GenParticle> > h_customgenelectrons;
+    edm::Handle< std::vector<reco::GenParticle> > h_customgenmuons;
     iEvent.getByToken( customGenJetsToken,h_customgenjets );
+    iEvent.getByToken( customGenElectronsToken,h_customgenelectrons );
+    iEvent.getByToken( customGenMuonsToken,h_customgenmuons );
     edm::Handle<std::vector<int> > genBHadFlavour;
     edm::Handle<std::vector<int> > genBHadJetIndex;
     edm::Handle<std::vector<int> > genBHadFromTopWeakDecay;
@@ -61,7 +67,7 @@ GenTopEvent GenTopEventProducer::Produce(const edm::Event& iEvent, bool doGenHad
     int ttid_full = *genTtbarId;
     genTopEvt.FillTTdecay(*prunedGenParticles,ttid_full);
     if(doGenHadronMatch){
-	genTopEvt.FillTTxDetails(*h_customgenjets, 
+	genTopEvt.FillTTxDetails(*h_customgenjets, *h_customgenelectrons, *h_customgenmuons,
 				 *genBHadIndex, *genBHadJetIndex, 
 				 *genBHadFlavour, *genBHadFromTopWeakDecay, 
 				 *genBHadPlusMothers, 
@@ -91,6 +97,7 @@ bool GenTopEvent::TTxIsFilled() const{
 }
 
 void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets, 
+                 const std::vector<reco::GenParticle>& customGenElectrons, const std::vector<reco::GenParticle>& customGenMuons,
 				 const std::vector<int>& genBHadIndex, const std::vector<int>& genBHadJetIndex, 
 				 const std::vector<int>& genBHadFlavour, const std::vector<int>& genBHadFromTopWeakDecay, 
 				 const std::vector<reco::GenParticle>& genBHadPlusMothers, 
@@ -219,6 +226,18 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     if(customGenJets[i].pt()<=ttxptcut || fabs(customGenJets[i].eta())>=ttxetacut){
       continue;
     }
+    // skip jets that are actually leptons
+    std::vector<reco::GenParticle> leptons = customGenElectrons;
+    std::vector<reco::GenParticle> muons = customGenMuons;
+    leptons.insert(leptons.end(), muons.begin(), muons.end());
+    bool matchLepton = false;
+    for(auto const &v : leptons){
+      if(BoostedUtils::DeltaR(customGenJets[i].p4(),v.p4())<0.2){
+          matchLepton = true;
+      }
+    }
+    if(matchLepton) continue;
+    
     // all genjets
     all_genjets.push_back(customGenJets[i]);
     // skip light jets

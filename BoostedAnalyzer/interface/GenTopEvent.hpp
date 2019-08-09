@@ -141,6 +141,7 @@ public:
 
 
   void FillTTxDetails(const std::vector<reco::GenJet>& customGenJets, 
+              const std::vector<reco::GenParticle>& customGenElectrons, const std::vector<reco::GenParticle>& customGenMuons,
 		      const std::vector<int>& genBHadIndex, const std::vector<int>& genBHadJetIndex, 
 		      const std::vector<int>& genBHadFlavour, const std::vector<int>& genBHadFromTopWeakDecay, 
 		      const std::vector<reco::GenParticle>& genBHadPlusMothers, 
@@ -210,8 +211,10 @@ private:
   std::vector<reco::GenJet> w_genjets;
   std::vector<reco::GenJet> additional_light_genjets;
   const float wMatchR=0.4;
-  const float ttxptcut=20;
-  const float ttxetacut=2.4;
+  //~ const float ttxptcut=20.;
+  const float ttxptcut=25.;
+  //~ const float ttxetacut=2.4;
+  const float ttxetacut=2.5;
   bool isTTbar=false;
   bool isTTH=false;
   bool topIsHadronic;
@@ -229,7 +232,9 @@ public:
   GenTopEvent Produce(const edm::Event& iEvent, bool doGenHadronMatch, bool returnDummy);
   ~GenTopEventProducer();
 private:
-  edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsToken;   
+  edm::EDGetTokenT< std::vector<reco::GenJet> > customGenJetsToken;  
+  edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenElectronsToken;
+  edm::EDGetTokenT< std::vector<reco::GenParticle> > customGenMuonsToken; 
   edm::EDGetTokenT<std::vector<int> > genBHadJetIndexToken;
   edm::EDGetTokenT<std::vector<int> > genBHadFlavourToken;
   edm::EDGetTokenT<std::vector<int> > genBHadFromTopWeakDecayToken;
