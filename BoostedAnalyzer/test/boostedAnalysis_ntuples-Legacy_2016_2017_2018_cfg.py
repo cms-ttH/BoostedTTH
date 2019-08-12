@@ -73,12 +73,16 @@ if not options.inputFiles:
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
             # options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/60000/AC628CE7-0169-E811-9C5E-00010100096B.root']
         elif "2018" in options.dataEra:
-            #options.inputFiles=[
-            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_1.root']
-            #options.inputFiles=[
-            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTZToBB_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_135752/0000/Skim_1.root']
             options.inputFiles=[
-                'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_1.root']
+               'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_1.root']
+            # options.inputFiles=[
+            #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTZToBB_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_135752/0000/Skim_1.root']
+            # options.inputFiles=[
+                # 'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190406_083857/0000/Skim_1.root']
+        #   options.inputFiles=[
+                # 'file:///pnfs/desy.de/cms/tier2//store/user/mschrode/THQ_ctcvcp_4f_Hincl_13TeV_madgraph_pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190409_100520/0000/Skim_146.root']
+            # options.inputFiles=[
+                # 'file:///pnfs/desy.de/cms/tier2//store/user/mschrode/THW_ctcvcp_5f_Hincl_13TeV_madgraph_pythia8/KIT_tthbb_skims_MC_94X_LEG_2018/190409_100644/0000/Skim_117.root']
     else:
         if "2016" in options.dataEra: # CAREFUL: NO 2016 Data Skims ready yet
             # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
@@ -451,7 +455,7 @@ process.CorrectedJetProducerAK4=process.SelectedJetProducerAK4.clone(jets=jetCol
                                                                collectionNames=["correctedJetsAK4"],
                                                                applyCorrection=True,
                                                                systematics=[""]+systsJES,
-                                                               JetID=["tight"],
+                                                               JetID=["tightlepveto"],
                                                                PUJetIDMins=["none"])
 
 # process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8jetCollection, 
