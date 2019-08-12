@@ -682,11 +682,11 @@ void Synchronizer::Init(std::string filename, const std::vector<std::string>& je
     }
     selectionsDL.push_back(new FilterSelection(iConfig));
     selectionsDL.push_back(new VertexSelection());
-    selectionsDL.push_back(new DiLeptonSelection(iConfig));
-    selectionsDL.push_back(new DiLeptonMassSelection(20,99999,false,true));
-    selectionsDL.push_back(new DiLeptonMassSelection(76,106,true,false));
-    selectionsDL.push_back(new DiLeptonMETSelection(40,99999));
-    selectionsDL.push_back(new DiLeptonJetTagSelection(2,1));
+    // selectionsDL.push_back(new DiLeptonSelection(iConfig));
+    // selectionsDL.push_back(new DiLeptonMassSelection(20,99999,false,true));
+    // selectionsDL.push_back(new DiLeptonMassSelection(76,106,true,false));
+    // selectionsDL.push_back(new DiLeptonMETSelection(40,99999));
+    // selectionsDL.push_back(new DiLeptonJetTagSelection(2,1));
     for (auto &c : cutflowsDL){
 	for (auto &s : selectionsDL){
 	    s->InitCutflow(c);
