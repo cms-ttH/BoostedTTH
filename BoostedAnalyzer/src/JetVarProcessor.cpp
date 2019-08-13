@@ -51,7 +51,9 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK8Jet_SoftDropJet3_DeepJetCSV", "N_AK8Jets");
 
     vars.InitVar("N_AK8Jets_x_N_Jets", "I");
+    vars.InitVar("N_AK8Jets_x_N_JetsTagged", "I");
     vars.InitVars("DeltaR_AK8Jet_AK4Jet", "N_AK8Jets_x_N_Jets");
+    vars.InitVars("DeltaR_AK8Jet_AK4JetTagged", "N_AK8Jets_x_N_JetsTagged");
 
     vars.InitVar("N_AK15Jets", "I");
     vars.InitVars("AK15Jet_Pt", "N_AK15Jets");
@@ -94,7 +96,9 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_SoftDropJet3_DeepJetCSV", "N_AK15Jets");
 
     vars.InitVar("N_AK15Jets_x_N_Jets", "I");
+    vars.InitVar("N_AK15Jets_x_N_JetsTagged", "I");
     vars.InitVars("DeltaR_AK15Jet_AK4Jet", "N_AK15Jets_x_N_Jets");
+    vars.InitVars("DeltaR_AK15Jet_AK4JetTagged", "N_AK15Jets_x_N_JetsTagged");
 
     initialized = true;
 }
@@ -104,11 +108,17 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     if (!initialized) cerr << "JetVarProcessor not initialized" << endl;
 
     const auto& ak4jets = input.selectedJets;
+    std::vector<pat::Jet> ak4jets_tagged;
+    for(const auto& ak4jet : ak4jets){
+        if (CSVHelper::PassesCSV(ak4jet, "DeepJet", CSVHelper::CSVwp::Medium, era))
+            ak4jets_tagged.push_back(ak4jet);
+    }
 
     const auto& ak8jets = input.selectedJetsAK8;
 
     vars.FillVar("N_AK8Jets", ak8jets.size());
     vars.FillVar("N_AK8Jets_x_N_Jets", ak8jets.size() * ak4jets.size());
+    vars.FillVar("N_AK8Jets_x_N_JetsTagged", ak8jets.size() * ak4jets_tagged.size());
     for (size_t i = 0; i < ak8jets.size(); i++) {
         const auto& ak8jet = ak8jets.at(i);
         vars.FillVars("AK8Jet_Pt", i, ak8jet.pt());
@@ -145,12 +155,18 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             const auto& ak4jet = ak4jets.at(k);
             vars.FillVars("DeltaR_AK8Jet_AK4Jet", i * ak4jets.size() + k, BoostedUtils::DeltaR(ak8jet.p4(), ak4jet.p4()));
         }
+        
+        for (size_t k = 0; k < ak4jets_tagged.size(); k++) {
+            const auto& ak4jet_tagged = ak4jets_tagged.at(k);
+            vars.FillVars("DeltaR_AK8Jet_AK4JetTagged", i * ak4jets_tagged.size() + k, BoostedUtils::DeltaR(ak8jet.p4(), ak4jet_tagged.p4()));
+        }
     }
 
     const auto& ak15jets = input.selectedJetsAK15;
 
     vars.FillVar("N_AK15Jets", ak15jets.size());
     vars.FillVar("N_AK15Jets_x_N_Jets", ak15jets.size() * ak4jets.size());
+    vars.FillVar("N_AK15Jets_x_N_JetsTagged", ak15jets.size() * ak4jets_tagged.size());
     for (size_t i = 0; i < ak15jets.size(); i++) {
         const auto& ak15jet = ak15jets.at(i);
         vars.FillVars("AK15Jet_Pt", i, ak15jet.pt());
@@ -188,6 +204,11 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         for (size_t k = 0; k < ak4jets.size(); k++) {
             const auto& ak4jet = ak4jets.at(k);
             vars.FillVars("DeltaR_AK15Jet_AK4Jet", i * ak4jets.size() + k, BoostedUtils::DeltaR(ak15jet.p4(), ak4jet.p4()));
+        }
+        
+        for (size_t k = 0; k < ak4jets_tagged.size(); k++) {
+            const auto& ak4jet_tagged = ak4jets_tagged.at(k);
+            vars.FillVars("DeltaR_AK15Jet_AK4JetTagged", i * ak4jets_tagged.size() + k, BoostedUtils::DeltaR(ak15jet.p4(), ak4jet_tagged.p4()));
         }
     }
 }
