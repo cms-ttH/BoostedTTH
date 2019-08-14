@@ -97,6 +97,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
 
     vars.InitVar("N_AK15Jets_x_N_Jets", "I");
     vars.InitVar("N_AK15Jets_x_N_JetsTagged", "I");
+    vars.InitVar("N_AK4JetsTagged_outside_AK15Jets", "I");
     vars.InitVars("DeltaR_AK15Jet_AK4Jet", "N_AK15Jets_x_N_Jets");
     vars.InitVars("DeltaR_AK15Jet_AK4JetTagged", "N_AK15Jets_x_N_JetsTagged");
 
@@ -108,10 +109,10 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     if (!initialized) cerr << "JetVarProcessor not initialized" << endl;
 
     const auto& ak4jets = input.selectedJets;
-    std::vector<pat::Jet> ak4jets_tagged;
-    for(const auto& ak4jet : ak4jets){
-        if (CSVHelper::PassesCSV(ak4jet, "DeepJet", CSVHelper::CSVwp::Medium, era))
-            ak4jets_tagged.push_back(ak4jet);
+
+    std::vector< pat::Jet > ak4jets_tagged;
+    for (const auto& ak4jet : ak4jets) {
+        if (CSVHelper::PassesCSV(ak4jet, "DeepJet", CSVHelper::CSVwp::Medium, era)) ak4jets_tagged.push_back(ak4jet);
     }
 
     const auto& ak8jets = input.selectedJetsAK8;
@@ -155,12 +156,14 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             const auto& ak4jet = ak4jets.at(k);
             vars.FillVars("DeltaR_AK8Jet_AK4Jet", i * ak4jets.size() + k, BoostedUtils::DeltaR(ak8jet.p4(), ak4jet.p4()));
         }
-        
+
         for (size_t k = 0; k < ak4jets_tagged.size(); k++) {
             const auto& ak4jet_tagged = ak4jets_tagged.at(k);
             vars.FillVars("DeltaR_AK8Jet_AK4JetTagged", i * ak4jets_tagged.size() + k, BoostedUtils::DeltaR(ak8jet.p4(), ak4jet_tagged.p4()));
         }
     }
+
+    int n_AK4JetsTagged_outside_AK15Jets = 0;
 
     const auto& ak15jets = input.selectedJetsAK15;
 
@@ -205,10 +208,13 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             const auto& ak4jet = ak4jets.at(k);
             vars.FillVars("DeltaR_AK15Jet_AK4Jet", i * ak4jets.size() + k, BoostedUtils::DeltaR(ak15jet.p4(), ak4jet.p4()));
         }
-        
+
         for (size_t k = 0; k < ak4jets_tagged.size(); k++) {
-            const auto& ak4jet_tagged = ak4jets_tagged.at(k);
-            vars.FillVars("DeltaR_AK15Jet_AK4JetTagged", i * ak4jets_tagged.size() + k, BoostedUtils::DeltaR(ak15jet.p4(), ak4jet_tagged.p4()));
+            const auto& ak4jet_tagged            = ak4jets_tagged.at(k);
+            const auto  dR_ak15jet_ak4jet_tagged = BoostedUtils::DeltaR(ak15jet.p4(), ak4jet_tagged.p4());
+            vars.FillVars("DeltaR_AK15Jet_AK4JetTagged", i * ak4jets_tagged.size() + k, dR_ak15jet_ak4jet_tagged);
+            if (dR_ak15jet_ak4jet_tagged > 1.5) n_AK4JetsTagged_outside_AK15Jets += 1;
         }
     }
+    vars.FillVar("N_AK4JetsTagged_outside_AK15Jets", n_AK4JetsTagged_outside_AK15Jets);
 }
