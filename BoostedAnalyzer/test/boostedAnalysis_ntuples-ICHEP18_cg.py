@@ -381,8 +381,10 @@ for s in systsJES:
 process.load("BoostedTTH.GenCollectionProducer.GenCollectionProducer_cfi")
 process.GenCollectionProducer.collection_name=["CustomGenElectrons","CustomGenMuons","CustomGenTaus","CustomGenPhotons"]
 process.GenCollectionProducer.collection_type=["Electron","Muon","Tau","Photon"]
-process.GenCollectionProducer.pt_min=[27.,27.,18.,15.]
-process.GenCollectionProducer.eta_max=[2.5,2.5,2.5,2.5]
+process.GenCollectionProducer.pt_min=[15.,15.,15.,15.]
+# ~ process.GenCollectionProducer.pt_min=[27.,27.,15.,15.]
+process.GenCollectionProducer.eta_max=[2.4,2.4,2.4,2.4]
+# ~ process.GenCollectionProducer.eta_max=[2.5,2.5,2.4,2.4]
 process.GenCollectionProducer.doDeltaRCleaning=False
 
 ################################################
@@ -442,11 +444,11 @@ if options.isData:
 
 process.BoostedAnalyzer.selectionNames = [
 "GenTopSLSelection"
-#"FilterSelection",
-#"VertexSelection",
-#"LeptonSelection",
-#"JetTagSelection",
-#"METSelection"
+# ~ "FilterSelection",
+# ~ "VertexSelection",
+# ~ "LeptonSelection",
+# ~ "JetTagSelection",
+# ~ "METSelection"
 ]
 if options.additionalSelection!="NONE":
   process.BoostedAnalyzer.selectionNames+=cms.vstring(options.additionalSelection)
@@ -464,12 +466,13 @@ if options.isData:
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-  "essentialMCMatchVarProcessor",
+  "MCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
   "BDTVarProcessor",
   "TriggerVarProcessor",
   "AdditionalJetProcessor",
+  "GenJetProcessor",
   "GenBJetProcessor",
   "GenLeptonProcessor"
   )
