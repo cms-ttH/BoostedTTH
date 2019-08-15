@@ -21,14 +21,17 @@ Do for example:
     export CMSSWSRCDIR="$( pwd )"
     eval `scramv1 runtime -sh` 
     
-    # producer of deterministic seeds for physics objects to be able to do synchronization (needs 10X port)
-    #git cms-merge-topic yrath:deterministicSeeds_102X
-    
+    # producer of deterministic seeds for physics objects to be able to do synchronization
+        
     # producer to apply JER to jets
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then    
       git cms-merge-topic michaelwassmer:CMSSW_10_2_X_changed_SmearedJetProducer
+      # producer of deterministic seeds for physics objects to be able to do synchronization
+      git cms-merge-topic yrath:deterministicSeeds_102X
     elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
       git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
+      # producer of deterministic seeds for physics objects to be able to do synchronization
+      git cms-merge-topic yrath:deterministicSeeds
     else
       echo "WRONG CMSSW VERSION"
       return 1
