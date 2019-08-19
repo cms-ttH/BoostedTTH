@@ -358,7 +358,8 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct) {
         }
         // get the id of the weight
         TString id=TString(line,split);
-        line.ReplaceAll(TString(id),"");
+        //line.ReplaceAll(TString(id),"");
+        line = line(id.Length(),line.Length());
         // some more string acrobatics to get a nice identifier string for the weights
         if(is_pdf_var) {
             line.ReplaceAll("lhapdf","Weight_"+name_string+"_");
