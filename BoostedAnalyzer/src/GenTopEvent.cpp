@@ -232,7 +232,7 @@ void GenTopEvent::FillTTxDetails(const std::vector<reco::GenJet>& customGenJets,
     leptons.insert(leptons.end(), muons.begin(), muons.end());
     bool matchLepton = false;
     for(auto const &v : leptons){
-      if(BoostedUtils::DeltaR(customGenJets[i].p4(),v.p4())<0.2){
+      if(BoostedUtils::DeltaR(customGenJets[i].p4(),v.p4())<0.4){
           matchLepton = true;
       }
     }
