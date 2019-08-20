@@ -43,7 +43,7 @@ void MCMatchVarProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("GenTopHad_W_DR",-9.,"N_GenTopHad");
     vars.InitVars("GenTopHad_W_Q1_DR",-9.,"N_GenTopHad");
     vars.InitVars("GenTopHad_W_Q2_DR",-9.,"N_GenTopHad");
-    
+    vars.InitVars("GenTopHad_B_Q1_Q2_maxDR",-9.,"N_GenTopHad");
 
     vars.InitVar("N_GenTopLep", -1, "I");
     vars.InitVars("GenTopLep_Pt", -9., "N_GenTopLep");
@@ -343,6 +343,7 @@ void MCMatchVarProcessor::Process(const InputCollections& input, VariableContain
         vars.FillVars("GenTopHad_W_DR", i, BoostedUtils::DeltaR(tophad[i].p4(),whad[i].p4()));
         vars.FillVars("GenTopHad_W_Q1_DR", i, BoostedUtils::DeltaR(whad[i].p4(),q1[i].p4()));
         vars.FillVars("GenTopHad_W_Q2_DR", i, BoostedUtils::DeltaR(whad[i].p4(),q2[i].p4()));
+        vars.FillVars("GenTopHad_B_Q1_Q2_maxDR", i, std::max(std::max(BoostedUtils::DeltaR(q1[i].p4(),q2[i].p4()),BoostedUtils::DeltaR(bhad[i].p4(),q1[i].p4())),BoostedUtils::DeltaR(bhad[i].p4(),q2[i].p4())));
     }
 
     //     if (higgs.pt() > 0.) {
