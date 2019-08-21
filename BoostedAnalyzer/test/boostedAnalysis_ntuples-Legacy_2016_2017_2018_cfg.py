@@ -71,6 +71,8 @@ if not options.inputFiles:
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
         elif "2017" in options.dataEra: 
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
+            # options.inputFiles=[
+            #    'file://ttH_2017_selectedEvents.root']
             # options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/60000/AC628CE7-0169-E811-9C5E-00010100096B.root']
         elif "2018" in options.dataEra:
             options.inputFiles=[
@@ -328,6 +330,8 @@ elif "2017" in options.dataEra:
     EG_era = '2017-Nov17ReReco'
     EG_corrections = True
     EG_vid = True
+    # EG_corrections = False
+    # EG_vid = False
 elif "2018" in options.dataEra:
     EG_era = '2018-Prompt'
     EG_corrections = False
@@ -405,7 +409,7 @@ elif "2018" in options.dataEra:
 
 process.SelectedElectronProducer.leptons=electronCollection
 process.SelectedElectronProducer.etaMaxs=[2.4,2.4,2.4]
-process.SelectedElectronProducer.leptonIDs=["loose","tight","tight"]
+process.SelectedElectronProducer.leptonIDs=["tight","tight","tight"]
 process.SelectedElectronProducer.isoConeSizes=["R03"]*3
 process.SelectedElectronProducer.isoCorrTypes=["rhoEA"]*3
 process.SelectedElectronProducer.collectionNames=["selectedElectronsLoose","selectedElectronsDL","selectedElectrons"]
@@ -415,7 +419,7 @@ process.SelectedElectronProducer.era=options.dataEra
 
 process.SelectedMuonProducer.leptons=muonCollection
 process.SelectedMuonProducer.etaMaxs=[2.4,2.4,2.4]
-process.SelectedMuonProducer.leptonIDs=["loose","tight","tight"]
+process.SelectedMuonProducer.leptonIDs=["tight","tight","tight"]
 process.SelectedMuonProducer.isoConeSizes=["R04"]*3
 process.SelectedMuonProducer.isoCorrTypes=["deltaBeta"]*3
 process.SelectedMuonProducer.muonIsoTypes = ["loose", "loose", "tight"]
@@ -681,6 +685,14 @@ if options.dumpSyncExe:
     process.BoostedAnalyzer.dumpSyncExe=True
     process.BoostedAnalyzer.dumpExtended=False
     process.BoostedAnalyzer.dumpAlwaysEvents=[
+        # 2876878,
+        # 2876882,
+        # 2877695,
+        # 2877028,
+        # 2877912,
+        # 7984609,
+        # 7772477,
+        2878485
         #3222838,
         #3211421,
         #527273,
