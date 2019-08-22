@@ -41,6 +41,10 @@ for event in events:
            jet.userFloat("NjettinessAK15Puppi:tau3")/jet.userFloat("NjettinessAK15Puppi:tau2")<0.6
            ):
             top_mass_ak15_hist.Fill(jet.userFloat("ak15PFJetsPuppiSoftDropMass"))
+        #subjetcollectionnames = jet.subjetCollectionNames()
+        #for subjetcollectionname in subjetcollectionnames:
+            #print subjetcollectionname
+        #print jet.subjets("SoftDrop").size()
     for jet in JetsAK8:
         if(jet.userFloat("NjettinessAK8Puppi:tau2")==0. or jet.userFloat("NjettinessAK8Puppi:tau3")==0.):
             continue
@@ -49,6 +53,10 @@ for event in events:
            jet.userFloat("NjettinessAK8Puppi:tau3")/jet.userFloat("NjettinessAK8Puppi:tau2")<0.6
            ):
             top_mass_ak8_hist.Fill(jet.userFloat("ak8PFJetsPuppiSoftDropMass"))
+        #subjetcollectionnames = jet.subjetCollectionNames()
+        #for subjetcollectionname in subjetcollectionnames:
+            #print subjetcollectionname
+        #print jet.subjets("SoftDrop").size()
 
 c=ROOT.TCanvas()
 l=ROOT.TLegend(0.3,0.3)
