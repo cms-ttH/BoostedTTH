@@ -107,7 +107,7 @@ Do for example:
     cd $CMSSWSRCDIR
 
     # add JetToolbox
-    git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v1
+    git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102_v2
 
     git cms-addpkg EgammaAnalysis/ElectronTools
     rm EgammaAnalysis/ElectronTools/data -rf
