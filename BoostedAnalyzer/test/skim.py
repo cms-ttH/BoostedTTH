@@ -260,39 +260,109 @@ updateJetCollection(
     postfix="AK8WithPuppiDaughters",
 )
 
-# updateJetCollection(
-# process,
-# jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiPrunedSubjets'),
-# pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-# svSource = cms.InputTag('slimmedSecondaryVertices'),
-# jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
-# btagDiscriminators = [
-#'pfDeepFlavourJetTags:probb',
-#'pfDeepFlavourJetTags:probbb',
-#'pfDeepFlavourJetTags:problepb',
-#'pfDeepFlavourJetTags:probc',
-#'pfDeepFlavourJetTags:probuds',
-#'pfDeepFlavourJetTags:probg'
-# ],
-# postfix='AK15PFPuppiPrunedSubjetsNewDFTraining'
-# )
+updateJetCollection(
+    process,
+    labelName="AK15SoftDropSubjetsWithBtagInfo",
+    jetSource=cms.InputTag(
+        "selectedPatJetsAK15PFPuppiSoftDropPacked", "SubJets", "SKIM"
+    ),
+    jetCorrections=(
+        "AK4PFPuppi",
+        cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]),
+        "None",
+    ),  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+    btagDiscriminators=[
+        "pfDeepFlavourJetTags:probb",
+        "pfDeepFlavourJetTags:probbb",
+        "pfDeepFlavourJetTags:problepb",
+        "pfDeepFlavourJetTags:probc",
+        "pfDeepFlavourJetTags:probuds",
+        "pfDeepFlavourJetTags:probg",
+        "pfDeepCSVJetTags:probb",
+        "pfDeepCSVJetTags:probc",
+        "pfDeepCSVJetTags:probudsg",
+        "pfDeepCSVJetTags:probbb",
+    ],
+    explicitJTA=True,  # needed for subjet b tagging
+    svClustering=False,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
+    fatJets=cms.InputTag(
+        "selectedUpdatedPatJetsAK15WithPuppiDaughters", "", "SKIM"
+    ),  # needed for subjet b tagging
+    rParam=1.5,  # needed for subjet b tagging
+    algo="ak",  # has to be defined but is not used with svClustering=False
+)
 
-# updateJetCollection(
-# process,
-# jetSource = cms.InputTag('selectedPatJetsAK15PFPuppiSoftDropSubjets'),
-# pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-# svSource = cms.InputTag('slimmedSecondaryVertices'),
-# jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
-# btagDiscriminators = [
-#'pfDeepFlavourJetTags:probb',
-#'pfDeepFlavourJetTags:probbb',
-#'pfDeepFlavourJetTags:problepb',
-#'pfDeepFlavourJetTags:probc',
-#'pfDeepFlavourJetTags:probuds',
-#'pfDeepFlavourJetTags:probg'
-# ],
-# postfix='AK15PFPuppiSoftDropSubjetsNewDFTraining'
-# )
+# this producer merges the ak15 fat jets (groomed with softdrop) with the softdrop subjets
+process.MergeAK15FatjetsAndSubjets = cms.EDProducer(
+    "BoostedJetMerger",
+    jetSrc=cms.InputTag("selectedPatJetsAK15PFPuppiSoftDrop", "", "SKIM"),
+    subjetSrc=cms.InputTag("selectedUpdatedPatJetsAK15SoftDropSubjetsWithBtagInfo"),
+)
+
+# this producer puts all information from the ak15 fat jets (groomed and ungroomed) and the subjets into one collection containing everything
+process.AK15PFPuppiComplete = cms.EDProducer(
+    "JetSubstructurePacker",
+    jetSrc=cms.InputTag("selectedUpdatedPatJetsAK15WithPuppiDaughters", "", "SKIM"),
+    distMax=cms.double(1.5),
+    algoTags=cms.VInputTag(cms.InputTag("MergeAK15FatjetsAndSubjets")),
+    algoLabels=cms.vstring("SoftDropWithBtagInfo"),
+    fixDaughters=cms.bool(False),
+)
+
+updateJetCollection(
+    process,
+    labelName="AK8SoftDropSubjetsWithBtagInfo",
+    jetSource=cms.InputTag(
+        "selectedPatJetsAK8PFPuppiSoftDropPacked", "SubJets", "SKIM"
+    ),
+    jetCorrections=(
+        "AK4PFPuppi",
+        cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]),
+        "None",
+    ),  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+    btagDiscriminators=[
+        "pfDeepFlavourJetTags:probb",
+        "pfDeepFlavourJetTags:probbb",
+        "pfDeepFlavourJetTags:problepb",
+        "pfDeepFlavourJetTags:probc",
+        "pfDeepFlavourJetTags:probuds",
+        "pfDeepFlavourJetTags:probg",
+        "pfDeepCSVJetTags:probb",
+        "pfDeepCSVJetTags:probc",
+        "pfDeepCSVJetTags:probudsg",
+        "pfDeepCSVJetTags:probbb",
+    ],
+    explicitJTA=True,  # needed for subjet b tagging
+    svClustering=False,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
+    fatJets=cms.InputTag(
+        "selectedUpdatedPatJetsAK8WithPuppiDaughters", "", "SKIM"
+    ),  # needed for subjet b tagging
+    rParam=0.8,  # needed for subjet b tagging
+    algo="ak",  # has to be defined but is not used with svClustering=False
+)
+
+# this producer merges the ak15 fat jets (groomed with softdrop) with the softdrop subjets
+process.MergeAK8FatjetsAndSubjets = cms.EDProducer(
+    "BoostedJetMerger",
+    jetSrc=cms.InputTag("selectedPatJetsAK8PFPuppiSoftDrop", "", "SKIM"),
+    subjetSrc=cms.InputTag("selectedUpdatedPatJetsAK8SoftDropSubjetsWithBtagInfo"),
+)
+
+# this producer puts all information from the ak15 fat jets (groomed and ungroomed) and the subjets into one collection containing everything
+process.AK8PFPuppiComplete = cms.EDProducer(
+    "JetSubstructurePacker",
+    jetSrc=cms.InputTag("selectedUpdatedPatJetsAK8WithPuppiDaughters", "", "SKIM"),
+    distMax=cms.double(0.8),
+    algoTags=cms.VInputTag(cms.InputTag("MergeAK8FatjetsAndSubjets")),
+    algoLabels=cms.vstring("SoftDropWithBtagInfo"),
+    fixDaughters=cms.bool(False),
+)
+
+process.jets = cms.Task()
+process.jets.add(process.MergeAK15FatjetsAndSubjets)
+process.jets.add(process.AK15PFPuppiComplete)
+process.jets.add(process.MergeAK8FatjetsAndSubjets)
+process.jets.add(process.AK8PFPuppiComplete)
 
 ######################################################
 
@@ -414,6 +484,10 @@ process.OUT = cms.OutputModule(
             "keep *_*slimmedMET*_*_SKIM",
             "keep patPackedCandidates_puppi__SKIM",
             "keep patPackedCandidates_puppiNoLep__SKIM",
+            "keep patJets_AK15PFPuppiComplete__SKIM",
+            "keep patJets_AK8PFPuppiComplete__SKIM",
+            "keep patJets_MergeAK15FatjetsAndSubjets_*_SKIM",
+            "keep patJets_MergeAK8FatjetsAndSubjets_*_SKIM",
         ]
     ),
     SelectEvents=cms.untracked.PSet(SelectEvents=cms.vstring("skim")),
@@ -442,5 +516,5 @@ process.egamma = cms.Path(process.egammaPostRecoSeq)
 
 # write the events which pass the skimming selection and only keep the specified file content
 process.write_skimmed = cms.EndPath(process.OUT)
-
+process.write_skimmed.associate(process.jets)
 # print(process.dumpPython())
