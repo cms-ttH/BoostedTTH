@@ -21,14 +21,17 @@ Do for example:
     export CMSSWSRCDIR="$( pwd )"
     eval `scramv1 runtime -sh` 
     
-    # producer of deterministic seeds for physics objects to be able to do synchronization (needs 10X port)
-    #git cms-merge-topic yrath:deterministicSeeds
+    # producer of deterministic seeds for physics objects to be able to do synchronization
     
     # producer to apply JER to jets
-    if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then    
+    if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
       git cms-merge-topic michaelwassmer:CMSSW_10_2_X_changed_SmearedJetProducer
+      # producer of deterministic seeds for physics objects to be able to do synchronization
+      git cms-merge-topic yrath:deterministicSeeds_102X
     elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
       git cms-merge-topic michaelwassmer:CMSSW_9_4_6_patch1_changed_SmearedJetProducer
+      # producer of deterministic seeds for physics objects to be able to do synchronization
+      git cms-merge-topic yrath:deterministicSeeds
     else
       echo "WRONG CMSSW VERSION"
       return 1
@@ -57,13 +60,11 @@ Do for example:
     # install common classifier (currently work in progress)
     mkdir TTH
     cd TTH
+    # use 10_2X_KIT_MEMproduction branch for now since updates on MEMclassifier are also needed for standard ntupling
+    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git CommonClassifier -b 10_2X_ttZAnalysis
     if [[ $CMSSW_VERSION == "CMSSW_10_2_"* ]]; then
-      # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier -b 10_2_X
-      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_ttZReconstruction
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
     elif [[ $CMSSW_VERSION == "CMSSW_9_4_"* ]]; then
-      # git clone https://git@gitlab.cern.ch/algomez/CommonClassifier.git CommonClassifier
-      git clone https://gitlab.cern.ch/swieland/CommonClassifier.git CommonClassifier -b 10_2X_ttZReconstruction
       git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone
     else
       echo "WRONG CMSSW VERSION"
