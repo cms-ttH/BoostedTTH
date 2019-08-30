@@ -466,7 +466,7 @@ process.CorrectedJetProducerAK4=process.SelectedJetProducerAK4.clone(jets=jetCol
                                                                collectionNames=["correctedJetsAK4"],
                                                                applyCorrection=True,
                                                                systematics=[""]+systsJES,
-                                                               JetID=["tight"],
+                                                               JetID=["tightlepveto"],
                                                                PUJetIDMins=["none"])
 
 # process.CorrectedJetProducerAK8=process.CorrectedJetProducerAK4.clone(jets=AK8jetCollection, 

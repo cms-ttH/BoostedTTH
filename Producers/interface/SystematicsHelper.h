@@ -18,6 +18,7 @@ public:
     JESAbsoluteScaleup,
     JESAbsoluteFlavMapup,
     JESAbsoluteMPFBiasup,
+    JESAbsoluteSampleup,
     JESFragmentationup,
     JESSinglePionECALup,
     JESSinglePionHCALup,
@@ -31,6 +32,7 @@ public:
     JESRelativePtEC2up,
     JESRelativePtHFup,
     JESRelativeBalup,
+    JESRelativeSampleup,
     JESRelativeFSRup,
     JESRelativeStatFSRup,
     JESRelativeStatECup,
@@ -74,6 +76,7 @@ public:
     JESAbsoluteScaledown,
     JESAbsoluteFlavMapdown,
     JESAbsoluteMPFBiasdown,
+    JESAbsoluteSampledown,
     JESFragmentationdown,
     JESSinglePionECALdown,
     JESSinglePionHCALdown,
@@ -87,6 +90,7 @@ public:
     JESRelativePtEC2down,
     JESRelativePtHFdown,
     JESRelativeBaldown,
+    JESRelativeSampledown,
     JESRelativeFSRdown,
     JESRelativeStatFSRdown,
     JESRelativeStatECdown,
@@ -199,6 +203,7 @@ void SystematicsHelper::init() {
   add( JESAbsoluteScaleup,       JESAbsoluteScaledown,       "JESAbsoluteScale",         "AbsoluteScale"       );             
   add( JESAbsoluteFlavMapup,     JESAbsoluteFlavMapdown,     "JESAbsoluteFlavMap",       "AbsoluteFlavMap"     );                             
   add( JESAbsoluteMPFBiasup,     JESAbsoluteMPFBiasdown,     "JESAbsoluteMPFBias",       "AbsoluteMPFBias"     );                             
+  add( JESAbsoluteSampleup,      JESAbsoluteSampledown,      "JESAbsoluteSample",        "AbsoluteSample"      );                             
   add( JESFragmentationup,       JESFragmentationdown,       "JESFragmentation",         "Fragmentation"       );             
   add( JESSinglePionECALup,      JESSinglePionECALdown,      "JESSinglePionECAL",        "SinglePionECAL"      );                             
   add( JESSinglePionHCALup,      JESSinglePionHCALdown,      "JESSinglePionHCAL",        "SinglePionHCAL"      );                             
@@ -212,6 +217,7 @@ void SystematicsHelper::init() {
   add( JESRelativePtEC2up,       JESRelativePtEC2down,       "JESRelativePtEC2",         "RelativePtEC2"       );             
   add( JESRelativePtHFup,        JESRelativePtHFdown,        "JESRelativePtHF",          "RelativePtHF"        );             
   add( JESRelativeBalup,         JESRelativeBaldown,         "JESRelativeBal",           "RelativeBal"         );                        
+  add( JESRelativeSampleup,      JESRelativeSampledown,      "JESRelativeSample",        "RelativeSample"      );                        
   add( JESRelativeFSRup,         JESRelativeFSRdown,         "JESRelativeFSR",           "RelativeFSR"         );                        
   add( JESRelativeStatFSRup,     JESRelativeStatFSRdown,     "JESRelativeStatFSR",       "RelativeStatFSR"     );                             
   add( JESRelativeStatECup,      JESRelativeStatECdown,      "JESRelativeStatEC",        "RelativeStatEC"      );                             
