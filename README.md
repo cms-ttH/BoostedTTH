@@ -84,7 +84,7 @@ Do for example:
     # install miniaod and boostedtth
     cd $CMSSWSRCDIR
     git clone -b Legacy_2016_2017_2018_Devel https://github.com/cms-ttH/MiniAOD.git
-    git clone -b Legacy_2016_2017_2018_Devel https://github.com/cms-ttH/BoostedTTH.git
+    git clone -b CMSSW_10_2X_ttZAnalysis https://github.com/cms-ttH/BoostedTTH.git
     
     # Download the JER correction files
     cd $CMSSWSRCDIR/BoostedTTH/BoostedAnalyzer/data
