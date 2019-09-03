@@ -554,10 +554,10 @@ METCollection = cms.InputTag("slimmedMETs", "", process.name_())
 PuppiMETCollection = cms.InputTag("slimmedMETsPuppi", "", process.name_())
 jetCollection = cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM")
 AK8jetCollection = cms.InputTag(
-    "selectedUpdatedPatJetsAK8WithPuppiDaughters", "", "SKIM"
+    "AK15PFPuppiComplete", "", "SKIM"
 )
 AK15jetCollection = cms.InputTag(
-    "selectedUpdatedPatJetsAK15WithPuppiDaughters", "", "SKIM"
+    "AK8PFPuppiComplete", "", "SKIM"
 )
 
 
