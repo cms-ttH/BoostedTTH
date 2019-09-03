@@ -138,7 +138,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK8Jet_DeepAK8_probTbc", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbc"));
         vars.FillVars("AK8Jet_DeepAK8_probTbq", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbq"));
 
-        const auto& ak8jet_subjets = ak8jet.subjets("SoftDrop");
+        const auto& ak8jet_subjets = ak8jet.subjets("SoftDropWithBtagInfo");
 
         vars.FillVars("AK8Jet_N_SoftDropSubjets", i, ak8jet_subjets.size());
 
@@ -190,7 +190,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK15Jet_DeepAK15_probTbc", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbc"));
         vars.FillVars("AK15Jet_DeepAK15_probTbq", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbq"));
 
-        const auto& ak15jet_subjets = ak15jet.subjets("SoftDrop");
+        const auto& ak15jet_subjets = ak15jet.subjets("SoftDropWithBtagInfo");
 
         vars.FillVars("AK15Jet_N_SoftDropSubjets", i, ak15jet_subjets.size());
 
