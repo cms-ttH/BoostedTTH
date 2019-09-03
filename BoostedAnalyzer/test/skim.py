@@ -139,11 +139,11 @@ jetToolbox(
     maxTau=4,  # add Nsubjettiness tau1, tau2, tau3, tau4
     JETCorrPayload="AK8PFPuppi",  # JETCorrLevels = ['L2Relative', 'L3Absolute'],
     runOnMC=not options.isData,
-    miniAOD=True,
+    dataTier="miniAOD",
     Cut="pt > 150 && abs(eta) < 2.5",
     GetJetMCFlavour=not options.isData,
     # GetSubJetMCFlavour=True,
-    addHEPTopTagger=True,
+    addHEPTopTagger=True
 )
 
 # cluster AK8 jets and use PUPPI pileup mitigation method
@@ -163,11 +163,11 @@ jetToolbox(
     maxTau=4,  # add Nsubjettiness tau1, tau2, tau3, tau4
     JETCorrPayload="AK8PFPuppi",  # JETCorrLevels = ['L2Relative', 'L3Absolute'],
     runOnMC=not options.isData,
-    miniAOD=True,
+    dataTier="miniAOD",
     Cut="pt > 100 && abs(eta) < 2.5",
     GetJetMCFlavour=not options.isData,
     # GetSubJetMCFlavour=True,
-    addHEPTopTagger=True,
+    addHEPTopTagger=True
 )
 
 # update slimmedJets collection with DeepJet variables and update JECs
@@ -269,7 +269,7 @@ updateJetCollection(
     jetCorrections=(
         "AK4PFPuppi",
         cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]),
-        "None",
+        "None"
     ),  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
     btagDiscriminators=[
         "pfDeepFlavourJetTags:probb",
@@ -318,7 +318,7 @@ updateJetCollection(
     jetCorrections=(
         "AK4PFPuppi",
         cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]),
-        "None",
+        "None"
     ),  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
     btagDiscriminators=[
         "pfDeepFlavourJetTags:probb",
