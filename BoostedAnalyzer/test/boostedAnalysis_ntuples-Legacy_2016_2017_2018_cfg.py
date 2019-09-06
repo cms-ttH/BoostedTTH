@@ -202,7 +202,7 @@ if not options.inputFiles:
             ]
         elif "2018" in options.dataEra:
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_Monotop_skims_102X/190624_131536/0000/Skim_1.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_Monotop_skims_102X_v1/190823_163428/0000/Skim_1.root"
             ]
     else:
         if "2016" in options.dataEra:  # CAREFUL: NO 2016 Data Skims ready yet
@@ -216,7 +216,7 @@ if not options.inputFiles:
             ]
         elif "2018" in options.dataEra:
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_102X/190704_101037/0000/Skim_1.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_102X_v1_Run2018A/190823_170126/0000/Skim_1.root"
             ]
 
 
