@@ -29,6 +29,8 @@ void PhotonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     vars.InitVars("LoosePhoton_IdentificationSF", "N_LoosePhotons");
     vars.InitVars("LoosePhoton_IdentificationSFUp", "N_LoosePhotons");
     vars.InitVars("LoosePhoton_IdentificationSFDown", "N_LoosePhotons");
+    
+    vars.InitVar("N_HEM_Photons", "I");
 
     initialized = true;
 }
@@ -51,6 +53,8 @@ void PhotonVarProcessor::Process(const InputCollections& input, VariableContaine
         }
     }
     
+    int N_HEM_Photons = 0;
+    
     vars.FillVar("N_LoosePhotons", input.selectedPhotonsLoose.size());
     for (size_t i = 0; i < input.selectedPhotonsLoose.size(); i++) {
         vars.FillVars("LoosePhoton_Pt", i, input.selectedPhotonsLoose.at(i).pt());
@@ -63,5 +67,7 @@ void PhotonVarProcessor::Process(const InputCollections& input, VariableContaine
             vars.FillVars("LoosePhoton_IdentificationSFUp", i, input.selectedPhotonsLoose.at(i).userFloat("IdentificationSFUp"));
             vars.FillVars("LoosePhoton_IdentificationSFDown", i, input.selectedPhotonsLoose.at(i).userFloat("IdentificationSFDown"));
         }
+        if(input.selectedPhotonsLoose.at(i).eta()<-1.4 && input.selectedPhotonsLoose.at(i).eta()>-3.0 && input.selectedPhotonsLoose.at(i).phi()<-0.87 && input.selectedPhotonsLoose.at(i).phi()>-1.57) N_HEM_Photons+=1;
     }
+    vars.FillVar("N_HEM_Photons", N_HEM_Photons);
 }
