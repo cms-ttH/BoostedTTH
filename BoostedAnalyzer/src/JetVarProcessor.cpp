@@ -16,6 +16,10 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK8Jet_Phi", "N_AK8Jets");
     vars.InitVars("AK8Jet_E", "N_AK8Jets");
     vars.InitVars("AK8Jet_M", "N_AK8Jets");
+
+    vars.InitVars("AK8Jet_CHF", "N_AK8Jets");
+    vars.InitVars("AK8Jet_NHF", "N_AK8Jets");
+
     vars.InitVars("AK8Jet_Njettiness_tau1", "N_AK8Jets");
     vars.InitVars("AK8Jet_Njettiness_tau2", "N_AK8Jets");
     vars.InitVars("AK8Jet_Njettiness_tau3", "N_AK8Jets");
@@ -61,6 +65,10 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_Phi", "N_AK15Jets");
     vars.InitVars("AK15Jet_E", "N_AK15Jets");
     vars.InitVars("AK15Jet_M", "N_AK15Jets");
+
+    vars.InitVars("AK15Jet_CHF", "N_AK15Jets");
+    vars.InitVars("AK15Jet_NHF", "N_AK15Jets");
+
     vars.InitVars("AK15Jet_Njettiness_tau1", "N_AK15Jets");
     vars.InitVars("AK15Jet_Njettiness_tau2", "N_AK15Jets");
     vars.InitVars("AK15Jet_Njettiness_tau3", "N_AK15Jets");
@@ -127,6 +135,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK8Jet_Phi", i, ak8jet.phi());
         vars.FillVars("AK8Jet_E", i, ak8jet.energy());
         vars.FillVars("AK8Jet_M", i, ak8jet.mass());
+        if (ak8jet.hasUserFloat("chargedHadronEnergyFraction")) { vars.FillVars("AK8Jet_CHF", i, ak8jet.userFloat("chargedHadronEnergyFraction")); }
+        if (ak8jet.hasUserFloat("neutralHadronEnergyFraction")) { vars.FillVars("AK8Jet_NHF", i, ak8jet.userFloat("neutralHadronEnergyFraction")); }
         if (ak8jet.hasUserFloat("NjettinessAK8Puppi:tau1")) { vars.FillVars("AK8Jet_Njettiness_tau1", i, ak8jet.userFloat("NjettinessAK8Puppi:tau1")); }
         if (ak8jet.hasUserFloat("NjettinessAK8Puppi:tau2")) { vars.FillVars("AK8Jet_Njettiness_tau2", i, ak8jet.userFloat("NjettinessAK8Puppi:tau2")); }
         if (ak8jet.hasUserFloat("NjettinessAK8Puppi:tau3")) { vars.FillVars("AK8Jet_Njettiness_tau3", i, ak8jet.userFloat("NjettinessAK8Puppi:tau3")); }
@@ -177,6 +187,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK15Jet_Phi", i, ak15jet.phi());
         vars.FillVars("AK15Jet_E", i, ak15jet.energy());
         vars.FillVars("AK15Jet_M", i, ak15jet.mass());
+        if (ak15jet.hasUserFloat("chargedHadronEnergyFraction")) { vars.FillVars("AK15Jet_CHF", i, ak15jet.userFloat("chargedHadronEnergyFraction")); }
+        if (ak15jet.hasUserFloat("neutralHadronEnergyFraction")) { vars.FillVars("AK15Jet_NHF", i, ak15jet.userFloat("neutralHadronEnergyFraction")); }
         if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau1")) { vars.FillVars("AK15Jet_Njettiness_tau1", i, ak15jet.userFloat("NjettinessAK15Puppi:tau1")); }
         if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau2")) { vars.FillVars("AK15Jet_Njettiness_tau2", i, ak15jet.userFloat("NjettinessAK15Puppi:tau2")); }
         if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau3")) { vars.FillVars("AK15Jet_Njettiness_tau3", i, ak15jet.userFloat("NjettinessAK15Puppi:tau3")); }
