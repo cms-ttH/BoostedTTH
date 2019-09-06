@@ -118,6 +118,8 @@ void LeptonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     //     vars.InitVars("LooseLepton_Eta", "N_LooseLeptons");
     //     vars.InitVars("LooseLepton_Phi", "N_LooseLeptons");
 
+    vars.InitVar("HEM_Issue_Leptons", "I");
+
     initialized = true;
 }
 
@@ -131,6 +133,8 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
     vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
     // vars.FillVar("N_TightLeptons", input.selectedElectrons.size() + input.selectedMuons.size());
     // vars.FillVar("N_LooseLeptons", input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size());
+    
+    int N_HEM_Leptons = 0;
 
     for (std::vector< pat::Electron >::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle) {
         int iEle = itEle - input.selectedElectronsLoose.begin();
@@ -162,6 +166,7 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
             vars.FillVars("LooseElectron_ReconstructionSFUp", iEle, itEle->userFloat("ReconstructionSFUp"));
             vars.FillVars("LooseElectron_ReconstructionSFDown", iEle, itEle->userFloat("ReconstructionSFDown"));
         }
+        if(itEle->eta()<-1.4 && itEle->eta()>-3.0 && itEle->phi()<-0.87 && itEle->phi()>-1.57) N_HEM_Leptons+=1;
     }
     for (std::vector< pat::Electron >::const_iterator itEle = input.selectedElectrons.begin(); itEle != input.selectedElectrons.end(); ++itEle) {
         int iEle = itEle - input.selectedElectrons.begin();
@@ -232,6 +237,7 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
             vars.FillVars("LooseMuon_IsolationSFUp", iMu, itMu->userFloat("IsolationSFUp"));
             vars.FillVars("LooseMuon_IsolationSFDown", iMu, itMu->userFloat("IsolationSFDown"));
         }
+        if(itMu->eta()<-1.4 && itMu->eta()>-3.0 && itMu->phi()<-0.87 && itMu->phi()>-1.57) N_HEM_Leptons+=1;
     }
     for (std::vector< pat::Muon >::const_iterator itMu = input.selectedMuons.begin(); itMu != input.selectedMuons.end(); ++itMu) {
         int iMu = itMu - input.selectedMuons.begin();
@@ -291,4 +297,6 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
     //         vars.FillVars("LooseLepton_Eta", iLep, itLep->Eta());
     //         vars.FillVars("LooseLepton_Phi", iLep, itLep->Phi());
     //     }
+    
+    if(N_HEM_Leptons>0) vars.FillVar("HEM_Issue_Leptons",1);
 }
