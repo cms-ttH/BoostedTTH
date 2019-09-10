@@ -70,8 +70,8 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     }
 
     hadr_recoil_p4 = met_p4;
-    for (const auto& el : input.selectedElectrons) { hadr_recoil_p4 += el.p4(); }
-    for (const auto& mu : input.selectedMuons) { hadr_recoil_p4 += mu.p4(); }
+    for (const auto& el : input.selectedElectronsLoose) { hadr_recoil_p4 += el.p4(); }
+    for (const auto& mu : input.selectedMuonsLoose) { hadr_recoil_p4 += mu.p4(); }
     for (const auto& ph : input.selectedPhotons) { hadr_recoil_p4 += ph.p4(); }
 
     if (met_p4.pt() < minMET && hadr_recoil_p4.pt() < minMET) return false;
