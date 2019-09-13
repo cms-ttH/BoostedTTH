@@ -10,7 +10,7 @@ void PhotonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     // load dataEra
     era = input.era;
 
-    vars.InitVar("N_Photons", "I");
+    vars.InitVar("N_TightPhotons", "I");
     vars.InitVars("Photon_Pt", "N_Photons");
     vars.InitVars("Photon_Eta", "N_Photons");
     vars.InitVars("Photon_Phi", "N_Photons");
@@ -39,7 +39,7 @@ void PhotonVarProcessor::Process(const InputCollections& input, VariableContaine
 {
     if (!initialized) cerr << "PhotonVarProcessor not initialized" << endl;
 
-    vars.FillVar("N_Photons", input.selectedPhotons.size());
+    vars.FillVar("N_TightPhotons", input.selectedPhotons.size());
     for (size_t i = 0; i < input.selectedPhotons.size(); i++) {
         vars.FillVars("Photon_Pt", i, input.selectedPhotons.at(i).pt());
         vars.FillVars("Photon_Eta", i, input.selectedPhotons.at(i).eta());
