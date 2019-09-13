@@ -271,9 +271,8 @@ void BasicVarProcessor::Process(const InputCollections& input, VariableContainer
     math::XYZTLorentzVector primLepVec = math::XYZTLorentzVector();
     float                   mtw        = -1.;
     if (input.selectedElectrons.size() > 0 || input.selectedMuons.size() > 0) {
-        mtw =
-            sqrt(2 * (primLepVec.Pt() * input.correctedMET.corP4(pat::MET::Type1).pt() - primLepVec.Px() * input.correctedMET.corP4(pat::MET::Type1).px() -
-                      primLepVec.Py() * input.correctedMET.corP4(pat::MET::Type1).py()));
+        mtw = sqrt(2 * (primLepVec.Pt() * input.correctedMET.corP4(pat::MET::Type1).pt() - primLepVec.Px() * input.correctedMET.corP4(pat::MET::Type1).px() -
+                        primLepVec.Py() * input.correctedMET.corP4(pat::MET::Type1).py()));
     }
     vars.FillVar("Evt_MTW", mtw);
 

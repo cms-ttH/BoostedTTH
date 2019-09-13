@@ -108,9 +108,9 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVar("N_AK4JetsTagged_outside_AK15Jets", "I");
     vars.InitVars("DeltaR_AK15Jet_AK4Jet", "N_AK15Jets_x_N_Jets");
     vars.InitVars("DeltaR_AK15Jet_AK4JetTagged", "N_AK15Jets_x_N_JetsTagged");
-    
-    vars.InitVar("N_HEM_AK8Jets","I");
-    vars.InitVar("N_HEM_AK15Jets","I");
+
+    vars.InitVar("N_HEM_AK8Jets", "I");
+    vars.InitVar("N_HEM_AK15Jets", "I");
 
     initialized = true;
 }
@@ -125,7 +125,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     for (const auto& ak4jet : ak4jets) {
         if (CSVHelper::PassesCSV(ak4jet, "DeepJet", CSVHelper::CSVwp::Medium, era)) ak4jets_tagged.push_back(ak4jet);
     }
-    
+
     int N_HEM_AK8Jets = 0;
 
     const auto& ak8jets = input.selectedJetsAK8;
@@ -176,14 +176,14 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             const auto& ak4jet_tagged = ak4jets_tagged.at(k);
             vars.FillVars("DeltaR_AK8Jet_AK4JetTagged", i * ak4jets_tagged.size() + k, BoostedUtils::DeltaR(ak8jet.p4(), ak4jet_tagged.p4()));
         }
-        
-        if(ak8jet.eta()<-1.4 && ak8jet.eta()>-3.0 && ak8jet.phi()<-0.87 && ak8jet.phi()>-1.57) N_HEM_AK8Jets+=1;
+
+        if (ak8jet.eta() < -1.4 && ak8jet.eta() > -3.0 && ak8jet.phi() < -0.87 && ak8jet.phi() > -1.57) N_HEM_AK8Jets += 1;
     }
-    
-    vars.FillVar("N_HEM_AK8Jets",N_HEM_AK8Jets);
+
+    vars.FillVar("N_HEM_AK8Jets", N_HEM_AK8Jets);
 
     int n_AK4JetsTagged_outside_AK15Jets = 0;
-    int N_HEM_AK15Jets = 0;
+    int N_HEM_AK15Jets                   = 0;
 
     const auto& ak15jets = input.selectedJetsAK15;
 
@@ -237,10 +237,10 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             vars.FillVars("DeltaR_AK15Jet_AK4JetTagged", i * ak4jets_tagged.size() + k, dR_ak15jet_ak4jet_tagged);
             if (dR_ak15jet_ak4jet_tagged > 1.5) n_AK4JetsTagged_outside_AK15Jets += 1;
         }
-        
-        if(ak15jet.eta()<-1.4 && ak15jet.eta()>-3.0 && ak15jet.phi()<-0.87 && ak15jet.phi()>-1.57) N_HEM_AK15Jets+=1;
+
+        if (ak15jet.eta() < -1.4 && ak15jet.eta() > -3.0 && ak15jet.phi() < -0.87 && ak15jet.phi() > -1.57) N_HEM_AK15Jets += 1;
     }
     vars.FillVar("N_AK4JetsTagged_outside_AK15Jets", n_AK4JetsTagged_outside_AK15Jets);
-    
-    vars.FillVar("N_HEM_AK15Jets",N_HEM_AK15Jets);
+
+    vars.FillVar("N_HEM_AK15Jets", N_HEM_AK15Jets);
 }

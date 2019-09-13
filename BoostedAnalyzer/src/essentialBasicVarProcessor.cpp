@@ -100,9 +100,9 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVar("Gen_chsMET_Phi");
 
     vars.InitVars("CSV", "N_Jets");
-    
+
     vars.InitVar("N_HEM_Jets", "I");
-    
+
     initialized = true;
 }
 
@@ -181,8 +181,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("Jet_DeepJet_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probc"));
         vars.FillVars("Jet_DeepJet_uds", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probuds"));
         vars.FillVars("Jet_DeepJet_g", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probg"));
-        
-        if(itJet->eta()<-1.4 && itJet->eta()>-3.0 && itJet->phi()<-0.87 && itJet->phi()>-1.57) N_HEM_Jets+=1;
+
+        if (itJet->eta() < -1.4 && itJet->eta() > -3.0 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
     }
 
     //     for (std::vector< pat::Jet >::const_iterator itJet = input.selectedJetsLoose.begin(); itJet != input.selectedJetsLoose.end(); ++itJet) {
@@ -272,6 +272,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         int iCSV = itCSV - csvJetsSorted.begin();
         vars.FillVars("CSV", iCSV, *itCSV);
     }
-    
-    vars.FillVar("N_HEM_Jets",N_HEM_Jets);
+
+    vars.FillVar("N_HEM_Jets", N_HEM_Jets);
 }

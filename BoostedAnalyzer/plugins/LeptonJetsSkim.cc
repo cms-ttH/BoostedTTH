@@ -237,7 +237,7 @@ bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     // apply skimming selection
     if (n_ak4jets < minJetsAK4_ && n_ak8jets < minJetsAK8_ && n_ak15jets < minJetsAK15_) return false;
-    //if (n_ak4jets > maxJetsAK4_ || n_ak8jets > maxJetsAK8_ || n_ak15jets > maxJetsAK15_) return false;
+    // if (n_ak4jets > maxJetsAK4_ || n_ak8jets > maxJetsAK8_ || n_ak15jets > maxJetsAK15_) return false;
     // met selection in general
     if (hMETs->at(0).pt() < metPtMin_ && hPuppiMETs->at(0).pt() < metPtMin_ && hadr_recoil.pt() < metPtMin_ && hadr_recoil_puppi.pt() < metPtMin_) return false;
 
