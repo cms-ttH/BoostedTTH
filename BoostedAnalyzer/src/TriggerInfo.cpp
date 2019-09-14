@@ -37,6 +37,7 @@ bool TriggerInfo::IsTriggered(std::string triggername) const
         }
         else {
             cerr << "* wildcard only allowed at the end" << endl;
+            cerr << triggername << endl;
             return false;
         }
     }
