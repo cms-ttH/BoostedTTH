@@ -527,7 +527,7 @@ elif "2017" in options.dataEra:
     EG_vid = True
 elif "2018" in options.dataEra:
     EG_era = "2018-Prompt"
-    EG_corrections = False
+    EG_corrections = True
     EG_vid = True
 else:
     raise Exception(
