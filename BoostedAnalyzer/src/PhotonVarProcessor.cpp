@@ -11,14 +11,14 @@ void PhotonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     era = input.era;
 
     vars.InitVar("N_TightPhotons", "I");
-    vars.InitVars("Photon_Pt", "N_Photons");
-    vars.InitVars("Photon_Eta", "N_Photons");
-    vars.InitVars("Photon_Phi", "N_Photons");
-    vars.InitVars("Photon_E", "N_Photons");
-    vars.InitVars("Photon_M", "N_Photons");
-    vars.InitVars("Photon_IdentificationSF", "N_Photons");
-    vars.InitVars("Photon_IdentificationSFUp", "N_Photons");
-    vars.InitVars("Photon_IdentificationSFDown", "N_Photons");
+    vars.InitVars("Photon_Pt", "N_TightPhotons");
+    vars.InitVars("Photon_Eta", "N_TightPhotons");
+    vars.InitVars("Photon_Phi", "N_TightPhotons");
+    vars.InitVars("Photon_E", "N_TightPhotons");
+    vars.InitVars("Photon_M", "N_TightPhotons");
+    vars.InitVars("Photon_IdentificationSF", "N_TightPhotons");
+    vars.InitVars("Photon_IdentificationSFUp", "N_TightPhotons");
+    vars.InitVars("Photon_IdentificationSFDown", "N_TightPhotons");
 
     vars.InitVar("N_LoosePhotons", "I");
     vars.InitVars("LoosePhoton_Pt", "N_LoosePhotons");
