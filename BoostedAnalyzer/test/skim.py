@@ -79,13 +79,43 @@ else:
 
 if not options.inputFiles:
     if not options.isData:
-        options.inputFiles = [
-            "root://xrootd-cms.infn.it///store/mc/RunIIAutumn18MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/40000/E26C264E-6FAE-BA4B-B729-1FDD04B0B2AC.root"
-        ]
+        if "2018" in options.dataEra:
+            options.inputFiles = [
+                "root://xrootd-cms.infn.it///store/mc/RunIIAutumn18MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/40000/E26C264E-6FAE-BA4B-B729-1FDD04B0B2AC.root"
+            ]
+        elif "2017" in options.dataEra:
+            options.inputFiles = [
+                "root://xrootd-cms.infn.it///store/mc/RunIIFall17MiniAODv2/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/100000/44A5063A-27D3-E811-BE88-0CC47AFB7DDC.root"
+            ]
+        elif "2016" in options.dataEra:
+            options.inputFiles = [
+                "root://xrootd-cms.infn.it///store/mc/RunIISummer16MiniAODv3/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v1/270000/68E65DC7-2C79-E911-A393-F01FAFE5CBE2.root"
+            ]
+        else:
+            raise Exception(
+                "dataEra "
+                + options.dataEra
+                + " not supported for this config: USE dataEra=2016/2017/2018"
+            )
     else:
-        options.inputFiles = [
-            "root://xrootd-cms.infn.it///store/data/Run2018B/MET/MINIAOD/17Sep2018-v1/100000/84F4D3C4-7275-834A-ADDF-E34194D17EB3.root"
-        ]
+        if "2018" in options.dataEra:
+            options.inputFiles = [
+                "root://xrootd-cms.infn.it///store/data/Run2018B/MET/MINIAOD/17Sep2018-v1/100000/84F4D3C4-7275-834A-ADDF-E34194D17EB3.root"
+            ]
+        elif "2017" in options.dataEra:
+            options.inputFiles = [
+                "root://xrootd-cms.infn.it///store/data/Run2017E/MET/MINIAOD/31Mar2018-v1/80000/5E616617-8C38-E811-B665-0025905B859E.root"
+            ]
+        elif "2016" in options.dataEra:
+            options.inputFiles = [
+                "root://xrootd-cms.infn.it///store/data/Run2016G/MET/MINIAOD/17Jul2018-v1/50000/C64557A4-228C-E811-9543-0090FAA587C4.root"
+            ]
+        else:
+            raise Exception(
+                "dataEra "
+                + options.dataEra
+                + " not supported for this config: USE dataEra=2016/2017/2018"
+            )
 
 # checks for correct values and consistency
 if "data" in options.globalTag.lower() and not options.isData:
