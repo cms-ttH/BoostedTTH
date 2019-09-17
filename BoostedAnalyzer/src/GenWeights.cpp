@@ -466,9 +466,11 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         if (special_shit and not is_scale_var) {
             id = TString(line(idIndex + 2, line.Length()));
             line.ReplaceAll(TString(id), "");
-            line.ReplaceAll("id", "");
+            // line.ReplaceAll("id", "");
+            line = line(id.Length(),line.Length());
         } else {
-            line.ReplaceAll("id", "");
+            // line.ReplaceAll("id", "");
+            line = line(id.Length(),line.Length());
             if (split != -1)
                 id = TString(line(0, split));
             if (line.Contains("lhapdf"))
