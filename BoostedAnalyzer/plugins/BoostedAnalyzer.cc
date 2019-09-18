@@ -341,12 +341,16 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     genParticlesToken               { consumes< std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticles")) },
     genJetsToken                    { consumes< std::vector<reco::GenJet> >(iConfig.getParameter<edm::InputTag>("genJets")) },
     LHERunInfoToken                 { consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer")) },
-    LHERunInfoTokenalternative      { consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("source")) },
-    prefweight_token                {consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"))},
-    prefweightup_token              {consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"))},
-    prefweightdown_token            {consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown"))}
+    LHERunInfoTokenalternative      { consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("source")) }
+    // prefweight_token                { consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"))},
+    // prefweightup_token              { consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"))},
+    // prefweightdown_token            { consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown"))}
 {
-  
+    if( era != "2018"){
+        prefweight_token = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"));
+        prefweightup_token = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+        prefweightdown_token = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
+    }
     //set up resource monitor
     ResMon.reset(new ResourceMonitor());
 
@@ -761,14 +765,19 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle< double > theprefweight;
     edm::Handle< double > theprefweightup;
     edm::Handle< double > theprefweightdown;
-    if(!isData){
-        iEvent.getByToken(prefweight_token, theprefweight ) ;
-        iEvent.getByToken(prefweightup_token, theprefweightup ) ;
-        iEvent.getByToken(prefweightdown_token, theprefweightdown ) ;
+    double prefiringweight = 1.;
+    double prefiringweightup = 1.;
+    double prefiringweightdown = 1.;
+    if (era != "2018"){
+        if(!isData){
+            iEvent.getByToken(prefweight_token, theprefweight ) ;
+            iEvent.getByToken(prefweightup_token, theprefweightup ) ;
+            iEvent.getByToken(prefweightdown_token, theprefweightdown ) ;
+        }
+        prefiringweight =(*theprefweight);
+        prefiringweightup =(*theprefweightup);
+        prefiringweightdown =(*theprefweightdown);
     }
-    double prefiringweight =(*theprefweight);
-    double prefiringweightup =(*theprefweightup);
-    double prefiringweightdown =(*theprefweightdown);
 
     // Fill Event Info Object
     EventInfo eventInfo(iEvent,h_beamSpot,h_hcalNoiseSummary,h_puInfo,firstVertexIsGood,*h_rho);

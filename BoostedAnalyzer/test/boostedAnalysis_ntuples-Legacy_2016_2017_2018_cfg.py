@@ -763,7 +763,9 @@ for s in [""]+systs:
 if not options.isData and not options.isBoostedMiniAOD:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
 
-if "2016" or "2017" in options.dataEra:
+if "2018" not in options.dataEra:
+    print("blaaaaa")
+    print(options.dataEra)
     process.p += process.prefiringweight
 
 if printContent:
