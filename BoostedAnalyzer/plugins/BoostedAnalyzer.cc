@@ -591,7 +591,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     else if (usedGenerator == "pythia8"){ generatorflag = genweights.SetGenerator(Generator::pythia8);}
     else{ generatorflag = false; }
     */
-    std::vector<std::string> pdfs = {"NNPDF31_nnlo_as_0118_nf_4","NNPDF31_nnlo_hessian_pdfas"};
+    std::vector<std::string> pdfs = {"NNPDF31_nnlo_as_0118_nf_4","NNPDF31_nnlo_hessian_pdfas","NNPDF30_nlo_nf_5_pdfas"};
     genweights.initLHAPDF(pdfs);
 
     assert(selectedJetsTokens.size()==selectedJetsLooseTokens.size());

@@ -70,7 +70,9 @@ if not options.inputFiles:
         if "2016" in options.dataEra:
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
         elif "2017" in options.dataEra: 
-            options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2017/190607_151112/0000/Skim_238.root']
+           options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2017/190607_151112/0000/Skim_238.root']
+            # options.inputFiles=['file:/pnfs/desy.de/cms/tier2//store/user/mhorzela/TTbb_Powheg_Openloops/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1-corrected/190813_124736/0000/TTbb_TuneCP5-Powloops_MINIAODSIMv2_840.root']
+
             # options.inputFiles=[
             #    'file://ttH_2017_selectedEvents.root']
             # options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/60000/AC628CE7-0169-E811-9C5E-00010100096B.root']
@@ -764,8 +766,6 @@ if not options.isData and not options.isBoostedMiniAOD:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
 
 if "2018" not in options.dataEra:
-    print("blaaaaa")
-    print(options.dataEra)
     process.p += process.prefiringweight
 
 if printContent:
