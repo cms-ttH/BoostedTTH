@@ -492,7 +492,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
             line = "Weight_" + line;
 
         // hack to exclude all pdf variations not belonging to NNPDF31_nnlo_hessian_pdfas pdfset. They have lhaids 306000-306102
-        if (line.Contains("pdf_variation") && !(line.Contains("_306") || line.Contains("_320")))
+        if (line.Contains("pdf_variation") && !(line.Contains("_306") || line.Contains("_32")))
             continue;
         if (line == "")
             continue;
