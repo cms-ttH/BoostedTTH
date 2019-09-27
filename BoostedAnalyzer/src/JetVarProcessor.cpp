@@ -53,6 +53,12 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK8Jet_SoftDropJet3_E", "N_AK8Jets");
     vars.InitVars("AK8Jet_SoftDropJet3_M", "N_AK8Jets");
     vars.InitVars("AK8Jet_SoftDropJet3_DeepJetCSV", "N_AK8Jets");
+    
+    vars.InitVars("AK8Jet_SoftDrop_Pt", "N_AK8Jets");
+    vars.InitVars("AK8Jet_SoftDrop_Eta", "N_AK8Jets");
+    vars.InitVars("AK8Jet_SoftDrop_Phi", "N_AK8Jets");
+    vars.InitVars("AK8Jet_SoftDrop_E", "N_AK8Jets");
+    vars.InitVars("AK8Jet_SoftDrop_M", "N_AK8Jets");
 
     vars.InitVar("N_AK8Jets_x_N_Jets", "I");
     vars.InitVar("N_AK8Jets_x_N_JetsTagged", "I");
@@ -96,6 +102,12 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_SoftDropJet2_E", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet2_M", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet2_DeepJetCSV", "N_AK15Jets");
+    
+    vars.InitVars("AK15Jet_SoftDrop_Pt", "N_AK15Jets");
+    vars.InitVars("AK15Jet_SoftDrop_Eta", "N_AK15Jets");
+    vars.InitVars("AK15Jet_SoftDrop_Phi", "N_AK15Jets");
+    vars.InitVars("AK15Jet_SoftDrop_E", "N_AK15Jets");
+    vars.InitVars("AK15Jet_SoftDrop_M", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_SoftDropJet3_Pt", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet3_Eta", "N_AK15Jets");
@@ -158,6 +170,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         const auto& ak8jet_subjets = ak8jet.subjets("SoftDropWithBtagInfo");
 
         vars.FillVars("AK8Jet_N_SoftDropSubjets", i, ak8jet_subjets.size());
+        
+        math::XYZTLorentzVector ak8jet_softdrop(0.,0.,0.,0.);
 
         for (size_t j = 0; j < ak8jet_subjets.size() && j < 3; j++) {
             const auto& ak8jet_subjet = *ak8jet_subjets.at(j);
@@ -167,7 +181,14 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_E", i, ak8jet_subjet.energy());
             vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_M", i, ak8jet_subjet.mass());
             vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_DeepJetCSV", i, CSVHelper::GetJetCSV_DNN(ak8jet_subjet, "DeepJet"));
+            ak8jet_softdrop += ak8jet_subjet.p4();
         }
+        
+        vars.FillVars("AK8Jet_SoftDrop_Pt", i, ak8jet_softdrop.pt());
+        vars.FillVars("AK8Jet_SoftDrop_Eta", i, ak8jet_softdrop.eta());
+        vars.FillVars("AK8Jet_SoftDrop_Phi", i, ak8jet_softdrop.phi());
+        vars.FillVars("AK8Jet_SoftDrop_E", i, ak8jet_softdrop.energy());
+        vars.FillVars("AK8Jet_SoftDrop_M", i, ak8jet_softdrop.mass());
 
         for (size_t k = 0; k < ak4jets.size(); k++) {
             const auto& ak4jet = ak4jets.at(k);
@@ -219,6 +240,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         const auto& ak15jet_subjets = ak15jet.subjets("SoftDropWithBtagInfo");
 
         vars.FillVars("AK15Jet_N_SoftDropSubjets", i, ak15jet_subjets.size());
+        
+        math::XYZTLorentzVector ak15jet_softdrop(0.,0.,0.,0.);
 
         for (size_t j = 0; j < ak15jet_subjets.size() && j < 3; j++) {
             const auto& ak15jet_subjet = *ak15jet_subjets.at(j);
@@ -228,7 +251,14 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_E", i, ak15jet_subjet.energy());
             vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_M", i, ak15jet_subjet.mass());
             vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_DeepJetCSV", i, CSVHelper::GetJetCSV_DNN(ak15jet_subjet, "DeepJet"));
+            ak15jet_softdrop += ak15jet_subjet.p4();
         }
+        
+        vars.FillVars("AK15Jet_SoftDrop_Pt", i, ak15jet_softdrop.pt());
+        vars.FillVars("AK15Jet_SoftDrop_Eta", i, ak15jet_softdrop.eta());
+        vars.FillVars("AK15Jet_SoftDrop_Phi", i, ak15jet_softdrop.phi());
+        vars.FillVars("AK15Jet_SoftDrop_E", i, ak15jet_softdrop.energy());
+        vars.FillVars("AK15Jet_SoftDrop_M", i, ak15jet_softdrop.mass());
 
         for (size_t k = 0; k < ak4jets.size(); k++) {
             const auto& ak4jet = ak4jets.at(k);
