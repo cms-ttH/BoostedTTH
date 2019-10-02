@@ -32,7 +32,13 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVar( "N_PrimaryVertices","I" );
     vars.InitVar( "N_GenPVs", "I");
 
-
+    vars.InitVar( "Evt_ForwardJetFlag", "I");
+    vars.InitVar( "N_ForwardJets", "I");
+    vars.InitVars("ForwardJet_Pt", "N_ForwardJets");
+    vars.InitVars("ForwardJet_Eta", "N_ForwardJets");
+    vars.InitVars("ForwardJet_E", "N_ForwardJets");
+    vars.InitVars("ForwardJet_M", "N_ForwardJets");
+    vars.InitVars("ForwardJet_Phi", "N_ForwardJets");
     
     vars.InitVars( "LooseJet_E","N_LooseJets" );
     vars.InitVars( "LooseJet_M","N_LooseJets" );
@@ -565,4 +571,22 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         vars.FillVars("CSV" ,iCSV,*itCSV);
     }
 
+    // forward jet flag definition
+    std::vector<pat::Jet> selectedForwardJets;
+    for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){
+        if(fabs(itJet->eta())>=2.4 && (itJet->pt())>=40){
+            selectedForwardJets.push_back(*itJet);
+        }
+    }
+
+    vars.FillVar("N_ForwardJets",selectedForwardJets.size());
+   
+   for(std::vector<pat::Jet>::const_iterator itJet = selectedForwardJets.begin() ; itJet != selectedForwardJets.end(); ++itJet){
+        int iJet = itJet - selectedForwardJets.begin();
+        vars.FillVars( "ForwardJet_E",iJet,itJet->energy() );
+        vars.FillVars( "ForwardJet_M",iJet,itJet->mass() );
+        vars.FillVars( "ForwardJet_Pt",iJet,itJet->pt() );
+        vars.FillVars( "ForwardJet_Eta",iJet,itJet->eta() );
+        vars.FillVars( "ForwardJet_Phi",iJet,itJet->phi() ); 
+   }
 }
