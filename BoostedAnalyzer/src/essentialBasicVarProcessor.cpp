@@ -212,6 +212,9 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     
     
     vars.InitVars( "CSV","N_Jets" );
+    vars.InitVar("N_HEM_Jets", "I");
+    vars.InitVar("N_HEM_LooseElectrons", "I");
+    vars.InitVar("N_HEM_LooseMuons", "I");
     initialized=true;
 }
 
@@ -262,6 +265,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     vars.FillVar( "N_LooseMuons",input.selectedMuonsLoose.size());    
     
     // Fill Jet Variables
+    int N_HEM_Jets = 0;
     // All Jets
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet)
     {
@@ -303,7 +307,11 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         vars.FillVars( "Jet_DeepJet_c",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probc"));
         vars.FillVars( "Jet_DeepJet_uds",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probuds"));
         vars.FillVars( "Jet_DeepJet_g",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepFlavourJetTags:probg"));
+
+        if (itJet->eta() < -1.4 && itJet->eta() > -3.0 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
     }
+
+    vars.FillVar("N_HEM_Jets", N_HEM_Jets);
     
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet)
     {
@@ -371,6 +379,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     }
 
     // Fill Lepton Variables
+    int N_HEM_LooseElectrons = 0;
+    int N_HEM_LooseMuons = 0;
     std::vector<math::XYZTLorentzVector> tightLeptonVecs = BoostedUtils::GetLepVecs(input.selectedElectrons,input.selectedMuons);
     for(auto itLep = tightLeptonVecs.begin(); itLep != tightLeptonVecs.end(); ++itLep)
     {
@@ -426,7 +436,11 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
             vars.FillVars( "LooseElectron_ReconstructionSFUp",iEle,itEle->userFloat("ReconstructionSFUp"));
             vars.FillVars( "LooseElectron_ReconstructionSFDown",iEle,itEle->userFloat("ReconstructionSFDown"));
         }
+        if (itEle->eta() < -1.4 && itEle->eta() > -3.0 && itEle->phi() < -0.87 && itEle->phi() > -1.57) N_HEM_LooseElectrons += 1;
+
     }
+    vars.FillVar("N_HEM_LooseElectrons", N_HEM_LooseElectrons);
+
     for(std::vector<pat::Electron>::const_iterator itEle = input.selectedElectrons.begin(); itEle != input.selectedElectrons.end(); ++itEle)
     {
         int iEle = itEle - input.selectedElectrons.begin();
@@ -499,7 +513,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
             vars.FillVars( "LooseMuon_IsolationSFUp",iMu,itMu->userFloat("IsolationSFUp"));
             vars.FillVars( "LooseMuon_IsolationSFDown",iMu,itMu->userFloat("IsolationSFDown"));
         }
+        if (itMu->eta() < -1.4 && itMu->eta() > -3.0 && itMu->phi() < -0.87 && itMu->phi() > -1.57) N_HEM_LooseMuons += 1;
     }
+    vars.FillVar("N_HEM_LooseMuons", N_HEM_LooseMuons);
+
     for(std::vector<pat::Muon>::const_iterator itMu = input.selectedMuons.begin(); itMu != input.selectedMuons.end(); ++itMu)
     {
         int iMu = itMu - input.selectedMuons.begin();
