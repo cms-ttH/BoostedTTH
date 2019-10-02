@@ -70,7 +70,9 @@ if not options.inputFiles:
         if "2016" in options.dataEra:
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
         elif "2017" in options.dataEra: 
-            options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_v2_94X/181109_144129/0000/Skim_1.root']
+           options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2017/190607_151112/0000/Skim_238.root']
+            # options.inputFiles=['file:/pnfs/desy.de/cms/tier2//store/user/mhorzela/TTbb_Powheg_Openloops/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1-corrected/190813_124736/0000/TTbb_TuneCP5-Powloops_MINIAODSIMv2_840.root']
+
             # options.inputFiles=[
             #    'file://ttH_2017_selectedEvents.root']
             # options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/60000/AC628CE7-0169-E811-9C5E-00010100096B.root']
@@ -166,6 +168,26 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
+#Add producer calculating the L1 prefire weights
+# https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
+if "2016" in options.dataEra:
+    from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+    process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+        DataEra = cms.string("2016BtoH"), #Use 2016BtoH for 2016
+        UseJetEMPt = cms.bool(False),
+        PrefiringRateSystematicUncty = cms.double(0.2),
+        SkipWarnings = False)
+elif "2017" in options.dataEra:
+    from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+    process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+        DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
+        UseJetEMPt = cms.bool(False),
+        PrefiringRateSystematicUncty = cms.double(0.2),
+        SkipWarnings = False)
+
+
+
+
 # ReRun DeepJet
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 updateJetCollection(
@@ -199,7 +221,7 @@ process.updateJets = cms.Task(
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
-#jec_mc_data = 'DATA' if options.isData else 'MC'
+# jec_mc_data = 'DATA' if options.isData else 'MC'
 #print jec_mc_data
 #process.CondDB.connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
 #process.jec = cms.ESSource('PoolDBESSource',
@@ -219,18 +241,32 @@ process.updateJets = cms.Task(
         ## ...and so on for all jet types you need
     #)
 #)
-#process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+# process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
 
-#process.GlobalTag.toGet = cms.VPSet(
-  #cms.PSet(record = cms.string("JetCorrectionsRecord"),
-           #tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK4PFchs'),
-           #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
-          #),
-  #cms.PSet(record = cms.string("JetCorrectionsRecord"),
-           #tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
-           #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
-          #)
-#)
+if "2018" in options.dataEra:
+    if options.isData:
+        process.GlobalTag.toGet = cms.VPSet(
+        cms.PSet(record = cms.string("JetCorrectionsRecord"),
+                tag = cms.string('JetCorrectorParametersCollection_Autumn18_RunABCD_V19_DATA_AK4PFchs'),
+                connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Autumn18_RunABCD_V19_DATA.db')
+                ),
+        # cms.PSet(record = cms.string("JetCorrectionsRecord"),
+        #         tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+        #         connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+        #         )
+        )
+    else:
+        process.GlobalTag.toGet = cms.VPSet(
+        cms.PSet(record = cms.string("JetCorrectionsRecord"),
+                tag = cms.string('JetCorrectorParametersCollection_Autumn18_V19_MC_AK4PFchs'),
+                connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Autumn18_V19_MC.db')
+                ),
+        # cms.PSet(record = cms.string("JetCorrectionsRecord"),
+        #         tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+        #         connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+        #         )
+        )   
+    
 
 
 # Set up JetCorrections chain to be used in MiniAODHelper
@@ -501,10 +537,10 @@ elif "2017" in options.dataEra:
     jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFchs.txt"
     # jerSFFileAK8 = "Fall17_V3_MC_SF_AK8PFchs.txt"
 elif "2018" in options.dataEra:
-    jerResFileAK4 = "Autumn18_V1_MC_PtResolution_AK4PFchs.txt"
-    # jerResFileAK8 = "Autumn18_V1_MC_PtResolution_AK8PFchs.txt"
-    jerSFFileAK4 = "Autumn18_V1_MC_SF_AK4PFchs.txt"
-    # jerSFFileAK8 = "Autumn18_V1_MC_SF_AK8PFchs.txt"
+    jerResFileAK4 = "Autumn18_V7_MC_PtResolution_AK4PFchs.txt"
+    # jerResFileAK8 = "Autumn18_V7_MC_PtResolution_AK8PFchs.txt"
+    jerSFFileAK4 = "Autumn18_V7_MC_SF_AK4PFchs.txt"
+    # jerSFFileAK8 = "Autumn18_V7_MC_SF_AK8PFchs.txt"
 else:
     raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017/2018")
 
@@ -742,6 +778,9 @@ for s in [""]+systs:
 
 if not options.isData and not options.isBoostedMiniAOD:
     process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+
+if "2018" not in options.dataEra:
+    process.p += process.prefiringweight
 
 if printContent:
     process.p *= process.content

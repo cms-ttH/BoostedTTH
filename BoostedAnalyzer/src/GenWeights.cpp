@@ -342,10 +342,10 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
             continue;
 
         // remove substrings to extract the weightids
+
         line.ReplaceAll("weight", "");
         if (!(line.Contains("mur") and line.Contains("muf") and is_pdf_var))
             line.ReplaceAll("id", "");
-        // cout << line << endl;
 
         split = 0;
         if (line.Contains("pdf"))
@@ -416,7 +416,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
             // line.ReplaceAll("pdf30600", "");
             int pdfIndex = line.Index("pdf");
             TString muRmuFString = line(pdfIndex + 9, line.Length());
-            cout << muRmuFString << endl;
+            // cout << muRmuFString << endl;
 
             split = muRmuFString.Index("muf") + 3;
             id = muRmuFString(0, 1);
@@ -466,9 +466,11 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         if (special_shit and not is_scale_var) {
             id = TString(line(idIndex + 2, line.Length()));
             line.ReplaceAll(TString(id), "");
-            line.ReplaceAll("id", "");
+            // line.ReplaceAll("id", "");
+            line = line(id.Length(),line.Length());
         } else {
             line.ReplaceAll("id", "");
+            // line = line(id.Length(),line.Length());
             if (split != -1)
                 id = TString(line(0, split));
             if (line.Contains("lhapdf"))
@@ -490,7 +492,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
             line = "Weight_" + line;
 
         // hack to exclude all pdf variations not belonging to NNPDF31_nnlo_hessian_pdfas pdfset. They have lhaids 306000-306102
-        if (line.Contains("pdf_variation") && !line.Contains("_306"))
+        if (line.Contains("pdf_variation") && !(line.Contains("_306") || line.Contains("_32")))
             continue;
         if (line == "")
             continue;

@@ -512,7 +512,30 @@ bool dfirst=true;
 
   }
 
+  // for THW
+  if(w_not_from_top.pt()>0.){  
+    vars.FillVar( "GenW_NotFromTop_Pt",w_not_from_top.pt());
+    vars.FillVar( "GenW_NotFromTop_Eta",w_not_from_top.eta());
+    vars.FillVar( "GenW_NotFromTop_Phi",w_not_from_top.phi());
+    vars.FillVar( "GenW_NotFromTop_E",w_not_from_top.energy());
+  }
+  vars.FillVar( "N_GenW_NotFromTop_DecProds",w_not_from_top_decay_products.size() );
+  for(size_t i=0;i<w_not_from_top_decay_products.size();i++){
+    vars.FillVars("GenW_NotFromTop_DecProd_Pt",i,w_not_from_top_decay_products.at(i).pt() );
+    vars.FillVars("GenW_NotFromTop_DecProd_Eta",i,w_not_from_top_decay_products.at(i).eta() );
+    vars.FillVars("GenW_NotFromTop_DecProd_Phi",i,w_not_from_top_decay_products.at(i).phi() );
+    vars.FillVars("GenW_NotFromTop_DecProd_E",i,w_not_from_top_decay_products.at(i).energy() );
+    vars.FillVars("GenW_NotFromTop_DecProd_PDGID",i,w_not_from_top_decay_products.at(i).pdgId() );
+  }
 
+  // for THQ
+  if(forward_quark.pt()>0.){
+    vars.FillVar( "GenForwardQuark_Pt",forward_quark.pt());
+    vars.FillVar( "GenForwardQuark_Eta",forward_quark.eta());
+    vars.FillVar( "GenForwardQuark_Phi",forward_quark.phi());
+    vars.FillVar( "GenForwardQuark_E",forward_quark.energy());
+    vars.FillVar( "GenForwardQuark_PDGID",forward_quark.pdgId());
+  }
   // fill Z system
   //if(Z.pt()>0.){
   //  vars.FillVar( "GenZ_Pt",Z.pt());

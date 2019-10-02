@@ -158,21 +158,21 @@ BTagSFs94XDeepJet2016 = cms.PSet(
 # Trigger SFs
 
 TriggerSFs2016 = cms.PSet(
-    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEleTriggerSF_Run2016All_v1.root"),
-    elecHistName = cms.string("Ele27_WPTight_Gsf"),
+    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb2016_v2.root"),
+    elecHistName = cms.string("ele27_ele_pt_ele_sceta"),
     muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_2016_RunBtoH.root"),
     muonHistName = cms.string("IsoMu24_OR_IsoTkMu24_PtEtaBins/pt_abseta_ratio"),
 )
 
 TriggerSFs2017 = cms.PSet(
-    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Legacy2017_v1.root"),
+    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb2017_v2.root"),
     elecHistName = cms.string("ele28_ht150_OR_ele32_ele_pt_ele_sceta"),
     muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_RunBtoF_Nov17Nov2017.root"),
     muonHistName = cms.string("IsoMu27_PtEtaBins/pt_abseta_ratio"),
 )
 
 TriggerSFs2018 = cms.PSet(
-    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb_Legacy2018_v1.root"),
+    elecFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb2018_v2.root"),
     elecHistName = cms.string("ele28_ht150_OR_ele32_ele_pt_ele_sceta"),
     muonFileName = cms.string("MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_2018_RunAtoD.root"),
     muonHistName = cms.string("IsoMu24_PtEtaBins/pt_abseta_ratio"),
