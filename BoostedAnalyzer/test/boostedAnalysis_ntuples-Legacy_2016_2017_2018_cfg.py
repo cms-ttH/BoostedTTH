@@ -241,18 +241,18 @@ process.updateJets = cms.Task(
         ## ...and so on for all jet types you need
     #)
 #)
-#process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+# process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
 
-#process.GlobalTag.toGet = cms.VPSet(
-  #cms.PSet(record = cms.string("JetCorrectionsRecord"),
-           #tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK4PFchs'),
-           #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
-          #),
-  #cms.PSet(record = cms.string("JetCorrectionsRecord"),
-           #tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
-           #connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
-          #)
-#)
+# process.GlobalTag.toGet = cms.VPSet(
+#   cms.PSet(record = cms.string("JetCorrectionsRecord"),
+#            tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK4PFchs'),
+#            connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+#           ),
+#   cms.PSet(record = cms.string("JetCorrectionsRecord"),
+#            tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+#            connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+#           )
+# )
 
 
 # Set up JetCorrections chain to be used in MiniAODHelper
@@ -523,10 +523,10 @@ elif "2017" in options.dataEra:
     jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFchs.txt"
     # jerSFFileAK8 = "Fall17_V3_MC_SF_AK8PFchs.txt"
 elif "2018" in options.dataEra:
-    jerResFileAK4 = "Autumn18_V1_MC_PtResolution_AK4PFchs.txt"
-    # jerResFileAK8 = "Autumn18_V1_MC_PtResolution_AK8PFchs.txt"
-    jerSFFileAK4 = "Autumn18_V1_MC_SF_AK4PFchs.txt"
-    # jerSFFileAK8 = "Autumn18_V1_MC_SF_AK8PFchs.txt"
+    jerResFileAK4 = "Autumn18_V7_MC_PtResolution_AK4PFchs.txt"
+    # jerResFileAK8 = "Autumn18_V7_MC_PtResolution_AK8PFchs.txt"
+    jerSFFileAK4 = "Autumn18_V7_MC_SF_AK4PFchs.txt"
+    # jerSFFileAK8 = "Autumn18_V7_MC_SF_AK8PFchs.txt"
 else:
     raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017/2018")
 
