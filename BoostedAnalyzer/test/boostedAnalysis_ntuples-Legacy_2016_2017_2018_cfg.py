@@ -221,7 +221,7 @@ process.updateJets = cms.Task(
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
-#jec_mc_data = 'DATA' if options.isData else 'MC'
+# jec_mc_data = 'DATA' if options.isData else 'MC'
 #print jec_mc_data
 #process.CondDB.connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
 #process.jec = cms.ESSource('PoolDBESSource',
@@ -243,16 +243,30 @@ process.updateJets = cms.Task(
 #)
 # process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
 
-# process.GlobalTag.toGet = cms.VPSet(
-#   cms.PSet(record = cms.string("JetCorrectionsRecord"),
-#            tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK4PFchs'),
-#            connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
-#           ),
-#   cms.PSet(record = cms.string("JetCorrectionsRecord"),
-#            tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
-#            connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
-#           )
-# )
+if "2018" in options.dataEra:
+    if options.isData:
+        process.GlobalTag.toGet = cms.VPSet(
+        cms.PSet(record = cms.string("JetCorrectionsRecord"),
+                tag = cms.string('JetCorrectorParametersCollection_Autumn18_RunABCD_V19_DATA_AK4PFchs'),
+                connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Autumn18_RunABCD_V19_DATA.db')
+                ),
+        # cms.PSet(record = cms.string("JetCorrectionsRecord"),
+        #         tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+        #         connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+        #         )
+        )
+    else:
+        process.GlobalTag.toGet = cms.VPSet(
+        cms.PSet(record = cms.string("JetCorrectionsRecord"),
+                tag = cms.string('JetCorrectorParametersCollection_Autumn18_V19_MC_AK4PFchs'),
+                connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Autumn18_V19_MC.db')
+                ),
+        # cms.PSet(record = cms.string("JetCorrectionsRecord"),
+        #         tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+        #         connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+        #         )
+        )   
+    
 
 
 # Set up JetCorrections chain to be used in MiniAODHelper
