@@ -32,7 +32,6 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVar( "N_PrimaryVertices","I" );
     vars.InitVar( "N_GenPVs", "I");
 
-    vars.InitVar( "Evt_ForwardJetFlag", "I");
     vars.InitVar( "N_ForwardJets", "I");
     vars.InitVars("ForwardJet_Pt", "N_ForwardJets");
     vars.InitVars("ForwardJet_Eta", "N_ForwardJets");
@@ -571,7 +570,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         vars.FillVars("CSV" ,iCSV,*itCSV);
     }
 
-    // forward jet flag definition
+    // forward jet definition
     std::vector<pat::Jet> selectedForwardJets;
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet){
         if(fabs(itJet->eta())>=2.4 && (itJet->pt())>=40){
