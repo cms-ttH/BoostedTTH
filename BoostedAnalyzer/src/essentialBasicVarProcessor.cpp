@@ -158,10 +158,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("Jet_Flav", iJet, itJet->hadronFlavour());
         vars.FillVars("Jet_PartonFlav", iJet, itJet->partonFlavour());
         vars.FillVars("Jet_Charge", iJet, itJet->jetCharge());
-        
+
         if (itJet->hasUserFloat("chargedHadronEnergyFraction")) { vars.FillVars("Jet_CHF", iJet, itJet->userFloat("chargedHadronEnergyFraction")); }
         if (itJet->hasUserFloat("neutralHadronEnergyFraction")) { vars.FillVars("Jet_NHF", iJet, itJet->userFloat("neutralHadronEnergyFraction")); }
-        
+
         if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));
         if (itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant"))
             vars.FillVars("Jet_PileUpMVA", iJet, itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
