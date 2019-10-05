@@ -759,7 +759,7 @@ process.SelectedJetProducerAK8 = process.CorrectedJetProducerAK8.clone(
     applyCorrection=False,
     systematics=[""],
     JetID=["none"],
-    PUJetIDMins=["loose"],
+    PUJetIDMins=["none"],
 )
 
 # selection of the systematically shifted (JES) AK8 jets
