@@ -296,31 +296,47 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
 
     if (not passesID) return false;
 
+    float multiplicity = iJet.hasUserFloat("patPuppiJetSpecificProducer:puppiMultiplicity") ? iJet.userFloat("patPuppiJetSpecificProducer:puppiMultiplicity")
+                                                                                            : iJet.numberOfDaughters();
+    float neutral_multiplicity = iJet.hasUserFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity")
+                                     ? iJet.userFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity")
+                                     : iJet.neutralMultiplicity();
+    float charged_multiplicity =
+        (iJet.hasUserFloat("patPuppiJetSpecificProducer:puppiMultiplicity") && iJet.hasUserFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity"))
+            ? (multiplicity - neutral_multiplicity)
+            : iJet.chargedMultiplicity();
+
+    // std::cout << "puppi charged multiplicity " << charged_multiplicity << std::endl;
+    // std::cout << "puppi neutral multiplicity " << neutral_multiplicity << std::endl;
+    // std::cout << "charged multiplicity " << iJet.chargedMultiplicity() << std::endl;
+    // std::cout << "neutral multiplicity " << iJet.neutralMultiplicity() << std::endl;
+    // std::cout << " num const 1 " << multiplicity << std::endl;
+    // std::cout << " num const 2 " << iJet.numberOfDaughters() << std::endl;
+
     switch (iJetID) {
         case JetID::Loose:
-            passesID = iJet.neutralHadronEnergyFraction() < 0.99 && iJet.neutralEmEnergyFraction() < 0.99;
-            passesID = passesID && iJet.numberOfDaughters() > 1;
-            if (fabs(iJet.eta()) < 2.4)
-                passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0 && iJet.chargedMultiplicity() > 0 && iJet.chargedEmEnergyFraction() < 0.99);
+            passesID = (iJet.neutralHadronEnergyFraction() < 0.99) && (iJet.neutralEmEnergyFraction() < 0.99) && (multiplicity > 1);
+            if (fabs(iJet.eta()) < 2.4) {
+                passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0) && (iJet.chargedEmEnergyFraction() < 0.99) && (charged_multiplicity > 0);
+            }
             break;
         case JetID::Tight:
             // works for 2016 tight ID (CHS and Puppi), 2017 tight ID (CHS and Puppi), and 2018 tight ID (CHS and Puppi). Only take this for jets with
             // |eta|<=2.4, otherwise recheck!
-            passesID = iJet.neutralHadronEnergyFraction() < 0.90 && iJet.neutralEmEnergyFraction() < 0.90;
-            passesID = passesID && iJet.numberOfDaughters() > 1;
-            if (fabs(iJet.eta()) < 2.4) passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0 && iJet.chargedMultiplicity() > 0);
-            if (era.find("2016") != std::string::npos) passesID = passesID && iJet.chargedEmEnergyFraction() < 0.99;
+            passesID = (iJet.neutralHadronEnergyFraction() < 0.90) && (iJet.neutralEmEnergyFraction() < 0.90) && (multiplicity > 1);
+            if (fabs(iJet.eta()) < 2.4) { passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0) && (charged_multiplicity > 0); }
+            if (era.find("2016") != std::string::npos) passesID = passesID && (iJet.chargedEmEnergyFraction() < 0.99);
             break;
         case JetID::TightLepVeto:
             // works for 2016 tight ID (CHS and Puppi), 2017 tight ID (CHS and Puppi), and 2018 tight ID (CHS and Puppi). Only take this for jets with
             // |eta|<=2.4, otherwise recheck!
-            passesID = iJet.neutralHadronEnergyFraction() < 0.90 && iJet.neutralEmEnergyFraction() < 0.90 && iJet.muonEnergyFraction() < 0.80;
-            passesID = passesID && iJet.numberOfDaughters() > 1;
-            if (fabs(iJet.eta()) < 2.4) passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0 && iJet.chargedMultiplicity() > 0);
+            passesID = (iJet.neutralHadronEnergyFraction() < 0.90) && (iJet.neutralEmEnergyFraction() < 0.90) && (iJet.muonEnergyFraction() < 0.80) &&
+                       (multiplicity > 1);
+            if (fabs(iJet.eta()) < 2.4) { passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0) && (charged_multiplicity > 0); }
             if (era.find("2016") != std::string::npos)
-                passesID = passesID && iJet.chargedEmEnergyFraction() < 0.90;
+                passesID = passesID && (iJet.chargedEmEnergyFraction() < 0.90);
             else
-                passesID = passesID && iJet.chargedEmEnergyFraction() < 0.80;
+                passesID = passesID && (iJet.chargedEmEnergyFraction() < 0.80);
             break;
         case JetID::None: passesID = true; break;
         default:
