@@ -542,6 +542,33 @@ setupEgammaPostRecoSeq(
 # a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
 # electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 
+#-------------------------------------------------------------------------------------------------------------------------------------------------- #
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+from PhysicsTools.PatAlgos.patPuppiJetSpecificProducer_cfi import patPuppiJetSpecificProducer
+
+process.patPuppiJetSpecificProducerAK8 = patPuppiJetSpecificProducer.clone(
+  src=cms.InputTag("AK8PFPuppiComplete", "", "SKIM"),
+)
+updateJetCollection(
+   process,
+   labelName = 'PuppiVarsAK8',
+   jetSource = cms.InputTag("AK8PFPuppiComplete", "", "SKIM"),
+   )
+process.updatedPatJetsPuppiVarsAK8.userData.userFloats.src = ['patPuppiJetSpecificProducerAK8:puppiMultiplicity', 'patPuppiJetSpecificProducerAK8:neutralPuppiMultiplicity']
+process.updatedPatJetsPuppiVarsAK8.userData.userFunctions = ["userFloat(\"patPuppiJetSpecificProducerAK8:puppiMultiplicity\")","userFloat(\"patPuppiJetSpecificProducerAK8:neutralPuppiMultiplicity\")"]
+process.updatedPatJetsPuppiVarsAK8.userData.userFunctionLabels = ['patPuppiJetSpecificProducer:puppiMultiplicity','patPuppiJetSpecificProducer:neutralPuppiMultiplicity']
+
+process.patPuppiJetSpecificProducerAK15 = patPuppiJetSpecificProducer.clone(
+  src=cms.InputTag("AK15PFPuppiComplete", "", "SKIM"),
+)
+updateJetCollection(
+   process,
+   labelName = 'PuppiVarsAK15',
+   jetSource = cms.InputTag("AK15PFPuppiComplete", "", "SKIM"),
+   )
+process.updatedPatJetsPuppiVarsAK15.userData.userFloats.src = ['patPuppiJetSpecificProducerAK15:puppiMultiplicity', 'patPuppiJetSpecificProducerAK15:neutralPuppiMultiplicity']
+process.updatedPatJetsPuppiVarsAK15.userData.userFunctions = ["userFloat(\"patPuppiJetSpecificProducerAK15:puppiMultiplicity\")","userFloat(\"patPuppiJetSpecificProducerAK15:neutralPuppiMultiplicity\")"]
+process.updatedPatJetsPuppiVarsAK15.userData.userFunctionLabels = ['patPuppiJetSpecificProducer:puppiMultiplicity','patPuppiJetSpecificProducer:neutralPuppiMultiplicity']
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 ### some standard collections ####
@@ -554,10 +581,10 @@ METCollection = cms.InputTag("slimmedMETs", "", process.name_())
 PuppiMETCollection = cms.InputTag("slimmedMETsPuppi", "", process.name_())
 jetCollection = cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM")
 AK8jetCollection = cms.InputTag(
-    "AK8PFPuppiComplete", "", "SKIM"
+    "updatedPatJetsPuppiVarsAK8","",process.name_()
 )
 AK15jetCollection = cms.InputTag(
-    "AK15PFPuppiComplete", "", "SKIM"
+    "updatedPatJetsPuppiVarsAK15","",process.name_()
 )
 
 
@@ -1127,7 +1154,11 @@ process.leptons_photons.add(
 )
 process.final.associate(process.leptons_photons)
 
+process.puppimults = cms.Path(process.patPuppiJetSpecificProducerAK8*process.patPuppiJetSpecificProducerAK15)
+
 process.jets = cms.Task()
+process.jets.add(process.updatedPatJetsPuppiVarsAK8)
+process.jets.add(process.updatedPatJetsPuppiVarsAK15)
 # process.jets.add(process.MergeAK15FatjetsAndSubjets)
 # process.jets.add(process.AK15PFPuppiWithDeepAK15WithSoftDropSubjetsWithDeepJet)
 process.jets.add(process.CorrectedJetProducerAK4)
@@ -1157,4 +1188,4 @@ if not options.isData and not options.isBoostedMiniAOD:
     )
     process.final.associate(process.tthfmatcher)
 
-# print process.dumpPython()
+#print process.dumpPython()
