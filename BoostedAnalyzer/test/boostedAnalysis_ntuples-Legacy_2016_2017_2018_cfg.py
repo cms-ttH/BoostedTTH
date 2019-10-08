@@ -48,9 +48,9 @@ if options.isData:
         options.globalTag="94X_dataRun2_v11"
     elif "2018" in options.dataEra:
         if "D" in options.dataEra:
-            options.globalTag="102X_dataRun2_Prompt_v14"
+            options.globalTag="102X_dataRun2_Prompt_v15"
         else:
-            options.globalTag="102X_dataRun2_v11"
+            options.globalTag="102X_dataRun2_v12"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 elif not options.isData:
@@ -59,7 +59,7 @@ elif not options.isData:
     elif "2017" in options.dataEra:
         options.globalTag="94X_mc2017_realistic_v17"
     elif "2018" in options.dataEra:
-        options.globalTag="102X_upgrade2018_realistic_v19"
+        options.globalTag="102X_upgrade2018_realistic_v20"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 else:
@@ -243,29 +243,29 @@ process.updateJets = cms.Task(
 #)
 # process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
 
-if "2018" in options.dataEra:
-    if options.isData:
-        process.GlobalTag.toGet = cms.VPSet(
-        cms.PSet(record = cms.string("JetCorrectionsRecord"),
-                tag = cms.string('JetCorrectorParametersCollection_Autumn18_RunABCD_V19_DATA_AK4PFchs'),
-                connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Autumn18_RunABCD_V19_DATA.db')
-                ),
-        # cms.PSet(record = cms.string("JetCorrectionsRecord"),
-        #         tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
-        #         connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
-        #         )
-        )
-    else:
-        process.GlobalTag.toGet = cms.VPSet(
-        cms.PSet(record = cms.string("JetCorrectionsRecord"),
-                tag = cms.string('JetCorrectorParametersCollection_Autumn18_V19_MC_AK4PFchs'),
-                connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Autumn18_V19_MC.db')
-                ),
-        # cms.PSet(record = cms.string("JetCorrectionsRecord"),
-        #         tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
-        #         connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
-        #         )
-        )   
+# if "2018" in options.dataEra:
+#     if options.isData:
+#         process.GlobalTag.toGet = cms.VPSet(
+#         cms.PSet(record = cms.string("JetCorrectionsRecord"),
+#                 tag = cms.string('JetCorrectorParametersCollection_Autumn18_RunABCD_V19_DATA_AK4PFchs'),
+#                 connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Autumn18_RunABCD_V19_DATA.db')
+#                 ),
+#         # cms.PSet(record = cms.string("JetCorrectionsRecord"),
+#         #         tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+#         #         connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+#         #         )
+#         )
+#     else:
+#         process.GlobalTag.toGet = cms.VPSet(
+#         cms.PSet(record = cms.string("JetCorrectionsRecord"),
+#                 tag = cms.string('JetCorrectorParametersCollection_Autumn18_V19_MC_AK4PFchs'),
+#                 connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Autumn18_V19_MC.db')
+#                 ),
+#         # cms.PSet(record = cms.string("JetCorrectionsRecord"),
+#         #         tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_'+jec_mc_data+'_AK8PFchs'),
+#         #         connect = cms.string('sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jecs/Fall17_17Nov2017_V32_94X_'+jec_mc_data+'.db')
+#         #         )
+#         )   
     
 
 
