@@ -7,7 +7,7 @@ JetAssignment2016 = cms.PSet(
 
     ttH_even_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2016/even_ttH/JAreco_expert_BDT.weights.xml"),
     ttH_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2016/odd_ttH/JAreco_expert_BDT.weights.xml"),
-    ttH_varlist = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2016/even_ttH/variables.csv""),
+    ttH_varlist = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2016/even_ttH/variables.csv"),
 
     thq_even_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2016/even_tHq/JAreco_expert_BDT.weights.xml"),
     thq_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2016/odd_tHq/JAreco_expert_BDT.weights.xml"),
@@ -25,7 +25,7 @@ JetAssignment2017 = cms.PSet(
 
     ttH_even_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2017/even_ttH/JAreco_expert_BDT.weights.xml"),
     ttH_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2017/odd_ttH/JAreco_expert_BDT.weights.xml"),
-    ttH_varlist = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2017/even_ttH/variables.csv""),
+    ttH_varlist = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2017/even_ttH/variables.csv"),
 
     thq_even_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2017/even_tHq/JAreco_expert_BDT.weights.xml"),
     thq_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2017/odd_tHq/JAreco_expert_BDT.weights.xml"),
@@ -43,7 +43,7 @@ JetAssignment2018 = cms.PSet(
 
     ttH_even_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2018/even_ttH/JAreco_expert_BDT.weights.xml"),
     ttH_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2018/odd_ttH/JAreco_expert_BDT.weights.xml"),
-    ttH_varlist = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2018/even_ttH/variables.csv""),
+    ttH_varlist = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2018/even_ttH/variables.csv"),
 
     thq_even_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2018/even_tHq/JAreco_expert_BDT.weights.xml"),
     thq_odd_weightpath = cms.string("BoostedTTH/BoostedAnalyzer/data/bdtweights/2018/odd_tHq/JAreco_expert_BDT.weights.xml"),
