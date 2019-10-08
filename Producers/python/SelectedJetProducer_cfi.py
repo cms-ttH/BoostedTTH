@@ -36,8 +36,8 @@ SelectedJetProducer = cms.EDProducer(
     jecFileAK15_2017=cms.string(
         "Fall17_17Nov2017_V32_MC_UncertaintySources_AK8PFPuppi.txt"
     ),
-    jecFileAK4_2018=cms.string("Autumn18_V8_MC_UncertaintySources_AK4PFPuppi.txt"),
-    jecFileAK8_2018=cms.string("Autumn18_V8_MC_UncertaintySources_AK8PFPuppi.txt"),
-    jecFileAK15_2018=cms.string("Autumn18_V8_MC_UncertaintySources_AK8PFPuppi.txt"),
+    jecFileAK4_2018=cms.string("Autumn18_V19_MC_UncertaintySources_AK4PFPuppi.txt"),
+    jecFileAK8_2018=cms.string("Autumn18_V19_MC_UncertaintySources_AK8PFPuppi.txt"),
+    jecFileAK15_2018=cms.string("Autumn18_V19_MC_UncertaintySources_AK8PFPuppi.txt"),
     era=cms.string("2017"),
 )
