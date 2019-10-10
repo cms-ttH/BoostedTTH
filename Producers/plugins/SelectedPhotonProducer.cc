@@ -11,7 +11,8 @@ SelectedPhotonProducer::SelectedPhotonProducer(const edm::ParameterSet& iConfig)
     // inputs
     EDMRhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))},
     EDMVertexToken{consumes< reco::VertexCollection >(iConfig.getParameter< edm::InputTag >("vertices"))},
-    EDMPhotonsToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("photons"))}
+    EDMPhotonsToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("photons"))},
+    EDMElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("electrons"))}
 
 {
     if (era.find("2016") == std::string::npos and era.find("2017") == std::string::npos and era.find("2018") == std::string::npos) {
@@ -91,9 +92,17 @@ void SelectedPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
         std::cerr << "\n\nERROR: retrieved photon collection is not valid" << std::endl;
         throw std::exception();
     }
+    
+    // get input electron collection
+    edm::Handle< pat::ElectronCollection > inputElectrons;
+    iEvent.getByToken(EDMElectronsToken, inputElectrons);
+    if (not inputElectrons.isValid()) {
+        std::cerr << "\n\nERROR: retrieved electron collection is not valid" << std::endl;
+        throw std::exception();
+    }
 
     for (size_t i = 0; i < ptMins_.size(); i++) {
-        std::vector< pat::Photon > updatedPhotons  = *inputPhotons;
+        std::vector< pat::Photon > updatedPhotons  = GetDeltaRCleanedPhotons(*inputPhotons,*inputElectrons,0.4);
         std::vector< pat::Photon > selectedPhotons = GetSortedByPt(GetSelectedPhotons(updatedPhotons, ptMins_.at(i), etaMaxs_.at(i), photonIDs_.at(i)));
         if (not isData) AddPhotonSFs(selectedPhotons, photonIDs_.at(i));
         // produce the different photon collections and create a unique ptr to it
@@ -215,6 +224,19 @@ std::vector< float > SelectedPhotonProducer::GetPhotonIDSF(const pat::Photon& iP
     SFs.at(2) = (SF_hist->GetBinContent(SF_hist->FindBin(eta, pt))) - (SF_hist->GetBinError(SF_hist->FindBin(eta, pt)));
 
     return SFs;
+}
+
+std::vector< pat::Photon > SelectedPhotonProducer::GetDeltaRCleanedPhotons(const std::vector< pat::Photon >& inputPhotons, const std::vector< pat::Electron >& inputElectrons, const float DeltaR) const {
+    std::vector< pat::Photon > cleaned_photons;
+    for(auto& ph: inputPhotons){
+        bool overlap = false;
+        for(auto& el: inputElectrons){
+            if(reco::deltaR(ph.p4(),el.p4())<DeltaR) overlap = true;
+        }
+        if(overlap) continue;
+        cleaned_photons.push_back(ph);
+    }
+    return cleaned_photons;
 }
 
 template< typename T >

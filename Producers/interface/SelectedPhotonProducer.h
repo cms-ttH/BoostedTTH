@@ -17,6 +17,7 @@
 //#include "MiniAOD/MiniAODHelper/interface/MiniAODHelper.h"
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
 
 #include "TH2F.h"
 #include "TFile.h"
@@ -43,6 +44,7 @@ class SelectedPhotonProducer : public edm::EDProducer {
     bool                       isGoodPhoton(const pat::Photon& iPhoton, const float iMinPt, const float iMaxEta, const PhotonID iPhotonID);
     void                       AddPhotonSFs(std::vector< pat::Photon >& inputPhotons, const PhotonID iPhotonID) const;
     std::vector< float >       GetPhotonIDSF(const pat::Photon& iPhoton, const PhotonID iPhotonID) const;
+    std::vector< pat::Photon > GetDeltaRCleanedPhotons(const std::vector< pat::Photon >& inputPhotons, const std::vector< pat::Electron >& inputElectrons, const float DeltaR) const;
     // ----------member data ---------------------------
     const std::string          era;
     const bool                 isData;
@@ -58,6 +60,8 @@ class SelectedPhotonProducer : public edm::EDProducer {
     edm::EDGetTokenT< reco::VertexCollection > EDMVertexToken;
     // photons
     edm::EDGetTokenT< pat::PhotonCollection > EDMPhotonsToken;
+    // electrons
+    edm::EDGetTokenT< pat::ElectronCollection > EDMElectronsToken;
 
     std::vector< PhotonID > photonIDs_;
     // primary vertex

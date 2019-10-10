@@ -679,7 +679,9 @@ process.SelectedMuonProducer.useDeterministicSeeds = options.deterministicSeeds
 process.SelectedMuonProducer.isData = options.isData
 process.SelectedMuonProducer.era = options.dataEra
 
-
+process.SelectedPhotonProducer.electrons = cms.InputTag(
+    "SelectedElectronProducer:selectedElectronsLoose"
+)
 process.SelectedPhotonProducer.ptMins = [15.0, 175.0]
 process.SelectedPhotonProducer.etaMaxs = [2.4, 2.4]
 process.SelectedPhotonProducer.IDs = ["loose", "tight"]
