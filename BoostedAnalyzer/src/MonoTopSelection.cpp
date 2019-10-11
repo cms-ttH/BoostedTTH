@@ -33,14 +33,14 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     if (!initialized) cerr << "MonoTopSelection not initialized" << endl;
 
     // do not use the event if there is not exactly one AK15 jet
-    if (input.selectedJetsAK15.size() != 1) return false;
+    if (input.selectedJetsAK15.size() != 1 && input.selectedElectronsLoose.size() < 1 && input.selectedMuonsLoose.size() < 1) return false;
 
     // AK15 jet has to fulfill pt,eta and several quality criteria
-    bool leading_jet_criterium = input.selectedJetsAK15.at(0).pt() > pt_min && fabs(input.selectedJetsAK15.at(0).eta()) < eta_max;  //&&
+    // bool leading_jet_criterium = input.selectedJetsAK15.at(0).pt() > pt_min && fabs(input.selectedJetsAK15.at(0).eta()) < eta_max;  //&&
     //                                  charged_hadron_fraction_min < input.selectedJetsAK15.at(0).userFloat("chargedHadronEnergyFraction") &&
     //                                  neutral_hadron_fraction_max > input.selectedJetsAK15.at(0).userFloat("neutralHadronEnergyFraction");
 
-    if (!leading_jet_criterium) return false;
+    // if (!leading_jet_criterium) return false;
 
     // get correct MET/hadronic recoil from events, see METSelection.cpp for
     // explanation
