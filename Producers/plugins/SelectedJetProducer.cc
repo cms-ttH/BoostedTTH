@@ -279,13 +279,13 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
     if (era.find("2016") != std::string::npos)
     {
       if (fabs(iJet.eta()) <= 2.7){
-        passesID = iJet.neutralHadronEnergyFraction() < 0.90 
+        passesID = iJet.neutralHadronEnergyFraction() < 0.90
                 && iJet.neutralEmEnergyFraction() < 0.90 
                 && iJet.numberOfDaughters() > 1;
         if (fabs(iJet.eta()) <= 2.4){
           passesID = passesID && iJet.chargedHadronEnergyFraction() > 0.0
                 && iJet.chargedMultiplicity() > 0
-                && iJet.neutralEmEnergyFraction() < 0.99;
+                && iJet.chargedEmEnergyFraction() < 0.99;
         }
       }
       else if (2.7 < fabs(iJet.eta()) && fabs(iJet.eta()) <= 3.0){
@@ -307,8 +307,7 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
                 && iJet.numberOfDaughters() > 1;
         if (fabs(iJet.eta()) <= 2.4){
           passesID = passesID && iJet.chargedHadronEnergyFraction() > 0.0
-                && iJet.chargedMultiplicity() > 0
-                && iJet.neutralEmEnergyFraction() < 0.80;
+                && iJet.chargedMultiplicity() > 0;
         }
       }
       else if (2.7 < fabs(iJet.eta()) && fabs(iJet.eta()) <= 3.0){
@@ -366,7 +365,7 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
         if (fabs(iJet.eta()) <= 2.4){
           passesID = passesID && iJet.chargedHadronEnergyFraction() > 0.0
                 && iJet.chargedMultiplicity() > 0
-                && iJet.neutralEmEnergyFraction() < 0.90;
+                && iJet.chargedEmEnergyFraction() < 0.90;
         }
       }
       else if (2.7 < fabs(iJet.eta()) && fabs(iJet.eta()) <= 3.0){
@@ -391,8 +390,8 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
         if (fabs(iJet.eta()) <= 2.4){
           passesID = passesID && iJet.chargedHadronEnergyFraction() > 0.0
                 && iJet.chargedMultiplicity() > 0
-                && iJet.neutralEmEnergyFraction() < 0.80
-                && iJet.chargedEmEnergyFraction() < 0.8;
+                && iJet.chargedEmEnergyFraction() < 0.80;
+
         }
       }
       else if (2.7 < fabs(iJet.eta()) && fabs(iJet.eta()) <= 3.0){
