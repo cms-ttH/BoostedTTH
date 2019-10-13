@@ -92,7 +92,7 @@ void SelectedPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
         std::cerr << "\n\nERROR: retrieved photon collection is not valid" << std::endl;
         throw std::exception();
     }
-    
+
     // get input electron collection
     edm::Handle< pat::ElectronCollection > inputElectrons;
     iEvent.getByToken(EDMElectronsToken, inputElectrons);
@@ -102,7 +102,7 @@ void SelectedPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
     }
 
     for (size_t i = 0; i < ptMins_.size(); i++) {
-        std::vector< pat::Photon > updatedPhotons  = GetDeltaRCleanedPhotons(*inputPhotons,*inputElectrons,0.4);
+        std::vector< pat::Photon > updatedPhotons  = GetDeltaRCleanedPhotons(*inputPhotons, *inputElectrons, 0.4);
         std::vector< pat::Photon > selectedPhotons = GetSortedByPt(GetSelectedPhotons(updatedPhotons, ptMins_.at(i), etaMaxs_.at(i), photonIDs_.at(i)));
         if (not isData) AddPhotonSFs(selectedPhotons, photonIDs_.at(i));
         // produce the different photon collections and create a unique ptr to it
@@ -226,14 +226,19 @@ std::vector< float > SelectedPhotonProducer::GetPhotonIDSF(const pat::Photon& iP
     return SFs;
 }
 
-std::vector< pat::Photon > SelectedPhotonProducer::GetDeltaRCleanedPhotons(const std::vector< pat::Photon >& inputPhotons, const std::vector< pat::Electron >& inputElectrons, const float DeltaR) const {
+std::vector< pat::Photon > SelectedPhotonProducer::GetDeltaRCleanedPhotons(const std::vector< pat::Photon >&   inputPhotons,
+                                                                           const std::vector< pat::Electron >& inputElectrons, const float DeltaR) const
+{
     std::vector< pat::Photon > cleaned_photons;
-    for(auto& ph: inputPhotons){
+    for (const auto& ph : inputPhotons) {
         bool overlap = false;
-        for(auto& el: inputElectrons){
-            if(reco::deltaR(ph.p4(),el.p4())<DeltaR) overlap = true;
+        for (auto& el : inputElectrons) {
+            if (reco::deltaR(ph.p4(), el.p4()) < DeltaR) {
+                overlap = true;
+                break;
+            }
         }
-        if(overlap) continue;
+        if (overlap) continue;
         cleaned_photons.push_back(ph);
     }
     return cleaned_photons;

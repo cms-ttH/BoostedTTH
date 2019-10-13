@@ -44,7 +44,8 @@ class SelectedPhotonProducer : public edm::EDProducer {
     bool                       isGoodPhoton(const pat::Photon& iPhoton, const float iMinPt, const float iMaxEta, const PhotonID iPhotonID);
     void                       AddPhotonSFs(std::vector< pat::Photon >& inputPhotons, const PhotonID iPhotonID) const;
     std::vector< float >       GetPhotonIDSF(const pat::Photon& iPhoton, const PhotonID iPhotonID) const;
-    std::vector< pat::Photon > GetDeltaRCleanedPhotons(const std::vector< pat::Photon >& inputPhotons, const std::vector< pat::Electron >& inputElectrons, const float DeltaR) const;
+    std::vector< pat::Photon > GetDeltaRCleanedPhotons(const std::vector< pat::Photon >& inputPhotons, const std::vector< pat::Electron >& inputElectrons,
+                                                       const float DeltaR) const;
     // ----------member data ---------------------------
     const std::string          era;
     const bool                 isData;
