@@ -42,6 +42,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
 
 #include "../interface/SystematicsHelper.h"
 
@@ -99,7 +100,8 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
     bool                    isGoodJet(const pat::Jet &iJet, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP wp) const;
     std::vector< pat::Jet > GetUncorrectedJets(const std::vector< pat::Jet > &inputJets) const;
     std::vector< pat::Jet > GetDeltaRCleanedJets(const std::vector< pat::Jet > &inputJets, const std::vector< pat::Muon > &inputMuons,
-                                                 const std::vector< pat::Electron > &inputElectrons, const double deltaRCut) const;
+                                                 const std::vector< pat::Electron > &inputElectrons, const std::vector< pat::Photon > &inputPhotons,
+                                                 const double deltaRCut) const;
     std::vector< pat::Jet > GetCorrectedJets(const std::vector< pat::Jet > &, const edm::Event &, const edm::EventSetup &,
                                              const edm::Handle< reco::GenJetCollection > &, const SystematicsHelper::Type iSysType = SystematicsHelper::NA,
                                              const bool &doJES = true, const bool &doJER = true, const float &corrFactor = 1, const float &uncFactor = 1);
@@ -159,6 +161,8 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
     edm::EDGetTokenT< pat::MuonCollection > muonsToken;
     /** electrons data access token (for jet cleaning)**/
     edm::EDGetTokenT< pat::ElectronCollection > electronsToken;
+    /** photons data access token (for jet cleaning)**/
+    edm::EDGetTokenT< pat::PhotonCollection > photonsToken;
     /** rho data access token (for jet cleaning)**/
     edm::EDGetTokenT< double > rhoToken;
 

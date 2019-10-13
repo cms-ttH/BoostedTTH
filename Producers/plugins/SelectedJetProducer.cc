@@ -17,6 +17,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
     genjetsToken{consumes< reco::GenJetCollection >(iConfig.getParameter< edm::InputTag >("miniAODGenJets"))},
     muonsToken{consumes< pat::MuonCollection >(iConfig.getParameter< edm::InputTag >("muons"))},
     electronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("electrons"))},
+    photonsToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("photons"))},
     rhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))},
     jecFileAK4_2016{iConfig.getParameter< std::string >("jecFileAK4_2016")},
     jecFileAK8_2016{iConfig.getParameter< std::string >("jecFileAK8_2016")},
@@ -385,23 +386,17 @@ std::vector< pat::Jet > SelectedJetProducer::GetUncorrectedJets(const std::vecto
 
 // function to return Jets with no lepton inside a particular DeltaR
 std::vector< pat::Jet > SelectedJetProducer::GetDeltaRCleanedJets(const std::vector< pat::Jet > &inputJets, const std::vector< pat::Muon > &inputMuons,
-                                                                  const std::vector< pat::Electron > &inputElectrons, const double deltaRCut) const
+                                                                  const std::vector< pat::Electron > &inputElectrons,
+                                                                  const std::vector< pat::Photon > &inputPhotons, const double deltaRCut) const
 {
     std::vector< pat::Jet > outputJets;  // resulting jets
     // loop over inputJets
     for (const auto &iJet : inputJets) {
         bool isOverlap = false;
-        // get Jet 4-momentum
-        TLorentzVector jet_p4;
-        jet_p4.SetPxPyPzE(iJet.px(), iJet.py(), iJet.pz(), iJet.energy());
         // loop over all electrons
         for (const auto &iEle : inputElectrons) {
-            // get electron 4-momentum
-            TLorentzVector ele_p4;
-            ele_p4.SetPxPyPzE(iEle.px(), iEle.py(), iEle.pz(), iEle.energy());
             // calculate DeltaR between Jet and electron
-            double delta_tmp = jet_p4.DeltaR(ele_p4);
-            if (delta_tmp < deltaRCut) {  // check for overlap
+            if (reco::deltaR(iJet.p4(), iEle.p4()) < deltaRCut) {  // check for overlap
                 isOverlap = true;
                 break;
             }
@@ -411,12 +406,18 @@ std::vector< pat::Jet > SelectedJetProducer::GetDeltaRCleanedJets(const std::vec
 
         // loop over all muons
         for (const auto &iMuon : inputMuons) {
-            // get muon 4-momentum
-            TLorentzVector muon_p4;
-            muon_p4.SetPxPyPzE(iMuon.px(), iMuon.py(), iMuon.pz(), iMuon.energy());
             // calculate DeltaR between jet and electron
-            double delta_tmp = jet_p4.DeltaR(muon_p4);
-            if (delta_tmp < deltaRCut) {  // check for overlap
+            if (reco::deltaR(iJet.p4(), iMuon.p4()) < deltaRCut) {  // check for overlap
+                isOverlap = true;
+                break;
+            }
+        }
+
+        if (isOverlap) continue;
+
+        for (const auto &iPho : inputPhotons) {
+            // calculate DeltaR between Jet and electron
+            if (reco::deltaR(iJet.p4(), iPho.p4()) < deltaRCut) {  // check for overlap
                 isOverlap = true;
                 break;
             }
@@ -571,6 +572,13 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
         throw std::exception();
     }
 
+    edm::Handle< pat::PhotonCollection > inputPhotons;
+    iEvent.getByToken(photonsToken, inputPhotons);
+    if (not inputPhotons.isValid()) {
+        std::cerr << "\n\nERROR: retrieved photon collection is not valid" << std::endl;
+        throw std::exception();
+    }
+
     // initialize jetcorrector
     corrector = JetCorrector::getJetCorrector(correctorlabel + "L1L2L3", iSetup);
 
@@ -596,8 +604,8 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
             if (applyCorrection) {
                 std::vector< pat::Jet > rawJets = GetSortedByPt(GetUncorrectedJets(idJets));
 
-                // Clean muons and electrons from jets
-                std::vector< pat::Jet > cleanJets = GetDeltaRCleanedJets(rawJets, *inputMuons, *inputElectrons, leptonJetDr);
+                // Clean muons and electrons and photons from jets
+                std::vector< pat::Jet > cleanJets = GetDeltaRCleanedJets(rawJets, *inputMuons, *inputElectrons, *inputPhotons, leptonJetDr);
                 // Apply jet corrections
                 // Get genjets for new JER recommendation (JER is done in extra producer
                 // SmearedJetProducer, the manual JER application is therefore disabled
@@ -607,7 +615,7 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
             }
             // if no correction is to be applied, still remove jets close to a lepton
             else {
-                unsortedJets = GetDeltaRCleanedJets(idJets, *inputMuons, *inputElectrons, leptonJetDr);
+                unsortedJets = GetDeltaRCleanedJets(idJets, *inputMuons, *inputElectrons, *inputPhotons, leptonJetDr);
             }
 
             // loop over all jetcollections and each systematic and apply pt,eta as

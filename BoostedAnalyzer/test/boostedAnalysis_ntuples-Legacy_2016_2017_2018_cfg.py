@@ -715,6 +715,9 @@ process.CorrectedJetProducerAK4.electrons = cms.InputTag(
 process.CorrectedJetProducerAK4.muons = cms.InputTag(
     "SelectedMuonProducer:selectedMuonsLoose"
 )
+process.CorrectedJetProducerAK4.photons = cms.InputTag(
+    "SelectedPhotonProducer:selectedPhotonsLoose"
+)
 process.CorrectedJetProducerAK4.leptonJetDr = cms.double(0.4)
 
 

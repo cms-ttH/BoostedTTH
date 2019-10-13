@@ -9,6 +9,7 @@ SelectedJetProducer = cms.EDProducer(
     miniAODGenJets=cms.InputTag("slimmedGenJets"),
     electrons=cms.InputTag("SelectedElectronProducer:selectedElectronsLoose"),
     muons=cms.InputTag("SelectedMuonProducer:selectedMuonsLoose"),
+    photons=cms.InputTag("SelectedPhotonProducer:selectedPhotonsLoose"),
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     ptMins=cms.vdouble(30, 20),
     etaMaxs=cms.vdouble(2.4, 2.4),
