@@ -773,10 +773,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             iEvent.getByToken(prefweight_token, theprefweight ) ;
             iEvent.getByToken(prefweightup_token, theprefweightup ) ;
             iEvent.getByToken(prefweightdown_token, theprefweightdown ) ;
+            prefiringweight =(*theprefweight);
+            prefiringweightup =(*theprefweightup);
+            prefiringweightdown =(*theprefweightdown);
         }
-        prefiringweight =(*theprefweight);
-        prefiringweightup =(*theprefweightup);
-        prefiringweightdown =(*theprefweightdown);
     }
 
     // Fill Event Info Object
