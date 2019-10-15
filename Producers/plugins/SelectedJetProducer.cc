@@ -570,9 +570,23 @@ pat::Jet SelectedJetProducer::GetCorrectedJet(const pat::Jet &inputJet, const ed
                                               const float corrFactor, const float uncFactor)
 {
   double factor = 1.;
+  double uncFactor_ = 1.;
   pat::Jet outputJet = inputJet;
   bool addUserFloats = true;
-  ApplyJetEnergyCorrection(outputJet, factor, event, setup, genjets, iSysType, doJES, doJER, addUserFloats, corrFactor, uncFactor);
+
+  if(era.find("2018") != std::string::npos)
+  {
+    bool isHEM = (-3 < outputJet.eta()) && (outputJet.eta() < -1.3);
+    isHEM = isHEM && ( (-1.57 < outputJet.phi()) && (outputJet.phi() < -0.87) );
+    if (isHEM) 
+    {
+      uncFactor_ = 1.2;
+    }
+  }
+  else{
+    uncFactor_ = 1.0;
+  }
+  ApplyJetEnergyCorrection(outputJet, factor, event, setup, genjets, iSysType, doJES, doJER, addUserFloats, corrFactor, uncFactor_);
 
   return outputJet;
 }
@@ -582,7 +596,7 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet &jet, double &totalC
                                                    const edm::Handle<reco::GenJetCollection> &genjets, const SystematicsHelper::Type iSysType,
                                                    const bool doJES, const bool doJER,
                                                    const bool addUserFloats,
-                                                   const float corrFactor, const float uncFactor)
+                                                   const float corrFactor, float uncFactor)
 {
   totalCorrFactor = 1.;
   if (doJES || doJER)
