@@ -160,11 +160,11 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
     /** the csv reweighter calculates the event weight from b-tag reweightung */
     CSVHelper csvReweighter;
     // calculate the scalefactor for leptons
-    //LeptonSFHelper leptonSFhelper;
+    // LeptonSFHelper leptonSFhelper;
     // reweight the number of primary vertices distribution
     PUWeights puWeights;
     /** Class that tests objects and event selections */
-    //Synchronizer synchronizer;
+    // Synchronizer synchronizer;
     /** class to extract generator weights */
     GenWeights genweights;
     /** produces MC truth information for ttbar and ttH samples (genTopEvent)*/
@@ -298,8 +298,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
 BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     // initialize some helpers with consumes collector (allows to access data
     // from file within this class)
-    //leptonSFhelper{iConfig},
-    //synchronizer{iConfig, consumesCollector()},
+    // leptonSFhelper{iConfig},
+    // synchronizer{iConfig, consumesCollector()},
     genTopEvtProd{consumesCollector()},
     triggerInfoProd{iConfig, consumesCollector()},
     filterInfoProd{iConfig, consumesCollector()},
@@ -472,7 +472,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     jet_tag_pos = find(selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
 
     // initialize synchronizer
-    //if (dumpSyncExe) { synchronizer.Init(outfileNameBase, systematicsNames, iConfig, &helper, &leptonSFhelper, dumpExtended); }
+    // if (dumpSyncExe) { synchronizer.Init(outfileNameBase, systematicsNames, iConfig, &helper, &leptonSFhelper, dumpExtended); }
 
     // INITIALIZE TREEWRITERs
     if (!ProduceMemNtuples) {
@@ -868,7 +868,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         genDarkMatterEvent.Initialize();
         // fill the event
         genDarkMatterEvent.Fill();
-        // genDarkMatterEvent.FillBoson();
+        if (genDarkMatterEvent.HasVectorBoson()) genDarkMatterEvent.FillBoson();
     }
 
     // selectiontags
@@ -892,7 +892,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
     // TODO: adapt to new synch exe
 
-    //if (dumpSyncExe) { synchronizer.DumpSyncExe(inputs, dumpExtended, dumpAlwaysEvents); }
+    // if (dumpSyncExe) { synchronizer.DumpSyncExe(inputs, dumpExtended, dumpAlwaysEvents); }
 
     assert(inputs.size() == cutflows.size());
     assert(inputs.size() == jetSystematics.size());
@@ -997,9 +997,9 @@ std::map< string, float > BoostedAnalyzer::GetWeights(const GenEventInfoProduct&
     weights["Weight_TopPtdown"] = topptweightDown;
 
     // Add Lepton Scalefactors to weight map
-    //std::map< std::string, float > selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons, selectedMuons);
+    // std::map< std::string, float > selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons, selectedMuons);
 
-    //for (auto sfit = selectedScaleFactors.begin(); sfit != selectedScaleFactors.end(); sfit++) { weights["Weight_" + sfit->first] = sfit->second; }
+    // for (auto sfit = selectedScaleFactors.begin(); sfit != selectedScaleFactors.end(); sfit++) { weights["Weight_" + sfit->first] = sfit->second; }
 
     // set optional additional PU weights
     for (std::vector< PUWeights::Weight >::const_iterator it = puWeights.additionalWeightsBegin(); it != puWeights.additionalWeightsEnd(); ++it) {

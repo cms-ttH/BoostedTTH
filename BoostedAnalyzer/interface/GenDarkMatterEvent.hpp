@@ -22,6 +22,7 @@ class GenDarkMatterEvent {
     std::vector< reco::GenParticle > ReturnNeutrinos() const;
 
     bool HasDarkMatter() const;
+    bool HasVectorBoson() const;
     bool IsFilled() const;
 
     double                        ReturnMediatorMass() const;
@@ -50,6 +51,8 @@ class GenDarkMatterEvent {
     std::vector< reco::GenParticle >             Neutralinos;
     reco::GenParticle                            Mediator;
     std::vector< reco::GenParticle >             Neutrinos;
+    std::vector< reco::GenParticle >             Leptons;
+    std::vector< reco::GenParticle >             Radiated_Photons;
 
     // for MC reweighting of Z/W boson + jets events
     bool                    hasVectorBoson = false;

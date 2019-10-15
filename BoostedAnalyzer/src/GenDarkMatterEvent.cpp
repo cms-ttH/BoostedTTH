@@ -12,34 +12,15 @@ GenDarkMatterEvent::GenDarkMatterEvent(const std::vector< reco::GenParticle >&  
 // destructor
 GenDarkMatterEvent::~GenDarkMatterEvent() {}
 
-// take the given genparticle collections and save a copy of them as member
-// variables
+// initialize some flags
 void GenDarkMatterEvent::Initialize()
 {
-    // prunedGenParticles = prunedGenParticles_;
-    // packedGenParticles = packedGenParticles_;
-
     hasDarkMatter = false;
     isFilled      = false;
 
     hasVectorBoson = false;
     WBosonisFilled = false;
     ZBosonisFilled = false;
-
-    int n_decay_prods = 0;
-
-    for (size_t i = 0; i < prunedGenParticles.size(); i++) {
-        if (prunedGenParticles[i].pdgId() == 1000022 or abs(prunedGenParticles[i].pdgId()) == 18) {
-            hasDarkMatter = true;
-            // break;
-        }
-        if ((abs(prunedGenParticles[i].pdgId()) == 11 or abs(prunedGenParticles[i].pdgId()) == 12 or abs(prunedGenParticles[i].pdgId()) == 13 or
-             abs(prunedGenParticles[i].pdgId()) == 14 or abs(prunedGenParticles[i].pdgId()) == 15 or abs(prunedGenParticles[i].pdgId()) == 16) and
-            prunedGenParticles[i].isPromptFinalState()) {
-            n_decay_prods += 1;
-        }
-    }
-    if (n_decay_prods >= 2) hasVectorBoson = true;
 }
 
 // return the prunedGenParticles collection
@@ -52,14 +33,7 @@ const std::vector< pat::PackedGenParticle >& GenDarkMatterEvent::ReturnPackedGen
 // genparticle collections
 void GenDarkMatterEvent::Fill()
 {
-    if (not hasDarkMatter) {
-        // std::cout << "The Generator Event does not have a Dark Matter particle
-        // with PDGID 1000022 (lightest neutralino)." << std::endl; std::cout <<
-        // "Therefore, the GenDarkMatterEvent cannot be filled." << std::endl;
-        return;
-    }
-
-    // find the lightest neutralinos in the event, the mediator, and neutrinos
+    // find the lightest neutralinos in the event, the mediator, neutrinos, leptons in general (for vector boson pt reweighting) and radiated photons
     for (size_t i = 0; i < prunedGenParticles.size(); i++) {
         const reco::GenParticle& genparticle = prunedGenParticles[i];
         if ((genparticle.pdgId() == 1000022 or abs(genparticle.pdgId()) == 18) and genparticle.status() == 1) { Neutralinos.push_back(genparticle); }
@@ -67,8 +41,17 @@ void GenDarkMatterEvent::Fill()
         if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16) and genparticle.status() == 1) {
             Neutrinos.push_back(genparticle);
         }
+        if ((abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 13 or abs(genparticle.pdgId()) == 14 or
+             abs(genparticle.pdgId()) == 15 or abs(genparticle.pdgId()) == 16) and
+            genparticle.isPromptFinalState()) {
+            Leptons.push_back(genparticle);
+        }
+        if (abs(genparticle.pdgId()) == 22 and genparticle.status() == 1 and !genparticle.statusFlags().isPrompt()) { Radiated_Photons.push_back(genparticle); }
     }
     isFilled = true;
+
+    if (Neutralinos.size() > 0) hasDarkMatter = true;
+    if (Leptons.size() >= 2) hasVectorBoson = true;
 }
 
 // return the lightest neutralinos in a vector
@@ -97,6 +80,9 @@ bool GenDarkMatterEvent::IsFilled() const { return isFilled; }
 
 // return if the event has at least one lightest neutralino (PDGID 1000022)
 bool GenDarkMatterEvent::HasDarkMatter() const { return hasDarkMatter; }
+
+// return if the event has at least one vector boson
+bool GenDarkMatterEvent::HasVectorBoson() const { return hasVectorBoson; }
 
 // return the mass of the mediator particle
 double GenDarkMatterEvent::ReturnMediatorMass() const { return Mediator.mass(); }
@@ -164,12 +150,10 @@ void GenDarkMatterEvent::FillBoson()
     }
     std::vector< reco::GenParticle > decay_prodW;
     std::vector< reco::GenParticle > decay_prodZ;
-    std::vector< reco::GenParticle > radiated_photons;
     // std::cout << "doing Boson stuff" << std::endl;
-    // std::cout << "looping over " << prunedGenParticles.size() << "
-    // genParticles" << std::endl;
-    for (size_t i = 0; i < prunedGenParticles.size(); i++) {
-        const reco::GenParticle& genparticle = prunedGenParticles[i];
+    // std::cout << "looping over " << prunedGenParticles.size() << " genParticles" << std::endl;
+    for (size_t i = 0; i < Leptons.size(); i++) {
+        const reco::GenParticle& genparticle = Leptons[i];
 
         // Z Bosons
         if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16 or abs(genparticle.pdgId()) == 11 or
@@ -184,17 +168,16 @@ void GenDarkMatterEvent::FillBoson()
                                                  // or abs(daughter->pdgId()) == 16
             decay_prodW.push_back(genparticle);
         }
-
-        if (abs(genparticle.pdgId()) == 22 and genparticle.status() == 1 and !genparticle.statusFlags().isPrompt()) { radiated_photons.push_back(genparticle); }
     }
+    // std::cout << "Z boson decay products " << decay_prodZ.size() << std::endl;
     if (decay_prodW.size() == 2) {
         // std::cout << "filling W Boson" << std::endl;
         if ((decay_prodW.at(0).pdgId()) * (decay_prodW.at(1).pdgId()) < 0 and abs(abs(decay_prodW.at(0).pdgId()) - abs(decay_prodW.at(1).pdgId())) == 1) {
             for (size_t k = 0; k < decay_prodW.size(); k++) {
                 if (abs(decay_prodW.at(k).pdgId()) == 11 or abs(decay_prodW.at(k).pdgId()) == 13) {
-                    for (size_t l = 0; l < radiated_photons.size(); l++) {
-                        if (reco::deltaR(radiated_photons.at(l).p4(), decay_prodW.at(k).p4()) < 0.1) {
-                            decay_prodW.at(k).setP4(decay_prodW.at(k).p4() + radiated_photons.at(l).p4());
+                    for (size_t l = 0; l < Radiated_Photons.size(); l++) {
+                        if (reco::deltaR(Radiated_Photons.at(l).p4(), decay_prodW.at(k).p4()) < 0.1) {
+                            decay_prodW.at(k).setP4(decay_prodW.at(k).p4() + Radiated_Photons.at(l).p4());
                         }
                     }
                 }
@@ -208,9 +191,9 @@ void GenDarkMatterEvent::FillBoson()
         if ((decay_prodZ.at(0).pdgId()) + (decay_prodZ.at(1).pdgId()) == 0) {
             for (size_t k = 0; k < decay_prodZ.size(); k++) {
                 if (abs(decay_prodZ.at(k).pdgId()) == 11 or abs(decay_prodZ.at(k).pdgId()) == 13) {
-                    for (size_t l = 0; l < radiated_photons.size(); l++) {
-                        if (reco::deltaR(radiated_photons.at(l).p4(), decay_prodZ.at(k).p4()) < 0.1) {
-                            decay_prodZ.at(k).setP4(decay_prodZ.at(k).p4() + radiated_photons.at(l).p4());
+                    for (size_t l = 0; l < Radiated_Photons.size(); l++) {
+                        if (reco::deltaR(Radiated_Photons.at(l).p4(), decay_prodZ.at(k).p4()) < 0.1) {
+                            decay_prodZ.at(k).setP4(decay_prodZ.at(k).p4() + Radiated_Photons.at(l).p4());
                         }
                     }
                 }
