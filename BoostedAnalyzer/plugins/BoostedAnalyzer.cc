@@ -119,6 +119,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/PhotonVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/JetVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/LeptonVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/BosonWeightProcessor.hpp"
 
 //
 // class declaration
@@ -518,6 +519,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
         }
         if (std::find(processorNames.begin(), processorNames.end(), "DarkMatterProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new DarkMatterProcessor(), "DarkMatterProcessor");
+        }
+        if (std::find(processorNames.begin(), processorNames.end(), "BosonWeightProcessor") != processorNames.end()) {
+            treewriter->AddTreeProcessor(new BosonWeightProcessor(), "BosonWeightProcessor");
         }
         if (std::find(processorNames.begin(), processorNames.end(), "essentialMVAVarProcessor") != processorNames.end()) {
             if (std::find(processorNames.begin(), processorNames.end(), "essentialBasicVarProcessor") == processorNames.end()) {
