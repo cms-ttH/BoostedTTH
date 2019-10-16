@@ -13,6 +13,9 @@ public:
     JESup,			
     JESdown,			
 
+    // additional JES source for 2018 HEM issue
+    JESHEMup,
+    JESHEMdown,
     // individual JEC uncertainties up
     JESAbsoluteStatup,
     JESAbsoluteScaleup,
@@ -197,6 +200,7 @@ std::map<SystematicsHelper::Type,std::string> SystematicsHelper::typeLabelMap_  
 void SystematicsHelper::init() {
   add( JESup,JESdown,"JES","Uncertainty");
   add( JERup,JERdown,"JER","JER");
+  add( JESHEMup,                 JESHEMdown,                 "JESHEM",                   "HEM"                 );             
   add( JESAbsoluteStatup,        JESAbsoluteStatdown,        "JESAbsoluteStat",          "AbsoluteStat"        );             
   add( JESAbsoluteScaleup,       JESAbsoluteScaledown,       "JESAbsoluteScale",         "AbsoluteScale"       );             
   add( JESAbsoluteFlavMapup,     JESAbsoluteFlavMapdown,     "JESAbsoluteFlavMap",       "AbsoluteFlavMap"     );                             
