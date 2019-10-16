@@ -118,12 +118,12 @@ for row in reader:
         if ntuple and not slimmed:
             src='common/template_cfg_ntuple.py'
             datasets=row['boosted_dataset'].split(",")
-            variation_list = get_list_of_systematics("common/systematicVariations.txt")
+            variation_list = get_list_of_systematics("common/systematicVariations_new.txt")
             print("Creating crab configs to Ntuple, therefore using common/systematicVariations.txt and skimmed datasets")
         elif slimmed:
             src='common/template_cfg_ntuple.py'
             datasets=row['dataset'].split(",")
-            variation_list = get_list_of_systematics("common/systematicVariations.txt")
+            variation_list = get_list_of_systematics("common/systematicVariations_new.txt")
             print("Creating crab configs to Ntuple, therefore using common/systematicVariations.txt and unskimmed dataset")
         else:
             src='common/template_cfg.py'

@@ -8,7 +8,7 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'CMSSWPATH/RUNCONFIG'
 config.JobType.outputFiles = OUTPUTFILES
 # config.JobType.maxJobRuntimeMin = 2800
-config.JobType.maxMemoryMB = 2000 
+config.JobType.maxMemoryMB = 4000 
 config.JobType.pyCfgParams = ['isData=ISDATA','maxEvents=99999999','outName=OUTNAME', 'dataEra=DATAERA','systematicVariations=SYSTEMATICVARIATIONS','weight=WEIGHT','ProduceMemNtuples=SLIMMED', 'deterministicSeeds=SEEDS']
 config.JobType.sendPythonFolder=True
 
@@ -19,7 +19,7 @@ config.Data.inputDBS = 'DBSINSTANCE'
 config.Data.splitting = 'Automatic'
 config.Data.publication = False
 config.Data.publishDBS = 'phys03'
-config.Data.outputDatasetTag = 'KIT_tthbb_sl_NTUPLETAG_DATAERA'
+config.Data.outputDatasetTag = 'KIT_tthbb_sl_LEG_NTUPLETAG_DATAERA'
 
 config.User.voGroup = 'dcms'
 
