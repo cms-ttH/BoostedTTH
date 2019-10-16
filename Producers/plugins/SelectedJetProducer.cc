@@ -570,9 +570,11 @@ pat::Jet SelectedJetProducer::GetCorrectedJet(const pat::Jet &inputJet, const ed
                                               const float corrFactor, const float uncFactor)
 {
   double factor = 1.;
+  double uncFactor_ = 1.;
   pat::Jet outputJet = inputJet;
   bool addUserFloats = true;
-  ApplyJetEnergyCorrection(outputJet, factor, event, setup, genjets, iSysType, doJES, doJER, addUserFloats, corrFactor, uncFactor);
+
+  ApplyJetEnergyCorrection(outputJet, factor, event, setup, genjets, iSysType, doJES, doJER, addUserFloats, corrFactor, uncFactor_);
 
   return outputJet;
 }
@@ -582,7 +584,7 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet &jet, double &totalC
                                                    const edm::Handle<reco::GenJetCollection> &genjets, const SystematicsHelper::Type iSysType,
                                                    const bool doJES, const bool doJER,
                                                    const bool addUserFloats,
-                                                   const float corrFactor, const float uncFactor)
+                                                   const float corrFactor, float uncFactor)
 {
   totalCorrFactor = 1.;
   if (doJES || doJER)
@@ -599,11 +601,21 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet &jet, double &totalC
       {
         edm::LogError("SelectedJetProducer") << "Trying to use GetCorrectedJets() without setting jet corrector!";
       }
+      
+      // Figure out if HEM issue -> only for 2018 
+      bool isHEM = false;
+      if(era.find("2018") != std::string::npos)
+      {
+        isHEM = (-3 < jet.eta()) && (jet.eta() < -1.3);
+        isHEM = isHEM && ( (-1.57 < jet.phi()) && (jet.phi() < -0.87) );
+      }
 
       const double jec = scale * corrFactor;
       jet.scaleEnergy(jec);
       totalCorrFactor *= jec;
+      
 
+      
       if (addUserFloats)
       {
         jet.addUserFloat("HelperJES", scale);
@@ -617,7 +629,29 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet &jet, double &totalC
 
       if (SystematicsHelper::isJECUncertainty(iSysType))
       {
-        const double unc = GetJECUncertainty(jet, setup, iSysType);
+        double unc = 1.0;
+        if (iSysType == SystematicsHelper::Type::JESHEMup)
+        {
+          if (isHEM){
+            unc = 0.2;
+            // std::cout << "DEBUG got HEM JET setting unc to 0.2" << std::endl;
+          } 
+          else unc = 0.0;
+        }
+        else if (iSysType == SystematicsHelper::Type::JESHEMdown)
+        {
+          if (isHEM){
+            unc = -0.2;
+            // std::cout << "DEBUG got HEM JET setting unc to -0.2" << std::endl;
+          } 
+          else unc = 0.0;
+        }
+        else
+        {
+          // std::cout << "DEBUG got standard JES setting unc to whatever" << std::endl;
+          unc = GetJECUncertainty(jet, setup, iSysType);
+        }
+        // std::cout << "DEBUG: unc = " << unc << std::endl;
         const double jecvar = 1. + (unc * uncFactor);
         if (addUserFloats)
         {
