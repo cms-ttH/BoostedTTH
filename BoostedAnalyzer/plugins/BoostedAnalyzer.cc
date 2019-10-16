@@ -521,7 +521,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
             treewriter->AddTreeProcessor(new DarkMatterProcessor(), "DarkMatterProcessor");
         }
         if (std::find(processorNames.begin(), processorNames.end(), "BosonWeightProcessor") != processorNames.end()) {
-            treewriter->AddTreeProcessor(new BosonWeightProcessor(), "BosonWeightProcessor");
+            treewriter->AddTreeProcessor(new BosonWeightProcessor(era), "BosonWeightProcessor");
         }
         if (std::find(processorNames.begin(), processorNames.end(), "essentialMVAVarProcessor") != processorNames.end()) {
             if (std::find(processorNames.begin(), processorNames.end(), "essentialBasicVarProcessor") == processorNames.end()) {
