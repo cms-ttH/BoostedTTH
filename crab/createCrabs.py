@@ -144,9 +144,12 @@ for row in reader:
                     for filename in variations.split(","):
                         if filename=="nominal":
                             filenames.append("ntuples_"+filename+"_Tree.root")
+                            filenames.append("ntuples_"+filename+"_Cutflow.txt")
                         else: 
                             filenames.append("ntuples_"+filename+"up"+"_Tree.root")
+                            filenames.append("ntuples_"+filename+"up"+"_Cutflow.txt")
                             filenames.append("ntuples_"+filename+"down"+"_Tree.root")
+                            filenames.append("ntuples_"+filename+"down"+"_Cutflow.txt")
                 elif slimmed:
                     filenames.append("MEM_slimmed_ntuples_Tree.root")
                 shutil.copy(src,out)
