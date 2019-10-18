@@ -261,6 +261,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
     TString mur_keyword  = "";
     TString muf_keyword  = "";
     TString pdf_keyword  = "";
+    TString id_keyword   = "";
     double  mur_d        = 0;
     double  muf_d        = 0;
     int     pdf_member_i = 0;
@@ -269,7 +270,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
     // loop over lines of LHE header
     for (auto iter = myLHERunInfoProduct.begin(); iter != myLHERunInfoProduct.end(); iter++) {
         TString line = *iter;
-        // std::cout << "LHE HEADER:  " << line << std::endl;
+        //         std::cout << "LHE HEADER:  " << line << std::endl;
 
         // first remove some characters which complicate everything
         line.ToLower();
@@ -285,7 +286,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         line.ReplaceAll("&gt;", "");
         line.ReplaceAll("dyn-1", "");
 
-        // std::cout << "LHE HEADER edited  :  " << line << std::endl;
+        //         std::cout << "LHE HEADER edited  :  " << line << std::endl;
 
         // check if a new weighgroup begins
         if (line.Contains("weightgroup") && line.Contains("combine")) {
@@ -328,7 +329,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         if (!is_pdf_var && !is_scale_var) continue;
 
         // only use lines which have something to do with actual weights
-        if (!line.Contains("weightid")) continue;
+        if (not (line.Contains("weight") and line.Contains("id"))) continue;
 
         // reset some defaults
         mur          = "";
@@ -343,6 +344,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         mur_keyword  = "";
         muf_keyword  = "";
         pdf_keyword  = "";
+        id_keyword   = "";
 
         // keywords (depend on samples ...)
         if (is_scale_var) {
@@ -377,7 +379,17 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         }
 
         // get values of weight id
-        id_i = GetNumber(line, "weightid").Atoi();
+        if (line.Contains("weightid")) { id_keyword = "weightid"; }
+        else if (line.Contains("id")) {
+            id_keyword = "id";
+        }
+        else {
+            std::cerr << "no known keyword for weight ID" << std::endl;
+            std::cerr << "This should never happen!" << std::endl;
+            std::cerr << "Don't trust the generator weights unless this problem is fixed!" << std::endl;
+            throw std::exception();
+        }
+        id_i = GetNumber(line, id_keyword).Atoi();
 
         // fail-safe
         if (((mur_d == 0. or muf_d == 0.) and is_scale_var) or (pdf_member_i == 0 and is_pdf_var) or id_i == 0) {
@@ -395,10 +407,10 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         id         = TString::Format("%i", id_i);
         pdf_member = TString::Format("%i", pdf_member_i);
 
-        // std::cout << "weightid: " << id << std::endl;
-        // std::cout << "muf: " << muf << std::endl;
-        // std::cout << "mur: " << mur << std::endl;
-        // std::cout << "pdfid: " << pdf_member << std::endl;
+        //         std::cout << "weightid: " << id << std::endl;
+        //         std::cout << "muf: " << muf << std::endl;
+        //         std::cout << "mur: " << mur << std::endl;
+        //         std::cout << "pdfid: " << pdf_member << std::endl;
 
         // set default names for possible variations
         if (is_scale_var) { name = "Weight_scale_variation_muR_" + mur + "_muF_" + muf; }
