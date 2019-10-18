@@ -255,13 +255,22 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
     bool    is_hdamp_var = false;
     TString mur          = "";
     TString muf          = "";
+    TString pdf_member   = "";
+    TString id           = "";
+    TString name         = "";
+    TString mur_keyword  = "";
+    TString muf_keyword  = "";
+    TString pdf_keyword  = "";
     double  mur_d        = 0;
     double  muf_d        = 0;
-    TString name_string  = "";
-    int     split        = 0;
+    int     pdf_member_i = 0;
+    int     id_i         = 0;
+
+    // loop over lines of LHE header
     for (auto iter = myLHERunInfoProduct.begin(); iter != myLHERunInfoProduct.end(); iter++) {
         TString line = *iter;
-        //         std::cout<<line<<std::endl;
+        // std::cout << "LHE HEADER:  " << line << std::endl;
+
         // first remove some characters which complicate everything
         line.ToLower();
         line.ReplaceAll("\n", "");
@@ -272,16 +281,18 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         line.ReplaceAll('"', "");
         line.ReplaceAll("=", "");
         line.ReplaceAll("+", "");
-        // check if this line has anything to do with generator weights
-        if (!line.Contains("weight")) continue;
+        line.ReplaceAll("&lt;", "");
+        line.ReplaceAll("&gt;", "");
+        line.ReplaceAll("dyn-1", "");
+
+        // std::cout << "LHE HEADER edited  :  " << line << std::endl;
+
         // check if a new weighgroup begins
-        //         std::cout << line << std::endl;
-        TString lineAsPrinted = line;
-        if (line.Contains("weightgroupcombine")) {
-            // pdf weights?
-            if (line.Contains("pdf")) {
-                is_pdf_var   = true;
-                is_scale_var = false;
+        if (line.Contains("weightgroup") && line.Contains("combine")) {
+            // matrix element weights?
+            if (line.Contains("scale")) {
+                is_pdf_var   = false;
+                is_scale_var = true;
                 is_hdamp_var = false;
             }
             // pdf weights?
@@ -290,10 +301,10 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
                 is_scale_var = false;
                 is_hdamp_var = false;
             }
-            // matrix element weights?
-            else if (line.Contains("scale")) {
-                is_pdf_var   = false;
-                is_scale_var = true;
+            // pdf weights?
+            else if (line.Contains("pdf")) {
+                is_pdf_var   = true;
+                is_scale_var = false;
                 is_hdamp_var = false;
             }
             // hdamp weights?
@@ -309,116 +320,130 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
                 is_scale_var = false;
                 is_hdamp_var = false;
             }
-            // remove name/type string from the actual name of the weightgroup
-            split = 0;
-            if (line.Contains("name")) split = line.Index("name");
-            if (line.Contains("type")) split = line.Index("type");
-            line.Remove(0, split + 4);
-            // use the name of the weightgroup for the following weights
-            name_string = line;
-            // some names have .lhgrid string in their name->remove
-            name_string.ReplaceAll(".lhgrid", "");
-            name_string.ReplaceAll("centralscalevariation", "scale_variation");
-            name_string.ReplaceAll("pdf_variation1", "pdf_variation");
-            name_string.ReplaceAll("pdf_variation2", "pdf_variation");
-            // cout << "blablabla " << split << "       " << pdf_string << endl;
-            //             cout<<name_string<<endl;
             continue;
         }
+
         // only use matrix element scale and pdf weights for now
         if (is_hdamp_var) continue;
         if (!is_pdf_var && !is_scale_var) continue;
+
         // only use lines which have something to do with actual weights
         if (!line.Contains("weightid")) continue;
 
-        // cout << line << endl;
-        // remove substrings to extract the weightids
-        line.ReplaceAll("weight", "");
-        line.ReplaceAll("id", "");
+        // reset some defaults
+        mur          = "";
+        muf          = "";
+        pdf_member   = "";
+        id           = "";
+        name         = "";
+        mur_d        = 0;
+        muf_d        = 0;
+        pdf_member_i = 0;
+        id_i         = 0;
+        mur_keyword  = "";
+        muf_keyword  = "";
+        pdf_keyword  = "";
 
-        split = 0;
-        if (line.Contains("lhapdf")) split = line.Index("lhapdf");
-        if (line.Contains("pdfset")) split = line.Index("pdfset");
-        if (line.Contains("member")) split = line.Index("member");
-        if (line.Contains("renscfact")) {
-            // cout << "-----------------------------------" << endl;
-            // cout << line << endl;
-            split = line.Index("hdamp");
-            line.ReplaceAll(line(split, line.Length()), "");
-            //             cout << line << endl;
-            split = line.Index("facscfact");
-            muf   = line(split, line.Length());
-            line.ReplaceAll(muf, "");
-            muf.ReplaceAll("facscfact", "");
-            //             cout << line << endl;
-            split = line.Index("renscfact");
-            mur   = line(split, line.Length());
-            line.ReplaceAll(mur, "");
-            mur.ReplaceAll("renscfact", "");
-            //             cout << line << endl;
-            //             std::string mur_ = mur.Data();
-            //             std::string muf_ = muf.Data();
-            mur_d = mur.Atof();
-            //             cout << mur_d << " "<< mur <<" "<<
-            //             TString::Format("%.1f",mur_d)<<endl;
-            muf_d = muf.Atof();
-            mur   = TString::Format("%.1f", mur_d);
-            mur.ReplaceAll(".", "p");
-            muf = TString::Format("%.1f", muf_d);
-            muf.ReplaceAll(".", "p");
-            split = line.Index("lhapdf");
-            line.ReplaceAll(line(split, line.Length()), "");
+        // keywords (depend on samples ...)
+        if (is_scale_var) {
+            if (line.Contains("mur") and line.Contains("muf")) {
+                mur_keyword = "mur";
+                muf_keyword = "muf";
+            }
+            else if (line.Contains("renscfact") and line.Contains("facscfact")) {
+                mur_keyword = "renscfact";
+                muf_keyword = "facscfact";
+            }
+            else {
+                std::cerr << "no known keyword for matrix element scale variations" << std::endl;
+                std::cerr << "This should never happen!" << std::endl;
+                std::cerr << "Don't trust the generator weights unless this problem is fixed!" << std::endl;
+                throw std::exception();
+            }
+            // get values of mur/muf
+            mur_d = GetNumber(line, mur_keyword).Atof();
+            muf_d = GetNumber(line, muf_keyword).Atof();
         }
-        if (line.Contains("mur") and line.Contains("muf")) {
-            // cout << "-----------------------------------" << endl;
-            // cout << line << endl;
-            split = line.Index("hdamp");
-            line.ReplaceAll(line(split, line.Length()), "");
-            //             cout << line << endl;
-            split = line.Index("muf");
-            muf   = line(split, line.Length());
-            line.ReplaceAll(muf, "");
-            muf.ReplaceAll("muf", "");
-            //             cout << line << endl;
-            split = line.Index("mur");
-            mur   = line(split, line.Length());
-            line.ReplaceAll(mur, "");
-            mur.ReplaceAll("mur", "");
-            //             cout << line << endl;
-            //             std::string mur_ = mur.Data();
-            //             std::string muf_ = muf.Data();
-            mur_d = mur.Atof();
-            //             cout << mur_d << " "<< mur <<" "<<
-            //             TString::Format("%.1f",mur_d)<<endl;
-            muf_d = muf.Atof();
-            mur   = TString::Format("%.1f", mur_d);
-            mur.ReplaceAll(".", "p");
-            muf = TString::Format("%.1f", muf_d);
-            muf.ReplaceAll(".", "p");
-            //             split=line.Index("lhapdf");
-            //             line.ReplaceAll(line(split,line.Length()),"");
+        else if (is_pdf_var) {
+            if (line.Contains("pdf")) { pdf_keyword = "pdf"; }
+            else {
+                std::cerr << "no known keyword for pdf variations" << std::endl;
+                std::cerr << "This should never happen!" << std::endl;
+                std::cerr << "Don't trust the generator weights unless this problem is fixed!" << std::endl;
+                throw std::exception();
+            }
+            // get ids of pdf variations
+            pdf_member_i = GetNumber(line, pdf_keyword).Atoi();
         }
-        // get the id of the weight
-        TString id = TString(line, split);
-        line.ReplaceAll(TString(id), "");
-        // some more string acrobatics to get a nice identifier string for the
-        // weights
-        if (is_pdf_var) {
-            line.ReplaceAll("lhapdf", "Weight_" + name_string + "_");
-            line.ReplaceAll("pdfset", "Weight_" + name_string + "_");
-            line.ReplaceAll("member", "Weight_" + name_string + "_");
+
+        // get values of weight id
+        id_i = GetNumber(line, "weightid").Atoi();
+
+        // fail-safe
+        if (((mur_d == 0. or muf_d == 0.) and is_scale_var) or (pdf_member_i == 0 and is_pdf_var) or id_i == 0) {
+            std::cerr << "something went wrong with reading the values for the matrix element scale or pdf variation IDs" << std::endl;
+            std::cerr << "This should never happen!" << std::endl;
+            std::cerr << "Don't trust the generator weights unless this problem is fixed!" << std::endl;
+            throw std::exception();
         }
-        if (is_scale_var) line = "Weight_" + name_string + "_muR_" + mur + "_muF_" + muf;
-        //         cout << lineAsPrinted<<" " <<line << "   " << id << endl;
-        // hack to exclude all pdf variations not belonging to
-        // NNPDF31_nnlo_hessian_pdfas pdfset. They have lhaids 306000-306102
-        if (line.Contains("pdf_variation") && !line.Contains("_306")) continue;
-        // add the unique weightid and the corresponding name to a map to use later
-        // when reading the weights from the events
-        lhe_weights[std::string(id)] = line;
+
+        // ensure a common format
+        mur = TString::Format("%.1f", mur_d);
+        mur.ReplaceAll(".", "p");
+        muf = TString::Format("%.1f", muf_d);
+        muf.ReplaceAll(".", "p");
+        id         = TString::Format("%i", id_i);
+        pdf_member = TString::Format("%i", pdf_member_i);
+
+        // std::cout << "weightid: " << id << std::endl;
+        // std::cout << "muf: " << muf << std::endl;
+        // std::cout << "mur: " << mur << std::endl;
+        // std::cout << "pdfid: " << pdf_member << std::endl;
+
+        // set default names for possible variations
+        if (is_scale_var) { name = "Weight_scale_variation_muR_" + mur + "_muF_" + muf; }
+        else if (is_pdf_var) {
+            name = "Weight_pdf_variation_" + pdf_member;
+        }
+        else {
+            std::cerr << "Problem in GenWeights::GetNamesFromLHE" << std::endl;
+            std::cerr << "This should never happen!" << std::endl;
+            std::cerr << "Don't trust the generator weights unless this problem is fixed!" << std::endl;
+            throw std::exception();
+        }
+
+        // put the weight ids and their corresponding names in the map
+        lhe_weights[std::string(id)] = name;
     }
 
     initialized = true;
 }
 
 void GenWeights::Clear() { lhe_weights.clear(); }
+
+TString GenWeights::GetNumber(TString line, TString keyword) const
+{
+    if (line == "" or keyword == "") {
+        std::cerr << "Problem in GenWeights::GetNumber" << std::endl;
+        std::cerr << "This should never happen!" << std::endl;
+        std::cerr << "Don't trust the generator weights unless this problem is fixed!" << std::endl;
+        throw std::exception();
+    }
+    auto split = line.Index(keyword);
+    if (split == -1) return "";
+    auto index_1 = split;
+    for (auto i = split; i < line.Length(); i++) {
+        if (std::isdigit(line.Data()[i])) {
+            index_1 = i;
+            break;
+        }
+    }
+    auto index_2 = index_1;
+    for (auto i = index_1; i < line.Length(); i++) {
+        if ((not std::isdigit(line.Data()[i])) and (not std::isdigit(line.Data()[i + 1]))) {
+            index_2 = i;
+            break;
+        }
+    }
+    return line(index_1, index_2 - index_1);
+}

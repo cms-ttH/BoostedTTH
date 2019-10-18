@@ -25,8 +25,9 @@ class GenWeights {
     bool initLHAPDF(std::string name);
     bool initLHAPDF(std::vector< std::string > name);
 
-    void GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct);
-    void Clear();
+    void    GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct);
+    void    Clear();
+    TString GetNumber(TString line, TString keyword) const;
 
    private:
     std::vector< LHAPDF::PDFSet >              initializedPDFSets;
