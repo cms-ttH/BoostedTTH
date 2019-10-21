@@ -118,12 +118,12 @@ for row in reader:
         if ntuple and not slimmed:
             src='common/template_cfg_ntuple.py'
             datasets=row['boosted_dataset'].split(",")
-            variation_list = get_list_of_systematics("common/systematicVariations.txt")
+            variation_list = get_list_of_systematics("common/systematicVariations_new.txt")
             print("Creating crab configs to Ntuple, therefore using common/systematicVariations.txt and skimmed datasets")
         elif slimmed:
             src='common/template_cfg_ntuple.py'
             datasets=row['dataset'].split(",")
-            variation_list = get_list_of_systematics("common/systematicVariations.txt")
+            variation_list = get_list_of_systematics("common/systematicVariations_new.txt")
             print("Creating crab configs to Ntuple, therefore using common/systematicVariations.txt and unskimmed dataset")
         else:
             src='common/template_cfg.py'
@@ -144,9 +144,12 @@ for row in reader:
                     for filename in variations.split(","):
                         if filename=="nominal":
                             filenames.append("ntuples_"+filename+"_Tree.root")
+                            filenames.append("ntuples_"+filename+"_Cutflow.txt")
                         else: 
                             filenames.append("ntuples_"+filename+"up"+"_Tree.root")
+                            filenames.append("ntuples_"+filename+"up"+"_Cutflow.txt")
                             filenames.append("ntuples_"+filename+"down"+"_Tree.root")
+                            filenames.append("ntuples_"+filename+"down"+"_Cutflow.txt")
                 elif slimmed:
                     filenames.append("MEM_slimmed_ntuples_Tree.root")
                 shutil.copy(src,out)
