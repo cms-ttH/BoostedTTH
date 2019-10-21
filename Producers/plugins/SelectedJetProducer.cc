@@ -633,15 +633,17 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet &jet, double &totalC
         if (iSysType == SystematicsHelper::Type::JESHEMup)
         {
           if (isHEM){
-            unc = 0.2;
-            // std::cout << "DEBUG got HEM JET setting unc to 0.2" << std::endl;
+            if ((-2.5 < jet.eta()) && (jet.eta() < -1.3)) unc = 0.2;
+            else if ((-3.0 < jet.eta()) && (jet.eta() < -2.5 )) unc = 0.35;
+            // std::cout << "DEBUG got HEM JET setting unc to " << unc << std::endl;
           } 
           else unc = 0.0;
         }
         else if (iSysType == SystematicsHelper::Type::JESHEMdown)
         {
           if (isHEM){
-            unc = -0.2;
+            if ((-2.5 < jet.eta()) && (jet.eta() < -1.3)) unc = -0.2;
+            else if ((-3.0 < jet.eta()) && (jet.eta() < -2.5 )) unc = -0.35;
             // std::cout << "DEBUG got HEM JET setting unc to -0.2" << std::endl;
           } 
           else unc = 0.0;
