@@ -16,7 +16,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVar("Evt_Lumi", "I");
 
     vars.InitVar("N_Jets", "I");
-    // vars.InitVar("N_LooseJets", "I");
+    vars.InitVar("N_LooseJets", "I");
 
     vars.InitVar("N_BTagsL", "I");
     vars.InitVar("N_BTagsM", "I");
@@ -24,11 +24,11 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVar("N_PrimaryVertices", "I");
     vars.InitVar("N_GenPVs", "I");
 
-    //     vars.InitVars("LooseJet_E", "N_LooseJets");
-    //     vars.InitVars("LooseJet_M", "N_LooseJets");
-    //     vars.InitVars("LooseJet_Pt", "N_LooseJets");
-    //     vars.InitVars("LooseJet_Phi", "N_LooseJets");
-    //     vars.InitVars("LooseJet_Eta", "N_LooseJets");
+    vars.InitVars("LooseJet_E", "N_LooseJets");
+    vars.InitVars("LooseJet_M", "N_LooseJets");
+    vars.InitVars("LooseJet_Pt", "N_LooseJets");
+    vars.InitVars("LooseJet_Phi", "N_LooseJets");
+    vars.InitVars("LooseJet_Eta", "N_LooseJets");
     //     vars.InitVars("LooseJet_CSV", "N_LooseJets");
     //     vars.InitVars("LooseJet_Flav", "N_LooseJets");
     //     vars.InitVars("LooseJet_PartonFlav", "N_LooseJets");
@@ -141,7 +141,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_GenPVs", input.eventInfo.numTruePV);
     vars.FillVar("N_PrimaryVertices", input.selectedPVs.size());
     vars.FillVar("N_Jets", input.selectedJets.size());
-    //     vars.FillVar("N_LooseJets", input.selectedJetsLoose.size());
+    vars.FillVar("N_LooseJets", input.selectedJetsLoose.size());
 
     int N_HEM_Jets = 0;
 
@@ -188,16 +188,18 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("Jet_DeepJet_uds", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probuds"));
         vars.FillVars("Jet_DeepJet_g", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probg"));
 
-        if (itJet->eta() < -1.4 && itJet->eta() > -3.0 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
+        // if (itJet->eta() < -1.4 && itJet->eta() > -3.0 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
     }
 
-    //     for (std::vector< pat::Jet >::const_iterator itJet = input.selectedJetsLoose.begin(); itJet != input.selectedJetsLoose.end(); ++itJet) {
-    //         int iJet = itJet - input.selectedJetsLoose.begin();
-    //         vars.FillVars("LooseJet_E", iJet, itJet->energy());
-    //         vars.FillVars("LooseJet_M", iJet, itJet->mass());
-    //         vars.FillVars("LooseJet_Pt", iJet, itJet->pt());
-    //         vars.FillVars("LooseJet_Eta", iJet, itJet->eta());
-    //         vars.FillVars("LooseJet_Phi", iJet, itJet->phi());
+    for (std::vector< pat::Jet >::const_iterator itJet = input.selectedJetsLoose.begin(); itJet != input.selectedJetsLoose.end(); ++itJet) {
+        int iJet = itJet - input.selectedJetsLoose.begin();
+        vars.FillVars("LooseJet_E", iJet, itJet->energy());
+        vars.FillVars("LooseJet_M", iJet, itJet->mass());
+        vars.FillVars("LooseJet_Pt", iJet, itJet->pt());
+        vars.FillVars("LooseJet_Eta", iJet, itJet->eta());
+        vars.FillVars("LooseJet_Phi", iJet, itJet->phi());
+        if (itJet->pt() > 30. && itJet->eta() < -1.4 && itJet->eta() > -3.0 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
+    }
     //         vars.FillVars("LooseJet_CSV", iJet, CSVHelper::GetJetCSV(*itJet, btagger));
     //         // vars.FillVars(
     //         // "LooseJet_CSV_DNN",iJet,CSVHelper::GetJetCSV_DNN(*itJet,btagger) );
