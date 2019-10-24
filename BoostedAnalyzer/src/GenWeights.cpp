@@ -425,6 +425,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         }
 
         // put the weight ids and their corresponding names in the map
+        if (name.Contains("pdf_variation") && !name.Contains("_306")) continue;
         lhe_weights[std::string(id)] = name;
     }
 
