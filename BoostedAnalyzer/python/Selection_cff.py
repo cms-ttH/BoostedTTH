@@ -67,7 +67,7 @@ import FWCore.ParameterSet.Config as cms
 # dlchannel = cms.string("all"),
 # )
 
-METSelection = cms.PSet(minMET=cms.double(250.0), maxMET=cms.double(100000.0))
+METSelection = cms.PSet(minMET=cms.double(150.0), maxMET=cms.double(100000.0))
 
 # JetTagSelection = cms.PSet(
 # minJets = cms.vint32(4),
@@ -216,4 +216,5 @@ MonoTopSelection = cms.PSet(
     AK15Jet_Chf=cms.double(0.1),
     AK15Jet_Nhf=cms.double(0.8),
     DeltaR_MET_AK15Jet=cms.double(1.5),
+    minRecoil=cms.double(250.),
 )
