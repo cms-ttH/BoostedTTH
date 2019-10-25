@@ -5,18 +5,19 @@ using namespace std;
 MonoTopSelection::MonoTopSelection(const edm::ParameterSet& iConfig) :
     MonoTopSelection(iConfig.getParameter< double >("AK15Jet_Pt"), iConfig.getParameter< double >("AK15Jet_Eta"), iConfig.getParameter< double >("AK15Jet_Chf"),
                      iConfig.getParameter< double >("AK15Jet_Nhf"), iConfig.getParameter< double >("minMET"), iConfig.getParameter< double >("maxMET"),
-                     iConfig.getParameter< double >("DeltaR_MET_AK15Jet"))
+                     iConfig.getParameter< double >("DeltaR_MET_AK15Jet"), iConfig.getParameter< double >("minRecoil"))
 {
 }
 MonoTopSelection::MonoTopSelection(double pt_min_, double eta_max_, double chf_min_, double nhf_max_, double min_MET_, double max_MET_,
-                                   double deltaR_MET_AK15Jet_) :
+                                   double deltaR_MET_AK15Jet_, double min_Recoil_) :
     pt_min(pt_min_),
     eta_max(eta_max_),
     charged_hadron_fraction_min(chf_min_),
     neutral_hadron_fraction_max(nhf_max_),
     minMET(min_MET_),
     maxMET(max_MET_),
-    deltaR_MET_AK15Jet(deltaR_MET_AK15Jet_)
+    deltaR_MET_AK15Jet(deltaR_MET_AK15Jet_),
+    minRecoil(min_Recoil_)
 {
 }
 MonoTopSelection::~MonoTopSelection() {}
@@ -74,7 +75,7 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     for (const auto& mu : input.selectedMuonsLoose) { hadr_recoil_p4 += mu.p4(); }
     for (const auto& ph : input.selectedPhotons) { hadr_recoil_p4 += ph.p4(); }
 
-    if (met_p4.pt() < minMET && hadr_recoil_p4.pt() < minMET) return false;
+    if (met_p4.pt() < minMET && hadr_recoil_p4.pt() < minRecoil) return false;
     // deltaphi criteria between jets and MET to suppress mismeasured QCD events
     // bool dPhi_jet_met_criterium = true;
     // for(size_t i=0;i<input.selectedJets.size()&&i<4;i++) {
