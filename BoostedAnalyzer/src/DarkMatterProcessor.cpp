@@ -24,6 +24,9 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Gen_Hadr_Recoil_Phi");
     vars.InitVar("CaloMET_Hadr_Recoil_ratio");
 
+    vars.InitVar("N_LooseLeptons","I");
+    vars.InitVars("M_W_transverse", "N_LooseLeptons");
+
     vars.InitVars("DeltaPhi_AK4Jet_MET", "N_Jets");
     vars.InitVars("DeltaPhi_AK4Jet_Hadr_Recoil", "N_Jets");
     vars.InitVars("DeltaPhi_AK8Jet_MET", "N_AK8Jets");
@@ -175,6 +178,23 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     vars.FillVar("Evt_Pt_MET_UnclEnDown", input.correctedMETPuppi.shiftedPt(pat::MET::UnclusteredEnDown, pat::MET::Type1));
     vars.FillVar("CaloMET", input.correctedMETPuppi.caloMETPt());
     vars.FillVar("CaloMET_PFMET_ratio", fabs(met_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
+
+    // transverse W mass
+    std::vector<double> v_M_W_transverse;
+    vars.FillVar("N_LooseLeptons", input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size());
+
+    for (std::vector< pat::Electron >::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle) {
+        double cos_dphi = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met_p4.phi() - itEle->phi())));
+        v_M_W_transverse.push_back(TMath::Sqrt(2*itEle->pt()*met_p4.pt()*(1-cos_dphi)));
+    }
+     for (std::vector< pat::Muon >::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu) {
+        double cos_dphi = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met_p4.phi() - itMu->phi())));
+        v_M_W_transverse.push_back(TMath::Sqrt(2*itMu->pt()*met_p4.pt()*(1-cos_dphi)));
+    }
+
+    for (size_t i = 0; i < v_M_W_transverse.size(); i++) {
+        vars.FillVars("M_W_transverse", i, v_M_W_transverse.at(i));
+    }
 
     for (size_t i = 0; i < input.selectedJets.size(); i++) {
         vars.FillVars("DeltaPhi_AK4Jet_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJets.at(i).phi())));
