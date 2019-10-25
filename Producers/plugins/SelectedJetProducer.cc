@@ -350,7 +350,7 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
     if (not passesID) return false;
 
     // PileUP Jet ID
-    if (iJet.hasUserInt("pileupJetId:fullId") && iJet.pt()<50) {
+    if (iJet.hasUserInt("pileupJetId:fullId") && iJet.pt() < 50) {
         if (iJet.userInt("pileupJetId:fullId") < TranslateJetPUIDtoInt(wp)) return false;
     }
 

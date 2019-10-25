@@ -329,7 +329,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         if (!is_pdf_var && !is_scale_var) continue;
 
         // only use lines which have something to do with actual weights
-        if (not (line.Contains("weight") and line.Contains("id"))) continue;
+        if (not(line.Contains("weight") and line.Contains("id"))) continue;
 
         // reset some defaults
         mur          = "";
