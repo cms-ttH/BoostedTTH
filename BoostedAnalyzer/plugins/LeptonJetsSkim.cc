@@ -216,22 +216,22 @@ bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // jet){return (jet.pt()>=AK8jetPtMin_ && fabs(jet.eta())<=AK8jetEtaMax_);});
     n_ak8jets  = ak8Jets->size();
     n_ak15jets = ak15Jets->size();
-    
+
     bool jet_veto_criterium = n_ak4jets < minJetsAK4_ && n_ak8jets < minJetsAK8_ && n_ak15jets < minJetsAK15_;
-    
+
     // apply skimming selection
     if (jet_veto_criterium) return false;
-    
+
     // number of leptons (electrons and muons)
     int n_electrons = selectedElectrons.size();
-    int n_muons = selectedMuons.size();
-    int n_leptons = n_electrons + n_muons;
-    
+    int n_muons     = selectedMuons.size();
+    int n_leptons   = n_electrons + n_muons;
+
     // leading lepton pts
-    auto leading_ele_pt = n_electrons > 0 ? selectedElectrons.at(0).pt() : 0.; 
-    auto leading_muon_pt = n_muons > 0 ? selectedMuons.at(0).pt() : 0.;
+    auto leading_ele_pt    = n_electrons > 0 ? selectedElectrons.at(0).pt() : 0.;
+    auto leading_muon_pt   = n_muons > 0 ? selectedMuons.at(0).pt() : 0.;
     auto leading_lepton_pt = leading_ele_pt > leading_muon_pt ? leading_ele_pt : leading_muon_pt;
-    auto leading_jet_pt = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
+    auto leading_jet_pt    = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
 
     // calculate approximate hadronic recoil
     auto hadr_recoil = hMETs->at(0).p4();
@@ -250,14 +250,15 @@ bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         hadr_recoil += ph.p4();
         hadr_recoil_puppi += ph.p4();
     }
-    
+
     // veto criterium for hadronic channel which can only be circumvented by leptonic events, see next criterium
-    bool met_recoil_veto_criterium = hMETs->at(0).pt() < metPtMin_ && hPuppiMETs->at(0).pt() < metPtMin_ && hadr_recoil.pt() < metPtMin_ && hadr_recoil_puppi.pt() < metPtMin_;
-    
+    bool met_recoil_veto_criterium =
+        (hMETs->at(0).pt() < metPtMin_) && (hPuppiMETs->at(0).pt() < metPtMin_) && (hadr_recoil.pt() < metPtMin_) && (hadr_recoil_puppi.pt() < metPtMin_);
+
     // criterium which lowers requested MET value for events in the leptonic channel
-    bool lepton_jet_met_criterium = n_leptons > 0 && n_ak4jets > 0 && leading_jet_pt > 30. && leading_lepton_pt > 20. && (hMETs->at(0).pt() > 50. || hPuppiMETs->at(0).pt() > 50.);
-    
-    
+    bool lepton_jet_met_criterium =
+        (n_leptons == 1) && (n_ak4jets > 0) && (leading_jet_pt > 50.) && (leading_lepton_pt > 20.) && (hMETs->at(0).pt() > 50. || hPuppiMETs->at(0).pt() > 50.);
+
     // if (n_ak4jets > maxJetsAK4_ || n_ak8jets > maxJetsAK8_ || n_ak15jets > maxJetsAK15_) return false;
     // met selection in general
     if (met_recoil_veto_criterium && !lepton_jet_met_criterium) return false;
