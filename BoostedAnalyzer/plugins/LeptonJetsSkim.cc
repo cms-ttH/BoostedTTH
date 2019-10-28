@@ -183,6 +183,10 @@ bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                            return !(ph.pt() >= photonPtMin_ && fabs(ph.eta()) <= photonEtaMax_ && ph.photonID("cutBasedPhotonID-Fall17-94X-V2-loose"));
                        }),
         selectedPhotons.end());
+    
+    // get slimmedVertices
+    edm::Handle< reco::VertexCollection > hVertices;
+    iEvent.getByToken(EDMVertexToken, hVertices);
 
     // get AK4 jets
     edm::Handle< pat::JetCollection > ak4Jets;
@@ -221,18 +225,7 @@ bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     // apply skimming selection
     if (jet_veto_criterium) return false;
-
-    // number of leptons (electrons and muons)
-    int n_electrons = selectedElectrons.size();
-    int n_muons     = selectedMuons.size();
-    int n_leptons   = n_electrons + n_muons;
-
-    // leading lepton pts
-    auto leading_ele_pt    = n_electrons > 0 ? selectedElectrons.at(0).pt() : 0.;
-    auto leading_muon_pt   = n_muons > 0 ? selectedMuons.at(0).pt() : 0.;
-    auto leading_lepton_pt = leading_ele_pt > leading_muon_pt ? leading_ele_pt : leading_muon_pt;
-    auto leading_jet_pt    = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
-
+    
     // calculate approximate hadronic recoil
     auto hadr_recoil = hMETs->at(0).p4();
 
@@ -254,13 +247,41 @@ bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // veto criterium for hadronic channel which can only be circumvented by leptonic events, see next criterium
     bool met_recoil_veto_criterium =
         (hMETs->at(0).pt() < metPtMin_) && (hPuppiMETs->at(0).pt() < metPtMin_) && (hadr_recoil.pt() < metPtMin_) && (hadr_recoil_puppi.pt() < metPtMin_);
+    
+    int n_loose_leptons = selectedElectrons.size() + selectedMuons.size();
+        
+    // for leptonic events, increase the criteria for electrons
+    selectedElectrons.erase(std::remove_if(selectedElectrons.begin(), selectedElectrons.end(),
+                                           [&](pat::Electron ele) {
+                                               return !(ele.pt() >= (electronPtMin_ + 10.) && ele.electronID("cutBasedElectronID-Fall17-94X-V2-tight"));
+                                           }),
+                            selectedElectrons.end());
+    
+    auto vertex = hVertices->empty() ? reco::Vertex() : hVertices->at(0);
+    // for leptonic events, increase the criteria for muons
+    selectedMuons.erase(
+        std::remove_if(selectedMuons.begin(), selectedMuons.end(),
+                       [&](pat::Muon mu) {
+                           return !(mu.pt() >= (muonPtMin_ + 10.) && muon::isTightMuon(mu,vertex));
+                       }),
+        selectedMuons.end());
+
+    // number of leptons (electrons and muons)
+    int n_electrons = selectedElectrons.size();
+    int n_muons     = selectedMuons.size();
+    int n_leptons   = n_electrons + n_muons;
+
+    // leading lepton pts
+    auto leading_ele_pt    = n_electrons > 0 ? selectedElectrons.at(0).pt() : 0.;
+    auto leading_muon_pt   = n_muons > 0 ? selectedMuons.at(0).pt() : 0.;
+    auto leading_lepton_pt = leading_ele_pt > leading_muon_pt ? leading_ele_pt : leading_muon_pt;
+    auto leading_jet_pt    = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
 
     // criterium which lowers requested MET value for events in the leptonic channel
     bool lepton_jet_met_criterium =
-        (n_leptons == 1) && (n_ak4jets > 0) && (leading_jet_pt > 50.) && (leading_lepton_pt > 20.) && (hMETs->at(0).pt() > 50. || hPuppiMETs->at(0).pt() > 50.);
+        (n_leptons == 1) && (n_loose_leptons==1) && (n_ak4jets > 0) && (leading_jet_pt > 50.) && (leading_lepton_pt > 20.) && (hMETs->at(0).pt() > 50. || hPuppiMETs->at(0).pt() > 50.);
 
-    // if (n_ak4jets > maxJetsAK4_ || n_ak8jets > maxJetsAK8_ || n_ak15jets > maxJetsAK15_) return false;
-    // met selection in general
+    // select events that either are not vetoed by the requirements on MET and hadronic recoil or if they satisfy the criteria for the leptonic analysis
     if (met_recoil_veto_criterium && !lepton_jet_met_criterium) return false;
 
     //     std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
