@@ -12,48 +12,48 @@
      [Notes on implementation]
 */
 //
-// Original Author:  Hannes Mildner
-//         Created:  Sat, 17 Oct 2015 09:19:10 GMT
+// Original Author:  Michael Wassmer
 //
 //
 
 // system include files
-#include <memory>
 #include <exception>
 #include <iostream>
+#include <memory>
 
 // user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDFilter.h"
+#include "FWCore/Framework/interface/Frameworkfwd.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "DataFormats/PatCandidates/interface/Lepton.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/Lepton.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
+#include "TVector2.h"
 //
 // class declaration
 //
 
 class LeptonJetsSkim : public edm::EDFilter {
    public:
-    explicit LeptonJetsSkim(const edm::ParameterSet&);
+    explicit LeptonJetsSkim(const edm::ParameterSet &);
     ~LeptonJetsSkim();
 
-    static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+    static void fillDescriptions(edm::ConfigurationDescriptions &descriptions);
 
    private:
     virtual void beginJob() override;
-    virtual bool filter(edm::Event&, const edm::EventSetup&) override;
+    virtual bool filter(edm::Event &, const edm::EventSetup &) override;
     virtual void endJob() override;
-    bool         setUpHelper(const edm::Event& iEvent);
+    bool         setUpHelper(const edm::Event &iEvent);
 
     // ----------member data ---------------------------
 
@@ -93,7 +93,7 @@ class LeptonJetsSkim : public edm::EDFilter {
 //
 // constructors and destructor
 //
-LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet& iConfig) :
+LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet &iConfig) :
     // now do what ever initialization is needed
 
     EDMElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("electrons"))},
@@ -143,7 +143,7 @@ LeptonJetsSkim::~LeptonJetsSkim()
 //
 
 // ------------ method called on each new Event  ------------
-bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
+bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
 {
     // get slimmedElectrons
     edm::Handle< pat::ElectronCollection > hElectrons;
@@ -183,7 +183,7 @@ bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                            return !(ph.pt() >= photonPtMin_ && fabs(ph.eta()) <= photonEtaMax_ && ph.photonID("cutBasedPhotonID-Fall17-94X-V2-loose"));
                        }),
         selectedPhotons.end());
-    
+
     // get slimmedVertices
     edm::Handle< reco::VertexCollection > hVertices;
     iEvent.getByToken(EDMVertexToken, hVertices);
@@ -225,46 +225,48 @@ bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     // apply skimming selection
     if (jet_veto_criterium) return false;
-    
+
+    auto met       = hMETs->at(0).p4();
+    auto met_puppi = hPuppiMETs->at(0).p4();
+
     // calculate approximate hadronic recoil
-    auto hadr_recoil = hMETs->at(0).p4();
+    auto hadr_recoil = met;
 
-    auto hadr_recoil_puppi = hPuppiMETs->at(0).p4();
+    auto hadr_recoil_puppi = met_puppi;
 
-    for (const auto& ele : selectedElectrons) {
+    for (const auto &ele : selectedElectrons) {
         hadr_recoil += ele.p4();
         hadr_recoil_puppi += ele.p4();
     }
-    for (const auto& mu : selectedMuons) {
+    for (const auto &mu : selectedMuons) {
         hadr_recoil += mu.p4();
         hadr_recoil_puppi += mu.p4();
     }
-    for (const auto& ph : selectedPhotons) {
+    for (const auto &ph : selectedPhotons) {
         hadr_recoil += ph.p4();
         hadr_recoil_puppi += ph.p4();
     }
 
-    // veto criterium for hadronic channel which can only be circumvented by leptonic events, see next criterium
+    // veto criterium for hadronic channel which can only be circumvented by
+    // leptonic events, see next criterium
     bool met_recoil_veto_criterium =
-        (hMETs->at(0).pt() < metPtMin_) && (hPuppiMETs->at(0).pt() < metPtMin_) && (hadr_recoil.pt() < metPtMin_) && (hadr_recoil_puppi.pt() < metPtMin_);
-    
+        (met.pt() < metPtMin_) && (met_puppi.pt() < metPtMin_) && (hadr_recoil.pt() < metPtMin_) && (hadr_recoil_puppi.pt() < metPtMin_);
+
+    if (!met_recoil_veto_criterium) return true;
+
     int n_loose_leptons = selectedElectrons.size() + selectedMuons.size();
-        
+
     // for leptonic events, increase the criteria for electrons
-    selectedElectrons.erase(std::remove_if(selectedElectrons.begin(), selectedElectrons.end(),
-                                           [&](pat::Electron ele) {
-                                               return !(ele.pt() >= (electronPtMin_ + 10.) && ele.electronID("cutBasedElectronID-Fall17-94X-V2-tight"));
-                                           }),
-                            selectedElectrons.end());
-    
+    selectedElectrons.erase(
+        std::remove_if(selectedElectrons.begin(), selectedElectrons.end(),
+                       [&](pat::Electron ele) { return !(ele.pt() >= (electronPtMin_ + 10.) && ele.electronID("cutBasedElectronID-Fall17-94X-V2-tight")); }),
+        selectedElectrons.end());
+
     auto vertex = hVertices->empty() ? reco::Vertex() : hVertices->at(0);
     // for leptonic events, increase the criteria for muons
-    selectedMuons.erase(
-        std::remove_if(selectedMuons.begin(), selectedMuons.end(),
-                       [&](pat::Muon mu) {
-                           return !(mu.pt() >= (muonPtMin_ + 10.) && muon::isTightMuon(mu,vertex));
-                       }),
-        selectedMuons.end());
+    selectedMuons.erase(std::remove_if(selectedMuons.begin(), selectedMuons.end(),
+                                       [&](pat::Muon mu) { return !(mu.pt() >= (muonPtMin_ + 10.) && muon::isTightMuon(mu, vertex)); }),
+                        selectedMuons.end());
 
     // number of leptons (electrons and muons)
     int n_electrons = selectedElectrons.size();
@@ -272,17 +274,24 @@ bool LeptonJetsSkim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     int n_leptons   = n_electrons + n_muons;
 
     // leading lepton pts
-    auto leading_ele_pt    = n_electrons > 0 ? selectedElectrons.at(0).pt() : 0.;
-    auto leading_muon_pt   = n_muons > 0 ? selectedMuons.at(0).pt() : 0.;
-    auto leading_lepton_pt = leading_ele_pt > leading_muon_pt ? leading_ele_pt : leading_muon_pt;
-    auto leading_jet_pt    = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
+    auto leading_ele    = n_electrons > 0 ? selectedElectrons.at(0).p4() : math::XYZTLorentzVector(0., 0., 0., 0.);
+    auto leading_muon   = n_muons > 0 ? selectedMuons.at(0).p4() : math::XYZTLorentzVector(0., 0., 0., 0.);
+    auto leading_lepton = leading_ele.pt() > leading_muon.pt() ? leading_ele : leading_muon;
+    auto leading_jet_pt = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
 
-    // criterium which lowers requested MET value for events in the leptonic channel
-    bool lepton_jet_met_criterium =
-        (n_leptons == 1) && (n_loose_leptons==1) && (n_ak4jets > 0) && (leading_jet_pt > 50.) && (leading_lepton_pt > 20.) && (hMETs->at(0).pt() > 50. || hPuppiMETs->at(0).pt() > 50.);
+    auto cos_dphi_met_lep       = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met.phi() - leading_lepton.phi())));
+    auto m_W_transv             = TMath::Sqrt(2 * leading_lepton.pt() * met.pt() * (1 - cos_dphi_met_lep));
+    auto cos_dphi_met_lep_puppi = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met_puppi.phi() - leading_lepton.phi())));
+    auto m_W_transv_puppi       = TMath::Sqrt(2 * leading_lepton.pt() * met_puppi.pt() * (1 - cos_dphi_met_lep_puppi));
 
-    // select events that either are not vetoed by the requirements on MET and hadronic recoil or if they satisfy the criteria for the leptonic analysis
-    if (met_recoil_veto_criterium && !lepton_jet_met_criterium) return false;
+    // criterium which lowers requested MET value for events in the leptonic
+    // channel
+    bool lepton_jet_met_criterium = (n_leptons == 1) && (n_loose_leptons == 1) && (n_ak4jets > 0) && (leading_jet_pt > 50.) && (leading_lepton.pt() > 20.) &&
+                                    (m_W_transv > 25. || m_W_transv_puppi > 25.) && (met.pt() > 65. || met_puppi.pt() > 65.);
+
+    // select events that either are not vetoed by the requirements on MET and
+    // hadronic recoil or if they satisfy the criteria for the leptonic analysis
+    if (!lepton_jet_met_criterium) return false;
 
     //     std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
     //     std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
@@ -345,7 +354,7 @@ const&)
 
 // ------------ method fills 'descriptions' with the allowed parameters for the
 // module  ------------
-void LeptonJetsSkim::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
+void LeptonJetsSkim::fillDescriptions(edm::ConfigurationDescriptions &descriptions)
 {
     // The following says we do not know what parameters are allowed so do no
     // validation
