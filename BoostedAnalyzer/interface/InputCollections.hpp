@@ -46,14 +46,10 @@ struct InputCollections {
                      const std::vector< pat::Photon >& selectedPhotons_, const std::vector< pat::Photon >& selectedPhotonsLoose_,
                      const std::vector< pat::Jet >& selectedJets_, const std::vector< pat::Jet >& selectedJetsLoose_,
                      const std::vector< pat::Jet >& selectedJetsAK8_, const std::vector< pat::Jet >& selectedJetsAK15_, const pat::MET& correctedMET_,
-                     const pat::MET& correctedMETPuppi_,
-                     //                    const boosted::BoostedJetCollection&
-                     //                    selectedBoostedJets_, const
-                     //                    boosted::Ak4ClusterCollection& selectedAk4Cluster_,
-                     const GenTopEvent& genTopEvt_, const GenDarkMatterEvent& genDarkMatterEvt_, const std::vector< reco::GenJet >& genJets_,
-                     const SampleType sampleType_, const HiggsDecay::HiggsDecay higgsDecay_, const std::map< std::string, float >& weights_,
-                     const edm::Event& iEvent_, const edm::EventSetup& iSetup_, const Systematics::Type& systematic_,
-                     const std::map< std::string, int >& selectionTags_, const std::string& era_
+                     const pat::MET& correctedMETPuppi_, const GenTopEvent& genTopEvt_, const GenDarkMatterEvent& genDarkMatterEvt_,
+                     const std::vector< reco::GenJet >& genJets_, const SampleType sampleType_, const HiggsDecay::HiggsDecay higgsDecay_,
+                     const std::map< std::string, float >& weights_, const edm::Event& iEvent_, const edm::EventSetup& iSetup_,
+                     const Systematics::Type& systematic_, const std::map< std::string, int >& selectionTags_, const std::string& era_
 
                      /**** bjetness code ****/
                      ) :
@@ -75,8 +71,6 @@ struct InputCollections {
         selectedJetsAK15(selectedJetsAK15_),
         correctedMET(correctedMET_),
         correctedMETPuppi(correctedMETPuppi_),
-        //                    selectedBoostedJets(selectedBoostedJets_),
-        //                    selectedAk4Cluster(selectedAk4Cluster_),
         genTopEvt(genTopEvt_),
         genDarkMatterEvt(genDarkMatterEvt_),
         genJets(genJets_),
@@ -117,8 +111,6 @@ struct InputCollections {
         selectedJetsAK15(input.selectedJetsAK15),
         correctedMET(correctedMET_),
         correctedMETPuppi(correctedMETPuppi_),
-        //                    selectedBoostedJets(selectedBoostedJets_),
-        //                    selectedAk4Cluster(selectedAk4Cluster_),
         genTopEvt(input.genTopEvt),
         genDarkMatterEvt(input.genDarkMatterEvt),
         genJets(input.genJets),
@@ -133,26 +125,24 @@ struct InputCollections {
     {
     }
 
-    const EventInfo&                    eventInfo;
-    const TriggerInfo&                  triggerInfo;
-    const FilterInfo&                   filterInfo;
-    const std::vector< reco::Vertex >&  selectedPVs;
-    const std::vector< pat::Muon >&     selectedMuons;
-    const std::vector< pat::Muon >&     selectedMuonsDL;
-    const std::vector< pat::Muon >&     selectedMuonsLoose;
-    const std::vector< pat::Electron >& selectedElectrons;
-    const std::vector< pat::Electron >& selectedElectronsDL;
-    const std::vector< pat::Electron >& selectedElectronsLoose;
-    const std::vector< pat::Photon >&   selectedPhotons;
-    const std::vector< pat::Photon >&   selectedPhotonsLoose;
-    const std::vector< pat::Jet >&      selectedJets;
-    const std::vector< pat::Jet >&      selectedJetsLoose;
-    const std::vector< pat::Jet >&      selectedJetsAK8;
-    const std::vector< pat::Jet >&      selectedJetsAK15;
-    const pat::MET&                     correctedMET;
-    const pat::MET&                     correctedMETPuppi;
-    //  const boosted::BoostedJetCollection&          selectedBoostedJets;
-    //  const boosted::Ak4ClusterCollection&          selectedAk4Cluster;
+    const EventInfo&                     eventInfo;
+    const TriggerInfo&                   triggerInfo;
+    const FilterInfo&                    filterInfo;
+    const std::vector< reco::Vertex >&   selectedPVs;
+    const std::vector< pat::Muon >&      selectedMuons;
+    const std::vector< pat::Muon >&      selectedMuonsDL;
+    const std::vector< pat::Muon >&      selectedMuonsLoose;
+    const std::vector< pat::Electron >&  selectedElectrons;
+    const std::vector< pat::Electron >&  selectedElectronsDL;
+    const std::vector< pat::Electron >&  selectedElectronsLoose;
+    const std::vector< pat::Photon >&    selectedPhotons;
+    const std::vector< pat::Photon >&    selectedPhotonsLoose;
+    const std::vector< pat::Jet >&       selectedJets;
+    const std::vector< pat::Jet >&       selectedJetsLoose;
+    const std::vector< pat::Jet >&       selectedJetsAK8;
+    const std::vector< pat::Jet >&       selectedJetsAK15;
+    const pat::MET&                      correctedMET;
+    const pat::MET&                      correctedMETPuppi;
     const GenTopEvent&                   genTopEvt;
     const GenDarkMatterEvent&            genDarkMatterEvt;
     const std::vector< reco::GenJet >&   genJets;
