@@ -68,6 +68,7 @@ class GenCollectionProducer : public edm::stream::EDProducer<> {
     edm::EDGetTokenT< std::vector< reco::GenJet > > GenJetsToken;
     // token for slimmed AK8genjets collection
     edm::EDGetTokenT< std::vector< reco::GenJet > > GenJetsAK8Token;
+    edm::EDGetTokenT< std::vector< reco::GenJet > > GenJetsAK15Token;
     // token for pruned gen particle collection
     edm::EDGetTokenT< std::vector< reco::GenParticle > > GenParticlesToken;
 
@@ -113,6 +114,7 @@ GenCollectionProducer::GenCollectionProducer(const edm::ParameterSet& iConfig)
     // register data access
     GenJetsToken      = consumes< std::vector< reco::GenJet > >(iConfig.getParameter< edm::InputTag >("genJets"));
     GenJetsAK8Token   = consumes< std::vector< reco::GenJet > >(iConfig.getParameter< edm::InputTag >("genJetsAK8"));
+    GenJetsAK15Token  = consumes< std::vector< reco::GenJet > >(iConfig.getParameter< edm::InputTag >("genJetsAK15"));
     GenParticlesToken = consumes< std::vector< reco::GenParticle > >(iConfig.getParameter< edm::InputTag >("genParticles"));
 
     // read config
@@ -124,7 +126,9 @@ GenCollectionProducer::GenCollectionProducer(const edm::ParameterSet& iConfig)
 
     // register the objects which will later be put into the edm::event instance
     for (size_t i = 0; i < collection_name.size(); i++) {
-        if (collection_type.at(i) == "AK4Jet" || collection_type.at(i) == "AK8Jet") { produces< std::vector< reco::GenJet > >(collection_name.at(i)); }
+        if (collection_type.at(i) == "AK4Jet" || collection_type.at(i) == "AK8Jet" || collection_type.at(i) == "AK15Jet") {
+            produces< std::vector< reco::GenJet > >(collection_name.at(i));
+        }
         else if (collection_type.at(i) == "Electron" || collection_type.at(i) == "Muon" || collection_type.at(i) == "Tau" ||
                  collection_type.at(i) == "Photon") {
             produces< std::vector< reco::GenParticle > >(collection_name.at(i));
@@ -168,10 +172,12 @@ void GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     // handle to manage the objects to be accessed
     edm::Handle< std::vector< reco::GenJet > >      GenJets;
     edm::Handle< std::vector< reco::GenJet > >      GenJetsAK8;
+    edm::Handle< std::vector< reco::GenJet > >      GenJetsAK15;
     edm::Handle< std::vector< reco::GenParticle > > GenParticles;
     // get the objects
     iEvent.getByToken(GenJetsToken, GenJets);
     iEvent.getByToken(GenJetsAK8Token, GenJetsAK8);
+    iEvent.getByToken(GenJetsAK15Token, GenJetsAK15);
     iEvent.getByToken(GenParticlesToken, GenParticles);
 
     std::vector< reco::GenParticle > electrons = ApplyPtEtaCuts(*GenParticles, "Electron", 10., 2.4);
@@ -197,6 +203,16 @@ void GenCollectionProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
             std::vector< reco::GenJet > collection = ApplyPtEtaCuts(*GenJetsAK8, pt_min.at(i), eta_max.at(i));
             if (doDeltaRCleaning) {
                 std::vector< reco::GenJet > collection_cleaned = DeltaRCleaning(collection, leptons, 0.8);
+                collection                                     = collection_cleaned;
+            }
+            std::unique_ptr< std::vector< reco::GenJet > > pOut(new std::vector< reco::GenJet >(collection));
+            std::sort(pOut->begin(), pOut->end(), [](const auto& a, const auto& b) { return a.pt() > b.pt(); });
+            iEvent.put(std::move(pOut), collection_name.at(i));
+        }
+        else if (collection_type.at(i) == "AK15Jet") {
+            std::vector< reco::GenJet > collection = ApplyPtEtaCuts(*GenJetsAK15, pt_min.at(i), eta_max.at(i));
+            if (doDeltaRCleaning) {
+                std::vector< reco::GenJet > collection_cleaned = DeltaRCleaning(collection, leptons, 1.5);
                 collection                                     = collection_cleaned;
             }
             std::unique_ptr< std::vector< reco::GenJet > > pOut(new std::vector< reco::GenJet >(collection));
