@@ -38,21 +38,17 @@ struct InputCollections {
        set
      */
     InputCollections(const EventInfo& eventInfo_, const TriggerInfo& triggerInfo_, const FilterInfo& filterInfo_,
-                     const std::vector< reco::Vertex >& selectedPVs_,
-
-                     const std::vector< pat::Muon >& selectedMuons_, const std::vector< pat::Muon >& selectedMuonsDL_,
-                     const std::vector< pat::Muon >& selectedMuonsLoose_, const std::vector< pat::Electron >& selectedElectrons_,
-                     const std::vector< pat::Electron >& selectedElectronsDL_, const std::vector< pat::Electron >& selectedElectronsLoose_,
-                     const std::vector< pat::Photon >& selectedPhotons_, const std::vector< pat::Photon >& selectedPhotonsLoose_,
-                     const std::vector< pat::Jet >& selectedJets_, const std::vector< pat::Jet >& selectedJetsLoose_,
-                     const std::vector< pat::Jet >& selectedJetsAK8_, const std::vector< pat::Jet >& selectedJetsAK15_, const pat::MET& correctedMET_,
-                     const pat::MET& correctedMETPuppi_, const GenTopEvent& genTopEvt_, const GenDarkMatterEvent& genDarkMatterEvt_,
-                     const std::vector< reco::GenJet >& genJets_, const SampleType sampleType_, const HiggsDecay::HiggsDecay higgsDecay_,
-                     const std::map< std::string, float >& weights_, const edm::Event& iEvent_, const edm::EventSetup& iSetup_,
-                     const Systematics::Type& systematic_, const std::map< std::string, int >& selectionTags_, const std::string& era_
-
-                     /**** bjetness code ****/
-                     ) :
+                     const std::vector< reco::Vertex >& selectedPVs_, const std::vector< pat::Muon >& selectedMuons_,
+                     const std::vector< pat::Muon >& selectedMuonsDL_, const std::vector< pat::Muon >& selectedMuonsLoose_,
+                     const std::vector< pat::Electron >& selectedElectrons_, const std::vector< pat::Electron >& selectedElectronsDL_,
+                     const std::vector< pat::Electron >& selectedElectronsLoose_, const std::vector< pat::Photon >& selectedPhotons_,
+                     const std::vector< pat::Photon >& selectedPhotonsLoose_, const std::vector< pat::Jet >& selectedJets_,
+                     const std::vector< pat::Jet >& selectedJetsLoose_, const std::vector< pat::Jet >& selectedJetsAK8_,
+                     const std::vector< pat::Jet >& selectedJetsAK15_, const pat::MET& correctedMET_, const pat::MET& correctedMETPuppi_,
+                     const GenTopEvent& genTopEvt_, const GenDarkMatterEvent& genDarkMatterEvt_, const std::vector< reco::GenJet >& genJets_,
+                     const SampleType sampleType_, const HiggsDecay::HiggsDecay higgsDecay_, const std::map< std::string, float >& weights_,
+                     const edm::Event& iEvent_, const edm::EventSetup& iSetup_, const Systematics::Type& systematic_,
+                     const std::map< std::string, int >& selectionTags_, const std::string& era_) :
         eventInfo(eventInfo_),
         triggerInfo(triggerInfo_),
         filterInfo(filterInfo_),

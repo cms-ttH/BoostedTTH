@@ -456,9 +456,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
             selection.reset(new JetTagSelection(4, -1));
         else if (itSel == "2TagSelection")
             selection.reset(new JetTagSelection(-1, 2));
-        // else if(itSel == "BoostedTopSelection") selection.reset(new
-        // BoostedSelection(1,0)); else if(itSel == "BoostedSelection")
-        // selection.reset(new BoostedSelection(0,1));
         else {
             cout << "No matching selection found for: " << itSel << endl;
             continue;
@@ -535,52 +532,12 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
         if (std::find(processorNames.begin(), processorNames.end(), "StdTopVarProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new StdTopVarProcessor(), "StdTopVarProcessor");
         }
-        // if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end())
-        // {
-        //    treewriter->AddTreeProcessor(new
-        //    BoostedJetVarProcessor(&helper),"BoostedJetVarProcessor");
-        //}
-        // if(std::find(processorNames.begin(),processorNames.end(),"BoostedAk4VarProcessor")!=processorNames.end())
-        // {
-        //    treewriter->AddTreeProcessor(new
-        //    BoostedAk4VarProcessor(),"BoostedAk4VarProcessor");
-        //}
-        // if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopHiggsVarProcessor")!=processorNames.end())
-        // {
-        //        treewriter->AddTreeProcessor(new
-        //        ttHVarProcessor(BoostedRecoType::BoostedTopHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopHiggs_",doBoostedMEM),"BoostedTopHiggsVarProcessor");
-        //}
-        // if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopVarProcessor")!=processorNames.end())
-        // {
-        //        treewriter->AddTreeProcessor(new
-        //        ttHVarProcessor(BoostedRecoType::BoostedTop,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTop_"),"BoostedTopVarProcessor");
-        //    }
-        // if(std::find(processorNames.begin(),processorNames.end(),"BoostedHiggsVarProcessor")!=processorNames.end())
-        // {
-        //        treewriter->AddTreeProcessor(new
-        //        ttHVarProcessor(BoostedRecoType::BoostedHiggs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedHiggs_"),"BoostedHiggsVarProcessor");
-        //}
-        //    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsVarProcessor")!=processorNames.end())
-        //    {
-        //        treewriter->AddTreeProcessor(new
-        //        ttHVarProcessor(BoostedRecoType::BoostedTopAk4Higgs,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4Higgs_",doBoostedMEM),"BoostedTopAk4HiggsVarProcessor");
-        //    }
-        //    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsFromAk4CVarProcessor")!=processorNames.end())
-        //    {
-        //        treewriter->AddTreeProcessor(new
-        //        ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
-        //    }
         if (std::find(processorNames.begin(), processorNames.end(), "MCMatchVarProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new MCMatchVarProcessor(), "MCMatchVarProcessor");
         }
         if (std::find(processorNames.begin(), processorNames.end(), "essentialMCMatchVarProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new essentialMCMatchVarProcessor(), "essentialMCMatchVarProcessor");
         }
-        // if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end())
-        // {
-        //    treewriter->AddTreeProcessor(new
-        //    BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");
-        //}
         if (std::find(processorNames.begin(), processorNames.end(), "AdditionalJetProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new AdditionalJetProcessor(), "AdditionalJetProcessor");
         }
@@ -616,17 +573,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
         }
     }
 
-    // Genweights: Initialize the weightnames for the generator, that was used
-    // for this sample
-    /*
-    if (usedGenerator == "POWHEG"){ generatorflag =
-    genweights.SetGenerator(Generator::POWHEG); } else if (usedGenerator ==
-    "aMC"){ generatorflag = genweights.SetGenerator(Generator::aMC);} else if
-    (usedGenerator == "MadGraph"){ generatorflag =
-    genweights.SetGenerator(Generator::MadGraph);} else if (usedGenerator ==
-    "pythia8"){ generatorflag = genweights.SetGenerator(Generator::pythia8);}
-    else{ generatorflag = false; }
-    */
     std::vector< std::string > pdfs = {"NNPDF31_nnlo_hessian_pdfas"};
     genweights.initLHAPDF(pdfs);
 
@@ -663,6 +609,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     eventcount++;
 
+    // EVENTINFO
     edm::Handle< std::vector< PileupSummaryInfo > > h_puInfo;
     iEvent.getByToken(puInfoToken, h_puInfo);
     edm::Handle< double > h_rho;
@@ -773,44 +720,6 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // TODO: setup MiniAODhelper more transparently
     helper.SetRho(*h_rho);
 
-    /**** GET BOOSTEDJETS ****/
-    // TODO: also in external producer?
-    /*
-    const JetCorrector* ak4corrector = JetCorrector::getJetCorrector(
-    "ak4PFchsL1L2L3", iSetup ); helper.SetJetCorrector(ak4corrector);
-
-    const JetCorrector* ak8corrector = JetCorrector::getJetCorrector(
-    "ak8PFchsL1L2L3", iSetup ); helper.SetBoostedJetCorrector(ak8corrector);
-    edm::Handle<boosted::BoostedJetCollection> h_boostedjet;
-    std::vector<boosted::BoostedJetCollection> selectedBoostedJets;
-    if(useFatJets){
-        iEvent.getByToken( boostedJetsToken,h_boostedjet);
-        boosted::BoostedJetCollection const &boostedjets_unsorted =
-    *h_boostedjet; boosted::BoostedJetCollection boostedjets =
-    BoostedUtils::GetSortedByPt(boostedjets_unsorted);
-        boosted::BoostedJetCollection idBoostedJets =
-    helper.GetSelectedBoostedJets(boostedjets, 0., 9999., 0., 9999.,
-    jetID::jetLoose, "A"); for(auto syst : jetSystematics){
-            boosted::BoostedJetCollection correctedBoostedJets =
-    helper.GetCorrectedBoostedJets(idBoostedJets, iEvent, iSetup, h_genJets,
-    syst, true, true);
-            selectedBoostedJets.push_back(helper.GetSelectedBoostedJets(correctedBoostedJets,
-    200., 2.0, 20., 2.4, jetID::none, "A"));
-        }
-    }
-    else{
-        for(size_t i =0; i<jetSystematics.size();i++){
-            selectedBoostedJets.push_back(boosted::BoostedJetCollection());
-        }
-    }
-
-    // Get CA15 Ak4 jet cluster (alternative to CA15 fatjets)
-    pat::JetCollection ak4Jets = *(hs_selectedJets[0]);
-    boosted::Ak4ClusterCollection ak4Cluster =
-    Ak4Cluster::GetAk4Cluster(ak4Jets, 0); boosted::Ak4ClusterCollection
-    selectedAk4Cluster = Ak4Cluster::GetSelectedAk4Cluster(ak4Cluster, 200.,
-    "A");
-    */
     // Fill Event Info Object
     EventInfo   eventInfo(iEvent, h_beamSpot, h_hcalNoiseSummary, h_puInfo, firstVertexIsGood, *h_rho);
     TriggerInfo triggerInfo = triggerInfoProd.Produce(iEvent);
