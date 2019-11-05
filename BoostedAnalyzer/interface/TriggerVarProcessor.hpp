@@ -5,6 +5,8 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/TreeProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedUtils.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/TriggerScaleFactors.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/SingleMuTriggerSFs.hpp"
 
 class TriggerVarProcessor : public TreeProcessor {
    public:
@@ -15,8 +17,9 @@ class TriggerVarProcessor : public TreeProcessor {
     void Process(const InputCollections& input, VariableContainer& var);
 
    private:
-    const std::vector< std::string > relevantTriggers;
-    std::string                      replaceAsterix(std::string triggername);
+    const std::vector< std::string >                      relevantTriggers;
+    std::string                                           replaceAsterix(std::string triggername);
+    std::vector< std::unique_ptr< TriggerScaleFactors > > availableTriggerScaleFactors;
 };
 
 #endif

@@ -2,7 +2,10 @@
 
 using namespace std;
 
-TriggerVarProcessor::TriggerVarProcessor(const std::vector< std::string > relevantTriggers_) : relevantTriggers(relevantTriggers_) {}
+TriggerVarProcessor::TriggerVarProcessor(const std::vector< std::string > relevantTriggers_) : relevantTriggers(relevantTriggers_)
+{
+    availableTriggerScaleFactors.emplace_back(new SingleMuTriggerSFs("HLT_IsoMu24_vX"));
+}
 TriggerVarProcessor::~TriggerVarProcessor() {}
 
 void TriggerVarProcessor::Init(const InputCollections& input, VariableContainer& vars)
@@ -11,7 +14,14 @@ void TriggerVarProcessor::Init(const InputCollections& input, VariableContainer&
         vars.InitVar("Triggered_" + replaceAsterix(*it), "I");
         vars.InitVar("Prescale_" + replaceAsterix(*it), "F");
     }
-
+    if (not input.iEvent.isRealData()) {
+        for (auto& triggerSF : availableTriggerScaleFactors) {
+            triggerSF->Init(input);
+            vars.InitVar("TriggerSF_" + triggerSF->GetName());
+            vars.InitVar("TriggerSF_" + triggerSF->GetName() + "_Up");
+            vars.InitVar("TriggerSF_" + triggerSF->GetName() + "_Down");
+        }
+    }
     initialized = true;
 }
 
@@ -21,6 +31,14 @@ void TriggerVarProcessor::Process(const InputCollections& input, VariableContain
     for (auto it = relevantTriggers.begin(); it != relevantTriggers.end(); ++it) {
         vars.FillVar("Triggered_" + replaceAsterix(*it), int(input.triggerInfo.IsTriggered(*it)));
         vars.FillVar("Prescale_" + replaceAsterix(*it), float(input.triggerInfo.GetPrescale(*it)));
+    }
+    if (not input.iEvent.isRealData()) {
+        for (auto& triggerSF : availableTriggerScaleFactors) {
+            auto sfs = triggerSF->GetTriggerSFs(input);
+            vars.FillVar("TriggerSF_" + triggerSF->GetName(), sfs.at(0));
+            vars.FillVar("TriggerSF_" + triggerSF->GetName() + "_Up", sfs.at(1));
+            vars.FillVar("TriggerSF_" + triggerSF->GetName() + "_Down", sfs.at(2));
+        }
     }
 }
 
