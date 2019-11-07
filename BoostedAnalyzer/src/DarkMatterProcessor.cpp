@@ -17,6 +17,7 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Evt_Phi_GenMET");
     vars.InitVar("CaloMET");
     vars.InitVar("CaloMET_PFMET_ratio");
+    vars.InitVar("CaloMET_PFMET_Recoil_ratio");
     vars.InitVar("NaiveMET");
     vars.InitVar("Hadr_Recoil_Pt");
     vars.InitVar("Hadr_Recoil_Phi");
@@ -27,6 +28,9 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("N_LooseLeptons", "I");
     vars.InitVars("M_W_transverse", "N_LooseLeptons");
 
+    vars.InitVars("DeltaPhi_LooseElectron_MET", "N_LooseElectrons");
+    vars.InitVars("DeltaPhi_LooseMuon_MET", "N_LooseMuons");
+
     vars.InitVars("DeltaPhi_AK4Jet_MET", "N_Jets");
     vars.InitVars("DeltaPhi_AK4Jet_Hadr_Recoil", "N_Jets");
     vars.InitVars("DeltaPhi_AK8Jet_MET", "N_AK8Jets");
@@ -36,13 +40,17 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
 
     vars.InitVar("N_AK15Jets_x_N_LooseElectrons", "I");
     vars.InitVar("N_AK8Jets_x_N_LooseElectrons", "I");
+    vars.InitVar("N_AK4Jets_x_N_LooseElectrons", "I");
     vars.InitVar("N_AK15Jets_x_N_LooseMuons", "I");
     vars.InitVar("N_AK8Jets_x_N_LooseMuons", "I");
+    vars.InitVar("N_AK4Jets_x_N_LooseMuons", "I");
 
     vars.InitVars("DeltaR_AK15Jet_LooseElectron", "N_AK15Jets_x_N_LooseElectrons");
     vars.InitVars("DeltaR_AK8Jet_LooseElectron", "N_AK8Jets_x_N_LooseElectrons");
+    vars.InitVars("DeltaR_AK4Jet_LooseElectron", "N_AK4Jets_x_N_LooseElectrons");
     vars.InitVars("DeltaR_AK15Jet_LooseMuon", "N_AK15Jets_x_N_LooseMuons");
     vars.InitVars("DeltaR_AK8Jet_LooseMuon", "N_AK8Jets_x_N_LooseMuons");
+    vars.InitVars("DeltaR_AK4Jet_LooseMuon", "N_AK4Jets_x_N_LooseMuons");
 
     vars.InitVar("N_Neutralinos", "I");
     vars.InitVar("N_Neutrinos", "I");
@@ -183,13 +191,17 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     std::vector< double > v_M_W_transverse;
     vars.FillVar("N_LooseLeptons", input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size());
 
-    for (std::vector< pat::Electron >::const_iterator itEle = input.selectedElectronsLoose.begin(); itEle != input.selectedElectronsLoose.end(); ++itEle) {
-        double cos_dphi = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met_p4.phi() - itEle->phi())));
-        v_M_W_transverse.push_back(TMath::Sqrt(2 * itEle->pt() * met_p4.pt() * (1 - cos_dphi)));
+    for (size_t i = 0; i < input.selectedElectronsLoose.size(); i++) {
+        double dphi = fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedElectronsLoose.at(i).phi()));
+        vars.FillVars("DeltaPhi_LooseElectron_MET", i, dphi);
+        double cos_dphi = TMath::Cos(dphi);
+        v_M_W_transverse.push_back(TMath::Sqrt(2 * input.selectedElectronsLoose.at(i).pt() * met_p4.pt() * (1 - cos_dphi)));
     }
-    for (std::vector< pat::Muon >::const_iterator itMu = input.selectedMuonsLoose.begin(); itMu != input.selectedMuonsLoose.end(); ++itMu) {
-        double cos_dphi = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met_p4.phi() - itMu->phi())));
-        v_M_W_transverse.push_back(TMath::Sqrt(2 * itMu->pt() * met_p4.pt() * (1 - cos_dphi)));
+    for (size_t i = 0; i < input.selectedMuonsLoose.size(); i++) {
+        double dphi = fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedMuonsLoose.at(i).phi()));
+        vars.FillVars("DeltaPhi_LooseMuon_MET", i, dphi);
+        double cos_dphi = TMath::Cos(dphi);
+        v_M_W_transverse.push_back(TMath::Sqrt(2 * input.selectedMuonsLoose.at(i).pt() * met_p4.pt() * (1 - cos_dphi)));
     }
 
     for (size_t i = 0; i < v_M_W_transverse.size(); i++) { vars.FillVars("M_W_transverse", i, v_M_W_transverse.at(i)); }
@@ -213,14 +225,25 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     vars.FillVar("Hadr_Recoil_Pt", hadr_recoil_p4.pt());
     vars.FillVar("Hadr_Recoil_Phi", hadr_recoil_p4.phi());
     vars.FillVar("CaloMET_Hadr_Recoil_ratio", fabs(hadr_recoil_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
+    vars.FillVar("CaloMET_PFMET_Recoil_ratio", fabs(met_p4.pt() - input.correctedMETPuppi.caloMETPt()) / hadr_recoil_p4.pt());
 
     vars.FillVar("N_AK15Jets_x_N_LooseElectrons", input.selectedJetsAK15.size() * input.selectedElectronsLoose.size());
     vars.FillVar("N_AK8Jets_x_N_LooseElectrons", input.selectedJetsAK8.size() * input.selectedElectronsLoose.size());
+    vars.FillVar("N_AK4Jets_x_N_LooseElectrons", input.selectedJets.size() * input.selectedElectronsLoose.size());
     vars.FillVar("N_AK15Jets_x_N_LooseMuons", input.selectedJetsAK15.size() * input.selectedMuonsLoose.size());
     vars.FillVar("N_AK8Jets_x_N_LooseMuons", input.selectedJetsAK8.size() * input.selectedMuonsLoose.size());
+    vars.FillVar("N_AK4Jets_x_N_LooseMuons", input.selectedJets.size() * input.selectedMuonsLoose.size());
 
     for (size_t i = 0; i < input.selectedJets.size(); i++) {
         vars.FillVars("DeltaPhi_AK4Jet_Hadr_Recoil", i, fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi() - input.selectedJets.at(i).phi())));
+        for (size_t j = 0; j < input.selectedElectronsLoose.size(); j++) {
+            vars.FillVars("DeltaR_AK4Jet_LooseElectron", i * input.selectedElectronsLoose.size() + j,
+                          BoostedUtils::DeltaR(input.selectedJets.at(i).p4(), input.selectedElectronsLoose.at(j).p4()));
+        }
+        for (size_t j = 0; j < input.selectedMuonsLoose.size(); j++) {
+            vars.FillVars("DeltaR_AK4Jet_LooseMuon", i * input.selectedMuonsLoose.size() + j,
+                          BoostedUtils::DeltaR(input.selectedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
+        }
     }
     for (size_t i = 0; i < input.selectedJetsAK8.size(); i++) {
         vars.FillVars("DeltaPhi_AK8Jet_Hadr_Recoil", i, fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi() - input.selectedJetsAK8.at(i).phi())));
