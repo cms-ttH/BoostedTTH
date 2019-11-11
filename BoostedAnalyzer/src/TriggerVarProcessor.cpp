@@ -4,7 +4,8 @@ using namespace std;
 
 TriggerVarProcessor::TriggerVarProcessor(const std::vector< std::string > relevantTriggers_) : relevantTriggers(relevantTriggers_)
 {
-    availableTriggerScaleFactors.emplace_back(new SingleMuTriggerSFs("HLT_IsoMu24_vX"));
+    availableTriggerScaleFactors.emplace_back(new SingleMuTriggerSFs("SingleMuon"));
+    availableTriggerScaleFactors.emplace_back(new SingleElTriggerSFs("SingleElectron"));
 }
 TriggerVarProcessor::~TriggerVarProcessor() {}
 
