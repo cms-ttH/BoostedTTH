@@ -721,6 +721,7 @@ process.CorrectedJetProducerAK4.photons = cms.InputTag(
 process.CorrectedJetProducerAK4.leptonJetDr = cms.double(0.4)
 
 process.CorrectedJetProducerLooseAK4 = process.CorrectedJetProducerAK4.clone(
+    jets=cms.InputTag("slimmedJetsPuppi","","PAT"),
     JetID=["none"],
     leptonJetDr = -1.0,
     collectionNames = ["correctedJetsLooseAK4"],
@@ -742,7 +743,7 @@ process.SelectedJetProducerLooseAK4 = process.CorrectedJetProducerLooseAK4.clone
     jets=cms.InputTag("patSmearedJetsLooseAK4", "", process.name_()),
     applyCorrection=False,
     ptMins=[30],
-    etaMaxs=[4.5],
+    etaMaxs=[4.7],
     collectionNames=["selectedJetsLooseAK4"],
     systematics=[""],
     PUJetIDMins=["none"],
