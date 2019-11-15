@@ -37,6 +37,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK8Jet_DeepAK8_probZcc", "N_AK8Jets");
     vars.InitVars("AK8Jet_DeepAK8_probZqq", "N_AK8Jets");
     vars.InitVars("AK8Jet_DeepAK8_probQCDbb", "N_AK8Jets");
+    vars.InitVars("AK8Jet_DeepAK8_probQCDb", "N_AK8Jets");
     vars.InitVars("AK8Jet_DeepAK8_probQCDcc", "N_AK8Jets");
     vars.InitVars("AK8Jet_DeepAK8_probQCDc", "N_AK8Jets");
     vars.InitVars("AK8Jet_DeepAK8_probQCDothers", "N_AK8Jets");
@@ -233,6 +234,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK8Jet_DeepAK8_probZcc", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZcc"));
         vars.FillVars("AK8Jet_DeepAK8_probZqq", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:propZqq"));
         vars.FillVars("AK8Jet_DeepAK8_probQCDbb", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDbb"));
+        vars.FillVars("AK8Jet_DeepAK8_probQCDb", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDb"));
         vars.FillVars("AK8Jet_DeepAK8_probQCDcc", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDcc"));
         vars.FillVars("AK8Jet_DeepAK8_probQCDc", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDc"));
         vars.FillVars("AK8Jet_DeepAK8_probQCDothers", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDothers"));
