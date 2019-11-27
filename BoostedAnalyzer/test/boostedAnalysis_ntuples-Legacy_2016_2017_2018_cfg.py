@@ -725,6 +725,8 @@ process.CorrectedJetProducerLooseAK4 = process.CorrectedJetProducerAK4.clone(
     JetID=["none"],
     leptonJetDr = -1.0,
     collectionNames = ["correctedJetsLooseAK4"],
+    applyCorrection = True,
+    systematics = [""]
 )
 
 # nominal AK4 jet selection
@@ -742,7 +744,7 @@ process.SelectedJetProducerAK4 = process.CorrectedJetProducerAK4.clone(
 process.SelectedJetProducerLooseAK4 = process.CorrectedJetProducerLooseAK4.clone(
     jets=cms.InputTag("patSmearedJetsLooseAK4", "", process.name_()),
     applyCorrection=False,
-    ptMins=[20.],
+    ptMins=[10.],
     etaMaxs=[4.7],
     collectionNames=["selectedJetsLooseAK4"],
     systematics=[""],
@@ -762,16 +764,16 @@ for syst in systs:
             ],
         ),
     )
-    setattr(
-        process,
-        "SelectedJetProducerLooseAK4" + syst,
-        process.SelectedJetProducerLooseAK4.clone(
-            jets="patSmearedJetsLooseAK4" + syst,
-            collectionNames=[
-                n + syst for n in list(process.SelectedJetProducerLooseAK4.collectionNames)
-            ],
-        ),
-    )
+    #setattr(
+        #process,
+        #"SelectedJetProducerLooseAK4" + syst,
+        #process.SelectedJetProducerLooseAK4.clone(
+            #jets="patSmearedJetsLooseAK4" + syst,
+            #collectionNames=[
+                #n + syst for n in list(process.SelectedJetProducerLooseAK4.collectionNames)
+            #],
+        #),
+    #)
 
 # apply JES correction to AK8 jets
 process.CorrectedJetProducerAK8 = process.CorrectedJetProducerAK4.clone(
@@ -958,13 +960,13 @@ for s in systsJER:
             variation=v, src=cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4")
         ),
     )
-    setattr(
-        process,
-        "patSmearedJetsLooseAK4" + s,
-        process.patSmearedJetsLooseAK4.clone(
-            variation=v, src=cms.InputTag("CorrectedJetProducerLooseAK4:correctedJetsLooseAK4")
-        ),
-    )
+    #setattr(
+        #process,
+        #"patSmearedJetsLooseAK4" + s,
+        #process.patSmearedJetsLooseAK4.clone(
+            #variation=v, src=cms.InputTag("CorrectedJetProducerLooseAK4:correctedJetsLooseAK4")
+        #),
+    #)
     setattr(
         process,
         "patSmearedJetsAK8" + s,
@@ -988,14 +990,14 @@ for s in systsJES:
             src=cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4" + s),
         ),
     )
-    setattr(
-        process,
-        "patSmearedJetsLooseAK4" + s,
-        process.patSmearedJetsLooseAK4.clone(
-            variation=0,
-            src=cms.InputTag("CorrectedJetProducerLooseAK4:correctedJetsLooseAK4" + s),
-        ),
-    )
+    #setattr(
+        #process,
+        #"patSmearedJetsLooseAK4" + s,
+        #process.patSmearedJetsLooseAK4.clone(
+            #variation=0,
+            #src=cms.InputTag("CorrectedJetProducerLooseAK4:correctedJetsLooseAK4" + s),
+        #),
+    #)
     setattr(
         process,
         "patSmearedJetsAK8" + s,
@@ -1068,7 +1070,7 @@ process.BoostedAnalyzer.selectedJets = [
     for s in variations
 ]
 process.BoostedAnalyzer.selectedJetsLoose = [
-    cms.InputTag("SelectedJetProducerLooseAK4" + s + ":selectedJetsLooseAK4" + s)
+    cms.InputTag("SelectedJetProducerLooseAK4:selectedJetsLooseAK4")
     for s in variations
 ]
 process.BoostedAnalyzer.selectedJetsAK8 = [
@@ -1219,13 +1221,15 @@ process.jets.add(process.CorrectedJetProducerAK15)
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed
 for s in [""] + systs:
     process.jets.add(getattr(process, "patSmearedJetsAK4" + s))
-    process.jets.add(getattr(process, "patSmearedJetsLooseAK4" + s))
+    #process.jets.add(getattr(process, "patSmearedJetsLooseAK4" + s))
     process.jets.add(getattr(process, "patSmearedJetsAK8" + s))
     process.jets.add(getattr(process, "patSmearedJetsAK15" + s))
     process.jets.add(getattr(process, "SelectedJetProducerAK4" + s))
-    process.jets.add(getattr(process, "SelectedJetProducerLooseAK4" + s))
+    #process.jets.add(getattr(process, "SelectedJetProducerLooseAK4" + s))
     process.jets.add(getattr(process, "SelectedJetProducerAK8" + s))
     process.jets.add(getattr(process, "SelectedJetProducerAK15" + s))
+process.jets.add(getattr(process, "patSmearedJetsLooseAK4"))
+process.jets.add(getattr(process, "SelectedJetProducerLooseAK4"))
 # process.final.associate(process.patAlgosToolsTask)
 process.final.associate(process.jets)
 
