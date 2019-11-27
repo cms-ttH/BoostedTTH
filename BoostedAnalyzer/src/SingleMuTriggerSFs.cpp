@@ -15,13 +15,16 @@ void SingleMuTriggerSFs::Init(const InputCollections& input)
 {
     if (input.era.find("2016") != std::string::npos) {
         file = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_2016_RunBtoH.root";
+        hist_name = "IsoMu24_OR_IsoTkMu24_PtEtaBins/pt_abseta_ratio";
     }
     else if (input.era.find("2017") != std::string::npos) {
         file = TString(std::string(getenv("CMSSW_BASE"))) +
                "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_RunBtoF_Nov17Nov2017.root";
+        hist_name = "IsoMu27_PtEtaBins/pt_abseta_ratio";
     }
     else if (input.era.find("2018") != std::string::npos) {
         file = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/SingleMuTriggerEfficienciesAndSF_2018_RunAtoD.root";
+        hist_name = "IsoMu24_PtEtaBins/pt_abseta_ratio";
     }
     else {
         initialized = false;
@@ -34,7 +37,7 @@ void SingleMuTriggerSFs::Init(const InputCollections& input)
         return;
     }
 
-    hist = (TH2F*) root_file->Get("IsoMu24_PtEtaBins/pt_abseta_ratio");
+    hist = (TH2F*) root_file->Get(hist_name);
     if (hist == nullptr) {
         initialized = false;
         return;

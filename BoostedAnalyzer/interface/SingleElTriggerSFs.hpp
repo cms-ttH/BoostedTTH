@@ -22,6 +22,7 @@ class SingleElTriggerSFs : public TriggerScaleFactors {
 
    private:
     TString file      = "";
+    TString hist_name = "";
     TFile*  root_file = nullptr;
     TH2F*   hist      = nullptr;
     float   xmin      = -999.;
