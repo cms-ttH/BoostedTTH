@@ -36,17 +36,18 @@ void GenDarkMatterEvent::Fill()
     // find the lightest neutralinos in the event, the mediator, neutrinos, leptons in general (for vector boson pt reweighting) and radiated photons
     for (size_t i = 0; i < prunedGenParticles.size(); i++) {
         const reco::GenParticle& genparticle = prunedGenParticles[i];
-        if ((genparticle.pdgId() == 1000022 or abs(genparticle.pdgId()) == 18) and genparticle.status() == 1) { Neutralinos.push_back(genparticle); }
+        if ((genparticle.pdgId() == 1000022 or abs(genparticle.pdgId()) == 18) and genparticle.isPromptFinalState()) { Neutralinos.push_back(genparticle); }
         if ((genparticle.pdgId() == 23 || genparticle.pdgId() == 25 || genparticle.pdgId() == 55) and genparticle.isLastCopy()) { Mediator = genparticle; }
-        if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16) and genparticle.status() == 1) {
+        if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16) and genparticle.isPromptFinalState() == 1) {
             Neutrinos.push_back(genparticle);
         }
-        if ((abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 13 or abs(genparticle.pdgId()) == 14 or
-             abs(genparticle.pdgId()) == 15 or abs(genparticle.pdgId()) == 16) and
-            genparticle.isPromptFinalState()) {
+        if (((abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 13 or abs(genparticle.pdgId()) == 14 or
+              abs(genparticle.pdgId()) == 16) and
+             genparticle.isPromptFinalState()) or
+            (abs(genparticle.pdgId()) == 15 and genparticle.isPromptDecayed())) {
             Leptons.push_back(genparticle);
         }
-        if (abs(genparticle.pdgId()) == 22 and genparticle.status() == 1 and !genparticle.statusFlags().isPrompt()) { Radiated_Photons.push_back(genparticle); }
+        if (abs(genparticle.pdgId()) == 22 and genparticle.isPromptFinalState()) { Radiated_Photons.push_back(genparticle); }
     }
     isFilled = true;
 
@@ -156,25 +157,28 @@ void GenDarkMatterEvent::FillBoson()
         const reco::GenParticle& genparticle = Leptons[i];
 
         // Z Bosons
-        if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16 or abs(genparticle.pdgId()) == 11 or
-             abs(genparticle.pdgId()) == 13) and
-            genparticle.isPromptFinalState()) {
+        if (((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16 or abs(genparticle.pdgId()) == 11 or
+              abs(genparticle.pdgId()) == 13) and
+             genparticle.isPromptFinalState()) or
+            (abs(genparticle.pdgId()) == 15 and genparticle.isPromptDecayed())) {
             decay_prodZ.push_back(genparticle);
         }
 
         // W Bosons
-        if ((abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 13 or abs(genparticle.pdgId()) == 14) and
-            genparticle.isPromptFinalState()) {  // or abs(daughter->pdgId()) == 15
-                                                 // or abs(daughter->pdgId()) == 16
+        if (((abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 13 or abs(genparticle.pdgId()) == 14 or
+              abs(genparticle.pdgId()) == 16) and
+             genparticle.isPromptFinalState()) or
+            (abs(genparticle.pdgId()) == 15 and genparticle.isPromptDecayed())) {  // or abs(daughter->pdgId()) == 15
+                                                                                   // or abs(daughter->pdgId()) == 16
             decay_prodW.push_back(genparticle);
         }
     }
-    // std::cout << "Z boson decay products " << decay_prodZ.size() << std::endl;
-    if (decay_prodW.size() == 2) {
+    if (decay_prodW.size() >= 2) {
+        std::sort(decay_prodW.begin(), decay_prodW.end(), [](auto& a, auto& b) {return a.pt() > b.pt();});
         // std::cout << "filling W Boson" << std::endl;
         if ((decay_prodW.at(0).pdgId()) * (decay_prodW.at(1).pdgId()) < 0 and abs(abs(decay_prodW.at(0).pdgId()) - abs(decay_prodW.at(1).pdgId())) == 1) {
             for (size_t k = 0; k < decay_prodW.size(); k++) {
-                if (abs(decay_prodW.at(k).pdgId()) == 11 or abs(decay_prodW.at(k).pdgId()) == 13) {
+                if (abs(decay_prodW.at(k).pdgId()) == 11 or abs(decay_prodW.at(k).pdgId()) == 13 or abs(decay_prodW.at(k).pdgId()) == 15) {
                     for (size_t l = 0; l < Radiated_Photons.size(); l++) {
                         if (reco::deltaR(Radiated_Photons.at(l).p4(), decay_prodW.at(k).p4()) < 0.1) {
                             decay_prodW.at(k).setP4(decay_prodW.at(k).p4() + Radiated_Photons.at(l).p4());
@@ -186,11 +190,12 @@ void GenDarkMatterEvent::FillBoson()
             WBosonisFilled = true;
         }
     }
-    if (decay_prodZ.size() == 2) {
+    if (decay_prodZ.size() >= 2) {
+        std::sort(decay_prodZ.begin(), decay_prodZ.end(), [](auto& a, auto& b) {return a.pt() > b.pt();});
         // std::cout << "filling Z Boson" << std::endl;
         if ((decay_prodZ.at(0).pdgId()) + (decay_prodZ.at(1).pdgId()) == 0) {
             for (size_t k = 0; k < decay_prodZ.size(); k++) {
-                if (abs(decay_prodZ.at(k).pdgId()) == 11 or abs(decay_prodZ.at(k).pdgId()) == 13) {
+                if (abs(decay_prodZ.at(k).pdgId()) == 11 or abs(decay_prodZ.at(k).pdgId()) == 13 or abs(decay_prodZ.at(k).pdgId()) == 15) {
                     for (size_t l = 0; l < Radiated_Photons.size(); l++) {
                         if (reco::deltaR(Radiated_Photons.at(l).p4(), decay_prodZ.at(k).p4()) < 0.1) {
                             decay_prodZ.at(k).setP4(decay_prodZ.at(k).p4() + Radiated_Photons.at(l).p4());
