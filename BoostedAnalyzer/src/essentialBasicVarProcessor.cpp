@@ -198,7 +198,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("LooseJet_Pt", iJet, itJet->pt());
         vars.FillVars("LooseJet_Eta", iJet, itJet->eta());
         vars.FillVars("LooseJet_Phi", iJet, itJet->phi());
-        if (itJet->pt() > 30. && itJet->eta() < -1.4 && itJet->eta() > -3.0 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
+        if (itJet->eta() < -1.3 && itJet->eta() > -3.2 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
     }
     //         vars.FillVars("LooseJet_CSV", iJet, CSVHelper::GetJetCSV(*itJet, btagger));
     //         // vars.FillVars(
