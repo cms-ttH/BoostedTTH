@@ -39,6 +39,8 @@ BosonWeightProcessor::BosonWeightProcessor(std::string era)
     hWbosonWeight_MixedDown = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_d");
     hWbosonWeight_AlphaUp   = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_alpha_up");
     hWbosonWeight_AlphaDown = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_alpha_down");
+    hWbosonWeight_StatsUp   = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_stats_up");
+    hWbosonWeight_StatsDown = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_stats_down");
     hWbosonWeight_muRUp     = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_2p0_muF_1p0");
     hWbosonWeight_muRDown   = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
     hWbosonWeight_muFUp     = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
@@ -61,6 +63,8 @@ BosonWeightProcessor::BosonWeightProcessor(std::string era)
     hZvvbosonWeight_MixedDown = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_d");
     hZvvbosonWeight_AlphaUp   = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_alpha_up");
     hZvvbosonWeight_AlphaDown = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_alpha_down");
+    hZvvbosonWeight_StatsUp   = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_stats_up");
+    hZvvbosonWeight_StatsDown = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_stats_down");
     hZvvbosonWeight_muRUp     = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_2p0_muF_1p0");
     hZvvbosonWeight_muRDown   = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
     hZvvbosonWeight_muFUp     = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
@@ -83,6 +87,8 @@ BosonWeightProcessor::BosonWeightProcessor(std::string era)
     hZllbosonWeight_MixedDown = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_d");
     hZllbosonWeight_AlphaUp   = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_alpha_up");
     hZllbosonWeight_AlphaDown = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_alpha_down");
+    hZllbosonWeight_StatsUp   = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_stats_up");
+    hZllbosonWeight_StatsDown = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_stats_down");
     hZllbosonWeight_muRUp     = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_2p0_muF_1p0");
     hZllbosonWeight_muRDown   = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
     hZllbosonWeight_muFUp     = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
@@ -118,6 +124,8 @@ void BosonWeightProcessor::Init(const InputCollections& input, VariableContainer
     vars.InitVar("BosonWeight_MixedDown");
     vars.InitVar("BosonWeight_AlphaUp");
     vars.InitVar("BosonWeight_AlphaDown");
+    vars.InitVar("BosonWeight_StatsUp");
+    vars.InitVar("BosonWeight_StatsDown");
 
     vars.InitVar("BosonWeight_muRUp");
     vars.InitVar("BosonWeight_muRDown");
@@ -150,6 +158,8 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
     BosonWeight_MixedDown = 1;
     BosonWeight_AlphaUp   = 1;
     BosonWeight_AlphaDown = 1;
+    BosonWeight_StatsUp   = 1;
+    BosonWeight_StatsDown = 1;
     BosonWeight_muRUp     = 1;
     BosonWeight_muRDown   = 1;
     BosonWeight_muFUp     = 1;
@@ -175,6 +185,8 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
             BosonWeight_MixedDown = hWbosonWeight_MixedDown->GetBinContent(hWbosonWeight_MixedDown->FindBin(W_Pt));
             BosonWeight_AlphaUp   = hWbosonWeight_AlphaUp->GetBinContent(hWbosonWeight_AlphaUp->FindBin(W_Pt));
             BosonWeight_AlphaDown = hWbosonWeight_AlphaDown->GetBinContent(hWbosonWeight_AlphaDown->FindBin(W_Pt));
+            BosonWeight_StatsUp   = hWbosonWeight_StatsUp->GetBinContent(hWbosonWeight_StatsUp->FindBin(W_Pt));
+            BosonWeight_StatsDown = hWbosonWeight_StatsDown->GetBinContent(hWbosonWeight_StatsDown->FindBin(W_Pt));
             BosonWeight_muRUp     = hWbosonWeight_muRUp->GetBinContent(hWbosonWeight_muRUp->FindBin(W_Pt));
             BosonWeight_muRDown   = hWbosonWeight_muRDown->GetBinContent(hWbosonWeight_muRDown->FindBin(W_Pt));
             BosonWeight_muFUp     = hWbosonWeight_muFUp->GetBinContent(hWbosonWeight_muFUp->FindBin(W_Pt));
@@ -204,6 +216,8 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
                 BosonWeight_MixedDown = hZvvbosonWeight_MixedDown->GetBinContent(hZvvbosonWeight_MixedDown->FindBin(Z_Pt));
                 BosonWeight_AlphaUp   = hZvvbosonWeight_AlphaUp->GetBinContent(hZvvbosonWeight_AlphaUp->FindBin(Z_Pt));
                 BosonWeight_AlphaDown = hZvvbosonWeight_AlphaDown->GetBinContent(hZvvbosonWeight_AlphaDown->FindBin(Z_Pt));
+                BosonWeight_StatsUp   = hZvvbosonWeight_StatsUp->GetBinContent(hZvvbosonWeight_StatsUp->FindBin(Z_Pt));
+                BosonWeight_StatsDown = hZvvbosonWeight_StatsDown->GetBinContent(hZvvbosonWeight_StatsDown->FindBin(Z_Pt));
                 BosonWeight_muRUp     = hZvvbosonWeight_muRUp->GetBinContent(hZvvbosonWeight_muRUp->FindBin(Z_Pt));
                 BosonWeight_muRDown   = hZvvbosonWeight_muRDown->GetBinContent(hZvvbosonWeight_muRDown->FindBin(Z_Pt));
                 BosonWeight_muFUp     = hZvvbosonWeight_muFUp->GetBinContent(hZvvbosonWeight_muFUp->FindBin(Z_Pt));
@@ -228,6 +242,8 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
                 BosonWeight_MixedDown = hZllbosonWeight_MixedDown->GetBinContent(hZllbosonWeight_MixedDown->FindBin(Z_Pt));
                 BosonWeight_AlphaUp   = hZllbosonWeight_AlphaUp->GetBinContent(hZllbosonWeight_AlphaUp->FindBin(Z_Pt));
                 BosonWeight_AlphaDown = hZllbosonWeight_AlphaDown->GetBinContent(hZllbosonWeight_AlphaDown->FindBin(Z_Pt));
+                BosonWeight_StatsUp   = hZllbosonWeight_StatsUp->GetBinContent(hZllbosonWeight_StatsUp->FindBin(Z_Pt));
+                BosonWeight_StatsDown = hZllbosonWeight_StatsDown->GetBinContent(hZllbosonWeight_StatsDown->FindBin(Z_Pt));
                 BosonWeight_muRUp     = hZllbosonWeight_muRUp->GetBinContent(hZllbosonWeight_muRUp->FindBin(Z_Pt));
                 BosonWeight_muRDown   = hZllbosonWeight_muRDown->GetBinContent(hZllbosonWeight_muRDown->FindBin(Z_Pt));
                 BosonWeight_muFUp     = hZllbosonWeight_muFUp->GetBinContent(hZllbosonWeight_muFUp->FindBin(Z_Pt));
@@ -255,6 +271,8 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
     vars.FillVar("BosonWeight_MixedDown", BosonWeight_MixedDown);
     vars.FillVar("BosonWeight_AlphaUp", BosonWeight_AlphaUp);
     vars.FillVar("BosonWeight_AlphaDown", BosonWeight_AlphaDown);
+    vars.FillVar("BosonWeight_StatsUp", BosonWeight_StatsUp);
+    vars.FillVar("BosonWeight_StatsDown", BosonWeight_StatsDown);
 
     vars.FillVar("BosonWeight_muRUp", BosonWeight_muRUp);
     vars.FillVar("BosonWeight_muRDown", BosonWeight_muRDown);
