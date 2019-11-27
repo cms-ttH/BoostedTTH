@@ -35,6 +35,8 @@ class BosonWeightProcessor : public TreeProcessor {
     TH1D* hWbosonWeight_MixedDown = nullptr;
     TH1D* hWbosonWeight_AlphaUp   = nullptr;
     TH1D* hWbosonWeight_AlphaDown = nullptr;
+    TH1D* hWbosonWeight_StatsUp   = nullptr;
+    TH1D* hWbosonWeight_StatsDown = nullptr;
     TH1D* hWbosonWeight_muRUp     = nullptr;
     TH1D* hWbosonWeight_muRDown   = nullptr;
     TH1D* hWbosonWeight_muFUp     = nullptr;
@@ -57,6 +59,8 @@ class BosonWeightProcessor : public TreeProcessor {
     TH1D* hZvvbosonWeight_MixedDown = nullptr;
     TH1D* hZvvbosonWeight_AlphaUp   = nullptr;
     TH1D* hZvvbosonWeight_AlphaDown = nullptr;
+    TH1D* hZvvbosonWeight_StatsUp   = nullptr;
+    TH1D* hZvvbosonWeight_StatsDown = nullptr;
     TH1D* hZvvbosonWeight_muRUp     = nullptr;
     TH1D* hZvvbosonWeight_muRDown   = nullptr;
     TH1D* hZvvbosonWeight_muFUp     = nullptr;
@@ -79,6 +83,8 @@ class BosonWeightProcessor : public TreeProcessor {
     TH1D* hZllbosonWeight_MixedDown = nullptr;
     TH1D* hZllbosonWeight_AlphaUp   = nullptr;
     TH1D* hZllbosonWeight_AlphaDown = nullptr;
+    TH1D* hZllbosonWeight_StatsUp   = nullptr;
+    TH1D* hZllbosonWeight_StatsDown = nullptr;
     TH1D* hZllbosonWeight_muRUp     = nullptr;
     TH1D* hZllbosonWeight_muRDown   = nullptr;
     TH1D* hZllbosonWeight_muFUp     = nullptr;
@@ -101,6 +107,8 @@ class BosonWeightProcessor : public TreeProcessor {
     double BosonWeight_MixedDown = 1;
     double BosonWeight_AlphaUp   = 1;
     double BosonWeight_AlphaDown = 1;
+    double BosonWeight_StatsUp   = 1;
+    double BosonWeight_StatsDown = 1;
     double BosonWeight_muRUp     = 1;
     double BosonWeight_muRDown   = 1;
     double BosonWeight_muFUp     = 1;
