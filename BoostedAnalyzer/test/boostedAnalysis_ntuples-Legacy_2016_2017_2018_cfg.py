@@ -571,7 +571,7 @@ process.updatedPatJetsPuppiVarsAK15.userData.userFunctions = ["userFloat(\"patPu
 process.updatedPatJetsPuppiVarsAK15.userData.userFunctionLabels = ['patPuppiJetSpecificProducer:puppiMultiplicity','patPuppiJetSpecificProducer:neutralPuppiMultiplicity']
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 # L1 Prefiring issue
-if ("2017" or "2016" in options.dataEra) and (not options.isData):
+if ("2016" in options.dataEra or "2017" in options.dataEra) and (not options.isData):
     from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
     prefire_era = None
     if "2016" in options.dataEra:
@@ -1251,7 +1251,7 @@ process.jets.add(getattr(process, "SelectedJetProducerLooseAK4"))
 process.final.associate(process.jets)
 
 # L1 prefiring issue
-if ("2017" or "2016" in options.dataEra) and (not options.isData):
+if ("2016" in options.dataEra or "2017" in options.dataEra) and (not options.isData):
     process.prefire = cms.Task()
     process.prefire.add(process.prefiringweight)
     process.final.associate(process.prefire)
