@@ -23,6 +23,7 @@ void TriggerVarProcessor::Init(const InputCollections& input, VariableContainer&
             vars.InitVar("TriggerSF_" + triggerSF->GetName() + "_Down");
         }
     }
+    for (auto& prefire : input.triggerInfo.GetL1PrefireWeights()) { vars.InitVar(prefire.first); }
     initialized = true;
 }
 
@@ -41,6 +42,7 @@ void TriggerVarProcessor::Process(const InputCollections& input, VariableContain
             vars.FillVar("TriggerSF_" + triggerSF->GetName() + "_Down", sfs.at(2));
         }
     }
+    for (auto& prefire : input.triggerInfo.GetL1PrefireWeights()) { vars.FillVar(prefire.first, prefire.second); }
 }
 
 std::string TriggerVarProcessor::replaceAsterix(std::string triggername)

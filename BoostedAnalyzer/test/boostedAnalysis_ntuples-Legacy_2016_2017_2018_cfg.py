@@ -570,7 +570,24 @@ process.updatedPatJetsPuppiVarsAK15.userData.userFloats.src = ['patPuppiJetSpeci
 process.updatedPatJetsPuppiVarsAK15.userData.userFunctions = ["userFloat(\"patPuppiJetSpecificProducerAK15:puppiMultiplicity\")","userFloat(\"patPuppiJetSpecificProducerAK15:neutralPuppiMultiplicity\")"]
 process.updatedPatJetsPuppiVarsAK15.userData.userFunctionLabels = ['patPuppiJetSpecificProducer:puppiMultiplicity','patPuppiJetSpecificProducer:neutralPuppiMultiplicity']
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
+# L1 Prefiring issue
+if ("2017" or "2016" in options.dataEra) and (not options.isData):
+    from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+    prefire_era = None
+    if "2016" in options.dataEra:
+        prefire_era = "2016BtoH"
+    elif "2017" in options.dataEra:
+        prefire_era = "2017BtoF"
+    else:
+        prefire_era = None
+    process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+        DataEra = cms.string(prefire_era), #Use 2016BtoH for 2016
+        UseJetEMPt = cms.bool(False),
+        PrefiringRateSystematicUncty = cms.double(0.2),
+        SkipWarnings = False)
 
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 ### some standard collections ####
 # if not options.isData:
 electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
@@ -1232,6 +1249,12 @@ process.jets.add(getattr(process, "patSmearedJetsLooseAK4"))
 process.jets.add(getattr(process, "SelectedJetProducerLooseAK4"))
 # process.final.associate(process.patAlgosToolsTask)
 process.final.associate(process.jets)
+
+# L1 prefiring issue
+if ("2017" or "2016" in options.dataEra) and (not options.isData):
+    process.prefire = cms.Task()
+    process.prefire.add(process.prefiringweight)
+    process.final.associate(process.prefire)
 
 if not options.isData and not options.isBoostedMiniAOD:
     process.tthfmatcher = cms.Task()

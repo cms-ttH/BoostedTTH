@@ -13,17 +13,21 @@
 
 class TriggerInfo {
    public:
-    TriggerInfo(std::map< std::string, bool > triggers, std::map< std::string, int > prescales);
+    TriggerInfo(std::map< std::string, bool > triggers, std::map< std::string, int > prescales, std::map< std::string, double > L1_prefire_weights);
     bool                          IsTriggered(std::string triggername) const;
     bool                          Exists(std::string triggername) const;
     bool                          GetPrescale(std::string triggername) const;
     void                          Print() const;
     bool                          IsAnyTriggered(std::vector< std::string > triggers) const;
     std::map< std::string, bool > GetTriggers() const;
+    // L1 prefiring issue
+    std::map< std::string, double > GetL1PrefireWeights() const;
 
    private:
     std::map< std::string, bool > triggers;
     std::map< std::string, int >  prescales;
+    // L1 prefiring issue
+    std::map< std::string, double > L1_prefire_weights;
 };
 
 class TriggerInfoProducer {
@@ -34,6 +38,12 @@ class TriggerInfoProducer {
    private:
     edm::EDGetTokenT< edm::TriggerResults >         triggerBitsToken;
     edm::EDGetTokenT< pat::PackedTriggerPrescales > triggerPrescalesToken;
+    // L1 prefiring issue
+    edm::EDGetTokenT< double > prefweight_token;
+    edm::EDGetTokenT< double > prefweightup_token;
+    edm::EDGetTokenT< double > prefweightdown_token;
+    std::string                era;
+    bool                       isData;
 };
 
 #endif
