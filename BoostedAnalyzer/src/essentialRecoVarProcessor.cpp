@@ -6,7 +6,7 @@ essentialRecoVarProcessor::essentialRecoVarProcessor()
 {
     // ReconstructedVars(bool ttH, bool ttZ)
     // arguments activate chi2based ttH and ttZ reconstruction
-    pointerToRecoVars.reset(new ReconstructedVars(true, false));
+    pointerToRecoVars.reset(new ReconstructedVars(true, true));
 }
 
 essentialRecoVarProcessor::~essentialRecoVarProcessor() {}
