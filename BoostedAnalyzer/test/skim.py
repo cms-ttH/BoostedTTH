@@ -53,9 +53,9 @@ if options.isData:
         options.globalTag="94X_dataRun2_v11"
     elif "2018" in options.dataEra:
         if "D" in options.dataEra:
-            options.globalTag="102X_dataRun2_Prompt_v13"
+            options.globalTag="102X_dataRun2_Prompt_v14"
         else:
-            options.globalTag="102X_dataRun2_Sep2018ABC_v2"
+            options.globalTag="102X_dataRun2_v11"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017/2018")
 elif not options.isData:
@@ -64,7 +64,7 @@ elif not options.isData:
     elif "2017" in options.dataEra:
         options.globalTag="94X_mc2017_realistic_v17"
     elif "2018" in options.dataEra:
-        options.globalTag="102X_upgrade2018_realistic_v18"
+        options.globalTag="102X_upgrade2018_realistic_v19"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017/2018")
 else:
@@ -104,7 +104,7 @@ process.skimmed=cms.Path(process.LeptonJetsSkim)
 selection = ['drop *','keep *_*_*_PAT','keep *_*_*_DQM','keep *_*_*_RECO','keep *_*_*_HLT*','keep *_*_*_SIM',
                     'keep *_*_*_LHE','keep *_matchGen*Hadron_*_*', 'keep *_ak4GenJetsCustom_*_*', 'keep *_categorizeGenTtbar_*_*', 
                     'drop *_*AK8*_*_*', 'drop *_*Puppi*_*_*', 'drop *_*slimmedTausBoosted*_*_*', 'drop *_*oniaPhotonCandidates*_*_*',
-                    'drop *_*slimmedMETsNoHF*_*_*']
+                    'drop *_*slimmedMETsNoHF*_*_*','keep *LHE*_*_*_*']
 
 if "2017" in options.dataEra:
     selection.append("keep *_*slimmedPatTrigger*_*_*")
