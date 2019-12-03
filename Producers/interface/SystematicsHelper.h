@@ -11,7 +11,41 @@ public:
 
     // total JEC uncertainties
     JESup,			
-    JESdown,			
+    JESdown,	
+
+    // JES grouping by JETMET recommendation: https://docs.google.com/spreadsheets/d/1Feuj1n0MdotcPq19Mht7SUIgvkXkA4hiB0BxEuBShLw/edit#gid=1345121349
+    JESAbsoluteup,
+    JESAbsolutedown,
+
+    JESAbsoluteyearup,    
+    JESAbsoluteyeardown,
+
+    // JESFlavorQCDup,
+    // JESFlavorQCDdown,
+
+    JESBBEC1up,
+    JESBBEC1down,
+
+    JESBBEC1yearup,
+    JESBBEC1yeardown,
+
+    JESEC2up,
+    JESEC2down,
+
+    JESEC2yearup,
+    JESEC2yeardown,
+
+    JESHFup,
+    JESHFdown,
+
+    JESHFyearup,
+    JESHFyeardown,
+
+    // JESRelativeBalup,
+    // JESRelativeBaldown,
+
+    JESRelativeSampleyearup,
+    JESRelativeSampleyeardown,
 
     // additional JES source for 2018 HEM issue
     JESHEMup,
@@ -200,6 +234,19 @@ std::map<SystematicsHelper::Type,std::string> SystematicsHelper::typeLabelMap_  
 void SystematicsHelper::init() {
   add( JESup,JESdown,"JES","Uncertainty");
   add( JERup,JERdown,"JER","JER");
+
+  add(JESAbsoluteup,             JESAbsolutedown,            "JESAbsolute",              "Absoluteup"          );
+  add(JESAbsoluteyearup,         JESAbsoluteyeardown,        "JESAbsoluteyear",          "Absoluteyear"       );
+  // add(JESFlavorQCDup,            JESFlavorQCDdown,           "JESFlavorQCD",             "FlavorQCD"           );
+  add(JESBBEC1up,                JESBBEC1down,               "JESBBEC1",                 "BBEC1"               );
+  add(JESBBEC1yearup,            JESBBEC1yeardown,           "JESBBEC1year",             "BBEC1year"          );
+  add(JESEC2up,                  JESEC2down,                 "JESEC2up",                 "EC2"                 );
+  add(JESEC2yearup,              JESEC2yeardown,             "JESEC2year",               "EC2year"            );
+  add(JESHFup,                   JESHFdown,                  "JESHF",                    "HF"                  );
+  add(JESHFyearup,               JESHFyeardown,              "JESHFyear",                "HFyear"             );
+  // add(JESRelativeBalup,          JESRelativeBaldown,         "JESRelativeBal",           "RelativeBal"         );
+  add(JESRelativeSampleyearup,   JESRelativeSampleyeardown,  "JESRelativeSampleyear",    "RelativeSampleyear" );
+
   add( JESHEMup,                 JESHEMdown,                 "JESHEM",                   "HEM"                 );             
   add( JESAbsoluteStatup,        JESAbsoluteStatdown,        "JESAbsoluteStat",          "AbsoluteStat"        );             
   add( JESAbsoluteScaleup,       JESAbsoluteScaledown,       "JESAbsoluteScale",         "AbsoluteScale"       );             
