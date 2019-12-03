@@ -24,11 +24,11 @@ LeptonJetsSkim = cms.EDFilter(
     AK8jetEtaMax=cms.double(2.5),
     minJetsAK4=cms.int32(1),
     minJetsAK8=cms.int32(1),
-    maxJetsAK4=cms.int32(7),
-    maxJetsAK8=cms.int32(4),
     minJetsAK15=cms.int32(1),
-    maxJetsAK15=cms.int32(3),
+    maxJetsAK4=cms.int32(99),
+    maxJetsAK8=cms.int32(99),
+    maxJetsAK15=cms.int32(99),
     photonPtMin=cms.double(15),
     photonEtaMax=cms.double(2.5),
-    metPtMin=cms.double(150.0),
+    metPtMin=cms.double(200.0)
 )

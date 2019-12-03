@@ -38,6 +38,7 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
 #include "TVector2.h"
+#include "MiniAOD/MiniAODHelper/interface/CSVHelper.h"
 //
 // class declaration
 //
@@ -87,7 +88,8 @@ class LeptonJetsSkim : public edm::EDFilter {
     const double photonEtaMax_;
     const double metPtMin_;
 
-    const bool isData;
+    const bool        isData;
+    const std::string era;
 };
 
 //
@@ -127,7 +129,8 @@ LeptonJetsSkim::LeptonJetsSkim(const edm::ParameterSet &iConfig) :
 
     metPtMin_{iConfig.getParameter< double >("metPtMin")},
 
-    isData{iConfig.getParameter< bool >("isData")}
+    isData{iConfig.getParameter< bool >("isData")},
+    era{iConfig.getParameter< std::string >("era")}
 
 {
 }
@@ -145,48 +148,38 @@ LeptonJetsSkim::~LeptonJetsSkim()
 // ------------ method called on each new Event  ------------
 bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
 {
-    // get slimmedElectrons
-    edm::Handle< pat::ElectronCollection > hElectrons;
-    iEvent.getByToken(EDMElectronsToken, hElectrons);
+    // get slimmedMETs CHS
+    edm::Handle< std::vector< pat::MET > > hMETs;
+    iEvent.getByToken(EDMMETToken, hMETs);
 
-    // select those electrons satifsying pt and eta cuts
-    std::vector< pat::Electron > selectedElectrons = *hElectrons;
-    selectedElectrons.erase(std::remove_if(selectedElectrons.begin(), selectedElectrons.end(),
-                                           [&](pat::Electron ele) {
-                                               return !(ele.pt() >= electronPtMin_ && fabs(ele.eta()) <= electronEtaMax_ &&
-                                                        ele.electronID("cutBasedElectronID-Fall17-94X-V2-loose"));
-                                           }),
-                            selectedElectrons.end());
+    // get slimmedMETs Puppi
+    edm::Handle< std::vector< pat::MET > > hPuppiMETs;
+    iEvent.getByToken(EDMPuppiMETToken, hPuppiMETs);
 
-    // get slimmedMuons
-    edm::Handle< pat::MuonCollection > hMuons;
-    iEvent.getByToken(EDMMuonsToken, hMuons);
+    // get CHS and Puppi MET 4-vector also considering combined JES variations
+    auto met      = hMETs->at(0).corP4(pat::MET::Type1);
+    auto met_up   = hMETs->at(0).shiftedP4(pat::MET::JetEnUp, pat::MET::Type1);
+    auto met_down = hMETs->at(0).shiftedP4(pat::MET::JetEnDown, pat::MET::Type1);
 
-    // select those muons satisfying pt and eta cuts
-    std::vector< pat::Muon > selectedMuons = *hMuons;
-    selectedMuons.erase(
-        std::remove_if(selectedMuons.begin(), selectedMuons.end(),
-                       [&](pat::Muon mu) {
-                           return !(mu.pt() >= muonPtMin_ && fabs(mu.eta()) <= muonEtaMax_ && muon::isLooseMuon(mu) && mu.passed(pat::Muon::PFIsoLoose));
-                       }),
-        selectedMuons.end());
+    auto met_puppi      = hPuppiMETs->at(0).corP4(pat::MET::Type1);
+    auto met_puppi_up   = hPuppiMETs->at(0).shiftedP4(pat::MET::JetEnUp, pat::MET::Type1);
+    auto met_puppi_down = hPuppiMETs->at(0).shiftedP4(pat::MET::JetEnDown, pat::MET::Type1);
 
-    // get slimmedPhotons
-    edm::Handle< pat::PhotonCollection > hPhotons;
-    iEvent.getByToken(EDMPhotonsToken, hPhotons);
+    // determine the maximum met within the nominal value and the variations
+    auto met_max       = std::max(met.pt(), std::max(met_up.pt(), met_down.pt()));
+    auto met_puppi_max = std::max(met_puppi.pt(), std::max(met_puppi_up.pt(), met_puppi_down.pt()));
 
-    // select those photons satisfying pt and eta cuts
-    std::vector< pat::Photon > selectedPhotons = *hPhotons;
-    selectedPhotons.erase(
-        std::remove_if(selectedPhotons.begin(), selectedPhotons.end(),
-                       [&](pat::Photon ph) {
-                           return !(ph.pt() >= photonPtMin_ && fabs(ph.eta()) <= photonEtaMax_ && ph.photonID("cutBasedPhotonID-Fall17-94X-V2-loose"));
-                       }),
-        selectedPhotons.end());
+    // std::cout << "MET: " << met.pt() << std::endl;
+    // std::cout << "MET up: " << met_up.pt() << std::endl;
+    // std::cout << "MET down: " << met_down.pt() << std::endl;
+    // std::cout << "Puppi MET: " << met_puppi.pt() << std::endl;
+    // std::cout << "Puppi MET up: " << met_puppi_up.pt() << std::endl;
+    // std::cout << "Puppi MET down: " << met_puppi_down.pt() << std::endl;
 
-    // get slimmedVertices
-    edm::Handle< reco::VertexCollection > hVertices;
-    iEvent.getByToken(EDMVertexToken, hVertices);
+    // check if we have sizeable MET in the event and if so, keep the event
+    bool met_criterium = (met_max >= metPtMin_) || (met_puppi_max >= metPtMin_);
+
+    if (met_criterium) return true;
 
     // get AK4 jets
     edm::Handle< pat::JetCollection > ak4Jets;
@@ -200,72 +193,132 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     edm::Handle< pat::JetCollection > ak15Jets;
     iEvent.getByToken(EDMAK15JetsToken_, ak15Jets);
 
-    // get slimmedMETs CHS
-    edm::Handle< std::vector< pat::MET > > hMETs;
-    iEvent.getByToken(EDMMETToken, hMETs);
-
-    // get slimmedMETs Puppi
-    edm::Handle< std::vector< pat::MET > > hPuppiMETs;
-    iEvent.getByToken(EDMPuppiMETToken, hPuppiMETs);
-
-    int n_ak4jets  = 0;
-    int n_ak8jets  = 0;
-    int n_ak15jets = 0;
+    int n_ak4jets  = ak4Jets->size();
+    int n_ak8jets  = ak8Jets->size();
+    int n_ak15jets = ak15Jets->size();
 
     // count ak4 and ak8 jets satisfying pt and eta cuts
     // n_ak4jets = std::count_if(ak4Jets->begin(),ak4Jets->end(),[&](pat::Jet
     // jet){return (jet.pt()>=AK4jetPtMin_ && fabs(jet.eta())<=AK4jetEtaMax_);});
-    n_ak4jets = ak4Jets->size();
     // n_ak8jets = std::count_if(ak8Jets->begin(),ak8Jets->end(),[&](pat::Jet
     // jet){return (jet.pt()>=AK8jetPtMin_ && fabs(jet.eta())<=AK8jetEtaMax_);});
-    n_ak8jets  = ak8Jets->size();
-    n_ak15jets = ak15Jets->size();
 
-    bool jet_veto_criterium = n_ak4jets < minJetsAK4_ && n_ak8jets < minJetsAK8_ && n_ak15jets < minJetsAK15_;
+    // std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
+    // std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
+    // std::cout << "Number of AK15 jets: " << n_ak15jets << std::endl;
+
+    // check if we have jets in the event
+    bool jet_veto_criterium = (n_ak4jets < minJetsAK4_) && (n_ak8jets < minJetsAK8_) && (n_ak15jets < minJetsAK15_);
 
     // apply skimming selection
     if (jet_veto_criterium) return false;
 
-    auto met       = hMETs->at(0).p4();
-    auto met_puppi = hPuppiMETs->at(0).p4();
+    // get slimmedElectrons
+    edm::Handle< pat::ElectronCollection > hElectrons;
+    iEvent.getByToken(EDMElectronsToken, hElectrons);
+
+    // select those electrons satifsying pt and eta cuts
+    std::vector< pat::Electron > selectedElectrons = *hElectrons;
+    selectedElectrons.erase(
+        std::remove_if(selectedElectrons.begin(), selectedElectrons.end(),
+                       [&](pat::Electron ele) {
+                           return (ele.pt() < electronPtMin_ || fabs(ele.eta()) > electronEtaMax_ || !ele.electronID("cutBasedElectronID-Fall17-94X-V2-loose"));
+                       }),
+        selectedElectrons.end());
+
+    // get slimmedMuons
+    edm::Handle< pat::MuonCollection > hMuons;
+    iEvent.getByToken(EDMMuonsToken, hMuons);
+
+    // select those muons satisfying pt and eta cuts
+    std::vector< pat::Muon > selectedMuons = *hMuons;
+    selectedMuons.erase(
+        std::remove_if(selectedMuons.begin(), selectedMuons.end(),
+                       [&](pat::Muon mu) {
+                           return (mu.pt() < muonPtMin_ || fabs(mu.eta()) > muonEtaMax_ || !muon::isLooseMuon(mu) || !mu.passed(pat::Muon::PFIsoLoose));
+                       }),
+        selectedMuons.end());
+
+    // get slimmedPhotons
+    edm::Handle< pat::PhotonCollection > hPhotons;
+    iEvent.getByToken(EDMPhotonsToken, hPhotons);
+
+    // select those photons satisfying pt and eta cuts
+    std::vector< pat::Photon > selectedPhotons = *hPhotons;
+    selectedPhotons.erase(
+        std::remove_if(
+            selectedPhotons.begin(), selectedPhotons.end(),
+            [&](pat::Photon ph) { return (ph.pt() < photonPtMin_ || fabs(ph.eta()) > photonEtaMax_ || !ph.photonID("cutBasedPhotonID-Fall17-94X-V2-loose")); }),
+        selectedPhotons.end());
+
+    // std::cout << "Number of selected electrons: " << selectedElectrons.size() << std::endl;
+    // std::cout << "Number of selected muons: " << selectedMuons.size() << std::endl;
+    // std::cout << "Number of selected photons: " << selectedPhotons.size() << std::endl;
 
     // calculate approximate hadronic recoil
-    auto hadr_recoil = met;
+    auto hadr_recoil      = met;
+    auto hadr_recoil_up   = met_up;
+    auto hadr_recoil_down = met_down;
 
-    auto hadr_recoil_puppi = met_puppi;
+    auto hadr_recoil_puppi      = met_puppi;
+    auto hadr_recoil_puppi_up   = met_puppi_up;
+    auto hadr_recoil_puppi_down = met_puppi_down;
 
     for (const auto &ele : selectedElectrons) {
         hadr_recoil += ele.p4();
+        hadr_recoil_up += ele.p4();
+        hadr_recoil_down += ele.p4();
+
         hadr_recoil_puppi += ele.p4();
+        hadr_recoil_puppi_up += ele.p4();
+        hadr_recoil_puppi_down += ele.p4();
     }
     for (const auto &mu : selectedMuons) {
         hadr_recoil += mu.p4();
+        hadr_recoil_up += mu.p4();
+        hadr_recoil_down += mu.p4();
+
         hadr_recoil_puppi += mu.p4();
+        hadr_recoil_puppi_up += mu.p4();
+        hadr_recoil_puppi_down += mu.p4();
     }
     for (const auto &ph : selectedPhotons) {
         hadr_recoil += ph.p4();
+        hadr_recoil_up += ph.p4();
+        hadr_recoil_down += ph.p4();
+
         hadr_recoil_puppi += ph.p4();
+        hadr_recoil_puppi_up += ph.p4();
+        hadr_recoil_puppi_down += ph.p4();
     }
 
-    // veto criterium for hadronic channel which can only be circumvented by
-    // leptonic events, see next criterium
-    bool met_recoil_veto_criterium =
-        (met.pt() < metPtMin_) && (met_puppi.pt() < metPtMin_) && (hadr_recoil.pt() < metPtMin_) && (hadr_recoil_puppi.pt() < metPtMin_);
+    // std::cout << "Hadronic recoil: " << hadr_recoil.pt() << std::endl;
+    // std::cout << "Puppi Hadronic recoil: " << hadr_recoil_puppi.pt() << std::endl;
 
-    if (!met_recoil_veto_criterium) return true;
+    auto hadr_recoil_max       = std::max(hadr_recoil.pt(), std::max(hadr_recoil_up.pt(), hadr_recoil_down.pt()));
+    auto hadr_recoil_puppi_max = std::max(hadr_recoil_puppi.pt(), std::max(hadr_recoil_puppi_up.pt(), hadr_recoil_puppi_down.pt()));
+
+    // check if we have sizeable hadronic recoil in the event and if so, keep the event
+    bool recoil_criterium = (hadr_recoil_max >= metPtMin_) || (hadr_recoil_puppi_max >= metPtMin_);
+
+    if (recoil_criterium) return true;
+
+    // get slimmedVertices
+    edm::Handle< reco::VertexCollection > hVertices;
+    iEvent.getByToken(EDMVertexToken, hVertices);
 
     int n_loose_leptons = selectedElectrons.size() + selectedMuons.size();
 
     // for leptonic events, increase the criteria for electrons
     selectedElectrons.erase(
         std::remove_if(selectedElectrons.begin(), selectedElectrons.end(),
-                       [&](pat::Electron ele) { return !(ele.pt() >= (electronPtMin_ + 10.) && ele.electronID("cutBasedElectronID-Fall17-94X-V2-tight")); }),
+                       [&](pat::Electron ele) { return (ele.pt() < (electronPtMin_ + 10.) || !ele.electronID("cutBasedElectronID-Fall17-94X-V2-tight")); }),
         selectedElectrons.end());
 
     auto vertex = hVertices->empty() ? reco::Vertex() : hVertices->at(0);
     // for leptonic events, increase the criteria for muons
     selectedMuons.erase(std::remove_if(selectedMuons.begin(), selectedMuons.end(),
-                                       [&](pat::Muon mu) { return !(mu.pt() >= (muonPtMin_ + 10.) && muon::isTightMuon(mu, vertex)); }),
+                                       [&](pat::Muon mu) { return (mu.pt() < (muonPtMin_ + 10.) || !muon::isTightMuon(mu, vertex)); }),
                         selectedMuons.end());
 
     // number of leptons (electrons and muons)
@@ -273,39 +326,33 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     int n_muons     = selectedMuons.size();
     int n_leptons   = n_electrons + n_muons;
 
-    // leading lepton pts
-    auto leading_ele    = n_electrons > 0 ? selectedElectrons.at(0).p4() : math::XYZTLorentzVector(0., 0., 0., 0.);
-    auto leading_muon   = n_muons > 0 ? selectedMuons.at(0).p4() : math::XYZTLorentzVector(0., 0., 0., 0.);
-    auto leading_lepton = leading_ele.pt() > leading_muon.pt() ? leading_ele : leading_muon;
-    auto leading_jet_pt = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
+    // number of loosely btagged jets
+    int n_btagged_jets =
+        std::count_if(ak4Jets->begin(), ak4Jets->end(), [&](pat::Jet jet) { return (CSVHelper::PassesCSV(jet, "DeepJet", CSVHelper::CSVwp::Loose, era)); });
 
-    auto cos_dphi_met_lep       = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met.phi() - leading_lepton.phi())));
-    auto m_W_transv             = TMath::Sqrt(2 * leading_lepton.pt() * met.pt() * (1 - cos_dphi_met_lep));
-    auto cos_dphi_met_lep_puppi = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met_puppi.phi() - leading_lepton.phi())));
-    auto m_W_transv_puppi       = TMath::Sqrt(2 * leading_lepton.pt() * met_puppi.pt() * (1 - cos_dphi_met_lep_puppi));
+    // std::cout << "Number of loosely btagged jets: " << n_btagged_jets << std::endl;
+
+    // leading lepton pts
+    // auto leading_ele    = n_electrons > 0 ? selectedElectrons.at(0).p4() : math::XYZTLorentzVector(0., 0., 0., 0.);
+    // auto leading_muon   = n_muons > 0 ? selectedMuons.at(0).p4() : math::XYZTLorentzVector(0., 0., 0., 0.);
+    // auto leading_lepton = leading_ele.pt() > leading_muon.pt() ? leading_ele : leading_muon;
+    // auto leading_jet_pt = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
+
+    // auto cos_dphi_met_lep       = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met.phi() - leading_lepton.phi())));
+    // auto m_W_transv             = TMath::Sqrt(2 * leading_lepton.pt() * met.pt() * (1 - cos_dphi_met_lep));
+    // auto cos_dphi_met_lep_puppi = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met_puppi.phi() - leading_lepton.phi())));
+    // auto m_W_transv_puppi       = TMath::Sqrt(2 * leading_lepton.pt() * met_puppi.pt() * (1 - cos_dphi_met_lep_puppi));
 
     // criterium which lowers requested MET value for events in the leptonic
     // channel
-    bool lepton_jet_met_criterium = (n_leptons == 1) && (n_loose_leptons == 1) && (n_ak4jets > 0) && (leading_jet_pt > 50.) && (leading_lepton.pt() > 20.) &&
-                                    (m_W_transv > 25. || m_W_transv_puppi > 25.) && (met.pt() > 65. || met_puppi.pt() > 65.);
+    bool lepton_jet_met_criterium =
+        (n_leptons >= 1) && (n_loose_leptons >= 1) && (n_ak4jets > 0) && (n_btagged_jets > 0) && (met_max > 80. || met_puppi_max > 80.);
 
     // select events that either are not vetoed by the requirements on MET and
     // hadronic recoil or if they satisfy the criteria for the leptonic analysis
-    if (!lepton_jet_met_criterium) return false;
+    if (lepton_jet_met_criterium) return true;
 
-    //     std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
-    //     std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
-    //     std::cout << "Number of AK15 jets: " << n_ak15jets << std::endl;
-    //     std::cout << "MET: " << hMETs->at(0).pt() << std::endl;
-    //     std::cout << "Puppi MET: " << hPuppiMETs->at(0).pt() << std::endl;
-    //     std::cout << "Hadronic recoil: " << hadr_recoil.pt() << std::endl;
-    //     std::cout << "Puppi Hadronic recoil: " << hadr_recoil_puppi.pt() <<
-    //     std::endl; std::cout << "Number of selected electrons: " <<
-    //     selectedElectrons.size() << std::endl; std::cout << "Number of selected
-    //     muons: " << selectedMuons.size() << std::endl; std::cout << "Number of
-    //     selected photons: " << selectedPhotons.size() << std::endl;
-
-    return true;
+    return false;
 }
 
 // ------------ method called once each job just before starting event loop

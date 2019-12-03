@@ -159,21 +159,21 @@ jetToolbox(
     "ak15JetSubs",
     "noOutput",
     PUMethod="Puppi",
-    addPruning=True,
+    addPruning=False,
     addSoftDrop=True,  # add basic grooming
-    addTrimming=True,
-    addFiltering=True,
+    addTrimming=False,
+    addFiltering=False,
     addSoftDropSubjets=True,
-    addPrunedSubjets=True,
+    addPrunedSubjets=False,
     addNsub=True,
     maxTau=4,  # add Nsubjettiness tau1, tau2, tau3, tau4
     JETCorrPayload="AK8PFPuppi",  # JETCorrLevels = ['L2Relative', 'L3Absolute'],
     runOnMC=not options.isData,
     dataTier="miniAOD",
-    Cut="pt > 150 && abs(eta) < 2.5",
+    Cut="pt > 200. && abs(eta) < 2.5",
     GetJetMCFlavour=not options.isData,
     # GetSubJetMCFlavour=True,
-    addHEPTopTagger=True
+    addHEPTopTagger=False
 )
 
 # cluster AK8 jets and use PUPPI pileup mitigation method
@@ -183,21 +183,21 @@ jetToolbox(
     "ak8JetSubs",
     "noOutput",
     PUMethod="Puppi",
-    addPruning=True,
+    addPruning=False,
     addSoftDrop=True,  # add basic grooming
-    addTrimming=True,
-    addFiltering=True,
+    addTrimming=False,
+    addFiltering=False,
     addSoftDropSubjets=True,
-    addPrunedSubjets=True,
+    addPrunedSubjets=False,
     addNsub=True,
     maxTau=4,  # add Nsubjettiness tau1, tau2, tau3, tau4
     JETCorrPayload="AK8PFPuppi",  # JETCorrLevels = ['L2Relative', 'L3Absolute'],
     runOnMC=not options.isData,
     dataTier="miniAOD",
-    Cut="pt > 100 && abs(eta) < 2.5",
+    Cut="pt > 170. && abs(eta) < 2.5",
     GetJetMCFlavour=not options.isData,
     # GetSubJetMCFlavour=True,
-    addHEPTopTagger=True
+    addHEPTopTagger=False
 )
 
 # update slimmedJets collection with DeepJet variables and update JECs
@@ -217,7 +217,7 @@ jetToolbox(
         "pfDeepFlavourJetTags:probg",
     ],
     runOnMC=not options.isData,
-    Cut="pt > 20 && abs(eta) < 2.5",
+    Cut="pt > 20. && abs(eta) < 2.5",
 )
 
 # update slimmedJetsPuppi collection with DeepJet variables and update JECs
@@ -238,7 +238,7 @@ jetToolbox(
         "pfDeepFlavourJetTags:probg",
     ],
     runOnMC=not options.isData,
-    Cut="pt > 20 && abs(eta) < 2.5",
+    Cut="pt > 20. && abs(eta) < 2.5",
 )
 
 # load DeepBoostedJet outputs
@@ -481,6 +481,7 @@ setupEgammaPostRecoSeq(
 
 process.load("BoostedTTH.BoostedAnalyzer.LeptonJetsSkim_cfi")
 process.LeptonJetsSkim.isData = cms.bool(options.isData)
+process.LeptonJetsSkim.era = cms.string(options.dataEra)
 process.LeptonJetsSkim.electrons = cms.InputTag("slimmedElectrons", "", process.name_())
 process.LeptonJetsSkim.photons = cms.InputTag("slimmedPhotons", "", process.name_())
 process.LeptonJetsSkim.met = cms.InputTag("slimmedMETs", "", process.name_())
