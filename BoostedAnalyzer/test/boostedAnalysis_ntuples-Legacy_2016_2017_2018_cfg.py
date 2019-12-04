@@ -1159,7 +1159,7 @@ else:
         "JetVarProcessor",
         "DarkMatterProcessor",
         "LeptonVarProcessor",
-        #"BosonWeightProcessor"
+        "BosonWeightProcessor"
     )
 
 if process.BoostedAnalyzer.taggingSelection:
