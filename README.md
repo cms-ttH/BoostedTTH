@@ -131,7 +131,8 @@ The next steps can be followed as they are.
 	rm EgammaAnalysis/ElectronTools/data -rf
 	git clone https://github.com/cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
 
-	#compile
+#### Compile
+
 	scram b -j 12
 
 #### Only for crab use ###
