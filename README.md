@@ -125,6 +125,8 @@ The next steps can be followed as they are.
 #### Add JetToolbox
 	git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v2
 
+#### Update electron scale factors
+
 	git cms-addpkg EgammaAnalysis/ElectronTools
 	rm EgammaAnalysis/ElectronTools/data -rf
 	git clone https://github.com/cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
