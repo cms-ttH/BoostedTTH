@@ -120,7 +120,7 @@ The next steps can be followed as they are.
 	#wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Autumn18_V1_MC/Autumn18_V1_MC_SF_AK8PFchs.txt"
 	#wget "https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Autumn18_V1_MC/Autumn18_V1_MC_PtResolution_AK8PFchs.txt"
 
-	cd $CMSSWSRCDIR
+	#cd $CMSSWSRCDIR
 
 #### Add JetToolbox
 	git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v2
