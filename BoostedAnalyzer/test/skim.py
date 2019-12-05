@@ -173,6 +173,7 @@ jetToolbox(
     dataTier="miniAOD",
     Cut="pt > 170. && abs(eta) < 2.5",
     GetJetMCFlavour=not options.isData,
+    bTagDiscriminators=["None"],
     # GetSubJetMCFlavour=True,
     addHEPTopTagger=False
 )
@@ -198,6 +199,7 @@ jetToolbox(
     dataTier="miniAOD",
     Cut="pt > 170. && abs(eta) < 2.5",
     GetJetMCFlavour=not options.isData,
+    bTagDiscriminators=["None"],
     # GetSubJetMCFlavour=True,
     addHEPTopTagger=False
 )
