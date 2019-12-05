@@ -179,8 +179,6 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     // check if we have sizeable MET in the event and if so, keep the event
     bool met_criterium = (met_max >= metPtMin_) || (met_puppi_max >= metPtMin_);
 
-    if (met_criterium) return true;
-
     // get AK4 jets
     edm::Handle< pat::JetCollection > ak4Jets;
     iEvent.getByToken(EDMAK4JetsToken, ak4Jets);
@@ -197,6 +195,10 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     int n_ak8jets  = ak8Jets->size();
     int n_ak15jets = ak15Jets->size();
 
+    bool jet_criterium = (n_ak8jets > 0) || (n_ak15jets > 0);
+
+    if (met_criterium && jet_criterium) return true;
+
     // count ak4 and ak8 jets satisfying pt and eta cuts
     // n_ak4jets = std::count_if(ak4Jets->begin(),ak4Jets->end(),[&](pat::Jet
     // jet){return (jet.pt()>=AK4jetPtMin_ && fabs(jet.eta())<=AK4jetEtaMax_);});
@@ -206,12 +208,6 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     // std::cout << "Number of AK4 jets: " << n_ak4jets << std::endl;
     // std::cout << "Number of AK8 jets: " << n_ak8jets << std::endl;
     // std::cout << "Number of AK15 jets: " << n_ak15jets << std::endl;
-
-    // check if we have jets in the event
-    bool jet_veto_criterium = (n_ak4jets < minJetsAK4_) && (n_ak8jets < minJetsAK8_) && (n_ak15jets < minJetsAK15_);
-
-    // apply skimming selection
-    if (jet_veto_criterium) return false;
 
     // get slimmedElectrons
     edm::Handle< pat::ElectronCollection > hElectrons;
@@ -301,7 +297,7 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     // check if we have sizeable hadronic recoil in the event and if so, keep the event
     bool recoil_criterium = (hadr_recoil_max >= metPtMin_) || (hadr_recoil_puppi_max >= metPtMin_);
 
-    if (recoil_criterium) return true;
+    if (recoil_criterium && jet_criterium) return true;
 
     // get slimmedVertices
     edm::Handle< reco::VertexCollection > hVertices;
@@ -330,13 +326,14 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     int n_btagged_jets =
         std::count_if(ak4Jets->begin(), ak4Jets->end(), [&](pat::Jet jet) { return (CSVHelper::PassesCSV(jet, "DeepJet", CSVHelper::CSVwp::Loose, era)); });
 
+    int n_harder_jets = std::count_if(ak4Jets->begin(), ak4Jets->end(), [&](pat::Jet jet) { return (jet.pt() >= 30.); });
     // std::cout << "Number of loosely btagged jets: " << n_btagged_jets << std::endl;
 
     // leading lepton pts
     // auto leading_ele    = n_electrons > 0 ? selectedElectrons.at(0).p4() : math::XYZTLorentzVector(0., 0., 0., 0.);
     // auto leading_muon   = n_muons > 0 ? selectedMuons.at(0).p4() : math::XYZTLorentzVector(0., 0., 0., 0.);
     // auto leading_lepton = leading_ele.pt() > leading_muon.pt() ? leading_ele : leading_muon;
-    // auto leading_jet_pt = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
+    auto leading_jet_pt = n_ak4jets > 0 ? ak4Jets->at(0).pt() : 0.;
 
     // auto cos_dphi_met_lep       = TMath::Cos(fabs(TVector2::Phi_mpi_pi(met.phi() - leading_lepton.phi())));
     // auto m_W_transv             = TMath::Sqrt(2 * leading_lepton.pt() * met.pt() * (1 - cos_dphi_met_lep));
@@ -346,11 +343,15 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     // criterium which lowers requested MET value for events in the leptonic
     // channel
     bool lepton_jet_met_criterium =
-        (n_leptons >= 1) && (n_loose_leptons >= 1) && (n_ak4jets > 0) && (n_btagged_jets > 0) && (met_max > 80. || met_puppi_max > 80.);
+        (n_leptons >= 1) && (n_loose_leptons >= 1) && (n_ak4jets > 0) && (leading_jet_pt > 50.) && (met_max > 80. || met_puppi_max > 80.);
+
+    bool w_criterium     = (n_btagged_jets == 0) && (n_harder_jets < 4);
+    bool ttbar_criterium = (n_btagged_jets > 0);
 
     // select events that either are not vetoed by the requirements on MET and
     // hadronic recoil or if they satisfy the criteria for the leptonic analysis
-    if (lepton_jet_met_criterium) return true;
+    if (lepton_jet_met_criterium && w_criterium) return true;
+    if (lepton_jet_met_criterium && ttbar_criterium) return true;
 
     return false;
 }

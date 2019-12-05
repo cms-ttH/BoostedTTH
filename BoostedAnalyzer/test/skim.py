@@ -170,7 +170,7 @@ jetToolbox(
     JETCorrPayload="AK8PFPuppi",  # JETCorrLevels = ['L2Relative', 'L3Absolute'],
     runOnMC=not options.isData,
     dataTier="miniAOD",
-    Cut="pt > 200. && abs(eta) < 2.5",
+    Cut="pt > 170. && abs(eta) < 2.5",
     GetJetMCFlavour=not options.isData,
     # GetSubJetMCFlavour=True,
     addHEPTopTagger=False
