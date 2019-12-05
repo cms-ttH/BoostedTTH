@@ -167,7 +167,8 @@ jetToolbox(
     addPrunedSubjets=False,
     addNsub=True,
     maxTau=4,  # add Nsubjettiness tau1, tau2, tau3, tau4
-    JETCorrPayload="AK8PFPuppi",  # JETCorrLevels = ['L2Relative', 'L3Absolute'],
+    JETCorrPayload="AK8PFPuppi",
+    JETCorrLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'],
     runOnMC=not options.isData,
     dataTier="miniAOD",
     Cut="pt > 170. && abs(eta) < 2.5",
@@ -191,7 +192,8 @@ jetToolbox(
     addPrunedSubjets=False,
     addNsub=True,
     maxTau=4,  # add Nsubjettiness tau1, tau2, tau3, tau4
-    JETCorrPayload="AK8PFPuppi",  # JETCorrLevels = ['L2Relative', 'L3Absolute'],
+    JETCorrPayload="AK8PFPuppi",
+    JETCorrLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'],
     runOnMC=not options.isData,
     dataTier="miniAOD",
     Cut="pt > 170. && abs(eta) < 2.5",
@@ -257,7 +259,7 @@ updateJetCollection(
     process,
     jetSource=cms.InputTag("packedPatJetsAK15PFPuppiSoftDrop"),
     rParam=1.5,
-    jetCorrections=("AK8PFPuppi", cms.vstring(["L2Relative", "L3Absolute"]), "None"),
+    jetCorrections=("AK8PFPuppi", cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]), "None"),
     btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs
     + pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs,
     postfix="AK15WithPuppiDaughters",
@@ -284,7 +286,7 @@ updateJetCollection(
     process,
     jetSource=cms.InputTag("packedPatJetsAK8PFPuppiSoftDrop"),
     rParam=0.8,
-    jetCorrections=("AK8PFPuppi", cms.vstring(["L2Relative", "L3Absolute"]), "None"),
+    jetCorrections=("AK8PFPuppi", cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]), "None"),
     btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs
     + pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs,
     postfix="AK8WithPuppiDaughters",
