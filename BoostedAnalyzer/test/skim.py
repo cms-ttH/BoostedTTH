@@ -309,18 +309,22 @@ process.pfMassDecorrelatedDeepBoostedJetTagsAK8WithPuppiDaughters.preprocessPara
     pfMassDecorrelatedDeepBoostedJetPreprocessParamsV02
 )
 process.pfMassDecorrelatedDeepBoostedJetTagsAK8WithPuppiDaughters.model_path = (
+    #"RecoBTag/Combined/data/DeepBoostedJet/V02/decorrelated/resnet-symbol.json"
     "BoostedTTH/BoostedAnalyzer/data/deepak8/V02/decorrelated/resnet-symbol.json"
 )
 process.pfMassDecorrelatedDeepBoostedJetTagsAK8WithPuppiDaughters.param_path = (
+    #"RecoBTag/Combined/data/DeepBoostedJet/V02/decorrelated/resnet-0000.params"
     "BoostedTTH/BoostedAnalyzer/data/deepak8/V02/decorrelated/resnet-0000.params"
 )
 process.pfDeepBoostedJetTagsAK8WithPuppiDaughters.preprocessParams = (
     pfDeepBoostedJetPreprocessParamsV02
 )
 process.pfDeepBoostedJetTagsAK8WithPuppiDaughters.model_path = (
+    #"RecoBTag/Combined/data/DeepBoostedJet/V02/full/resnet-symbol.json"
     "BoostedTTH/BoostedAnalyzer/data/deepak8/V02/full/resnet-symbol.json"
 )
 process.pfDeepBoostedJetTagsAK8WithPuppiDaughters.param_path = (
+    #"RecoBTag/Combined/data/DeepBoostedJet/V02/full/resnet-0000.params"
     "BoostedTTH/BoostedAnalyzer/data/deepak8/V02/full/resnet-0000.params"
 )
 
