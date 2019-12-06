@@ -248,13 +248,15 @@ jetToolbox(
 # load DeepBoostedJet outputs
 from RecoBTag.MXNet.pfDeepBoostedJet_cff import (
     _pfMassDecorrelatedDeepBoostedJetTagsProbs as pfMassDecorrelatedDeepBoostedJetTagsProbs,
-)
-from RecoBTag.MXNet.pfDeepBoostedJet_cff import (
     _pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs as pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs,
+    _pfDeepBoostedJetTagsProbs as pfDeepBoostedJetTagsProbs,
+    _pfDeepBoostedJetTagsMetaDiscrs as pfDeepBoostedJetTagsMetaDiscrs,
 )
 
 print (pfMassDecorrelatedDeepBoostedJetTagsProbs)
 print (pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs)
+print (pfDeepBoostedJetTagsProbs)
+print (pfDeepBoostedJetTagsMetaDiscrs)
 
 # update the new AK15 jet collection with DeepAK15 tagger outputs
 updateJetCollection(
@@ -263,36 +265,65 @@ updateJetCollection(
     rParam=1.5,
     jetCorrections=("AK8PFPuppi", cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]), "None"),
     btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs
-    + pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs,
+    + pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs + pfDeepBoostedJetTagsProbs + pfDeepBoostedJetTagsMetaDiscrs,
     postfix="AK15WithPuppiDaughters",
 )
 # since DeepAK15 is not standard, preprocessing parameters have to be provided -> from LPC-DM colleagues
-from BoostedTTH.BoostedAnalyzer.pfDeepBoostedJetPreprocessParamsAK15_cfi import (
+from BoostedTTH.BoostedAnalyzer.pfDeepBoostedJetPreprocessParamsAK15_cfi_new import (
     pfDeepBoostedJetPreprocessParams as params,
 )
-
 # provide parameter and model file for DeepAK15 tagger -> from LPC-DM colleagues
 process.pfDeepBoostedJetTagInfosAK15WithPuppiDaughters.jet_radius = 1.5
 process.pfMassDecorrelatedDeepBoostedJetTagsAK15WithPuppiDaughters.preprocessParams = (
     params
 )
 process.pfMassDecorrelatedDeepBoostedJetTagsAK15WithPuppiDaughters.model_path = (
-    "BoostedTTH/BoostedAnalyzer/data/deepak15/resnet-symbol.json"
+    "BoostedTTH/BoostedAnalyzer/data/deepak15/decorrelated/resnet-symbol.json"
 )
 process.pfMassDecorrelatedDeepBoostedJetTagsAK15WithPuppiDaughters.param_path = (
-    "BoostedTTH/BoostedAnalyzer/data/deepak15/resnet.params"
+    "BoostedTTH/BoostedAnalyzer/data/deepak15/decorrelated/resnet.params"
+)
+process.pfDeepBoostedJetTagsAK15WithPuppiDaughters.preprocessParams = (
+    params
+)
+process.pfDeepBoostedJetTagsAK15WithPuppiDaughters.model_path = (
+    "BoostedTTH/BoostedAnalyzer/data/deepak15/full/resnet-symbol.json"
+)
+process.pfDeepBoostedJetTagsAK15WithPuppiDaughters.param_path = (
+    "BoostedTTH/BoostedAnalyzer/data/deepak15/full/resnet.params"
 )
 
 # update the new AK8 jet collection with DeepAK8 tagger outputs
+from RecoBTag.MXNet.Parameters.V02.pfDeepBoostedJetPreprocessParams_cfi import pfDeepBoostedJetPreprocessParams as pfDeepBoostedJetPreprocessParamsV02
+from RecoBTag.MXNet.Parameters.V02.pfMassDecorrelatedDeepBoostedJetPreprocessParams_cfi import pfMassDecorrelatedDeepBoostedJetPreprocessParams as pfMassDecorrelatedDeepBoostedJetPreprocessParamsV02
 updateJetCollection(
     process,
     jetSource=cms.InputTag("packedPatJetsAK8PFPuppiSoftDrop"),
     rParam=0.8,
     jetCorrections=("AK8PFPuppi", cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]), "None"),
     btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs
-    + pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs,
+    + pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs + pfDeepBoostedJetTagsProbs + pfDeepBoostedJetTagsMetaDiscrs,
     postfix="AK8WithPuppiDaughters",
 )
+process.pfMassDecorrelatedDeepBoostedJetTagsAK8WithPuppiDaughters.preprocessParams = (
+    pfMassDecorrelatedDeepBoostedJetPreprocessParamsV02
+)
+process.pfMassDecorrelatedDeepBoostedJetTagsAK8WithPuppiDaughters.model_path = (
+    "BoostedTTH/BoostedAnalyzer/data/deepak8/V02/decorrelated/resnet-symbol.json"
+)
+process.pfMassDecorrelatedDeepBoostedJetTagsAK8WithPuppiDaughters.param_path = (
+    "BoostedTTH/BoostedAnalyzer/data/deepak8/V02/decorrelated/resnet-0000.params"
+)
+process.pfDeepBoostedJetTagsAK8WithPuppiDaughters.preprocessParams = (
+    pfDeepBoostedJetPreprocessParamsV02
+)
+process.pfDeepBoostedJetTagsAK8WithPuppiDaughters.model_path = (
+    "BoostedTTH/BoostedAnalyzer/data/deepak8/V02/full/resnet-symbol.json"
+)
+process.pfDeepBoostedJetTagsAK8WithPuppiDaughters.param_path = (
+    "BoostedTTH/BoostedAnalyzer/data/deepak8/V02/full/resnet-0000.params"
+)
+
 
 updateJetCollection(
     process,
