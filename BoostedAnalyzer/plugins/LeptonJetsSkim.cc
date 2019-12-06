@@ -195,8 +195,10 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     int n_ak8jets  = ak8Jets->size();
     int n_ak15jets = ak15Jets->size();
 
+    // want at least one fat jet for hadronic monotop regions
     bool jet_criterium = (n_ak8jets > 0) || (n_ak15jets > 0);
 
+    // if met criterium and fat jet criterium is fulfilled, keep the event
     if (met_criterium && jet_criterium) return true;
 
     // count ak4 and ak8 jets satisfying pt and eta cuts
@@ -213,7 +215,7 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     edm::Handle< pat::ElectronCollection > hElectrons;
     iEvent.getByToken(EDMElectronsToken, hElectrons);
 
-    // select those electrons satifsying pt and eta cuts
+    // select those electrons satifsying pt and eta cuts and loose cut-based electron ID
     std::vector< pat::Electron > selectedElectrons = *hElectrons;
     selectedElectrons.erase(
         std::remove_if(selectedElectrons.begin(), selectedElectrons.end(),
@@ -226,7 +228,7 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     edm::Handle< pat::MuonCollection > hMuons;
     iEvent.getByToken(EDMMuonsToken, hMuons);
 
-    // select those muons satisfying pt and eta cuts
+    // select those muons satisfying pt and eta cuts and loose cut-base muon ID
     std::vector< pat::Muon > selectedMuons = *hMuons;
     selectedMuons.erase(
         std::remove_if(selectedMuons.begin(), selectedMuons.end(),
@@ -239,7 +241,7 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     edm::Handle< pat::PhotonCollection > hPhotons;
     iEvent.getByToken(EDMPhotonsToken, hPhotons);
 
-    // select those photons satisfying pt and eta cuts
+    // select those photons satisfying pt and eta cuts and loose cut-based photon ID
     std::vector< pat::Photon > selectedPhotons = *hPhotons;
     selectedPhotons.erase(
         std::remove_if(
@@ -294,27 +296,30 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     auto hadr_recoil_max       = std::max(hadr_recoil.pt(), std::max(hadr_recoil_up.pt(), hadr_recoil_down.pt()));
     auto hadr_recoil_puppi_max = std::max(hadr_recoil_puppi.pt(), std::max(hadr_recoil_puppi_up.pt(), hadr_recoil_puppi_down.pt()));
 
-    // check if we have sizeable hadronic recoil in the event and if so, keep the event
+    // check if we have sizeable hadronic recoil in the event
     bool recoil_criterium = (hadr_recoil_max >= metPtMin_) || (hadr_recoil_puppi_max >= metPtMin_);
 
+    // keep the event if recoil and fatjet criteria are fulfilled
     if (recoil_criterium && jet_criterium) return true;
 
     // get slimmedVertices
     edm::Handle< reco::VertexCollection > hVertices;
     iEvent.getByToken(EDMVertexToken, hVertices);
 
-    int n_loose_leptons = selectedElectrons.size() + selectedMuons.size();
+    // reset lepton collections
+    selectedElectrons = *hElectrons;
+    selectedMuons     = *hMuons;
 
-    // for leptonic events, increase the criteria for electrons
-    selectedElectrons.erase(
-        std::remove_if(selectedElectrons.begin(), selectedElectrons.end(),
-                       [&](pat::Electron ele) { return (ele.pt() < (electronPtMin_ + 10.) || !ele.electronID("cutBasedElectronID-Fall17-94X-V2-tight")); }),
-        selectedElectrons.end());
+    // for leptonic monotop events, dont use ID criteria because of included isolation cuts
+    selectedElectrons.erase(std::remove_if(selectedElectrons.begin(), selectedElectrons.end(),
+                                           [&](pat::Electron ele) { return (ele.pt() < (electronPtMin_ + 10.) || fabs(ele.eta()) > electronEtaMax_); }),
+                            selectedElectrons.end());
 
     auto vertex = hVertices->empty() ? reco::Vertex() : hVertices->at(0);
-    // for leptonic events, increase the criteria for muons
+
+    // for leptonic monotop events, dont use ID criteria for muons
     selectedMuons.erase(std::remove_if(selectedMuons.begin(), selectedMuons.end(),
-                                       [&](pat::Muon mu) { return (mu.pt() < (muonPtMin_ + 10.) || !muon::isTightMuon(mu, vertex)); }),
+                                       [&](pat::Muon mu) { return (mu.pt() < (muonPtMin_ + 10.) || fabs(mu.eta()) > muonEtaMax_); }),
                         selectedMuons.end());
 
     // number of leptons (electrons and muons)
@@ -342,8 +347,7 @@ bool LeptonJetsSkim::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
 
     // criterium which lowers requested MET value for events in the leptonic
     // channel
-    bool lepton_jet_met_criterium =
-        (n_leptons >= 1) && (n_loose_leptons >= 1) && (n_ak4jets > 0) && (leading_jet_pt > 50.) && (met_max > 80. || met_puppi_max > 80.);
+    bool lepton_jet_met_criterium = (n_leptons >= 1) && (n_ak4jets > 0) && (leading_jet_pt > 50.) && (met_max > 80. || met_puppi_max > 80.);
 
     bool w_criterium     = (n_btagged_jets == 0) && (n_harder_jets < 4);
     bool ttbar_criterium = (n_btagged_jets > 0);
