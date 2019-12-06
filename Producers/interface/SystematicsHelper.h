@@ -168,6 +168,17 @@ public:
     JERup,			
     JERdown,
 
+    JERpt0eta0up,
+    JERpt0eta0down,
+    JERpt0eta1up,
+    JERpt0eta1down,
+    JERpt1eta0up,
+    JERpt1eta0down,
+    JERpt1eta1up,
+    JERpt1eta1down,
+    JEReta2up,
+    JEReta2down,
+
     hfSFup,
     hfSFdown,
     lfSFdown,
@@ -207,6 +218,8 @@ public:
   // true if type is one of the JEC-related uncertainties
   static bool isJECUncertainty(const Type type);
 
+  // true if type is one of the JER-related uncertainties
+  static bool isJERUncertainty(const Type type);
   // return the label that is used by JetCorrectorParametersCollection
   // to label the uncertainty type. See also:
   // https://cmssdt.cern.ch/SDT/doxygen/CMSSW_8_0_23/doc/html/dc/d33/classJetCorrectorParametersCollection.html#afb3d4c6fd711ca23d89e0625a22dc483 for a list of in principle valid labels. Whether the uncertainty
@@ -234,6 +247,12 @@ std::map<SystematicsHelper::Type,std::string> SystematicsHelper::typeLabelMap_  
 void SystematicsHelper::init() {
   add( JESup,JESdown,"JES","Uncertainty");
   add( JERup,JERdown,"JER","JER");
+
+  add( JERpt0eta0up,JERpt0eta0down,"JERpt0eta0","JERpt0eta0");
+  add( JERpt0eta1up,JERpt0eta1down,"JERpt0eta1","JERpt0eta1");
+  add( JERpt1eta0up,JERpt1eta0down,"JERpt1eta0","JERpt1eta0");
+  add( JERpt1eta1up,JERpt1eta1down,"JERpt1eta1","JERpt1eta1");
+  add( JEReta2up,JEReta2down,"JEReta2","JEReta2");
 
   add(JESAbsoluteup,             JESAbsolutedown,            "JESAbsolute",              "Absoluteup"          );
   add(JESAbsoluteyearup,         JESAbsoluteyeardown,        "JESAbsoluteyear",          "Absoluteyear"       );
@@ -362,6 +381,11 @@ bool SystematicsHelper::isJECUncertaintyDown(const Type type) {
 
 bool SystematicsHelper::isJECUncertainty(const Type type) {
   return isJECUncertaintyUp(type) || isJECUncertaintyDown(type);
+}
+
+bool SystematicsHelper::isJERUncertainty(const Type type) {
+  const std::string str = toString(type);
+  return str.find("JER")==0;
 }
 
 std::string SystematicsHelper::GetJECUncertaintyLabel(const Type type) {
