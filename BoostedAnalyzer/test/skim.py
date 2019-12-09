@@ -130,6 +130,10 @@ if not options.inputFiles:
 
 process = cms.Process("SKIM")
 
+#process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",
+#    ignoreTotal = cms.untracked.int32(1)
+#)
+
 process.source = cms.Source(
     "PoolSource",
     fileNames=cms.untracked.vstring(options.inputFiles),
@@ -166,7 +170,7 @@ jetToolbox(
     addSoftDropSubjets=True,
     addPrunedSubjets=False,
     addNsub=True,
-    maxTau=4,  # add Nsubjettiness tau1, tau2, tau3, tau4
+    maxTau=3,  # add Nsubjettiness tau1, tau2, tau3, tau4
     JETCorrPayload="AK8PFPuppi",
     JETCorrLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'],
     runOnMC=not options.isData,
@@ -192,7 +196,7 @@ jetToolbox(
     addSoftDropSubjets=True,
     addPrunedSubjets=False,
     addNsub=True,
-    maxTau=4,  # add Nsubjettiness tau1, tau2, tau3, tau4
+    maxTau=3,  # add Nsubjettiness tau1, tau2, tau3, tau4
     JETCorrPayload="AK8PFPuppi",
     JETCorrLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'],
     runOnMC=not options.isData,
