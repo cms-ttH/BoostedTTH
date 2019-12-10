@@ -583,7 +583,18 @@ process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
 for s in systsJER:
     v=0
     if s=='JERup': v=+1
+    elif s=='JERpt0eta0up': v=+2
+    elif s=='JERpt0eta1up': v=+3
+    elif s=='JERpt1eta0up': v=+4
+    elif s=='JERpt1eta1up': v=+5
+    elif s=='JEReta2up': v=+6
+
     elif s=='JERdown': v=-1
+    elif s=='JERpt0eta0down': v=-2
+    elif s=='JERpt0eta1down': v=-3
+    elif s=='JERpt1eta0down': v=-4
+    elif s=='JERpt1eta1down': v=-5
+    elif s=='JEReta2down': v=-6
     setattr(process,'patSmearedJetsAK4'+s,process.patSmearedJetsAK4.clone(variation=v,src=cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4")))
     # setattr(process,'patSmearedJetsAK8'+s,process.patSmearedJetsAK8.clone(variation=v,src=cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8")))
 for s in systsJES:
