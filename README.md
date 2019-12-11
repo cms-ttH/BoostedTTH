@@ -11,7 +11,11 @@ Do for example:
 #export CMSSW_GIT_REFERENCE=/nfs/dust/cms/user/$USER/.cmsgit-cache
 
     # setup environment
-    export SCRAM_ARCH="slc6_amd64_gcc700"
+    # SL6
+    # export SCRAM_ARCH="slc6_amd64_gcc700"
+    # CC7
+    export SCRAM_ARCH="slc7_amd64_gcc700"
+    
     export CMSSW_VERSION="CMSSW_10_2_18"
   
     # create new CMSSW environment
