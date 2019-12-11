@@ -183,6 +183,21 @@ private:
   const JetCorrector *corrector;
   std::string correctorlabel = "";
   const bool doJES = true;
+  const std::map<std::string, std::vector<std::string>> groups = {
+          { "JESAbsolute", { "JESAbsoluteMPFBias", "JESAbsoluteScale", "JESFragmentation", "JESPileUpDataMC", "JESPileUpPtRef", "JESRelativeFSR", "JESSinglePionECAL", "JESSinglePionHCAL" } },
+          { "JESAbsoluteyear", { "JESAbsoluteStat", "JESRelativeStatFSR", "JESTimePtEta" } },
+          { "JESFlavorQCD", { "JESFlavorQCD" } },
+          { "JESBBEC1", { "JESPileUpPtBB", "JESPileUpPtEC1", "JESRelativePtBB" } },
+          { "JESBBEC1year", { "JESRelativeJEREC1", "JESRelativePtEC1", "JESRelativeStatEC" } },
+          { "JESEC2", { "JESPileUpPtEC2" } },
+          { "JESEC2year", { "JESRelativeJEREC2", "JESRelativePtEC2" } },
+          { "JESHF", { "JESPileUpPtHF", "JESRelativeJERHF", "JESRelativePtHF" } },
+          { "JESHFyear", { "JESRelativeStatHF" } },
+          { "JESRelativeBal", { "JESRelativeBal" } },
+          { "JESRelativeSampleyear", { "JESRelativeSample" } },
+
+      };
+
 
 };
 
