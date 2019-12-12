@@ -652,7 +652,7 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalC
                               // std::cout << "adding  " << source + "up" << std::endl;
                               // std::cout << "corrFactor =   " << corrFactor << std::endl;
                           }
-                          unc = +1*  sqrt(corrFactor);
+                          unc = +1. * sqrt(corrFactor);
                         }
                         else { // is down group
                           // std::cout << "Found DOWN GROUP " << Name << std::endl;
@@ -662,13 +662,14 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalC
                               // std::cout << "adding  " << source + "down" << std::endl;
                               // std::cout << "corrFactor =   " << corrFactor << std::endl;
                           }
-                          unc = -1 * sqrt(corrFactor);
+                          unc = -1. * sqrt(corrFactor);
                         }
                     } else { // no group
                         unc = GetJECUncertainty(jet, setup, iSysType);
                     }
 
                     // std::cout << "DEBUG: unc = " << unc << std::endl;
+ 
                     const double jecvar = 1. + (unc * uncFactor);
                     if (addUserFloats) {
                         jet.addUserFloat("Helper" + SystematicsHelper::toString(iSysType), jecvar);
@@ -704,13 +705,9 @@ double SelectedJetProducer::GetJECUncertainty(const pat::Jet& jet, const edm::Ev
 
     unc->setJetEta(jet.eta());
     unc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
-    if (unc < 0) {
-      std::cout << "DEBUUUG: negative unc: " << unc << std::endl;
-      std::cout << "DEBUUUG: pt: " << jet.pt() << std::endl;
-      std::cout << "DEBUUUG: eta: " << jet.eta() << std::endl;
-    }
+
     if (SystematicsHelper::isJECUncertaintyUp(iSysType))
-        return +1. * unc->getUncertainty(true);
+      return +1. * unc->getUncertainty(true);
     else
         return -1. * unc->getUncertainty(false);
     
