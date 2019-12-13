@@ -1,4 +1,4 @@
-<flags skip_files="BoostedJetVarProcessor.cpp BoostedMCMatchVarProcessor.cpp BoostedAk4VarProcessor.cpp BoostedSelection.cpp BoostedttHEvent.cpp ttHVarProcessor.cpp Ak4Cluster.cpp DNNVarProcessor.cpp TTbarReconstructionVarProcessor.cpp MVAVarProcessor.cpp ReconstructionMEvarProcessor.cpp SpinCorrelationProcessor.cpp essentialRecoVarProcessor.cpp BDTVarProcessor.cpp essentialMVAVarProcessor.cpp Synchronizer.cpp"/>
+<flags skip_files="BoostedJetVarProcessor.cpp BoostedMCMatchVarProcessor.cpp BoostedAk4VarProcessor.cpp BoostedSelection.cpp BoostedttHEvent.cpp ttHVarProcessor.cpp Ak4Cluster.cpp DNNVarProcessor.cpp TTbarReconstructionVarProcessor.cpp MVAVarProcessor.cpp ReconstructionMEvarProcessor.cpp SpinCorrelationProcessor.cpp essentialRecoVarProcessor.cpp BDTVarProcessor.cpp essentialMVAVarProcessor.cpp Synchronizer.cpp MVAVarProcessor.cpp BDTClassifier.cpp DNNVarProcessor.cpp"/>
 <use name="root"/>
 <use name="LHAPDF"/>
 <use name="DataFormats/PatCandidates"/>
