@@ -17,7 +17,9 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Evt_Phi_GenMET");
     vars.InitVar("CaloMET");
     vars.InitVar("CaloMET_PFMET_ratio");
+    vars.InitVar("CaloMET_PFMET_vec_ratio");
     vars.InitVar("CaloMET_PFMET_Recoil_ratio");
+    vars.InitVar("CaloMET_PFMET_Recoil_vec_ratio");
     vars.InitVar("NaiveMET");
     vars.InitVar("Hadr_Recoil_Pt");
     vars.InitVar("Hadr_Recoil_Phi");
@@ -177,6 +179,8 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     else {
         met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
     }
+    
+    math::XYZTLorentzVector calomet_p4(input.correctedMETPuppi.caloMETP2().px,input.correctedMETPuppi.caloMETP2().py,0.,0.);
 
     vars.FillVar("Evt_Pt_MET", met_p4.pt());
     vars.FillVar("Evt_Phi_MET", met_p4.phi());
@@ -186,6 +190,7 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     vars.FillVar("Evt_Pt_MET_UnclEnDown", input.correctedMETPuppi.shiftedPt(pat::MET::UnclusteredEnDown, pat::MET::Type1));
     vars.FillVar("CaloMET", input.correctedMETPuppi.caloMETPt());
     vars.FillVar("CaloMET_PFMET_ratio", fabs(met_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
+    vars.FillVar("CaloMET_PFMET_vec_ratio", (met_p4 - calomet_p4).pt() / calomet_p4.pt());
 
     // transverse W mass
     std::vector< double > v_M_W_transverse;
@@ -226,7 +231,8 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     vars.FillVar("Hadr_Recoil_Phi", hadr_recoil_p4.phi());
     vars.FillVar("CaloMET_Hadr_Recoil_ratio", fabs(hadr_recoil_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
     vars.FillVar("CaloMET_PFMET_Recoil_ratio", fabs(met_p4.pt() - input.correctedMETPuppi.caloMETPt()) / hadr_recoil_p4.pt());
-
+    vars.FillVar("CaloMET_PFMET_Recoil_vec_ratio", (met_p4 - calomet_p4).pt() / hadr_recoil_p4.pt());
+    
     vars.FillVar("N_AK15Jets_x_N_LooseElectrons", input.selectedJetsAK15.size() * input.selectedElectronsLoose.size());
     vars.FillVar("N_AK8Jets_x_N_LooseElectrons", input.selectedJetsAK8.size() * input.selectedElectronsLoose.size());
     vars.FillVar("N_AK4Jets_x_N_LooseElectrons", input.selectedJets.size() * input.selectedElectronsLoose.size());
