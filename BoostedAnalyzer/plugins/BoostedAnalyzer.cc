@@ -578,8 +578,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
 
     assert(selectedJetsTokens.size() == selectedJetsLooseTokens.size());
     assert(selectedJetsTokens.size() == jetSystematics.size());
-    assert(selectedJetsTokens.size() == AK8Jets_Tokens.size());
-    assert(selectedJetsTokens.size() == AK15Jets_Tokens.size());
+    assert(selectedJetsTokens.size() == selectedJetsAK8_Tokens.size());
+    assert(selectedJetsTokens.size() == selectedJetsAK15_Tokens.size());
     assert(selectedJetsTokens.size() == correctedMETsTokens.size());
     assert(selectedJetsTokens.size() == correctedMETsPuppiTokens.size());
     assert(selectedJetsTokens.size() == cutflows.size());
