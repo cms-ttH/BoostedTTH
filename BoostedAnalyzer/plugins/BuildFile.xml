@@ -1,11 +1,5 @@
-<lib name="TMVA"/>
 <use name="FWCore/Framework"/>
-<use name="FWCore/PluginManager"/>
-<use name="FWCore/ParameterSet"/>
 <use name="DataFormats/PatCandidates"/>
-<use name="DataFormats/HepMCCandidate"/>
-<use name="PhysicsTools/Utilities"/>
 <use name="MiniAOD/MiniAODHelper"/>
-<use name="MiniAOD/BoostedObjects"/>
 <use name="BoostedTTH/BoostedAnalyzer"/>
 <flags EDM_PLUGIN="1"/>

@@ -1,7 +1,5 @@
 <library file="*.cc" name="Producer_plugins">
 <use name="FWCore/Framework"/>
-<use name="FWCore/PluginManager"/>
-<use name="FWCore/ParameterSet"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="RecoEgamma/EgammaTools"/>
 <use name="CondFormats/JetMETObjects"/>

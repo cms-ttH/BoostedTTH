@@ -1,23 +1,8 @@
-<flags skip_files="BoostedJetVarProcessor.cpp BoostedMCMatchVarProcessor.cpp BoostedAk4VarProcessor.cpp BoostedSelection.cpp BoostedttHEvent.cpp ttHVarProcessor.cpp Ak4Cluster.cpp"/>
+<flags skip_files="BoostedJetVarProcessor.cpp BoostedMCMatchVarProcessor.cpp BoostedAk4VarProcessor.cpp BoostedSelection.cpp BoostedttHEvent.cpp ttHVarProcessor.cpp Ak4Cluster.cpp DNNVarProcessor.cpp TTbarReconstructionVarProcessor.cpp MVAVarProcessor.cpp ReconstructionMEvarProcessor.cpp SpinCorrelationProcessor.cpp essentialRecoVarProcessor.cpp BDTVarProcessor.cpp essentialMVAVarProcessor.cpp Synchronizer.cpp"/>
 <use name="root"/>
 <use name="LHAPDF"/>
-<lib name="TMVA"/>
-<use name="FWCore/Framework"/>
-<use name="FWCore/MessageLogger"/>
-<use name="FWCore/PluginManager"/>
-<use name="FWCore/ParameterSet"/>
-<use name="FWCore/Utilities"/>
-<use name="DataFormats/BTauReco"/>
-<use name="DataFormats/Math"/>
 <use name="DataFormats/PatCandidates"/>
-<use name="DataFormats/HepMCCandidate"/>
-<use name="PhysicsTools/Utilities"/>
-<use name="HLTrigger/HLTcore"/>
-<use name="JetMETCorrections/Objects"/>
-<use name="CondFormats/JetMETObjects"/>
 <use name="MiniAOD/MiniAODHelper"/>
-<use name="BoostedTTH/MatrixElements"/>
-<use name="TTH/CommonClassifier"/>
 <export>
   <lib   name="1"/>
 </export>
