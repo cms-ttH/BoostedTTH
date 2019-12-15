@@ -4,7 +4,7 @@ using namespace std;
 
 essentialRecoVarProcessor::essentialRecoVarProcessor()
 {
-    pointerToRecoVars.reset(new ReconstructedVars());
+    pointerToRecoVars.reset(new ReconstructedVars(false, false));
 }
 
 essentialRecoVarProcessor::~essentialRecoVarProcessor() {}

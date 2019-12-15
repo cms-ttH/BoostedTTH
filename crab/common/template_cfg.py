@@ -5,7 +5,7 @@ config.General.requestName = 'THEREQUESTNAME'
 config.General.workArea = 'crab_skims'
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = '/nfs/dust/cms/user/swieland/ttH_legacy/skimming/RELEASE/src/BoostedTTH/BoostedAnalyzer/test/skim.py'
+config.JobType.psetName = 'CMSSWPATH/RUNCONFIG'
 config.JobType.outputFiles = ['Skim.root']
 # config.JobType.maxJobRuntimeMin = 2800
 config.JobType.maxMemoryMB = 2000 
