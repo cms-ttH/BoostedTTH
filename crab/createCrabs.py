@@ -124,7 +124,7 @@ for row in reader:
             src='common/template_cfg_ntuple.py'
             datasets=row['dataset'].split(",")
             variation_list = get_list_of_systematics("common/systematicVariations.txt")
-            print("Creating crab configs to Ntuple, therefore using common/systematicVariations.txt and unskimmed dataset")
+            print("Creating crab configs to slimmedNtuple, therefore using common/systematicVariations.txt and unskimmed dataset")
         else:
             src='common/template_cfg.py'
             datasets=row['dataset'].split(",")
