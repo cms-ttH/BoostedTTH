@@ -259,7 +259,7 @@ void SystematicsHelper::init() {
   // add(JESFlavorQCDup,            JESFlavorQCDdown,           "JESFlavorQCD",             "FlavorQCD"           );
   add(JESBBEC1up,                JESBBEC1down,               "JESBBEC1",                 "BBEC1"               );
   add(JESBBEC1yearup,            JESBBEC1yeardown,           "JESBBEC1year",             "BBEC1year"          );
-  add(JESEC2up,                  JESEC2down,                 "JESEC2up",                 "EC2"                 );
+  add(JESEC2up,                  JESEC2down,                 "JESEC2",                   "EC2"                 );
   add(JESEC2yearup,              JESEC2yeardown,             "JESEC2year",               "EC2year"            );
   add(JESHFup,                   JESHFdown,                  "JESHF",                    "HF"                  );
   add(JESHFyearup,               JESHFyeardown,              "JESHFyear",                "HFyear"             );
