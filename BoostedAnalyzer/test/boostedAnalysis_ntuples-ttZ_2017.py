@@ -70,7 +70,11 @@ if not options.inputFiles:
         if "2016" in options.dataEra:
             options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
         elif "2017" in options.dataEra: 
-           options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2017/190607_151112/0000/Skim_238.root']
+            #for testing with ttZ use:
+            options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/TTZToQQ_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2017/190607_153859/0000/Skim_1.root']
+            #for testing with ttH use:
+            #options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2017/190607_160411/0000/Skim_1.root']
+            
             # options.inputFiles=['file:/pnfs/desy.de/cms/tier2//store/user/mhorzela/TTbb_Powheg_Openloops/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1-corrected/190813_124736/0000/TTbb_TuneCP5-Powloops_MINIAODSIMv2_840.root']
 
             # options.inputFiles=[
@@ -583,18 +587,7 @@ process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
 for s in systsJER:
     v=0
     if s=='JERup': v=+1
-    elif s=='JERpt0eta0up': v=+2
-    elif s=='JERpt0eta1up': v=+3
-    elif s=='JERpt1eta0up': v=+4
-    elif s=='JERpt1eta1up': v=+5
-    elif s=='JEReta2up': v=+6
-
     elif s=='JERdown': v=-1
-    elif s=='JERpt0eta0down': v=-2
-    elif s=='JERpt0eta1down': v=-3
-    elif s=='JERpt1eta0down': v=-4
-    elif s=='JERpt1eta1down': v=-5
-    elif s=='JEReta2down': v=-6
     setattr(process,'patSmearedJetsAK4'+s,process.patSmearedJetsAK4.clone(variation=v,src=cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4")))
     # setattr(process,'patSmearedJetsAK8'+s,process.patSmearedJetsAK8.clone(variation=v,src=cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8")))
 for s in systsJES:
@@ -697,10 +690,10 @@ if options.isData:
   "essentialMVAVarProcessor",
   "essentialRecoVarProcessor",
   "TriggerVarProcessor",
-  "JABDTttbarProcessor",
-  "JABDTthqProcessor",
-  "JABDTthwProcessor",
-  "JABDTtthProcessor",
+  #"JABDTttbarProcessor",
+  #"JABDTthqProcessor",
+  #"JABDTthwProcessor",
+  #"JABDTtthProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )
@@ -712,10 +705,10 @@ else:
   "essentialMVAVarProcessor",
   "essentialRecoVarProcessor",
   "TriggerVarProcessor",
-  "JABDTttbarProcessor",
-  "JABDTthqProcessor",
-  "JABDTthwProcessor",
-  "JABDTtthProcessor",
+  #"JABDTttbarProcessor",
+  #"JABDTthqProcessor",
+  #"JABDTthwProcessor",
+  #"JABDTtthProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )

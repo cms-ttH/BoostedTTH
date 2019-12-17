@@ -450,7 +450,7 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
   if (not passesID) return false;
   
   // PileUP Jet ID
-  if (iJet.hasUserInt("pileupJetId:fullId"))
+  if (iJet.hasUserInt("pileupJetId:fullId") && iJet.pt()<50 )
   {
     if (iJet.userInt("pileupJetId:fullId") < TranslateJetPUIDtoInt(wp))
       return false;
@@ -574,100 +574,144 @@ pat::Jet SelectedJetProducer::GetCorrectedJet(const pat::Jet &inputJet, const ed
   pat::Jet outputJet = inputJet;
   bool addUserFloats = true;
 
-  if(era.find("2018") != std::string::npos)
-  {
-    bool isHEM = (-3 < outputJet.eta()) && (outputJet.eta() < -1.3);
-    isHEM = isHEM && ( (-1.57 < outputJet.phi()) && (outputJet.phi() < -0.87) );
-    if (isHEM) 
-    {
-      uncFactor_ = 1.2;
-    }
-  }
-  else{
-    uncFactor_ = 1.0;
-  }
   ApplyJetEnergyCorrection(outputJet, factor, event, setup, genjets, iSysType, doJES, doJER, addUserFloats, corrFactor, uncFactor_);
 
   return outputJet;
 }
 
 // function to apply JES, JER needs to be implemente (is currently done via SmearedJetProducer)
-void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet &jet, double &totalCorrFactor, const edm::Event &event, const edm::EventSetup &setup,
-                                                   const edm::Handle<reco::GenJetCollection> &genjets, const SystematicsHelper::Type iSysType,
-                                                   const bool doJES, const bool doJER,
-                                                   const bool addUserFloats,
-                                                   const float corrFactor, float uncFactor)
+void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalCorrFactor, const edm::Event& event, const edm::EventSetup& setup,
+    const edm::Handle<reco::GenJetCollection>& genjets, const SystematicsHelper::Type iSysType,
+    const bool doJES, const bool doJER,
+    const bool addUserFloats,
+    const float corrFactor, float uncFactor)
 {
-  totalCorrFactor = 1.;
-  if (doJES || doJER)
-  { // check again if JES or JER is demanded
-    /// JES
-    if (doJES)
-    {
-      double scale = 1.;
-      if (corrector)
-      {
-        scale = corrector->correction(jet, event, setup);
-      }
-      else
-      {
-        edm::LogError("SelectedJetProducer") << "Trying to use GetCorrectedJets() without setting jet corrector!";
-      }
+    totalCorrFactor = 1.;
+    if (doJES || doJER) { // check again if JES or JER is demanded
+        /// JES
+        if (doJES) {
+            double scale = 1.;
+            if (corrector) {
+                scale = corrector->correction(jet, event, setup);
+            } else {
+                edm::LogError("SelectedJetProducer") << "Trying to use GetCorrectedJets() without setting jet corrector!";
+            }
 
-      const double jec = scale * corrFactor;
-      jet.scaleEnergy(jec);
-      totalCorrFactor *= jec;
+            // Figure out if HEM issue -> only for 2018
+            bool isHEM = false;
+            if (era.find("2018") != std::string::npos) {
+                isHEM = (-3 < jet.eta()) && (jet.eta() < -1.3);
+                isHEM = isHEM && ((-1.57 < jet.phi()) && (jet.phi() < -0.87));
+            }
 
-      if (addUserFloats)
-      {
-        jet.addUserFloat("HelperJES", scale);
-        const double uncUp = GetJECUncertainty(jet, setup, SystematicsHelper::JESup);
-        const double uncDown = GetJECUncertainty(jet, setup, SystematicsHelper::JESdown);
-        const double jecvarUp = 1. + (uncUp);
-        const double jecvarDown = 1. + (uncDown);
-        jet.addUserFloat("HelperJESup", jecvarUp);
-        jet.addUserFloat("HelperJESdown", jecvarDown);
-      }
+            const double jec = scale * corrFactor;
+            jet.scaleEnergy(jec);
+            totalCorrFactor *= jec;
 
-      if (SystematicsHelper::isJECUncertainty(iSysType))
-      {
-        const double unc = GetJECUncertainty(jet, setup, iSysType);
-        const double jecvar = 1. + (unc * uncFactor);
-        if (addUserFloats)
-        {
-          jet.addUserFloat("Helper" + SystematicsHelper::toString(iSysType), jecvar);
+            if (addUserFloats) {
+                jet.addUserFloat("HelperJES", scale);
+                const double uncUp = GetJECUncertainty(jet, setup, SystematicsHelper::JESup);
+                const double uncDown = GetJECUncertainty(jet, setup, SystematicsHelper::JESdown);
+                const double jecvarUp = 1. + (uncUp);
+                const double jecvarDown = 1. + (uncDown);
+                jet.addUserFloat("HelperJESup", jecvarUp);
+                jet.addUserFloat("HelperJESdown", jecvarDown);
+            }
+
+            if (SystematicsHelper::isJECUncertainty(iSysType)) {
+                double unc = 1.0;
+                if (iSysType == SystematicsHelper::Type::JESHEMup) {
+                    if (isHEM) {
+                        if ((-2.5 < jet.eta()) && (jet.eta() < -1.3))
+                            unc = 0.2;
+                        else if ((-3.0 < jet.eta()) && (jet.eta() < -2.5))
+                            unc = 0.35;
+                        // std::cout << "DEBUG got HEM JET setting unc to " << unc << std::endl;
+                    } else
+                        unc = 0.0;
+                } else if (iSysType == SystematicsHelper::Type::JESHEMdown) {
+                    if (isHEM) {
+                        if ((-2.5 < jet.eta()) && (jet.eta() < -1.3))
+                            unc = -0.2;
+                        else if ((-3.0 < jet.eta()) && (jet.eta() < -2.5))
+                            unc = -0.35;
+                        // std::cout << "DEBUG got HEM JET setting unc to -0.2" << std::endl;
+                    } else
+                        unc = 0.0;
+                } else {
+                    // std::cout << "DEBUG got standard JES setting unc to whatever" << std::endl;
+                    // check if required source is a group
+                    std::string Name = SystematicsHelper::toString(iSysType);
+                    // std::cout << "DOING " << Name  << std::endl;
+                    if (groups.count(Name.substr(0, Name.size() - 2)) || groups.count(Name.substr(0, Name.size() - 4))) { // is group
+                        if (SystematicsHelper::isJECUncertaintyUp(iSysType)){ // is up group
+                          // std::cout << "Found UP GROUP " << Name << std::endl;
+                          double corrFactor = 0.;
+                          for (auto source : groups.at(Name.substr(0, Name.size() - 2))) {
+                              corrFactor += GetJECUncertainty(jet, setup, SystematicsHelper::get(source + "up"))*GetJECUncertainty(jet, setup, SystematicsHelper::get(source + "up"));
+                              // std::cout << "adding  " << source + "up" << std::endl;
+                              // std::cout << "corrFactor =   " << corrFactor << std::endl;
+                          }
+                          unc = +1. * sqrt(corrFactor);
+                        }
+                        else { // is down group
+                          // std::cout << "Found DOWN GROUP " << Name << std::endl;
+                          double corrFactor = 0.;
+                          for (auto source : groups.at(Name.substr(0, Name.size() - 4))) {
+                              corrFactor += GetJECUncertainty(jet, setup, SystematicsHelper::get(source + "down"))*GetJECUncertainty(jet, setup, SystematicsHelper::get(source + "down"));
+                              // std::cout << "adding  " << source + "down" << std::endl;
+                              // std::cout << "corrFactor =   " << corrFactor << std::endl;
+                          }
+                          unc = -1. * sqrt(corrFactor);
+                        }
+                    } else { // no group
+                        unc = GetJECUncertainty(jet, setup, iSysType);
+                    }
+
+                    // std::cout << "DEBUG: unc = " << unc << std::endl;
+ 
+                    const double jecvar = 1. + (unc * uncFactor);
+                    if (addUserFloats) {
+                        jet.addUserFloat("Helper" + SystematicsHelper::toString(iSysType), jecvar);
+                    }
+                    jet.scaleEnergy(jecvar);
+                    totalCorrFactor *= jecvar;
+                }
+                // implement on demand
+                // if (doJER){
+                //}
+            }
         }
-        jet.scaleEnergy(jecvar);
-        totalCorrFactor *= jecvar;
-      }
-      // implement on demand
-      // if (doJER){
-      //}
     }
-  }
 }
 
 // Return the JEC uncertainty value
 // Scale JES by (1+value) to apply uncertainty
 // Note: for JEC down, value will internally be multiplied by -1
 // --> *always* scale JES by (1+value).
-double SelectedJetProducer::GetJECUncertainty(const pat::Jet &jet, const edm::EventSetup &iSetup, const SystematicsHelper::Type iSysType)
-{
-  const std::string uncertaintyLabel = SystematicsHelper::GetJECUncertaintyLabel(iSysType);
-  auto jecUncIt = jecUncertainties_.find(uncertaintyLabel);
-  if (jecUncIt == jecUncertainties_.end())
-  { // Lazy initialization
-    AddJetCorrectorUncertainty(iSetup, uncertaintyLabel);
-    jecUncIt = jecUncertainties_.find(uncertaintyLabel);
-  }
-  JetCorrectionUncertainty *unc = jecUncIt->second.get();
 
-  unc->setJetEta(jet.eta());
-  unc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
-  if (SystematicsHelper::isJECUncertaintyUp(iSysType))
-    return +1. * unc->getUncertainty(true);
-  else
-    return -1. * unc->getUncertainty(false);
+double SelectedJetProducer::GetJECUncertainty(const pat::Jet& jet, const edm::EventSetup& iSetup, const SystematicsHelper::Type iSysType)
+{
+
+    const std::string uncertaintyLabel = SystematicsHelper::GetJECUncertaintyLabel(iSysType);
+
+    // no group
+    auto jecUncIt = jecUncertainties_.find(uncertaintyLabel);
+    if (jecUncIt == jecUncertainties_.end()) { // Lazy initialization
+        AddJetCorrectorUncertainty(iSetup, uncertaintyLabel);
+        jecUncIt = jecUncertainties_.find(uncertaintyLabel);
+    }
+    JetCorrectionUncertainty* unc = jecUncIt->second.get();
+
+    unc->setJetEta(jet.eta());
+    unc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
+
+    if (SystematicsHelper::isJECUncertaintyUp(iSysType))
+      return +1. * unc->getUncertainty(true);
+    else
+        return -1. * unc->getUncertainty(false);
+    
+
 }
 
 // ------------ method called to produce the data  ------------
