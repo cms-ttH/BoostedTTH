@@ -160,14 +160,11 @@ if options.maxEvents is -1:  # maxEvents is set in VarParsing class by default t
 
 if options.isData:
     if "2016" in options.dataEra:
-        options.globalTag = "94X_dataRun2_v10"
+        options.globalTag = "102X_dataRun2_v12"
     elif "2017" in options.dataEra:
-        options.globalTag = "94X_dataRun2_v11"
+        options.globalTag = "102X_dataRun2_v12"
     elif "2018" in options.dataEra:
-        if "D" in options.dataEra:
-            options.globalTag = "102X_dataRun2_Prompt_v15"
-        else:
-            options.globalTag = "102X_dataRun2_v12"
+        options.globalTag = "102X_dataRun2_v12"
     else:
         raise Exception(
             "dataEra "
@@ -176,9 +173,9 @@ if options.isData:
         )
 elif not options.isData:
     if "2016" in options.dataEra:
-        options.globalTag = "94X_mcRun2_asymptotic_v3"
+        options.globalTag = "102X_mcRun2_asymptotic_v7"
     elif "2017" in options.dataEra:
-        options.globalTag = "94X_mc2017_realistic_v17"
+        options.globalTag = "102X_mc2017_realistic_v7"
     elif "2018" in options.dataEra:
         options.globalTag = "102X_upgrade2018_realistic_v20"
     else:
