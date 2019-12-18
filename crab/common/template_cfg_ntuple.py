@@ -19,7 +19,7 @@ config.Data.unitsPerJob = 600
 config.Data.splitting = 'Automatic'
 config.Data.publication = False
 config.Data.publishDBS = 'phys03'
-config.Data.outputDatasetTag = 'KIT_tthbb_sl_LEG_NTUPLETAG_DATAERA'
+config.Data.outputDatasetTag = 'KIT_LEG_NTUPLETAG_DATAERA'
 
 config.User.voGroup = 'dcms'
 
