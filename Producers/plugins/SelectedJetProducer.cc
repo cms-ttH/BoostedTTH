@@ -639,37 +639,10 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalC
                     } else
                         unc = 0.0;
                 } else {
-                    // std::cout << "DEBUG got standard JES setting unc to whatever" << std::endl;
-                    // check if required source is a group
-                    std::string Name = SystematicsHelper::toString(iSysType);
-                    // std::cout << "DOING " << Name  << std::endl;
-                    if (groups.count(Name.substr(0, Name.size() - 2)) || groups.count(Name.substr(0, Name.size() - 4))) { // is group
-                        if (SystematicsHelper::isJECUncertaintyUp(iSysType)) { // is up group
-                            // std::cout << "Found UP GROUP " << Name << std::endl;
-                            double corrFactor = 0.;
-                            for (auto source : groups.at(Name.substr(0, Name.size() - 2))) {
-                                corrFactor += GetJECUncertainty(jet, setup, SystematicsHelper::get(source + "up")) * GetJECUncertainty(jet, setup, SystematicsHelper::get(source + "up"));
-                                // std::cout << "adding  " << source + "up" << std::endl;
-                                // std::cout << "corrFactor =   " << corrFactor << std::endl;
-                            }
-                            unc = +1. * sqrt(corrFactor);
-                        } else { // is down group
-                            // std::cout << "Found DOWN GROUP " << Name << std::endl;
-                            double corrFactor = 0.;
-                            for (auto source : groups.at(Name.substr(0, Name.size() - 4))) {
-                                corrFactor += GetJECUncertainty(jet, setup, SystematicsHelper::get(source + "down")) * GetJECUncertainty(jet, setup, SystematicsHelper::get(source + "down"));
-                                // std::cout << "adding  " << source + "down" << std::endl;
-                                // std::cout << "corrFactor =   " << corrFactor << std::endl;
-                            }
-                            unc = -1. * sqrt(corrFactor);
-                        }
-                    } else { // no group
-                        unc = GetJECUncertainty(jet, setup, iSysType);
-                    }
-
-                    // std::cout << "DEBUG: unc = " << unc << std::endl;
+                    unc = GetJECUncertainty(jet, setup, iSysType);
                 }
 
+                    // std::cout << "DEBUG: unc = " << unc << std::endl;
                 const double jecvar = 1. + (unc * uncFactor);
                 if (addUserFloats) {
                     jet.addUserFloat("Helper" + SystematicsHelper::toString(iSysType), jecvar);
@@ -679,7 +652,7 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet& jet, double& totalC
                 // implement on demand
                 // if (doJER){
                 //}
-            }
+          }
         }
     }
 }

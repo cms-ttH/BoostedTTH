@@ -254,7 +254,7 @@ void SystematicsHelper::init() {
   add( JERpt1eta1up,JERpt1eta1down,"JERpt1eta1","JERpt1eta1");
   add( JEReta2up,JEReta2down,"JEReta2","JEReta2");
 
-  add(JESAbsoluteup,             JESAbsolutedown,            "JESAbsolute",              "Absoluteup"          );
+  add(JESAbsoluteup,             JESAbsolutedown,            "JESAbsolute",              "Absolute"          );
   add(JESAbsoluteyearup,         JESAbsoluteyeardown,        "JESAbsoluteyear",          "Absoluteyear"       );
   // add(JESFlavorQCDup,            JESFlavorQCDdown,           "JESFlavorQCD",             "FlavorQCD"           );
   add(JESBBEC1up,                JESBBEC1down,               "JESBBEC1",                 "BBEC1"               );
