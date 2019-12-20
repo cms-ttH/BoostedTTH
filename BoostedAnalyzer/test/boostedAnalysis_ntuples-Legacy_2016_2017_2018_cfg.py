@@ -43,9 +43,9 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 
 if options.isData:
     if "2016" in options.dataEra:
-        options.globalTag="94X_dataRun2_v12"
+        options.globalTag="102X_dataRun2_v12"
     elif "2017" in options.dataEra:
-        options.globalTag="94X_dataRun2_v12"
+        options.globalTag="102X_dataRun2_v12"
     elif "2018" in options.dataEra:
         options.globalTag="102X_dataRun2_v12"
     else:
