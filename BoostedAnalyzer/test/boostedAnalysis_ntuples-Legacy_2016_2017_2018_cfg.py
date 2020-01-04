@@ -191,29 +191,29 @@ if not options.inputFiles:
     if not options.isData:
         if "2016" in options.dataEra:
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_Monotop_skims_2016_102X/191230_154242/0000/Skim_9.root"
             ]
         elif "2017" in options.dataEra:
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_Monotop_skims_2017_94X_v1/191026_175939/0000/Skim_1.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_Monotop_skims_2017_102X_v1/191227_111420/0000/Skim_9.root"
             ]
         elif "2018" in options.dataEra:
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_Monotop_skims_102X_v1/190823_163428/0000/Skim_1.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/KIT_Monotop_skims_2018_102X_v2/191222_173237/0000/Skim_9.root"
             ]
     else:
         if "2016" in options.dataEra:  # CAREFUL: NO 2016 Data Skims ready yet
             # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/pkeicher/SingleElectron/KIT_tthbb_sl_skims_DATA_94X_Run2017B/180617_220344/0000/Skim_1.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_2016_102X_Run2016H/191229_144538/0000/Skim_1.root"
             ]
         elif "2017" in options.dataEra:
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_2017_94X_v1_Run2017B/191111_121634/0000/Skim_6.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_2017_102X_Run2017F_v1/191225_110902/0000/Skim_99.root"
             ]
         elif "2018" in options.dataEra:
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_102X_v1_Run2018A/190823_170126/0000/Skim_1.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_2018_102X_Run2018D_v2/191218_152014/0000/Skim_99.root"
             ]
 
 
@@ -509,33 +509,33 @@ if "2017" or "2018" in options.dataEra:
 ### E/Gamma recommendations ###
 
 ### Electron scale and smearing corrections ###
-from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+#from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 
-EG_era = None
-EG_corrections = None
-EG_vid = None
-if "2016" in options.dataEra:
-    EG_era = "2016-Legacy"
-    EG_corrections = False
-    EG_vid = True
-elif "2017" in options.dataEra:
-    EG_era = "2017-Nov17ReReco"
-    EG_corrections = True
-    EG_vid = True
-elif "2018" in options.dataEra:
-    EG_era = "2018-Prompt"
-    EG_corrections = True
-    EG_vid = True
-else:
-    raise Exception(
-        "dataEra "
-        + options.dataEra
-        + " not supported for Egamma tools: USE dataEra=2016/2017/2018"
-    )
+#EG_era = None
+#EG_corrections = None
+#EG_vid = None
+#if "2016" in options.dataEra:
+#    EG_era = "2016-Legacy"
+#    EG_corrections = False
+#    EG_vid = True
+#elif "2017" in options.dataEra:
+#    EG_era = "2017-Nov17ReReco"
+#    EG_corrections = True
+#    EG_vid = True
+#elif "2018" in options.dataEra:
+#    EG_era = "2018-Prompt"
+#    EG_corrections = True
+#    EG_vid = True
+#else:
+#    raise Exception(
+#        "dataEra "
+#        + options.dataEra
+#        + " not supported for Egamma tools: USE dataEra=2016/2017/2018"
+#    )
 
-setupEgammaPostRecoSeq(
-    process, runVID=EG_vid, runEnergyCorrections=EG_corrections, era=EG_era
-)
+#setupEgammaPostRecoSeq(
+#    process, runVID=EG_vid, runEnergyCorrections=EG_corrections, era=EG_era
+#)
 # a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
 # electronCollection = cms.InputTag("slimmedElectrons","",process.name_())
 
@@ -587,8 +587,8 @@ if ("2016" in options.dataEra or "2017" in options.dataEra) and (not options.isD
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 ### some standard collections ####
 # if not options.isData:
-electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
-photonCollection = cms.InputTag("slimmedPhotons", "", process.name_())
+electronCollection = cms.InputTag("slimmedElectrons", "", "SKIM")
+photonCollection = cms.InputTag("slimmedPhotons", "", "SKIM")
 muonCollection = cms.InputTag("slimmedMuons")
 tauCollection = cms.InputTag("slimmedTaus")
 METCollection = cms.InputTag("slimmedMETs", "", process.name_())
@@ -751,7 +751,7 @@ process.SelectedJetProducerAK4 = process.CorrectedJetProducerAK4.clone(
     etaMaxs=[2.4],
     collectionNames=["selectedJetsAK4"],
     systematics=[""],
-    PUJetIDMins=["loose"],
+    PUJetIDMins=["none"],
     JetID=["none"],
 )
 
@@ -1207,7 +1207,7 @@ if options.recorrectMET:
     )
 
 # electron scale and smearing corrections
-process.egamma = cms.Path(process.egammaPostRecoSeq)
+#process.egamma = cms.Path(process.egammaPostRecoSeq)
 
 if options.deterministicSeeds:
     process.seeds = cms.Task(process.deterministicSeeds)
