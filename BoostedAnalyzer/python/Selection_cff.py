@@ -119,6 +119,10 @@ checkBasicDataTriggers = cms.PSet(
         "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v*",
         "HLT_PFMETNoMu100_PFMHTNoMu100_IDTight_PFHT60_v*",
         "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v*",
+        "HLT_PFJet40_v*",
+        "HLT_PFHT180_v*",
+        "HLT_PFHT200_v*",
+        "HLT_AK8PFJet140_v*",
     )
 )
 checkBasicMCTriggers = cms.PSet(
@@ -164,6 +168,10 @@ checkBasicMCTriggers = cms.PSet(
         "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v*",
         "HLT_PFMETNoMu100_PFMHTNoMu100_IDTight_PFHT60_v*",
         "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v*",
+        "HLT_PFJet40_v*",
+        "HLT_PFHT180_v*",
+        "HLT_PFHT200_v*",
+        "HLT_AK8PFJet140_v*",
     )
 )
 
