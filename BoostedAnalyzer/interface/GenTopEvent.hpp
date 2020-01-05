@@ -225,7 +225,7 @@ class GenTopEvent {
 
 class GenTopEventProducer {
    public:
-    GenTopEventProducer(edm::ConsumesCollector&& iC);
+    GenTopEventProducer(edm::ConsumesCollector&& iC, bool doGenHadronMatch);
     GenTopEvent Produce(const edm::Event& iEvent, bool doGenHadronMatch, bool returnDummy);
     ~GenTopEventProducer();
 

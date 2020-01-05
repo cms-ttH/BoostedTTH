@@ -301,7 +301,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     // from file within this class)
     // leptonSFhelper{iConfig},
     // synchronizer{iConfig, consumesCollector()},
-    genTopEvtProd{consumesCollector()},
+    genTopEvtProd{consumesCollector(), iConfig.getParameter< bool >("useGenHadronMatch")},
     triggerInfoProd{iConfig, consumesCollector()},
     filterInfoProd{iConfig, consumesCollector()},
 

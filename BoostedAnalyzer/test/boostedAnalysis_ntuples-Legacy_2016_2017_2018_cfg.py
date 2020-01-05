@@ -1253,17 +1253,17 @@ if ("2016" in options.dataEra or "2017" in options.dataEra) and (not options.isD
     process.prefire.add(process.prefiringweight)
     process.final.associate(process.prefire)
 
-if not options.isData and not options.isBoostedMiniAOD:
-    process.tthfmatcher = cms.Task()
-    process.tthfmatcher.add(
-        process.genParticlesForJetsNoNu,
-        process.ak4GenJetsCustom,
-        process.selectedHadronsAndPartons,
-        process.genJetFlavourInfos,
-        process.matchGenBHadron,
-        process.matchGenCHadron,
-        process.categorizeGenTtbar,
-    )
-    process.final.associate(process.tthfmatcher)
+#if not options.isData and not options.isBoostedMiniAOD:
+    #process.tthfmatcher = cms.Task()
+    #process.tthfmatcher.add(
+        #process.genParticlesForJetsNoNu,
+        #process.ak4GenJetsCustom,
+        #process.selectedHadronsAndPartons,
+        #process.genJetFlavourInfos,
+        #process.matchGenBHadron,
+        #process.matchGenCHadron,
+        #process.categorizeGenTtbar,
+    #)
+    #process.final.associate(process.tthfmatcher)
 
 #print process.dumpPython()
