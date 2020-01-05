@@ -589,7 +589,6 @@ BoostedAnalyzer::~BoostedAnalyzer()
 {
     // do anything here that needs to be done at desctruction time
     // (e.g. close files, deallocate resources etc.)
-    // DNNClassifierBase::pyFinalize();
 }
 
 //
@@ -618,8 +617,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken(hcalNoiseToken, h_hcalNoiseSummary);
     edm::Handle< reco::BeamSpot > h_beamSpot;
     iEvent.getByToken(beamSpotToken, h_beamSpot);
-    edm::Handle< reco::ConversionCollection > h_conversionCollection;
-    iEvent.getByToken(conversionCollectionToken, h_conversionCollection);
+    //edm::Handle< reco::ConversionCollection > h_conversionCollection;
+    //iEvent.getByToken(conversionCollectionToken, h_conversionCollection);
     edm::Handle< reco::VertexCollection > h_primaryVertices;
     iEvent.getByToken(primaryVerticesToken, h_primaryVertices);
 
