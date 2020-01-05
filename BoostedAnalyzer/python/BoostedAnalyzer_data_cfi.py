@@ -7,7 +7,7 @@ BoostedAnalyzer2017 = cms.EDAnalyzer(
     Inputs_tth_sl,  # defined in Inputs_cff
     # DiLeptonSelectionData, # defined in Selection_cff
     # JetTagSelection, # defined in Selection_cff
-    METSelection,  # defined in Selection_cff
+    # METSelection,  # defined in Selection_cff
     checkBasicDataTriggers,  # defined in Selection_cff
     # filtersMC, # defined in Selection_cff
     MonoTopSelection,
