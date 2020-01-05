@@ -33,9 +33,6 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
 {
     if (!initialized) cerr << "MonoTopSelection not initialized" << endl;
 
-    // criterium for number of ak15 jets
-    bool n_ak15_jets_criterium = (input.selectedJetsAK15.size() >= 1) && (input.selectedJetsAK15.size() <= 2);
-
     // get correct MET/hadronic recoil from events, see METSelection.cpp for explanation
     math::XYZTLorentzVector met_p4(0., 0., 0., 0.);
     math::XYZTLorentzVector hadr_recoil_p4(0., 0., 0., 0.);
@@ -62,14 +59,22 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
         met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
     }
 
+    // calculate hadronic recoil starting from MET
     hadr_recoil_p4 = met_p4;
     for (const auto& el : input.selectedElectronsLoose) { hadr_recoil_p4 += el.p4(); }
     for (const auto& mu : input.selectedMuonsLoose) { hadr_recoil_p4 += mu.p4(); }
     for (const auto& ph : input.selectedPhotons) { hadr_recoil_p4 += ph.p4(); }
 
+    // criteria for number of ak15 jets, MET, and hadronic recoil in hadronic monotop channel
+    bool n_ak15_jets_criterium = (input.selectedJetsAK15.size() >= 1) && (input.selectedJetsAK15.size() <= 2);
     bool met_recoil_criterium = (met_p4.pt() >= minRecoil) || (hadr_recoil_p4.pt() >= minRecoil);
     bool hadronic_criterium = met_recoil_criterium && n_ak15_jets_criterium;
     
+    // event is compatible with hadronic monotop selection
+    if (hadronic_criterium) {
+        cutflow.EventSurvivedStep("MonoTopSelection", input.weights.at("Weight"));
+        return true;
+    }
     // deltaphi criteria between jets and MET to suppress mismeasured QCD events
     // bool dPhi_jet_met_criterium = true;
     // for(size_t i=0;i<input.selectedJets.size()&&i<4;i++) {
@@ -81,16 +86,18 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     // Delta phi criterium between AK15 jet and MET
     // if (fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJetsAK15.at(0).phi())) < deltaR_MET_AK15Jet) return false;
     
+    // criteria for number of AK4 jets, number of well reconstructed leptons, and MET for leptonic monotop channel
     bool n_ak4_jets_criterium = (input.selectedJets.size() >= 1) && (input.selectedJets.size() <= 3);
     bool n_lepton_criterium = (input.selectedElectrons.size() + input.selectedMuons.size()) == 1;
     bool met_criterium = met_p4.pt() >= minMET;
     bool leptonic_criterium = n_ak4_jets_criterium && n_lepton_criterium && met_criterium;
     
-    if(hadronic_criterium || leptonic_criterium) {
+    // event is compatible with leptonic monotop selection
+    if(leptonic_criterium) {
         cutflow.EventSurvivedStep("MonoTopSelection", input.weights.at("Weight"));
         return true;
     }
-    else {
-        return false;
-    }
+    
+    // event is not compatible with either hadronic or leptonic monotop selection
+    return false;
 }
