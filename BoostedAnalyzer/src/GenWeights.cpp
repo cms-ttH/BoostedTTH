@@ -338,6 +338,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         if (!(line.Contains("weightid")
                 or (line.Contains("weight") and line.Contains("nnpdf31"))
                 or (line.Contains("weightmuf") and line.Contains("pdf306000")) // hacks for TH Samples
+                or (line.Contains("weightmuf") and line.Contains("pdf263400")) // hacks for TTH ctcvcp Samples
                 or (line.Contains("weightmuf") and line.Contains("pdf320900"))))
             continue;
 
