@@ -7,18 +7,10 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
     etaMaxs{iConfig.getParameter< std::vector< double > >("etaMaxs")},
     leptonJetDr{iConfig.getParameter< double >("leptonJetDr")},
     applyCorrection{iConfig.getParameter< bool >("applyCorrection")},
-    doJER{iConfig.getParameter< bool >("doJER")},
     collectionNames{iConfig.getParameter< std::vector< std::string > >("collectionNames")},
     PUJetIDMins{iConfig.getParameter< std::vector< std::string > >("PUJetIDMins")},
     JetID_{iConfig.getParameter< std::vector< std::string > >("JetID")},
     systematics_config{iConfig.getParameter< std::vector< std::string > >("systematics")},
-    // inputs
-    jetsToken{consumes< pat::JetCollection >(iConfig.getParameter< edm::InputTag >("jets"))},
-    genjetsToken{consumes< reco::GenJetCollection >(iConfig.getParameter< edm::InputTag >("miniAODGenJets"))},
-    muonsToken{consumes< pat::MuonCollection >(iConfig.getParameter< edm::InputTag >("muons"))},
-    electronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("electrons"))},
-    photonsToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("photons"))},
-    rhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))},
     jecFileAK4_2016{iConfig.getParameter< std::string >("jecFileAK4_2016")},
     jecFileAK8_2016{iConfig.getParameter< std::string >("jecFileAK8_2016")},
     jecFileAK15_2016{iConfig.getParameter< std::string >("jecFileAK15_2016")},
@@ -28,7 +20,13 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
     jecFileAK4_2018{iConfig.getParameter< std::string >("jecFileAK4_2018")},
     jecFileAK8_2018{iConfig.getParameter< std::string >("jecFileAK8_2018")},
     jecFileAK15_2018{iConfig.getParameter< std::string >("jecFileAK15_2018")},
-    era{iConfig.getParameter< std::string >("era")}
+    era{iConfig.getParameter< std::string >("era")},
+    // inputs
+    jetsToken{consumes< pat::JetCollection >(iConfig.getParameter< edm::InputTag >("jets"))},
+    muonsToken{consumes< pat::MuonCollection >(iConfig.getParameter< edm::InputTag >("muons"))},
+    electronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("electrons"))},
+    photonsToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("photons"))},
+    rhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))}
 {
     // do this for getJetCorrector call with JetType as argument, because it needs
     // ak4... or ak8 ... instead of AK4... or AK8...
@@ -433,11 +431,11 @@ std::vector< pat::Jet > SelectedJetProducer::GetDeltaRCleanedJets(const std::vec
 
 // function to return a vector of corrected Jets
 std::vector< pat::Jet > SelectedJetProducer::GetCorrectedJets(const std::vector< pat::Jet > &inputJets, const edm::Event &event, const edm::EventSetup &setup,
-                                                              const edm::Handle< reco::GenJetCollection > &genjets, const SystematicsHelper::Type iSysType,
-                                                              const bool &doJES, const bool &doJER, const float &corrFactor, const float &uncFactor)
+                                                              const SystematicsHelper::Type iSysType, const bool &doJES, const float &corrFactor,
+                                                              const float &uncFactor)
 {
-    // do nothing if neither JES or JER is demanded
-    if (!doJES && !doJER) return inputJets;
+    // do nothing if JES is not demanded
+    if (!doJES) return inputJets;
 
     // resulting corrected Jets
     std::vector< pat::Jet > outputJets;
@@ -445,31 +443,29 @@ std::vector< pat::Jet > SelectedJetProducer::GetCorrectedJets(const std::vector<
     // loop over input jets and correct each one
     // for (std::vector<pat::Jet>::const_iterator it = inputJets.begin(), ed =
     // inputJets.end(); it != ed; ++it)
-    for (const auto &jet : inputJets) { outputJets.push_back(GetCorrectedJet(jet, event, setup, genjets, iSysType, doJES, doJER, corrFactor, uncFactor)); }
+    for (const auto &jet : inputJets) { outputJets.push_back(GetCorrectedJet(jet, event, setup, iSysType, doJES, corrFactor, uncFactor)); }
     return outputJets;
 }
 
 // function to return one corrected Jet
 pat::Jet SelectedJetProducer::GetCorrectedJet(const pat::Jet &inputJet, const edm::Event &event, const edm::EventSetup &setup,
-                                              const edm::Handle< reco::GenJetCollection > &genjets, const SystematicsHelper::Type iSysType, const bool doJES,
-                                              const bool doJER, const float corrFactor, const float uncFactor)
+                                              const SystematicsHelper::Type iSysType, const bool doJES, const float corrFactor, const float uncFactor)
 {
     double   factor        = 1.;
     pat::Jet outputJet     = inputJet;
     bool     addUserFloats = true;
-    ApplyJetEnergyCorrection(outputJet, factor, event, setup, genjets, iSysType, doJES, doJER, addUserFloats, corrFactor, uncFactor);
+    ApplyJetEnergyCorrection(outputJet, factor, event, setup, iSysType, doJES, addUserFloats, corrFactor, uncFactor);
 
     return outputJet;
 }
 
-// function to apply JES, JER needs to be implemente (is currently done via
-// SmearedJetProducer)
+// function to apply JES
 void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet &jet, double &totalCorrFactor, const edm::Event &event, const edm::EventSetup &setup,
-                                                   const edm::Handle< reco::GenJetCollection > &genjets, const SystematicsHelper::Type iSysType,
-                                                   const bool doJES, const bool doJER, const bool addUserFloats, const float corrFactor, const float uncFactor)
+                                                   const SystematicsHelper::Type iSysType, const bool doJES, const bool addUserFloats, const float corrFactor,
+                                                   const float uncFactor)
 {
     totalCorrFactor = 1.;
-    if (doJES || doJER) {  // check again if JES or JER is demanded
+    if (doJES) {  // check again if JES is demanded
         /// JES
         if (doJES) {
             double scale = 1.;
@@ -500,9 +496,6 @@ void SelectedJetProducer::ApplyJetEnergyCorrection(pat::Jet &jet, double &totalC
                 jet.scaleEnergy(jecvar);
                 totalCorrFactor *= jecvar;
             }
-            // implement on demand
-            // if (doJER){
-            //}
         }
     }
 }
@@ -547,15 +540,6 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
     if (not inputJets.isValid()) {
         std::cerr << "\n\nERROR: retrieved jet collection is not valid" << std::endl;
         throw std::exception();
-    }
-
-    edm::Handle< reco::GenJetCollection > genJets;
-    if (!isData) {
-        iEvent.getByToken(genjetsToken, genJets);
-        if (not genJets.isValid()) {
-            std::cerr << "\n\nERROR: retrieved genjet collection is not valid" << std::endl;
-            throw std::exception();
-        }
     }
 
     edm::Handle< pat::ElectronCollection > inputElectrons;
@@ -607,11 +591,8 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
                 // Clean muons and electrons and photons from jets
                 std::vector< pat::Jet > cleanJets = GetDeltaRCleanedJets(rawJets, *inputMuons, *inputElectrons, *inputPhotons, leptonJetDr);
                 // Apply jet corrections
-                // Get genjets for new JER recommendation (JER is done in extra producer
-                // SmearedJetProducer, the manual JER application is therefore disabled
-                // doJER=false)
 
-                unsortedJets = GetCorrectedJets(cleanJets, iEvent, iSetup, genJets, systematics.at(j), doJES, doJER);
+                unsortedJets = GetCorrectedJets(cleanJets, iEvent, iSetup, systematics.at(j), doJES);
             }
             // if no correction is to be applied, still remove jets close to a lepton
             else {
