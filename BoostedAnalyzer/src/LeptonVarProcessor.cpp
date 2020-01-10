@@ -7,10 +7,11 @@ LeptonVarProcessor::~LeptonVarProcessor() {}
 
 void LeptonVarProcessor::Init(const InputCollections& input, VariableContainer& vars)
 {
-    vars.InitVar("N_TightElectrons", "I");
-    vars.InitVar("N_LooseElectrons", "I");
-    vars.InitVar("N_TightMuons", "I");
-    vars.InitVar("N_LooseMuons", "I");
+    // vars.InitVar("N_TightElectrons", "I");
+    // vars.InitVar("N_LooseElectrons", "I");
+    // vars.InitVar("N_TightMuons", "I");
+    // vars.InitVar("N_LooseMuons", "I");
+
     // vars.InitVar("N_TightLeptons", "I");
     // vars.InitVar("N_LooseLeptons", "I");
 
@@ -128,10 +129,11 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
 {
     if (!initialized) cerr << "LeptonVarProcessor not initialized" << endl;
 
-    vars.FillVar("N_TightElectrons", input.selectedElectrons.size());
-    vars.FillVar("N_LooseElectrons", input.selectedElectronsLoose.size());
-    vars.FillVar("N_TightMuons", input.selectedMuons.size());
-    vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
+    // vars.FillVar("N_TightElectrons", input.selectedElectrons.size());
+    // vars.FillVar("N_LooseElectrons", input.selectedElectronsLoose.size());
+    // vars.FillVar("N_TightMuons", input.selectedMuons.size());
+    // vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
+
     // vars.FillVar("N_TightLeptons", input.selectedElectrons.size() + input.selectedMuons.size());
     // vars.FillVar("N_LooseLeptons", input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size());
 

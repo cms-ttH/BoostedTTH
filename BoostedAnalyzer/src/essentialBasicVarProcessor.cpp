@@ -17,12 +17,19 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
 
     vars.InitVar("N_Jets", "I");
     vars.InitVar("N_LooseJets", "I");
+    vars.InitVar("N_AK8Jets", "I");
+    vars.InitVar("N_AK15Jets", "I");
 
     vars.InitVar("N_BTagsL", "I");
     vars.InitVar("N_BTagsM", "I");
     vars.InitVar("N_BTagsT", "I");
     vars.InitVar("N_PrimaryVertices", "I");
     vars.InitVar("N_GenPVs", "I");
+
+    vars.InitVar("N_TightElectrons", "I");
+    vars.InitVar("N_LooseElectrons", "I");
+    vars.InitVar("N_TightMuons", "I");
+    vars.InitVar("N_LooseMuons", "I");
 
     vars.InitVars("LooseJet_E", "N_LooseJets");
     vars.InitVars("LooseJet_M", "N_LooseJets");
@@ -142,6 +149,12 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_PrimaryVertices", input.selectedPVs.size());
     vars.FillVar("N_Jets", input.selectedJets.size());
     vars.FillVar("N_LooseJets", input.selectedJetsLoose.size());
+    vars.FillVar("N_AK8Jets", input.selectedJetsAK8.size());
+    vars.FillVar("N_AK15Jets", input.selectedJetsAK15.size());
+    vars.FillVar("N_TightElectrons", input.selectedElectrons.size());
+    vars.FillVar("N_LooseElectrons", input.selectedElectronsLoose.size());
+    vars.FillVar("N_TightMuons", input.selectedMuons.size());
+    vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
 
     int N_HEM_Jets = 0;
 
