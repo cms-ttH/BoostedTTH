@@ -1129,9 +1129,9 @@ if options.isData:
 
 
 process.BoostedAnalyzer.selectionNames = [
-    "FilterSelection",
-    "VertexSelection",
-    "MonoTopSelection",
+    #"FilterSelection",
+    #"VertexSelection",
+    #"MonoTopSelection",
 ]
 if options.additionalSelection != "NONE":
     process.BoostedAnalyzer.selectionNames += cms.vstring(options.additionalSelection)
