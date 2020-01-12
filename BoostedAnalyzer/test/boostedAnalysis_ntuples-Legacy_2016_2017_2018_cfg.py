@@ -585,6 +585,11 @@ if ("2016" in options.dataEra or "2017" in options.dataEra) and (not options.isD
 
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
+
+if "2017" in options.dataEra:
+    process.load("BoostedTTH.Filters.Ele32DoubleL1ToSingleL1_cfi")
+
+
 ### some standard collections ####
 # if not options.isData:
 electronCollection = cms.InputTag("slimmedElectrons", "", "SKIM")
@@ -1206,6 +1211,8 @@ if options.recorrectMET:
         process.puppiMETSequence * process.fullPatMetSequencePuppi
     )
 
+if "2017" in options.dataEra:
+    process.eletrigger = cms.Path(process.Ele32DoubleL1ToSingleL1)
 # electron scale and smearing corrections
 #process.egamma = cms.Path(process.egammaPostRecoSeq)
 

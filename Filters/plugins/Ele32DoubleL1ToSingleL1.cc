@@ -76,8 +76,8 @@ class Ele32DoubleL1ToSingleL1 : public edm::stream::EDFilter<> {
 // constructors and destructor
 //
 Ele32DoubleL1ToSingleL1::Ele32DoubleL1ToSingleL1(const edm::ParameterSet& iConfig) :
-    trigResultsToken_{consumes< edm::TriggerResults >(iConfig.getParameter< edm::InputTag >("trigObjs"))},
-    trigObjsToken_{consumes< std::vector< pat::TriggerObjectStandAlone > >(iConfig.getParameter< edm::InputTag >("trigResults"))},
+    trigResultsToken_{consumes< edm::TriggerResults >(iConfig.getParameter< edm::InputTag >("trigResults"))},
+    trigObjsToken_{consumes< std::vector< pat::TriggerObjectStandAlone > >(iConfig.getParameter< edm::InputTag >("trigObjs"))},
     elesToken_{consumes< edm::View< pat::Electron > >(iConfig.getParameter< edm::InputTag >("eles"))},
     tagging_mode_{iConfig.getParameter< bool >("tagging_mode")}
 {
@@ -114,9 +114,12 @@ bool Ele32DoubleL1ToSingleL1::filter(edm::Event& iEvent, const edm::EventSetup& 
     }
 
     for (auto& ele : *eles) {
+        // std::cout << "found: " << found << std::endl;
         // the eta/phi of e/gamma trigger objects is the supercluster eta/phi
         const float eta = ele.superCluster()->eta();
         const float phi = ele.superCluster()->phi();
+        // std::cout << "ele eta: " << eta << std::endl;
+        // std::cout << "ele phi: " << phi << std::endl;
         // now match ALL objects in a cone of DR<0.1
         // it is important to match all objects as there are different ways to reconstruct the same electron
         // eg, L1 seeded, unseeded, as a jet etc
@@ -126,7 +129,7 @@ bool Ele32DoubleL1ToSingleL1::filter(edm::Event& iEvent, const edm::EventSetup& 
             // now just check if it passes the two filters
             if (trigObj->hasFilterLabel("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") && trigObj->hasFilterLabel("hltEGL1SingleEGOrFilter")) {
                 found = true;
-                std::cout << " ele " << ele.et() << " " << eta << " " << phi << " passes HLT_Ele32_WPTight_Gsf" << std::endl;
+                // std::cout << " ele " << ele.et() << " " << eta << " " << phi << " passes HLT_Ele32_WPTight_Gsf" << std::endl;
                 if (tagging_mode_) iEvent.put(std::unique_ptr< bool >(new bool(found)), "Ele32DoubleL1ToSingleL1");
                 return true;
             }
