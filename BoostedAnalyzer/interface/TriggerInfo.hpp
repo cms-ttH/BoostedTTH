@@ -13,7 +13,8 @@
 
 class TriggerInfo {
    public:
-    TriggerInfo(std::map< std::string, bool > triggers, std::map< std::string, int > prescales, std::map< std::string, double > L1_prefire_weights);
+    TriggerInfo(std::map< std::string, bool > triggers, std::map< std::string, int > prescales, std::map< std::string, double > L1_prefire_weights,
+                bool Ele32DoubleL1ToSingleL1);
     bool                          IsTriggered(std::string triggername) const;
     bool                          Exists(std::string triggername) const;
     bool                          GetPrescale(std::string triggername) const;
@@ -22,12 +23,16 @@ class TriggerInfo {
     std::map< std::string, bool > GetTriggers() const;
     // L1 prefiring issue
     std::map< std::string, double > GetL1PrefireWeights() const;
+    // ele32 trigger issue for 2017 era
+    bool                            GetEle32DoubleL1ToSingleL1() const;
 
    private:
     std::map< std::string, bool > triggers;
     std::map< std::string, int >  prescales;
     // L1 prefiring issue
     std::map< std::string, double > L1_prefire_weights;
+    // ele32 trigger issue for 2017 era
+    bool ele32DoubleL1ToSingleL1;
 };
 
 class TriggerInfoProducer {
@@ -42,8 +47,10 @@ class TriggerInfoProducer {
     edm::EDGetTokenT< double > prefweight_token;
     edm::EDGetTokenT< double > prefweightup_token;
     edm::EDGetTokenT< double > prefweightdown_token;
-    std::string                era;
-    bool                       isData;
+    // ele32 trigger issue for 2017 era
+    edm::EDGetTokenT< bool > ele32DoubleL1ToSingleL1_token;
+    std::string              era;
+    bool                     isData;
 };
 
 #endif

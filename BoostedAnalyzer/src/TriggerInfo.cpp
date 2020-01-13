@@ -1,10 +1,11 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerInfo.hpp"
 using namespace std;
-TriggerInfo::TriggerInfo(std::map< std::string, bool > triggers_, std::map< std::string, int > prescales_,
-                         std::map< std::string, double > L1_prefire_weights_) :
+TriggerInfo::TriggerInfo(std::map< std::string, bool > triggers_, std::map< std::string, int > prescales_, std::map< std::string, double > L1_prefire_weights_,
+                         bool Ele32DoubleL1ToSingleL1) :
     triggers{triggers_},
     prescales{prescales_},
-    L1_prefire_weights{L1_prefire_weights_}
+    L1_prefire_weights{L1_prefire_weights_},
+    ele32DoubleL1ToSingleL1{Ele32DoubleL1ToSingleL1}
 {
 }
 
@@ -58,6 +59,9 @@ std::map< std::string, bool > TriggerInfo::GetTriggers() const { return triggers
 // L1 prefiring issue
 std::map< std::string, double > TriggerInfo::GetL1PrefireWeights() const { return L1_prefire_weights; }
 
+// ele32 trigger issue for 2017 era
+bool TriggerInfo::GetEle32DoubleL1ToSingleL1() const { return ele32DoubleL1ToSingleL1; }
+
 TriggerInfoProducer::TriggerInfoProducer(const edm::ParameterSet& iConfig, edm::ConsumesCollector&& iC) :
     era{iConfig.getParameter< std::string >("dataEra")},
     isData{iConfig.getParameter< bool >("isData")}
@@ -70,6 +74,10 @@ TriggerInfoProducer::TriggerInfoProducer(const edm::ParameterSet& iConfig, edm::
         prefweight_token     = iC.consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"));
         prefweightup_token   = iC.consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
         prefweightdown_token = iC.consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
+    }
+    // ele32 trigger issue for 2017 era
+    if (era.find("2017") != std::string::npos) {
+        ele32DoubleL1ToSingleL1_token = iC.consumes< bool >(edm::InputTag("Ele32DoubleL1ToSingleL1:Ele32DoubleL1ToSingleL1"));
     }
 }
 
@@ -115,5 +123,11 @@ TriggerInfo TriggerInfoProducer::Produce(const edm::Event& iEvent) const
         prefiring_weights["Weight_L1_Prefire_Down"] = *theprefweightdown;
     }
 
-    return TriggerInfo(triggers, prescales, prefiring_weights);
+    // ele32 trigger issue in 2017 era
+    edm::Handle< bool > ele32DoubleL1ToSingleL1;
+    bool                Ele32DoubleL1ToSingleL1 = false;
+    if (era.find("2017") != std::string::npos) { iEvent.getByToken(ele32DoubleL1ToSingleL1_token, ele32DoubleL1ToSingleL1); }
+    if (ele32DoubleL1ToSingleL1.isValid()) { Ele32DoubleL1ToSingleL1 = *ele32DoubleL1ToSingleL1; }
+
+    return TriggerInfo(triggers, prescales, prefiring_weights, Ele32DoubleL1ToSingleL1);
 }

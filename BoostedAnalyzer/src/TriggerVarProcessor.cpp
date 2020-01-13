@@ -24,6 +24,9 @@ void TriggerVarProcessor::Init(const InputCollections& input, VariableContainer&
         }
     }
     for (auto& prefire : input.triggerInfo.GetL1PrefireWeights()) { vars.InitVar(prefire.first); }
+
+    if (input.era.find("2017") != std::string::npos) { vars.InitVar("Triggered_HLT_Ele32_WPTight_Gsf_vX_2017", "I"); }
+
     initialized = true;
 }
 
@@ -43,6 +46,9 @@ void TriggerVarProcessor::Process(const InputCollections& input, VariableContain
         }
     }
     for (auto& prefire : input.triggerInfo.GetL1PrefireWeights()) { vars.FillVar(prefire.first, prefire.second); }
+    if (input.era.find("2017") != std::string::npos) {
+        vars.FillVar("Triggered_HLT_Ele32_WPTight_Gsf_vX_2017", int(input.triggerInfo.GetEle32DoubleL1ToSingleL1()));
+    }
 }
 
 std::string TriggerVarProcessor::replaceAsterix(std::string triggername)
