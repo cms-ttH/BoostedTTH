@@ -7,6 +7,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
     etaMaxs{iConfig.getParameter< std::vector< double > >("etaMaxs")},
     leptonJetDr{iConfig.getParameter< double >("leptonJetDr")},
     applyCorrection{iConfig.getParameter< bool >("applyCorrection")},
+    doDeltaRCleaning{iConfig.getParameter< bool >("doDeltaRCleaning")},
     collectionNames{iConfig.getParameter< std::vector< std::string > >("collectionNames")},
     PUJetIDMins{iConfig.getParameter< std::vector< std::string > >("PUJetIDMins")},
     JetID_{iConfig.getParameter< std::vector< std::string > >("JetID")},
@@ -28,24 +29,6 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
     photonsToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("photons"))},
     rhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))}
 {
-    // do this for getJetCorrector call with JetType as argument, because it needs
-    // ak4... or ak8 ... instead of AK4... or AK8...
-    if (jetType == "AK4PFCHS")
-        JetType_ = JetType::AK4PFCHS;
-    else if (jetType == "AK4PFPUPPI")
-        JetType_ = JetType::AK4PFPUPPI;
-    else if (jetType == "AK8PFCHS")
-        JetType_ = JetType::AK8PFCHS;
-    else if (jetType == "AK8PFPUPPI")
-        JetType_ = JetType::AK8PFPUPPI;
-    else if (jetType == "AK15PFPUPPI")
-        JetType_ = JetType::AK15PFPUPPI;
-    else {
-        std::cerr << "\n\nERROR: Unknown Jet type " << jetType << std::endl;
-        std::cerr << "Please select 'AK4PFCHS/PUPPI' or 'AK8PFCHS/PUPPI' or 'AK15PFPUPPI'\n" << std::endl;
-        throw std::exception();
-    }
-
     // make sure everything is consistent
     assert(ptMins.size() == etaMaxs.size());
     assert(ptMins.size() == collectionNames.size());
@@ -63,134 +46,34 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
         }
     }
 
-    // produce Jet collections
-    produces< pat::JetCollection >("rawJets");
-    for (size_t i = 0; i < collectionNames.size(); i++) {
-        for (size_t j = 0; j < systematics.size(); j++) { produces< pat::JetCollection >(systName(collectionNames.at(i), systematics.at(j))); }
-    }
+    // determine JetType
+    JetType_ = TranslateJetTypeStringToEnum(jetType);
 
-    // set JEC File
-    if (JetType_ == JetType::AK4PFCHS) {
-        jetTypeLabelForJECUncertainty = "AK4PFchs";
-        // change File for 2016
-        if (era.find("2016") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2016;
-        }
-        else if (era.find("2017") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2017;
-        }
-        else if (era.find("2018") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2018;
-        }
-    }
-    else if (JetType_ == JetType::AK4PFPUPPI) {
-        jetTypeLabelForJECUncertainty = "AK4PFPuppi";
-        // change File for 2016
-        if (era.find("2016") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2016;
-        }
-        else if (era.find("2017") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2017;
-        }
-        else if (era.find("2018") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2018;
-        }
-    }
-    else if (JetType_ == JetType::AK8PFCHS) {
-        jetTypeLabelForJECUncertainty = "AK8PFchs";
-        // change File for 2016
-        if (era.find("2016") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2016;
-        }
-        else if (era.find("2017") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2017;
-        }
-        else if (era.find("2018") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2018;
-        }
-    }
-    else if (JetType_ == JetType::AK8PFPUPPI) {
-        jetTypeLabelForJECUncertainty = "AK8PFPuppi";
-        // change File for 2016
-        if (era.find("2016") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2016;
-        }
-        else if (era.find("2017") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2017;
-        }
-        else if (era.find("2018") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2018;
-        }
-    }
-    else if (JetType_ == JetType::AK15PFPUPPI) {
-        jetTypeLabelForJECUncertainty = "AK8PFPuppi";
-        // change File for 2016
-        if (era.find("2016") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK15_2016;
-        }
-        else if (era.find("2017") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK15_2017;
-        }
-        else if (era.find("2018") != std::string::npos) {
-            jecUncertaintyTxtFileName = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK15_2018;
-        }
-    }
+    // determine jes uncertainty label for given jet type
+    jetTypeLabelForJECUncertainty = TranslateJetTypeToUncertaintyLabel(JetType_);
 
-    if (jecUncertaintyTxtFileName != "") {
-        if (!fileExists(jecUncertaintyTxtFileName)) {  // check if JEC uncertainty
-                                                       // file exists
-            throw cms::Exception("InvalidJECUncertaintyFile") << "No JEC uncertainty file '" << jecUncertaintyTxtFileName << "' found";
-        }
-    }
-    else {
-        throw cms::Exception("NoJECUncertaintyFile") << "No JEC uncertainty file specified";
-    }
+    // determine correct file for jes uncertainty
+    jecUncertaintyTxtFileName = FindJESUncertaintyFile(JetType_);
 
+    // do this for getJetCorrector call with JetType as argument, because it needs
+    // ak4... or ak8 ... instead of AK4... or AK8...
+    correctorlabel = TranslateJetTypeToCorrectorLabel(JetType_);
+
+    // determine jet IDs and pu jet IDs
     PUJetID_WP = std::vector< PUJetIDWP >(PUJetIDMins.size(), PUJetIDWP::None);
     Jet_ID     = std::vector< JetID >(JetID_.size(), JetID::None);
     // translate Jet_PUID
     for (size_t i = 0; i < PUJetIDMins.size(); i++) {
         // translate Jet_ID
-        if (JetID_.at(i) == "none")
-            Jet_ID.at(i) = JetID::None;
-        else if (JetID_.at(i) == "loose")
-            Jet_ID.at(i) = JetID::Loose;
-        else if (JetID_.at(i) == "tight")
-            Jet_ID.at(i) = JetID::Tight;
-        else if (JetID_.at(i) == "tightlepveto")
-            Jet_ID.at(i) = JetID::TightLepVeto;
-        else {
-            std::cerr << "\n\nERROR: No matching JetID found for: " << JetID_.at(i) << std::endl;
-            throw std::exception();
-        }
-
-        if (PUJetIDMins.at(i) == "none")
-            PUJetID_WP.at(i) = PUJetIDWP::None;
-        else if (PUJetIDMins.at(i) == "loose")
-            PUJetID_WP.at(i) = PUJetIDWP::Loose;
-        else if (PUJetIDMins.at(i) == "medium")
-            PUJetID_WP.at(i) = PUJetIDWP::Medium;
-        else if (PUJetIDMins.at(i) == "tight")
-            PUJetID_WP.at(i) = PUJetIDWP::Tight;
-        else {
-            std::cerr << "\n\nERROR: No matching PUJetID_WP found for: " << PUJetIDMins.at(i) << std::endl;
-            throw std::exception();
-        }
+        Jet_ID.at(i) = TranslateJetIDStringToEnum(JetID_.at(i));
+        // translate PU Jet_ID
+        PUJetID_WP.at(i) = TranslatePUJetIDStringToEnum(PUJetIDMins.at(i));
     }
 
-    if (JetType_ == JetType::AK4PFCHS)
-        correctorlabel = "ak4PFchs";
-    else if (JetType_ == JetType::AK4PFPUPPI)
-        correctorlabel = "ak4PFPuppi";
-    else if (JetType_ == JetType::AK8PFCHS)
-        correctorlabel = "ak8PFchs";
-    else if (JetType_ == JetType::AK8PFPUPPI)
-        correctorlabel = "ak8PFPuppi";
-    else if (JetType_ == JetType::AK15PFPUPPI)
-        correctorlabel = "ak8PFPuppi";
-    else {
-        std::cerr << "\n\nERROR: Jet Type not recognized" << std::endl;
-        throw std::exception();
+    // produce Jet collections
+    produces< pat::JetCollection >("rawJets");
+    for (size_t i = 0; i < collectionNames.size(); i++) {
+        for (size_t j = 0; j < systematics.size(); j++) { produces< pat::JetCollection >(systName(collectionNames.at(i), systematics.at(j))); }
     }
 }
 
@@ -525,8 +408,10 @@ double SelectedJetProducer::GetJECUncertainty(const pat::Jet &jet, const edm::Ev
 // ------------ method called to produce the data  ------------
 void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSetup)
 {
-    using namespace edm;
+    // using namespace edm;
     UpdateJetCorrectorUncertainties(iSetup);
+
+    // get some necessary input data from the event
 
     edm::Handle< double > hRho;
     iEvent.getByToken(rhoToken, hRho);
@@ -563,52 +448,234 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
         throw std::exception();
     }
 
-    // initialize jetcorrector
+    // initialize jetcorrector which returns the nominal jes corrections
     corrector = JetCorrector::getJetCorrector(correctorlabel + "L1L2L3", iSetup);
 
-    // Get raw jets
+    // get raw jets and put them into the event
     std::vector< pat::Jet >               rawJets_general  = GetSortedByPt(GetUncorrectedJets(*inputJets));
     std::unique_ptr< pat::JetCollection > rawJets_general_ = std::make_unique< pat::JetCollection >(rawJets_general);
     iEvent.put(std::move(rawJets_general_), "rawJets");
 
+    // loop over the requested output jet collections
     for (size_t i = 0; i < ptMins.size(); i++) {
-        // selected jets with jet ID cuts ( do this before jet energy correction !!!
-        // )
+        // select jets with jet ID cuts (do this before jet energy correction !!!)
         std::vector< pat::Jet > idJets = GetSelectedJets(*inputJets, 0., 9999., Jet_ID.at(i));
 
-        for (auto &jet : idJets) {
+        // clean muons and electrons and photons from jets
+        std::vector< pat::Jet > cleanJets = doDeltaRCleaning ? GetDeltaRCleanedJets(idJets, *inputMuons, *inputElectrons, *inputPhotons, leptonJetDr) : idJets;
+
+        // these numbers are added as userfloats because they change after the jet energy corrections
+        // but the values only make sense before the jet energy corrections
+        for (auto &jet : cleanJets) {
             if (!jet.hasUserFloat("neutralHadronEnergyFraction") && !jet.hasUserFloat("chargedHadronEnergyFraction")) {
                 jet.addUserFloat("neutralHadronEnergyFraction", jet.neutralHadronEnergyFraction());
                 jet.addUserFloat("chargedHadronEnergyFraction", jet.chargedHadronEnergyFraction());
             }
         }
 
+        // loop over the requested JES systematics
         for (size_t j = 0; j < systematics.size(); j++) {
             std::vector< pat::Jet > unsortedJets;
+
+            // apply jet energy corrections or not
             if (applyCorrection) {
-                std::vector< pat::Jet > rawJets = GetSortedByPt(GetUncorrectedJets(idJets));
+                // uncorrect the previous jet energy corrections before applying new ones
+                std::vector< pat::Jet > rawJets = GetUncorrectedJets(cleanJets);
 
-                // Clean muons and electrons and photons from jets
-                std::vector< pat::Jet > cleanJets = GetDeltaRCleanedJets(rawJets, *inputMuons, *inputElectrons, *inputPhotons, leptonJetDr);
-                // Apply jet corrections
-
-                unsortedJets = GetCorrectedJets(cleanJets, iEvent, iSetup, systematics.at(j), doJES);
+                // apply jet corrections
+                unsortedJets = GetCorrectedJets(rawJets, iEvent, iSetup, systematics.at(j), doJES);
             }
-            // if no correction is to be applied, still remove jets close to a lepton
             else {
-                unsortedJets = GetDeltaRCleanedJets(idJets, *inputMuons, *inputElectrons, *inputPhotons, leptonJetDr);
+                unsortedJets = cleanJets;
             }
 
-            // loop over all jetcollections and each systematic and apply pt,eta as
-            // well as pujetid cut on them
-
-            // Get jet Collection which passes selections
+            // apply pt,eta cuts as well as pujetid cut but no jetid cut because it was already done
             std::vector< pat::Jet > selectedJets_unsorted = GetSelectedJets(unsortedJets, ptMins.at(i), etaMaxs.at(i), JetID::None, PUJetID_WP.at(i));
+
             // sort the selected jets with respect to pt
             std::unique_ptr< pat::JetCollection > selectedJets = std::make_unique< pat::JetCollection >(GetSortedByPt(selectedJets_unsorted));
+
+            // put the selected jets into the event
             iEvent.put(std::move(selectedJets), systName(collectionNames.at(i), systematics.at(j)));
         }
     }
+}
+
+SelectedJetProducer::JetType SelectedJetProducer::TranslateJetTypeStringToEnum(const std::string jet_type_str) const
+{
+    JetType jet_type_enum;
+    if (jet_type_str == "AK4PFCHS")
+        jet_type_enum = JetType::AK4PFCHS;
+    else if (jet_type_str == "AK4PFPUPPI")
+        jet_type_enum = JetType::AK4PFPUPPI;
+    else if (jet_type_str == "AK8PFCHS")
+        jet_type_enum = JetType::AK8PFCHS;
+    else if (jet_type_str == "AK8PFPUPPI")
+        jet_type_enum = JetType::AK8PFPUPPI;
+    else if (jet_type_str == "AK15PFPUPPI")
+        jet_type_enum = JetType::AK15PFPUPPI;
+    else {
+        std::cerr << "\n\nERROR: Unknown Jet type " << jet_type_str << std::endl;
+        std::cerr << "Please select 'AK4PFCHS/PUPPI' or 'AK8PFCHS/PUPPI' or 'AK15PFPUPPI'\n" << std::endl;
+        throw std::exception();
+    }
+    return jet_type_enum;
+}
+
+std::string SelectedJetProducer::TranslateJetTypeToCorrectorLabel(const JetType jet_type_enum) const
+{
+    std::string corrector_label = "";
+    if (jet_type_enum == JetType::AK4PFCHS)
+        corrector_label = "ak4PFchs";
+    else if (jet_type_enum == JetType::AK4PFPUPPI)
+        corrector_label = "ak4PFPuppi";
+    else if (jet_type_enum == JetType::AK8PFCHS)
+        corrector_label = "ak8PFchs";
+    else if (jet_type_enum == JetType::AK8PFPUPPI)
+        corrector_label = "ak8PFPuppi";
+    else if (jet_type_enum == JetType::AK15PFPUPPI)
+        corrector_label = "ak8PFPuppi";
+    else {
+        std::cerr << "\n\nERROR: Jet Type not recognized" << std::endl;
+        throw std::exception();
+    }
+    return corrector_label;
+}
+
+std::string SelectedJetProducer::TranslateJetTypeToUncertaintyLabel(const JetType jet_type_enum) const
+{
+    std::string uncertainty_label = "";
+    if (jet_type_enum == JetType::AK4PFCHS) { uncertainty_label = "AK4PFchs"; }
+    else if (jet_type_enum == JetType::AK4PFPUPPI) {
+        uncertainty_label = "AK4PFPuppi";
+    }
+    else if (jet_type_enum == JetType::AK8PFCHS) {
+        uncertainty_label = "AK8PFchs";
+    }
+    else if (jet_type_enum == JetType::AK8PFPUPPI) {
+        uncertainty_label = "AK8PFPuppi";
+    }
+    else if (jet_type_enum == JetType::AK15PFPUPPI) {
+        uncertainty_label = "AK8PFPuppi";
+    }
+    else {
+        std::cerr << "\n\nERROR: Jet Type not recognized" << std::endl;
+        throw std::exception();
+    }
+    return uncertainty_label;
+}
+
+std::string SelectedJetProducer::FindJESUncertaintyFile(const JetType jettype) const
+{
+    // set JEC File
+    std::string jes_uncertainty_file = "";
+    if (jettype == JetType::AK4PFCHS) {
+        // change File for 2016
+        if (era.find("2016") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2016;
+        }
+        else if (era.find("2017") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2017;
+        }
+        else if (era.find("2018") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2018;
+        }
+    }
+    else if (jettype == JetType::AK4PFPUPPI) {
+        // change File for 2016
+        if (era.find("2016") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2016;
+        }
+        else if (era.find("2017") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2017;
+        }
+        else if (era.find("2018") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK4_2018;
+        }
+    }
+    else if (jettype == JetType::AK8PFCHS) {
+        // change File for 2016
+        if (era.find("2016") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2016;
+        }
+        else if (era.find("2017") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2017;
+        }
+        else if (era.find("2018") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2018;
+        }
+    }
+    else if (jettype == JetType::AK8PFPUPPI) {
+        // change File for 2016
+        if (era.find("2016") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2016;
+        }
+        else if (era.find("2017") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2017;
+        }
+        else if (era.find("2018") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK8_2018;
+        }
+    }
+    else if (jettype == JetType::AK15PFPUPPI) {
+        // change File for 2016
+        if (era.find("2016") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK15_2016;
+        }
+        else if (era.find("2017") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK15_2017;
+        }
+        else if (era.find("2018") != std::string::npos) {
+            jes_uncertainty_file = std::string(getenv("CMSSW_BASE")) + "/src/BoostedTTH/Producers/data/jec/" + jecFileAK15_2018;
+        }
+    }
+
+    if (jes_uncertainty_file != "") {
+        if (!fileExists(jes_uncertainty_file)) {  // check if JEC uncertainty
+                                                  // file exists
+            throw cms::Exception("InvalidJECUncertaintyFile") << "No JEC uncertainty file '" << jes_uncertainty_file << "' found";
+        }
+    }
+    else {
+        throw cms::Exception("NoJECUncertaintyFile") << "No JEC uncertainty file specified";
+    }
+    return jes_uncertainty_file;
+}
+
+SelectedJetProducer::JetID SelectedJetProducer::TranslateJetIDStringToEnum(const std::string jet_id_str) const
+{
+    JetID jet_id_enum;
+    if (jet_id_str == "none")
+        jet_id_enum = JetID::None;
+    else if (jet_id_str == "loose")
+        jet_id_enum = JetID::Loose;
+    else if (jet_id_str == "tight")
+        jet_id_enum = JetID::Tight;
+    else if (jet_id_str == "tightlepveto")
+        jet_id_enum = JetID::TightLepVeto;
+    else {
+        std::cerr << "\n\nERROR: No matching JetID found for: " << jet_id_str << std::endl;
+        throw std::exception();
+    }
+    return jet_id_enum;
+}
+
+SelectedJetProducer::PUJetIDWP SelectedJetProducer::TranslatePUJetIDStringToEnum(const std::string pu_jet_id_str) const
+{
+    PUJetIDWP pu_jet_id_enum;
+    if (pu_jet_id_str == "none")
+        pu_jet_id_enum = PUJetIDWP::None;
+    else if (pu_jet_id_str == "loose")
+        pu_jet_id_enum = PUJetIDWP::Loose;
+    else if (pu_jet_id_str == "medium")
+        pu_jet_id_enum = PUJetIDWP::Medium;
+    else if (pu_jet_id_str == "tight")
+        pu_jet_id_enum = PUJetIDWP::Tight;
+    else {
+        std::cerr << "\n\nERROR: No matching PUJetID_WP found for: " << pu_jet_id_str << std::endl;
+        throw std::exception();
+    }
+    return pu_jet_id_enum;
 }
 
 // ------------ method called once each stream before processing any runs, lumis

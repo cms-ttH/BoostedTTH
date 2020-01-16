@@ -90,12 +90,16 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
     // convert systematics type into string
     std::string systName(std::string name, SystematicsHelper::Type) const;
 
+    // check if file exsits
     bool fileExists(const std::string &fileName) const;
 
+    // functions to create jet correction uncertainty objects
     void                      UpdateJetCorrectorUncertainties(const edm::EventSetup &iSetup);
     JetCorrectionUncertainty *CreateJetCorrectorUncertainty(const edm::EventSetup &iSetup, const std::string &jetTypeLabel,
                                                             const std::string &uncertaintyLabel) const;
+    void                      AddJetCorrectorUncertainty(const edm::EventSetup &iSetup, const std::string &uncertaintyLabel);
 
+    // functions to select and correct jet collections
     std::vector< pat::Jet > GetSelectedJets(const std::vector< pat::Jet > &, const float iMinPt, const float iMaxAbsEta, const JetID,
                                             const PUJetIDWP = PUJetIDWP::None) const;
     bool                    isGoodJet(const pat::Jet &iJet, const float iMinPt, const float iMaxAbsEta, const JetID, const PUJetIDWP wp) const;
@@ -115,18 +119,27 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
                                   const float uncFactor);
 
     double GetJECUncertainty(const pat::Jet &jet, const edm::EventSetup &iSetup, const SystematicsHelper::Type iSysType);
-    void   AddJetCorrectorUncertainty(const edm::EventSetup &iSetup, const std::string &uncertaintyLabel);
 
+    // functions to translate enums to strings or vice versa
+    JetType     TranslateJetTypeStringToEnum(const std::string) const;
+    std::string TranslateJetTypeToCorrectorLabel(const JetType) const;
+    std::string TranslateJetTypeToUncertaintyLabel(const JetType) const;
+    std::string FindJESUncertaintyFile(const JetType) const;
+    JetID       TranslateJetIDStringToEnum(const std::string) const;
+    PUJetIDWP   TranslatePUJetIDStringToEnum(const std::string) const;
+
+    // function to translate pujetid wp to integer
+    int TranslateJetPUIDtoInt(PUJetIDWP wp) const;
+
+    // function to sort objects by pt
     template< typename T >
     T GetSortedByPt(const T &) const;
-
-    int TranslateJetPUIDtoInt(PUJetIDWP wp) const;
 
     // ----------member data ---------------------------
 
     const std::string jetType;
-    JetType           JetType_;
-    const bool        isData;
+
+    const bool isData;
     /** min pt of jet collections **/
     const std::vector< double > ptMins;
     /** max eta of jet collections **/
@@ -136,6 +149,7 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
 
     /** apply jet energy correciton? **/
     const bool applyCorrection;
+    const bool doDeltaRCleaning;
 
     /** names of output jet collections **/
     const std::vector< std::string > collectionNames;
@@ -159,7 +173,7 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
     const std::string jecFileAK15_2018;
 
     const std::string era;
-    
+
     /** input jets data access token **/
     edm::EDGetTokenT< pat::JetCollection > jetsToken;
     /** muons data access token (for jet cleaning)**/
@@ -172,6 +186,7 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
     edm::EDGetTokenT< double > rhoToken;
 
     // selection criterias
+    JetType                  JetType_;
     std::vector< JetID >     Jet_ID;
     std::vector< PUJetIDWP > PUJetID_WP;
 
@@ -181,7 +196,8 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
     std::map< std::string, std::unique_ptr< JetCorrectionUncertainty > > jecUncertainties_;
     const JetCorrector *                                                 corrector;
     std::string                                                          correctorlabel = "";
-    const bool                                                           doJES          = true;
+
+    const bool doJES = true;
 };
 
 #endif
