@@ -892,7 +892,7 @@ process.patSmearedJetsAK4 = cms.EDProducer(
     ),  # If True, always skip gen jet matching and smear jet with a random gaussian
     # algopt = cms.string('AK4PFchs_pt'),
     # algo = cms.string('AK4PFchs'),
-    genJets=cms.InputTag("slimmedGenJets", "", "PAT"),
+    genJets=cms.InputTag("selectedPatJetsAK4PFPuppi", "genJets", "SKIM"),
     dRMax=cms.double(0.2),  # = cone size (0.4) / 2
     dPtMaxFactor=cms.double(3),  # dPt < 3 * resolution
     variation=cms.int32(0),  # systematic +1 0 -1 sigma
@@ -910,6 +910,7 @@ process.patSmearedJetsAK4 = cms.EDProducer(
 
 process.patSmearedJetsLooseAK4 = process.patSmearedJetsAK4.clone(
     src=cms.InputTag("CorrectedJetProducerLooseAK4:correctedJetsLooseAK4"),
+    genJets=cms.InputTag("slimmedGenJets")
 )
 
 
@@ -923,7 +924,7 @@ process.patSmearedJetsAK8 = cms.EDProducer(
     ),  # If True, always skip gen jet matching and smear jet with a random gaussian
     #    algopt = cms.string('AK4PFchs_pt'),
     #    algo = cms.string('AK4PFchs'),
-    genJets=cms.InputTag("slimmedGenJetsAK8", "", "PAT"),
+    genJets=cms.InputTag("selectedPatJetsAK8PFPuppi", "genJets", "SKIM"),
     dRMax=cms.double(0.4),  # = cone size (0.8) / 2
     dPtMaxFactor=cms.double(3),  # dPt < 3 * resolution
     variation=cms.int32(0),  # systematic +1 0 -1 sigma
@@ -949,7 +950,7 @@ process.patSmearedJetsAK15 = cms.EDProducer(
     ),  # If True, always skip gen jet matching and smear jet with a random gaussian
     #    algopt = cms.string('AK4PFchs_pt'),
     #    algo = cms.string('AK4PFchs'),
-    genJets=cms.InputTag("slimmedGenJetsAK8", "", "PAT"),
+    genJets=cms.InputTag("selectedPatJetsAK15PFPuppi", "genJets", "SKIM"),
     dRMax=cms.double(0.75),  # = cone size (1.5) / 2
     dPtMaxFactor=cms.double(3),  # dPt < 3 * resolution
     variation=cms.int32(0),  # systematic +1 0 -1 sigma
