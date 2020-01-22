@@ -8,6 +8,7 @@ SelectedJetProducer::SelectedJetProducer(const edm::ParameterSet &iConfig) :
     leptonJetDr{iConfig.getParameter< double >("leptonJetDr")},
     applyCorrection{iConfig.getParameter< bool >("applyCorrection")},
     doDeltaRCleaning{iConfig.getParameter< bool >("doDeltaRCleaning")},
+    isSubjetCollection{iConfig.getParameter< bool >("isSubjetCollection")},
     collectionNames{iConfig.getParameter< std::vector< std::string > >("collectionNames")},
     PUJetIDMins{iConfig.getParameter< std::vector< std::string > >("PUJetIDMins")},
     JetID_{iConfig.getParameter< std::vector< std::string > >("JetID")},
@@ -173,6 +174,7 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
     // Absolute eta requirement
     if (fabs(iJet.eta()) > iMaxAbsEta) return false;
 
+    if (isSubjetCollection) return true;
     // Jet ID
     bool passesID = iJet.isPFJet();
 
@@ -467,7 +469,7 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
         // these numbers are added as userfloats because they change after the jet energy corrections
         // but the values only make sense before the jet energy corrections
         for (auto &jet : cleanJets) {
-            if (!jet.hasUserFloat("neutralHadronEnergyFraction") && !jet.hasUserFloat("chargedHadronEnergyFraction")) {
+            if (!jet.hasUserFloat("neutralHadronEnergyFraction") && !jet.hasUserFloat("chargedHadronEnergyFraction") && !isSubjetCollection) {
                 jet.addUserFloat("neutralHadronEnergyFraction", jet.neutralHadronEnergyFraction());
                 jet.addUserFloat("chargedHadronEnergyFraction", jet.chargedHadronEnergyFraction());
             }

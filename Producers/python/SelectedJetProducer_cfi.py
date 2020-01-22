@@ -5,6 +5,7 @@ SelectedJetProducer = cms.EDProducer(
     isData=cms.bool(False),
     applyCorrection=cms.bool(True),
     doDeltaRCleaning=cms.bool(True),
+    isSubjetCollection=cms.bool(False),
     jets=cms.InputTag("slimmedJets"),
     electrons=cms.InputTag("SelectedElectronProducer:selectedElectronsLoose"),
     muons=cms.InputTag("SelectedMuonProducer:selectedMuonsLoose"),

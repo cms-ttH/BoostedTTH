@@ -150,6 +150,7 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
     /** apply jet energy correciton? **/
     const bool applyCorrection;
     const bool doDeltaRCleaning;
+    const bool isSubjetCollection;
 
     /** names of output jet collections **/
     const std::vector< std::string > collectionNames;

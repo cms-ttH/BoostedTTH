@@ -1037,6 +1037,87 @@ for s in systsJES:
 
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
+# JECs for Subjets
+from PhysicsTools.PatAlgos.tools.jetTools import addJetCollection
+addJetCollection(process,
+                    jetSource = cms.InputTag("MergeAK15FatjetsAndSubjets","SubJets","SKIM"),
+                    labelName = 'CreateRefs',
+                    jetCorrections = ("AK4PFPuppi", cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]), "None"),
+                    getJetMCFlavour = False,
+                    pvSource = cms.InputTag("offlineSlimmedPrimaryVertices"),
+                    genParticles = cms.InputTag("prunedGenParticles"),
+                    genJetCollection = cms.InputTag("slimmedGenJets")
+                    )
+if options.isData:
+    process.patJetsCreateRefs.addGenPartonMatch = cms.bool(False)
+    process.patJetsCreateRefs.addGenJetMatch = cms.bool(False)
+    process.patJetsCreateRefs.addPartonJetMatch = cms.bool(False)
+
+process.CorrectedSubjetProducer = process.CorrectedJetProducerAK4.clone(
+    jets=cms.InputTag("selectedPatJetsCreateRefs"),
+    JetID=["none"],
+    leptonJetDr = -1.0,
+    collectionNames = ["correctedSubjets"],
+    doDeltaRCleaning = cms.bool(False),
+    isSubjetCollection = cms.bool(True)
+)
+process.patSmearedSubjets = process.patSmearedJetsAK4.clone(
+    src=cms.InputTag("CorrectedSubjetProducer:correctedSubjets"),
+    skipGenMatching=cms.bool(True)
+)
+for s in systsJES:
+    setattr(
+        process,
+        "patSmearedSubjets" + s,
+        process.patSmearedSubjets.clone(
+            variation=0,
+            src=cms.InputTag("CorrectedSubjetProducer:correctedSubjets"+s),
+        )
+    )
+for s in systsJER:
+    v = 0
+    if s == "JERup":
+        v = +1
+    elif s == "JERdown":
+        v = -1
+    setattr(
+        process,
+        "patSmearedSubjets" + s,
+        process.patSmearedSubjets.clone(
+            variation=v, src=cms.InputTag("CorrectedSubjetProducer:correctedSubjets")
+        )
+    )
+process.LinkAK15JetsAndCorrectedSubjets = cms.EDProducer(
+    "BoostedJetMerger",
+    jetSrc=cms.InputTag("MergeAK15FatjetsAndSubjets","","SKIM"),
+    subjetSrc=cms.InputTag("patSmearedSubjets", "", process.name_())
+)
+process.CombineAK15JetsWithCorrectedSubjets = cms.EDProducer(
+    "JetSubstructurePacker",
+    jetSrc=cms.InputTag("SelectedJetProducerAK15:selectedJetsAK15"),
+    distMax=cms.double(1.5),
+    algoTags=cms.VInputTag(cms.InputTag("LinkAK15JetsAndCorrectedSubjets")),
+    algoLabels=cms.vstring("SoftDropWithBtagInfoCorrected"),
+    fixDaughters=cms.bool(False),
+)
+for syst in systs:
+    setattr(
+        process,
+        "LinkAK15JetsAndCorrectedSubjets" + syst,
+        process.LinkAK15JetsAndCorrectedSubjets.clone(
+            jetSrc=cms.InputTag("MergeAK15FatjetsAndSubjets","","SKIM"),
+            subjetSrc=cms.InputTag("patSmearedSubjets"+syst, "", process.name_())
+        )
+    )
+    setattr(
+        process,
+        "CombineAK15JetsWithCorrectedSubjets" + syst,
+        process.CombineAK15JetsWithCorrectedSubjets.clone(
+            jetSrc=cms.InputTag("SelectedJetProducerAK15"+syst+":selectedJetsAK15"+syst),
+            algoTags=cms.VInputTag(cms.InputTag("LinkAK15JetsAndCorrectedSubjets"+syst))
+        )
+    )
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 ### correct MET manually ###
 # process.load("BoostedTTH.Producers.CorrectedMETproducer_cfi")
@@ -1098,7 +1179,7 @@ process.BoostedAnalyzer.selectedJetsAK8 = [
     for s in variations
 ]
 process.BoostedAnalyzer.selectedJetsAK15 = [
-    cms.InputTag("SelectedJetProducerAK15" + s + ":selectedJetsAK15" + s)
+    cms.InputTag("CombineAK15JetsWithCorrectedSubjets" + s)
     for s in variations
 ]
 process.BoostedAnalyzer.correctedMETs = [METCollection] * (len(variations))
@@ -1197,6 +1278,7 @@ if options.ProduceMemNtuples == True:
 ##### DEFINE PATHS ##########
 
 process.final = cms.EndPath(process.BoostedAnalyzer)
+process.final.associate(process.patAlgosToolsTask)
 
 # run ecalBadCalibReducedMINIAODFilter for 2017/2018 data
 if "2017" or "2018" in options.dataEra:
@@ -1254,6 +1336,18 @@ process.jets.add(getattr(process, "patSmearedJetsLooseAK4"))
 process.jets.add(getattr(process, "SelectedJetProducerLooseAK4"))
 # process.final.associate(process.patAlgosToolsTask)
 process.final.associate(process.jets)
+
+# subjet corrections
+process.subjets = cms.Task()
+process.subjets.add(process.CorrectedSubjetProducer)
+process.subjets.add(process.patSmearedSubjets)
+process.subjets.add(process.LinkAK15JetsAndCorrectedSubjets)
+process.subjets.add(process.CombineAK15JetsWithCorrectedSubjets)
+for s in systs:
+    process.subjets.add(getattr(process, "patSmearedSubjets" + s))
+    process.subjets.add(getattr(process, "LinkAK15JetsAndCorrectedSubjets" + s))
+    process.subjets.add(getattr(process, "CombineAK15JetsWithCorrectedSubjets" + s))
+process.final.associate(process.subjets)
 
 # L1 prefiring issue
 if ("2016" in options.dataEra or "2017" in options.dataEra) and (not options.isData):
