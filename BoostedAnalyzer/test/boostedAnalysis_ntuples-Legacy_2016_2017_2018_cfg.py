@@ -799,7 +799,6 @@ process.CorrectedJetProducerAK8 = process.CorrectedJetProducerAK4.clone(
     jets=AK8jetCollection,
     JetType="AK8PFPUPPI",
     collectionNames=["correctedJetsAK8"],
-    miniAODGenJets=cms.InputTag("slimmedGenJetsAK8", "", "PAT"),
     leptonJetDr=0.8,
 )
 
@@ -833,7 +832,6 @@ process.CorrectedJetProducerAK15 = process.CorrectedJetProducerAK8.clone(
     jets=AK15jetCollection,
     JetType="AK15PFPUPPI",
     collectionNames=["correctedJetsAK15"],
-    miniAODGenJets=cms.InputTag("slimmedGenJetsAK8", "", "PAT"),
     leptonJetDr=1.5,
 )
 
