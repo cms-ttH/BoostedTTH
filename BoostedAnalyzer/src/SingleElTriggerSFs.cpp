@@ -14,15 +14,15 @@ SingleElTriggerSFs::~SingleElTriggerSFs()
 void SingleElTriggerSFs::Init(const InputCollections& input)
 {
     if (input.era.find("2016") != std::string::npos) {
-        file = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb2016_v2.root";
+        file = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb2016_v3.root";
         hist_name = "ele27_ele_pt_ele_sceta";
     }
     else if (input.era.find("2017") != std::string::npos) {
-        file = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb2017_v2.root";
+        file = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb2017_v3.root";
         hist_name = "ele28_ht150_OR_ele35_ele_pt_ele_sceta";
     }
     else if (input.era.find("2018") != std::string::npos) {
-        file = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb2018_v2.root";
+        file = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/SingleEG_JetHT_Trigger_Scale_Factors_ttHbb2018_v3.root";
         hist_name = "ele28_ht150_OR_ele32_ele_pt_ele_sceta";
     }
     else {
