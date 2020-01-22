@@ -48,9 +48,9 @@ void SingleMuTriggerSFs::Init(const InputCollections& input)
     xmax = hist->GetXaxis()->GetXmax();
     ymin = hist->GetYaxis()->GetXmin();
     ymax = hist->GetYaxis()->GetXmax();
-    
-    //std::cout << "xmin: " << xmin << " xmax: " << xmax << std::endl;
-    //std::cout << "ymin: " << ymin << " ymax: " << ymax << std::endl;
+
+    // std::cout << "xmin: " << xmin << " xmax: " << xmax << std::endl;
+    // std::cout << "ymin: " << ymin << " ymax: " << ymax << std::endl;
 
     initialized = true;
 }
@@ -60,7 +60,7 @@ std::vector< float > SingleMuTriggerSFs::CalculateTriggerSFs(const InputCollecti
 {
     std::vector< float > sfs{-999., -999., -999.};
     if (input.selectedMuonsLoose.size() == 0) return sfs;
-    
+
     pt  = -999.;
     eta = -999.;
 
@@ -69,12 +69,12 @@ std::vector< float > SingleMuTriggerSFs::CalculateTriggerSFs(const InputCollecti
     pt  = std::min(float(xmax - 0.1), float(pt));
     eta = std::max(ymin + 0.1, fabs(input.selectedMuonsLoose.at(0).eta()));
     eta = std::min(float(ymax - 0.1), float(eta));
-    //std::cout << "Pt: " << pt << std::endl;
-    //std::cout << "Eta: " << eta << std::endl;
+    // std::cout << "Pt: " << pt << std::endl;
+    // std::cout << "Eta: " << eta << std::endl;
     // calculate SFs here
     sfs.at(0) = hist->GetBinContent(hist->FindBin(pt, eta));
     sfs.at(1) = (hist->GetBinContent(hist->FindBin(pt, eta))) + (hist->GetBinError(hist->FindBin(pt, eta)));
     sfs.at(2) = (hist->GetBinContent(hist->FindBin(pt, eta))) - (hist->GetBinError(hist->FindBin(pt, eta)));
-    
+
     return sfs;
 }

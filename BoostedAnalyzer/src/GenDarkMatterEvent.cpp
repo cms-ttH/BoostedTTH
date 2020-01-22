@@ -174,7 +174,7 @@ void GenDarkMatterEvent::FillBoson()
         }
     }
     if (decay_prodW.size() >= 2) {
-        std::sort(decay_prodW.begin(), decay_prodW.end(), [](auto& a, auto& b) {return a.pt() > b.pt();});
+        std::sort(decay_prodW.begin(), decay_prodW.end(), [](auto& a, auto& b) { return a.pt() > b.pt(); });
         // std::cout << "filling W Boson" << std::endl;
         if ((decay_prodW.at(0).pdgId()) * (decay_prodW.at(1).pdgId()) < 0 and abs(abs(decay_prodW.at(0).pdgId()) - abs(decay_prodW.at(1).pdgId())) == 1) {
             for (size_t k = 0; k < decay_prodW.size(); k++) {
@@ -191,7 +191,7 @@ void GenDarkMatterEvent::FillBoson()
         }
     }
     if (decay_prodZ.size() >= 2) {
-        std::sort(decay_prodZ.begin(), decay_prodZ.end(), [](auto& a, auto& b) {return a.pt() > b.pt();});
+        std::sort(decay_prodZ.begin(), decay_prodZ.end(), [](auto& a, auto& b) { return a.pt() > b.pt(); });
         // std::cout << "filling Z Boson" << std::endl;
         if ((decay_prodZ.at(0).pdgId()) + (decay_prodZ.at(1).pdgId()) == 0) {
             for (size_t k = 0; k < decay_prodZ.size(); k++) {

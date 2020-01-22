@@ -179,8 +179,8 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     else {
         met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
     }
-    
-    math::XYZTLorentzVector calomet_p4(input.correctedMETPuppi.caloMETP2().px,input.correctedMETPuppi.caloMETP2().py,0.,0.);
+
+    math::XYZTLorentzVector calomet_p4(input.correctedMETPuppi.caloMETP2().px, input.correctedMETPuppi.caloMETP2().py, 0., 0.);
 
     vars.FillVar("Evt_Pt_MET", met_p4.pt());
     vars.FillVar("Evt_Phi_MET", met_p4.phi());
@@ -232,7 +232,7 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     vars.FillVar("CaloMET_Hadr_Recoil_ratio", fabs(hadr_recoil_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
     vars.FillVar("CaloMET_PFMET_Recoil_ratio", fabs(met_p4.pt() - input.correctedMETPuppi.caloMETPt()) / hadr_recoil_p4.pt());
     vars.FillVar("CaloMET_PFMET_Recoil_vec_ratio", (met_p4 - calomet_p4).pt() / hadr_recoil_p4.pt());
-    
+
     vars.FillVar("N_AK15Jets_x_N_LooseElectrons", input.selectedJetsAK15.size() * input.selectedElectronsLoose.size());
     vars.FillVar("N_AK8Jets_x_N_LooseElectrons", input.selectedJetsAK8.size() * input.selectedElectronsLoose.size());
     vars.FillVar("N_AK4Jets_x_N_LooseElectrons", input.selectedJets.size() * input.selectedElectronsLoose.size());

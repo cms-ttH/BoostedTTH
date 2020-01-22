@@ -24,7 +24,7 @@ class TriggerInfo {
     // L1 prefiring issue
     std::map< std::string, double > GetL1PrefireWeights() const;
     // ele32 trigger issue for 2017 era
-    bool                            GetEle32DoubleL1ToSingleL1() const;
+    bool GetEle32DoubleL1ToSingleL1() const;
 
    private:
     std::map< std::string, bool > triggers;

@@ -45,7 +45,7 @@ BosonWeightProcessor::BosonWeightProcessor(std::string era)
     hWbosonWeight_muRDown   = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
     hWbosonWeight_muFUp     = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
     hWbosonWeight_muFDown   = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
-    
+
     hZvvbosonWeight_nominal   = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n");
     hZvvbosonWeight_QCD1Up    = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_unn_nnn_n");
     hZvvbosonWeight_QCD1Down  = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_dnn_nnn_n");
@@ -69,7 +69,7 @@ BosonWeightProcessor::BosonWeightProcessor(std::string era)
     hZvvbosonWeight_muRDown   = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
     hZvvbosonWeight_muFUp     = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
     hZvvbosonWeight_muFDown   = (TH1D*) fWeightsZvv->Get("vvj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
-    
+
     hZllbosonWeight_nominal   = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n");
     hZllbosonWeight_QCD1Up    = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_unn_nnn_n");
     hZllbosonWeight_QCD1Down  = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_dnn_nnn_n");
@@ -198,7 +198,6 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
         double Z_Pt = DM_Evt.ReturnZBoson().Pt();
         if (Z_Pt > 30) {
             if (DM_Evt.IsZnunu()) {
-                
                 BosonWeight_nominal   = hZvvbosonWeight_nominal->GetBinContent(hZvvbosonWeight_nominal->FindBin(Z_Pt));
                 BosonWeight_QCD1Up    = hZvvbosonWeight_QCD1Up->GetBinContent(hZvvbosonWeight_QCD1Up->FindBin(Z_Pt));
                 BosonWeight_QCD1Down  = hZvvbosonWeight_QCD1Down->GetBinContent(hZvvbosonWeight_QCD1Down->FindBin(Z_Pt));
@@ -222,7 +221,6 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
                 BosonWeight_muRDown   = hZvvbosonWeight_muRDown->GetBinContent(hZvvbosonWeight_muRDown->FindBin(Z_Pt));
                 BosonWeight_muFUp     = hZvvbosonWeight_muFUp->GetBinContent(hZvvbosonWeight_muFUp->FindBin(Z_Pt));
                 BosonWeight_muFDown   = hZvvbosonWeight_muFDown->GetBinContent(hZvvbosonWeight_muFDown->FindBin(Z_Pt));
-                
             }
             else {
                 BosonWeight_nominal   = hZllbosonWeight_nominal->GetBinContent(hZllbosonWeight_nominal->FindBin(Z_Pt));

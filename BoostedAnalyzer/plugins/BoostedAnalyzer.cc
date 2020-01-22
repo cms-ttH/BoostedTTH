@@ -502,8 +502,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
         if (std::find(processorNames.begin(), processorNames.end(), "essentialBasicVarProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new essentialBasicVarProcessor(), "essentialBasicVarProcessor");
         }
-        //if (std::find(processorNames.begin(), processorNames.end(), "essentialRecoVarProcessor") != processorNames.end()) {
-            //treewriter->AddTreeProcessor(new essentialRecoVarProcessor(), "essentialRecoVarProcessor");
+        // if (std::find(processorNames.begin(), processorNames.end(), "essentialRecoVarProcessor") != processorNames.end()) {
+        // treewriter->AddTreeProcessor(new essentialRecoVarProcessor(), "essentialRecoVarProcessor");
         //}
         if (std::find(processorNames.begin(), processorNames.end(), "PhotonVarProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new PhotonVarProcessor(), "PhotonVarProcessor");
@@ -520,14 +520,14 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
         if (std::find(processorNames.begin(), processorNames.end(), "BosonWeightProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new BosonWeightProcessor(era), "BosonWeightProcessor");
         }
-        //if (std::find(processorNames.begin(), processorNames.end(), "essentialMVAVarProcessor") != processorNames.end()) {
-            //if (std::find(processorNames.begin(), processorNames.end(), "essentialBasicVarProcessor") == processorNames.end()) {
-                //cout << "adding essentialBasicVarProcessor, needed for "
-                //        "essentialMVAVarProcessor"
-                //     << endl;
-                //treewriter->AddTreeProcessor(new essentialBasicVarProcessor(), "essentialBasicVarProcessor");
-            //}
-            //treewriter->AddTreeProcessor(new essentialMVAVarProcessor(), "essentialMVAVarProcessor");
+        // if (std::find(processorNames.begin(), processorNames.end(), "essentialMVAVarProcessor") != processorNames.end()) {
+        // if (std::find(processorNames.begin(), processorNames.end(), "essentialBasicVarProcessor") == processorNames.end()) {
+        // cout << "adding essentialBasicVarProcessor, needed for "
+        //        "essentialMVAVarProcessor"
+        //     << endl;
+        // treewriter->AddTreeProcessor(new essentialBasicVarProcessor(), "essentialBasicVarProcessor");
+        //}
+        // treewriter->AddTreeProcessor(new essentialMVAVarProcessor(), "essentialMVAVarProcessor");
         //}
         if (std::find(processorNames.begin(), processorNames.end(), "StdTopVarProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new StdTopVarProcessor(), "StdTopVarProcessor");
@@ -547,14 +547,14 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
         if (std::find(processorNames.begin(), processorNames.end(), "TriggerVarProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new TriggerVarProcessor(relevantTriggers), "TriggerVarProcessor");
         }
-        //if (std::find(processorNames.begin(), processorNames.end(), "TTbarReconstructionVarProcessor") != processorNames.end()) {
-            //treewriter->AddTreeProcessor(new TTbarReconstructionVarProcessor(), "TTbarReconstructionVarProcessor");
+        // if (std::find(processorNames.begin(), processorNames.end(), "TTbarReconstructionVarProcessor") != processorNames.end()) {
+        // treewriter->AddTreeProcessor(new TTbarReconstructionVarProcessor(), "TTbarReconstructionVarProcessor");
         //}
-        //if (std::find(processorNames.begin(), processorNames.end(), "ReconstructionMEvarProcessor") != processorNames.end()) {
-            //treewriter->AddTreeProcessor(new ReconstructionMEvarProcessor(), "ReconstructionMEvarProcessor");
+        // if (std::find(processorNames.begin(), processorNames.end(), "ReconstructionMEvarProcessor") != processorNames.end()) {
+        // treewriter->AddTreeProcessor(new ReconstructionMEvarProcessor(), "ReconstructionMEvarProcessor");
         //}
-        //if (std::find(processorNames.begin(), processorNames.end(), "SpinCorrelationProcessor") != processorNames.end()) {
-            //treewriter->AddTreeProcessor(new SpinCorrelationProcessor(), "SpinCorrelationProcessor");
+        // if (std::find(processorNames.begin(), processorNames.end(), "SpinCorrelationProcessor") != processorNames.end()) {
+        // treewriter->AddTreeProcessor(new SpinCorrelationProcessor(), "SpinCorrelationProcessor");
         //}
         if (std::find(processorNames.begin(), processorNames.end(), "GenJetOrderedJetCollectionProcessor") != processorNames.end()) {
             treewriter->AddTreeProcessor(new GenJetOrderedJetCollectionProcessor, "GenJetOrderedJetCollectionProcessor");
@@ -617,8 +617,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken(hcalNoiseToken, h_hcalNoiseSummary);
     edm::Handle< reco::BeamSpot > h_beamSpot;
     iEvent.getByToken(beamSpotToken, h_beamSpot);
-    //edm::Handle< reco::ConversionCollection > h_conversionCollection;
-    //iEvent.getByToken(conversionCollectionToken, h_conversionCollection);
+    // edm::Handle< reco::ConversionCollection > h_conversionCollection;
+    // iEvent.getByToken(conversionCollectionToken, h_conversionCollection);
     edm::Handle< reco::VertexCollection > h_primaryVertices;
     iEvent.getByToken(primaryVerticesToken, h_primaryVertices);
 
