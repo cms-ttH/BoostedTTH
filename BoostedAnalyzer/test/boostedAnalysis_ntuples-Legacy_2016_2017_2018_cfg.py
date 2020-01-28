@@ -65,17 +65,19 @@ else:
 if not options.inputFiles:
     if not options.isData:
         if "2016" in options.dataEra:
-            options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
+            # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/swieland/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2016/190328_111449/0000/Skim_1.root']
+            options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/ttH_4f_ctcvcp_TuneCP5_13TeV_madgraph_pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2016/191218_102941/0000/Skim_1.root']
         elif "2017" in options.dataEra: 
-           options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2017/190607_151112/0000/Skim_238.root']
+        #    options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2017/190607_151112/0000/Skim_238.root']
+           options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/TTH_4f_ctcvcp_TuneCP5_13TeV_madgraph_pythia8/KIT_tthbb_sl_skims_MC_94X_LEG_2017/191218_102702/0000/Skim_1.root']
             # options.inputFiles=['file:/pnfs/desy.de/cms/tier2//store/user/mhorzela/TTbb_Powheg_Openloops/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1-corrected/190813_124736/0000/TTbb_TuneCP5-Powloops_MINIAODSIMv2_840.root']
 
             # options.inputFiles=[
             #    'file://ttH_2017_selectedEvents.root']
             # options.inputFiles=['root://xrootd-cms.infn.it//store/mc/RunIIFall17MiniAODv2/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/60000/AC628CE7-0169-E811-9C5E-00010100096B.root']
         elif "2018" in options.dataEra:
-            options.inputFiles=[
-               'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_1.root']
+            # options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/mschrode/ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_134753/0000/Skim_1.root']
+            options.inputFiles=['file:///pnfs/desy.de/cms/tier2/store/user/vanderli/TTH_4f_ctcvcp_TuneCP5_13TeV_madgraph_pythia8/KIT_tthbb_sl_skims_MC_102X_LEG_2018/191218_103017/0000/Skim_1.root']
             # options.inputFiles=[
             #    'file:///pnfs/desy.de/cms/tier2/store/user/mschrode/TTZToBB_TuneCP5_13TeV-amcatnlo-pythia8/KIT_tthbb_skims_MC_94X_LEG_2018_v2/190412_135752/0000/Skim_1.root']
             # options.inputFiles=[
@@ -577,21 +579,29 @@ process.patSmearedJetsAK4 = cms.EDProducer("SmearedPATJetProducer",
 # )
 
 # up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
+#   - |eta|<1.93,   1 pt bin [0,infty)           : JEReta0 (+-2)
+#   - 1.93<|eta|<2.5,  1 pt bin [0,infty)        : JEReta1 (+-3)
+#   - 2.5<|eta|<3, two pt bins [0,50],[50,infty) : JERpt0eta2 (+-4) JERpt1eta2 (+-5) 
+#   - 3<|eta|<5, two pt bins [0,50],[50,infty)   : JERpt0eta3 (+-6) JERpt1eta3 (+-7)
+            
 for s in systsJER:
     v=0
     if s=='JERup': v=+1
-    elif s=='JERpt0eta0up': v=+2
-    elif s=='JERpt0eta1up': v=+3
-    elif s=='JERpt1eta0up': v=+4
-    elif s=='JERpt1eta1up': v=+5
-    elif s=='JEReta2up': v=+6
+    elif s=='JEReta0up': v=+2
+    elif s=='JEReta1up': v=+3
+    elif s=='JERpt0eta2up': v=+4
+    elif s=='JERpt1eta2up': v=+5
+    elif s=='JERpt0eta3up': v=+6
+    elif s=='JERpt1eta3up': v=+7
 
-    elif s=='JERdown': v=-1
-    elif s=='JERpt0eta0down': v=-2
-    elif s=='JERpt0eta1down': v=-3
-    elif s=='JERpt1eta0down': v=-4
-    elif s=='JERpt1eta1down': v=-5
-    elif s=='JEReta2down': v=-6
+    if s=='JERdown': v=-1
+    elif s=='JEReta0down': v=-2
+    elif s=='JEReta1down': v=-3
+    elif s=='JERpt0eta2down': v=-4
+    elif s=='JERpt1eta2down': v=-5
+    elif s=='JERpt0eta3down': v=-6
+    elif s=='JERpt1eta3down': v=-7
+    
     setattr(process,'patSmearedJetsAK4'+s,process.patSmearedJetsAK4.clone(variation=v,src=cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4")))
     # setattr(process,'patSmearedJetsAK8'+s,process.patSmearedJetsAK8.clone(variation=v,src=cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8")))
 for s in systsJES:
@@ -704,15 +714,15 @@ if options.isData:
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-  "MCMatchVarProcessor",
-  "essentialBasicVarProcessor",
-  "essentialMVAVarProcessor",
-  "essentialRecoVarProcessor",
-  "TriggerVarProcessor",
-  "JABDTttbarProcessor",
-  "JABDTthqProcessor",
-  "JABDTthwProcessor",
-  "JABDTtthProcessor",
+#   "MCMatchVarProcessor",
+#   "essentialBasicVarProcessor",
+#   "essentialMVAVarProcessor",
+#   "essentialRecoVarProcessor",
+#   "TriggerVarProcessor",
+#   "JABDTttbarProcessor",
+#   "JABDTthqProcessor",
+#   "JABDTthwProcessor",
+#   "JABDTtthProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )
