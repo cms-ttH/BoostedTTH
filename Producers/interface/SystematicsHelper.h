@@ -168,16 +168,18 @@ public:
     JERup,			
     JERdown,
 
-    JERpt0eta0up,
-    JERpt0eta0down,
-    JERpt0eta1up,
-    JERpt0eta1down,
-    JERpt1eta0up,
-    JERpt1eta0down,
-    JERpt1eta1up,
-    JERpt1eta1down,
-    JEReta2up,
-    JEReta2down,
+    JEReta0up,
+    JEReta0down,
+    JEReta1up,
+    JEReta1down,
+    JERpt0eta2up,
+    JERpt0eta2down,
+    JERpt1eta2up,
+    JERpt1eta2down,
+    JERpt0eta3up,
+    JERpt0eta3down,
+    JERpt1eta3up,
+    JERpt1eta3down,
 
     hfSFup,
     hfSFdown,
@@ -248,11 +250,13 @@ void SystematicsHelper::init() {
   add( JESup,JESdown,"JES","Uncertainty");
   add( JERup,JERdown,"JER","JER");
 
-  add( JERpt0eta0up,JERpt0eta0down,"JERpt0eta0","JERpt0eta0");
-  add( JERpt0eta1up,JERpt0eta1down,"JERpt0eta1","JERpt0eta1");
-  add( JERpt1eta0up,JERpt1eta0down,"JERpt1eta0","JERpt1eta0");
-  add( JERpt1eta1up,JERpt1eta1down,"JERpt1eta1","JERpt1eta1");
-  add( JEReta2up,JEReta2down,"JEReta2","JEReta2");
+  add( JEReta0up,JEReta0down,"JEReta0","JEReta0");
+  add( JEReta1up,JEReta1down,"JEReta1","JEReta1");
+  add( JERpt0eta2up,JERpt0eta2down,"JERpt0eta2","JERpt0eta2");
+  add( JERpt1eta2up,JERpt1eta2down,"JERpt1eta2","JERpt1eta2");
+  add( JERpt0eta3up,JERpt0eta3down,"JERpt0eta3","JERpt0eta3");
+  add( JERpt1eta3up,JERpt1eta3down,"JERpt1eta3","JERpt1eta3");
+
 
   add(JESAbsoluteup,             JESAbsolutedown,            "JESAbsolute",              "Absolute"          );
   add(JESAbsoluteyearup,         JESAbsoluteyeardown,        "JESAbsoluteyear",          "Absoluteyear"       );
