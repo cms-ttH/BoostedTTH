@@ -17,12 +17,12 @@ JESRelativeSampleyear
 
 #JER sources according to HiggsMuMu
 
-JERpt0eta0
-JERpt0eta1
-JERpt1eta0
-JERpt1eta1
-JEReta2
-
+JEReta0
+JEReta1
+JERpt0eta2
+JERpt1eta2
+JERpt0eta3
+JERpt1eta3
 # Total 17 sources
 
 
