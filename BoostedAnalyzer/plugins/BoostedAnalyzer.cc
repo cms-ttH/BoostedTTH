@@ -276,6 +276,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
     edm::EDGetTokenT< LHEEventProduct > lheInfoToken_source;
     /** gen particles data access token **/
     edm::EDGetTokenT< std::vector< reco::GenParticle > > genParticlesToken;
+    edm::EDGetTokenT< std::vector< pat::PackedGenParticle > > packedGenParticlesToken;
     /** gen jets data access token **/
     edm::EDGetTokenT< std::vector< reco::GenJet > > genJetsToken;
     // LHERunInfo data access token
@@ -345,6 +346,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     lheInfoToken{consumes< LHEEventProduct >(iConfig.getParameter< edm::InputTag >("lheInfo"))},
     lheInfoToken_source{consumes< LHEEventProduct >(iConfig.getParameter< edm::InputTag >("lheInfo_source"))},
     genParticlesToken{consumes< std::vector< reco::GenParticle > >(iConfig.getParameter< edm::InputTag >("genParticles"))},
+    packedGenParticlesToken{consumes< std::vector< pat::PackedGenParticle > >(iConfig.getParameter< edm::InputTag >("packedGenParticles"))},
     genJetsToken{consumes< std::vector< reco::GenJet > >(iConfig.getParameter< edm::InputTag >("genJets"))},
     LHERunInfoToken{consumes< LHERunInfoProduct, edm::InRun >(edm::InputTag("externalLHEProducer"))},
     LHERunInfoToken_source{consumes< LHERunInfoProduct, edm::InRun >(edm::InputTag("source"))}
@@ -679,6 +681,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle< LHEEventProduct >                  h_dummie1;
     edm::Handle< LHEEventProduct >                  h_dummie2;
     edm::Handle< std::vector< reco::GenParticle > > h_genParticles;
+    edm::Handle< std::vector< pat::PackedGenParticle > > h_packedGenParticles;
     edm::Handle< std::vector< reco::GenJet > >      h_genJets;
     if (!isData) {
         iEvent.getByToken(genInfoToken, h_genInfo);
@@ -696,6 +699,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             dogenweights = false;
         }
         iEvent.getByToken(genParticlesToken, h_genParticles);
+        iEvent.getByToken(packedGenParticlesToken, h_packedGenParticles);
         iEvent.getByToken(genJetsToken, h_genJets);
     }
 
@@ -769,11 +773,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     else if (((foundT && !foundTbar) || (!foundT && foundTbar)) && foundHiggs)
         sampleType = SampleType::thq;
 
-    // create empty packedGenParticle dummy since this collection is not yet
-    // needed, but maybe later
-    std::vector< pat::PackedGenParticle > packedGenParticles_dummy;
     // create GenDarkMatterEvent object
-    GenDarkMatterEvent genDarkMatterEvent(*h_genParticles, packedGenParticles_dummy);
+    GenDarkMatterEvent genDarkMatterEvent(*h_genParticles, *h_packedGenParticles);
     // initialze the GenDarkMatterEvent object with the collections of
     // genparticles
     if (!isData) {

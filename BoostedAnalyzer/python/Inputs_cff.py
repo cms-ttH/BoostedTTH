@@ -31,6 +31,7 @@ Inputs_tth_sl = cms.PSet(
     lheInfo=cms.InputTag("externalLHEProducer"),
     lheInfo_source=cms.InputTag("source"),
     genParticles=cms.InputTag("prunedGenParticles"),
+    packedGenParticles=cms.InputTag("packedGenParticles"),
     genJets=cms.InputTag("slimmedGenJets"),
     conversionCollection=cms.InputTag("reducedEgamma:reducedConversions"),
 )
