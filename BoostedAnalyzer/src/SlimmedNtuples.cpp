@@ -16,7 +16,7 @@ template <typename T> T SlimmedNtuples::GetSortedBySeed(const T& collection){
 
 void SlimmedNtuples::Init(const std::vector<InputCollections>& input,VariableContainer& vars){
     
-    vars.InitVar( "event" , "I" );
+    vars.InitVar( "event" , "L" );
     vars.InitVar( "run" , "I" );
     vars.InitVar( "lumi" , "I" );
     vars.InitVar( "systematic" , "I" );
