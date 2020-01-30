@@ -116,6 +116,11 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Z_Eta");
     vars.InitVar("Z_Mass");
     vars.InitVar("Z_Energy");
+    vars.InitVar("Gamma_Pt");
+    vars.InitVar("Gamma_Phi");
+    vars.InitVar("Gamma_Eta");
+    vars.InitVar("Gamma_Mass");
+    vars.InitVar("Gamma_Energy");
 
     //     vars.InitVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio");
 
@@ -295,6 +300,16 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
         vars.FillVar("Z_Eta", ZBoson.Eta());
         vars.FillVar("Z_Energy", ZBoson.E());
         vars.FillVar("Z_Mass", ZBoson.M());
+    }
+
+    if (input.genDarkMatterEvt.PhotonIsFilled()) {
+        const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
+        math::XYZTLorentzVector   Gamma  = DM_Evt.ReturnPhoton();
+        vars.FillVar("Gamma_Pt", Gamma.Pt());
+        vars.FillVar("Gamma_Phi", Gamma.Phi());
+        vars.FillVar("Gamma_Eta", Gamma.Eta());
+        vars.FillVar("Gamma_Energy", Gamma.E());
+        vars.FillVar("Gamma_Mass", Gamma.M());
     }
 
     //         vars.FillVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio", fabs(Zmumu.Pt() - hadr_recoil_p4.pt()) / hadr_recoil_p4.pt());
