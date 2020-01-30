@@ -38,9 +38,11 @@ class GenDarkMatterEvent {
     void                    FillBoson();
     bool                    ZBosonIsFilled() const;
     bool                    WBosonIsFilled() const;
+    bool                    PhotonIsFilled() const;
     bool                    IsZnunu() const;
     math::XYZTLorentzVector ReturnZBoson() const;
     math::XYZTLorentzVector ReturnWBoson() const;
+    math::XYZTLorentzVector ReturnPhoton() const;
 
    private:
     bool hasDarkMatter = false;
@@ -48,19 +50,28 @@ class GenDarkMatterEvent {
 
     const std::vector< reco::GenParticle >&      prunedGenParticles;
     const std::vector< pat::PackedGenParticle >& packedGenParticles;
-    std::vector< reco::GenParticle >             Neutralinos;
-    reco::GenParticle                            Mediator;
-    std::vector< reco::GenParticle >             Neutrinos;
-    std::vector< reco::GenParticle >             Leptons;
-    std::vector< reco::GenParticle >             Radiated_Photons;
+
+    std::vector< reco::GenParticle > Neutralinos;
+    reco::GenParticle                Mediator;
+
+    std::vector< reco::GenParticle >      Neutrinos;
+    std::vector< reco::GenParticle >      Leptons;
+    std::vector< reco::GenParticle >      Photons;
+    std::vector< pat::PackedGenParticle > Hadrons;
 
     // for MC reweighting of Z/W boson + jets events
     bool                    hasVectorBoson = false;
     bool                    ZBosonisFilled = false;
     bool                    WBosonisFilled = false;
+    bool                    PhotonisFilled = false;
     bool                    isZnunu        = false;
     math::XYZTLorentzVector ZBoson;
     math::XYZTLorentzVector WBoson;
+    math::XYZTLorentzVector Photon;
+
+    float epsilon_0_dyn = 0.1;
+    int   n_dyn         = 1;
+    int   iterations    = 2;
 };
 
 #endif

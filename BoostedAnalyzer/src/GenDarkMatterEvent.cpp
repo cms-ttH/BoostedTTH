@@ -15,12 +15,14 @@ GenDarkMatterEvent::~GenDarkMatterEvent() {}
 // initialize some flags
 void GenDarkMatterEvent::Initialize()
 {
+    isFilled = false;
+
     hasDarkMatter = false;
-    isFilled      = false;
 
     hasVectorBoson = false;
     WBosonisFilled = false;
     ZBosonisFilled = false;
+    PhotonisFilled = false;
 }
 
 // return the prunedGenParticles collection
@@ -33,11 +35,15 @@ const std::vector< pat::PackedGenParticle >& GenDarkMatterEvent::ReturnPackedGen
 // genparticle collections
 void GenDarkMatterEvent::Fill()
 {
-    // find the lightest neutralinos in the event, the mediator, neutrinos, leptons in general (for vector boson pt reweighting) and radiated photons
-    for (size_t i = 0; i < prunedGenParticles.size(); i++) {
-        const reco::GenParticle& genparticle = prunedGenParticles[i];
-        if ((genparticle.pdgId() == 1000022 or abs(genparticle.pdgId()) == 18) and genparticle.isPromptFinalState()) { Neutralinos.push_back(genparticle); }
-        if ((genparticle.pdgId() == 23 || genparticle.pdgId() == 25 || genparticle.pdgId() == 55) and genparticle.isLastCopy()) { Mediator = genparticle; }
+    // find the lightest neutralinos in the event, the mediator, neutrinos, leptons in general (for vector boson pt reweighting) and photons from the
+    // prunedGenParticles collection
+    for (const reco::GenParticle& genparticle : prunedGenParticles) {
+        if ((abs(genparticle.pdgId()) == 1000022 or abs(genparticle.pdgId()) == 18) and genparticle.isPromptFinalState()) {
+            Neutralinos.push_back(genparticle);
+        }
+        if ((abs(genparticle.pdgId()) == 23 or abs(genparticle.pdgId()) == 25 or abs(genparticle.pdgId()) == 55) and genparticle.isLastCopy()) {
+            Mediator = genparticle;
+        }
         if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16) and genparticle.isPromptFinalState() == 1) {
             Neutrinos.push_back(genparticle);
         }
@@ -47,12 +53,22 @@ void GenDarkMatterEvent::Fill()
             (abs(genparticle.pdgId()) == 15 and genparticle.isPromptDecayed())) {
             Leptons.push_back(genparticle);
         }
-        if (abs(genparticle.pdgId()) == 22 and genparticle.isPromptFinalState()) { Radiated_Photons.push_back(genparticle); }
+        if (abs(genparticle.pdgId()) == 22 and genparticle.isPromptFinalState()) { Photons.push_back(genparticle); }
     }
+    // find all final state hadrons in the event from the the packedGenParticles collection
+    for (const pat::PackedGenParticle& genparticle : packedGenParticles) {
+        if (genparticle.status() == 1 and (not(abs(genparticle.pdgId()) == 22 or (abs(genparticle.pdgId()) >= 11 and abs(genparticle.pdgId()) <= 16)))) {
+            Hadrons.push_back(genparticle);
+        }
+    }
+
     isFilled = true;
 
     if (Neutralinos.size() > 0) hasDarkMatter = true;
-    if (Leptons.size() >= 2) hasVectorBoson = true;
+    if (Leptons.size() >= 2 or Photons.size() > 0) hasVectorBoson = true;
+    //     for (const auto& hadron : Hadrons) {
+    //         std::cout << "Hadron: " << hadron.pdgId() << " " << hadron.status() << " " << hadron.pt() << " " << hadron.eta() << std::endl;
+    //     }
 }
 
 // return the lightest neutralinos in a vector
@@ -138,50 +154,70 @@ TLorentzVector GenDarkMatterEvent::ReturnNaiveMET4Vector() const
     return BoostedUtils::GetTLorentzVector(vec4_invisibles);
 }
 
-// for MC reweighting of Z/W boson + jets events: save the pt of the generator v
+// for MC reweighting of Z/W/Gamma boson + jets events: save the pt of the generator v
 // boson
 
 void GenDarkMatterEvent::FillBoson()
 {
-    if (not hasVectorBoson) {
-        // std::cout << "The Generator Event does not have a VectorBoson with PDGID
-        // 23 or 24 (Z/W)." << std::endl; std::cout << "Therefore, the Boson cannot
-        // be filled." << std::endl;
-        return;
-    }
+    if (not hasVectorBoson) { return; }
+
     std::vector< reco::GenParticle > decay_prodW;
     std::vector< reco::GenParticle > decay_prodZ;
-    // std::cout << "doing Boson stuff" << std::endl;
-    // std::cout << "looping over " << prunedGenParticles.size() << " genParticles" << std::endl;
-    for (size_t i = 0; i < Leptons.size(); i++) {
-        const reco::GenParticle& genparticle = Leptons[i];
+    std::vector< reco::GenParticle > isolated_photons;
 
+    // find all possible leptonic decay product of the Z and W boson
+    for (const reco::GenParticle& lepton : Leptons) {
         // Z Bosons
-        if (((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16 or abs(genparticle.pdgId()) == 11 or
-              abs(genparticle.pdgId()) == 13) and
-             genparticle.isPromptFinalState()) or
-            (abs(genparticle.pdgId()) == 15 and genparticle.isPromptDecayed())) {
-            decay_prodZ.push_back(genparticle);
+        if (((abs(lepton.pdgId()) == 12 or abs(lepton.pdgId()) == 14 or abs(lepton.pdgId()) == 16 or abs(lepton.pdgId()) == 11 or abs(lepton.pdgId()) == 13) and
+             lepton.isPromptFinalState()) or
+            (abs(lepton.pdgId()) == 15 and lepton.isPromptDecayed())) {
+            decay_prodZ.push_back(lepton);
         }
 
         // W Bosons
-        if (((abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 13 or abs(genparticle.pdgId()) == 14 or
-              abs(genparticle.pdgId()) == 16) and
-             genparticle.isPromptFinalState()) or
-            (abs(genparticle.pdgId()) == 15 and genparticle.isPromptDecayed())) {  // or abs(daughter->pdgId()) == 15
-                                                                                   // or abs(daughter->pdgId()) == 16
-            decay_prodW.push_back(genparticle);
+        if (((abs(lepton.pdgId()) == 11 or abs(lepton.pdgId()) == 12 or abs(lepton.pdgId()) == 13 or abs(lepton.pdgId()) == 14 or abs(lepton.pdgId()) == 16) and
+             lepton.isPromptFinalState()) or
+            (abs(lepton.pdgId()) == 15 and lepton.isPromptDecayed())) {  // or abs(daughter->pdgId()) == 15
+                                                                         // or abs(daughter->pdgId()) == 16
+            decay_prodW.push_back(lepton);
         }
     }
+
+    // find all isolated photons using a dynamic Frixione isolation criterium
+    for (const reco::GenParticle& photon : Photons) {
+        //         std::cout << "Photon Pt: " << photon.pt() << std::endl;
+        bool                 isolated = true;
+        float                R_dyn    = 91.1876 / (photon.pt() * sqrt(epsilon_0_dyn));
+        float                R_0_dyn  = std::min(float(1.0), R_dyn);
+        std::vector< float > radii;
+        for (int j = 1; j <= iterations; j++) { radii.push_back(R_0_dyn / iterations * j); }
+        for (const float& R : radii) {
+            //             std::cout << "R: " << R << std::endl;
+            float isolation = 0.0;
+            for (const auto& hadron : Hadrons) {
+                if (reco::deltaR(photon.p4(), hadron.p4()) <= R) { isolation += hadron.pt(); }
+            }
+            //             std::cout << "Dynamic frixione isolation: " << isolation << std::endl;
+            float isolation_cut = epsilon_0_dyn * photon.pt() * pow((1 - cos(R)) / (1 - cos(R_0_dyn)), n_dyn);
+            //             std::cout << "Dynamic frixione isolation cut: " << isolation_cut << std::endl;
+            if (isolation > isolation_cut) {
+                isolated = false;
+                break;
+            }
+        }
+        if (isolated) isolated_photons.push_back(photon);
+    }
+
+    // try to reconstruct the W boson from its decay products
     if (decay_prodW.size() >= 2) {
         std::sort(decay_prodW.begin(), decay_prodW.end(), [](auto& a, auto& b) { return a.pt() > b.pt(); });
         // std::cout << "filling W Boson" << std::endl;
         if ((decay_prodW.at(0).pdgId()) * (decay_prodW.at(1).pdgId()) < 0 and abs(abs(decay_prodW.at(0).pdgId()) - abs(decay_prodW.at(1).pdgId())) == 1) {
             for (size_t k = 0; k < decay_prodW.size(); k++) {
                 if (abs(decay_prodW.at(k).pdgId()) == 11 or abs(decay_prodW.at(k).pdgId()) == 13 or abs(decay_prodW.at(k).pdgId()) == 15) {
-                    for (size_t l = 0; l < Radiated_Photons.size(); l++) {
-                        if (reco::deltaR(Radiated_Photons.at(l).p4(), decay_prodW.at(k).p4()) < 0.1) {
-                            decay_prodW.at(k).setP4(decay_prodW.at(k).p4() + Radiated_Photons.at(l).p4());
+                    for (size_t l = 0; l < Photons.size(); l++) {
+                        if (reco::deltaR(Photons.at(l).p4(), decay_prodW.at(k).p4()) < 0.1) {
+                            decay_prodW.at(k).setP4(decay_prodW.at(k).p4() + Photons.at(l).p4());
                         }
                     }
                 }
@@ -190,15 +226,17 @@ void GenDarkMatterEvent::FillBoson()
             WBosonisFilled = true;
         }
     }
+
+    // try to reconstruct the Z boson from its decay products
     if (decay_prodZ.size() >= 2) {
         std::sort(decay_prodZ.begin(), decay_prodZ.end(), [](auto& a, auto& b) { return a.pt() > b.pt(); });
         // std::cout << "filling Z Boson" << std::endl;
         if ((decay_prodZ.at(0).pdgId()) + (decay_prodZ.at(1).pdgId()) == 0) {
             for (size_t k = 0; k < decay_prodZ.size(); k++) {
                 if (abs(decay_prodZ.at(k).pdgId()) == 11 or abs(decay_prodZ.at(k).pdgId()) == 13 or abs(decay_prodZ.at(k).pdgId()) == 15) {
-                    for (size_t l = 0; l < Radiated_Photons.size(); l++) {
-                        if (reco::deltaR(Radiated_Photons.at(l).p4(), decay_prodZ.at(k).p4()) < 0.1) {
-                            decay_prodZ.at(k).setP4(decay_prodZ.at(k).p4() + Radiated_Photons.at(l).p4());
+                    for (size_t l = 0; l < Photons.size(); l++) {
+                        if (reco::deltaR(Photons.at(l).p4(), decay_prodZ.at(k).p4()) < 0.1) {
+                            decay_prodZ.at(k).setP4(decay_prodZ.at(k).p4() + Photons.at(l).p4());
                         }
                     }
                 }
@@ -210,6 +248,13 @@ void GenDarkMatterEvent::FillBoson()
                 isZnunu = false;
         }
     }
+
+    // fill the hardest isolated photon
+    if (isolated_photons.size() > 0) {
+        std::sort(isolated_photons.begin(), isolated_photons.end(), [](auto& a, auto& b) { return a.pt() > b.pt(); });
+        Photon         = isolated_photons.at(0).p4();
+        PhotonisFilled = true;
+    }
 }
 
 // return if the WBoson has been filled
@@ -217,6 +262,9 @@ bool GenDarkMatterEvent::WBosonIsFilled() const { return WBosonisFilled; }
 
 // return if the ZBoson has been filled
 bool GenDarkMatterEvent::ZBosonIsFilled() const { return ZBosonisFilled; }
+
+// return if the Photon has been filled
+bool GenDarkMatterEvent::PhotonIsFilled() const { return PhotonisFilled; }
 
 // return if the ZBoson decayed to Neutrinos
 bool GenDarkMatterEvent::IsZnunu() const { return isZnunu; }
@@ -231,4 +279,10 @@ math::XYZTLorentzVector GenDarkMatterEvent::ReturnZBoson() const
 {
     if (not ZBosonisFilled) { std::cerr << "Attention: ZBoson is not filled!"; }
     return ZBoson;
+}
+
+math::XYZTLorentzVector GenDarkMatterEvent::ReturnPhoton() const
+{
+    if (not PhotonisFilled) { std::cerr << "Attention: Photon is not filled!"; }
+    return Photon;
 }
