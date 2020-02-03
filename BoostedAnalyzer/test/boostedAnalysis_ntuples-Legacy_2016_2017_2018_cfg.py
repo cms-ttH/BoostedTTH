@@ -644,26 +644,26 @@ from BoostedTTH.Producers.SelectedPhotonProducers_cfi import *
 
 if "2016" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2016
-    process.SelectedElectronProducer.ptMins = [10.0, 15.0, 29.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 29.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2016
-    process.SelectedMuonProducer.ptMins = [10.0, 15.0, 26.0]
+    process.SelectedMuonProducer.ptMins = [10.0, 20.0, 26.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2016
 elif "2017" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2017
-    process.SelectedElectronProducer.ptMins = [10.0, 15.0, 30.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 34.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2017
-    process.SelectedMuonProducer.ptMins = [10.0, 15.0, 29.0]
+    process.SelectedMuonProducer.ptMins = [10.0, 20.0, 29.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2017
 elif "2018" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2018
-    process.SelectedElectronProducer.ptMins = [10.0, 15.0, 30.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 34.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2018
-    process.SelectedMuonProducer.ptMins = [10.0, 15.0, 26.0]
+    process.SelectedMuonProducer.ptMins = [10.0, 20.0, 26.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2018
 
@@ -687,7 +687,7 @@ process.SelectedMuonProducer.etaMaxs = [2.4, 2.4, 2.4]
 process.SelectedMuonProducer.leptonIDs = ["loose", "tight", "tight"]
 process.SelectedMuonProducer.isoConeSizes = ["R04"] * 3
 process.SelectedMuonProducer.isoCorrTypes = ["deltaBeta"] * 3
-process.SelectedMuonProducer.muonIsoTypes = ["loose", "loose", "tight"]
+process.SelectedMuonProducer.muonIsoTypes = ["loose", "tight", "tight"]
 process.SelectedMuonProducer.collectionNames = [
     "selectedMuonsLoose",
     "selectedMuonsDL",
