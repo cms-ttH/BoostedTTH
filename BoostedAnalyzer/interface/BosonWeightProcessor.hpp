@@ -14,9 +14,10 @@ class BosonWeightProcessor : public TreeProcessor {
     void Process(const InputCollections& input, VariableContainer& var);
 
    private:
-    TFile* fWeightsW   = nullptr;
-    TFile* fWeightsZvv = nullptr;
-    TFile* fWeightsZll = nullptr;
+    TFile* fWeightsW      = nullptr;
+    TFile* fWeightsZvv    = nullptr;
+    TFile* fWeightsZll    = nullptr;
+    TFile* fWeightsPhoton = nullptr;
 
     TH1D* hWbosonWeight_nominal   = nullptr;
     TH1D* hWbosonWeight_QCD1Up    = nullptr;
@@ -89,6 +90,30 @@ class BosonWeightProcessor : public TreeProcessor {
     TH1D* hZllbosonWeight_muRDown   = nullptr;
     TH1D* hZllbosonWeight_muFUp     = nullptr;
     TH1D* hZllbosonWeight_muFDown   = nullptr;
+
+    TH1D* hPhotonWeight_nominal   = nullptr;
+    TH1D* hPhotonWeight_QCD1Up    = nullptr;
+    TH1D* hPhotonWeight_QCD1Down  = nullptr;
+    TH1D* hPhotonWeight_QCD2Up    = nullptr;
+    TH1D* hPhotonWeight_QCD2Down  = nullptr;
+    TH1D* hPhotonWeight_QCD3Up    = nullptr;
+    TH1D* hPhotonWeight_QCD3Down  = nullptr;
+    TH1D* hPhotonWeight_EW1Up     = nullptr;
+    TH1D* hPhotonWeight_EW1Down   = nullptr;
+    TH1D* hPhotonWeight_EW2Up     = nullptr;
+    TH1D* hPhotonWeight_EW2Down   = nullptr;
+    TH1D* hPhotonWeight_EW3Up     = nullptr;
+    TH1D* hPhotonWeight_EW3Down   = nullptr;
+    TH1D* hPhotonWeight_MixedUp   = nullptr;
+    TH1D* hPhotonWeight_MixedDown = nullptr;
+    TH1D* hPhotonWeight_AlphaUp   = nullptr;
+    TH1D* hPhotonWeight_AlphaDown = nullptr;
+    TH1D* hPhotonWeight_StatsUp   = nullptr;
+    TH1D* hPhotonWeight_StatsDown = nullptr;
+    TH1D* hPhotonWeight_muRUp     = nullptr;
+    TH1D* hPhotonWeight_muRDown   = nullptr;
+    TH1D* hPhotonWeight_muFUp     = nullptr;
+    TH1D* hPhotonWeight_muFDown   = nullptr;
 
     double BosonWeight_nominal   = 1;
     double BosonWeight_QCD1Up    = 1;

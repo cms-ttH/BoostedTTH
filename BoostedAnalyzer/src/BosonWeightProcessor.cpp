@@ -7,19 +7,22 @@ BosonWeightProcessor::BosonWeightProcessor() { BosonWeightProcessor("2018"); }
 BosonWeightProcessor::BosonWeightProcessor(std::string era)
 {
     if (era.find("2018") != std::string::npos) {
-        fWeightsW   = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_evj_madgraph_2018.root", "READ");
-        fWeightsZvv = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_vvj_madgraph_2018.root", "READ");
-        fWeightsZll = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_eej_madgraph_2018.root", "READ");
+        fWeightsW      = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_evj_madgraph_2018.root", "READ");
+        fWeightsZvv    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_vvj_madgraph_2018.root", "READ");
+        fWeightsZll    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_eej_madgraph_2018.root", "READ");
+        fWeightsPhoton = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_aj_madgraph_2018.root", "READ");
     }
     else if (era.find("2017") != std::string::npos) {
-        fWeightsW   = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_evj_madgraph_2017.root", "READ");
-        fWeightsZvv = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_vvj_madgraph_2017.root", "READ");
-        fWeightsZll = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_eej_madgraph_2017.root", "READ");
+        fWeightsW      = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_evj_madgraph_2017.root", "READ");
+        fWeightsZvv    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_vvj_madgraph_2017.root", "READ");
+        fWeightsZll    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_eej_madgraph_2017.root", "READ");
+        fWeightsPhoton = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_aj_madgraph_2018.root", "READ");
     }
     else if (era.find("2016") != std::string::npos) {
-        fWeightsW   = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_evj_madgraph_2016.root", "READ");
-        fWeightsZvv = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_vvj_madgraph_2016.root", "READ");
-        fWeightsZll = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_eej_madgraph_2016.root", "READ");
+        fWeightsW      = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_evj_madgraph_2016.root", "READ");
+        fWeightsZvv    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_vvj_madgraph_2016.root", "READ");
+        fWeightsZll    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_eej_madgraph_2016.root", "READ");
+        fWeightsPhoton = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_aj_madgraph_2018.root", "READ");
     }
 
     hWbosonWeight_nominal   = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n");
@@ -93,6 +96,30 @@ BosonWeightProcessor::BosonWeightProcessor(std::string era)
     hZllbosonWeight_muRDown   = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
     hZllbosonWeight_muFUp     = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
     hZllbosonWeight_muFDown   = (TH1D*) fWeightsZll->Get("eej_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
+
+    hPhotonWeight_nominal   = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_n");
+    hPhotonWeight_QCD1Up    = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_unn_nnn_n");
+    hPhotonWeight_QCD1Down  = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_dnn_nnn_n");
+    hPhotonWeight_QCD2Up    = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nun_nnn_n");
+    hPhotonWeight_QCD2Down  = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_ndn_nnn_n");
+    hPhotonWeight_QCD3Up    = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnu_nnn_n");
+    hPhotonWeight_QCD3Down  = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnd_nnn_n");
+    hPhotonWeight_EW1Up     = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_unn_n");
+    hPhotonWeight_EW1Down   = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_dnn_n");
+    hPhotonWeight_EW2Up     = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nun_n");
+    hPhotonWeight_EW2Down   = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_ndn_n");
+    hPhotonWeight_EW3Up     = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnu_n");
+    hPhotonWeight_EW3Down   = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnd_n");
+    hPhotonWeight_MixedUp   = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_u");
+    hPhotonWeight_MixedDown = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_d");
+    hPhotonWeight_AlphaUp   = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_n_alpha_up");
+    hPhotonWeight_AlphaDown = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_n_alpha_down");
+    hPhotonWeight_StatsUp   = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_n_stats_up");
+    hPhotonWeight_StatsDown = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_n_stats_down");
+    hPhotonWeight_muRUp     = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_2p0_muF_1p0");
+    hPhotonWeight_muRDown   = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_0p5_muF_1p0");
+    hPhotonWeight_muFUp     = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_2p0");
+    hPhotonWeight_muFDown   = (TH1D*) fWeightsPhoton->Get("aj_NNLO_NLO_nnn_nnn_n_Weight_scale_variation_muR_1p0_muF_0p5");
 }
 
 BosonWeightProcessor::~BosonWeightProcessor()
@@ -100,6 +127,7 @@ BosonWeightProcessor::~BosonWeightProcessor()
     fWeightsW->Close();
     fWeightsZvv->Close();
     fWeightsZll->Close();
+    fWeightsPhoton->Close();
 }
 
 void BosonWeightProcessor::Init(const InputCollections& input, VariableContainer& vars)
@@ -249,6 +277,36 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
             }
         }
     }
+
+    if (DM_Evt.PhotonIsFilled()) {
+        double Photon_Pt = DM_Evt.ReturnPhoton().Pt();
+        if (Photon_Pt > 30) {
+            BosonWeight_nominal   = hPhotonWeight_nominal->GetBinContent(hPhotonWeight_nominal->FindBin(Photon_Pt));
+            BosonWeight_QCD1Up    = hPhotonWeight_QCD1Up->GetBinContent(hPhotonWeight_QCD1Up->FindBin(Photon_Pt));
+            BosonWeight_QCD1Down  = hPhotonWeight_QCD1Down->GetBinContent(hPhotonWeight_QCD1Down->FindBin(Photon_Pt));
+            BosonWeight_QCD2Up    = hPhotonWeight_QCD2Up->GetBinContent(hPhotonWeight_QCD2Up->FindBin(Photon_Pt));
+            BosonWeight_QCD2Down  = hPhotonWeight_QCD2Down->GetBinContent(hPhotonWeight_QCD2Down->FindBin(Photon_Pt));
+            BosonWeight_QCD3Up    = hPhotonWeight_QCD3Up->GetBinContent(hPhotonWeight_QCD3Up->FindBin(Photon_Pt));
+            BosonWeight_QCD3Down  = hPhotonWeight_QCD3Down->GetBinContent(hPhotonWeight_QCD3Down->FindBin(Photon_Pt));
+            BosonWeight_EW1Up     = hPhotonWeight_EW1Up->GetBinContent(hPhotonWeight_EW1Up->FindBin(Photon_Pt));
+            BosonWeight_EW1Down   = hPhotonWeight_EW1Down->GetBinContent(hPhotonWeight_EW1Down->FindBin(Photon_Pt));
+            BosonWeight_EW2Up     = hPhotonWeight_EW2Up->GetBinContent(hPhotonWeight_EW2Up->FindBin(Photon_Pt));
+            BosonWeight_EW2Down   = hPhotonWeight_EW2Down->GetBinContent(hPhotonWeight_EW2Down->FindBin(Photon_Pt));
+            BosonWeight_EW3Up     = hPhotonWeight_EW3Up->GetBinContent(hPhotonWeight_EW3Up->FindBin(Photon_Pt));
+            BosonWeight_EW3Down   = hPhotonWeight_EW3Down->GetBinContent(hPhotonWeight_EW3Down->FindBin(Photon_Pt));
+            BosonWeight_MixedUp   = hPhotonWeight_MixedUp->GetBinContent(hPhotonWeight_MixedUp->FindBin(Photon_Pt));
+            BosonWeight_MixedDown = hPhotonWeight_MixedDown->GetBinContent(hPhotonWeight_MixedDown->FindBin(Photon_Pt));
+            BosonWeight_AlphaUp   = hPhotonWeight_AlphaUp->GetBinContent(hPhotonWeight_AlphaUp->FindBin(Photon_Pt));
+            BosonWeight_AlphaDown = hPhotonWeight_AlphaDown->GetBinContent(hPhotonWeight_AlphaDown->FindBin(Photon_Pt));
+            BosonWeight_StatsUp   = hPhotonWeight_StatsUp->GetBinContent(hPhotonWeight_StatsUp->FindBin(Photon_Pt));
+            BosonWeight_StatsDown = hPhotonWeight_StatsDown->GetBinContent(hPhotonWeight_StatsDown->FindBin(Photon_Pt));
+            BosonWeight_muRUp     = hPhotonWeight_muRUp->GetBinContent(hPhotonWeight_muRUp->FindBin(Photon_Pt));
+            BosonWeight_muRDown   = hPhotonWeight_muRDown->GetBinContent(hPhotonWeight_muRDown->FindBin(Photon_Pt));
+            BosonWeight_muFUp     = hPhotonWeight_muFUp->GetBinContent(hPhotonWeight_muFUp->FindBin(Photon_Pt));
+            BosonWeight_muFDown   = hPhotonWeight_muFDown->GetBinContent(hPhotonWeight_muFDown->FindBin(Photon_Pt));
+        }
+    }
+
     vars.FillVar("BosonWeight_nominal", BosonWeight_nominal);
 
     vars.FillVar("BosonWeight_QCD1Up", BosonWeight_QCD1Up);
