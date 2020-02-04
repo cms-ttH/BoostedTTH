@@ -167,18 +167,12 @@ void GenDarkMatterEvent::FillBoson()
 
     // find all possible leptonic decay product of the Z and W boson
     for (const reco::GenParticle& lepton : Leptons) {
-        // Z Bosons
-        if (((abs(lepton.pdgId()) == 12 or abs(lepton.pdgId()) == 14 or abs(lepton.pdgId()) == 16 or abs(lepton.pdgId()) == 11 or abs(lepton.pdgId()) == 13) and
-             lepton.isPromptFinalState()) or
-            (abs(lepton.pdgId()) == 15 and lepton.isPromptDecayed())) {
-            decay_prodZ.push_back(lepton);
-        }
-
-        // W Bosons
         if (((abs(lepton.pdgId()) == 11 or abs(lepton.pdgId()) == 12 or abs(lepton.pdgId()) == 13 or abs(lepton.pdgId()) == 14 or abs(lepton.pdgId()) == 16) and
              lepton.isPromptFinalState()) or
-            (abs(lepton.pdgId()) == 15 and lepton.isPromptDecayed())) {  // or abs(daughter->pdgId()) == 15
-                                                                         // or abs(daughter->pdgId()) == 16
+            (abs(lepton.pdgId()) == 15 and lepton.isPromptDecayed())) {
+            // Z Boson decay products
+            decay_prodZ.push_back(lepton);
+            // W Boson  decay products
             decay_prodW.push_back(lepton);
         }
     }
