@@ -37,7 +37,9 @@ void SlimmedNtuples::Init(const std::vector<InputCollections>& input,VariableCon
     
     for(uint i_sys=1;i_sys<uint(input.size());i_sys++) {
         TString syst_str = Systematics::toString(input.at(i_sys).systematic);
-        syst_str.ReplaceAll("JES","");
+        if (syst_str != "JES" and syst_str != "JESup" and syst_str != "JESdown") {
+          syst_str.ReplaceAll("JES","");
+        }
         //vars.InitVar("njets"+syst_str,"I");
         vars.InitVars( "jet_"+syst_str , "njets" );
     }
@@ -139,7 +141,7 @@ void SlimmedNtuples::Process(const std::vector<InputCollections>& input,Variable
         std::vector<pat::Jet> jets = GetSortedBySeed(input_used.selectedJetsLoose);
         const Systematics::Type& systematic = input_used.systematic;
         TString syst_str = Systematics::toString(systematic);
-        if (syst_str != "JES") {
+        if (syst_str != "JES" and syst_str != "JESup" and syst_str != "JESdown") {
           syst_str.ReplaceAll("JES","");
         }
         //vars.FillIntVar("njets"+syst_str,jets.size());
