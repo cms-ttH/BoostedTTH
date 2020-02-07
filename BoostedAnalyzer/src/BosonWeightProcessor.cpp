@@ -224,7 +224,8 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
 
     if (DM_Evt.ZBosonIsFilled()) {
         double Z_Pt = DM_Evt.ReturnZBoson().Pt();
-        if (Z_Pt > 30) {
+        double Z_Mass = DM_Evt.ReturnZBoson().M();
+        if (Z_Pt > 30 && Z_Mass > 10) {
             if (DM_Evt.IsZnunu()) {
                 BosonWeight_nominal   = hZvvbosonWeight_nominal->GetBinContent(hZvvbosonWeight_nominal->FindBin(Z_Pt));
                 BosonWeight_QCD1Up    = hZvvbosonWeight_QCD1Up->GetBinContent(hZvvbosonWeight_QCD1Up->FindBin(Z_Pt));
