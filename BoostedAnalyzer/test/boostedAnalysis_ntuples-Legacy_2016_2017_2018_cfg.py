@@ -838,7 +838,7 @@ process.CorrectedJetProducerAK15 = process.CorrectedJetProducerAK8.clone(
 # nominal AK15 jet selection
 process.SelectedJetProducerAK15 = process.CorrectedJetProducerAK15.clone(
     jets=cms.InputTag("patSmearedJetsAK15", "", process.name_()),
-    ptMins=[200.0],
+    ptMins=[150.0],
     etaMaxs=[2.4],
     collectionNames=["selectedJetsAK15"],
     applyCorrection=False,

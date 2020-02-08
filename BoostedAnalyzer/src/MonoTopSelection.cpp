@@ -61,10 +61,32 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     for (const auto& mu : input.selectedMuonsLoose) { hadr_recoil_p4 += mu.p4(); }
     for (const auto& ph : input.selectedPhotons) { hadr_recoil_p4 += ph.p4(); }
 
-    // criteria for number of ak15 jets, MET, and hadronic recoil in hadronic monotop channel
+    // for softdrop mass criterium
+    std::vector< math::XYZTLorentzVector > ak15_softdrop_jets_from_subjets;
+    std::vector< float >                   ak15_softdrop_masses;
+    for (const auto& ak15jet : input.selectedJetsAK15) {
+        math::XYZTLorentzVector ak15_softdrop_jet{0., 0., 0., 0.};
+        for (const auto& ak15_softdrop_subjet : ak15jet.subjets("SoftDropWithBtagInfoCorrected")) { ak15_softdrop_jet += ak15_softdrop_subjet->p4(); }
+        ak15_softdrop_jets_from_subjets.push_back(ak15_softdrop_jet);
+        ak15_softdrop_masses.push_back(ak15jet.userFloat("ak15PFJetsPuppiSoftDropMass"));
+    }
+
+    // sort starting with highest softdrop pt
+    std::sort(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [](auto& a, auto& b) { return a.pt() > b.pt(); });
+    // check if hardest ak15 jet or softdrop jet satisfies minimum pt
+    bool leading_ak15jet_pt_criterium = (input.selectedJetsAK15.size() > 0 ? (input.selectedJetsAK15.at(0).pt() > pt_min) : false) ||
+                                        (ak15_softdrop_jets_from_subjets.size() > 0 ? (ak15_softdrop_jets_from_subjets.at(0).pt() > pt_min) : false);
+
+    // sort starting with highest softdrop mass
+    std::sort(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [](auto& a, auto& b) { return a.mass() > b.mass(); });
+    std::sort(ak15_softdrop_masses.begin(), ak15_softdrop_masses.end(), [](auto& a, auto& b) { return a > b; });
+    bool softdrop_mass_criterium = (ak15_softdrop_jets_from_subjets.size() > 0 ? (ak15_softdrop_jets_from_subjets.at(0).mass() > 30.) : false) ||
+                                   (ak15_softdrop_masses.size() > 0 ? (ak15_softdrop_masses.at(0) > 30.) : false);
+
+    // criteria for number of ak15 jets, MET, highest softdrop mass, and hadronic recoil in hadronic monotop channel
     bool n_ak15_jets_criterium = (input.selectedJetsAK15.size() >= 1) && (input.selectedJetsAK15.size() <= 2);
     bool met_recoil_criterium  = (met_p4.pt() >= minRecoil) || (hadr_recoil_p4.pt() >= minRecoil);
-    bool hadronic_criterium    = met_recoil_criterium && n_ak15_jets_criterium;
+    bool hadronic_criterium    = met_recoil_criterium && n_ak15_jets_criterium && leading_ak15jet_pt_criterium && softdrop_mass_criterium;
 
     // event is compatible with hadronic monotop selection
     if (hadronic_criterium) {

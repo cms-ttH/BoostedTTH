@@ -219,7 +219,7 @@ filtersMC16 = cms.vstring(
 
 # process.BoostedAnalyzer.additionalFilters = cms.VInputTag(["ecalBadCalibReducedMINIAODFilter"])
 MonoTopSelection = cms.PSet(
-    AK15Jet_Pt=cms.double(250.0),
+    AK15Jet_Pt=cms.double(200.0),
     AK15Jet_Eta=cms.double(2.4),
     AK15Jet_Chf=cms.double(0.1),
     AK15Jet_Nhf=cms.double(0.8),
