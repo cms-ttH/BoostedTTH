@@ -105,10 +105,19 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     // if (fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJetsAK15.at(0).phi())) < deltaR_MET_AK15Jet) return false;
 
     // criteria for number of AK4 jets, number of well reconstructed leptons, and MET for leptonic monotop channel
-    bool n_ak4_jets_criterium = (input.selectedJets.size() >= 1) && (input.selectedJets.size() <= 3);
-    bool n_lepton_criterium   = (input.selectedElectrons.size() + input.selectedMuons.size()) == 1;
-    bool met_criterium        = met_p4.pt() >= minMET;
-    bool leptonic_criterium   = n_ak4_jets_criterium && n_lepton_criterium && met_criterium;
+    float m_transverse = 0.;
+    if ((input.selectedElectrons.size() + input.selectedMuons.size()) == 1) {
+        auto lepton_p4 = input.selectedElectrons.size() > 0 ? input.selectedElectrons.at(0).p4() : input.selectedMuons.at(0).p4();
+        auto dphi      = fabs(TVector2::Phi_mpi_pi(met_p4.phi() - lepton_p4.phi()));
+        auto cos_dphi  = TMath::Cos(dphi);
+        m_transverse   = TMath::Sqrt(2 * lepton_p4.pt() * met_p4.pt() * (1 - cos_dphi));
+    }
+
+    bool n_ak4_jets_criterium   = (input.selectedJets.size() >= 1) && (input.selectedJets.size() <= 3);
+    bool n_lepton_criterium     = (input.selectedElectrons.size() + input.selectedMuons.size()) == 1;
+    bool met_criterium          = met_p4.pt() >= minMET;
+    bool m_transverse_criterium = m_transverse >= 20.;
+    bool leptonic_criterium     = n_ak4_jets_criterium && n_lepton_criterium && met_criterium && m_transverse_criterium;
 
     // event is compatible with leptonic monotop selection
     if (leptonic_criterium) {
