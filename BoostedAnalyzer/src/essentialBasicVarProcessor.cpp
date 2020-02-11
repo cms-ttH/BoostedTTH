@@ -218,9 +218,6 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVar("N_HEM_Jets", "I");
     vars.InitVar("N_HEM_LooseElectrons", "I");
     vars.InitVar("N_HEM_LooseMuons", "I");
-
-    vars.InitVar("Evt_HT_jets");
-
     initialized=true;
 }
 
@@ -278,12 +275,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     
     // Fill Jet Variables
     int N_HEM_Jets = 0;
-    double ht_jets = 0;
     // All Jets
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet)
     {
         int iJet = itJet - input.selectedJets.begin();
-        ht_jets += itJet->pt();
         vars.FillVars( "Jet_E",iJet,itJet->energy() );
         vars.FillVars( "Jet_M",iJet,itJet->mass() );
         vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
@@ -327,7 +322,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         if (itJet->eta() < -1.3 && itJet->eta() > -3.0 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
     }
 
-    vars.FillVar("Evt_HT_jets", ht_jets);
     vars.FillVar("N_HEM_Jets", N_HEM_Jets);
     
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJetsLoose.begin() ; itJet != input.selectedJetsLoose.end(); ++itJet)
