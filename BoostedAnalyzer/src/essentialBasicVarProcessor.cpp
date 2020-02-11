@@ -28,6 +28,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVar( "N_LooseMuons" ,"I");
     vars.InitVar( "N_BTagsL" ,"I");
     vars.InitVar( "N_BTagsM" ,"I");
+    vars.InitVar( "N_BTagsM_DeepCSV" ,"I");
     vars.InitVar( "N_BTagsT","I" );
     vars.InitVar( "N_PrimaryVertices","I" );
     vars.InitVar( "N_GenPVs", "I");
