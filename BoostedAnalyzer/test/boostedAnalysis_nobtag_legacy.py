@@ -691,7 +691,7 @@ process.BoostedAnalyzer.selectionNames = [
 "FilterSelection",
 "VertexSelection",
 "LeptonSelection",
-"JetSelection",
+"JetTagSelection",
 "METSelection"
 ]
 if options.additionalSelection!="NONE":
