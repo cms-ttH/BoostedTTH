@@ -305,7 +305,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         }
 
         
-        vars.FillVars( "Jet_DeepCSV",ijet,CSVHelper::GetJetCSV_DNN(*itJet,"DeepCSV"));
+        vars.FillVars( "Jet_DeepCSV",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"DeepCSV"));
         vars.FillVars( "Jet_DeepCSV_b",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probb"));
         vars.FillVars( "Jet_DeepCSV_bb",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probbb"));
         vars.FillVars( "Jet_DeepCSV_c",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probc"));
