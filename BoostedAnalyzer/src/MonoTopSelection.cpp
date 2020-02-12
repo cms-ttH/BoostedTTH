@@ -43,15 +43,20 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     else if (input.systematic == Systematics::JERdown) {
         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResDown, pat::MET::Type1);
     }
-    //     else if(input.systematic==Systematics::METUnclENup) {
-    //       met_p4 =
-    //       input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp,pat::MET::Type1);
-    //     }
-    //     else if(input.systematic==Systematics::METUnclENdown) {
-    //         met_p4 =
-    //         input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown,pat::MET::Type1);
-    //     }
+    //else if(input.systematic==Systematics::METUnclENup) {
+        //met_p4 =
+        //input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp,pat::MET::Type1);
+    //}
+    //else if(input.systematic==Systematics::METUnclENdown) {
+        //met_p4 =
+        //input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown,pat::MET::Type1);
+    //}
     else {
+        met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
+    }
+    // catch possible error where JER corrected MET has nan values
+    // use nominal MET instead as temporary solution
+    if (std::isnan(met_p4.pt())) {
         met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
     }
 

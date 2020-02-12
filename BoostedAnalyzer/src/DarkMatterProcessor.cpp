@@ -124,6 +124,8 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
 
     //     vars.InitVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio");
 
+    vars.InitVar("Problematic_MET", "I");
+
     initialized = true;
 }
 
@@ -183,6 +185,14 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     //     }
     else {
         met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
+    }
+
+    if (std::isnan(met_p4.pt())) {
+        vars.FillVar("Problematic_MET", 1);
+        met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
+    }
+    else {
+        vars.FillVar("Problematic_MET", 0);
     }
 
     math::XYZTLorentzVector calomet_p4(input.correctedMETPuppi.caloMETP2().px, input.correctedMETPuppi.caloMETP2().py, 0., 0.);
