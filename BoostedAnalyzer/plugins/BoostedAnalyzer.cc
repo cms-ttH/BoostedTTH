@@ -275,7 +275,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
     /** LHE data access token **/
     edm::EDGetTokenT< LHEEventProduct > lheInfoToken_source;
     /** gen particles data access token **/
-    edm::EDGetTokenT< std::vector< reco::GenParticle > > genParticlesToken;
+    edm::EDGetTokenT< std::vector< reco::GenParticle > >      genParticlesToken;
     edm::EDGetTokenT< std::vector< pat::PackedGenParticle > > packedGenParticlesToken;
     /** gen jets data access token **/
     edm::EDGetTokenT< std::vector< reco::GenJet > > genJetsToken;
@@ -287,9 +287,6 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
     TStopwatch watch;
     /** Event counter */
     int eventcount;
-    /** variable to holt the position of JetTagSelection in selections vector,
-     * for later use */
-    uint jet_tag_pos;
     /** map for selectiontags**/
     std::map< std::string, int > selectionTags;
 };
@@ -467,9 +464,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
         for (auto& c : cutflows) { selections.back()->InitCutflow(c); }
         // dump some event info after selection step
     }
-    // find the position of the JetTagSelection to check later if the failed
-    // selection is the JetTagSelection or not
-    jet_tag_pos = find(selectionNames.begin(), selectionNames.end(), "JetTagSelection") - selectionNames.begin();
 
     // initialize synchronizer
     // if (dumpSyncExe) { synchronizer.Init(outfileNameBase, systematicsNames, iConfig, &helper, &leptonSFhelper, dumpExtended); }
@@ -477,10 +471,10 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     // INITIALIZE TREEWRITERs
     if (!ProduceMemNtuples) {
         for (size_t i = 0; i < jetSystematics.size(); i++) {
-            cout << "creating tree writer " << outfileNames[i] << endl;
+            cout << "creating tree writer " << outfileNames.at(i) << endl;
             std::unique_ptr< TreeWriter > treewriter(new TreeWriter());
             treewriters.push_back(std::move(treewriter));
-            treewriters.back()->Init(outfileNames[i]);
+            treewriters.back()->Init(outfileNames.at(i));
         }
     }
     else {
@@ -676,13 +670,13 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
 
     // MC only (generator weights for example)
-    edm::Handle< GenEventInfoProduct >              h_genInfo;
-    edm::Handle< LHEEventProduct >                  h_lheInfo;
-    edm::Handle< LHEEventProduct >                  h_dummie1;
-    edm::Handle< LHEEventProduct >                  h_dummie2;
-    edm::Handle< std::vector< reco::GenParticle > > h_genParticles;
+    edm::Handle< GenEventInfoProduct >                   h_genInfo;
+    edm::Handle< LHEEventProduct >                       h_lheInfo;
+    edm::Handle< LHEEventProduct >                       h_dummie1;
+    edm::Handle< LHEEventProduct >                       h_dummie2;
+    edm::Handle< std::vector< reco::GenParticle > >      h_genParticles;
     edm::Handle< std::vector< pat::PackedGenParticle > > h_packedGenParticles;
-    edm::Handle< std::vector< reco::GenJet > >      h_genJets;
+    edm::Handle< std::vector< reco::GenJet > >           h_genJets;
     if (!isData) {
         iEvent.getByToken(genInfoToken, h_genInfo);
         iEvent.getByToken(lheInfoToken, h_dummie1);
@@ -717,7 +711,7 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             isFirst = false;
         }
     }
-    if (vtxs.size() > 0) helper.SetVertex(vtxs[0]);
+    if (vtxs.size() > 0) helper.SetVertex(vtxs.at(0));
 
     // set rho in MiniAODhelper
     // TODO: setup MiniAODhelper more transparently
@@ -736,15 +730,15 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if (!isData) {
         std::vector< reco::GenParticle > const& genParticles = *h_genParticles;
         for (size_t i = 0; i < genParticles.size(); i++) {
-            if (genParticles[i].pdgId() == 6)
+            if (genParticles.at(i).pdgId() == 6)
                 foundT = true;
-            else if (genParticles[i].pdgId() == -6)
+            else if (genParticles.at(i).pdgId() == -6)
                 foundTbar = true;
-            else if (genParticles[i].pdgId() == 25) {
+            else if (genParticles.at(i).pdgId() == 25) {
                 foundHiggs = true;
                 if (higgsdecay == HiggsDecay::NA) higgsdecay = HiggsDecay::nonbb;
-                for (size_t j = 0; j < genParticles[i].numberOfDaughters(); j++) {
-                    if (abs(genParticles[i].daughter(j)->pdgId()) == 5) { higgsdecay = HiggsDecay::bb; }
+                for (size_t j = 0; j < genParticles.at(i).numberOfDaughters(); j++) {
+                    if (abs(genParticles.at(i).daughter(j)->pdgId()) == 5) { higgsdecay = HiggsDecay::bb; }
                 }
             }
         }
@@ -809,54 +803,33 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     assert(inputs.size() == cutflows.size());
     assert(inputs.size() == jetSystematics.size());
-    // flag to identifiy if the event is selected for at least one of the
-    // possible jet collections corresponding to the jec sources
-    bool at_least_one_selected = false;
-    // flag to identify if the event does not fulfill selection criteria
-    // independent of the jet collections (vertex,filter,lepton) so it can be
-    // skipped no matter which jet collection is looked at
-    bool next_event = false;
+
     // DO SELECTION
     // loop over jet systematics
     for (size_t i_sys = 0; i_sys < jetSystematics.size(); i_sys++) {
         // all events survive step 0
-        cutflows[i_sys].EventSurvivedStep("all", inputs[i_sys].weights.at("Weight"));
+        cutflows.at(i_sys).EventSurvivedStep("all", inputs.at(i_sys).weights.at("Weight"));
         // start with selection=true and change this if one selection fails
         bool selected = true;
         // for every systematic: loop over selections
-        for (size_t i_sel = 0; i_sel < selections.size() && selected; i_sel++) {
+        for (size_t i_sel = 0; (i_sel < selections.size()) && selected; i_sel++) {
             // see if event is selected
-            if (!taggingSelection) {
-                // std::cout << "not running in tagging mode" << std::endl;
-                if (!selections.at(i_sel)->IsSelected(inputs[i_sys], cutflows[i_sys])) {
-                    selected = false;
-                    // if the vertex,filter or lepton selection is not
-                    // fulfilled, set the flag to skip the other jec variations
-                    if (!selected && i_sel != jet_tag_pos && jet_tag_pos != selections.size()) next_event = true;
-                }
-            }
-            else {
-                selected                                = true;
-                next_event                              = false;
-                selectionTags[selectionNames.at(i_sel)] = selections.at(i_sel)->IsSelected(inputs[i_sys], cutflows[i_sys]);
+            if (not(selections.at(i_sel)->IsSelected(inputs.at(i_sys), cutflows.at(i_sys)))) {
+                selected = false;
+                break;
             }
         }
-        // if the vertex,filter or lepton selection is not fulfilled, skip the
-        // other jec variations
-        if (next_event) break;
-        // if one of the jet collections fulfills the selection and mem ntuples
-        // are supposed to be written, skip the checks for the other jet
-        // collections and go directly to writing
-        at_least_one_selected = at_least_one_selected || selected;
-        if (ProduceMemNtuples && at_least_one_selected) break;
+        // if one of the jet collection fulfills the selections and slimmed ntuples are desired, write the slimmed ntuples
+        if (ProduceMemNtuples && selected) {
+            treewriters.back()->Process(inputs, false);
+            return;
+        }
         // if normal ntuples are supposed to be written and the selections are
         // fulfilled for the jet collection, then write
-        if (!ProduceMemNtuples && selected) treewriters[i_sys]->Process(inputs[i_sys],
-                                                                        false);  // second parameter: verbose
+        if ((not ProduceMemNtuples) && selected) {
+            treewriters.at(i_sys)->Process(inputs.at(i_sys), false);  // second parameter: verbose
+        }
     }
-    // write the mem ntuples if the mem ntuples flag is set and at least one jet
-    // collection fulfills the selection criteria
-    if (ProduceMemNtuples && at_least_one_selected) treewriters.back()->Process(inputs, false);
 }
 
 float BoostedAnalyzer::GetTopPtWeight(const float& toppt1, const float& toppt2)
@@ -884,8 +857,8 @@ std::map< string, float > BoostedAnalyzer::GetWeights(const GenEventInfoProduct&
     float weight          = 1.;
     float weight_GenValue = 1.0;
     if (genInfo.weights().size() > 0) {
-        weight          = genInfo.weights()[0] > 0 ? 1. : -1.;
-        weight_GenValue = genInfo.weights()[0];
+        weight          = genInfo.weights().at(0) > 0 ? 1. : -1.;
+        weight_GenValue = genInfo.weights().at(0);
     }
 
     float xsweight        = eventWeight;
@@ -903,16 +876,11 @@ std::map< string, float > BoostedAnalyzer::GetWeights(const GenEventInfoProduct&
     weights["Weight"]          = weight;
     weights["Weight_XS"]       = xsweight;
 
-    weights["Weight_PU"]    = puweight;
-    weights["Weight_TopPt"] = topptweight;
+    weights["Weight_PU"] = puweight;
 
+    weights["Weight_TopPt"]     = topptweight;
     weights["Weight_TopPtup"]   = topptweightUp;
     weights["Weight_TopPtdown"] = topptweightDown;
-
-    // Add Lepton Scalefactors to weight map
-    // std::map< std::string, float > selectedScaleFactors = leptonSFhelper.GetLeptonSF(selectedElectrons, selectedMuons);
-
-    // for (auto sfit = selectedScaleFactors.begin(); sfit != selectedScaleFactors.end(); sfit++) { weights["Weight_" + sfit->first] = sfit->second; }
 
     // set optional additional PU weights
     for (std::vector< PUWeights::Weight >::const_iterator it = puWeights.additionalWeightsBegin(); it != puWeights.additionalWeightsEnd(); ++it) {
@@ -1033,19 +1001,10 @@ void BoostedAnalyzer::beginJob()
 void BoostedAnalyzer::endJob()
 {
     for (size_t i = 0; i < outfileNames.size(); i++) {
-        std::ofstream fout(outfileNames[i] + "_Cutflow.txt");
-        cutflows[i].Print(fout);
+        std::ofstream fout(outfileNames.at(i) + "_Cutflow.txt");
+        cutflows.at(i).Print(fout);
         fout.close();
-        // if(!ProduceMemNtuples) {
-        // delete treewriters[i];
-        //}
     }
-    // if(ProduceMemNtuples) {
-    // delete treewriters.back();
-    //}
-    // for(size_t i=0; i<selections.size();i++) {
-    // delete selections[i];
-    //}
 }
 
 // ------------ method called when starting to processes a run ------------
