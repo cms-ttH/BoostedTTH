@@ -79,9 +79,12 @@ for row in reader:
             for filename in variations.split(","):
                 if filename == "nominal":
                     filenames.append("ntuples_" + filename + "_Tree.root")
+                    filenames.append("ntuples_" + filename + "_Cutflow.txt")
                 else:
                     filenames.append("ntuples_" + filename + "up" + "_Tree.root")
+                    filenames.append("ntuples_" + filename + "up" + "_Cutflow.txt")
                     filenames.append("ntuples_" + filename + "down" + "_Tree.root")
+                    filenames.append("ntuples_" + filename + "down" + "_Cutflow.txt")
             shutil.copy(src, out)
             repl("THEREQUESTNAME", row["name"] + "_" + str(i) + "_" + str(l), out)
             repl("THEINPUTDATASET", dataset, out)
