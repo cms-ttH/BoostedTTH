@@ -193,119 +193,112 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
     BosonWeight_muFUp     = 1;
     BosonWeight_muFDown   = 1;
 
-    if (DM_Evt.WBosonIsFilled()) {
-        double W_Pt = DM_Evt.ReturnWBoson().Pt();
-        if (W_Pt > 30) {
-            BosonWeight_nominal   = hWbosonWeight_nominal->GetBinContent(hWbosonWeight_nominal->FindBin(W_Pt));
-            BosonWeight_QCD1Up    = hWbosonWeight_QCD1Up->GetBinContent(hWbosonWeight_QCD1Up->FindBin(W_Pt));
-            BosonWeight_QCD1Down  = hWbosonWeight_QCD1Down->GetBinContent(hWbosonWeight_QCD1Down->FindBin(W_Pt));
-            BosonWeight_QCD2Up    = hWbosonWeight_QCD2Up->GetBinContent(hWbosonWeight_QCD2Up->FindBin(W_Pt));
-            BosonWeight_QCD2Down  = hWbosonWeight_QCD2Down->GetBinContent(hWbosonWeight_QCD2Down->FindBin(W_Pt));
-            BosonWeight_QCD3Up    = hWbosonWeight_QCD3Up->GetBinContent(hWbosonWeight_QCD3Up->FindBin(W_Pt));
-            BosonWeight_QCD3Down  = hWbosonWeight_QCD3Down->GetBinContent(hWbosonWeight_QCD3Down->FindBin(W_Pt));
-            BosonWeight_EW1Up     = hWbosonWeight_EW1Up->GetBinContent(hWbosonWeight_EW1Up->FindBin(W_Pt));
-            BosonWeight_EW1Down   = hWbosonWeight_EW1Down->GetBinContent(hWbosonWeight_EW1Down->FindBin(W_Pt));
-            BosonWeight_EW2Up     = hWbosonWeight_EW2Up->GetBinContent(hWbosonWeight_EW2Up->FindBin(W_Pt));
-            BosonWeight_EW2Down   = hWbosonWeight_EW2Down->GetBinContent(hWbosonWeight_EW2Down->FindBin(W_Pt));
-            BosonWeight_EW3Up     = hWbosonWeight_EW3Up->GetBinContent(hWbosonWeight_EW3Up->FindBin(W_Pt));
-            BosonWeight_EW3Down   = hWbosonWeight_EW3Down->GetBinContent(hWbosonWeight_EW3Down->FindBin(W_Pt));
-            BosonWeight_MixedUp   = hWbosonWeight_MixedUp->GetBinContent(hWbosonWeight_MixedUp->FindBin(W_Pt));
-            BosonWeight_MixedDown = hWbosonWeight_MixedDown->GetBinContent(hWbosonWeight_MixedDown->FindBin(W_Pt));
-            BosonWeight_AlphaUp   = hWbosonWeight_AlphaUp->GetBinContent(hWbosonWeight_AlphaUp->FindBin(W_Pt));
-            BosonWeight_AlphaDown = hWbosonWeight_AlphaDown->GetBinContent(hWbosonWeight_AlphaDown->FindBin(W_Pt));
-            BosonWeight_StatsUp   = hWbosonWeight_StatsUp->GetBinContent(hWbosonWeight_StatsUp->FindBin(W_Pt));
-            BosonWeight_StatsDown = hWbosonWeight_StatsDown->GetBinContent(hWbosonWeight_StatsDown->FindBin(W_Pt));
-            BosonWeight_muRUp     = hWbosonWeight_muRUp->GetBinContent(hWbosonWeight_muRUp->FindBin(W_Pt));
-            BosonWeight_muRDown   = hWbosonWeight_muRDown->GetBinContent(hWbosonWeight_muRDown->FindBin(W_Pt));
-            BosonWeight_muFUp     = hWbosonWeight_muFUp->GetBinContent(hWbosonWeight_muFUp->FindBin(W_Pt));
-            BosonWeight_muFDown   = hWbosonWeight_muFDown->GetBinContent(hWbosonWeight_muFDown->FindBin(W_Pt));
+    if (DM_Evt.WBosonIsFilled() && DM_Evt.ReturnWBoson().Pt() > 30.) {
+        const auto W_Pt       = DM_Evt.ReturnWBoson().Pt();
+        BosonWeight_nominal   = hWbosonWeight_nominal->GetBinContent(hWbosonWeight_nominal->FindBin(W_Pt));
+        BosonWeight_QCD1Up    = hWbosonWeight_QCD1Up->GetBinContent(hWbosonWeight_QCD1Up->FindBin(W_Pt));
+        BosonWeight_QCD1Down  = hWbosonWeight_QCD1Down->GetBinContent(hWbosonWeight_QCD1Down->FindBin(W_Pt));
+        BosonWeight_QCD2Up    = hWbosonWeight_QCD2Up->GetBinContent(hWbosonWeight_QCD2Up->FindBin(W_Pt));
+        BosonWeight_QCD2Down  = hWbosonWeight_QCD2Down->GetBinContent(hWbosonWeight_QCD2Down->FindBin(W_Pt));
+        BosonWeight_QCD3Up    = hWbosonWeight_QCD3Up->GetBinContent(hWbosonWeight_QCD3Up->FindBin(W_Pt));
+        BosonWeight_QCD3Down  = hWbosonWeight_QCD3Down->GetBinContent(hWbosonWeight_QCD3Down->FindBin(W_Pt));
+        BosonWeight_EW1Up     = hWbosonWeight_EW1Up->GetBinContent(hWbosonWeight_EW1Up->FindBin(W_Pt));
+        BosonWeight_EW1Down   = hWbosonWeight_EW1Down->GetBinContent(hWbosonWeight_EW1Down->FindBin(W_Pt));
+        BosonWeight_EW2Up     = hWbosonWeight_EW2Up->GetBinContent(hWbosonWeight_EW2Up->FindBin(W_Pt));
+        BosonWeight_EW2Down   = hWbosonWeight_EW2Down->GetBinContent(hWbosonWeight_EW2Down->FindBin(W_Pt));
+        BosonWeight_EW3Up     = hWbosonWeight_EW3Up->GetBinContent(hWbosonWeight_EW3Up->FindBin(W_Pt));
+        BosonWeight_EW3Down   = hWbosonWeight_EW3Down->GetBinContent(hWbosonWeight_EW3Down->FindBin(W_Pt));
+        BosonWeight_MixedUp   = hWbosonWeight_MixedUp->GetBinContent(hWbosonWeight_MixedUp->FindBin(W_Pt));
+        BosonWeight_MixedDown = hWbosonWeight_MixedDown->GetBinContent(hWbosonWeight_MixedDown->FindBin(W_Pt));
+        BosonWeight_AlphaUp   = hWbosonWeight_AlphaUp->GetBinContent(hWbosonWeight_AlphaUp->FindBin(W_Pt));
+        BosonWeight_AlphaDown = hWbosonWeight_AlphaDown->GetBinContent(hWbosonWeight_AlphaDown->FindBin(W_Pt));
+        BosonWeight_StatsUp   = hWbosonWeight_StatsUp->GetBinContent(hWbosonWeight_StatsUp->FindBin(W_Pt));
+        BosonWeight_StatsDown = hWbosonWeight_StatsDown->GetBinContent(hWbosonWeight_StatsDown->FindBin(W_Pt));
+        BosonWeight_muRUp     = hWbosonWeight_muRUp->GetBinContent(hWbosonWeight_muRUp->FindBin(W_Pt));
+        BosonWeight_muRDown   = hWbosonWeight_muRDown->GetBinContent(hWbosonWeight_muRDown->FindBin(W_Pt));
+        BosonWeight_muFUp     = hWbosonWeight_muFUp->GetBinContent(hWbosonWeight_muFUp->FindBin(W_Pt));
+        BosonWeight_muFDown   = hWbosonWeight_muFDown->GetBinContent(hWbosonWeight_muFDown->FindBin(W_Pt));
+    }
+
+    else if (DM_Evt.ZBosonIsFilled() && DM_Evt.ReturnZBoson().Pt() > 30.) {
+        const auto Z_Pt = DM_Evt.ReturnZBoson().Pt();
+        if (DM_Evt.IsZnunu()) {
+            BosonWeight_nominal   = hZvvbosonWeight_nominal->GetBinContent(hZvvbosonWeight_nominal->FindBin(Z_Pt));
+            BosonWeight_QCD1Up    = hZvvbosonWeight_QCD1Up->GetBinContent(hZvvbosonWeight_QCD1Up->FindBin(Z_Pt));
+            BosonWeight_QCD1Down  = hZvvbosonWeight_QCD1Down->GetBinContent(hZvvbosonWeight_QCD1Down->FindBin(Z_Pt));
+            BosonWeight_QCD2Up    = hZvvbosonWeight_QCD2Up->GetBinContent(hZvvbosonWeight_QCD2Up->FindBin(Z_Pt));
+            BosonWeight_QCD2Down  = hZvvbosonWeight_QCD2Down->GetBinContent(hZvvbosonWeight_QCD2Down->FindBin(Z_Pt));
+            BosonWeight_QCD3Up    = hZvvbosonWeight_QCD3Up->GetBinContent(hZvvbosonWeight_QCD3Up->FindBin(Z_Pt));
+            BosonWeight_QCD3Down  = hZvvbosonWeight_QCD3Down->GetBinContent(hZvvbosonWeight_QCD3Down->FindBin(Z_Pt));
+            BosonWeight_EW1Up     = hZvvbosonWeight_EW1Up->GetBinContent(hZvvbosonWeight_EW1Up->FindBin(Z_Pt));
+            BosonWeight_EW1Down   = hZvvbosonWeight_EW1Down->GetBinContent(hZvvbosonWeight_EW1Down->FindBin(Z_Pt));
+            BosonWeight_EW2Up     = hZvvbosonWeight_EW2Up->GetBinContent(hZvvbosonWeight_EW2Up->FindBin(Z_Pt));
+            BosonWeight_EW2Down   = hZvvbosonWeight_EW2Down->GetBinContent(hZvvbosonWeight_EW2Down->FindBin(Z_Pt));
+            BosonWeight_EW3Up     = hZvvbosonWeight_EW3Up->GetBinContent(hZvvbosonWeight_EW3Up->FindBin(Z_Pt));
+            BosonWeight_EW3Down   = hZvvbosonWeight_EW3Down->GetBinContent(hZvvbosonWeight_EW3Down->FindBin(Z_Pt));
+            BosonWeight_MixedUp   = hZvvbosonWeight_MixedUp->GetBinContent(hZvvbosonWeight_MixedUp->FindBin(Z_Pt));
+            BosonWeight_MixedDown = hZvvbosonWeight_MixedDown->GetBinContent(hZvvbosonWeight_MixedDown->FindBin(Z_Pt));
+            BosonWeight_AlphaUp   = hZvvbosonWeight_AlphaUp->GetBinContent(hZvvbosonWeight_AlphaUp->FindBin(Z_Pt));
+            BosonWeight_AlphaDown = hZvvbosonWeight_AlphaDown->GetBinContent(hZvvbosonWeight_AlphaDown->FindBin(Z_Pt));
+            BosonWeight_StatsUp   = hZvvbosonWeight_StatsUp->GetBinContent(hZvvbosonWeight_StatsUp->FindBin(Z_Pt));
+            BosonWeight_StatsDown = hZvvbosonWeight_StatsDown->GetBinContent(hZvvbosonWeight_StatsDown->FindBin(Z_Pt));
+            BosonWeight_muRUp     = hZvvbosonWeight_muRUp->GetBinContent(hZvvbosonWeight_muRUp->FindBin(Z_Pt));
+            BosonWeight_muRDown   = hZvvbosonWeight_muRDown->GetBinContent(hZvvbosonWeight_muRDown->FindBin(Z_Pt));
+            BosonWeight_muFUp     = hZvvbosonWeight_muFUp->GetBinContent(hZvvbosonWeight_muFUp->FindBin(Z_Pt));
+            BosonWeight_muFDown   = hZvvbosonWeight_muFDown->GetBinContent(hZvvbosonWeight_muFDown->FindBin(Z_Pt));
+        }
+        else if (DM_Evt.ReturnZBoson().M() > 30.) {
+            BosonWeight_nominal   = hZllbosonWeight_nominal->GetBinContent(hZllbosonWeight_nominal->FindBin(Z_Pt));
+            BosonWeight_QCD1Up    = hZllbosonWeight_QCD1Up->GetBinContent(hZllbosonWeight_QCD1Up->FindBin(Z_Pt));
+            BosonWeight_QCD1Down  = hZllbosonWeight_QCD1Down->GetBinContent(hZllbosonWeight_QCD1Down->FindBin(Z_Pt));
+            BosonWeight_QCD2Up    = hZllbosonWeight_QCD2Up->GetBinContent(hZllbosonWeight_QCD2Up->FindBin(Z_Pt));
+            BosonWeight_QCD2Down  = hZllbosonWeight_QCD2Down->GetBinContent(hZllbosonWeight_QCD2Down->FindBin(Z_Pt));
+            BosonWeight_QCD3Up    = hZllbosonWeight_QCD3Up->GetBinContent(hZllbosonWeight_QCD3Up->FindBin(Z_Pt));
+            BosonWeight_QCD3Down  = hZllbosonWeight_QCD3Down->GetBinContent(hZllbosonWeight_QCD3Down->FindBin(Z_Pt));
+            BosonWeight_EW1Up     = hZllbosonWeight_EW1Up->GetBinContent(hZllbosonWeight_EW1Up->FindBin(Z_Pt));
+            BosonWeight_EW1Down   = hZllbosonWeight_EW1Down->GetBinContent(hZllbosonWeight_EW1Down->FindBin(Z_Pt));
+            BosonWeight_EW2Up     = hZllbosonWeight_EW2Up->GetBinContent(hZllbosonWeight_EW2Up->FindBin(Z_Pt));
+            BosonWeight_EW2Down   = hZllbosonWeight_EW2Down->GetBinContent(hZllbosonWeight_EW2Down->FindBin(Z_Pt));
+            BosonWeight_EW3Up     = hZllbosonWeight_EW3Up->GetBinContent(hZllbosonWeight_EW3Up->FindBin(Z_Pt));
+            BosonWeight_EW3Down   = hZllbosonWeight_EW3Down->GetBinContent(hZllbosonWeight_EW3Down->FindBin(Z_Pt));
+            BosonWeight_MixedUp   = hZllbosonWeight_MixedUp->GetBinContent(hZllbosonWeight_MixedUp->FindBin(Z_Pt));
+            BosonWeight_MixedDown = hZllbosonWeight_MixedDown->GetBinContent(hZllbosonWeight_MixedDown->FindBin(Z_Pt));
+            BosonWeight_AlphaUp   = hZllbosonWeight_AlphaUp->GetBinContent(hZllbosonWeight_AlphaUp->FindBin(Z_Pt));
+            BosonWeight_AlphaDown = hZllbosonWeight_AlphaDown->GetBinContent(hZllbosonWeight_AlphaDown->FindBin(Z_Pt));
+            BosonWeight_StatsUp   = hZllbosonWeight_StatsUp->GetBinContent(hZllbosonWeight_StatsUp->FindBin(Z_Pt));
+            BosonWeight_StatsDown = hZllbosonWeight_StatsDown->GetBinContent(hZllbosonWeight_StatsDown->FindBin(Z_Pt));
+            BosonWeight_muRUp     = hZllbosonWeight_muRUp->GetBinContent(hZllbosonWeight_muRUp->FindBin(Z_Pt));
+            BosonWeight_muRDown   = hZllbosonWeight_muRDown->GetBinContent(hZllbosonWeight_muRDown->FindBin(Z_Pt));
+            BosonWeight_muFUp     = hZllbosonWeight_muFUp->GetBinContent(hZllbosonWeight_muFUp->FindBin(Z_Pt));
+            BosonWeight_muFDown   = hZllbosonWeight_muFDown->GetBinContent(hZllbosonWeight_muFDown->FindBin(Z_Pt));
         }
     }
 
-    if (DM_Evt.ZBosonIsFilled()) {
-        double Z_Pt = DM_Evt.ReturnZBoson().Pt();
-        double Z_Mass = DM_Evt.ReturnZBoson().M();
-        if (Z_Pt > 30 && Z_Mass > 10) {
-            if (DM_Evt.IsZnunu()) {
-                BosonWeight_nominal   = hZvvbosonWeight_nominal->GetBinContent(hZvvbosonWeight_nominal->FindBin(Z_Pt));
-                BosonWeight_QCD1Up    = hZvvbosonWeight_QCD1Up->GetBinContent(hZvvbosonWeight_QCD1Up->FindBin(Z_Pt));
-                BosonWeight_QCD1Down  = hZvvbosonWeight_QCD1Down->GetBinContent(hZvvbosonWeight_QCD1Down->FindBin(Z_Pt));
-                BosonWeight_QCD2Up    = hZvvbosonWeight_QCD2Up->GetBinContent(hZvvbosonWeight_QCD2Up->FindBin(Z_Pt));
-                BosonWeight_QCD2Down  = hZvvbosonWeight_QCD2Down->GetBinContent(hZvvbosonWeight_QCD2Down->FindBin(Z_Pt));
-                BosonWeight_QCD3Up    = hZvvbosonWeight_QCD3Up->GetBinContent(hZvvbosonWeight_QCD3Up->FindBin(Z_Pt));
-                BosonWeight_QCD3Down  = hZvvbosonWeight_QCD3Down->GetBinContent(hZvvbosonWeight_QCD3Down->FindBin(Z_Pt));
-                BosonWeight_EW1Up     = hZvvbosonWeight_EW1Up->GetBinContent(hZvvbosonWeight_EW1Up->FindBin(Z_Pt));
-                BosonWeight_EW1Down   = hZvvbosonWeight_EW1Down->GetBinContent(hZvvbosonWeight_EW1Down->FindBin(Z_Pt));
-                BosonWeight_EW2Up     = hZvvbosonWeight_EW2Up->GetBinContent(hZvvbosonWeight_EW2Up->FindBin(Z_Pt));
-                BosonWeight_EW2Down   = hZvvbosonWeight_EW2Down->GetBinContent(hZvvbosonWeight_EW2Down->FindBin(Z_Pt));
-                BosonWeight_EW3Up     = hZvvbosonWeight_EW3Up->GetBinContent(hZvvbosonWeight_EW3Up->FindBin(Z_Pt));
-                BosonWeight_EW3Down   = hZvvbosonWeight_EW3Down->GetBinContent(hZvvbosonWeight_EW3Down->FindBin(Z_Pt));
-                BosonWeight_MixedUp   = hZvvbosonWeight_MixedUp->GetBinContent(hZvvbosonWeight_MixedUp->FindBin(Z_Pt));
-                BosonWeight_MixedDown = hZvvbosonWeight_MixedDown->GetBinContent(hZvvbosonWeight_MixedDown->FindBin(Z_Pt));
-                BosonWeight_AlphaUp   = hZvvbosonWeight_AlphaUp->GetBinContent(hZvvbosonWeight_AlphaUp->FindBin(Z_Pt));
-                BosonWeight_AlphaDown = hZvvbosonWeight_AlphaDown->GetBinContent(hZvvbosonWeight_AlphaDown->FindBin(Z_Pt));
-                BosonWeight_StatsUp   = hZvvbosonWeight_StatsUp->GetBinContent(hZvvbosonWeight_StatsUp->FindBin(Z_Pt));
-                BosonWeight_StatsDown = hZvvbosonWeight_StatsDown->GetBinContent(hZvvbosonWeight_StatsDown->FindBin(Z_Pt));
-                BosonWeight_muRUp     = hZvvbosonWeight_muRUp->GetBinContent(hZvvbosonWeight_muRUp->FindBin(Z_Pt));
-                BosonWeight_muRDown   = hZvvbosonWeight_muRDown->GetBinContent(hZvvbosonWeight_muRDown->FindBin(Z_Pt));
-                BosonWeight_muFUp     = hZvvbosonWeight_muFUp->GetBinContent(hZvvbosonWeight_muFUp->FindBin(Z_Pt));
-                BosonWeight_muFDown   = hZvvbosonWeight_muFDown->GetBinContent(hZvvbosonWeight_muFDown->FindBin(Z_Pt));
-            }
-            else {
-                BosonWeight_nominal   = hZllbosonWeight_nominal->GetBinContent(hZllbosonWeight_nominal->FindBin(Z_Pt));
-                BosonWeight_QCD1Up    = hZllbosonWeight_QCD1Up->GetBinContent(hZllbosonWeight_QCD1Up->FindBin(Z_Pt));
-                BosonWeight_QCD1Down  = hZllbosonWeight_QCD1Down->GetBinContent(hZllbosonWeight_QCD1Down->FindBin(Z_Pt));
-                BosonWeight_QCD2Up    = hZllbosonWeight_QCD2Up->GetBinContent(hZllbosonWeight_QCD2Up->FindBin(Z_Pt));
-                BosonWeight_QCD2Down  = hZllbosonWeight_QCD2Down->GetBinContent(hZllbosonWeight_QCD2Down->FindBin(Z_Pt));
-                BosonWeight_QCD3Up    = hZllbosonWeight_QCD3Up->GetBinContent(hZllbosonWeight_QCD3Up->FindBin(Z_Pt));
-                BosonWeight_QCD3Down  = hZllbosonWeight_QCD3Down->GetBinContent(hZllbosonWeight_QCD3Down->FindBin(Z_Pt));
-                BosonWeight_EW1Up     = hZllbosonWeight_EW1Up->GetBinContent(hZllbosonWeight_EW1Up->FindBin(Z_Pt));
-                BosonWeight_EW1Down   = hZllbosonWeight_EW1Down->GetBinContent(hZllbosonWeight_EW1Down->FindBin(Z_Pt));
-                BosonWeight_EW2Up     = hZllbosonWeight_EW2Up->GetBinContent(hZllbosonWeight_EW2Up->FindBin(Z_Pt));
-                BosonWeight_EW2Down   = hZllbosonWeight_EW2Down->GetBinContent(hZllbosonWeight_EW2Down->FindBin(Z_Pt));
-                BosonWeight_EW3Up     = hZllbosonWeight_EW3Up->GetBinContent(hZllbosonWeight_EW3Up->FindBin(Z_Pt));
-                BosonWeight_EW3Down   = hZllbosonWeight_EW3Down->GetBinContent(hZllbosonWeight_EW3Down->FindBin(Z_Pt));
-                BosonWeight_MixedUp   = hZllbosonWeight_MixedUp->GetBinContent(hZllbosonWeight_MixedUp->FindBin(Z_Pt));
-                BosonWeight_MixedDown = hZllbosonWeight_MixedDown->GetBinContent(hZllbosonWeight_MixedDown->FindBin(Z_Pt));
-                BosonWeight_AlphaUp   = hZllbosonWeight_AlphaUp->GetBinContent(hZllbosonWeight_AlphaUp->FindBin(Z_Pt));
-                BosonWeight_AlphaDown = hZllbosonWeight_AlphaDown->GetBinContent(hZllbosonWeight_AlphaDown->FindBin(Z_Pt));
-                BosonWeight_StatsUp   = hZllbosonWeight_StatsUp->GetBinContent(hZllbosonWeight_StatsUp->FindBin(Z_Pt));
-                BosonWeight_StatsDown = hZllbosonWeight_StatsDown->GetBinContent(hZllbosonWeight_StatsDown->FindBin(Z_Pt));
-                BosonWeight_muRUp     = hZllbosonWeight_muRUp->GetBinContent(hZllbosonWeight_muRUp->FindBin(Z_Pt));
-                BosonWeight_muRDown   = hZllbosonWeight_muRDown->GetBinContent(hZllbosonWeight_muRDown->FindBin(Z_Pt));
-                BosonWeight_muFUp     = hZllbosonWeight_muFUp->GetBinContent(hZllbosonWeight_muFUp->FindBin(Z_Pt));
-                BosonWeight_muFDown   = hZllbosonWeight_muFDown->GetBinContent(hZllbosonWeight_muFDown->FindBin(Z_Pt));
-            }
-        }
-    }
-
-    if (DM_Evt.PhotonIsFilled()) {
-        double Photon_Pt = DM_Evt.ReturnPhoton().Pt();
-        if (Photon_Pt > 30) {
-            BosonWeight_nominal   = hPhotonWeight_nominal->GetBinContent(hPhotonWeight_nominal->FindBin(Photon_Pt));
-            BosonWeight_QCD1Up    = hPhotonWeight_QCD1Up->GetBinContent(hPhotonWeight_QCD1Up->FindBin(Photon_Pt));
-            BosonWeight_QCD1Down  = hPhotonWeight_QCD1Down->GetBinContent(hPhotonWeight_QCD1Down->FindBin(Photon_Pt));
-            BosonWeight_QCD2Up    = hPhotonWeight_QCD2Up->GetBinContent(hPhotonWeight_QCD2Up->FindBin(Photon_Pt));
-            BosonWeight_QCD2Down  = hPhotonWeight_QCD2Down->GetBinContent(hPhotonWeight_QCD2Down->FindBin(Photon_Pt));
-            BosonWeight_QCD3Up    = hPhotonWeight_QCD3Up->GetBinContent(hPhotonWeight_QCD3Up->FindBin(Photon_Pt));
-            BosonWeight_QCD3Down  = hPhotonWeight_QCD3Down->GetBinContent(hPhotonWeight_QCD3Down->FindBin(Photon_Pt));
-            BosonWeight_EW1Up     = hPhotonWeight_EW1Up->GetBinContent(hPhotonWeight_EW1Up->FindBin(Photon_Pt));
-            BosonWeight_EW1Down   = hPhotonWeight_EW1Down->GetBinContent(hPhotonWeight_EW1Down->FindBin(Photon_Pt));
-            BosonWeight_EW2Up     = hPhotonWeight_EW2Up->GetBinContent(hPhotonWeight_EW2Up->FindBin(Photon_Pt));
-            BosonWeight_EW2Down   = hPhotonWeight_EW2Down->GetBinContent(hPhotonWeight_EW2Down->FindBin(Photon_Pt));
-            BosonWeight_EW3Up     = hPhotonWeight_EW3Up->GetBinContent(hPhotonWeight_EW3Up->FindBin(Photon_Pt));
-            BosonWeight_EW3Down   = hPhotonWeight_EW3Down->GetBinContent(hPhotonWeight_EW3Down->FindBin(Photon_Pt));
-            BosonWeight_MixedUp   = hPhotonWeight_MixedUp->GetBinContent(hPhotonWeight_MixedUp->FindBin(Photon_Pt));
-            BosonWeight_MixedDown = hPhotonWeight_MixedDown->GetBinContent(hPhotonWeight_MixedDown->FindBin(Photon_Pt));
-            BosonWeight_AlphaUp   = hPhotonWeight_AlphaUp->GetBinContent(hPhotonWeight_AlphaUp->FindBin(Photon_Pt));
-            BosonWeight_AlphaDown = hPhotonWeight_AlphaDown->GetBinContent(hPhotonWeight_AlphaDown->FindBin(Photon_Pt));
-            BosonWeight_StatsUp   = hPhotonWeight_StatsUp->GetBinContent(hPhotonWeight_StatsUp->FindBin(Photon_Pt));
-            BosonWeight_StatsDown = hPhotonWeight_StatsDown->GetBinContent(hPhotonWeight_StatsDown->FindBin(Photon_Pt));
-            BosonWeight_muRUp     = hPhotonWeight_muRUp->GetBinContent(hPhotonWeight_muRUp->FindBin(Photon_Pt));
-            BosonWeight_muRDown   = hPhotonWeight_muRDown->GetBinContent(hPhotonWeight_muRDown->FindBin(Photon_Pt));
-            BosonWeight_muFUp     = hPhotonWeight_muFUp->GetBinContent(hPhotonWeight_muFUp->FindBin(Photon_Pt));
-            BosonWeight_muFDown   = hPhotonWeight_muFDown->GetBinContent(hPhotonWeight_muFDown->FindBin(Photon_Pt));
-        }
+    else if (DM_Evt.PhotonIsFilled() && DM_Evt.ReturnPhoton().Pt() > 30.) {
+        const auto Photon_Pt  = DM_Evt.ReturnPhoton().Pt();
+        BosonWeight_nominal   = hPhotonWeight_nominal->GetBinContent(hPhotonWeight_nominal->FindBin(Photon_Pt));
+        BosonWeight_QCD1Up    = hPhotonWeight_QCD1Up->GetBinContent(hPhotonWeight_QCD1Up->FindBin(Photon_Pt));
+        BosonWeight_QCD1Down  = hPhotonWeight_QCD1Down->GetBinContent(hPhotonWeight_QCD1Down->FindBin(Photon_Pt));
+        BosonWeight_QCD2Up    = hPhotonWeight_QCD2Up->GetBinContent(hPhotonWeight_QCD2Up->FindBin(Photon_Pt));
+        BosonWeight_QCD2Down  = hPhotonWeight_QCD2Down->GetBinContent(hPhotonWeight_QCD2Down->FindBin(Photon_Pt));
+        BosonWeight_QCD3Up    = hPhotonWeight_QCD3Up->GetBinContent(hPhotonWeight_QCD3Up->FindBin(Photon_Pt));
+        BosonWeight_QCD3Down  = hPhotonWeight_QCD3Down->GetBinContent(hPhotonWeight_QCD3Down->FindBin(Photon_Pt));
+        BosonWeight_EW1Up     = hPhotonWeight_EW1Up->GetBinContent(hPhotonWeight_EW1Up->FindBin(Photon_Pt));
+        BosonWeight_EW1Down   = hPhotonWeight_EW1Down->GetBinContent(hPhotonWeight_EW1Down->FindBin(Photon_Pt));
+        BosonWeight_EW2Up     = hPhotonWeight_EW2Up->GetBinContent(hPhotonWeight_EW2Up->FindBin(Photon_Pt));
+        BosonWeight_EW2Down   = hPhotonWeight_EW2Down->GetBinContent(hPhotonWeight_EW2Down->FindBin(Photon_Pt));
+        BosonWeight_EW3Up     = hPhotonWeight_EW3Up->GetBinContent(hPhotonWeight_EW3Up->FindBin(Photon_Pt));
+        BosonWeight_EW3Down   = hPhotonWeight_EW3Down->GetBinContent(hPhotonWeight_EW3Down->FindBin(Photon_Pt));
+        BosonWeight_MixedUp   = hPhotonWeight_MixedUp->GetBinContent(hPhotonWeight_MixedUp->FindBin(Photon_Pt));
+        BosonWeight_MixedDown = hPhotonWeight_MixedDown->GetBinContent(hPhotonWeight_MixedDown->FindBin(Photon_Pt));
+        BosonWeight_AlphaUp   = hPhotonWeight_AlphaUp->GetBinContent(hPhotonWeight_AlphaUp->FindBin(Photon_Pt));
+        BosonWeight_AlphaDown = hPhotonWeight_AlphaDown->GetBinContent(hPhotonWeight_AlphaDown->FindBin(Photon_Pt));
+        BosonWeight_StatsUp   = hPhotonWeight_StatsUp->GetBinContent(hPhotonWeight_StatsUp->FindBin(Photon_Pt));
+        BosonWeight_StatsDown = hPhotonWeight_StatsDown->GetBinContent(hPhotonWeight_StatsDown->FindBin(Photon_Pt));
+        BosonWeight_muRUp     = hPhotonWeight_muRUp->GetBinContent(hPhotonWeight_muRUp->FindBin(Photon_Pt));
+        BosonWeight_muRDown   = hPhotonWeight_muRDown->GetBinContent(hPhotonWeight_muRDown->FindBin(Photon_Pt));
+        BosonWeight_muFUp     = hPhotonWeight_muFUp->GetBinContent(hPhotonWeight_muFUp->FindBin(Photon_Pt));
+        BosonWeight_muFDown   = hPhotonWeight_muFDown->GetBinContent(hPhotonWeight_muFDown->FindBin(Photon_Pt));
     }
 
     vars.FillVar("BosonWeight_nominal", BosonWeight_nominal);
