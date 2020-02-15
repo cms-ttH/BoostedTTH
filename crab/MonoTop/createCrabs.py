@@ -5,6 +5,9 @@ import sys
 from subprocess import call
 
 csvfile = open(sys.argv[1], "r")
+dataset_row = sys.argv[2]
+template = sys.argv[3]
+output = sys.argv[4]
 reader = csv.DictReader(csvfile, delimiter=",")
 
 
@@ -58,23 +61,17 @@ for row in reader:
     variation_list = get_list_of_systematics("systematicVariations.txt")
     # print(variation_list)
     variations_list = split_for_systematic_variations(variation_list, 100)
-    src = "template_cfg.py"
+    src = template
     if row["isData"] == "True":
         variations_list = ["nominal"]
-    datasets = row["dataset"].split(",")
+    datasets = row[dataset_row].split(",")
+    if not os.path.isdir(output):
+        os.mkdir(output)
     for variations, l in zip(variations_list, range(len(variations_list))):
         print ("looking at systematic sources ", variations)
         for dataset, i in zip(datasets, range(len(datasets))):
             print ("looking at dataset ", dataset)
-            out = (
-                "configs_skims/"
-                + row["name"]
-                + "_"
-                + str(i)
-                + "_"
-                + str(l)
-                + "_crab.py"
-            )
+            out = os.path.join(output, row["name"] + "_" + str(i) + "_" + str(l) + "_crab.py")
             filenames = []
             for filename in variations.split(","):
                 if filename == "nominal":
