@@ -654,7 +654,7 @@ std::vector< float > SelectedLeptonProducer::GetMuonIDSF(const pat::Muon& iMuon,
 {
     // get pt and eta of the electron
     auto                 pt      = iMuon.pt();
-    auto                 eta     = abs(iMuon.eta());
+    auto                 eta     = era.find("2016")!=std::string::npos ? iMuon.eta() : abs(iMuon.eta());
     TH2F*                SF_hist = nullptr;
     std::vector< float > SFs{1.0, 1.0, 1.0};
     // load the correct scale factor histogram
@@ -698,7 +698,7 @@ std::vector< float > SelectedLeptonProducer::GetMuonISOSF(const pat::Muon& iMuon
 {
     // get pt and eta of the electron
     auto                 pt      = iMuon.pt();
-    auto                 eta     = abs(iMuon.eta());
+    auto                 eta     = era.find("2016")!=std::string::npos ? iMuon.eta() : abs(iMuon.eta());
     TH2F*                SF_hist = nullptr;
     std::vector< float > SFs{1.0, 1.0, 1.0};
     // load the correct scale factor histogram
