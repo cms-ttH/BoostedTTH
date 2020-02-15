@@ -873,10 +873,10 @@ elif "2017" in options.dataEra:
     jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFPuppi.txt"
     jerSFFileAK8 = "Fall17_V3_MC_SF_AK8PFPuppi.txt"
 elif "2018" in options.dataEra:
-    jerResFileAK4 = "Autumn18_V7_MC_PtResolution_AK4PFPuppi.txt"
-    jerResFileAK8 = "Autumn18_V7_MC_PtResolution_AK8PFPuppi.txt"
-    jerSFFileAK4 = "Autumn18_V7_MC_SF_AK4PFPuppi.txt"
-    jerSFFileAK8 = "Autumn18_V7_MC_SF_AK8PFPuppi.txt"
+    jerResFileAK4 = "Autumn18_V7b_MC_PtResolution_AK4PFPuppi.txt"
+    jerResFileAK8 = "Autumn18_V7b_MC_PtResolution_AK8PFPuppi.txt"
+    jerSFFileAK4 = "Autumn18_V7b_MC_SF_AK4PFPuppi.txt"
+    jerSFFileAK8 = "Autumn18_V7b_MC_SF_AK8PFPuppi.txt"
 else:
     raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017/2018")
 
