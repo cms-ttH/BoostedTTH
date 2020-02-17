@@ -647,9 +647,9 @@ void SelectedLeptonProducer::AddMuonSFs(std::vector<pat::Muon>& inputMuons, cons
 }
 
 std::vector<float> SelectedLeptonProducer::GetMuonIDSF(const pat::Muon& iMuon, const MuonID& iMuonID) const{
-    // get pt and eta of the electron
+    // get pt and eta of the muon
     auto pt = iMuon.pt();
-    auto eta = abs(iMuon.eta());
+    auto eta = era.find("2016")!=std::string::npos ? iMuon.eta() : abs(iMuon.eta());
     TH2F* SF_hist = nullptr; 
     std::vector<float> SFs{1.0,1.0,1.0};
     // load the correct scale factor histogram
@@ -699,9 +699,9 @@ std::vector<float> SelectedLeptonProducer::GetMuonIDSF(const pat::Muon& iMuon, c
 }
 
 std::vector<float> SelectedLeptonProducer::GetMuonISOSF(const pat::Muon& iMuon, const MuonID& iMuonID, const MuonIsolation& iMuonIso) const{
-    // get pt and eta of the electron
+    // get pt and eta of the muon
     auto pt = iMuon.pt();
-    auto eta = abs(iMuon.eta());
+    auto eta = era.find("2016")!=std::string::npos ? iMuon.eta() : abs(iMuon.eta());
     TH2F* SF_hist = nullptr; 
     std::vector<float> SFs{1.0,1.0,1.0};
     // load the correct scale factor histogram
