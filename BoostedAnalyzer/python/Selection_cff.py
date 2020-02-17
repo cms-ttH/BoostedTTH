@@ -223,6 +223,7 @@ MonoTopSelection = cms.PSet(
     AK15Jet_Eta=cms.double(2.4),
     AK15Jet_Chf=cms.double(0.1),
     AK15Jet_Nhf=cms.double(0.8),
+    AK15Jet_SoftDrop_Mass=cms.double(40.),
 #    DeltaR_MET_AK15Jet=cms.double(1.5),
     minRecoil=cms.double(250.),
     minMET=cms.double(100.0)

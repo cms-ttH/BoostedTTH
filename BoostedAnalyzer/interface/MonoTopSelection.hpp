@@ -8,7 +8,7 @@
 class MonoTopSelection : public Selection {
    public:
     MonoTopSelection(const edm::ParameterSet& iConfig);
-    MonoTopSelection(double pt_min_, double eta_max_, double chf_min_, double nhf_max_, double min_MET_, double min_Recoil_);
+    MonoTopSelection(double pt_min_, double eta_max_, double chf_min_, double nhf_max_, double min_MET_, double min_Recoil_, double min_SoftDropMass_);
     ~MonoTopSelection();
     void InitCutflow(Cutflow& cutflow);
     bool IsSelected(const InputCollections& input, Cutflow& cutflow);
@@ -20,6 +20,7 @@ class MonoTopSelection : public Selection {
     double neutral_hadron_fraction_max;
     double minMET;
     double minRecoil;
+    double minSoftDropMass;
 };
 
 #endif

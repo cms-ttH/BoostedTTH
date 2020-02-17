@@ -4,16 +4,19 @@ using namespace std;
 
 MonoTopSelection::MonoTopSelection(const edm::ParameterSet& iConfig) :
     MonoTopSelection(iConfig.getParameter< double >("AK15Jet_Pt"), iConfig.getParameter< double >("AK15Jet_Eta"), iConfig.getParameter< double >("AK15Jet_Chf"),
-                     iConfig.getParameter< double >("AK15Jet_Nhf"), iConfig.getParameter< double >("minMET"), iConfig.getParameter< double >("minRecoil"))
+                     iConfig.getParameter< double >("AK15Jet_Nhf"), iConfig.getParameter< double >("minMET"), iConfig.getParameter< double >("minRecoil"),
+                     iConfig.getParameter< double >("AK15Jet_SoftDrop_Mass"))
 {
 }
-MonoTopSelection::MonoTopSelection(double pt_min_, double eta_max_, double chf_min_, double nhf_max_, double min_MET_, double min_Recoil_) :
+MonoTopSelection::MonoTopSelection(double pt_min_, double eta_max_, double chf_min_, double nhf_max_, double min_MET_, double min_Recoil_,
+                                   double min_SoftDropMass_) :
     pt_min(pt_min_),
     eta_max(eta_max_),
     charged_hadron_fraction_min(chf_min_),
     neutral_hadron_fraction_max(nhf_max_),
     minMET(min_MET_),
-    minRecoil(min_Recoil_)
+    minRecoil(min_Recoil_),
+    minSoftDropMass(min_SoftDropMass_)
 {
 }
 MonoTopSelection::~MonoTopSelection() {}
@@ -43,22 +46,20 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     else if (input.systematic == Systematics::JERdown) {
         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResDown, pat::MET::Type1);
     }
-    //else if(input.systematic==Systematics::METUnclENup) {
-        //met_p4 =
-        //input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp,pat::MET::Type1);
+    // else if(input.systematic==Systematics::METUnclENup) {
+    // met_p4 =
+    // input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp,pat::MET::Type1);
     //}
-    //else if(input.systematic==Systematics::METUnclENdown) {
-        //met_p4 =
-        //input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown,pat::MET::Type1);
+    // else if(input.systematic==Systematics::METUnclENdown) {
+    // met_p4 =
+    // input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown,pat::MET::Type1);
     //}
     else {
         met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
     }
     // catch possible error where JER corrected MET has nan values
     // use nominal MET instead as temporary solution
-    if (std::isnan(met_p4.pt())) {
-        met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
-    }
+    if (std::isnan(met_p4.pt())) { met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1); }
 
     // calculate hadronic recoil starting from MET
     hadr_recoil_p4 = met_p4;
@@ -85,8 +86,8 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     // sort starting with highest softdrop mass
     std::sort(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [](auto& a, auto& b) { return a.mass() > b.mass(); });
     std::sort(ak15_softdrop_masses.begin(), ak15_softdrop_masses.end(), [](auto& a, auto& b) { return a > b; });
-    bool softdrop_mass_criterium = (ak15_softdrop_jets_from_subjets.size() > 0 ? (ak15_softdrop_jets_from_subjets.at(0).mass() > 30.) : false) ||
-                                   (ak15_softdrop_masses.size() > 0 ? (ak15_softdrop_masses.at(0) > 30.) : false);
+    bool softdrop_mass_criterium = (ak15_softdrop_jets_from_subjets.size() > 0 ? (ak15_softdrop_jets_from_subjets.at(0).mass() > minSoftDropMass) : false) ||
+                                   (ak15_softdrop_masses.size() > 0 ? (ak15_softdrop_masses.at(0) > minSoftDropMass) : false);
 
     // criteria for number of ak15 jets, MET, highest softdrop mass, and hadronic recoil in hadronic monotop channel
     bool n_ak15_jets_criterium   = (input.selectedJetsAK15.size() >= 1) && (input.selectedJetsAK15.size() <= 2);
