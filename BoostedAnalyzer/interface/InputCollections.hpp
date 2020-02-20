@@ -41,14 +41,14 @@ struct InputCollections {
                      const std::vector< reco::Vertex >& selectedPVs_, const std::vector< pat::Muon >& selectedMuons_,
                      const std::vector< pat::Muon >& selectedMuonsDL_, const std::vector< pat::Muon >& selectedMuonsLoose_,
                      const std::vector< pat::Electron >& selectedElectrons_, const std::vector< pat::Electron >& selectedElectronsDL_,
-                     const std::vector< pat::Electron >& selectedElectronsLoose_, const std::vector< pat::Photon >& selectedPhotons_,
-                     const std::vector< pat::Photon >& selectedPhotonsLoose_, const std::vector< pat::Jet >& selectedJets_,
-                     const std::vector< pat::Jet >& selectedJetsLoose_, const std::vector< pat::Jet >& selectedJetsAK8_,
-                     const std::vector< pat::Jet >& selectedJetsAK15_, const pat::MET& correctedMET_, const pat::MET& correctedMETPuppi_,
-                     const GenTopEvent& genTopEvt_, const GenDarkMatterEvent& genDarkMatterEvt_, const std::vector< reco::GenJet >& genJets_,
-                     const SampleType sampleType_, const HiggsDecay::HiggsDecay higgsDecay_, const std::map< std::string, float >& weights_,
-                     const edm::Event& iEvent_, const edm::EventSetup& iSetup_, const Systematics::Type& systematic_,
-                     const std::map< std::string, int >& selectionTags_, const std::string& era_) :
+                     const std::vector< pat::Electron >& selectedElectronsLoose_, const std::vector< pat::Tau >& selectedTaus_,
+                     const std::vector< pat::Photon >& selectedPhotons_, const std::vector< pat::Photon >& selectedPhotonsLoose_,
+                     const std::vector< pat::Jet >& selectedJets_, const std::vector< pat::Jet >& selectedJetsLoose_,
+                     const std::vector< pat::Jet >& selectedJetsAK8_, const std::vector< pat::Jet >& selectedJetsAK15_, const pat::MET& correctedMET_,
+                     const pat::MET& correctedMETPuppi_, const GenTopEvent& genTopEvt_, const GenDarkMatterEvent& genDarkMatterEvt_,
+                     const std::vector< reco::GenJet >& genJets_, const SampleType sampleType_, const HiggsDecay::HiggsDecay higgsDecay_,
+                     const std::map< std::string, float >& weights_, const edm::Event& iEvent_, const edm::EventSetup& iSetup_,
+                     const Systematics::Type& systematic_, const std::map< std::string, int >& selectionTags_, const std::string& era_) :
         eventInfo(eventInfo_),
         triggerInfo(triggerInfo_),
         filterInfo(filterInfo_),
@@ -59,6 +59,7 @@ struct InputCollections {
         selectedElectrons(selectedElectrons_),
         selectedElectronsDL(selectedElectronsDL_),
         selectedElectronsLoose(selectedElectronsLoose_),
+        selectedTaus(selectedTaus_),
         selectedPhotons(selectedPhotons_),
         selectedPhotonsLoose(selectedPhotonsLoose_),
         selectedJets(selectedJets_),
@@ -99,6 +100,7 @@ struct InputCollections {
         selectedElectrons(input.selectedElectrons),
         selectedElectronsDL(input.selectedElectronsDL),
         selectedElectronsLoose(input.selectedElectronsLoose),
+        selectedTaus(input.selectedTaus),
         selectedPhotons(input.selectedPhotons),
         selectedPhotonsLoose(input.selectedPhotonsLoose),
         selectedJets(selectedJets_),
@@ -131,6 +133,7 @@ struct InputCollections {
     const std::vector< pat::Electron >&  selectedElectrons;
     const std::vector< pat::Electron >&  selectedElectronsDL;
     const std::vector< pat::Electron >&  selectedElectronsLoose;
+    const std::vector< pat::Tau >&       selectedTaus;
     const std::vector< pat::Photon >&    selectedPhotons;
     const std::vector< pat::Photon >&    selectedPhotonsLoose;
     const std::vector< pat::Jet >&       selectedJets;

@@ -193,3 +193,53 @@ SelectedMuonProducer2018 = SelectedMuonProducer2017.clone(
         "NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"
     ),
 )
+    
+SelectedTauProducer2017 = cms.EDProducer(
+    "SelectedLeptonProducer",
+    leptonType=cms.string("tau"),
+    isData=cms.bool(False),
+    era=cms.string("2017"),
+    leptons=cms.InputTag("slimmedTaus"),
+    vertices=cms.InputTag("offlineSlimmedPrimaryVertices"),
+    rho=cms.InputTag("fixedGridRhoFastjetAll"),
+    ptMins=cms.vdouble(20.),
+    etaMaxs=cms.vdouble(2.3),
+    leptonIDs=cms.vstring("loose"),
+    collectionNames=cms.vstring("selectedTausLoose"),
+    isoConeSizes=cms.vstring("R03"),
+    isoCorrTypes=cms.vstring("rhoEA"),
+    muonIsoTypes=cms.vstring("loose"),
+    useMuonRC=cms.bool(False),
+    useDeterministicSeeds=cms.bool(False),
+    rc_dir=cms.string("BoostedTTH/Producers/data/muonSFs/RoccoR2017.txt"),
+    ea_dir=cms.string(
+        "BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt"
+    ),
+    file_EleLooseIDSF=cms.string(
+        ""
+    ),
+    file_EleMediumIDSF=cms.string(
+        ""
+    ),
+    file_EleTightIDSF=cms.string(
+        ""
+    ),
+    file_EleRecoSF_highPt=cms.string(
+        ""
+    ),
+    file_EleRecoSF_lowPt=cms.string(
+        ""
+    ),
+    file_MuonLooseIDSF=cms.string(""),
+    file_MuonMediumIDSF=cms.string(""),
+    file_MuonTightIDSF=cms.string(""),
+    file_MuonIsoSF=cms.string(""),
+)
+
+SelectedTauProducer2018 = SelectedTauProducer2017.clone(
+    era=cms.string("2018")
+)
+
+SelectedTauProducer2016 = SelectedTauProducer2017.clone(
+    era=cms.string("2016")
+)

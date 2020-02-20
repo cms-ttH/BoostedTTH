@@ -23,7 +23,8 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     EDMRhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))},
     EDMVertexToken{consumes< reco::VertexCollection >(iConfig.getParameter< edm::InputTag >("vertices"))},
     EDMMuonsToken{consumes< pat::MuonCollection >(iConfig.getParameter< edm::InputTag >("leptons"))},
-    EDMElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("leptons"))}
+    EDMElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("leptons"))},
+    EDMTausToken{consumes< pat::TauCollection >(iConfig.getParameter< edm::InputTag >("leptons"))}
 
 {
     // setup of producer
@@ -31,6 +32,8 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         leptonType_ = LeptonType::Electron;
     else if (leptonType == "muon")
         leptonType_ = LeptonType::Muon;
+    else if (leptonType == "tau")
+        leptonType_ = LeptonType::Tau;
     else {
         std::cerr << "\n\nERROR: Unknown lepton type " << leptonType << std::endl;
         std::cerr << "Please select 'electron' or 'muon'\n" << std::endl;
@@ -46,6 +49,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     // fill lepton selection criteria with default values
     electronIDs_  = std::vector< ElectronID >(leptonIDs.size(), ElectronID::Loose);
     muonIDs_      = std::vector< MuonID >(leptonIDs.size(), MuonID::Loose);
+    tauIDs_       = std::vector< TauID >(leptonIDs.size(), TauID::Loose);
     IsoConeSizes_ = std::vector< IsoConeSize >(leptonIDs.size(), IsoConeSize::R03);
     IsoCorrTypes_ = std::vector< IsoCorrType >(leptonIDs.size(), IsoCorrType::rhoEA);
     muonIsos_     = std::vector< MuonIsolation >(leptonIDs.size(), MuonIsolation::Loose);
@@ -103,6 +107,22 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
                 throw std::exception();
             }
         }
+        if (leptonType_ == LeptonType::Tau) {
+            if (leptonIDs.at(i) == "loose")
+                tauIDs_.at(i) = TauID::Loose;
+            else if (leptonIDs.at(i) == "medium")
+                tauIDs_.at(i) = TauID::Medium;
+            else if (leptonIDs.at(i) == "tight")
+                tauIDs_.at(i) = TauID::Tight;
+            else if (leptonIDs.at(i) == "veto")
+                tauIDs_.at(i) = TauID::Veto;
+            else if (leptonIDs.at(i) == "none")
+                tauIDs_.at(i) = TauID::None;
+            else {
+                std::cerr << "\n\nERROR: No matching tau ID type found for: " << leptonIDs.at(i) << std::endl;
+                throw std::exception();
+            }
+        }
 
         if (isoConeSizes.at(i) == "R03")
             IsoConeSizes_.at(i) = IsoConeSize::R03;
@@ -126,6 +146,8 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
             produces< pat::ElectronCollection >(collectionNames_.at(i));
         else if (leptonType_ == LeptonType::Muon)
             produces< pat::MuonCollection >(collectionNames_.at(i));
+        else if (leptonType_ == LeptonType::Tau)
+            produces< pat::TauCollection >(collectionNames_.at(i));
         else {
             std::cerr << "\n\nERROR: Unknown lepton type " << leptonType << std::endl;
             std::cerr << "Please select 'electron' or 'muon'\n" << std::endl;
@@ -302,6 +324,19 @@ void SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
             // produce the different muon collections and create a unique ptr to it
             std::unique_ptr< pat::MuonCollection > selectedLeptons = std::make_unique< pat::MuonCollection >(selectedMuons);
             // put the collection into the event with help of the unique ptr
+            iEvent.put(std::move(selectedLeptons), collectionNames_.at(i));
+        }
+    }
+    else if (leptonType_ == LeptonType::Tau) {
+        edm::Handle< pat::TauCollection > inputTaus;
+        iEvent.getByToken(EDMTausToken, inputTaus);
+        if (not inputTaus.isValid()) {
+            std::cerr << "\n\nERROR: retrieved tau collection is not valid" << std::endl;
+            throw std::exception();
+        }
+        for (size_t i = 0; i < ptMins_.size(); i++) {
+            pat::TauCollection                    selectedTaus    = GetSortedByPt(GetSelectedTaus(*inputTaus, ptMins_.at(i), etaMaxs_.at(i), tauIDs_.at(i)));
+            std::unique_ptr< pat::TauCollection > selectedLeptons = std::make_unique< pat::TauCollection >(selectedTaus);
             iEvent.put(std::move(selectedLeptons), collectionNames_.at(i));
         }
     }
@@ -654,7 +689,7 @@ std::vector< float > SelectedLeptonProducer::GetMuonIDSF(const pat::Muon& iMuon,
 {
     // get pt and eta of the electron
     auto                 pt      = iMuon.pt();
-    auto                 eta     = era.find("2016")!=std::string::npos ? iMuon.eta() : abs(iMuon.eta());
+    auto                 eta     = era.find("2016") != std::string::npos ? iMuon.eta() : abs(iMuon.eta());
     TH2F*                SF_hist = nullptr;
     std::vector< float > SFs{1.0, 1.0, 1.0};
     // load the correct scale factor histogram
@@ -698,7 +733,7 @@ std::vector< float > SelectedLeptonProducer::GetMuonISOSF(const pat::Muon& iMuon
 {
     // get pt and eta of the electron
     auto                 pt      = iMuon.pt();
-    auto                 eta     = era.find("2016")!=std::string::npos ? iMuon.eta() : abs(iMuon.eta());
+    auto                 eta     = era.find("2016") != std::string::npos ? iMuon.eta() : abs(iMuon.eta());
     TH2F*                SF_hist = nullptr;
     std::vector< float > SFs{1.0, 1.0, 1.0};
     // load the correct scale factor histogram
@@ -752,6 +787,48 @@ std::vector< float > SelectedLeptonProducer::GetMuonISOSF(const pat::Muon& iMuon
     SFs.at(2) = (SF_hist->GetBinContent(bin)) - (SF_hist->GetBinError(bin));
 
     return SFs;
+}
+
+bool SelectedLeptonProducer::isGoodTau(const pat::Tau& iTau, const double iMinPt, const double iMaxEta, const TauID iTauID) const
+{
+    bool passesKinematics = (iMinPt <= iTau.pt()) and (iMaxEta >= fabs(iTau.eta()));
+    bool passesDM         = iTau.tauID("decayModeFindingNewDMs") >= 0.5;
+    bool passesID         = false;
+
+    switch (iTauID) {
+        case TauID::None: passesID = true; break;
+        case TauID::Veto:
+            passesID = iTau.tauID("byVLooseDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byVLooseDeepTau2017v2p1VSe") >= 0.5 and
+                       iTau.tauID("byVLooseDeepTau2017v2p1VSmu") >= 0.5;
+            break;
+        case TauID::Loose:
+            passesID = iTau.tauID("byLooseDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byLooseDeepTau2017v2p1VSe") >= 0.5 and
+                       iTau.tauID("byLooseDeepTau2017v2p1VSmu") >= 0.5;
+            break;
+        case TauID::Medium:
+            passesID = iTau.tauID("byMediumDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byMediumDeepTau2017v2p1VSe") >= 0.5 and
+                       iTau.tauID("byMediumDeepTau2017v2p1VSmu") >= 0.5;
+            break;
+        case TauID::Tight:
+            passesID = iTau.tauID("byTightDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byTightDeepTau2017v2p1VSe") >= 0.5 and
+                       iTau.tauID("byTightDeepTau2017v2p1VSmu") >= 0.5;
+            break;
+        default: std::cerr << "\n\nERROR: InvalidTauID" << std::endl; throw std::exception();
+    }
+
+    return passesKinematics and passesDM and passesID;
+}
+
+std::vector< pat::Tau > SelectedLeptonProducer::GetSelectedTaus(const std::vector< pat::Tau >& inputTaus, const double iMinPt, const double iMaxEta,
+                                                                const TauID iTauID) const
+{
+    std::vector< pat::Tau > selectedTaus;
+
+    for (const auto& tau : inputTaus) {
+        if (isGoodTau(tau, iMinPt, iMaxEta, iTauID)) { selectedTaus.push_back(tau); }
+    }
+
+    return selectedTaus;
 }
 
 // ------------ method called once each job just before starting event loop

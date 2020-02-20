@@ -19,6 +19,7 @@ Inputs_tth_sl = cms.PSet(
     selectedElectronsLoose=cms.InputTag(
         "SelectedElectronProducer:selectedElectronsLoose"
     ),
+    selectedTaus = cms.InputTag("SelectedTauProducer:selectedTausLoose"),
     selectedPhotons=cms.InputTag("SelectedPhotonProducer:selectedPhotons"),
     selectedPhotonsLoose=cms.InputTag("SelectedPhotonProducer:selectedPhotonsLoose"),
     selectedJets=cms.VInputTag("SelectedJetProducer:selectedJets"),

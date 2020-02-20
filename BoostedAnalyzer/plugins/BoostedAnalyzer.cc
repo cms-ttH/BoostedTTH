@@ -252,6 +252,8 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsDLToken;
     /** loose electrons data access token **/
     edm::EDGetTokenT< pat::ElectronCollection > selectedElectronsLooseToken;
+    /** tau data access token **/
+    edm::EDGetTokenT< pat::TauCollection > selectedTausToken;
     /** photon collection **/
     edm::EDGetTokenT< pat::PhotonCollection > selectedPhotonsToken;
     /** loose photon collection **/
@@ -336,6 +338,7 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     selectedElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("selectedElectrons"))},
     selectedElectronsDLToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("selectedElectronsDL"))},
     selectedElectronsLooseToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("selectedElectronsLoose"))},
+    selectedTausToken{consumes< pat::TauCollection >(iConfig.getParameter< edm::InputTag >("selectedTaus"))},
     selectedPhotonsToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("selectedPhotons"))},
     selectedPhotonsLooseToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("selectedPhotonsLoose"))},
 
@@ -634,6 +637,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken(selectedElectronsDLToken, h_selectedElectronsDL);
     iEvent.getByToken(selectedElectronsLooseToken, h_selectedElectronsLoose);
 
+    // TAUS
+    edm::Handle< pat::TauCollection > h_selectedTaus;
+    iEvent.getByToken(selectedTausToken, h_selectedTaus);
+
     // PHOTONS
     edm::Handle< pat::PhotonCollection > h_selectedPhotons;
     iEvent.getByToken(selectedPhotonsToken, h_selectedPhotons);
@@ -789,8 +796,8 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         auto csvweights = GetCSVWeights(*(hs_selectedJets.at(isys)), jetSystematics.at(isys));
         weights.insert(csvweights.begin(), csvweights.end());
         inputs.emplace_back(eventInfo, triggerInfo, filterInfo, selectedPVs, *h_selectedMuons, *h_selectedMuonsDL, *h_selectedMuonsLoose, *h_selectedElectrons,
-                            *h_selectedElectronsDL, *h_selectedElectronsLoose, *h_selectedPhotons, *h_selectedPhotonsLoose, *(hs_selectedJets.at(isys)),
-                            *(hs_selectedJetsLoose.at(isys)), *(hs_selectedJetsAK8.at(isys)), *(hs_selectedJetsAK15.at(isys)),
+                            *h_selectedElectronsDL, *h_selectedElectronsLoose, *h_selectedTaus, *h_selectedPhotons, *h_selectedPhotonsLoose,
+                            *(hs_selectedJets.at(isys)), *(hs_selectedJetsLoose.at(isys)), *(hs_selectedJetsAK8.at(isys)), *(hs_selectedJetsAK15.at(isys)),
                             (*(hs_correctedMETs.at(isys))).at(0), (*(hs_correctedMETsPuppi.at(isys))).at(0),
                             // selectedBoostedJets[isys],
                             // selectedAk4Cluster,

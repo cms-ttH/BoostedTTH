@@ -585,6 +585,15 @@ if ("2016" in options.dataEra or "2017" in options.dataEra) and (not options.isD
 
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
+updatedTauName = "slimmedTausNewID"
+import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
+tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
+                    updatedTauName = updatedTauName,
+                    toKeep = ["deepTau2017v2p1"#,"2017v2"
+                               ])
+tauIdEmbedder.runTauID()
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 if "2017" in options.dataEra:
     process.load("BoostedTTH.Filters.Ele32DoubleL1ToSingleL1_cfi")
@@ -595,7 +604,7 @@ if "2017" in options.dataEra:
 electronCollection = cms.InputTag("slimmedElectrons", "", "SKIM")
 photonCollection = cms.InputTag("slimmedPhotons", "", "SKIM")
 muonCollection = cms.InputTag("slimmedMuons")
-tauCollection = cms.InputTag("slimmedTaus")
+tauCollection = cms.InputTag("slimmedTausNewID")
 METCollection = cms.InputTag("slimmedMETs", "", process.name_())
 PuppiMETCollection = cms.InputTag("slimmedMETsPuppi", "", process.name_())
 jetCollection = cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM")
@@ -650,6 +659,8 @@ if "2016" in options.dataEra:
     process.SelectedMuonProducer.ptMins = [10.0, 20.0, 26.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2016
+    ###
+    process.SelectedTauProducer = SelectedTauProducer2016
 elif "2017" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2017
     process.SelectedElectronProducer.ptMins = [10.0, 20.0, 34.0]
@@ -658,6 +669,8 @@ elif "2017" in options.dataEra:
     process.SelectedMuonProducer.ptMins = [10.0, 20.0, 29.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2017
+    ###
+    process.SelectedTauProducer = SelectedTauProducer2017
 elif "2018" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2018
     process.SelectedElectronProducer.ptMins = [10.0, 20.0, 34.0]
@@ -666,6 +679,8 @@ elif "2018" in options.dataEra:
     process.SelectedMuonProducer.ptMins = [10.0, 20.0, 26.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2018
+    ###
+    process.SelectedTauProducer = SelectedTauProducer2018
 
 
 process.SelectedElectronProducer.leptons = electronCollection
@@ -710,6 +725,13 @@ process.SelectedPhotonProducer.collectionNames = [
 ]
 process.SelectedPhotonProducer.isData = options.isData
 process.SelectedPhotonProducer.era = options.dataEra
+
+process.SelectedTauProducer.leptons = tauCollection
+process.SelectedTauProducer.ptMins = [20.]
+process.SelectedTauProducer.etaMaxs = [2.3]
+process.SelectedTauProducer.leptonIDs = ["loose"]
+process.SelectedTauProducer.isData = options.isData
+process.SelectedTauProducer.collectionNames = ["selectedTausLoose"]
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 # apply JES correction to AK4 jets
@@ -1305,9 +1327,12 @@ process.leptons_photons = cms.Task()
 process.leptons_photons.add(
     process.SelectedElectronProducer,
     process.SelectedMuonProducer,
+    process.SelectedTauProducer,
     process.SelectedPhotonProducer,
 )
 process.final.associate(process.leptons_photons)
+
+process.taus = cms.Path(process.rerunMvaIsolationSequence * process.slimmedTausNewID)
 
 process.puppimults = cms.Path(process.patPuppiJetSpecificProducerAK8*process.patPuppiJetSpecificProducerAK15)
 

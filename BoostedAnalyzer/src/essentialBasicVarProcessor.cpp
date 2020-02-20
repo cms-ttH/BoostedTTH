@@ -30,6 +30,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVar("N_LooseElectrons", "I");
     vars.InitVar("N_TightMuons", "I");
     vars.InitVar("N_LooseMuons", "I");
+    vars.InitVar("N_Taus", "I");
 
     vars.InitVars("LooseJet_E", "N_LooseJets");
     vars.InitVars("LooseJet_M", "N_LooseJets");
@@ -155,6 +156,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_LooseElectrons", input.selectedElectronsLoose.size());
     vars.FillVar("N_TightMuons", input.selectedMuons.size());
     vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
+    vars.FillVar("N_Taus", input.selectedTaus.size());
 
     int N_HEM_Jets = 0;
 

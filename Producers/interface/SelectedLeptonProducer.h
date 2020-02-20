@@ -43,6 +43,7 @@
 #include "DataFormats/PatCandidates/interface/Lepton.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Tau.h"
 
 #include "TH2F.h"
 #include "TFile.h"
@@ -60,9 +61,10 @@ class SelectedLeptonProducer : public edm::EDProducer {
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
     // some enums to make things nicer
-    enum class LeptonType { Electron, Muon };
+    enum class LeptonType { Electron, Muon, Tau };
     enum class ElectronID { None, Veto, Loose, Medium, Tight };
     enum class MuonID { None, Loose, Medium, Tight };
+    enum class TauID { None, Veto, Loose, Medium, Tight };
     enum class IsoConeSize { R03, R04 };
     enum class IsoCorrType { rhoEA, deltaBeta };
     enum class MuonIsolation { None, Loose, Medium, Tight };
@@ -112,6 +114,10 @@ class SelectedLeptonProducer : public edm::EDProducer {
     // Function to apply the muon rochester correction to a given muon collection
     void ApplyMuonMomentumCorrection(std::vector< pat::Muon >& inputMuons);
 
+    std::vector< pat::Tau > GetSelectedTaus(const std::vector< pat::Tau >& inputTaus, const double iMinPt = 20., const double iMaxEta = 2.3,
+                                            const TauID = TauID::Loose) const;
+    bool                    isGoodTau(const pat::Tau& iTau, const double iMinPt = 20., const double iMaxEta = 2.3, const TauID iTauID = TauID::Loose) const;
+
    private:
     virtual void beginJob() override;
     virtual void produce(edm::Event&, const edm::EventSetup&) override;
@@ -142,6 +148,7 @@ class SelectedLeptonProducer : public edm::EDProducer {
     // lepton selection criteria
     std::vector< MuonID >        muonIDs_;
     std::vector< ElectronID >    electronIDs_;
+    std::vector< TauID >         tauIDs_;
     std::vector< IsoConeSize >   IsoConeSizes_;
     std::vector< IsoCorrType >   IsoCorrTypes_;
     std::vector< MuonIsolation > muonIsos_;
@@ -161,6 +168,8 @@ class SelectedLeptonProducer : public edm::EDProducer {
     edm::EDGetTokenT< pat::MuonCollection > EDMMuonsToken;
     // electrons
     edm::EDGetTokenT< pat::ElectronCollection > EDMElectronsToken;
+    // taus
+    edm::EDGetTokenT< pat::TauCollection > EDMTausToken;
 
     // primary vertex
     reco::Vertex vertex;
