@@ -67,6 +67,9 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     for (const auto& mu : input.selectedMuonsLoose) { hadr_recoil_p4 += mu.p4(); }
     for (const auto& ph : input.selectedPhotons) { hadr_recoil_p4 += ph.p4(); }
 
+    // hadronic tau criterium
+    bool hadronic_tau_criterium = input.selectedTaus.size() == 0;
+
     // for softdrop mass criterium
     std::vector< math::XYZTLorentzVector > ak15_softdrop_jets_from_subjets;
     std::vector< float >                   ak15_softdrop_masses;
@@ -93,8 +96,8 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     bool n_ak15_jets_criterium   = (input.selectedJetsAK15.size() >= 1) && (input.selectedJetsAK15.size() <= 2);
     bool met_recoil_criterium    = (met_p4.pt() >= minRecoil) || (hadr_recoil_p4.pt() >= minRecoil);
     bool n_max_leptons_criterium = (input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size()) <= 2;
-    bool hadronic_criterium =
-        met_recoil_criterium && n_ak15_jets_criterium && leading_ak15jet_pt_criterium && softdrop_mass_criterium && n_max_leptons_criterium;
+    bool hadronic_criterium      = met_recoil_criterium && n_ak15_jets_criterium && leading_ak15jet_pt_criterium && softdrop_mass_criterium &&
+                              n_max_leptons_criterium && hadronic_tau_criterium;
 
     // event is compatible with hadronic monotop selection
     if (hadronic_criterium) {
@@ -125,7 +128,7 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     bool n_lepton_criterium     = (input.selectedElectrons.size() + input.selectedMuons.size()) == 1;
     bool met_criterium          = met_p4.pt() >= minMET;
     bool m_transverse_criterium = m_transverse >= 20.;
-    bool leptonic_criterium     = n_ak4_jets_criterium && n_lepton_criterium && met_criterium && m_transverse_criterium;
+    bool leptonic_criterium     = n_ak4_jets_criterium && n_lepton_criterium && met_criterium && m_transverse_criterium && hadronic_tau_criterium;
 
     // event is compatible with leptonic monotop selection
     if (leptonic_criterium) {
