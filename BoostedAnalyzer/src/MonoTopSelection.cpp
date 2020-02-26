@@ -5,18 +5,19 @@ using namespace std;
 MonoTopSelection::MonoTopSelection(const edm::ParameterSet& iConfig) :
     MonoTopSelection(iConfig.getParameter< double >("AK15Jet_Pt"), iConfig.getParameter< double >("AK15Jet_Eta"), iConfig.getParameter< double >("AK15Jet_Chf"),
                      iConfig.getParameter< double >("AK15Jet_Nhf"), iConfig.getParameter< double >("minMET"), iConfig.getParameter< double >("minRecoil"),
-                     iConfig.getParameter< double >("AK15Jet_SoftDrop_Mass"))
+                     iConfig.getParameter< double >("AK15Jet_Min_SoftDrop_Mass"), iConfig.getParameter< double >("AK15Jet_Max_SoftDrop_Mass"))
 {
 }
 MonoTopSelection::MonoTopSelection(double pt_min_, double eta_max_, double chf_min_, double nhf_max_, double min_MET_, double min_Recoil_,
-                                   double min_SoftDropMass_) :
+                                   double minSoftDropMass_, double maxSoftDropMass_) :
     pt_min(pt_min_),
     eta_max(eta_max_),
     charged_hadron_fraction_min(chf_min_),
     neutral_hadron_fraction_max(nhf_max_),
     minMET(min_MET_),
     minRecoil(min_Recoil_),
-    minSoftDropMass(min_SoftDropMass_)
+    minSoftDropMass(minSoftDropMass_),
+    maxSoftDropMass(maxSoftDropMass_)
 {
 }
 MonoTopSelection::~MonoTopSelection() {}
@@ -74,10 +75,11 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     std::vector< math::XYZTLorentzVector > ak15_softdrop_jets_from_subjets;
     std::vector< float >                   ak15_softdrop_masses;
     for (const auto& ak15jet : input.selectedJetsAK15) {
+        if (not ak15jet.hasSubjets("SoftDropWithBtagInfoCorrected")) continue;
         math::XYZTLorentzVector ak15_softdrop_jet{0., 0., 0., 0.};
         for (const auto& ak15_softdrop_subjet : ak15jet.subjets("SoftDropWithBtagInfoCorrected")) { ak15_softdrop_jet += ak15_softdrop_subjet->p4(); }
         ak15_softdrop_jets_from_subjets.push_back(ak15_softdrop_jet);
-        ak15_softdrop_masses.push_back(ak15jet.userFloat("ak15PFJetsPuppiSoftDropMass"));
+        ak15_softdrop_masses.push_back(ak15jet.hasUserFloat("ak15PFJetsPuppiSoftDropMass") ? ak15jet.userFloat("ak15PFJetsPuppiSoftDropMass") : -9.);
     }
 
     // sort starting with highest softdrop pt
@@ -89,8 +91,10 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     // sort starting with highest softdrop mass
     std::sort(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [](auto& a, auto& b) { return a.mass() > b.mass(); });
     std::sort(ak15_softdrop_masses.begin(), ak15_softdrop_masses.end(), [](auto& a, auto& b) { return a > b; });
-    bool softdrop_mass_criterium = (ak15_softdrop_jets_from_subjets.size() > 0 ? (ak15_softdrop_jets_from_subjets.at(0).mass() > minSoftDropMass) : false) ||
-                                   (ak15_softdrop_masses.size() > 0 ? (ak15_softdrop_masses.at(0) > minSoftDropMass) : false);
+    bool softdrop_mass_criterium = ak15_softdrop_jets_from_subjets.size() > 0
+                                       ? ((ak15_softdrop_jets_from_subjets.at(0).mass() > minSoftDropMass || ak15_softdrop_masses.at(0) > minSoftDropMass) &&
+                                          (ak15_softdrop_jets_from_subjets.back().mass() < maxSoftDropMass || ak15_softdrop_masses.back() < maxSoftDropMass))
+                                       : false;
 
     // criteria for number of ak15 jets, MET, highest softdrop mass, and hadronic recoil in hadronic monotop channel
     bool n_ak15_jets_criterium   = (input.selectedJetsAK15.size() >= 1) && (input.selectedJetsAK15.size() <= 2);
