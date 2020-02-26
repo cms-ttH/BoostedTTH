@@ -241,39 +241,41 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK8Jet_DeepAK8_WvsQCD", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD"));
         vars.FillVars("AK8Jet_DeepAK8_ZvsQCD", i, ak8jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZvsQCD"));
 
-        const auto& ak8jet_subjets = ak8jet.subjets("SoftDropWithBtagInfo");
+        if (ak8jet.hasSubjets("SoftDropWithBtagInfo")) {
+            const auto& ak8jet_subjets = ak8jet.subjets("SoftDropWithBtagInfo");
 
-        vars.FillVars("AK8Jet_N_SoftDropSubjets", i, ak8jet_subjets.size());
+            vars.FillVars("AK8Jet_N_SoftDropSubjets", i, ak8jet_subjets.size());
 
-        int n_btagged_softdropsubjets      = 0;
-        int n_loosebtagged_softdropsubjets = 0;
-        int n_tightbtagged_softdropsubjets = 0;
+            int n_btagged_softdropsubjets      = 0;
+            int n_loosebtagged_softdropsubjets = 0;
+            int n_tightbtagged_softdropsubjets = 0;
 
-        math::XYZTLorentzVector ak8jet_softdrop(0., 0., 0., 0.);
+            math::XYZTLorentzVector ak8jet_softdrop(0., 0., 0., 0.);
 
-        for (size_t j = 0; j < ak8jet_subjets.size() && j < 3; j++) {
-            const auto& ak8jet_subjet = *ak8jet_subjets.at(j);
-            vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_Pt", i, ak8jet_subjet.pt());
-            vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_Eta", i, ak8jet_subjet.eta());
-            vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_Phi", i, ak8jet_subjet.phi());
-            vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_E", i, ak8jet_subjet.energy());
-            vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_M", i, ak8jet_subjet.mass());
-            vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_DeepJetCSV", i, CSVHelper::GetJetCSV_DNN(ak8jet_subjet, "DeepJet"));
-            if (CSVHelper::PassesCSV(ak8jet_subjet, "DeepJet", CSVHelper::CSVwp::Medium, era)) n_btagged_softdropsubjets += 1;
-            if (CSVHelper::PassesCSV(ak8jet_subjet, "DeepJet", CSVHelper::CSVwp::Loose, era)) n_loosebtagged_softdropsubjets += 1;
-            if (CSVHelper::PassesCSV(ak8jet_subjet, "DeepJet", CSVHelper::CSVwp::Tight, era)) n_tightbtagged_softdropsubjets += 1;
-            ak8jet_softdrop += ak8jet_subjet.p4();
+            for (size_t j = 0; j < ak8jet_subjets.size() && j < 3; j++) {
+                const auto& ak8jet_subjet = *ak8jet_subjets.at(j);
+                vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_Pt", i, ak8jet_subjet.pt());
+                vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_Eta", i, ak8jet_subjet.eta());
+                vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_Phi", i, ak8jet_subjet.phi());
+                vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_E", i, ak8jet_subjet.energy());
+                vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_M", i, ak8jet_subjet.mass());
+                vars.FillVars("AK8Jet_SoftDropJet" + std::to_string(j + 1) + "_DeepJetCSV", i, CSVHelper::GetJetCSV_DNN(ak8jet_subjet, "DeepJet"));
+                if (CSVHelper::PassesCSV(ak8jet_subjet, "DeepJet", CSVHelper::CSVwp::Medium, era)) n_btagged_softdropsubjets += 1;
+                if (CSVHelper::PassesCSV(ak8jet_subjet, "DeepJet", CSVHelper::CSVwp::Loose, era)) n_loosebtagged_softdropsubjets += 1;
+                if (CSVHelper::PassesCSV(ak8jet_subjet, "DeepJet", CSVHelper::CSVwp::Tight, era)) n_tightbtagged_softdropsubjets += 1;
+                ak8jet_softdrop += ak8jet_subjet.p4();
+            }
+
+            vars.FillVars("AK8Jet_N_BTaggedSoftDropSubjets", i, n_btagged_softdropsubjets);
+            vars.FillVars("AK8Jet_N_LooseBTaggedSoftDropSubjets", i, n_loosebtagged_softdropsubjets);
+            vars.FillVars("AK8Jet_N_TightBTaggedSoftDropSubjets", i, n_tightbtagged_softdropsubjets);
+
+            vars.FillVars("AK8Jet_SoftDrop_Pt", i, ak8jet_softdrop.pt());
+            vars.FillVars("AK8Jet_SoftDrop_Eta", i, ak8jet_softdrop.eta());
+            vars.FillVars("AK8Jet_SoftDrop_Phi", i, ak8jet_softdrop.phi());
+            vars.FillVars("AK8Jet_SoftDrop_E", i, ak8jet_softdrop.energy());
+            vars.FillVars("AK8Jet_SoftDrop_M", i, ak8jet_softdrop.mass());
         }
-
-        vars.FillVars("AK8Jet_N_BTaggedSoftDropSubjets", i, n_btagged_softdropsubjets);
-        vars.FillVars("AK8Jet_N_LooseBTaggedSoftDropSubjets", i, n_loosebtagged_softdropsubjets);
-        vars.FillVars("AK8Jet_N_TightBTaggedSoftDropSubjets", i, n_tightbtagged_softdropsubjets);
-
-        vars.FillVars("AK8Jet_SoftDrop_Pt", i, ak8jet_softdrop.pt());
-        vars.FillVars("AK8Jet_SoftDrop_Eta", i, ak8jet_softdrop.eta());
-        vars.FillVars("AK8Jet_SoftDrop_Phi", i, ak8jet_softdrop.phi());
-        vars.FillVars("AK8Jet_SoftDrop_E", i, ak8jet_softdrop.energy());
-        vars.FillVars("AK8Jet_SoftDrop_M", i, ak8jet_softdrop.mass());
 
         for (size_t k = 0; k < ak4jets.size(); k++) {
             const auto& ak4jet = ak4jets.at(k);
@@ -368,39 +370,41 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK15Jet_DeepAK15_WvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD"));
         vars.FillVars("AK15Jet_DeepAK15_ZvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZvsQCD"));
 
-        const auto& ak15jet_subjets = ak15jet.subjets("SoftDropWithBtagInfoCorrected");
+        if (ak15jet.hasSubjets("SoftDropWithBtagInfoCorrected")) {
+            const auto& ak15jet_subjets = ak15jet.subjets("SoftDropWithBtagInfoCorrected");
 
-        vars.FillVars("AK15Jet_N_SoftDropSubjets", i, ak15jet_subjets.size());
+            vars.FillVars("AK15Jet_N_SoftDropSubjets", i, ak15jet_subjets.size());
 
-        int n_btagged_softdropsubjets      = 0;
-        int n_loosebtagged_softdropsubjets = 0;
-        int n_tightbtagged_softdropsubjets = 0;
+            int n_btagged_softdropsubjets      = 0;
+            int n_loosebtagged_softdropsubjets = 0;
+            int n_tightbtagged_softdropsubjets = 0;
 
-        math::XYZTLorentzVector ak15jet_softdrop(0., 0., 0., 0.);
+            math::XYZTLorentzVector ak15jet_softdrop(0., 0., 0., 0.);
 
-        for (size_t j = 0; j < ak15jet_subjets.size() && j < 3; j++) {
-            const auto& ak15jet_subjet = *ak15jet_subjets.at(j);
-            vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_Pt", i, ak15jet_subjet.pt());
-            vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_Eta", i, ak15jet_subjet.eta());
-            vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_Phi", i, ak15jet_subjet.phi());
-            vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_E", i, ak15jet_subjet.energy());
-            vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_M", i, ak15jet_subjet.mass());
-            vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_DeepJetCSV", i, CSVHelper::GetJetCSV_DNN(ak15jet_subjet, "DeepJet"));
-            if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Medium, era)) n_btagged_softdropsubjets += 1;
-            if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Loose, era)) n_loosebtagged_softdropsubjets += 1;
-            if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Tight, era)) n_tightbtagged_softdropsubjets += 1;
-            ak15jet_softdrop += ak15jet_subjet.p4();
+            for (size_t j = 0; j < ak15jet_subjets.size() && j < 3; j++) {
+                const auto& ak15jet_subjet = *ak15jet_subjets.at(j);
+                vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_Pt", i, ak15jet_subjet.pt());
+                vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_Eta", i, ak15jet_subjet.eta());
+                vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_Phi", i, ak15jet_subjet.phi());
+                vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_E", i, ak15jet_subjet.energy());
+                vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_M", i, ak15jet_subjet.mass());
+                vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_DeepJetCSV", i, CSVHelper::GetJetCSV_DNN(ak15jet_subjet, "DeepJet"));
+                if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Medium, era)) n_btagged_softdropsubjets += 1;
+                if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Loose, era)) n_loosebtagged_softdropsubjets += 1;
+                if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Tight, era)) n_tightbtagged_softdropsubjets += 1;
+                ak15jet_softdrop += ak15jet_subjet.p4();
+            }
+
+            vars.FillVars("AK15Jet_N_BTaggedSoftDropSubjets", i, n_btagged_softdropsubjets);
+            vars.FillVars("AK15Jet_N_LooseBTaggedSoftDropSubjets", i, n_loosebtagged_softdropsubjets);
+            vars.FillVars("AK15Jet_N_TightBTaggedSoftDropSubjets", i, n_tightbtagged_softdropsubjets);
+
+            vars.FillVars("AK15Jet_SoftDrop_Pt", i, ak15jet_softdrop.pt());
+            vars.FillVars("AK15Jet_SoftDrop_Eta", i, ak15jet_softdrop.eta());
+            vars.FillVars("AK15Jet_SoftDrop_Phi", i, ak15jet_softdrop.phi());
+            vars.FillVars("AK15Jet_SoftDrop_E", i, ak15jet_softdrop.energy());
+            vars.FillVars("AK15Jet_SoftDrop_M", i, ak15jet_softdrop.mass());
         }
-
-        vars.FillVars("AK15Jet_N_BTaggedSoftDropSubjets", i, n_btagged_softdropsubjets);
-        vars.FillVars("AK15Jet_N_LooseBTaggedSoftDropSubjets", i, n_loosebtagged_softdropsubjets);
-        vars.FillVars("AK15Jet_N_TightBTaggedSoftDropSubjets", i, n_tightbtagged_softdropsubjets);
-
-        vars.FillVars("AK15Jet_SoftDrop_Pt", i, ak15jet_softdrop.pt());
-        vars.FillVars("AK15Jet_SoftDrop_Eta", i, ak15jet_softdrop.eta());
-        vars.FillVars("AK15Jet_SoftDrop_Phi", i, ak15jet_softdrop.phi());
-        vars.FillVars("AK15Jet_SoftDrop_E", i, ak15jet_softdrop.energy());
-        vars.FillVars("AK15Jet_SoftDrop_M", i, ak15jet_softdrop.mass());
 
         for (size_t k = 0; k < ak4jets.size(); k++) {
             const auto& ak4jet = ak4jets.at(k);
