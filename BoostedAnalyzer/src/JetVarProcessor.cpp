@@ -44,6 +44,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK8Jet_DeepAK8_WvsQCD", "N_AK8Jets");
     vars.InitVars("AK8Jet_DeepAK8_ZvsQCD", "N_AK8Jets");
 
+    vars.InitVar("N_AK8Jets_SoftDrop", "I");
     vars.InitVars("AK8Jet_N_SoftDropSubjets", "N_AK8Jets");
     vars.InitVars("AK8Jet_N_BTaggedSoftDropSubjets", "N_AK8Jets");
     vars.InitVars("AK8Jet_N_LooseBTaggedSoftDropSubjets", "N_AK8Jets");
@@ -125,6 +126,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_DeepAK15_WvsQCD", "N_AK15Jets");
     vars.InitVars("AK15Jet_DeepAK15_ZvsQCD", "N_AK15Jets");
 
+    vars.InitVar("N_AK15Jets_SoftDrop", "I");
     vars.InitVars("AK15Jet_N_SoftDropSubjets", "N_AK15Jets");
     vars.InitVars("AK15Jet_N_BTaggedSoftDropSubjets", "N_AK15Jets");
     vars.InitVars("AK15Jet_N_LooseBTaggedSoftDropSubjets", "N_AK15Jets");
@@ -200,6 +202,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     int n_AK4JetsLooseTagged_inside_AK8Jets  = 0;
     int n_AK4JetsTightTagged_inside_AK8Jets  = 0;
     int N_HEM_AK8Jets                        = 0;
+    int n_AK8_SoftDrop_Jets                  = 0;
 
     const auto& ak8jets = input.selectedJetsAK8;
 
@@ -245,6 +248,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             const auto& ak8jet_subjets = ak8jet.subjets("SoftDropWithBtagInfo");
 
             vars.FillVars("AK8Jet_N_SoftDropSubjets", i, ak8jet_subjets.size());
+
+            if (ak8jet_subjets.size() > 0) n_AK8_SoftDrop_Jets += 1;
 
             int n_btagged_softdropsubjets      = 0;
             int n_loosebtagged_softdropsubjets = 0;
@@ -318,6 +323,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     vars.FillVar("N_AK4JetsTagged_inside_AK8Jets", n_AK4JetsTagged_inside_AK8Jets);
     vars.FillVar("N_AK4JetsLooseTagged_inside_AK8Jets", n_AK4JetsLooseTagged_inside_AK8Jets);
     vars.FillVar("N_AK4JetsTightTagged_inside_AK8Jets", n_AK4JetsTightTagged_inside_AK8Jets);
+    vars.FillVar("N_AK8Jets_SoftDrop", n_AK8_SoftDrop_Jets);
     vars.FillVar("N_HEM_AK8Jets", N_HEM_AK8Jets);
 
     int n_AK4JetsTagged_outside_AK15Jets      = 0;
@@ -327,6 +333,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     int n_AK4JetsLooseTagged_inside_AK15Jets  = 0;
     int n_AK4JetsTightTagged_inside_AK15Jets  = 0;
     int N_HEM_AK15Jets                        = 0;
+    int n_AK15_SoftDrop_Jets                  = 0;
 
     const auto& ak15jets = input.selectedJetsAK15;
 
@@ -374,6 +381,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             const auto& ak15jet_subjets = ak15jet.subjets("SoftDropWithBtagInfoCorrected");
 
             vars.FillVars("AK15Jet_N_SoftDropSubjets", i, ak15jet_subjets.size());
+
+            if (ak15jet_subjets.size() > 0) n_AK15_SoftDrop_Jets += 1;
 
             int n_btagged_softdropsubjets      = 0;
             int n_loosebtagged_softdropsubjets = 0;
@@ -447,6 +456,6 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     vars.FillVar("N_AK4JetsTagged_inside_AK15Jets", n_AK4JetsTagged_inside_AK15Jets);
     vars.FillVar("N_AK4JetsLooseTagged_inside_AK15Jets", n_AK4JetsLooseTagged_inside_AK15Jets);
     vars.FillVar("N_AK4JetsTightTagged_inside_AK15Jets", n_AK4JetsTightTagged_inside_AK15Jets);
-
+    vars.FillVar("N_AK15Jets_SoftDrop", n_AK15_SoftDrop_Jets);
     vars.FillVar("N_HEM_AK15Jets", N_HEM_AK15Jets);
 }
