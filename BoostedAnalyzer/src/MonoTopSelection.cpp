@@ -97,7 +97,9 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
                                        : false;
 
     // criteria for number of ak15 jets, MET, highest softdrop mass, and hadronic recoil in hadronic monotop channel
-    bool n_ak15_jets_criterium   = (input.selectedJetsAK15.size() >= 1) && (input.selectedJetsAK15.size() <= 2);
+    bool n_ak15_jets_criterium =
+        (std::count_if(input.selectedJetsAK15.begin(), input.selectedJetsAK15.end(), [&](auto& jet) { return jet.pt() > pt_min; }) == 1) ||
+        (std::count_if(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [&](auto& jet) { return jet.pt() > pt_min; }) == 1);
     bool met_recoil_criterium    = (met_p4.pt() >= minRecoil) || (hadr_recoil_p4.pt() >= minRecoil);
     bool n_max_leptons_criterium = (input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size()) <= 2;
     bool hadronic_criterium      = met_recoil_criterium && n_ak15_jets_criterium && leading_ak15jet_pt_criterium && softdrop_mass_criterium &&
