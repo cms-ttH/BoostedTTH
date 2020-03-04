@@ -107,6 +107,12 @@ void LeptonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     vars.InitVar("DiElectron_Energy");
     vars.InitVar("DiElectron_Mass");
 
+    vars.InitVars("Tau_E", "N_Taus");
+    vars.InitVars("Tau_M", "N_Taus");
+    vars.InitVars("Tau_Pt", "N_Taus");
+    vars.InitVars("Tau_Eta", "N_Taus");
+    vars.InitVars("Tau_Phi", "N_Taus");
+
     //     vars.InitVars("TightLepton_E", "N_TightLeptons");
     //     vars.InitVars("TightLepton_M", "N_TightLeptons");
     //     vars.InitVars("TightLepton_Pt", "N_TightLeptons");
@@ -301,6 +307,15 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
     //         vars.FillVars("LooseLepton_Eta", iLep, itLep->Eta());
     //         vars.FillVars("LooseLepton_Phi", iLep, itLep->Phi());
     //     }
+
+    for (std::vector< pat::Tau >::const_iterator itTau = input.selectedTaus.begin(); itTau != input.selectedTaus.end(); ++itTau) {
+        int iTau = itTau - input.selectedTaus.begin();
+        vars.FillVars("Tau_E", iTau, itTau->energy());
+        vars.FillVars("Tau_M", iTau, itTau->mass());
+        vars.FillVars("Tau_Pt", iTau, itTau->pt());
+        vars.FillVars("Tau_Eta", iTau, itTau->eta());
+        vars.FillVars("Tau_Phi", iTau, itTau->phi());
+    }
 
     vars.FillVar("N_HEM_Electrons", N_HEM_Electrons);
     vars.FillVar("N_HEM_Muons", N_HEM_Muons);
