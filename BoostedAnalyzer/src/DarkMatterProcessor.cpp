@@ -46,6 +46,9 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("N_AK15Jets_x_N_LooseMuons", "I");
     vars.InitVar("N_AK8Jets_x_N_LooseMuons", "I");
     vars.InitVar("N_AK4Jets_x_N_LooseMuons", "I");
+    vars.InitVar("N_AK15Jets_x_N_LoosePhotons", "I");
+    vars.InitVar("N_AK8Jets_x_N_LoosePhotons", "I");
+    vars.InitVar("N_AK4Jets_x_N_LoosePhotons", "I");
 
     vars.InitVars("DeltaR_AK15Jet_LooseElectron", "N_AK15Jets_x_N_LooseElectrons");
     vars.InitVars("DeltaR_AK8Jet_LooseElectron", "N_AK8Jets_x_N_LooseElectrons");
@@ -53,6 +56,9 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("DeltaR_AK15Jet_LooseMuon", "N_AK15Jets_x_N_LooseMuons");
     vars.InitVars("DeltaR_AK8Jet_LooseMuon", "N_AK8Jets_x_N_LooseMuons");
     vars.InitVars("DeltaR_AK4Jet_LooseMuon", "N_AK4Jets_x_N_LooseMuons");
+    vars.InitVars("DeltaR_AK4Jet_LoosePhoton", "N_AK4Jets_x_N_LoosePhotons");
+    vars.InitVars("DeltaR_AK8Jet_LoosePhoton", "N_AK8Jets_x_N_LoosePhotons");
+    vars.InitVars("DeltaR_AK15Jet_LoosePhoton", "N_AK15Jets_x_N_LoosePhotons");
 
     vars.InitVar("N_Neutralinos", "I");
     vars.InitVar("N_Neutrinos", "I");
@@ -254,6 +260,9 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     vars.FillVar("N_AK15Jets_x_N_LooseMuons", input.selectedJetsAK15.size() * input.selectedMuonsLoose.size());
     vars.FillVar("N_AK8Jets_x_N_LooseMuons", input.selectedJetsAK8.size() * input.selectedMuonsLoose.size());
     vars.FillVar("N_AK4Jets_x_N_LooseMuons", input.selectedJets.size() * input.selectedMuonsLoose.size());
+    vars.FillVar("N_AK15Jets_x_N_LoosePhotons", input.selectedJetsAK15.size() * input.selectedPhotonsLoose.size());
+    vars.FillVar("N_AK8Jets_x_N_LoosePhotons", input.selectedJetsAK8.size() * input.selectedPhotonsLoose.size());
+    vars.FillVar("N_AK4Jets_x_N_LoosePhotons", input.selectedJets.size() * input.selectedPhotonsLoose.size());
 
     for (size_t i = 0; i < input.selectedJets.size(); i++) {
         vars.FillVars("DeltaPhi_AK4Jet_Hadr_Recoil", i, fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi() - input.selectedJets.at(i).phi())));
@@ -264,6 +273,10 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
         for (size_t j = 0; j < input.selectedMuonsLoose.size(); j++) {
             vars.FillVars("DeltaR_AK4Jet_LooseMuon", i * input.selectedMuonsLoose.size() + j,
                           BoostedUtils::DeltaR(input.selectedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
+        }
+        for (size_t j = 0; j < input.selectedPhotonsLoose.size(); j++) {
+            vars.FillVars("DeltaR_AK4Jet_LoosePhoton", i * input.selectedPhotonsLoose.size() + j,
+                          BoostedUtils::DeltaR(input.selectedJets.at(i).p4(), input.selectedPhotonsLoose.at(j).p4()));
         }
     }
     for (size_t i = 0; i < input.selectedJetsAK8.size(); i++) {
@@ -276,6 +289,10 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
             vars.FillVars("DeltaR_AK8Jet_LooseMuon", i * input.selectedMuonsLoose.size() + j,
                           BoostedUtils::DeltaR(input.selectedJetsAK8.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
         }
+        for (size_t j = 0; j < input.selectedPhotonsLoose.size(); j++) {
+            vars.FillVars("DeltaR_AK8Jet_LoosePhoton", i * input.selectedPhotonsLoose.size() + j,
+                          BoostedUtils::DeltaR(input.selectedJetsAK8.at(i).p4(), input.selectedPhotonsLoose.at(j).p4()));
+        }
     }
     for (size_t i = 0; i < input.selectedJetsAK15.size(); i++) {
         vars.FillVars("DeltaPhi_AK15Jet_Hadr_Recoil", i, fabs(TVector2::Phi_mpi_pi(hadr_recoil_p4.phi() - input.selectedJetsAK15.at(i).phi())));
@@ -286,6 +303,10 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
         for (size_t j = 0; j < input.selectedMuonsLoose.size(); j++) {
             vars.FillVars("DeltaR_AK15Jet_LooseMuon", i * input.selectedMuonsLoose.size() + j,
                           BoostedUtils::DeltaR(input.selectedJetsAK15.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
+        }
+        for (size_t j = 0; j < input.selectedPhotonsLoose.size(); j++) {
+            vars.FillVars("DeltaR_AK15Jet_LoosePhoton", i * input.selectedPhotonsLoose.size() + j,
+                          BoostedUtils::DeltaR(input.selectedJetsAK15.at(i).p4(), input.selectedPhotonsLoose.at(j).p4()));
         }
     }
 
