@@ -472,6 +472,9 @@ void SelectedJetProducer::produce(edm::Event &iEvent, const edm::EventSetup &iSe
             if (!jet.hasUserFloat("neutralHadronEnergyFraction") && !jet.hasUserFloat("chargedHadronEnergyFraction") && !isSubjetCollection) {
                 jet.addUserFloat("neutralHadronEnergyFraction", jet.neutralHadronEnergyFraction());
                 jet.addUserFloat("chargedHadronEnergyFraction", jet.chargedHadronEnergyFraction());
+                jet.addUserFloat("neutralElectromagneticEnergyFraction", jet.neutralEmEnergyFraction());
+                jet.addUserFloat("muonEnergyFraction", jet.muonEnergyFraction());
+                jet.addUserFloat("chargedElectromagneticEnergyFraction", jet.chargedEmEnergyFraction());
             }
         }
 
