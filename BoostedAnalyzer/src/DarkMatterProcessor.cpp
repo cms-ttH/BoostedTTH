@@ -132,6 +132,8 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
 
     vars.InitVar("Problematic_MET", "I");
 
+    vars.InitVar("N_HEM_METS", "I");
+
     initialized = true;
 }
 
@@ -309,6 +311,12 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
                           BoostedUtils::DeltaR(input.selectedJetsAK15.at(i).p4(), input.selectedPhotonsLoose.at(j).p4()));
         }
     }
+
+    int n_hem_mets = 0;
+    for (const auto& loose_jet : input.selectedJetsLoose) {
+        if (met_p4.phi() < -0.87 && met_p4.phi() > -1.57 && loose_jet.eta() < -1.3 && loose_jet.eta() > -3.2) n_hem_mets += 1;
+    }
+    vars.FillVar("N_HEM_METS", n_hem_mets);
 
     // get particle-level W/Z pt for later usage in V boson reweighting
     if (input.genDarkMatterEvt.WBosonIsFilled()) {
