@@ -54,7 +54,7 @@ elif not options.isData:
     if "2016" in options.dataEra:
         options.globalTag="102X_mcRun2_asymptotic_v7"
     elif "2017" in options.dataEra:
-        options.globalTag="102X_mcRun2_asymptotic_v7"
+        options.globalTag="102X_mc2017_realistic_v7"
     elif "2018" in options.dataEra:
         options.globalTag="102X_upgrade2018_realistic_v20"
     else:
