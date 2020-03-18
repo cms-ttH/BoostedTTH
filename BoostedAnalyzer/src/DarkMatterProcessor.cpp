@@ -27,6 +27,8 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Gen_Hadr_Recoil_Phi");
     vars.InitVar("CaloMET_Hadr_Recoil_ratio");
 
+    vars.InitVar("HT_AK4Jets");
+
     vars.InitVar("N_LooseLeptons", "I");
     vars.InitVars("M_W_transverse", "N_LooseLeptons");
 
@@ -234,8 +236,10 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
 
     for (size_t i = 0; i < v_M_W_transverse.size(); i++) { vars.FillVars("M_W_transverse", i, v_M_W_transverse.at(i)); }
 
+    double ht_ak4jets = 0.0;
     for (size_t i = 0; i < input.selectedJets.size(); i++) {
         vars.FillVars("DeltaPhi_AK4Jet_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJets.at(i).phi())));
+        ht_ak4jets += input.selectedJets.at(i).pt();
     }
     for (size_t i = 0; i < input.selectedJetsAK8.size(); i++) {
         vars.FillVars("DeltaPhi_AK8Jet_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - input.selectedJetsAK8.at(i).phi())));
@@ -317,6 +321,7 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
         if (met_p4.phi() < -0.87 && met_p4.phi() > -1.57 && loose_jet.eta() < -1.3 && loose_jet.eta() > -3.2) n_hem_mets += 1;
     }
     vars.FillVar("N_HEM_METS", n_hem_mets);
+    vars.FillVar("HT_AK4Jets", ht_ak4jets);
 
     // get particle-level W/Z pt for later usage in V boson reweighting
     if (input.genDarkMatterEvt.WBosonIsFilled()) {
