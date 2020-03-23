@@ -69,41 +69,45 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     for (const auto& ph : input.selectedPhotons) { hadr_recoil_p4 += ph.p4(); }
 
     // hadronic tau criterium
-    bool hadronic_tau_criterium = input.selectedTaus.size() == 0;
+    // bool hadronic_tau_criterium = input.selectedTaus.size() == 0;
 
     // for softdrop mass criterium
-    std::vector< math::XYZTLorentzVector > ak15_softdrop_jets_from_subjets;
-    std::vector< float >                   ak15_softdrop_masses;
-    for (const auto& ak15jet : input.selectedJetsAK15) {
-        if (not ak15jet.hasSubjets("SoftDropWithBtagInfoCorrected")) continue;
-        math::XYZTLorentzVector ak15_softdrop_jet{0., 0., 0., 0.};
-        for (const auto& ak15_softdrop_subjet : ak15jet.subjets("SoftDropWithBtagInfoCorrected")) { ak15_softdrop_jet += ak15_softdrop_subjet->p4(); }
-        ak15_softdrop_jets_from_subjets.push_back(ak15_softdrop_jet);
-        ak15_softdrop_masses.push_back(ak15jet.hasUserFloat("ak15PFJetsPuppiSoftDropMass") ? ak15jet.userFloat("ak15PFJetsPuppiSoftDropMass") : -9.);
-    }
+    // std::vector< math::XYZTLorentzVector > ak15_softdrop_jets_from_subjets;
+    // std::vector< float >                   ak15_softdrop_masses;
+    // for (const auto& ak15jet : input.selectedJetsAK15) {
+    // if (not ak15jet.hasSubjets("SoftDropWithBtagInfoCorrected")) continue;
+    // math::XYZTLorentzVector ak15_softdrop_jet{0., 0., 0., 0.};
+    // for (const auto& ak15_softdrop_subjet : ak15jet.subjets("SoftDropWithBtagInfoCorrected")) { ak15_softdrop_jet += ak15_softdrop_subjet->p4(); }
+    // ak15_softdrop_jets_from_subjets.push_back(ak15_softdrop_jet);
+    // ak15_softdrop_masses.push_back(ak15jet.hasUserFloat("ak15PFJetsPuppiSoftDropMass") ? ak15jet.userFloat("ak15PFJetsPuppiSoftDropMass") : -9.);
+    //}
 
     // sort starting with highest softdrop pt
-    std::sort(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [](auto& a, auto& b) { return a.pt() > b.pt(); });
+    // std::sort(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [](auto& a, auto& b) { return a.pt() > b.pt(); });
     // check if hardest ak15 jet or softdrop jet satisfies minimum pt
-    bool leading_ak15jet_pt_criterium = (input.selectedJetsAK15.size() > 0 ? (input.selectedJetsAK15.at(0).pt() > pt_min) : false) ||
-                                        (ak15_softdrop_jets_from_subjets.size() > 0 ? (ak15_softdrop_jets_from_subjets.at(0).pt() > pt_min) : false);
 
     // sort starting with highest softdrop mass
-    std::sort(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [](auto& a, auto& b) { return a.mass() > b.mass(); });
-    std::sort(ak15_softdrop_masses.begin(), ak15_softdrop_masses.end(), [](auto& a, auto& b) { return a > b; });
-    bool softdrop_mass_criterium = ak15_softdrop_jets_from_subjets.size() > 0
-                                       ? ((ak15_softdrop_jets_from_subjets.at(0).mass() > minSoftDropMass || ak15_softdrop_masses.at(0) > minSoftDropMass) &&
-                                          (ak15_softdrop_jets_from_subjets.back().mass() < maxSoftDropMass || ak15_softdrop_masses.back() < maxSoftDropMass))
-                                       : false;
+    // std::sort(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [](auto& a, auto& b) { return a.mass() > b.mass(); });
+    // std::sort(ak15_softdrop_masses.begin(), ak15_softdrop_masses.end(), [](auto& a, auto& b) { return a > b; });
+    // bool softdrop_mass_criterium = ak15_softdrop_jets_from_subjets.size() > 0
+    //? ((ak15_softdrop_jets_from_subjets.at(0).mass() > minSoftDropMass || ak15_softdrop_masses.at(0) > minSoftDropMass) &&
+    //   (ak15_softdrop_jets_from_subjets.back().mass() < maxSoftDropMass || ak15_softdrop_masses.back() < maxSoftDropMass))
+    //: false;
 
     // criteria for number of ak15 jets, MET, highest softdrop mass, and hadronic recoil in hadronic monotop channel
-    bool n_ak15_jets_criterium =
-        (std::count_if(input.selectedJetsAK15.begin(), input.selectedJetsAK15.end(), [&](auto& jet) { return jet.pt() > pt_min; }) == 1) ||
-        (std::count_if(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [&](auto& jet) { return jet.pt() > pt_min; }) == 1);
-    bool met_recoil_criterium    = (met_p4.pt() >= minRecoil) || (hadr_recoil_p4.pt() >= minRecoil);
-    bool n_max_leptons_criterium = (input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size()) <= 2;
-    bool hadronic_criterium      = met_recoil_criterium && n_ak15_jets_criterium && leading_ak15jet_pt_criterium && softdrop_mass_criterium &&
-                              n_max_leptons_criterium && hadronic_tau_criterium;
+    // bool n_ak15_jets_criterium =
+    //(std::count_if(input.selectedJetsAK15.begin(), input.selectedJetsAK15.end(), [&](auto& jet) { return jet.pt() > pt_min; }) == 1) ||
+    //(std::count_if(ak15_softdrop_jets_from_subjets.begin(), ak15_softdrop_jets_from_subjets.end(), [&](auto& jet) { return jet.pt() > pt_min; }) == 1);
+
+    // bool softdrop_mass_criterium = (input.selectedJetsAK15.size() > 0 && input.selectedJetsAK15.at(0).hasUserFloat("ak15PFJetsPuppiSoftDropMass"))
+    //                                   ? (input.selectedJetsAK15.at(0).userFloat("ak15PFJetsPuppiSoftDropMass") > minSoftDropMass)
+    //                                   : true;
+
+    bool met_recoil_criterium         = (met_p4.pt() >= minRecoil) || (hadr_recoil_p4.pt() >= minRecoil);
+    bool n_ak15_jets_criterium        = (input.selectedJetsAK15.size() == 1);
+    bool leading_ak15jet_pt_criterium = (input.selectedJetsAK15.size() > 0 ? (input.selectedJetsAK15.at(0).pt() > pt_min) : false);
+    bool n_max_leptons_criterium      = (input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size()) <= 2;
+    bool hadronic_criterium           = met_recoil_criterium && n_ak15_jets_criterium && n_max_leptons_criterium && leading_ak15jet_pt_criterium;
 
     // event is compatible with hadronic monotop selection
     if (hadronic_criterium) {
@@ -133,8 +137,8 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     bool n_ak4_jets_criterium   = (input.selectedJets.size() >= 1) && (input.selectedJets.size() <= 3);
     bool n_lepton_criterium     = (input.selectedElectrons.size() + input.selectedMuons.size()) == 1;
     bool met_criterium          = met_p4.pt() >= minMET;
-    bool m_transverse_criterium = m_transverse >= 20.;
-    bool leptonic_criterium     = n_ak4_jets_criterium && n_lepton_criterium && met_criterium && m_transverse_criterium && hadronic_tau_criterium;
+    bool m_transverse_criterium = m_transverse >= 40.;
+    bool leptonic_criterium     = n_ak4_jets_criterium && n_lepton_criterium && met_criterium && m_transverse_criterium;
 
     // event is compatible with leptonic monotop selection
     if (leptonic_criterium) {
