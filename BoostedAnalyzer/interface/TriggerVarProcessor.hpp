@@ -8,6 +8,7 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/TriggerScaleFactors.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SingleMuTriggerSFs.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/SingleElTriggerSFs.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/METTriggerSFs.hpp"
 
 class TriggerVarProcessor : public TreeProcessor {
    public:
