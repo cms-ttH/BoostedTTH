@@ -73,6 +73,9 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_PileUpMVA", "N_Jets");
     vars.InitVars("Jet_CHF", "N_Jets");
     vars.InitVars("Jet_NHF", "N_Jets");
+    vars.InitVars("Jet_NEMF", "N_Jets");
+    vars.InitVars("Jet_CEMF", "N_Jets");
+    vars.InitVars("Jet_MF", "N_Jets");
 
     vars.InitVars("Jet_GenJet_Pt", "N_Jets");
     vars.InitVars("Jet_GenJet_Eta", "N_Jets");
@@ -176,6 +179,13 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
 
         if (itJet->hasUserFloat("chargedHadronEnergyFraction")) { vars.FillVars("Jet_CHF", iJet, itJet->userFloat("chargedHadronEnergyFraction")); }
         if (itJet->hasUserFloat("neutralHadronEnergyFraction")) { vars.FillVars("Jet_NHF", iJet, itJet->userFloat("neutralHadronEnergyFraction")); }
+        if (itJet->hasUserFloat("chargedElectromagneticEnergyFraction")) {
+            vars.FillVars("Jet_CEMF", iJet, itJet->userFloat("chargedElectromagneticEnergyFraction"));
+        }
+        if (itJet->hasUserFloat("neutralElectromagneticEnergyFraction")) {
+            vars.FillVars("Jet_NEMF", iJet, itJet->userFloat("neutralElectromagneticEnergyFraction"));
+        }
+        if (itJet->hasUserFloat("muonEnergyFraction")) { vars.FillVars("Jet_MF", iJet, itJet->userFloat("muonEnergyFraction")); }
 
         if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));
         if (itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant"))
