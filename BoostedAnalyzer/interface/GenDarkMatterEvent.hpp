@@ -71,7 +71,7 @@ class GenDarkMatterEvent {
 
     float epsilon_0_dyn = 0.1;
     int   n_dyn         = 1;
-    int   iterations    = 4;
+    int   iterations    = 5;
 };
 
 #endif

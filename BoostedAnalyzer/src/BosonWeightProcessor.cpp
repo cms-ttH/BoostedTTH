@@ -16,13 +16,13 @@ BosonWeightProcessor::BosonWeightProcessor(std::string era)
         fWeightsW      = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_evj_madgraph_2017.root", "READ");
         fWeightsZvv    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_vvj_madgraph_2017.root", "READ");
         fWeightsZll    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_eej_madgraph_2017.root", "READ");
-        fWeightsPhoton = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_aj_madgraph_2018.root", "READ");
+        fWeightsPhoton = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2017/TheoryXS_aj_madgraph_2017.root", "READ");
     }
     else if (era.find("2016") != std::string::npos) {
         fWeightsW      = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_evj_madgraph_2016.root", "READ");
         fWeightsZvv    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_vvj_madgraph_2016.root", "READ");
         fWeightsZll    = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_eej_madgraph_2016.root", "READ");
-        fWeightsPhoton = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2018/TheoryXS_aj_madgraph_2018.root", "READ");
+        fWeightsPhoton = new TFile("$CMSSW_BASE/src/BoostedTTH/BoostedAnalyzer/data/v_boson_reweighting/2016/TheoryXS_aj_madgraph_2016.root", "READ");
     }
 
     hWbosonWeight_nominal   = (TH1D*) fWeightsW->Get("evj_NNLO_NLO_nnn_nnn_n");
