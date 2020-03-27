@@ -7,6 +7,8 @@ DarkMatterProcessor::~DarkMatterProcessor() {}
 
 void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer& vars)
 {
+    era = input.era;
+    
     vars.InitVar("Evt_Pt_MET");
     vars.InitVar("Evt_Phi_MET");
     vars.InitVar("Evt_Pt_MET_T1XY");
@@ -61,6 +63,18 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("DeltaR_AK4Jet_LoosePhoton", "N_AK4Jets_x_N_LoosePhotons");
     vars.InitVars("DeltaR_AK8Jet_LoosePhoton", "N_AK8Jets_x_N_LoosePhotons");
     vars.InitVars("DeltaR_AK15Jet_LoosePhoton", "N_AK15Jets_x_N_LoosePhotons");
+    
+    vars.InitVar("N_AK4JetsTagged_x_N_LooseElectrons", "I");
+    vars.InitVar("N_AK4JetsUntagged_x_N_LooseElectrons", "I");
+    vars.InitVar("N_AK4JetsTagged_x_N_LooseMuons", "I");
+    vars.InitVar("N_AK4JetsUntagged_x_N_LooseMuons", "I");
+    
+    vars.InitVars("DeltaPhi_AK4JetTagged_MET", "N_BTagsM");
+    vars.InitVars("DeltaPhi_AK4JetUntagged_MET", "N_NoTags");
+    vars.InitVars("DeltaR_AK4JetTagged_LooseElectron", "N_AK4JetsTagged_x_N_LooseElectrons");
+    vars.InitVars("DeltaR_AK4JetUntagged_LooseElectron", "N_AK4JetsUntagged_x_N_LooseElectrons");
+    vars.InitVars("DeltaR_AK4JetTagged_LooseMuon", "N_AK4JetsTagged_x_N_LooseMuons");
+    vars.InitVars("DeltaR_AK4JetUntagged_LooseMuon", "N_AK4JetsUntagged_x_N_LooseMuons");
 
     vars.InitVar("N_Neutralinos", "I");
     vars.InitVar("N_Neutrinos", "I");
@@ -322,6 +336,44 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     }
     vars.FillVar("N_HEM_METS", n_hem_mets);
     vars.FillVar("HT_AK4Jets", ht_ak4jets);
+    
+    const char*             btagger = "DeepJet";
+    std::vector< pat::Jet > selectedTaggedJets;
+    std::vector< pat::Jet > selectedUntaggedJets;
+    for (std::vector< pat::Jet >::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet) {
+        if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Medium, era))
+            selectedTaggedJets.push_back(*itJet);
+        else
+            selectedUntaggedJets.push_back(*itJet);
+    }
+    
+    vars.FillVar("N_AK4JetsTagged_x_N_LooseElectrons", selectedTaggedJets.size()*input.selectedElectronsLoose.size());
+    vars.FillVar("N_AK4JetsUntagged_x_N_LooseElectrons", selectedUntaggedJets.size()*input.selectedElectronsLoose.size());
+    vars.FillVar("N_AK4JetsTagged_x_N_LooseMuons", selectedTaggedJets.size()*input.selectedMuonsLoose.size());
+    vars.FillVar("N_AK4JetsUntagged_x_N_LooseMuons", selectedUntaggedJets.size()*input.selectedMuonsLoose.size());
+    
+    for (size_t i = 0; i < selectedTaggedJets.size(); i++) {
+        vars.FillVars("DeltaPhi_AK4JetTagged_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - selectedTaggedJets.at(i).phi())));
+        for (size_t j = 0; j < input.selectedElectronsLoose.size(); j++) {
+            vars.FillVars("DeltaR_AK4JetTagged_LooseElectron", i * input.selectedElectronsLoose.size() + j,
+                          BoostedUtils::DeltaR(selectedTaggedJets.at(i).p4(), input.selectedElectronsLoose.at(j).p4()));
+        }
+        for (size_t j = 0; j < input.selectedMuonsLoose.size(); j++) {
+            vars.FillVars("DeltaR_AK4JetTagged_LooseMuon", i * input.selectedMuonsLoose.size() + j,
+                          BoostedUtils::DeltaR(selectedTaggedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
+        }
+    }
+    for (size_t i = 0; i < selectedUntaggedJets.size(); i++) {
+        vars.FillVars("DeltaPhi_AK4JetUntagged_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - selectedUntaggedJets.at(i).phi())));
+        for (size_t j = 0; j < input.selectedElectronsLoose.size(); j++) {
+            vars.FillVars("DeltaR_AK4JetUntagged_LooseElectron", i * input.selectedElectronsLoose.size() + j,
+                          BoostedUtils::DeltaR(selectedUntaggedJets.at(i).p4(), input.selectedElectronsLoose.at(j).p4()));
+        }
+        for (size_t j = 0; j < input.selectedMuonsLoose.size(); j++) {
+            vars.FillVars("DeltaR_AK4JetUntagged_LooseMuon", i * input.selectedMuonsLoose.size() + j,
+                          BoostedUtils::DeltaR(selectedUntaggedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
+        }
+    }
 
     // get particle-level W/Z pt for later usage in V boson reweighting
     if (input.genDarkMatterEvt.WBosonIsFilled()) {
