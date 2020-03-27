@@ -13,6 +13,7 @@ class DarkMatterProcessor : public TreeProcessor {
     void Process(const InputCollections& input, VariableContainer& var);
 
    private:
+    std::string era;
 };
 
 #endif

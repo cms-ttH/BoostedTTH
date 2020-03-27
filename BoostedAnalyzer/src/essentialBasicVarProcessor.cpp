@@ -108,6 +108,13 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     // vars.InitVars("TaggedJet_DeepJet_uds", "N_BTagsM");
     // vars.InitVars("TaggedJet_DeepJet_g", "N_BTagsM");
 
+    vars.InitVars("UntaggedJet_E", "N_NoTags");
+    vars.InitVars("UntaggedJet_M", "N_NoTags");
+    vars.InitVars("UntaggedJet_Pt", "N_NoTags");
+    vars.InitVars("UntaggedJet_Phi", "N_NoTags");
+    vars.InitVars("UntaggedJet_Eta", "N_NoTags");
+    vars.InitVars("UntaggedJet_CSV", "N_NoTags");
+
     vars.InitVar("Evt_chsMET_Pt");
     vars.InitVar("Evt_chsMET_Phi");
     vars.InitVar("Gen_chsMET_Pt");
@@ -275,6 +282,15 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         // vars.FillVars("TaggedJet_DeepJet_c", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probc"));
         // vars.FillVars("TaggedJet_DeepJet_uds", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probuds"));
         // vars.FillVars("TaggedJet_DeepJet_g", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probg"));
+    }
+    for (std::vector< pat::Jet >::iterator itUntaggedJet = selectedUntaggedJets.begin(); itUntaggedJet != selectedUntaggedJets.end(); ++itUntaggedJet) {
+        int iUntaggedJet = itUntaggedJet - selectedUntaggedJets.begin();
+        vars.FillVars("UntaggedJet_E", iUntaggedJet, itUntaggedJet->energy());
+        vars.FillVars("UntaggedJet_M", iUntaggedJet, itUntaggedJet->mass());
+        vars.FillVars("UntaggedJet_Pt", iUntaggedJet, itUntaggedJet->pt());
+        vars.FillVars("UntaggedJet_Eta", iUntaggedJet, itUntaggedJet->eta());
+        vars.FillVars("UntaggedJet_Phi", iUntaggedJet, itUntaggedJet->phi());
+        vars.FillVars("UntaggedJet_CSV", iUntaggedJet, CSVHelper::GetJetCSV(*itUntaggedJet, btagger));
     }
 
     vars.FillVar("Evt_chsMET_Pt", input.correctedMET.corPt(pat::MET::Type1));
