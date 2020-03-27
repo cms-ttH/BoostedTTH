@@ -10,7 +10,9 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     // load dataEra
     era = input.era;
 
-    // vars.InitVar("N_AK8Jets", "I");
+    /*
+    vars.InitVar("N_AK8Jets", "I");
+
     vars.InitVars("AK8Jet_Pt", "N_AK8Jets");
     vars.InitVars("AK8Jet_Eta", "N_AK8Jets");
     vars.InitVars("AK8Jet_Phi", "N_AK8Jets");
@@ -94,6 +96,9 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("DeltaR_AK8Jet_AK4JetTagged", "N_AK8Jets_x_N_JetsTagged");
     vars.InitVars("DeltaR_AK8Jet_AK4JetLooseTagged", "N_AK8Jets_x_N_JetsLooseTagged");
     vars.InitVars("DeltaR_AK8Jet_AK4JetTightTagged", "N_AK8Jets_x_N_JetsTightTagged");
+
+    vars.InitVar("N_HEM_AK8Jets", "I");
+    */
 
     // vars.InitVar("N_AK15Jets", "I");
     vars.InitVars("AK15Jet_Pt", "N_AK15Jets");
@@ -183,7 +188,6 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_TopMatched", "N_AK15Jets");
     vars.InitVars("Min_DeltaR_AK15Jet_GenTopHad", "N_AK15Jets");
 
-    vars.InitVar("N_HEM_AK8Jets", "I");
     vars.InitVar("N_HEM_AK15Jets", "I");
 
     initialized = true;
@@ -204,6 +208,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         if (CSVHelper::PassesCSV(ak4jet, "DeepJet", CSVHelper::CSVwp::Tight, era)) ak4jets_tight_tagged.push_back(ak4jet);
     }
 
+    /*
     int n_AK4JetsTagged_outside_AK8Jets      = 0;
     int n_AK4JetsLooseTagged_outside_AK8Jets = 0;
     int n_AK4JetsTightTagged_outside_AK8Jets = 0;
@@ -341,6 +346,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     vars.FillVar("N_AK4JetsTightTagged_inside_AK8Jets", n_AK4JetsTightTagged_inside_AK8Jets);
     vars.FillVar("N_AK8Jets_SoftDrop", n_AK8_SoftDrop_Jets);
     vars.FillVar("N_HEM_AK8Jets", N_HEM_AK8Jets);
+    */
 
     int n_AK4JetsTagged_outside_AK15Jets      = 0;
     int n_AK4JetsLooseTagged_outside_AK15Jets = 0;
