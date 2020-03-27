@@ -23,6 +23,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVar("N_BTagsL", "I");
     vars.InitVar("N_BTagsM", "I");
     vars.InitVar("N_BTagsT", "I");
+    vars.InitVar("N_NoTags", "I");
     vars.InitVar("N_PrimaryVertices", "I");
     vars.InitVar("N_GenPVs", "I");
 
@@ -93,19 +94,19 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_DeepJet_uds", "N_Jets");
     vars.InitVars("Jet_DeepJet_g", "N_Jets");
 
-    //     vars.InitVars("TaggedJet_E", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_M", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_Pt", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_Phi", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_Eta", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_CSV", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_DeepJetCSV", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_DeepJet_b", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_DeepJet_bb", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_DeepJet_lepb", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_DeepJet_c", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_DeepJet_uds", "N_BTagsM");
-    //     vars.InitVars("TaggedJet_DeepJet_g", "N_BTagsM");
+    vars.InitVars("TaggedJet_E", "N_BTagsM");
+    vars.InitVars("TaggedJet_M", "N_BTagsM");
+    vars.InitVars("TaggedJet_Pt", "N_BTagsM");
+    vars.InitVars("TaggedJet_Phi", "N_BTagsM");
+    vars.InitVars("TaggedJet_Eta", "N_BTagsM");
+    vars.InitVars("TaggedJet_CSV", "N_BTagsM");
+    // vars.InitVars("TaggedJet_DeepJetCSV", "N_BTagsM");
+    // vars.InitVars("TaggedJet_DeepJet_b", "N_BTagsM");
+    // vars.InitVars("TaggedJet_DeepJet_bb", "N_BTagsM");
+    // vars.InitVars("TaggedJet_DeepJet_lepb", "N_BTagsM");
+    // vars.InitVars("TaggedJet_DeepJet_c", "N_BTagsM");
+    // vars.InitVars("TaggedJet_DeepJet_uds", "N_BTagsM");
+    // vars.InitVars("TaggedJet_DeepJet_g", "N_BTagsM");
 
     vars.InitVar("Evt_chsMET_Pt");
     vars.InitVar("Evt_chsMET_Phi");
@@ -258,23 +259,23 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     //         vars.FillVars("LooseJet_DeepJet_g", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probg"));
     //     }
 
-    //     // Tagged Jets
-    //     for (std::vector< pat::Jet >::iterator itTaggedJet = selectedTaggedJets.begin(); itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet) {
-    //         int iTaggedJet = itTaggedJet - selectedTaggedJets.begin();
-    //         vars.FillVars("TaggedJet_E", iTaggedJet, itTaggedJet->energy());
-    //         vars.FillVars("TaggedJet_M", iTaggedJet, itTaggedJet->mass());
-    //         vars.FillVars("TaggedJet_Pt", iTaggedJet, itTaggedJet->pt());
-    //         vars.FillVars("TaggedJet_Eta", iTaggedJet, itTaggedJet->eta());
-    //         vars.FillVars("TaggedJet_Phi", iTaggedJet, itTaggedJet->phi());
-    //         vars.FillVars("TaggedJet_CSV", iTaggedJet, CSVHelper::GetJetCSV(*itTaggedJet, btagger));
-    //         vars.FillVars("TaggedJet_DeepJetCSV", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "DeepJet"));
-    //         vars.FillVars("TaggedJet_DeepJet_b", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probb"));
-    //         vars.FillVars("TaggedJet_DeepJet_bb", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probbb"));
-    //         vars.FillVars("TaggedJet_DeepJet_lepb", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:problepb"));
-    //         vars.FillVars("TaggedJet_DeepJet_c", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probc"));
-    //         vars.FillVars("TaggedJet_DeepJet_uds", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probuds"));
-    //         vars.FillVars("TaggedJet_DeepJet_g", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probg"));
-    //     }
+    // Tagged Jets
+    for (std::vector< pat::Jet >::iterator itTaggedJet = selectedTaggedJets.begin(); itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet) {
+        int iTaggedJet = itTaggedJet - selectedTaggedJets.begin();
+        vars.FillVars("TaggedJet_E", iTaggedJet, itTaggedJet->energy());
+        vars.FillVars("TaggedJet_M", iTaggedJet, itTaggedJet->mass());
+        vars.FillVars("TaggedJet_Pt", iTaggedJet, itTaggedJet->pt());
+        vars.FillVars("TaggedJet_Eta", iTaggedJet, itTaggedJet->eta());
+        vars.FillVars("TaggedJet_Phi", iTaggedJet, itTaggedJet->phi());
+        vars.FillVars("TaggedJet_CSV", iTaggedJet, CSVHelper::GetJetCSV(*itTaggedJet, btagger));
+        // vars.FillVars("TaggedJet_DeepJetCSV", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "DeepJet"));
+        // vars.FillVars("TaggedJet_DeepJet_b", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probb"));
+        // vars.FillVars("TaggedJet_DeepJet_bb", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probbb"));
+        // vars.FillVars("TaggedJet_DeepJet_lepb", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:problepb"));
+        // vars.FillVars("TaggedJet_DeepJet_c", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probc"));
+        // vars.FillVars("TaggedJet_DeepJet_uds", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probuds"));
+        // vars.FillVars("TaggedJet_DeepJet_g", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probg"));
+    }
 
     vars.FillVar("Evt_chsMET_Pt", input.correctedMET.corPt(pat::MET::Type1));
     vars.FillVar("Evt_chsMET_Phi", input.correctedMET.corPhi(pat::MET::Type1));
@@ -292,6 +293,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_BTagsM", selectedTaggedJets.size());
     vars.FillVar("N_BTagsL", selectedTaggedJetsL.size());
     vars.FillVar("N_BTagsT", selectedTaggedJetsT.size());
+    vars.FillVar("N_NoTags", selectedUntaggedJets.size());
 
     // Fill CSV Variables
     std::vector< double > csvJets;
