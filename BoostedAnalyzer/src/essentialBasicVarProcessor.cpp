@@ -124,6 +124,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
 
     vars.InitVar("N_HEM_Jets", "I");
 
+    vars.InitVar("HT_GenAK4Jets");
+
     initialized = true;
 }
 
@@ -325,4 +327,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     }
 
     vars.FillVar("N_HEM_Jets", N_HEM_Jets);
+
+    if (not input.iEvent.isRealData()) {
+        float HT_GenAK4Jets = 0.0;
+        for (const auto& genjet : input.genJets) { HT_GenAK4Jets += genjet.pt(); }
+        vars.FillVar("HT_GenAK4Jets", HT_GenAK4Jets);
+    }
 }
