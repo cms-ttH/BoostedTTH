@@ -543,6 +543,18 @@ if "2017" or "2018" in options.dataEra:
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 from PhysicsTools.PatAlgos.patPuppiJetSpecificProducer_cfi import patPuppiJetSpecificProducer
 
+process.patPuppiJetSpecificProducerAK4 = patPuppiJetSpecificProducer.clone(
+  src=cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM"),
+)
+updateJetCollection(
+   process,
+   labelName = 'PuppiVarsAK4',
+   jetSource = cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM"),
+   )
+process.updatedPatJetsPuppiVarsAK4.userData.userFloats.src = ['patPuppiJetSpecificProducerAK4:puppiMultiplicity', 'patPuppiJetSpecificProducerAK4:neutralPuppiMultiplicity']
+process.updatedPatJetsPuppiVarsAK4.userData.userFunctions = ["userFloat(\"patPuppiJetSpecificProducerAK4:puppiMultiplicity\")","userFloat(\"patPuppiJetSpecificProducerAK4:neutralPuppiMultiplicity\")"]
+process.updatedPatJetsPuppiVarsAK4.userData.userFunctionLabels = ['patPuppiJetSpecificProducer:puppiMultiplicity','patPuppiJetSpecificProducer:neutralPuppiMultiplicity']
+
 process.patPuppiJetSpecificProducerAK8 = patPuppiJetSpecificProducer.clone(
   src=cms.InputTag("AK8PFPuppiComplete", "", "SKIM"),
 )
@@ -607,7 +619,7 @@ muonCollection = cms.InputTag("slimmedMuons")
 tauCollection = cms.InputTag("slimmedTausNewID")
 METCollection = cms.InputTag("slimmedMETs", "", process.name_())
 PuppiMETCollection = cms.InputTag("slimmedMETsPuppi", "", process.name_())
-jetCollection = cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM")
+jetCollection = cms.InputTag("updatedPatJetsPuppiVarsAK4", "", process.name_())
 AK8jetCollection = cms.InputTag(
     "updatedPatJetsPuppiVarsAK8","",process.name_()
 )
@@ -1334,9 +1346,10 @@ process.final.associate(process.leptons_photons)
 
 process.taus = cms.Path(process.rerunMvaIsolationSequence * process.slimmedTausNewID)
 
-process.puppimults = cms.Path(process.patPuppiJetSpecificProducerAK8*process.patPuppiJetSpecificProducerAK15)
+process.puppimults = cms.Path(process.patPuppiJetSpecificProducerAK4*process.patPuppiJetSpecificProducerAK8*process.patPuppiJetSpecificProducerAK15)
 
 process.jets = cms.Task()
+process.jets.add(process.updatedPatJetsPuppiVarsAK4)
 process.jets.add(process.updatedPatJetsPuppiVarsAK8)
 process.jets.add(process.updatedPatJetsPuppiVarsAK15)
 # process.jets.add(process.MergeAK15FatjetsAndSubjets)
