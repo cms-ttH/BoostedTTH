@@ -524,7 +524,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("N_AK4JetsLooseTagged_inside_AK15Jets", i, n_AK4JetsLooseTagged_inside_AK15Jets);
         vars.FillVars("N_AK4JetsTightTagged_inside_AK15Jets", i, n_AK4JetsTightTagged_inside_AK15Jets);
 
-        if (ak15jet.eta() < -1.4 && ak15jet.eta() > -3.0 && ak15jet.phi() < -0.87 && ak15jet.phi() > -1.57) N_HEM_AK15Jets += 1;
+        if (ak15jet.eta() < -1.3 && ak15jet.eta() > -3.2 && ak15jet.phi() < -0.87 && ak15jet.phi() > -1.57) N_HEM_AK15Jets += 1;
 
         if (input.genTopEvt.IsFilled()) {
             const auto& tophad  = input.genTopEvt.GetAllTopHads();
