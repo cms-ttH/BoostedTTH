@@ -177,16 +177,21 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVar("N_AK15Jets_x_N_JetsTagged", "I");
     vars.InitVar("N_AK15Jets_x_N_JetsLooseTagged", "I");
     vars.InitVar("N_AK15Jets_x_N_JetsTightTagged", "I");
-    vars.InitVar("N_AK4JetsTagged_outside_AK15Jets", "I");
-    vars.InitVar("N_AK4JetsLooseTagged_outside_AK15Jets", "I");
-    vars.InitVar("N_AK4JetsTightTagged_outside_AK15Jets", "I");
-    vars.InitVar("N_AK4JetsTagged_inside_AK15Jets", "I");
-    vars.InitVar("N_AK4JetsLooseTagged_inside_AK15Jets", "I");
-    vars.InitVar("N_AK4JetsTightTagged_inside_AK15Jets", "I");
+    vars.InitVars("N_AK4Jets_outside_AK15Jets", "N_AK15Jets");
+    vars.InitVars("N_AK4JetsTagged_outside_AK15Jets", "N_AK15Jets");
+    vars.InitVars("N_AK4JetsLooseTagged_outside_AK15Jets", "N_AK15Jets");
+    vars.InitVars("N_AK4JetsTightTagged_outside_AK15Jets", "N_AK15Jets");
+    vars.InitVars("N_AK4Jets_inside_AK15Jets", "N_AK15Jets");
+    vars.InitVars("N_AK4JetsTagged_inside_AK15Jets", "N_AK15Jets");
+    vars.InitVars("N_AK4JetsLooseTagged_inside_AK15Jets", "N_AK15Jets");
+    vars.InitVars("N_AK4JetsTightTagged_inside_AK15Jets", "N_AK15Jets");
     vars.InitVars("DeltaR_AK15Jet_AK4Jet", "N_AK15Jets_x_N_Jets");
     vars.InitVars("DeltaR_AK15Jet_AK4JetTagged", "N_AK15Jets_x_N_JetsTagged");
     vars.InitVars("DeltaR_AK15Jet_AK4JetLooseTagged", "N_AK15Jets_x_N_JetsLooseTagged");
     vars.InitVars("DeltaR_AK15Jet_AK4JetTightTagged", "N_AK15Jets_x_N_JetsTightTagged");
+
+    vars.InitVars("HT_AK4Jets_outside_AK15Jets", "N_AK15Jets");
+    vars.InitVars("HT_AK4Jets_inside_AK15Jets", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_TopMatched", "N_AK15Jets");
     vars.InitVars("Min_DeltaR_AK15Jet_GenTopHad", "N_AK15Jets");
@@ -351,14 +356,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     vars.FillVar("N_HEM_AK8Jets", N_HEM_AK8Jets);
     */
 
-    int n_AK4JetsTagged_outside_AK15Jets      = 0;
-    int n_AK4JetsLooseTagged_outside_AK15Jets = 0;
-    int n_AK4JetsTightTagged_outside_AK15Jets = 0;
-    int n_AK4JetsTagged_inside_AK15Jets       = 0;
-    int n_AK4JetsLooseTagged_inside_AK15Jets  = 0;
-    int n_AK4JetsTightTagged_inside_AK15Jets  = 0;
-    int N_HEM_AK15Jets                        = 0;
-    int n_AK15_SoftDrop_Jets                  = 0;
+    int N_HEM_AK15Jets       = 0;
+    int n_AK15_SoftDrop_Jets = 0;
 
     const auto& ak15jets = input.selectedJetsAK15;
 
@@ -460,10 +459,33 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             vars.FillVars("AK15Jet_SoftDrop_M", i, ak15jet_softdrop.mass());
         }
 
+        int n_AK4Jets_outside_AK15Jets            = 0;
+        int n_AK4JetsTagged_outside_AK15Jets      = 0;
+        int n_AK4JetsLooseTagged_outside_AK15Jets = 0;
+        int n_AK4JetsTightTagged_outside_AK15Jets = 0;
+        int n_AK4Jets_inside_AK15Jets             = 0;
+        int n_AK4JetsTagged_inside_AK15Jets       = 0;
+        int n_AK4JetsLooseTagged_inside_AK15Jets  = 0;
+        int n_AK4JetsTightTagged_inside_AK15Jets  = 0;
+
+        float ht_AK4Jets_outside_AK15Jets = 0;
+        float ht_AK4Jets_inside_AK15Jets  = 0;
+
         for (size_t k = 0; k < ak4jets.size(); k++) {
-            const auto& ak4jet = ak4jets.at(k);
-            vars.FillVars("DeltaR_AK15Jet_AK4Jet", i * ak4jets.size() + k, BoostedUtils::DeltaR(ak15jet.p4(), ak4jet.p4()));
+            const auto& ak4jet            = ak4jets.at(k);
+            const auto  dR_ak15jet_ak4jet = BoostedUtils::DeltaR(ak15jet.p4(), ak4jet.p4());
+            vars.FillVars("DeltaR_AK15Jet_AK4Jet", i * ak4jets.size() + k, dR_ak15jet_ak4jet);
+            if (dR_ak15jet_ak4jet > 1.5) {
+                n_AK4Jets_outside_AK15Jets += 1;
+                ht_AK4Jets_outside_AK15Jets += ak4jet.pt();
+            }
+            else {
+                n_AK4Jets_inside_AK15Jets += 1;
+                ht_AK4Jets_inside_AK15Jets += ak4jet.pt();
+            }
         }
+        vars.FillVars("HT_AK4Jets_outside_AK15Jets", i, ht_AK4Jets_outside_AK15Jets);
+        vars.FillVars("HT_AK4Jets_inside_AK15Jets", i, ht_AK4Jets_inside_AK15Jets);
 
         for (size_t k = 0; k < ak4jets_tagged.size(); k++) {
             const auto& ak4jet_tagged            = ak4jets_tagged.at(k);
@@ -493,6 +515,15 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
                 n_AK4JetsTightTagged_inside_AK15Jets += 1;
         }
 
+        vars.FillVars("N_AK4Jets_outside_AK15Jets", i, n_AK4Jets_outside_AK15Jets);
+        vars.FillVars("N_AK4JetsTagged_outside_AK15Jets", i, n_AK4JetsTagged_outside_AK15Jets);
+        vars.FillVars("N_AK4JetsLooseTagged_outside_AK15Jets", i, n_AK4JetsLooseTagged_outside_AK15Jets);
+        vars.FillVars("N_AK4JetsTightTagged_outside_AK15Jets", i, n_AK4JetsTightTagged_outside_AK15Jets);
+        vars.FillVars("N_AK4Jets_inside_AK15Jets", i, n_AK4Jets_inside_AK15Jets);
+        vars.FillVars("N_AK4JetsTagged_inside_AK15Jets", i, n_AK4JetsTagged_inside_AK15Jets);
+        vars.FillVars("N_AK4JetsLooseTagged_inside_AK15Jets", i, n_AK4JetsLooseTagged_inside_AK15Jets);
+        vars.FillVars("N_AK4JetsTightTagged_inside_AK15Jets", i, n_AK4JetsTightTagged_inside_AK15Jets);
+
         if (ak15jet.eta() < -1.4 && ak15jet.eta() > -3.0 && ak15jet.phi() < -0.87 && ak15jet.phi() > -1.57) N_HEM_AK15Jets += 1;
 
         if (input.genTopEvt.IsFilled()) {
@@ -515,12 +546,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             vars.FillVars("Min_DeltaR_AK15Jet_GenTopHad", i, min_dr);
         }
     }
-    vars.FillVar("N_AK4JetsTagged_outside_AK15Jets", n_AK4JetsTagged_outside_AK15Jets);
-    vars.FillVar("N_AK4JetsLooseTagged_outside_AK15Jets", n_AK4JetsLooseTagged_outside_AK15Jets);
-    vars.FillVar("N_AK4JetsTightTagged_outside_AK15Jets", n_AK4JetsTightTagged_outside_AK15Jets);
-    vars.FillVar("N_AK4JetsTagged_inside_AK15Jets", n_AK4JetsTagged_inside_AK15Jets);
-    vars.FillVar("N_AK4JetsLooseTagged_inside_AK15Jets", n_AK4JetsLooseTagged_inside_AK15Jets);
-    vars.FillVar("N_AK4JetsTightTagged_inside_AK15Jets", n_AK4JetsTightTagged_inside_AK15Jets);
+
     vars.FillVar("N_AK15Jets_SoftDrop", n_AK15_SoftDrop_Jets);
     vars.FillVar("N_HEM_AK15Jets", N_HEM_AK15Jets);
 }
