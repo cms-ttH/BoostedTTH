@@ -422,8 +422,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK15Jet_DeepAK15_WvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD"));
         vars.FillVars("AK15Jet_DeepAK15_ZvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZvsQCD"));
 
-        if (ak15jet.hasSubjets("SoftDropWithBtagInfoCorrected")) {
-            const auto& ak15jet_subjets = ak15jet.subjets("SoftDropWithBtagInfoCorrected");
+        if (ak15jet.hasSubjets("SoftDropWithBtagInfo")) {
+            const auto& ak15jet_subjets = ak15jet.subjets("SoftDropWithBtagInfo");
 
             vars.FillVars("AK15Jet_N_SoftDropSubjets", i, ak15jet_subjets.size());
 
