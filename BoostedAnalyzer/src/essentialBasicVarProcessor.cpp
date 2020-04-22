@@ -77,6 +77,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_NEMF", "N_Jets");
     vars.InitVars("Jet_CEMF", "N_Jets");
     vars.InitVars("Jet_MF", "N_Jets");
+    vars.InitVars("Jet_Puppi_Multiplicity", "N_Jets");
+    vars.InitVars("Jet_Puppi_NeutralMultiplicity", "N_Jets");
 
     vars.InitVars("Jet_GenJet_Pt", "N_Jets");
     vars.InitVars("Jet_GenJet_Eta", "N_Jets");
@@ -196,6 +198,13 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
             vars.FillVars("Jet_NEMF", iJet, itJet->userFloat("neutralElectromagneticEnergyFraction"));
         }
         if (itJet->hasUserFloat("muonEnergyFraction")) { vars.FillVars("Jet_MF", iJet, itJet->userFloat("muonEnergyFraction")); }
+
+        if (itJet->hasUserFloat("patPuppiJetSpecificProducer:puppiMultiplicity")) {
+            vars.FillVars("Jet_Puppi_Multiplicity", iJet, itJet->userFloat("patPuppiJetSpecificProducer:puppiMultiplicity"));
+        }
+        if (itJet->hasUserFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity")) {
+            vars.FillVars("Jet_Puppi_NeutralMultiplicity", iJet, itJet->userFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity"));
+        }
 
         if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));
         if (itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant"))
