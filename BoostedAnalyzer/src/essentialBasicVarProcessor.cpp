@@ -79,6 +79,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_MF", "N_Jets");
     vars.InitVars("Jet_Puppi_Multiplicity", "N_Jets");
     vars.InitVars("Jet_Puppi_NeutralMultiplicity", "N_Jets");
+    vars.InitVars("Jet_Puppi_ChargedMultiplicity", "N_Jets");
 
     vars.InitVars("Jet_GenJet_Pt", "N_Jets");
     vars.InitVars("Jet_GenJet_Eta", "N_Jets");
@@ -204,6 +205,12 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         }
         if (itJet->hasUserFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity")) {
             vars.FillVars("Jet_Puppi_NeutralMultiplicity", iJet, itJet->userFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity"));
+        }
+        if (itJet->hasUserFloat("patPuppiJetSpecificProducer:puppiMultiplicity") &&
+            itJet->hasUserFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity")) {
+            vars.FillVars(
+                "Jet_Puppi_ChargedMultiplicity", iJet,
+                itJet->userFloat("patPuppiJetSpecificProducer:puppiMultiplicity") - itJet->userFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity"));
         }
 
         if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));

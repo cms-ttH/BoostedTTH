@@ -114,6 +114,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_MF", "N_AK15Jets");
     vars.InitVars("AK15Jet_Puppi_Multiplicity", "N_AK15Jets");
     vars.InitVars("AK15Jet_Puppi_NeutralMultiplicity", "N_AK15Jets");
+    vars.InitVars("AK15Jet_Puppi_ChargedMultiplicity", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_Njettiness_tau1", "N_AK15Jets");
     vars.InitVars("AK15Jet_Njettiness_tau2", "N_AK15Jets");
@@ -387,6 +388,12 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         }
         if (ak15jet.hasUserFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity")) {
             vars.FillVars("AK15Jet_Puppi_NeutralMultiplicity", i, ak15jet.userFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity"));
+        }
+        if (ak15jet.hasUserFloat("patPuppiJetSpecificProducer:puppiMultiplicity") &&
+            ak15jet.hasUserFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity")) {
+            vars.FillVars(
+                "AK15Jet_Puppi_ChargedMultiplicity", i,
+                ak15jet.userFloat("patPuppiJetSpecificProducer:puppiMultiplicity") - ak15jet.userFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity"));
         }
 
         if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau1")) { vars.FillVars("AK15Jet_Njettiness_tau1", i, ak15jet.userFloat("NjettinessAK15Puppi:tau1")); }
