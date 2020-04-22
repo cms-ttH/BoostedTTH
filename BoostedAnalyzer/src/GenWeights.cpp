@@ -138,11 +138,6 @@ bool GenWeights::GetLHAPDFWeight(std::map< string, float >& weights, const GenEv
         weights["Weight_LHA_" + initializedPDFNames[p] /*+std::to_string(PDFs[0]->lhapdfID())*/ + "_up"]      = weight_up;
         weights["Weight_LHA_" + initializedPDFNames[p] /*+std::to_string(PDFs[0]->lhapdfID())*/ + "_down"]    = weight_down;
 
-        for (uint k = 0; k < genInfos.weights().size(); k++) {
-            auto index = std::to_string(k);
-            // weights["GenWeight_"+index] = genInfos.weights().at(k)/gen_weight;
-            weights["GenWeight_" + psweightsNameMap[k]] = genInfos.weights().at(k) / gen_weight;
-        }
 
         // handle internal pdf weights
         /*
@@ -208,6 +203,12 @@ bool GenWeights::GetLHAPDFWeight(std::map< string, float >& weights, const GenEv
             weights["Weight_LHA_" + std::to_string(PDFSet.lhapdfID()) + "_down"]    = (int_pdfUnc.central - int_pdfUnc.errminus);
             weights["Weight_LHA_" + std::to_string(PDFSet.lhapdfID()) + "_up"]      = (int_pdfUnc.central + int_pdfUnc.errplus);
         }
+    }
+    
+    for (uint k = 0; k < genInfos.weights().size(); k++) {
+        auto index = std::to_string(k);
+        // weights["GenWeight_"+index] = genInfos.weights().at(k)/gen_weight;
+        weights["GenWeight_" + psweightsNameMap[k]] = genInfos.weights().at(k) / gen_weight;
     }
 
     return true;
@@ -369,6 +370,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         else if (is_pdf_var) {
             if (line.Contains("pdf")) { pdf_keyword = "pdf"; }
             else {
+                continue;
                 std::cerr << "no known keyword for pdf variations" << std::endl;
                 std::cerr << "This should never happen!" << std::endl;
                 std::cerr << "Don't trust the generator weights unless this problem is fixed!" << std::endl;
