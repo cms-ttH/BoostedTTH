@@ -201,12 +201,12 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     else if (input.systematic == Systematics::JERdown) {
         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResDown, pat::MET::Type1);
     }
-    //     else if (input.systematic == Systematics::METUnclENup) {
-    //         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp, pat::MET::Type1);
-    //     }
-    //     else if (input.systematic == Systematics::METUnclENdown) {
-    //         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown, pat::MET::Type1);
-    //     }
+    else if (input.systematic == Systematics::METUnclEnup) {
+        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp, pat::MET::Type1);
+    }
+    else if (input.systematic == Systematics::METUnclEndown) {
+        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown, pat::MET::Type1);
+    }
     else {
         met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
     }

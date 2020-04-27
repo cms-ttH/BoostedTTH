@@ -254,6 +254,8 @@ if options.systematicVariations:
     for var in options.systematicVariations:
         if var.lower() == "nominal":
             writeNominal = True
+        elif var == "METUnclEn":
+            print "doing unclustered energy uncertainties"
         elif var.startswith("JES"):
             systsJES.append(var + "up")
             systsJES.append(var + "down")
@@ -1203,7 +1205,7 @@ process.BoostedAnalyzer.selectedJets = [
     for s in variations
 ]
 process.BoostedAnalyzer.selectedJetsLoose = [
-    cms.InputTag("SelectedJetProducerLooseAK4:selectedJetsLooseAK4")
+    cms.InputTag("slimmedJetsPuppi")
     for s in variations
 ]
 process.BoostedAnalyzer.selectedJetsAK8 = [
@@ -1222,6 +1224,17 @@ if not options.isData:
     process.BoostedAnalyzer.eventWeight = options.weight
 
 process.BoostedAnalyzer.systematics = variations
+########################################################################################################################################
+# block for unclustered energy systematic
+if "METUnclEn" in options.systematicVariations:
+    process.BoostedAnalyzer.systematics += ["METUnclEnup","METUnclEndown"]
+    process.BoostedAnalyzer.selectedJets += ["SelectedJetProducerAK4:selectedJetsAK4","SelectedJetProducerAK4:selectedJetsAK4"]
+    process.BoostedAnalyzer.selectedJetsLoose += ["slimmedJetsPuppi","slimmedJetsPuppi"]
+    process.BoostedAnalyzer.selectedJetsAK8 += ["SelectedJetProducerAK8:selectedJetsAK8","SelectedJetProducerAK8:selectedJetsAK8"]
+    process.BoostedAnalyzer.selectedJetsAK15 += ["SelectedJetProducerAK15:selectedJetsAK15","SelectedJetProducerAK15:selectedJetsAK15"]
+    process.BoostedAnalyzer.correctedMETs += [METCollection, METCollection]
+    process.BoostedAnalyzer.correctedMETsPuppi += [PuppiMETCollection, PuppiMETCollection]
+########################################################################################################################################
 process.BoostedAnalyzer.generatorName = options.generatorName
 
 if options.isData and options.useJson:
