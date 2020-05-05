@@ -7,6 +7,7 @@ TriggerVarProcessor::TriggerVarProcessor(const std::vector< std::string > releva
     availableTriggerScaleFactors.emplace_back(new SingleMuTriggerSFs("SingleMuon"));
     availableTriggerScaleFactors.emplace_back(new SingleElTriggerSFs("SingleElectron"));
     availableTriggerScaleFactors.emplace_back(new METTriggerSFs("MET"));
+    availableTriggerScaleFactors.emplace_back(new SinglePhTriggerSFs("SinglePhoton"));
 }
 TriggerVarProcessor::~TriggerVarProcessor() {}
 
