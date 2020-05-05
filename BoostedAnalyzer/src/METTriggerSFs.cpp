@@ -14,8 +14,8 @@ METTriggerSFs::~METTriggerSFs()
 void METTriggerSFs::Init(const InputCollections& input)
 {
     if (input.era.find("2016") != std::string::npos) {
-        file      = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/met_trigger_sf.root";
-        hist_name = "120pfht_hltmu_1m_2017";
+        file      = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/metTriggerEfficiency_recoil_monojet_TH1F.root";
+        hist_name = "hden_monojet_recoil_clone_passed";
     }
     else if (input.era.find("2017") != std::string::npos) {
         file      = TString(std::string(getenv("CMSSW_BASE"))) + "/src/MiniAOD/MiniAODHelper/data/Run2Legacy/met_trigger_sf.root";
