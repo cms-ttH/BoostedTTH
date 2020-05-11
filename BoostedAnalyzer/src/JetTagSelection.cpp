@@ -55,7 +55,7 @@ void JetTagSelection::InitCutflow(Cutflow& cutflow){
 bool JetTagSelection::IsSelected(const InputCollections& input,Cutflow& cutflow){
   if(!initialized) cerr << "JetTagSelection not initialized" << endl;
 
-  int njets = input.selectedJetsLoose.size();
+  int njets = input.selectedJets.size();
   int ntags = 0;
   for(size_t i=0; i<input.selectedJets.size();i++){
     if(CSVHelper::PassesCSV(input.selectedJets.at(i), "DeepJet", CSVHelper::CSVwp::Medium, input.era)){
