@@ -677,7 +677,7 @@ if "2016" in options.dataEra:
     process.SelectedTauProducer = SelectedTauProducer2016
 elif "2017" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2017
-    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 34.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 37.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2017
     process.SelectedMuonProducer.ptMins = [10.0, 20.0, 29.0]
