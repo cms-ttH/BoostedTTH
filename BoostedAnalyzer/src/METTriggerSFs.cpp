@@ -57,7 +57,7 @@ std::vector< float > METTriggerSFs::CalculateTriggerSFs(const InputCollections& 
 {
     std::vector< float > sfs{-999., -999., -999.};
 
-    auto recoil_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
+    auto recoil_p4 = input.correctedMET.corP4(pat::MET::Type1);
     for (const auto& el : input.selectedElectronsLoose) { recoil_p4 += el.p4(); }
     for (const auto& mu : input.selectedMuonsLoose) { recoil_p4 += mu.p4(); }
     for (const auto& ph : input.selectedPhotons) { recoil_p4 += ph.p4(); }
