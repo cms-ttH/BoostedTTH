@@ -180,6 +180,7 @@ class SelectedLeptonProducer : public edm::EDProducer {
 
     // ptrs to 2D histograms which contain the electron scale factors for
     // reconstruction and identification
+    TH2F* EleID_SF_Veto    = nullptr;
     TH2F* EleID_SF_Loose    = nullptr;
     TH2F* EleID_SF_Medium   = nullptr;
     TH2F* EleID_SF_Tight    = nullptr;

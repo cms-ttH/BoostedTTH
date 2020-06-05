@@ -157,6 +157,9 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
 
     // load electron scale factor histograms from given files
     if (leptonType_ == LeptonType::Electron) {
+        EleID_SF_Veto = (TH2F*) TFile::Open(TString(std::string(getenv("CMSSW_BASE")) + "/src/" + iConfig.getParameter< std::string >("file_EleVetoIDSF")))
+                             ->Get("EGamma_SF2D");
+        EleID_SF_Veto->SetDirectory(0);
         EleID_SF_Loose = (TH2F*) TFile::Open(TString(std::string(getenv("CMSSW_BASE")) + "/src/" + iConfig.getParameter< std::string >("file_EleLooseIDSF")))
                              ->Get("EGamma_SF2D");
         EleID_SF_Loose->SetDirectory(0);
@@ -476,7 +479,7 @@ std::vector< float > SelectedLeptonProducer::GetElectronIDSF(const pat::Electron
     // load the correct scale factor histogram
     switch (iElectronID) {
         case ElectronID::None: break;
-        case ElectronID::Veto: break;
+        case ElectronID::Veto: SF_hist = EleID_SF_Veto; break;
         case ElectronID::Loose: SF_hist = EleID_SF_Loose; break;
         case ElectronID::Medium: SF_hist = EleID_SF_Medium; break;
         case ElectronID::Tight: SF_hist = EleID_SF_Tight; break;
