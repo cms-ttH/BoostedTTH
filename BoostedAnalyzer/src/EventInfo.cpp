@@ -1,9 +1,22 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/EventInfo.hpp"
 
 EventInfo::EventInfo(const edm::Event& iEvent, const edm::Handle< reco::BeamSpot >& beamSpot, const edm::Handle< HcalNoiseSummary >& hcalNoiseSummary,
-                     const edm::Handle< std::vector< PileupSummaryInfo > >& puSummaryInfo, bool firstVertexIsGood_, float rho_) :
+                     const edm::Handle< std::vector< PileupSummaryInfo > >& puSummaryInfo, bool firstVertexIsGood_,
+                     float rhoAll_,
+                     float rhoFastjetAll_,
+                     float rhoFastjetAllCalo_,
+                     float rhoFastjetCentral_,
+                     float rhoFastjetCentralCalo_,
+                     float rhoFastjetCentralNeutral_,
+                     float rhoFastjetCentralChargedPileUp_) :
     firstVertexIsGood(firstVertexIsGood_),
-    rho(rho_)
+    rhoAll(rhoAll_),
+    rhoFastjetAll(rhoFastjetAll_),
+    rhoFastjetAllCalo(rhoFastjetAllCalo_),
+    rhoFastjetCentral(rhoFastjetCentral_),
+    rhoFastjetCentralCalo(rhoFastjetCentralCalo_),
+    rhoFastjetCentralNeutral(rhoFastjetCentralNeutral_),
+    rhoFastjetCentralChargedPileUp(rhoFastjetCentralChargedPileUp_)
 {
     evt = iEvent.id().event();
 

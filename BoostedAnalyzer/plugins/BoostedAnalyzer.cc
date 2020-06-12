@@ -231,7 +231,13 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
     /** pu summary data access token **/
     edm::EDGetTokenT< std::vector< PileupSummaryInfo > > puInfoToken;
     /** pileup density data access token **/
-    edm::EDGetTokenT< double > rhoToken;
+    edm::EDGetTokenT< double > rhoAllToken;
+    edm::EDGetTokenT< double > rhoFastjetAllToken;
+    edm::EDGetTokenT< double > rhoFastjetAllCaloToken;
+    edm::EDGetTokenT< double > rhoFastjetCentralToken;
+    edm::EDGetTokenT< double > rhoFastjetCentralCaloToken;
+    edm::EDGetTokenT< double > rhoFastjetCentralNeutralToken;
+    edm::EDGetTokenT< double > rhoFastjetCentralChargedPileUpToken;
     /** hcal noise data access token **/
     edm::EDGetTokenT< HcalNoiseSummary > hcalNoiseToken;
     /** beam spot data access token **/
@@ -327,7 +333,13 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     selectionNames{iConfig.getParameter< std::vector< std::string > >("selectionNames")},
 
     puInfoToken{consumes< std::vector< PileupSummaryInfo > >(iConfig.getParameter< edm::InputTag >("puInfo"))},
-    rhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))},
+    rhoAllToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rhoAll"))},
+    rhoFastjetAllToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rhoFastjetAll"))},
+    rhoFastjetAllCaloToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rhoFastjetAllCalo"))},
+    rhoFastjetCentralToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rhoFastjetCentral"))},
+    rhoFastjetCentralCaloToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rhoFastjetCentralCalo"))},
+    rhoFastjetCentralNeutralToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rhoFastjetCentralNeutral"))},
+    rhoFastjetCentralChargedPileUpToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rhoFastjetCentralChargedPileUp"))},
     hcalNoiseToken{consumes< HcalNoiseSummary >(iConfig.getParameter< edm::InputTag >("hcalNoise"))},
     beamSpotToken{consumes< reco::BeamSpot >(iConfig.getParameter< edm::InputTag >("beamSpot"))},
     conversionCollectionToken{consumes< reco::ConversionCollection >(iConfig.getParameter< edm::InputTag >("conversionCollection"))},
@@ -610,8 +622,20 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     // EVENTINFO
     edm::Handle< std::vector< PileupSummaryInfo > > h_puInfo;
     iEvent.getByToken(puInfoToken, h_puInfo);
-    edm::Handle< double > h_rho;
-    iEvent.getByToken(rhoToken, h_rho);
+    edm::Handle< double > h_rhoAll;
+    iEvent.getByToken(rhoAllToken, h_rhoAll);
+    edm::Handle< double > h_rhoFastjetAll;
+    iEvent.getByToken(rhoFastjetAllToken, h_rhoFastjetAll);
+    edm::Handle< double > h_rhoFastjetAllCalo;
+    iEvent.getByToken(rhoFastjetAllCaloToken, h_rhoFastjetAllCalo);
+    edm::Handle< double > h_rhoFastjetCentral;
+    iEvent.getByToken(rhoFastjetCentralToken, h_rhoFastjetCentral);
+    edm::Handle< double > h_rhoFastjetCentralCalo;
+    iEvent.getByToken(rhoFastjetCentralCaloToken, h_rhoFastjetCentralCalo);
+    edm::Handle< double > h_rhoFastjetCentralNeutral;
+    iEvent.getByToken(rhoFastjetCentralNeutralToken, h_rhoFastjetCentralNeutral);
+    edm::Handle< double > h_rhoFastjetCentralChargedPileUp;
+    iEvent.getByToken(rhoFastjetCentralChargedPileUpToken, h_rhoFastjetCentralChargedPileUp);
     edm::Handle< HcalNoiseSummary > h_hcalNoiseSummary;
     iEvent.getByToken(hcalNoiseToken, h_hcalNoiseSummary);
     edm::Handle< reco::BeamSpot > h_beamSpot;
@@ -722,10 +746,10 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     // set rho in MiniAODhelper
     // TODO: setup MiniAODhelper more transparently
-    helper.SetRho(*h_rho);
+    helper.SetRho(*h_rhoFastjetAll);
 
     // Fill Event Info Object
-    EventInfo   eventInfo(iEvent, h_beamSpot, h_hcalNoiseSummary, h_puInfo, firstVertexIsGood, *h_rho);
+    EventInfo   eventInfo(iEvent, h_beamSpot, h_hcalNoiseSummary, h_puInfo, firstVertexIsGood, *h_rhoAll, *h_rhoFastjetAll, *h_rhoFastjetAllCalo, *h_rhoFastjetCentral, *h_rhoFastjetCentralCalo, *h_rhoFastjetCentralNeutral, *h_rhoFastjetCentralChargedPileUp);
     TriggerInfo triggerInfo = triggerInfoProd.Produce(iEvent);
     FilterInfo  filterInfo  = filterInfoProd.Produce(iEvent);
 
