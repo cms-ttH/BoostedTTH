@@ -106,6 +106,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_Phi", "N_AK15Jets");
     vars.InitVars("AK15Jet_E", "N_AK15Jets");
     vars.InitVars("AK15Jet_M", "N_AK15Jets");
+    vars.InitVars("AK15Jet_Rapidity", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_CHF", "N_AK15Jets");
     vars.InitVars("AK15Jet_NHF", "N_AK15Jets");
@@ -165,6 +166,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_SoftDrop_Phi", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDrop_E", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDrop_M", "N_AK15Jets");
+    vars.InitVars("AK15Jet_SoftDrop_Rapidity", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_SoftDropJet3_Pt", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet3_Eta", "N_AK15Jets");
@@ -373,6 +375,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK15Jet_Phi", i, ak15jet.phi());
         vars.FillVars("AK15Jet_E", i, ak15jet.energy());
         vars.FillVars("AK15Jet_M", i, ak15jet.mass());
+        vars.FillVars("AK15Jet_Rapidity", i, ak15jet.rapidity());
         if (ak15jet.hasUserFloat("chargedHadronEnergyFraction")) { vars.FillVars("AK15Jet_CHF", i, ak15jet.userFloat("chargedHadronEnergyFraction")); }
         if (ak15jet.hasUserFloat("neutralHadronEnergyFraction")) { vars.FillVars("AK15Jet_NHF", i, ak15jet.userFloat("neutralHadronEnergyFraction")); }
         if (ak15jet.hasUserFloat("neutralElectromagneticEnergyFraction")) {
@@ -457,6 +460,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             vars.FillVars("AK15Jet_SoftDrop_Phi", i, ak15jet_softdrop.phi());
             vars.FillVars("AK15Jet_SoftDrop_E", i, ak15jet_softdrop.energy());
             vars.FillVars("AK15Jet_SoftDrop_M", i, ak15jet_softdrop.mass());
+            vars.FillVars("AK15Jet_SoftDrop_Rapidity", i, ak15jet_softdrop.Rapidity());
         }
 
         int n_AK4Jets_outside_AK15Jets            = 0;
