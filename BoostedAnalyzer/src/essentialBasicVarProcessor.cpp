@@ -26,6 +26,13 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVar("N_NoTags", "I");
     vars.InitVar("N_PrimaryVertices", "I");
     vars.InitVar("N_GenPVs", "I");
+    vars.InitVar("fixedGridRhoAll");
+    vars.InitVar("fixedGridRhoFastjetAll");
+    vars.InitVar("fixedGridRhoFastjetAllCalo");
+    vars.InitVar("fixedGridRhoFastjetCentral");
+    vars.InitVar("fixedGridRhoFastjetCentralCalo");
+    vars.InitVar("fixedGridRhoFastjetCentralNeutral");
+    vars.InitVar("fixedGridRhoFastjetCentralChargedPileUp");
 
     vars.InitVar("N_TightElectrons", "I");
     vars.InitVar("N_LooseElectrons", "I");
@@ -145,6 +152,13 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillIntVar("Evt_Odd", evt_id % 2);
     vars.FillIntVar("Evt_Run", run_id);
     vars.FillIntVar("Evt_Lumi", lumi_section);
+    vars.FillVar("fixedGridRhoAll", input.eventInfo.rhoAll);
+    vars.FillVar("fixedGridRhoFastjetAll", input.eventInfo.rhoFastjetAll);
+    vars.FillVar("fixedGridRhoFastjetAllCalo", input.eventInfo.rhoFastjetAllCalo);
+    vars.FillVar("fixedGridRhoFastjetCentral", input.eventInfo.rhoFastjetCentral);
+    vars.FillVar("fixedGridRhoFastjetCentralCalo", input.eventInfo.rhoFastjetCentralCalo);
+    vars.FillVar("fixedGridRhoFastjetCentralNeutral", input.eventInfo.rhoFastjetCentralNeutral);
+    vars.FillVar("fixedGridRhoFastjetCentralChargedPileUp", input.eventInfo.rhoFastjetCentralChargedPileUp);
 
     const char*             btagger = "DeepJet";
     std::vector< pat::Jet > selectedTaggedJets;

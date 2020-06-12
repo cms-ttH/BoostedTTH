@@ -10,7 +10,14 @@
 class EventInfo {
    public:
     EventInfo(const edm::Event& iEvent, const edm::Handle< reco::BeamSpot >& beamSpot, const edm::Handle< HcalNoiseSummary >& hcalNoiseSummary,
-              const edm::Handle< std::vector< PileupSummaryInfo > >& puSummaryInfo, bool firstVertexIsGood_, float rho_);
+              const edm::Handle< std::vector< PileupSummaryInfo > >& puSummaryInfo, bool firstVertexIsGood_,
+              float rhoAll_,
+              float rhoFastjetAll_,
+              float rhoFastjetAllCalo_,
+              float rhoFastjetCentral_,
+              float rhoFastjetCentralCalo_,
+              float rhoFastjetCentralNeutral_,
+              float rhoFastjetCentralChargedPileUp_);
 
     // Event Information
     long evt;
@@ -29,7 +36,13 @@ class EventInfo {
 
     bool firstVertexIsGood;
 
-    float rho;
+    float rhoAll;
+    float rhoFastjetAll;
+    float rhoFastjetAllCalo;
+    float rhoFastjetCentral;
+    float rhoFastjetCentralCalo;
+    float rhoFastjetCentralNeutral;
+    float rhoFastjetCentralChargedPileUp;
 };
 
 #endif

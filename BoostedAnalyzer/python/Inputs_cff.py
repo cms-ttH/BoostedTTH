@@ -2,7 +2,13 @@ import FWCore.ParameterSet.Config as cms
 
 Inputs_tth_sl = cms.PSet(
     puInfo=cms.InputTag("slimmedAddPileupInfo"),
-    rho=cms.InputTag("fixedGridRhoFastjetAll"),
+    rhoAll=cms.InputTag("fixedGridRhoAll"),
+    rhoFastjetAll=cms.InputTag("fixedGridRhoFastjetAll"),
+    rhoFastjetAllCalo=cms.InputTag("fixedGridRhoFastjetAllCalo"),
+    rhoFastjetCentral=cms.InputTag("fixedGridRhoFastjetCentral"),
+    rhoFastjetCentralCalo=cms.InputTag("fixedGridRhoFastjetCentralCalo"),
+    rhoFastjetCentralNeutral=cms.InputTag("fixedGridRhoFastjetCentralNeutral"),
+    rhoFastjetCentralChargedPileUp=cms.InputTag("fixedGridRhoFastjetCentralChargedPileUp"),
     hcalNoise=cms.InputTag("hcalnoise"),
     triggerBits=cms.InputTag("TriggerResults::HLT"),
     triggerPrescales=cms.InputTag("patTrigger"),
