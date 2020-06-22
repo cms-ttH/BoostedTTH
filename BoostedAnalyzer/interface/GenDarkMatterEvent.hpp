@@ -43,6 +43,13 @@ class GenDarkMatterEvent {
     math::XYZTLorentzVector ReturnZBoson() const;
     math::XYZTLorentzVector ReturnWBoson() const;
     math::XYZTLorentzVector ReturnPhoton() const;
+    
+    std::vector< reco::GenParticle > ReturnLightQuarksFromWPlus() const;
+    std::vector< reco::GenParticle > ReturnLightQuarksFromWMinus() const;
+    std::vector< reco::GenParticle > ReturnCQuarksFromWPlus() const;
+    std::vector< reco::GenParticle > ReturnCQuarksFromWMinus() const;
+    std::vector< reco::GenParticle > ReturnBQuarksFromTop() const;
+    std::vector< reco::GenParticle > ReturnBQuarksFromAntiTop() const;
 
    private:
     bool hasDarkMatter = false;
@@ -72,6 +79,13 @@ class GenDarkMatterEvent {
     float epsilon_0_dyn = 0.1;
     int   n_dyn         = 1;
     int   iterations    = 5;
+    
+    std::vector< reco::GenParticle > LightQuarksFromWPlus;
+    std::vector< reco::GenParticle > LightQuarksFromWMinus;
+    std::vector< reco::GenParticle > CQuarksFromWPlus;
+    std::vector< reco::GenParticle > CQuarksFromWMinus;
+    std::vector< reco::GenParticle > BQuarksFromTop;
+    std::vector< reco::GenParticle > BQuarksFromAntiTop;
 };
 
 #endif

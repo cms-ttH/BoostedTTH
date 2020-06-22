@@ -357,7 +357,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
     vars.FillVar("N_AK8Jets_SoftDrop", n_AK8_SoftDrop_Jets);
     vars.FillVar("N_HEM_AK8Jets", N_HEM_AK8Jets);
     */
-
+    
     int N_HEM_AK15Jets       = 0;
     int n_AK15_SoftDrop_Jets = 0;
 
@@ -549,8 +549,82 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             }
             vars.FillVars("Min_DeltaR_AK15Jet_GenTopHad", i, min_dr);
         }
+        
+        if (input.genDarkMatterEvt.IsFilled()) {
+            LightQuarksFromWPlus = input.genDarkMatterEvt.ReturnLightQuarksFromWPlus();
+            CQuarksFromWPlus = input.genDarkMatterEvt.ReturnCQuarksFromWPlus();
+            BQuarksFromTop = input.genDarkMatterEvt.ReturnBQuarksFromTop();
+            LightQuarksFromWMinus = input.genDarkMatterEvt.ReturnLightQuarksFromWMinus();
+            CQuarksFromWMinus = input.genDarkMatterEvt.ReturnCQuarksFromWMinus();
+            BQuarksFromAntiTop = input.genDarkMatterEvt.ReturnBQuarksFromAntiTop();
+            
+            RemoveParticlesOutsideOfJet(ak15jet);
+        }
     }
 
     vars.FillVar("N_AK15Jets_SoftDrop", n_AK15_SoftDrop_Jets);
     vars.FillVar("N_HEM_AK15Jets", N_HEM_AK15Jets);
+}
+
+void JetVarProcessor::RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR) {
+        LightQuarksFromWPlus.erase(
+        std::remove_if(LightQuarksFromWPlus.begin(), LightQuarksFromWPlus.end(),
+                       [&](reco::GenParticle particle) {
+                           return BoostedUtils::DeltaR(particle.p4(),jet.p4()) > dR;
+                       }),
+        LightQuarksFromWPlus.end());
+        
+        LightQuarksFromWMinus.erase(
+        std::remove_if(LightQuarksFromWMinus.begin(), LightQuarksFromWMinus.end(),
+                       [&](reco::GenParticle particle) {
+                           return BoostedUtils::DeltaR(particle.p4(),jet.p4()) > dR;
+                       }),
+        LightQuarksFromWMinus.end());
+        
+        CQuarksFromWPlus.erase(
+        std::remove_if(CQuarksFromWPlus.begin(), CQuarksFromWPlus.end(),
+                       [&](reco::GenParticle particle) {
+                           return BoostedUtils::DeltaR(particle.p4(),jet.p4()) > dR;
+                       }),
+        CQuarksFromWPlus.end());
+        
+        CQuarksFromWMinus.erase(
+        std::remove_if(CQuarksFromWMinus.begin(), CQuarksFromWMinus.end(),
+                       [&](reco::GenParticle particle) {
+                           return BoostedUtils::DeltaR(particle.p4(),jet.p4()) > dR;
+                       }),
+        CQuarksFromWMinus.end());
+        
+        BQuarksFromTop.erase(
+        std::remove_if(BQuarksFromTop.begin(), BQuarksFromTop.end(),
+                       [&](reco::GenParticle particle) {
+                           return BoostedUtils::DeltaR(particle.p4(),jet.p4()) > dR;
+                       }),
+        BQuarksFromTop.end());
+        
+        BQuarksFromAntiTop.erase(
+        std::remove_if(BQuarksFromAntiTop.begin(), BQuarksFromAntiTop.end(),
+                       [&](reco::GenParticle particle) {
+                           return BoostedUtils::DeltaR(particle.p4(),jet.p4()) > dR;
+                       }),
+        BQuarksFromAntiTop.end());
+}
+
+bool JetVarProcessor::tbqqmatch() {
+    return true;
+}
+bool JetVarProcessor::tbcqmatch() {
+    return true;
+}
+bool JetVarProcessor::tqqmatch() {
+    return true;
+}
+bool JetVarProcessor::tcqmatch() {
+    return true;
+}
+bool JetVarProcessor::tbqmatch() {
+    return true;
+}
+bool JetVarProcessor::tbcmatch() {
+    return true;
 }
