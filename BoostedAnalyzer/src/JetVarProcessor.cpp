@@ -559,6 +559,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             BQuarksFromAntiTop = input.genDarkMatterEvt.ReturnBQuarksFromAntiTop();
             
             RemoveParticlesOutsideOfJet(ak15jet);
+            
+            std::cout << "tbqq match: " << tbqqmatch() << std::endl;
         }
     }
 
@@ -611,7 +613,11 @@ void JetVarProcessor::RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR)
 }
 
 bool JetVarProcessor::tbqqmatch() {
-    return true;
+    bool flag_Top = LightQuarksFromWPlus.size() == 2 and BQuarksFromTop.size() == 1;
+    //if (flag_Top) flag_Top = flag_Top and FindMother(LightQuarksFromWPlus.at(0).mother())==6 and FindMother(LightQuarksFromWPlus.at(1).mother())==6;
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 2 and BQuarksFromAntiTop.size() == 1;
+    //if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(LightQuarksFromWMinus.at(0).mother())==6 and FindMother(LightQuarksFromWMinus.at(1).mother())==6;
+    return flag_Top != flag_AntiTop;
 }
 bool JetVarProcessor::tbcqmatch() {
     return true;
@@ -627,4 +633,12 @@ bool JetVarProcessor::tbqmatch() {
 }
 bool JetVarProcessor::tbcmatch() {
     return true;
+}
+
+const reco::Candidate* JetVarProcessor::FindMother(reco::GenParticle particle) {
+    const reco::Candidate* mom = particle.mother();
+    while (mom->pdgId() == particle.pdgId() and particle.numberOfMothers() != 0) {
+        mom = particle.mother();
+    }
+    return mom;
 }

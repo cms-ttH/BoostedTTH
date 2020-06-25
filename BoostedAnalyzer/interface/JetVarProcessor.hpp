@@ -25,6 +25,7 @@ class JetVarProcessor : public TreeProcessor {
     std::vector< reco::GenParticle > BQuarksFromAntiTop;
     
     void RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR = 1.5);
+    const reco::Candidate* FindMother(reco::GenParticle particle);
     
     bool tbqqmatch();
     bool tbcqmatch();
