@@ -613,32 +613,101 @@ void JetVarProcessor::RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR)
 }
 
 bool JetVarProcessor::tbqqmatch() {
+    // match 2 LF quark to W+ and check if b from top is found
     bool flag_Top = LightQuarksFromWPlus.size() == 2 and BQuarksFromTop.size() == 1;
-    //if (flag_Top) flag_Top = flag_Top and FindMother(LightQuarksFromWPlus.at(0).mother())==6 and FindMother(LightQuarksFromWPlus.at(1).mother())==6;
+    // check if light quarks are from top
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0).mother()))->pdgId()==6 and FindMother(FindMother(LightQuarksFromWPlus.at(1).mother()))->pdgId()==6;
+    
+    // match 2 LF quark to W- and check if b from antitop is found
     bool flag_AntiTop = LightQuarksFromWMinus.size() == 2 and BQuarksFromAntiTop.size() == 1;
-    //if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(LightQuarksFromWMinus.at(0).mother())==6 and FindMother(LightQuarksFromWMinus.at(1).mother())==6;
+    // check if light quarks are from antitop
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0).mother()))->pdgId()==-6 and FindMother(FindMother(LightQuarksFromWMinus.at(1).mother()))->pdgId()==-6;
+   
     return flag_Top != flag_AntiTop;
 }
 bool JetVarProcessor::tbcqmatch() {
-    return true;
+    // match 1 LF quark to W+ and check if b from top is found
+    bool flag_Top = LightQuarksFromWPlus.size() == 1 and BQuarksFromTop.size() == 1;
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0).mother()))->pdgId()==6;
+    // match 1 c quark to W+
+    bool flag_Topc = CQuarksFromWPlus.size() == 1;
+    if (flag_Topc && flag_Top) flag_Top = flag_Top and flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0).mother()))->pdgId()==6;
+ 
+
+   // match 1 LF to W- and check if b from antitop is found
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 1 and BQuarksFromAntiTop.size() == 1;
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0).mother()))->pdgId()==-6;
+    // match 1 c quark to W-
+    bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
+    if (flag_AntiTopc && flag_AntiTop) flag_AntiTop = flag_AntiTop and flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0).mother()))->pdgId()==-6;
+ 
+    return flag_Top != flag_AntiTop;
 }
 bool JetVarProcessor::tqqmatch() {
-    return true;
+    // match 2 LF quark to W+
+    bool flag_Top = LightQuarksFromWPlus.size() == 2;
+    // check if light quarks are from top
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0).mother()))->pdgId()==6 and FindMother(FindMother(LightQuarksFromWPlus.at(1).mother()))->pdgId()==6;
+    
+    // match 2 LF quark to W-
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 2;
+    // check if light quarks are from antitop
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0).mother()))->pdgId()==-6 and FindMother(FindMother(LightQuarksFromWMinus.at(1).mother()))->pdgId()==-6;
+   
+    return flag_Top != flag_AntiTop;
 }
 bool JetVarProcessor::tcqmatch() {
-    return true;
+    // match 1 LF quark to W+
+    bool flag_Top = LightQuarksFromWPlus.size() == 1;
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0).mother()))->pdgId()==6;
+    // match 1 c quark to W+
+    bool flag_Topc = CQuarksFromWPlus.size() == 1;
+    if (flag_Topc && flag_Top) flag_Top = flag_Top and flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0).mother()))->pdgId()==6;
+ 
+   // match 1 LF quark to W-
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 1;
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0).mother()))->pdgId()==-6;
+    // match 1 c quark to W-
+    bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
+    if (flag_AntiTopc && flag_AntiTop) flag_AntiTop = flag_AntiTop and flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0).mother()))->pdgId()==-6;
+ 
+    return flag_Top != flag_AntiTop;
 }
 bool JetVarProcessor::tbqmatch() {
-    return true;
+    // match 1 LF to W+ and check if b from top is found
+    bool flag_Top = LightQuarksFromWPlus.size() == 1 and BQuarksFromTop.size() == 1;
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0).mother()))->pdgId()==6;
+
+    // match 1 LF quark to W- and check if b from top is found
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 1 and BQuarksFromAntiTop.size() == 1;
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0).mother()))->pdgId()==-6;
+ 
+    return flag_Top != flag_AntiTop;
 }
 bool JetVarProcessor::tbcmatch() {
-    return true;
+    // match 1 c quark to W+ and check if b from top is found
+    bool flag_Top = CQuarksFromWPlus.size() == 1 and BQuarksFromTop.size() == 1;
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(CQuarksFromWPlus.at(0).mother()))->pdgId()==6;
+
+   // match 1 c quark to W- and check if b from top is found
+    bool flag_AntiTop = CQuarksFromWMinus.size() == 1 and BQuarksFromAntiTop.size() == 1;
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(CQuarksFromWMinus.at(0).mother()))->pdgId()==-6;
+ 
+    return flag_Top != flag_AntiTop;
 }
 
 const reco::Candidate* JetVarProcessor::FindMother(reco::GenParticle particle) {
     const reco::Candidate* mom = particle.mother();
     while (mom->pdgId() == particle.pdgId() and particle.numberOfMothers() != 0) {
         mom = particle.mother();
+    }
+    return mom;
+}
+
+const reco::Candidate* JetVarProcessor::FindMother(auto particle) {
+    const reco::Candidate* mom = particle->mother();
+    while (mom->pdgId() == particle->pdgId() and particle->numberOfMothers() != 0) {
+        mom = particle->mother();
     }
     return mom;
 }

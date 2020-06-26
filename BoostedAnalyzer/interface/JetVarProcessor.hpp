@@ -26,6 +26,7 @@ class JetVarProcessor : public TreeProcessor {
     
     void RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR = 1.5);
     const reco::Candidate* FindMother(reco::GenParticle particle);
+    const reco::Candidate* FindMother(auto particle);
     
     bool tbqqmatch();
     bool tbcqmatch();
