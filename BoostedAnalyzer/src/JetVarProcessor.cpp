@@ -200,6 +200,40 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
 
     vars.InitVar("N_HEM_AK15Jets", "I");
 
+
+    vars.InitVars("AK15Jet_tbqqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tbcqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tqqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tcqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tbqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tbcmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_wqqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_wcqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_zbbmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_zccmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_zqqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_isbmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_isbbmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_iscmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_isccmatch", "N_AK15Jets");
+
+    // gentypes according to https://github.com/mcremone/decaf/blob/master/analysis/processors/darkhiggs.py#L1310-L1413
+    // vars.InitVars("AK15Jet_match_xbb", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_tbcq", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_tbqq", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_zcc", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_wcq", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_vqq", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_bb", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_bc", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_b", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_cc", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_c", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_other", "N_AK15Jets");
+
+
+
+
     initialized = true;
 }
 
@@ -560,7 +594,52 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             
             RemoveParticlesOutsideOfJet(ak15jet);
             
-            std::cout << "tbqq match: " << tbqqmatch() << std::endl;
+            // std::cout << "tbqq match: " << tbqqmatch() << std::endl;
+            vars.FillVars("AK15Jet_tbqqmatch", i, tbqqmatch());
+            vars.FillVars("AK15Jet_tbcqmatch", i,  tbcqmatch());
+            vars.FillVars("AK15Jet_tqqmatch", i,  tqqmatch());
+            vars.FillVars("AK15Jet_tcqmatch", i,  tcqmatch());
+            vars.FillVars("AK15Jet_tbqmatch", i,  tbqmatch());
+            vars.FillVars("AK15Jet_tbcmatch", i,  tbcmatch());
+            vars.FillVars("AK15Jet_wqqmatch", i,  wqqmatch());
+            vars.FillVars("AK15Jet_wcqmatch", i,  wcqmatch());
+            vars.FillVars("AK15Jet_zbbmatch", i,  zbbmatch());
+            vars.FillVars("AK15Jet_zccmatch", i,  zccmatch());
+            vars.FillVars("AK15Jet_zqqmatch", i,  zqqmatch());
+            vars.FillVars("AK15Jet_isbmatch", i,  isbmatch());
+            vars.FillVars("AK15Jet_isbbmatch", i,  isbbmatch());
+            vars.FillVars("AK15Jet_iscmatch", i,  iscmatch());
+            vars.FillVars("AK15Jet_isccmatch", i,  isccmatch());
+
+            // gentypes according to  https://github.com/mcremone/decaf/blob/master/analysis/processors/darkhiggs.py#L1310-L1413
+            // bool flag_xbb = 
+            bool flag_tbcq = tbcqmatch();
+            bool flag_tbqq = !tbcqmatch() and tbqqmatch();
+            bool flag_zcc = !tbcqmatch() and !tbqqmatch() and zccmatch();
+            bool flag_wcq = !tbcqmatch() and !tbqqmatch() and !zccmatch() and (tcqmatch() or wcqmatch());
+            bool flag_vqq = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and (wqqmatch() or zqqmatch() or tqqmatch());
+            bool flag_bb = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and isbbmatch();
+            bool flag_bc = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and !isbbmatch() and (tbcmatch() or (isbmatch() and iscmatch()));
+            bool flag_b = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and !isbbmatch() and !(tbcmatch() or (isbmatch() and iscmatch())) and (tbqmatch() or isbmatch());
+            bool flag_cc = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and !isbbmatch() and !(tbcmatch() or (isbmatch() and iscmatch())) and !(tbqmatch() or isbmatch()) and isccmatch();
+            bool flag_c = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and !isbbmatch() and !(tbcmatch() or (isbmatch() and iscmatch())) and !(tbqmatch() or isbmatch()) and !isccmatch() and iscmatch();
+            bool flag_other = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and !isbbmatch() and !(tbcmatch() or (isbmatch() and iscmatch())) and !(tbqmatch() or isbmatch()) and !isccmatch() and !iscmatch();
+
+            // vars.FillVars("AK15Jet_match_xbb" , i, flag_xbb);
+            vars.FillVars("AK15Jet_match_tbcq" , i, flag_tbcq);
+            vars.FillVars("AK15Jet_match_tbqq" , i, flag_tbqq);
+            vars.FillVars("AK15Jet_match_zcc" , i, flag_zcc);
+            vars.FillVars("AK15Jet_match_wcq" , i, flag_wcq);
+            vars.FillVars("AK15Jet_match_vqq" , i, flag_vqq);
+            vars.FillVars("AK15Jet_match_bb" , i, flag_bb);
+            vars.FillVars("AK15Jet_match_bc" , i, flag_bc);
+            vars.FillVars("AK15Jet_match_b" , i, flag_b);
+            vars.FillVars("AK15Jet_match_cc" , i, flag_cc);
+            vars.FillVars("AK15Jet_match_c" , i, flag_c);
+            vars.FillVars("AK15Jet_match_other" , i, flag_other);
+
+
+
         }
     }
 
@@ -738,15 +817,15 @@ bool JetVarProcessor::isccmatch() {
 }
 
 bool JetVarProcessor::zbbmatch() { // not needed ?
-    return true;
+    return false;
 }
 
 bool JetVarProcessor::zccmatch() { // not needed ?
-    return true;
+    return false;
 }
 
 bool JetVarProcessor::zqqmatch() { // not needed ?
-    return true;
+    return false;
 }
 
 
