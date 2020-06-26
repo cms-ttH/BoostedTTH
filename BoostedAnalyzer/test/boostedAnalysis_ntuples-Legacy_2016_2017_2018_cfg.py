@@ -377,6 +377,126 @@ if options.isData:
         "ak8PFPuppiResidual"
     )  # add residual JEC for data
 
+###############################################################
+# replace JER with the latest recommended ones to avoid possible error during calculation of Puppi MET uncertainties
+campaign = None
+if "2016" in options.dataEra:
+    campaign = "Summer16_25nsV1b"
+elif "2017" in options.dataEra:
+    campaign = "Fall17_V3b"
+elif "2018" in options.dataEra:
+    campaign = "Autumn18_V7b"
+else:
+    print "this should never happen"
+    exit()
+data_mc = "DATA" if options.isData else "MC"
+filename = campaign + "_" + data_mc + ".db"
+process.GlobalTag.toGet = cms.VPSet(
+    ### AK4 ###
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_EtaResolution_AK4PFPuppi"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PhiResolution_AK4PFPuppi"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PtResolution_AK4PFPuppi"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionScaleFactorRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_SF_AK4PFPuppi"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_EtaResolution_AK4PFchs"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PhiResolution_AK4PFchs"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PtResolution_AK4PFchs"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionScaleFactorRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_SF_AK4PFchs"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_EtaResolution_AK4PF"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PhiResolution_AK4PF"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PtResolution_AK4PF"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionScaleFactorRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_SF_AK4PF"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    
+    ### AK8 ###
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_EtaResolution_AK8PFPuppi"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PhiResolution_AK8PFPuppi"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PtResolution_AK8PFPuppi"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionScaleFactorRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_SF_AK8PFPuppi"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_EtaResolution_AK8PFchs"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PhiResolution_AK8PFchs"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PtResolution_AK8PFchs"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionScaleFactorRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_SF_AK8PFchs"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_EtaResolution_AK8PF"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PhiResolution_AK8PF"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_PtResolution_AK8PF"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    ),
+    cms.PSet(record = cms.string("JetResolutionScaleFactorRcd"),
+                tag = cms.string("JR"+"_"+campaign+"_"+data_mc+"_SF_AK8PF"),
+            connect = cms.string("sqlite_fip:BoostedTTH/BoostedAnalyzer/data/jerfiles/"+filename)
+    )
+)
+
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 # from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
@@ -898,23 +1018,23 @@ for syst in systs:
 
 # smearing of corrected jets -- producers that create the nominal and up/down JER correction
 # jer shift of nominal sample
-if "2016" in options.dataEra:
-    jerResFileAK4 = "Summer16_25nsV1_MC_PtResolution_AK4PFPuppi.txt"
-    jerResFileAK8 = "Summer16_25nsV1_MC_PtResolution_AK8PFPuppi.txt"
-    jerSFFileAK4 = "Summer16_25nsV1_MC_SF_AK4PFPuppi.txt"
-    jerSFFileAK8 = "Summer16_25nsV1_MC_SF_AK8PFPuppi.txt"
-elif "2017" in options.dataEra:
-    jerResFileAK4 = "Fall17_V3_MC_PtResolution_AK4PFPuppi.txt"
-    jerResFileAK8 = "Fall17_V3_MC_PtResolution_AK8PFPuppi.txt"
-    jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFPuppi.txt"
-    jerSFFileAK8 = "Fall17_V3_MC_SF_AK8PFPuppi.txt"
-elif "2018" in options.dataEra:
-    jerResFileAK4 = "Autumn18_V7b_MC_PtResolution_AK4PFPuppi.txt"
-    jerResFileAK8 = "Autumn18_V7b_MC_PtResolution_AK8PFPuppi.txt"
-    jerSFFileAK4 = "Autumn18_V7b_MC_SF_AK4PFPuppi.txt"
-    jerSFFileAK8 = "Autumn18_V7b_MC_SF_AK8PFPuppi.txt"
-else:
-    raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017/2018")
+#if "2016" in options.dataEra:
+#    jerResFileAK4 = "Summer16_25nsV1_MC_PtResolution_AK4PFPuppi.txt"
+#    jerResFileAK8 = "Summer16_25nsV1_MC_PtResolution_AK8PFPuppi.txt"
+#    jerSFFileAK4 = "Summer16_25nsV1_MC_SF_AK4PFPuppi.txt"
+#    jerSFFileAK8 = "Summer16_25nsV1_MC_SF_AK8PFPuppi.txt"
+#elif "2017" in options.dataEra:
+#    jerResFileAK4 = "Fall17_V3_MC_PtResolution_AK4PFPuppi.txt"
+#    jerResFileAK8 = "Fall17_V3_MC_PtResolution_AK8PFPuppi.txt"
+#    jerSFFileAK4 = "Fall17_V3_MC_SF_AK4PFPuppi.txt"
+#    jerSFFileAK8 = "Fall17_V3_MC_SF_AK8PFPuppi.txt"
+#elif "2018" in options.dataEra:
+#    jerResFileAK4 = "Autumn18_V7b_MC_PtResolution_AK4PFPuppi.txt"
+#    jerResFileAK8 = "Autumn18_V7b_MC_PtResolution_AK8PFPuppi.txt"
+#    jerSFFileAK4 = "Autumn18_V7b_MC_SF_AK4PFPuppi.txt"
+#    jerSFFileAK8 = "Autumn18_V7b_MC_SF_AK8PFPuppi.txt"
+#else:
+#    raise Exception("NO JER FILES SPECIFIED: USE dataEra=2016/2017/2018")
 
 process.patSmearedJetsAK4 = cms.EDProducer(
     "SmearedPATJetProducer",
@@ -924,8 +1044,8 @@ process.patSmearedJetsAK4 = cms.EDProducer(
     skipGenMatching=cms.bool(
         False
     ),  # If True, always skip gen jet matching and smear jet with a random gaussian
-    # algopt = cms.string('AK4PFchs_pt'),
-    # algo = cms.string('AK4PFchs'),
+    algopt = cms.string('AK4PFPuppi_pt'),
+    algo = cms.string('AK4PFPuppi'),
     genJets=cms.InputTag("selectedPatJetsAK4PFPuppi", "genJets", "SKIM"),
     dRMax=cms.double(0.2),  # = cone size (0.4) / 2
     dPtMaxFactor=cms.double(3),  # dPt < 3 * resolution
@@ -934,12 +1054,12 @@ process.patSmearedJetsAK4 = cms.EDProducer(
     useDeterministicSeed=cms.bool(
         False
     ),  # default deterministic seeds not used, but our own
-    resolutionFile=cms.FileInPath(
-        "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK4
-    ),
-    scaleFactorFile=cms.FileInPath(
-        "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK4
-    ),
+    #resolutionFile=cms.FileInPath(
+    #    "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK4
+    #),
+    #scaleFactorFile=cms.FileInPath(
+    #    "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK4
+    #),
 )
 
 process.patSmearedJetsLooseAK4 = process.patSmearedJetsAK4.clone(
@@ -956,8 +1076,8 @@ process.patSmearedJetsAK8 = cms.EDProducer(
     skipGenMatching=cms.bool(
         False
     ),  # If True, always skip gen jet matching and smear jet with a random gaussian
-    #    algopt = cms.string('AK4PFchs_pt'),
-    #    algo = cms.string('AK4PFchs'),
+    algopt = cms.string('AK8PFPuppi_pt'),
+    algo = cms.string('AK8PFPuppi'),
     genJets=cms.InputTag("selectedPatJetsAK8PFPuppi", "genJets", "SKIM"),
     dRMax=cms.double(0.4),  # = cone size (0.8) / 2
     dPtMaxFactor=cms.double(3),  # dPt < 3 * resolution
@@ -966,12 +1086,12 @@ process.patSmearedJetsAK8 = cms.EDProducer(
     useDeterministicSeed=cms.bool(
         False
     ),  # default deterministic seeds not used, but our own
-    resolutionFile=cms.FileInPath(
-        "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK8
-    ),
-    scaleFactorFile=cms.FileInPath(
-        "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK8
-    ),
+    #resolutionFile=cms.FileInPath(
+    #    "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK8
+    #),
+    #scaleFactorFile=cms.FileInPath(
+    #    "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK8
+    #),
 )
 
 process.patSmearedJetsAK15 = cms.EDProducer(
@@ -982,8 +1102,8 @@ process.patSmearedJetsAK15 = cms.EDProducer(
     skipGenMatching=cms.bool(
         False
     ),  # If True, always skip gen jet matching and smear jet with a random gaussian
-    #    algopt = cms.string('AK4PFchs_pt'),
-    #    algo = cms.string('AK4PFchs'),
+    algopt = cms.string('AK8PFPuppi_pt'),
+    algo = cms.string('AK8PFPuppi'),
     genJets=cms.InputTag("selectedPatJetsAK15PFPuppi", "genJets", "SKIM"),
     dRMax=cms.double(0.75),  # = cone size (1.5) / 2
     dPtMaxFactor=cms.double(3),  # dPt < 3 * resolution
@@ -992,12 +1112,12 @@ process.patSmearedJetsAK15 = cms.EDProducer(
     useDeterministicSeed=cms.bool(
         False
     ),  # default deterministic seeds not used, but our own
-    resolutionFile=cms.FileInPath(
-        "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK8
-    ),
-    scaleFactorFile=cms.FileInPath(
-        "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK8
-    ),
+    #resolutionFile=cms.FileInPath(
+    #    "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerResFileAK8
+    #),
+    #scaleFactorFile=cms.FileInPath(
+    #    "BoostedTTH/BoostedAnalyzer/data/jerfiles/" + jerSFFileAK8
+    #),
 )
 
 # up/down jer shift of nominal sample and nominal jer shift of jes systematic samples
