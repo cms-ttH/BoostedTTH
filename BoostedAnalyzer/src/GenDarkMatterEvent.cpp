@@ -73,6 +73,12 @@ void GenDarkMatterEvent::Fill()
         if (abs(genparticle.pdgId()) == 5 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isFirstCopy() and genparticle.mother(0)->pdgId() == -6) {
             BQuarksFromAntiTop.push_back(genparticle);
         }
+        if (abs(genparticle.pdgId()) == 5 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
+            BQuarks.push_back(genparticle);
+        }
+        if (abs(genparticle.pdgId()) == 4 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
+            CQuarks.push_back(genparticle);
+        }
     }
     // find all final state hadrons in the event from the the packedGenParticles collection
     for (const pat::PackedGenParticle& genparticle : packedGenParticles) {

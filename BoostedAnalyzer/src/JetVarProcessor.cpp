@@ -610,6 +610,21 @@ void JetVarProcessor::RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR)
                            return BoostedUtils::DeltaR(particle.p4(),jet.p4()) > dR;
                        }),
         BQuarksFromAntiTop.end());
+
+        BQuarks.erase(
+        std::remove_if(BQuarks.begin(), BQuarks.end(),
+                       [&](reco::GenParticle particle) {
+                           return BoostedUtils::DeltaR(particle.p4(),jet.p4()) > dR;
+                       }),
+        BQuarks.end());
+
+        CQuarks.erase(
+        std::remove_if(CQuarks.begin(), CQuarks.end(),
+                       [&](reco::GenParticle particle) {
+                           return BoostedUtils::DeltaR(particle.p4(),jet.p4()) > dR;
+                       }),
+        CQuarks.end());
+        
 }
 
 bool JetVarProcessor::tbqqmatch() {
@@ -695,6 +710,46 @@ bool JetVarProcessor::tbcmatch() {
  
     return flag_Top != flag_AntiTop;
 }
+
+bool JetVarProcessor::wqqmatch() {
+    return LightQuarksFromWPlus.size() == 2 or LightQuarksFromWMinus.size() == 2;
+}
+
+bool JetVarProcessor::wcqmatch() {
+    bool flag_WMinus = CQuarksFromWMinus.size() == 1 and LightQuarksFromWMinus.size() == 1;
+    bool flag_WPlus = CQuarksFromWPlus.size() == 1 and LightQuarksFromWPlus.size() == 1;
+    return flag_WMinus != flag_WPlus;
+}
+
+bool JetVarProcessor::isbmatch() {
+    return BQuarks.size() == 1;
+}
+
+bool JetVarProcessor::isbbmatch() {
+    return BQuarks.size() == 2;
+}
+
+bool JetVarProcessor::iscmatch() {
+    return CQuarks.size() == 1;
+}
+
+bool JetVarProcessor::isccmatch() {
+    return CQuarks.size() == 1;
+}
+
+bool JetVarProcessor::zbbmatch() { // not needed ?
+    return true;
+}
+
+bool JetVarProcessor::zccmatch() { // not needed ?
+    return true;
+}
+
+bool JetVarProcessor::zqqmatch() { // not needed ?
+    return true;
+}
+
+
 
 const reco::Candidate* JetVarProcessor::FindMother(reco::GenParticle particle) {
     const reco::Candidate* mom = particle.mother();

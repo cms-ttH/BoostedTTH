@@ -86,6 +86,8 @@ class GenDarkMatterEvent {
     std::vector< reco::GenParticle > CQuarksFromWMinus;
     std::vector< reco::GenParticle > BQuarksFromTop;
     std::vector< reco::GenParticle > BQuarksFromAntiTop;
+    std::vector< reco::GenParticle > BQuarks;
+    std::vector< reco::GenParticle > CQuarks;
 };
 
 #endif
