@@ -742,15 +742,16 @@ bool JetVarProcessor::tbcqmatch() {
     if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0)))->pdgId()==6;
     // match 1 c quark to W+
     bool flag_Topc = CQuarksFromWPlus.size() == 1;
-    if (flag_Topc && flag_Top) flag_Top = flag_Top and flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId()==6;
- 
+    // also check if c quark comes from top
+    flag_Top = flag_Top and flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId()==6;
 
    // match 1 LF to W- and check if b from antitop is found
     bool flag_AntiTop = LightQuarksFromWMinus.size() == 1 and BQuarksFromAntiTop.size() == 1;
     if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0)))->pdgId()==-6;
     // match 1 c quark to W-
     bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
-    if (flag_AntiTopc && flag_AntiTop) flag_AntiTop = flag_AntiTop and flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId()==-6;
+    // also check if c quark comes from antitop
+    flag_AntiTop = flag_AntiTop and flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId()==-6;
  
     return flag_Top != flag_AntiTop;
 }
@@ -773,14 +774,16 @@ bool JetVarProcessor::tcqmatch() {
     if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0)))->pdgId()==6;
     // match 1 c quark to W+
     bool flag_Topc = CQuarksFromWPlus.size() == 1;
-    if (flag_Topc && flag_Top) flag_Top = flag_Top and flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId()==6;
+    // also check if c quark comes from top
+    flag_Top = flag_Top and flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId()==6;
  
    // match 1 LF quark to W-
     bool flag_AntiTop = LightQuarksFromWMinus.size() == 1;
     if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0)))->pdgId()==-6;
     // match 1 c quark to W-
     bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
-    if (flag_AntiTopc && flag_AntiTop) flag_AntiTop = flag_AntiTop and flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId()==-6;
+    // also check if c quark comes from antitop
+    flag_AntiTop = flag_AntiTop and flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId()==-6;
  
     return flag_Top != flag_AntiTop;
 }
@@ -798,10 +801,12 @@ bool JetVarProcessor::tbqmatch() {
 bool JetVarProcessor::tbcmatch() {
     // match 1 c quark to W+ and check if b from top is found
     bool flag_Top = CQuarksFromWPlus.size() == 1 and BQuarksFromTop.size() == 1;
+    // also check if c quark comes from top
     if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId()==6;
 
    // match 1 c quark to W- and check if b from top is found
     bool flag_AntiTop = CQuarksFromWMinus.size() == 1 and BQuarksFromAntiTop.size() == 1;
+    // also check if c quark comes from antitop
     if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId()==-6;
  
     return flag_Top != flag_AntiTop;
