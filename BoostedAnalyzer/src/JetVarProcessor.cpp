@@ -743,7 +743,8 @@ bool JetVarProcessor::tbcqmatch() {
     // match 1 c quark to W+
     bool flag_Topc = CQuarksFromWPlus.size() == 1;
     // also check if c quark comes from top
-    flag_Top = flag_Top and flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId()==6;
+    if (flag_Topc) flag_Topc = flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId()==6;
+    flag_Top = flag_Top and flag_Topc;
 
    // match 1 LF to W- and check if b from antitop is found
     bool flag_AntiTop = LightQuarksFromWMinus.size() == 1 and BQuarksFromAntiTop.size() == 1;
@@ -751,8 +752,9 @@ bool JetVarProcessor::tbcqmatch() {
     // match 1 c quark to W-
     bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
     // also check if c quark comes from antitop
-    flag_AntiTop = flag_AntiTop and flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId()==-6;
- 
+    if (flag_AntiTopc) flag_AntiTop = flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId()==6;
+    flag_AntiTop = flag_AntiTop and flag_AntiTopc;
+
     return flag_Top != flag_AntiTop;
 }
 bool JetVarProcessor::tqqmatch() {
@@ -775,7 +777,8 @@ bool JetVarProcessor::tcqmatch() {
     // match 1 c quark to W+
     bool flag_Topc = CQuarksFromWPlus.size() == 1;
     // also check if c quark comes from top
-    flag_Top = flag_Top and flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId()==6;
+    if (flag_Topc) flag_Topc = flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId()==6;
+    flag_Top = flag_Top and flag_Topc;
  
    // match 1 LF quark to W-
     bool flag_AntiTop = LightQuarksFromWMinus.size() == 1;
@@ -783,7 +786,8 @@ bool JetVarProcessor::tcqmatch() {
     // match 1 c quark to W-
     bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
     // also check if c quark comes from antitop
-    flag_AntiTop = flag_AntiTop and flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId()==-6;
+    if (flag_AntiTopc) flag_AntiTop = flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId()==6;
+    flag_AntiTop = flag_AntiTop and flag_AntiTopc;
  
     return flag_Top != flag_AntiTop;
 }
