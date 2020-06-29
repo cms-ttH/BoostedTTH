@@ -585,41 +585,56 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             // std::cout << "iscmatch: " << iscmatch() << std::endl;
             // std::cout << "isccmatch: " << isccmatch() << std::endl;
 
-            vars.FillVars("AK15Jet_tbqqmatch", i, tbqqmatch());
-            vars.FillVars("AK15Jet_tbcqmatch", i, tbcqmatch());
-            vars.FillVars("AK15Jet_tqqmatch", i, tqqmatch());
-            vars.FillVars("AK15Jet_tcqmatch", i, tcqmatch());
-            vars.FillVars("AK15Jet_tbqmatch", i, tbqmatch());
-            vars.FillVars("AK15Jet_tbcmatch", i, tbcmatch());
-            vars.FillVars("AK15Jet_wqqmatch", i, wqqmatch());
-            vars.FillVars("AK15Jet_wcqmatch", i, wcqmatch());
-            vars.FillVars("AK15Jet_zbbmatch", i, zbbmatch());
-            vars.FillVars("AK15Jet_zccmatch", i, zccmatch());
-            vars.FillVars("AK15Jet_zqqmatch", i, zqqmatch());
-            vars.FillVars("AK15Jet_isbmatch", i, isbmatch());
-            vars.FillVars("AK15Jet_isbbmatch", i, isbbmatch());
-            vars.FillVars("AK15Jet_iscmatch", i, iscmatch());
-            vars.FillVars("AK15Jet_isccmatch", i, isccmatch());
+            bool tbqqmatch_ = tbqqmatch();
+            bool tbcqmatch_ = tbcqmatch();
+            bool tqqmatch_  = tqqmatch();
+            bool tcqmatch_  = tcqmatch();
+            bool tbqmatch_  = tbqmatch();
+            bool tbcmatch_  = tbcmatch();
+            bool wqqmatch_  = wqqmatch();
+            bool wcqmatch_  = wcqmatch();
+            bool zbbmatch_  = zbbmatch();
+            bool zccmatch_  = zccmatch();
+            bool zqqmatch_  = zqqmatch();
+            bool isbmatch_  = isbmatch();
+            bool isbbmatch_ = isbbmatch();
+            bool iscmatch_  = iscmatch();
+            bool isccmatch_ = isccmatch();
+
+            vars.FillVars("AK15Jet_tbqqmatch", i, tbqqmatch_);
+            vars.FillVars("AK15Jet_tbcqmatch", i, tbcqmatch_);
+            vars.FillVars("AK15Jet_tqqmatch", i, tqqmatch_);
+            vars.FillVars("AK15Jet_tcqmatch", i, tcqmatch_);
+            vars.FillVars("AK15Jet_tbqmatch", i, tbqmatch_);
+            vars.FillVars("AK15Jet_tbcmatch", i, tbcmatch_);
+            vars.FillVars("AK15Jet_wqqmatch", i, wqqmatch_);
+            vars.FillVars("AK15Jet_wcqmatch", i, wcqmatch_);
+            vars.FillVars("AK15Jet_zbbmatch", i, zbbmatch_);
+            vars.FillVars("AK15Jet_zccmatch", i, zccmatch_);
+            vars.FillVars("AK15Jet_zqqmatch", i, zqqmatch_);
+            vars.FillVars("AK15Jet_isbmatch", i, isbmatch_);
+            vars.FillVars("AK15Jet_isbbmatch", i, isbbmatch_);
+            vars.FillVars("AK15Jet_iscmatch", i, iscmatch_);
+            vars.FillVars("AK15Jet_isccmatch", i, isccmatch_);
 
             // gentypes according to  https://github.com/mcremone/decaf/blob/master/analysis/processors/darkhiggs.py#L1310-L1413
             // bool flag_xbb =
-            bool flag_tbcq = tbcqmatch();
-            bool flag_tbqq = !tbcqmatch() and tbqqmatch();
-            bool flag_zcc  = !tbcqmatch() and !tbqqmatch() and zccmatch();
-            bool flag_wcq  = !tbcqmatch() and !tbqqmatch() and !zccmatch() and (tcqmatch() or wcqmatch());
-            bool flag_vqq  = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and (wqqmatch() or zqqmatch() or tqqmatch());
-            bool flag_bb =
-                !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and isbbmatch();
-            bool flag_bc = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and
-                           !isbbmatch() and (tbcmatch() or (isbmatch() and iscmatch()));
-            bool flag_b = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and
-                          !isbbmatch() and !(tbcmatch() or (isbmatch() and iscmatch())) and (tbqmatch() or isbmatch());
-            bool flag_cc = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and
-                           !isbbmatch() and !(tbcmatch() or (isbmatch() and iscmatch())) and !(tbqmatch() or isbmatch()) and isccmatch();
-            bool flag_c = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and
-                          !isbbmatch() and !(tbcmatch() or (isbmatch() and iscmatch())) and !(tbqmatch() or isbmatch()) and !isccmatch() and iscmatch();
-            bool flag_other = !tbcqmatch() and !tbqqmatch() and !zccmatch() and !(tcqmatch() or wcqmatch()) and !(wqqmatch() or zqqmatch() or tqqmatch()) and
-                              !isbbmatch() and !(tbcmatch() or (isbmatch() and iscmatch())) and !(tbqmatch() or isbmatch()) and !isccmatch() and !iscmatch();
+            bool flag_tbcq = tbcqmatch_;
+            bool flag_tbqq = !tbcqmatch_ and tbqqmatch_;
+            bool flag_zcc  = !tbcqmatch_ and !tbqqmatch_ and zccmatch_;
+            bool flag_wcq  = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and (tcqmatch_ or wcqmatch_);
+            bool flag_vqq  = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and (wqqmatch_ or zqqmatch_ or tqqmatch_);
+            bool flag_bb   = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and isbbmatch_;
+            bool flag_bc   = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                           !isbbmatch_ and (tbcmatch_ or (isbmatch_ and iscmatch_));
+            bool flag_b = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                          !isbbmatch_ and !(tbcmatch_ or (isbmatch_ and iscmatch_)) and (tbqmatch_ or isbmatch_);
+            bool flag_cc = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                           !isbbmatch_ and !(tbcmatch_ or (isbmatch_ and iscmatch_)) and !(tbqmatch_ or isbmatch_) and isccmatch_;
+            bool flag_c = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                          !isbbmatch_ and !(tbcmatch_ or (isbmatch_ and iscmatch_)) and !(tbqmatch_ or isbmatch_) and !isccmatch_ and iscmatch_;
+            bool flag_other = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                              !isbbmatch_ and !(tbcmatch_ or (isbmatch_ and iscmatch_)) and !(tbqmatch_ or isbmatch_) and !isccmatch_ and !iscmatch_;
 
             // vars.FillVars("AK15Jet_match_xbb" , i, flag_xbb);
             vars.FillVars("AK15Jet_match_tbcq", i, flag_tbcq);
