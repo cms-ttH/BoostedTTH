@@ -732,7 +732,7 @@ bool JetVarProcessor::tbcqmatch()
     // match 1 c quark to W-
     bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
     // also check if c quark comes from antitop
-    if (flag_AntiTopc) flag_AntiTop = flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId() == 6;
+    if (flag_AntiTopc) flag_AntiTopc = flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId() == -6;
     flag_AntiTop = flag_AntiTop and flag_AntiTopc;
 
     return flag_Top != flag_AntiTop;
@@ -772,7 +772,7 @@ bool JetVarProcessor::tcqmatch()
     // match 1 c quark to W-
     bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
     // also check if c quark comes from antitop
-    if (flag_AntiTopc) flag_AntiTop = flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId() == 6;
+    if (flag_AntiTopc) flag_AntiTopc = flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId() == -6;
     flag_AntiTop = flag_AntiTop and flag_AntiTopc;
 
     return flag_Top != flag_AntiTop;
