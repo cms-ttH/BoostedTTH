@@ -151,6 +151,10 @@ void MCMatchVarProcessor::Init(const InputCollections& input, VariableContainer&
     //     vars.InitVar("GenForwardQuark_Phi", -9.);
     //     vars.InitVar("GenForwardQuark_E", -9.);
     //     vars.InitVar("GenForwardQuark_PDGID", -999);
+    
+    // flags to identify V+jets samples as V + heavy flavor or V + light flavor
+    vars.InitVar("isHF", -1, "I");
+    vars.InitVar("isLF", -1, "I");
 
     initialized = true;
 }
@@ -472,4 +476,13 @@ void MCMatchVarProcessor::Process(const InputCollections& input, VariableContain
     //         vars.FillVar("GenForwardQuark_E", forward_quark.energy());
     //         vars.FillVar("GenForwardQuark_PDGID", forward_quark.pdgId());
     //     }
+    
+    // flags to identify V+jets samples as V + heavy flavor or V + light flavor
+    if (input.genDarkMatterEvt.IsFilled()) {
+        bool isHF_ = (input.genDarkMatterEvt.ReturnBQuarks().size() > 0) || (input.genDarkMatterEvt.ReturnCQuarks().size() > 0);
+        int isHF = isHF_;
+        int isLF = !isHF;
+        vars.FillVar("isHF", isHF);
+        vars.FillVar("isLF", isLF);
+    }
 }
