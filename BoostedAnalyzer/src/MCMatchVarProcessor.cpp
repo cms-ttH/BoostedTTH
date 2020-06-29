@@ -134,23 +134,23 @@ void MCMatchVarProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("GenTopHad_B_Hadron_E", -9., "N_GenTopHad");
 
     // for THW
-    vars.InitVar("GenW_NotFromTop_Pt", -9.);
-    vars.InitVar("GenW_NotFromTop_Eta", -9.);
-    vars.InitVar("GenW_NotFromTop_Phi", -9.);
-    vars.InitVar("GenW_NotFromTop_E", -9.);
-    vars.InitVar("N_GenW_NotFromTop_DecProds", -1, "I");
-    vars.InitVars("GenW_NotFromTop_DecProd_Pt", -9., "N_GenW_NotFromTop_DecProds");
-    vars.InitVars("GenW_NotFromTop_DecProd_Eta", -9., "N_GenW_NotFromTop_DecProds");
-    vars.InitVars("GenW_NotFromTop_DecProd_Phi", -9., "N_GenW_NotFromTop_DecProds");
-    vars.InitVars("GenW_NotFromTop_DecProd_E", -9., "N_GenW_NotFromTop_DecProds");
-    vars.InitVars("GenW_NotFromTop_DecProd_PDGID", -999, "N_GenW_NotFromTop_DecProds");
+    //     vars.InitVar("GenW_NotFromTop_Pt", -9.);
+    //     vars.InitVar("GenW_NotFromTop_Eta", -9.);
+    //     vars.InitVar("GenW_NotFromTop_Phi", -9.);
+    //     vars.InitVar("GenW_NotFromTop_E", -9.);
+    //     vars.InitVar("N_GenW_NotFromTop_DecProds", -1, "I");
+    //     vars.InitVars("GenW_NotFromTop_DecProd_Pt", -9., "N_GenW_NotFromTop_DecProds");
+    //     vars.InitVars("GenW_NotFromTop_DecProd_Eta", -9., "N_GenW_NotFromTop_DecProds");
+    //     vars.InitVars("GenW_NotFromTop_DecProd_Phi", -9., "N_GenW_NotFromTop_DecProds");
+    //     vars.InitVars("GenW_NotFromTop_DecProd_E", -9., "N_GenW_NotFromTop_DecProds");
+    //     vars.InitVars("GenW_NotFromTop_DecProd_PDGID", -999, "N_GenW_NotFromTop_DecProds");
 
     // for THQ
-    vars.InitVar("GenForwardQuark_Pt", -9.);
-    vars.InitVar("GenForwardQuark_Eta", -9.);
-    vars.InitVar("GenForwardQuark_Phi", -9.);
-    vars.InitVar("GenForwardQuark_E", -9.);
-    vars.InitVar("GenForwardQuark_PDGID", -999);
+    //     vars.InitVar("GenForwardQuark_Pt", -9.);
+    //     vars.InitVar("GenForwardQuark_Eta", -9.);
+    //     vars.InitVar("GenForwardQuark_Phi", -9.);
+    //     vars.InitVar("GenForwardQuark_E", -9.);
+    //     vars.InitVar("GenForwardQuark_PDGID", -999);
 
     initialized = true;
 }
@@ -449,27 +449,27 @@ void MCMatchVarProcessor::Process(const InputCollections& input, VariableContain
     }
 
     // for THW
-    if (w_not_from_top.pt() > 0.) {
-        vars.FillVar("GenW_NotFromTop_Pt", w_not_from_top.pt());
-        vars.FillVar("GenW_NotFromTop_Eta", w_not_from_top.eta());
-        vars.FillVar("GenW_NotFromTop_Phi", w_not_from_top.phi());
-        vars.FillVar("GenW_NotFromTop_E", w_not_from_top.energy());
-    }
-    vars.FillVar("N_GenW_NotFromTop_DecProds", w_not_from_top_decay_products.size());
-    for (size_t i = 0; i < w_not_from_top_decay_products.size(); i++) {
-        vars.FillVars("GenW_NotFromTop_DecProd_Pt", i, w_not_from_top_decay_products.at(i).pt());
-        vars.FillVars("GenW_NotFromTop_DecProd_Eta", i, w_not_from_top_decay_products.at(i).eta());
-        vars.FillVars("GenW_NotFromTop_DecProd_Phi", i, w_not_from_top_decay_products.at(i).phi());
-        vars.FillVars("GenW_NotFromTop_DecProd_E", i, w_not_from_top_decay_products.at(i).energy());
-        vars.FillVars("GenW_NotFromTop_DecProd_PDGID", i, w_not_from_top_decay_products.at(i).pdgId());
-    }
+    //     if (w_not_from_top.pt() > 0.) {
+    //         vars.FillVar("GenW_NotFromTop_Pt", w_not_from_top.pt());
+    //         vars.FillVar("GenW_NotFromTop_Eta", w_not_from_top.eta());
+    //         vars.FillVar("GenW_NotFromTop_Phi", w_not_from_top.phi());
+    //         vars.FillVar("GenW_NotFromTop_E", w_not_from_top.energy());
+    //     }
+    //     vars.FillVar("N_GenW_NotFromTop_DecProds", w_not_from_top_decay_products.size());
+    //     for (size_t i = 0; i < w_not_from_top_decay_products.size(); i++) {
+    //         vars.FillVars("GenW_NotFromTop_DecProd_Pt", i, w_not_from_top_decay_products.at(i).pt());
+    //         vars.FillVars("GenW_NotFromTop_DecProd_Eta", i, w_not_from_top_decay_products.at(i).eta());
+    //         vars.FillVars("GenW_NotFromTop_DecProd_Phi", i, w_not_from_top_decay_products.at(i).phi());
+    //         vars.FillVars("GenW_NotFromTop_DecProd_E", i, w_not_from_top_decay_products.at(i).energy());
+    //         vars.FillVars("GenW_NotFromTop_DecProd_PDGID", i, w_not_from_top_decay_products.at(i).pdgId());
+    //     }
 
     // for THQ
-    if (forward_quark.pt() > 0.) {
-        vars.FillVar("GenForwardQuark_Pt", forward_quark.pt());
-        vars.FillVar("GenForwardQuark_Eta", forward_quark.eta());
-        vars.FillVar("GenForwardQuark_Phi", forward_quark.phi());
-        vars.FillVar("GenForwardQuark_E", forward_quark.energy());
-        vars.FillVar("GenForwardQuark_PDGID", forward_quark.pdgId());
-    }
+    //     if (forward_quark.pt() > 0.) {
+    //         vars.FillVar("GenForwardQuark_Pt", forward_quark.pt());
+    //         vars.FillVar("GenForwardQuark_Eta", forward_quark.eta());
+    //         vars.FillVar("GenForwardQuark_Phi", forward_quark.phi());
+    //         vars.FillVar("GenForwardQuark_E", forward_quark.energy());
+    //         vars.FillVar("GenForwardQuark_PDGID", forward_quark.pdgId());
+    //     }
 }
