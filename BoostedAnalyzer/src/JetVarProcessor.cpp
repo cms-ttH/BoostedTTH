@@ -195,9 +195,6 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("HT_AK4Jets_outside_AK15Jets", "N_AK15Jets");
     vars.InitVars("HT_AK4Jets_inside_AK15Jets", "N_AK15Jets");
 
-    vars.InitVars("AK15Jet_TopMatched", "N_AK15Jets");
-    vars.InitVars("Min_DeltaR_AK15Jet_GenTopHad", "N_AK15Jets");
-
     vars.InitVar("N_HEM_AK15Jets", "I");
 
     vars.InitVars("AK15Jet_tbqqmatch", "N_AK15Jets");
@@ -559,26 +556,6 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("N_AK4JetsTightTagged_inside_AK15Jets", i, n_AK4JetsTightTagged_inside_AK15Jets);
 
         if (ak15jet.eta() < -1.3 && ak15jet.eta() > -3.2 && ak15jet.phi() < -0.87 && ak15jet.phi() > -1.57) N_HEM_AK15Jets += 1;
-
-        if (input.genTopEvt.IsFilled()) {
-            const auto& tophad  = input.genTopEvt.GetAllTopHads();
-            bool        matched = false;
-            float       min_dr  = 999.;
-            for (size_t j = 0; j < tophad.size(); j++) {
-                const auto& bhad   = input.genTopEvt.GetAllTopHadDecayQuarks().at(j);
-                const auto& q1     = input.genTopEvt.GetAllWQuarks().at(j);
-                const auto& q2     = input.genTopEvt.GetAllWAntiQuarks().at(j);
-                const auto  max_dr = std::max(
-                    {BoostedUtils::DeltaR(bhad.p4(), ak15jet.p4()), BoostedUtils::DeltaR(q1.p4(), ak15jet.p4()), BoostedUtils::DeltaR(q2.p4(), ak15jet.p4())});
-                min_dr = std::min(BoostedUtils::DeltaR(tophad.at(j).p4(), ak15jet.p4()), min_dr);
-                if (max_dr < 1.5) { matched = true; }
-            }
-            if (matched) { vars.FillVars("AK15Jet_TopMatched", i, 1); }
-            else {
-                vars.FillVars("AK15Jet_TopMatched", i, 0);
-            }
-            vars.FillVars("Min_DeltaR_AK15Jet_GenTopHad", i, min_dr);
-        }
 
         if (input.genDarkMatterEvt.IsFilled()) {
             LightQuarksFromWPlus  = input.genDarkMatterEvt.ReturnLightQuarksFromWPlus();
