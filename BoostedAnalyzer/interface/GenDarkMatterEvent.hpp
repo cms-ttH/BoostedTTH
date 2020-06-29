@@ -50,6 +50,8 @@ class GenDarkMatterEvent {
     std::vector< reco::GenParticle > ReturnCQuarksFromWMinus() const;
     std::vector< reco::GenParticle > ReturnBQuarksFromTop() const;
     std::vector< reco::GenParticle > ReturnBQuarksFromAntiTop() const;
+    std::vector< reco::GenParticle > ReturnBQuarks() const;
+    std::vector< reco::GenParticle > ReturnCQuarks() const;
 
    private:
     bool hasDarkMatter = false;

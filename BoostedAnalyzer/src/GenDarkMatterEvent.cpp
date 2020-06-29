@@ -327,3 +327,5 @@ std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnCQuarksFromWPlus() co
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnBQuarksFromAntiTop() const { return BQuarksFromAntiTop; }
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnLightQuarksFromWMinus() const { return LightQuarksFromWMinus; }
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnCQuarksFromWMinus() const { return CQuarksFromWMinus; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnBQuarks() const { return BQuarks; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnCQuarks() const { return CQuarks; }

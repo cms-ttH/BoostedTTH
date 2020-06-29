@@ -564,6 +564,8 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             LightQuarksFromWMinus = input.genDarkMatterEvt.ReturnLightQuarksFromWMinus();
             CQuarksFromWMinus     = input.genDarkMatterEvt.ReturnCQuarksFromWMinus();
             BQuarksFromAntiTop    = input.genDarkMatterEvt.ReturnBQuarksFromAntiTop();
+            BQuarks               = input.genDarkMatterEvt.ReturnBQuarks();
+            CQuarks               = input.genDarkMatterEvt.ReturnCQuarks();
 
             RemoveParticlesOutsideOfJet(ak15jet);
 
