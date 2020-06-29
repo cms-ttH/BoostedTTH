@@ -594,39 +594,39 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             
             RemoveParticlesOutsideOfJet(ak15jet);
             
-            std::cout << "tbqq match: " << tbqqmatch() << std::endl;
-            std::cout << "tbcqmatch: " << tbcqmatch() << std::endl;
-            std::cout << "tqqmatch: " << tqqmatch() << std::endl;
-            std::cout << "tqqmatch: " << tqqmatch() << std::endl;
-            std::cout << "tcqmatch: " << tcqmatch() << std::endl;
-            std::cout << "tbqmatch: " << tbqmatch() << std::endl;
-            std::cout << "tbcmatch: " << tbcmatch() << std::endl;
-            std::cout << "wqqmatch: " << wqqmatch() << std::endl;
-            std::cout << "wcqmatch: " << wcqmatch() << std::endl;
-            std::cout << "zbbmatch: " << zbbmatch() << std::endl;
-            std::cout << "zccmatch: " << zccmatch() << std::endl;
-            std::cout << "zqqmatch: " << zqqmatch() << std::endl;
-            std::cout << "isbmatch: " << isbmatch() << std::endl;
-            std::cout << "isbbmatch: " << isbbmatch() << std::endl;
-            std::cout << "iscmatch: " << iscmatch() << std::endl;
-            std::cout << "isccmatch: " << isccmatch() << std::endl;
+            // std::cout << "tbqq match: " << tbqqmatch() << std::endl;
+            // std::cout << "tbcqmatch: " << tbcqmatch() << std::endl;
+            // std::cout << "tqqmatch: " << tqqmatch() << std::endl;
+            // std::cout << "tqqmatch: " << tqqmatch() << std::endl;
+            // std::cout << "tcqmatch: " << tcqmatch() << std::endl;
+            // std::cout << "tbqmatch: " << tbqmatch() << std::endl;
+            // std::cout << "tbcmatch: " << tbcmatch() << std::endl;
+            // std::cout << "wqqmatch: " << wqqmatch() << std::endl;
+            // std::cout << "wcqmatch: " << wcqmatch() << std::endl;
+            // std::cout << "zbbmatch: " << zbbmatch() << std::endl;
+            // std::cout << "zccmatch: " << zccmatch() << std::endl;
+            // std::cout << "zqqmatch: " << zqqmatch() << std::endl;
+            // std::cout << "isbmatch: " << isbmatch() << std::endl;
+            // std::cout << "isbbmatch: " << isbbmatch() << std::endl;
+            // std::cout << "iscmatch: " << iscmatch() << std::endl;
+            // std::cout << "isccmatch: " << isccmatch() << std::endl;
 
 
-            // vars.FillVars("AK15Jet_tbqqmatch", i, tbqqmatch());
-            // vars.FillVars("AK15Jet_tbcqmatch", i,  tbcqmatch());
-            // vars.FillVars("AK15Jet_tqqmatch", i,  tqqmatch());
-            // vars.FillVars("AK15Jet_tcqmatch", i,  tcqmatch());
-            // vars.FillVars("AK15Jet_tbqmatch", i,  tbqmatch());
-            // vars.FillVars("AK15Jet_tbcmatch", i,  tbcmatch());
-            // vars.FillVars("AK15Jet_wqqmatch", i,  wqqmatch());
-            // vars.FillVars("AK15Jet_wcqmatch", i,  wcqmatch());
-            // vars.FillVars("AK15Jet_zbbmatch", i,  zbbmatch());
-            // vars.FillVars("AK15Jet_zccmatch", i,  zccmatch());
-            // vars.FillVars("AK15Jet_zqqmatch", i,  zqqmatch());
-            // vars.FillVars("AK15Jet_isbmatch", i,  isbmatch());
-            // vars.FillVars("AK15Jet_isbbmatch", i,  isbbmatch());
-            // vars.FillVars("AK15Jet_iscmatch", i,  iscmatch());
-            // vars.FillVars("AK15Jet_isccmatch", i,  isccmatch());
+            vars.FillVars("AK15Jet_tbqqmatch", i, tbqqmatch());
+            vars.FillVars("AK15Jet_tbcqmatch", i,  tbcqmatch());
+            vars.FillVars("AK15Jet_tqqmatch", i,  tqqmatch());
+            vars.FillVars("AK15Jet_tcqmatch", i,  tcqmatch());
+            vars.FillVars("AK15Jet_tbqmatch", i,  tbqmatch());
+            vars.FillVars("AK15Jet_tbcmatch", i,  tbcmatch());
+            vars.FillVars("AK15Jet_wqqmatch", i,  wqqmatch());
+            vars.FillVars("AK15Jet_wcqmatch", i,  wcqmatch());
+            vars.FillVars("AK15Jet_zbbmatch", i,  zbbmatch());
+            vars.FillVars("AK15Jet_zccmatch", i,  zccmatch());
+            vars.FillVars("AK15Jet_zqqmatch", i,  zqqmatch());
+            vars.FillVars("AK15Jet_isbmatch", i,  isbmatch());
+            vars.FillVars("AK15Jet_isbbmatch", i,  isbbmatch());
+            vars.FillVars("AK15Jet_iscmatch", i,  iscmatch());
+            vars.FillVars("AK15Jet_isccmatch", i,  isccmatch());
 
             // gentypes according to  https://github.com/mcremone/decaf/blob/master/analysis/processors/darkhiggs.py#L1310-L1413
             // bool flag_xbb = 
@@ -851,23 +851,16 @@ bool JetVarProcessor::zqqmatch() { // not needed ?
 
 const reco::Candidate* JetVarProcessor::FindMother(reco::GenParticle particle) {
     const reco::Candidate* mom = particle.mother();
-    while (mom->pdgId() == particle.pdgId() and particle.numberOfMothers() != 0) {
-        mom = particle.mother();
+    while (mom->pdgId() == particle.pdgId() and mom->numberOfMothers() != 0) {
+        mom = mom->mother();
     }
     return mom;
 }
 
 const reco::Candidate* JetVarProcessor::FindMother(auto particle) {
-    // std::cout << "------------- Calling FindMother ----------" << std::endl; 
-    // std::cout << "Checking particle " << particle->pdgId() << std::endl; 
     const reco::Candidate* mom = particle->mother();
-    // std::cout << "Checking mother " << mom->pdgId() << std::endl; 
-
     while (mom->pdgId() == particle->pdgId() and mom->numberOfMothers() != 0) {
         mom = mom->mother();
-        // std::cout << "Checking particle " << particle->pdgId() << std::endl; 
-        // std::cout << "Checking mother " << mom->pdgId() << std::endl; 
-        // std::cout << "# mothers:  " << particle->numberOfMothers() << std::endl; 
     }
     return mom;
 }
