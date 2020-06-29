@@ -54,6 +54,46 @@ void GenDarkMatterEvent::Fill()
             Leptons.push_back(genparticle);
         }
         if (abs(genparticle.pdgId()) == 22 and genparticle.isPromptFinalState()) { Photons.push_back(genparticle); }
+
+        // fill containers for fatjet gen matching regarding in-site DeepAK15 calibration
+        // light flavor quarks with W+ as mother
+        if (abs(genparticle.pdgId()) < 4 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isFirstCopy() and
+            genparticle.mother(0)->pdgId() == 24) {
+            LightQuarksFromWPlus.push_back(genparticle);
+        }
+        // light flavor quarks with W- as mother
+        if (abs(genparticle.pdgId()) < 4 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isFirstCopy() and
+            genparticle.mother(0)->pdgId() == -24) {
+            LightQuarksFromWMinus.push_back(genparticle);
+        }
+        // c flavor quarks with W+ as mother
+        if (abs(genparticle.pdgId()) == 4 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isFirstCopy() and
+            genparticle.mother(0)->pdgId() == 24) {
+            CQuarksFromWPlus.push_back(genparticle);
+        }
+        // light flavor quarks with W- as mother
+        if (abs(genparticle.pdgId()) == 4 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isFirstCopy() and
+            genparticle.mother(0)->pdgId() == -24) {
+            CQuarksFromWMinus.push_back(genparticle);
+        }
+        // b quarks with top quark as mother
+        if (abs(genparticle.pdgId()) == 5 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isFirstCopy() and
+            genparticle.mother(0)->pdgId() == 6) {
+            BQuarksFromTop.push_back(genparticle);
+        }
+        // b quarks with top antiquark as mother
+        if (abs(genparticle.pdgId()) == 5 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isFirstCopy() and
+            genparticle.mother(0)->pdgId() == -6) {
+            BQuarksFromAntiTop.push_back(genparticle);
+        }
+        // b quarks in general
+        if (abs(genparticle.pdgId()) == 5 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
+            BQuarks.push_back(genparticle);
+        }
+        // c quarks in general
+        if (abs(genparticle.pdgId()) == 4 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
+            CQuarks.push_back(genparticle);
+        }
     }
     // find all final state hadrons in the event from the the packedGenParticles collection
     for (const pat::PackedGenParticle& genparticle : packedGenParticles) {
@@ -280,3 +320,12 @@ math::XYZTLorentzVector GenDarkMatterEvent::ReturnPhoton() const
     if (not PhotonisFilled) { std::cerr << "Attention: Photon is not filled!"; }
     return Photon;
 }
+
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnBQuarksFromTop() const { return BQuarksFromTop; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnLightQuarksFromWPlus() const { return LightQuarksFromWPlus; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnCQuarksFromWPlus() const { return CQuarksFromWPlus; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnBQuarksFromAntiTop() const { return BQuarksFromAntiTop; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnLightQuarksFromWMinus() const { return LightQuarksFromWMinus; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnCQuarksFromWMinus() const { return CQuarksFromWMinus; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnBQuarks() const { return BQuarks; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnCQuarks() const { return CQuarks; }

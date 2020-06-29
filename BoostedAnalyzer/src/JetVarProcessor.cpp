@@ -195,10 +195,37 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("HT_AK4Jets_outside_AK15Jets", "N_AK15Jets");
     vars.InitVars("HT_AK4Jets_inside_AK15Jets", "N_AK15Jets");
 
-    vars.InitVars("AK15Jet_TopMatched", "N_AK15Jets");
-    vars.InitVars("Min_DeltaR_AK15Jet_GenTopHad", "N_AK15Jets");
-
     vars.InitVar("N_HEM_AK15Jets", "I");
+
+    vars.InitVars("AK15Jet_tbqqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tbcqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tqqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tcqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tbqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_tbcmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_wqqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_wcqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_zbbmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_zccmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_zqqmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_isbmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_isbbmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_iscmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_isccmatch", "N_AK15Jets");
+
+    // gentypes according to https://github.com/mcremone/decaf/blob/master/analysis/processors/darkhiggs.py#L1310-L1413
+    // vars.InitVars("AK15Jet_match_xbb", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_tbcq", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_tbqq", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_zcc", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_wcq", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_vqq", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_bb", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_bc", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_b", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_cc", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_c", "N_AK15Jets");
+    vars.InitVars("AK15Jet_match_other", "N_AK15Jets");
 
     initialized = true;
 }
@@ -530,27 +557,293 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
 
         if (ak15jet.eta() < -1.3 && ak15jet.eta() > -3.2 && ak15jet.phi() < -0.87 && ak15jet.phi() > -1.57) N_HEM_AK15Jets += 1;
 
-        if (input.genTopEvt.IsFilled()) {
-            const auto& tophad  = input.genTopEvt.GetAllTopHads();
-            bool        matched = false;
-            float       min_dr  = 999.;
-            for (size_t j = 0; j < tophad.size(); j++) {
-                const auto& bhad   = input.genTopEvt.GetAllTopHadDecayQuarks().at(j);
-                const auto& q1     = input.genTopEvt.GetAllWQuarks().at(j);
-                const auto& q2     = input.genTopEvt.GetAllWAntiQuarks().at(j);
-                const auto  max_dr = std::max(
-                    {BoostedUtils::DeltaR(bhad.p4(), ak15jet.p4()), BoostedUtils::DeltaR(q1.p4(), ak15jet.p4()), BoostedUtils::DeltaR(q2.p4(), ak15jet.p4())});
-                min_dr = std::min(BoostedUtils::DeltaR(tophad.at(j).p4(), ak15jet.p4()), min_dr);
-                if (max_dr < 1.5) { matched = true; }
-            }
-            if (matched) { vars.FillVars("AK15Jet_TopMatched", i, 1); }
-            else {
-                vars.FillVars("AK15Jet_TopMatched", i, 0);
-            }
-            vars.FillVars("Min_DeltaR_AK15Jet_GenTopHad", i, min_dr);
+        if (input.genDarkMatterEvt.IsFilled()) {
+            LightQuarksFromWPlus  = input.genDarkMatterEvt.ReturnLightQuarksFromWPlus();
+            CQuarksFromWPlus      = input.genDarkMatterEvt.ReturnCQuarksFromWPlus();
+            BQuarksFromTop        = input.genDarkMatterEvt.ReturnBQuarksFromTop();
+            LightQuarksFromWMinus = input.genDarkMatterEvt.ReturnLightQuarksFromWMinus();
+            CQuarksFromWMinus     = input.genDarkMatterEvt.ReturnCQuarksFromWMinus();
+            BQuarksFromAntiTop    = input.genDarkMatterEvt.ReturnBQuarksFromAntiTop();
+            BQuarks               = input.genDarkMatterEvt.ReturnBQuarks();
+            CQuarks               = input.genDarkMatterEvt.ReturnCQuarks();
+
+            RemoveParticlesOutsideOfJet(ak15jet);
+
+            // std::cout << "tbqq match: " << tbqqmatch() << std::endl;
+            // std::cout << "tbcqmatch: " << tbcqmatch() << std::endl;
+            // std::cout << "tqqmatch: " << tqqmatch() << std::endl;
+            // std::cout << "tcqmatch: " << tcqmatch() << std::endl;
+            // std::cout << "tbqmatch: " << tbqmatch() << std::endl;
+            // std::cout << "tbcmatch: " << tbcmatch() << std::endl;
+            // std::cout << "wqqmatch: " << wqqmatch() << std::endl;
+            // std::cout << "wcqmatch: " << wcqmatch() << std::endl;
+            // std::cout << "zbbmatch: " << zbbmatch() << std::endl;
+            // std::cout << "zccmatch: " << zccmatch() << std::endl;
+            // std::cout << "zqqmatch: " << zqqmatch() << std::endl;
+            // std::cout << "isbmatch: " << isbmatch() << std::endl;
+            // std::cout << "isbbmatch: " << isbbmatch() << std::endl;
+            // std::cout << "iscmatch: " << iscmatch() << std::endl;
+            // std::cout << "isccmatch: " << isccmatch() << std::endl;
+
+            bool tbqqmatch_ = tbqqmatch();
+            bool tbcqmatch_ = tbcqmatch();
+            bool tqqmatch_  = tqqmatch();
+            bool tcqmatch_  = tcqmatch();
+            bool tbqmatch_  = tbqmatch();
+            bool tbcmatch_  = tbcmatch();
+            bool wqqmatch_  = wqqmatch();
+            bool wcqmatch_  = wcqmatch();
+            bool zbbmatch_  = zbbmatch();
+            bool zccmatch_  = zccmatch();
+            bool zqqmatch_  = zqqmatch();
+            bool isbmatch_  = isbmatch();
+            bool isbbmatch_ = isbbmatch();
+            bool iscmatch_  = iscmatch();
+            bool isccmatch_ = isccmatch();
+
+            vars.FillVars("AK15Jet_tbqqmatch", i, tbqqmatch_);
+            vars.FillVars("AK15Jet_tbcqmatch", i, tbcqmatch_);
+            vars.FillVars("AK15Jet_tqqmatch", i, tqqmatch_);
+            vars.FillVars("AK15Jet_tcqmatch", i, tcqmatch_);
+            vars.FillVars("AK15Jet_tbqmatch", i, tbqmatch_);
+            vars.FillVars("AK15Jet_tbcmatch", i, tbcmatch_);
+            vars.FillVars("AK15Jet_wqqmatch", i, wqqmatch_);
+            vars.FillVars("AK15Jet_wcqmatch", i, wcqmatch_);
+            vars.FillVars("AK15Jet_zbbmatch", i, zbbmatch_);
+            vars.FillVars("AK15Jet_zccmatch", i, zccmatch_);
+            vars.FillVars("AK15Jet_zqqmatch", i, zqqmatch_);
+            vars.FillVars("AK15Jet_isbmatch", i, isbmatch_);
+            vars.FillVars("AK15Jet_isbbmatch", i, isbbmatch_);
+            vars.FillVars("AK15Jet_iscmatch", i, iscmatch_);
+            vars.FillVars("AK15Jet_isccmatch", i, isccmatch_);
+
+            // gentypes according to  https://github.com/mcremone/decaf/blob/master/analysis/processors/darkhiggs.py#L1310-L1413
+            // bool flag_xbb =
+            bool flag_tbcq = tbcqmatch_;
+            bool flag_tbqq = !tbcqmatch_ and tbqqmatch_;
+            bool flag_zcc  = !tbcqmatch_ and !tbqqmatch_ and zccmatch_;
+            bool flag_wcq  = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and (tcqmatch_ or wcqmatch_);
+            bool flag_vqq  = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and (wqqmatch_ or zqqmatch_ or tqqmatch_);
+            bool flag_bb   = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and isbbmatch_;
+            bool flag_bc   = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                           !isbbmatch_ and (tbcmatch_ or (isbmatch_ and iscmatch_));
+            bool flag_b = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                          !isbbmatch_ and !(tbcmatch_ or (isbmatch_ and iscmatch_)) and (tbqmatch_ or isbmatch_);
+            bool flag_cc = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                           !isbbmatch_ and !(tbcmatch_ or (isbmatch_ and iscmatch_)) and !(tbqmatch_ or isbmatch_) and isccmatch_;
+            bool flag_c = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                          !isbbmatch_ and !(tbcmatch_ or (isbmatch_ and iscmatch_)) and !(tbqmatch_ or isbmatch_) and !isccmatch_ and iscmatch_;
+            bool flag_other = !tbcqmatch_ and !tbqqmatch_ and !zccmatch_ and !(tcqmatch_ or wcqmatch_) and !(wqqmatch_ or zqqmatch_ or tqqmatch_) and
+                              !isbbmatch_ and !(tbcmatch_ or (isbmatch_ and iscmatch_)) and !(tbqmatch_ or isbmatch_) and !isccmatch_ and !iscmatch_;
+
+            // vars.FillVars("AK15Jet_match_xbb" , i, flag_xbb);
+            vars.FillVars("AK15Jet_match_tbcq", i, flag_tbcq);
+            vars.FillVars("AK15Jet_match_tbqq", i, flag_tbqq);
+            vars.FillVars("AK15Jet_match_zcc", i, flag_zcc);
+            vars.FillVars("AK15Jet_match_wcq", i, flag_wcq);
+            vars.FillVars("AK15Jet_match_vqq", i, flag_vqq);
+            vars.FillVars("AK15Jet_match_bb", i, flag_bb);
+            vars.FillVars("AK15Jet_match_bc", i, flag_bc);
+            vars.FillVars("AK15Jet_match_b", i, flag_b);
+            vars.FillVars("AK15Jet_match_cc", i, flag_cc);
+            vars.FillVars("AK15Jet_match_c", i, flag_c);
+            vars.FillVars("AK15Jet_match_other", i, flag_other);
         }
     }
 
     vars.FillVar("N_AK15Jets_SoftDrop", n_AK15_SoftDrop_Jets);
     vars.FillVar("N_HEM_AK15Jets", N_HEM_AK15Jets);
+}
+
+void JetVarProcessor::RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR)
+{
+    LightQuarksFromWPlus.erase(std::remove_if(LightQuarksFromWPlus.begin(), LightQuarksFromWPlus.end(),
+                                              [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
+                               LightQuarksFromWPlus.end());
+
+    LightQuarksFromWMinus.erase(std::remove_if(LightQuarksFromWMinus.begin(), LightQuarksFromWMinus.end(),
+                                               [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
+                                LightQuarksFromWMinus.end());
+
+    CQuarksFromWPlus.erase(std::remove_if(CQuarksFromWPlus.begin(), CQuarksFromWPlus.end(),
+                                          [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
+                           CQuarksFromWPlus.end());
+
+    CQuarksFromWMinus.erase(std::remove_if(CQuarksFromWMinus.begin(), CQuarksFromWMinus.end(),
+                                           [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
+                            CQuarksFromWMinus.end());
+
+    BQuarksFromTop.erase(std::remove_if(BQuarksFromTop.begin(), BQuarksFromTop.end(),
+                                        [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
+                         BQuarksFromTop.end());
+
+    BQuarksFromAntiTop.erase(std::remove_if(BQuarksFromAntiTop.begin(), BQuarksFromAntiTop.end(),
+                                            [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
+                             BQuarksFromAntiTop.end());
+
+    BQuarks.erase(
+        std::remove_if(BQuarks.begin(), BQuarks.end(), [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
+        BQuarks.end());
+
+    CQuarks.erase(
+        std::remove_if(CQuarks.begin(), CQuarks.end(), [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
+        CQuarks.end());
+}
+
+bool JetVarProcessor::tbqqmatch()
+{
+    // match 2 LF quark to W+ and check if b from top is found
+    bool flag_Top = LightQuarksFromWPlus.size() == 2 and BQuarksFromTop.size() == 1;
+    // check if light quarks are from top
+    if (flag_Top)
+        flag_Top =
+            flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0)))->pdgId() == 6 and FindMother(FindMother(LightQuarksFromWPlus.at(1)))->pdgId() == 6;
+
+    // match 2 LF quark to W- and check if b from antitop is found
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 2 and BQuarksFromAntiTop.size() == 1;
+    // check if light quarks are from antitop
+    if (flag_AntiTop)
+        flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0)))->pdgId() == -6 and
+                       FindMother(FindMother(LightQuarksFromWMinus.at(1)))->pdgId() == -6;
+
+    return flag_Top != flag_AntiTop;
+}
+bool JetVarProcessor::tbcqmatch()
+{
+    // match 1 LF quark to W+ and check if b from top is found
+    bool flag_Top = LightQuarksFromWPlus.size() == 1 and BQuarksFromTop.size() == 1;
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0)))->pdgId() == 6;
+    // match 1 c quark to W+
+    bool flag_Topc = CQuarksFromWPlus.size() == 1;
+    // also check if c quark comes from top
+    if (flag_Topc) flag_Topc = flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId() == 6;
+    flag_Top = flag_Top and flag_Topc;
+
+    // match 1 LF to W- and check if b from antitop is found
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 1 and BQuarksFromAntiTop.size() == 1;
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0)))->pdgId() == -6;
+    // match 1 c quark to W-
+    bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
+    // also check if c quark comes from antitop
+    if (flag_AntiTopc) flag_AntiTopc = flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId() == -6;
+    flag_AntiTop = flag_AntiTop and flag_AntiTopc;
+
+    return flag_Top != flag_AntiTop;
+}
+bool JetVarProcessor::tqqmatch()
+{
+    // match 2 LF quark to W+
+    bool flag_Top = LightQuarksFromWPlus.size() == 2;
+    // check if light quarks are from top
+    if (flag_Top)
+        flag_Top =
+            flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0)))->pdgId() == 6 and FindMother(FindMother(LightQuarksFromWPlus.at(1)))->pdgId() == 6;
+
+    // match 2 LF quark to W-
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 2;
+    // check if light quarks are from antitop
+    if (flag_AntiTop)
+        flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0)))->pdgId() == -6 and
+                       FindMother(FindMother(LightQuarksFromWMinus.at(1)))->pdgId() == -6;
+
+    return flag_Top != flag_AntiTop;
+}
+bool JetVarProcessor::tcqmatch()
+{
+    // match 1 LF quark to W+
+    bool flag_Top = LightQuarksFromWPlus.size() == 1;
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0)))->pdgId() == 6;
+    // match 1 c quark to W+
+    bool flag_Topc = CQuarksFromWPlus.size() == 1;
+    // also check if c quark comes from top
+    if (flag_Topc) flag_Topc = flag_Topc and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId() == 6;
+    flag_Top = flag_Top and flag_Topc;
+
+    // match 1 LF quark to W-
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 1;
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0)))->pdgId() == -6;
+    // match 1 c quark to W-
+    bool flag_AntiTopc = CQuarksFromWMinus.size() == 1;
+    // also check if c quark comes from antitop
+    if (flag_AntiTopc) flag_AntiTopc = flag_AntiTopc and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId() == -6;
+    flag_AntiTop = flag_AntiTop and flag_AntiTopc;
+
+    return flag_Top != flag_AntiTop;
+}
+bool JetVarProcessor::tbqmatch()
+{
+    // match 1 LF to W+ and check if b from top is found
+    bool flag_Top = LightQuarksFromWPlus.size() == 1 and BQuarksFromTop.size() == 1;
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(LightQuarksFromWPlus.at(0)))->pdgId() == 6;
+
+    // match 1 LF quark to W- and check if b from top is found
+    bool flag_AntiTop = LightQuarksFromWMinus.size() == 1 and BQuarksFromAntiTop.size() == 1;
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(LightQuarksFromWMinus.at(0)))->pdgId() == -6;
+
+    return flag_Top != flag_AntiTop;
+}
+bool JetVarProcessor::tbcmatch()
+{
+    // match 1 c quark to W+ and check if b from top is found
+    bool flag_Top = CQuarksFromWPlus.size() == 1 and BQuarksFromTop.size() == 1;
+    // also check if c quark comes from top
+    if (flag_Top) flag_Top = flag_Top and FindMother(FindMother(CQuarksFromWPlus.at(0)))->pdgId() == 6;
+
+    // match 1 c quark to W- and check if b from top is found
+    bool flag_AntiTop = CQuarksFromWMinus.size() == 1 and BQuarksFromAntiTop.size() == 1;
+    // also check if c quark comes from antitop
+    if (flag_AntiTop) flag_AntiTop = flag_AntiTop and FindMother(FindMother(CQuarksFromWMinus.at(0)))->pdgId() == -6;
+
+    return flag_Top != flag_AntiTop;
+}
+
+bool JetVarProcessor::wqqmatch()
+{
+    bool flag_Wplus  = LightQuarksFromWPlus.size() == 2;
+    bool flag_Wminus = LightQuarksFromWMinus.size() == 2;
+    return flag_Wplus != flag_Wminus;
+}
+
+bool JetVarProcessor::wcqmatch()
+{
+    bool flag_WMinus = CQuarksFromWMinus.size() == 1 and LightQuarksFromWMinus.size() == 1;
+    bool flag_WPlus  = CQuarksFromWPlus.size() == 1 and LightQuarksFromWPlus.size() == 1;
+    return flag_WMinus != flag_WPlus;
+}
+
+bool JetVarProcessor::isbmatch() { return BQuarks.size() == 1; }
+
+bool JetVarProcessor::isbbmatch() { return BQuarks.size() == 2; }
+
+bool JetVarProcessor::iscmatch() { return CQuarks.size() == 1; }
+
+bool JetVarProcessor::isccmatch() { return CQuarks.size() == 2; }
+
+bool JetVarProcessor::zbbmatch()
+{  // not needed ?
+    return false;
+}
+
+bool JetVarProcessor::zccmatch()
+{  // not needed ?
+    return false;
+}
+
+bool JetVarProcessor::zqqmatch()
+{  // not needed ?
+    return false;
+}
+
+const reco::Candidate* JetVarProcessor::FindMother(reco::GenParticle particle)
+{
+    const reco::Candidate* mom = particle.mother();
+    while (mom->pdgId() == particle.pdgId() and mom->numberOfMothers() != 0) { mom = mom->mother(); }
+    return mom;
+}
+
+const reco::Candidate* JetVarProcessor::FindMother(auto particle)
+{
+    const reco::Candidate* mom = particle->mother();
+    while (mom->pdgId() == particle->pdgId() and mom->numberOfMothers() != 0) { mom = mom->mother(); }
+    return mom;
 }
