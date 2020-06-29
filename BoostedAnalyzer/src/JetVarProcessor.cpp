@@ -570,7 +570,6 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             // std::cout << "tbqq match: " << tbqqmatch() << std::endl;
             // std::cout << "tbcqmatch: " << tbcqmatch() << std::endl;
             // std::cout << "tqqmatch: " << tqqmatch() << std::endl;
-            // std::cout << "tqqmatch: " << tqqmatch() << std::endl;
             // std::cout << "tcqmatch: " << tcqmatch() << std::endl;
             // std::cout << "tbqmatch: " << tbqmatch() << std::endl;
             // std::cout << "tbcmatch: " << tbcmatch() << std::endl;
