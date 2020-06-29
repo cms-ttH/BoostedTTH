@@ -80,6 +80,7 @@ class GenDarkMatterEvent {
     int   n_dyn         = 1;
     int   iterations    = 5;
     
+    // containers for fatjet gen matching regarding in-situ DeepAK15 calibration
     std::vector< reco::GenParticle > LightQuarksFromWPlus;
     std::vector< reco::GenParticle > LightQuarksFromWMinus;
     std::vector< reco::GenParticle > CQuarksFromWPlus;
