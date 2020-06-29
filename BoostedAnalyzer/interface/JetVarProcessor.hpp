@@ -15,7 +15,7 @@ class JetVarProcessor : public TreeProcessor {
 
    private:
     std::string era;
-    
+
     // fat jet matching
     std::vector< reco::GenParticle > LightQuarksFromWPlus;
     std::vector< reco::GenParticle > LightQuarksFromWMinus;
@@ -25,11 +25,11 @@ class JetVarProcessor : public TreeProcessor {
     std::vector< reco::GenParticle > BQuarksFromAntiTop;
     std::vector< reco::GenParticle > BQuarks;
     std::vector< reco::GenParticle > CQuarks;
-    
-    void RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR = 1.5);
+
+    void                   RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR = 1.5);
     const reco::Candidate* FindMother(reco::GenParticle particle);
     const reco::Candidate* FindMother(auto particle);
-    
+
     bool tbqqmatch();
     bool tbcqmatch();
     bool tqqmatch();

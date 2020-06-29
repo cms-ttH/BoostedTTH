@@ -43,7 +43,7 @@ class GenDarkMatterEvent {
     math::XYZTLorentzVector ReturnZBoson() const;
     math::XYZTLorentzVector ReturnWBoson() const;
     math::XYZTLorentzVector ReturnPhoton() const;
-    
+
     std::vector< reco::GenParticle > ReturnLightQuarksFromWPlus() const;
     std::vector< reco::GenParticle > ReturnLightQuarksFromWMinus() const;
     std::vector< reco::GenParticle > ReturnCQuarksFromWPlus() const;
@@ -79,7 +79,7 @@ class GenDarkMatterEvent {
     float epsilon_0_dyn = 0.1;
     int   n_dyn         = 1;
     int   iterations    = 5;
-    
+
     // containers for fatjet gen matching regarding in-situ DeepAK15 calibration
     std::vector< reco::GenParticle > LightQuarksFromWPlus;
     std::vector< reco::GenParticle > LightQuarksFromWMinus;
