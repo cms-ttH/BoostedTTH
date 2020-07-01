@@ -47,11 +47,11 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     else if (input.systematic == Systematics::JERdown) {
         met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResDown, pat::MET::Type1);
     }
-    else if(input.systematic==Systematics::METUnclEnup) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp,pat::MET::Type1);
+    else if (input.systematic == Systematics::METUnclEnup) {
+        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp, pat::MET::Type1);
     }
-    else if(input.systematic==Systematics::METUnclEndown) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown,pat::MET::Type1);
+    else if (input.systematic == Systematics::METUnclEndown) {
+        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown, pat::MET::Type1);
     }
     else {
         met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
@@ -101,11 +101,12 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
     //                                   ? (input.selectedJetsAK15.at(0).userFloat("ak15PFJetsPuppiSoftDropMass") > minSoftDropMass)
     //                                   : true;
 
-    bool met_recoil_criterium         = (met_p4.pt() >= minRecoil) || (hadr_recoil_p4.pt() >= minRecoil);
-    bool n_ak15_jets_criterium        = (input.selectedJetsAK15.size() == 1);
-    bool leading_ak15jet_pt_criterium = (input.selectedJetsAK15.size() > 0 ? (input.selectedJetsAK15.at(0).pt() > pt_min) : false);
-    bool n_max_leptons_criterium      = (input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size()) <= 2;
-    bool hadronic_criterium           = met_recoil_criterium && n_ak15_jets_criterium && n_max_leptons_criterium && leading_ak15jet_pt_criterium;
+    bool met_recoil_criterium  = (hadr_recoil_p4.pt() >= minRecoil);
+    bool n_ak15_jets_criterium = (input.selectedJetsAK15.size() >= 1);
+    // bool leading_ak15jet_pt_criterium = (input.selectedJetsAK15.size() > 0 ? (input.selectedJetsAK15.at(0).pt() > pt_min) : false);
+    bool n_max_leptons_criterium = (input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size()) <= 2;
+    bool n_max_photons_criterium = (input.selectedPhotonsLoose.size() <= 1);
+    bool hadronic_criterium      = met_recoil_criterium && n_ak15_jets_criterium && n_max_leptons_criterium && n_max_photons_criterium;
 
     // event is compatible with hadronic monotop selection
     if (hadronic_criterium) {
@@ -132,11 +133,13 @@ bool MonoTopSelection::IsSelected(const InputCollections& input, Cutflow& cutflo
         m_transverse   = TMath::Sqrt(2 * lepton_p4.pt() * met_p4.pt() * (1 - cos_dphi));
     }
 
-    bool n_ak4_jets_criterium   = (input.selectedJets.size() >= 1) && (input.selectedJets.size() <= 3);
-    bool n_lepton_criterium     = (input.selectedElectrons.size() + input.selectedMuons.size()) == 1;
-    bool met_criterium          = met_p4.pt() >= minMET;
-    bool m_transverse_criterium = m_transverse >= 40.;
-    bool leptonic_criterium     = n_ak4_jets_criterium && n_lepton_criterium && met_criterium && m_transverse_criterium;
+    bool n_ak4_jets_criterium        = (input.selectedJets.size() >= 1);
+    bool leading_ak4jet_pt_criterium = (n_ak4_jets_criterium ? (input.selectedJets.at(0).pt() > 50.) : false);
+    bool n_lepton_criterium =
+        ((input.selectedElectrons.size() + input.selectedMuons.size()) == 1) && ((input.selectedElectronsLoose.size() + input.selectedMuonsLoose.size()) == 1);
+    bool met_criterium          = (met_p4.pt() >= minMET);
+    bool m_transverse_criterium = (m_transverse >= 40.);
+    bool leptonic_criterium     = n_ak4_jets_criterium && leading_ak4jet_pt_criterium && n_lepton_criterium && met_criterium && m_transverse_criterium;
 
     // event is compatible with leptonic monotop selection
     if (leptonic_criterium) {
