@@ -67,7 +67,7 @@ void PhotonVarProcessor::Process(const InputCollections& input, VariableContaine
             vars.FillVars("LoosePhoton_IdentificationSFUp", i, input.selectedPhotonsLoose.at(i).userFloat("IdentificationSFUp"));
             vars.FillVars("LoosePhoton_IdentificationSFDown", i, input.selectedPhotonsLoose.at(i).userFloat("IdentificationSFDown"));
         }
-        if (input.selectedPhotonsLoose.at(i).eta() < -1.4 && input.selectedPhotonsLoose.at(i).eta() > -3.0 && input.selectedPhotonsLoose.at(i).phi() < -0.87 &&
+        if (input.selectedPhotonsLoose.at(i).eta() < -1.3 && input.selectedPhotonsLoose.at(i).eta() > -3.2 && input.selectedPhotonsLoose.at(i).phi() < -0.87 &&
             input.selectedPhotonsLoose.at(i).phi() > -1.57)
             N_HEM_Photons += 1;
     }
