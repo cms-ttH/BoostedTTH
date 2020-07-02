@@ -46,9 +46,9 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("LooseJet_Phi", "N_LooseJets");
     vars.InitVars("LooseJet_Eta", "N_LooseJets");
     //     vars.InitVars("LooseJet_CSV", "N_LooseJets");
-    //     vars.InitVars("LooseJet_Flav", "N_LooseJets");
-    //     vars.InitVars("LooseJet_PartonFlav", "N_LooseJets");
-    //     vars.InitVars("LooseJet_Charge", "N_LooseJets");
+    vars.InitVars("LooseJet_Flav", "N_LooseJets");
+    vars.InitVars("LooseJet_PartonFlav", "N_LooseJets");
+    vars.InitVars("LooseJet_Charge", "N_LooseJets");
     //     vars.InitVars("LooseJet_PileUpID", "N_LooseJets");
     //     vars.InitVars("LooseJet_PileUpMVA", "N_LooseJets");
     //
@@ -77,8 +77,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_Flav", "N_Jets");
     vars.InitVars("Jet_PartonFlav", "N_Jets");
     vars.InitVars("Jet_Charge", "N_Jets");
-    vars.InitVars("Jet_PileUpID", "N_Jets");
-    vars.InitVars("Jet_PileUpMVA", "N_Jets");
+    //vars.InitVars("Jet_PileUpID", "N_Jets");
+    //vars.InitVars("Jet_PileUpMVA", "N_Jets");
     vars.InitVars("Jet_CHF", "N_Jets");
     vars.InitVars("Jet_NHF", "N_Jets");
     vars.InitVars("Jet_NEMF", "N_Jets");
@@ -87,14 +87,15 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_Puppi_Multiplicity", "N_Jets");
     vars.InitVars("Jet_Puppi_NeutralMultiplicity", "N_Jets");
     vars.InitVars("Jet_Puppi_ChargedMultiplicity", "N_Jets");
+    vars.InitVars("Jet_N_Daughters", "N_Jets");
 
     vars.InitVars("Jet_GenJet_Pt", "N_Jets");
     vars.InitVars("Jet_GenJet_Eta", "N_Jets");
 
-    vars.InitVars("Jet_DeepCSV_b", "N_Jets");
-    vars.InitVars("Jet_DeepCSV_bb", "N_Jets");
-    vars.InitVars("Jet_DeepCSV_c", "N_Jets");
-    vars.InitVars("Jet_DeepCSV_udsg", "N_Jets");
+    //vars.InitVars("Jet_DeepCSV_b", "N_Jets");
+    //vars.InitVars("Jet_DeepCSV_bb", "N_Jets");
+    //vars.InitVars("Jet_DeepCSV_c", "N_Jets");
+    //vars.InitVars("Jet_DeepCSV_udsg", "N_Jets");
 
     vars.InitVars("Jet_DeepJetCSV", "N_Jets");
     vars.InitVars("Jet_DeepJet_b", "N_Jets");
@@ -203,6 +204,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("Jet_Flav", iJet, itJet->hadronFlavour());
         vars.FillVars("Jet_PartonFlav", iJet, itJet->partonFlavour());
         vars.FillVars("Jet_Charge", iJet, itJet->jetCharge());
+        vars.FillVars("Jet_N_Daughters", iJet, itJet->numberOfDaughters());
 
         if (itJet->hasUserFloat("chargedHadronEnergyFraction")) { vars.FillVars("Jet_CHF", iJet, itJet->userFloat("chargedHadronEnergyFraction")); }
         if (itJet->hasUserFloat("neutralHadronEnergyFraction")) { vars.FillVars("Jet_NHF", iJet, itJet->userFloat("neutralHadronEnergyFraction")); }
@@ -227,9 +229,9 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
                 itJet->userFloat("patPuppiJetSpecificProducer:puppiMultiplicity") - itJet->userFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity"));
         }
 
-        if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));
-        if (itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant"))
-            vars.FillVars("Jet_PileUpMVA", iJet, itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
+        //if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));
+        //if (itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant"))
+            //vars.FillVars("Jet_PileUpMVA", iJet, itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
 
         if (itJet->genJet() != NULL) {
             vars.FillVars("Jet_GenJet_Pt", iJet, itJet->genJet()->pt());
@@ -240,10 +242,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
             vars.FillVars("Jet_GenJet_Eta", iJet, -9.0);
         }
 
-        vars.FillVars("Jet_DeepCSV_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probb"));
-        vars.FillVars("Jet_DeepCSV_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probbb"));
-        vars.FillVars("Jet_DeepCSV_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probc"));
-        vars.FillVars("Jet_DeepCSV_udsg", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probudsg"));
+        //vars.FillVars("Jet_DeepCSV_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probb"));
+        //vars.FillVars("Jet_DeepCSV_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probbb"));
+        //vars.FillVars("Jet_DeepCSV_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probc"));
+        //vars.FillVars("Jet_DeepCSV_udsg", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probudsg"));
 
         vars.FillVars("Jet_DeepJetCSV", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "DeepJet"));
         vars.FillVars("Jet_DeepJet_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probb"));
@@ -263,14 +265,14 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("LooseJet_Pt", iJet, itJet->pt());
         vars.FillVars("LooseJet_Eta", iJet, itJet->eta());
         vars.FillVars("LooseJet_Phi", iJet, itJet->phi());
+        vars.FillVars("LooseJet_Flav", iJet, itJet->hadronFlavour());
+        vars.FillVars("LooseJet_PartonFlav", iJet, itJet->partonFlavour());
+        vars.FillVars("LooseJet_Charge", iJet, itJet->jetCharge());
         if (itJet->eta() < -1.3 && itJet->eta() > -3.2 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
     }
     //         vars.FillVars("LooseJet_CSV", iJet, CSVHelper::GetJetCSV(*itJet, btagger));
     //         // vars.FillVars(
     //         // "LooseJet_CSV_DNN",iJet,CSVHelper::GetJetCSV_DNN(*itJet,btagger) );
-    //         vars.FillVars("LooseJet_Flav", iJet, itJet->hadronFlavour());
-    //         vars.FillVars("LooseJet_PartonFlav", iJet, itJet->partonFlavour());
-    //         vars.FillVars("LooseJet_Charge", iJet, itJet->jetCharge());
     //         if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("LooseJet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));
     //         if (itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant"))
     //             vars.FillVars("LooseJet_PileUpMVA", iJet, itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
