@@ -28,6 +28,9 @@ SelectedElectronProducer2017 = cms.EDProducer(
     ea_dir=cms.string(
         "BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt"
     ),
+    file_EleVetoIDSF=cms.string(
+        "BoostedTTH/Producers/data/electronSFs/2017_ElectronVeto_Fall17V2.root"
+    ),
     file_EleLooseIDSF=cms.string(
         "BoostedTTH/Producers/data/electronSFs/2017_ElectronLoose_Fall17V2.root"
     ),
@@ -52,6 +55,9 @@ SelectedElectronProducer2017 = cms.EDProducer(
 
 SelectedElectronProducer2016 = SelectedElectronProducer2017.clone(
     era=cms.string("2016"),
+    file_EleVetoIDSF=cms.string(
+        "BoostedTTH/Producers/data/electronSFs/2016_ElectronVeto_Fall17V2.root"
+    ),
     file_EleLooseIDSF=cms.string(
         "BoostedTTH/Producers/data/electronSFs/2016_ElectronLoose_Fall17V2.root"
     ),
@@ -71,6 +77,9 @@ SelectedElectronProducer2016 = SelectedElectronProducer2017.clone(
 
 SelectedElectronProducer2018 = SelectedElectronProducer2017.clone(
     era=cms.string("2018"),
+    file_EleVetoIDSF=cms.string(
+        "BoostedTTH/Producers/data/electronSFs/2018_ElectronVeto_Fall17V2.root"
+    ),
     file_EleLooseIDSF=cms.string(
         "BoostedTTH/Producers/data/electronSFs/2018_ElectronLoose_Fall17V2.root"
     ),
