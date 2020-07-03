@@ -160,11 +160,14 @@ if options.maxEvents is -1:  # maxEvents is set in VarParsing class by default t
 
 if options.isData:
     if "2016" in options.dataEra:
-        options.globalTag = "102X_dataRun2_v12"
+        options.globalTag = "102X_dataRun2_v13"
     elif "2017" in options.dataEra:
-        options.globalTag = "102X_dataRun2_v12"
+        options.globalTag = "102X_dataRun2_v13"
     elif "2018" in options.dataEra:
-        options.globalTag = "102X_dataRun2_v12"
+        if "D" in options.dataEra:
+            options.globalTag = "102X_dataRun2_Prompt_v16"
+        else:
+            options.globalTag = "102X_dataRun2_v13"
     else:
         raise Exception(
             "dataEra "
@@ -173,11 +176,11 @@ if options.isData:
         )
 elif not options.isData:
     if "2016" in options.dataEra:
-        options.globalTag = "102X_mcRun2_asymptotic_v7"
+        options.globalTag = "102X_mcRun2_asymptotic_v8"
     elif "2017" in options.dataEra:
-        options.globalTag = "102X_mc2017_realistic_v7"
+        options.globalTag = "102X_mc2017_realistic_v8"
     elif "2018" in options.dataEra:
-        options.globalTag = "102X_upgrade2018_realistic_v20"
+        options.globalTag = "102X_upgrade2018_realistic_v21"
     else:
         raise Exception(
             "dataEra "
@@ -379,6 +382,7 @@ if options.isData:
 
 ###############################################################
 # replace JER with the latest recommended ones to avoid possible error during calculation of Puppi MET uncertainties
+"""
 campaign = None
 if "2016" in options.dataEra:
     campaign = "Summer16_25nsV1b"
@@ -520,7 +524,7 @@ process.GlobalTag.toGet = cms.VPSet(
               label = cms.untracked.string("AK8PF")
     )
 )
-
+"""
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 # from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
