@@ -48,6 +48,8 @@ if options.isData:
         options.globalTag="102X_dataRun2_v12"
     elif "2018" in options.dataEra:
         options.globalTag="102X_dataRun2_v12"
+	if "D" in options.dataEra:
+		options.globalTag="102X_dataRun2_Prompt_v16"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 elif not options.isData:
