@@ -73,19 +73,19 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVar( "GenHiggs_B1_E",-9. );
   vars.InitVar( "GenHiggs_B2_E",-9. );
   
-  //vars.InitVar( "GenZ_Pt",-9. );
-  //vars.InitVar( "GenZ_Eta",-9. );
-  //vars.InitVar( "GenZ_Phi",-9. );
-  //vars.InitVar( "GenZ_E",-9. );
-  //vars.InitVar( "GenZ_Y",-9. );
-  //vars.InitVar( "GenZ_B1_Pt",-9. );
-  //vars.InitVar( "GenZ_B2_Pt",-9. );
-  //vars.InitVar( "GenZ_B1_Eta",-9. );
-  //vars.InitVar( "GenZ_B2_Eta",-9. );
-  //vars.InitVar( "GenZ_B1_Phi",-9. );
-  //vars.InitVar( "GenZ_B2_Phi",-9. );
-  //vars.InitVar( "GenZ_B1_E",-9. );
-  //vars.InitVar( "GenZ_B2_E",-9. );
+  vars.InitVar( "GenZ_Pt",-9. );
+  vars.InitVar( "GenZ_Eta",-9. );
+  vars.InitVar( "GenZ_Phi",-9. );
+  vars.InitVar( "GenZ_E",-9. );
+  vars.InitVar( "GenZ_Y",-9. );
+  vars.InitVar( "GenZ_B1_Pt",-9. );
+  vars.InitVar( "GenZ_B2_Pt",-9. );
+  vars.InitVar( "GenZ_B1_Eta",-9. );
+  vars.InitVar( "GenZ_B2_Eta",-9. );
+  vars.InitVar( "GenZ_B1_Phi",-9. );
+  vars.InitVar( "GenZ_B2_Phi",-9. );
+  vars.InitVar( "GenZ_B1_E",-9. );
+  vars.InitVar( "GenZ_B2_E",-9. );
 
 
 
@@ -95,87 +95,21 @@ void MCMatchVarProcessor::Init(const InputCollections& input,VariableContainer& 
   vars.InitVars( "GenTopLep_B_Idx",-1,"N_GenTopLep" );
   vars.InitVar( "GenHiggs_B1_Idx",-1 );
   vars.InitVar( "GenHiggs_B2_Idx",-1 );
-  //vars.InitVar( "GenZ_B1_Idx",-1 );
-  //vars.InitVar( "GenZ_B2_Idx",-1 );
-  
-  vars.InitVar( "GenHiggs_DecProd1_Pt",-9. );
-  vars.InitVar( "GenHiggs_DecProd1_Eta",-9. );
-  vars.InitVar( "GenHiggs_DecProd1_E",-9. );
-  vars.InitVar( "GenHiggs_DecProd1_PDGID",-999 );
-  vars.InitVar( "GenHiggs_DecProd2_Pt",-9. );
-  vars.InitVar( "GenHiggs_DecProd2_Eta",-9. );
-  vars.InitVar( "GenHiggs_DecProd2_E",-9. );
-  vars.InitVar( "GenHiggs_DecProd2_PDGID",-999 );
-
-  vars.InitVar( "GenHiggs_B1_GenJet_Pt",-9. );
-  vars.InitVar( "GenHiggs_B2_GenJet_Pt",-9. );
-  vars.InitVar( "GenHiggs_B1_GenJet_Eta",-9. );
-  vars.InitVar( "GenHiggs_B2_GenJet_Eta",-9. );
-  vars.InitVar( "GenHiggs_B1_GenJet_Phi",-9. );
-  vars.InitVar( "GenHiggs_B2_GenJet_Phi",-9. );
-  vars.InitVar( "GenHiggs_B1_GenJet_E",-9. );
-  vars.InitVar( "GenHiggs_B2_GenJet_E",-9. );
-
-  vars.InitVars( "GenTopLep_B_GenJet_Pt",-9., "N_GenTopLep" );
-  vars.InitVars( "GenTopHad_B_GenJet_Pt",-9., "N_GenTopHad");
-  vars.InitVars( "GenTopLep_B_GenJet_Eta",-9., "N_GenTopLep" );
-  vars.InitVars( "GenTopHad_B_GenJet_Eta",-9., "N_GenTopHad");
-  vars.InitVars( "GenTopLep_B_GenJet_Phi",-9., "N_GenTopLep" );
-  vars.InitVars( "GenTopHad_B_GenJet_Phi",-9., "N_GenTopHad");
-  vars.InitVars( "GenTopLep_B_GenJet_E",-9., "N_GenTopLep" );
-  vars.InitVars( "GenTopHad_B_GenJet_E",-9., "N_GenTopHad");
+  vars.InitVar( "GenZ_B1_Idx",-1 );
+  vars.InitVar( "GenZ_B2_Idx",-1 );
 
 
-  vars.InitVar( "GenHiggs_B1_Hadron_Pt",-9. );
-  vars.InitVar( "GenHiggs_B2_Hadron_Pt",-9. );
-  vars.InitVar( "GenHiggs_B1_Hadron_Eta",-9. );
-  vars.InitVar( "GenHiggs_B2_Hadron_Eta",-9. );
-  vars.InitVar( "GenHiggs_B1_Hadron_Phi",-9. );
-  vars.InitVar( "GenHiggs_B2_Hadron_Phi",-9. );
-  vars.InitVar( "GenHiggs_B1_Hadron_E",-9. );
-  vars.InitVar( "GenHiggs_B2_Hadron_E",-9. );
-
-  vars.InitVars( "GenTopLep_B_Hadron_Pt",-9., "N_GenTopLep" );
-  vars.InitVars( "GenTopHad_B_Hadron_Pt",-9., "N_GenTopHad");
-  vars.InitVars( "GenTopLep_B_Hadron_Eta",-9., "N_GenTopLep" );
-  vars.InitVars( "GenTopHad_B_Hadron_Eta",-9., "N_GenTopHad");
-  vars.InitVars( "GenTopLep_B_Hadron_Phi",-9., "N_GenTopLep" );
-  vars.InitVars( "GenTopHad_B_Hadron_Phi",-9., "N_GenTopHad");
-  vars.InitVars( "GenTopLep_B_Hadron_E",-9., "N_GenTopLep" );
-  vars.InitVars( "GenTopHad_B_Hadron_E",-9., "N_GenTopHad");
-  
-  // for THW
-  vars.InitVar( "GenW_NotFromTop_Pt",-9. );
-  vars.InitVar( "GenW_NotFromTop_Eta",-9. );
-  vars.InitVar( "GenW_NotFromTop_Phi",-9. );
-  vars.InitVar( "GenW_NotFromTop_E",-9. );
-  vars.InitVar( "N_GenW_NotFromTop_DecProds",-1,"I" );
-  vars.InitVars( "GenW_NotFromTop_DecProd_Pt",-9., "N_GenW_NotFromTop_DecProds" );
-  vars.InitVars( "GenW_NotFromTop_DecProd_Eta",-9., "N_GenW_NotFromTop_DecProds" );
-  vars.InitVars( "GenW_NotFromTop_DecProd_Phi",-9., "N_GenW_NotFromTop_DecProds" );
-  vars.InitVars( "GenW_NotFromTop_DecProd_E",-9., "N_GenW_NotFromTop_DecProds" );
-  vars.InitVars( "GenW_NotFromTop_DecProd_PDGID",-999, "N_GenW_NotFromTop_DecProds" );
-  
-  // for THQ
-  vars.InitVar( "GenForwardQuark_Pt",-9. );
-  vars.InitVar( "GenForwardQuark_Eta",-9. );
-  vars.InitVar( "GenForwardQuark_Phi",-9. );
-  vars.InitVar( "GenForwardQuark_E",-9. );
-  vars.InitVar( "GenForwardQuark_PDGID",-999 );
-
-
-  // ttH variables
-  vars.InitVar( "Gen_ttH_M", -9. );
-  vars.InitVar( "Gen_ttH_Pt", -9. );
-
-  // HT variables
-  vars.InitVar( "Gen_Ht_ttH", -9. );
-  vars.InitVar( "Gen_Ht_Jets", -9. );
-
-   vars.InitVar("GenHiggsMassFromMatchedJets",-9.);	
-   //vars.InitVar("GenZMassFromMatchedJets",-9.);	  // HT variables
+  vars.InitVar("GenHiggsMassFromMatchedJets",-9.);	
+  vars.InitVar("GenZMassFromMatchedJets",-9.);
   vars.InitVars("GenHadTopMassFromMatchedJets",-9.,"N_GenTopHad");
   vars.InitVars("GenHadWMassFromMatchedJets",-9.,"N_GenTopHad");
+
+  vars.InitVar("N_AdditionalGenBJets",-1, "I");
+  vars.InitVars("AdditionalGenBJet_Pt",-9.,"N_AdditionalGenBJets");
+  vars.InitVars("AdditionalGenBJet_Eta",-9.,"N_AdditionalGenBJets");
+  vars.InitVars("AdditionalGenBJet_Phi",-9.,"N_AdditionalGenBJets");
+  vars.InitVars("AdditionalGenBJet_E",-9.,"N_AdditionalGenBJets");
+  vars.InitVars("AdditionalGenBJet_M",-9.,"N_AdditionalGenBJets");
 
   initialized = true;
 }
@@ -225,11 +159,9 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
   reco::GenParticle higgs;
   // for ttZ
   reco::GenParticle Z;
-  // for THW
-  reco::GenParticle w_not_from_top;
-  std::vector<reco::GenParticle> w_not_from_top_decay_products;
-  // for THQ
-  reco::GenParticle forward_quark;
+
+  std::vector<reco::GenJet> additional_b_genjets;
+
   std::vector<reco::GenParticle> higgs_bs;
   std::vector<reco::GenParticle> Z_bs;
   if(input.genTopEvt.IsFilled()){
@@ -251,11 +183,8 @@ void MCMatchVarProcessor::Process(const InputCollections& input,VariableContaine
     Z_bs=input.genTopEvt.GetZDecayProducts();
     // for ttZ
     Z = input.genTopEvt.GetZ();
-    // for THW
-    w_not_from_top = input.genTopEvt.GetWNotFromTop();
-    w_not_from_top_decay_products = input.genTopEvt.GetWNotFromTopDecayProducts();
-    // for THQ
-    forward_quark = input.genTopEvt.GetForwardQuark();
+
+    additional_b_genjets = input.genTopEvt.GetAdditionalBGenJets();    
   }
 
   reco::GenParticle b1;
@@ -282,18 +211,6 @@ bool dfirst=true;
     else{
       decProd2=*p;
     }
-  }
-  
-  // fill Higgs decay products
-  if(decProd1.pt()>0.){
-    vars.FillVar("GenHiggs_DecProd1_Pt",decProd1.pt());
-    vars.FillVar("GenHiggs_DecProd2_Pt",decProd2.pt());
-    vars.FillVar("GenHiggs_DecProd1_Eta",decProd1.eta());
-    vars.FillVar("GenHiggs_DecProd2_Eta",decProd2.eta());
-    vars.FillVar("GenHiggs_DecProd1_E",decProd1.energy());
-    vars.FillVar("GenHiggs_DecProd2_E",decProd2.energy());
-    vars.FillVar("GenHiggs_DecProd1_PDGID",decProd1.pdgId());
-    vars.FillVar("GenHiggs_DecProd2_PDGID",decProd2.pdgId());
   }
  
   // find Z decay products
@@ -512,152 +429,70 @@ bool dfirst=true;
 
   }
 
-  // for THW
-  if(w_not_from_top.pt()>0.){  
-    vars.FillVar( "GenW_NotFromTop_Pt",w_not_from_top.pt());
-    vars.FillVar( "GenW_NotFromTop_Eta",w_not_from_top.eta());
-    vars.FillVar( "GenW_NotFromTop_Phi",w_not_from_top.phi());
-    vars.FillVar( "GenW_NotFromTop_E",w_not_from_top.energy());
-  }
-  vars.FillVar( "N_GenW_NotFromTop_DecProds",w_not_from_top_decay_products.size() );
-  for(size_t i=0;i<w_not_from_top_decay_products.size();i++){
-    vars.FillVars("GenW_NotFromTop_DecProd_Pt",i,w_not_from_top_decay_products.at(i).pt() );
-    vars.FillVars("GenW_NotFromTop_DecProd_Eta",i,w_not_from_top_decay_products.at(i).eta() );
-    vars.FillVars("GenW_NotFromTop_DecProd_Phi",i,w_not_from_top_decay_products.at(i).phi() );
-    vars.FillVars("GenW_NotFromTop_DecProd_E",i,w_not_from_top_decay_products.at(i).energy() );
-    vars.FillVars("GenW_NotFromTop_DecProd_PDGID",i,w_not_from_top_decay_products.at(i).pdgId() );
-  }
-
-  // for THQ
-  if(forward_quark.pt()>0.){
-    vars.FillVar( "GenForwardQuark_Pt",forward_quark.pt());
-    vars.FillVar( "GenForwardQuark_Eta",forward_quark.eta());
-    vars.FillVar( "GenForwardQuark_Phi",forward_quark.phi());
-    vars.FillVar( "GenForwardQuark_E",forward_quark.energy());
-    vars.FillVar( "GenForwardQuark_PDGID",forward_quark.pdgId());
-  }
   // fill Z system
-  //if(Z.pt()>0.){
-  //  vars.FillVar( "GenZ_Pt",Z.pt());
-  //  vars.FillVar( "GenZ_Eta",Z.eta());
-  //  vars.FillVar( "GenZ_Phi",Z.phi());
-  //  vars.FillVar( "GenZ_E",Z.energy());
-  //  vars.FillVar( "GenZ_Y",Z.rapidity());
-  //}
-  //if(Zb1.pt()>0.){
-  //  vars.FillVar("GenZ_B1_Pt",Zb1.pt());
-  //  vars.FillVar("GenZ_B2_Pt",Zb2.pt());
-  //  vars.FillVar("GenZ_B1_Eta",Zb1.eta());
-  //  vars.FillVar("GenZ_B2_Eta",Zb2.eta());
-  //  vars.FillVar("GenZ_B1_Phi",Zb1.phi());
-  //  vars.FillVar("GenZ_B2_Phi",Zb2.phi());
-  //  vars.FillVar("GenZ_B1_E",Zb1.energy());
-  //  vars.FillVar("GenZ_B2_E",Zb2.energy());
-  //  
-  //  int idxb1=-1;
-  //  int idxb2=-1;
-  //  
-  //  double minDrB1 = 999;
-  //  double minDrB2 = 999;
-  //  
-  //  for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin() ; itJetVec != jetvecs.end(); ++itJetVec){
-  //    assert(itJetVec->pt()>0);
-  //    assert(Zb1.pt()>0);
-  //    assert(Zb2.pt()>0);
-  //    if(BoostedUtils::DeltaR(*itJetVec,Zb1.p4())<minDrB1){
-  //      idxb1 = itJetVec-jetvecs.begin();
-  //      minDrB1 = BoostedUtils::DeltaR(*itJetVec,Zb1.p4());
-  //    }
-  //    if(BoostedUtils::DeltaR(*itJetVec,Zb2.p4())<minDrB2){
-  //      idxb2 = itJetVec-jetvecs.begin();
-  //      minDrB2 = BoostedUtils::DeltaR(*itJetVec,Zb2.p4());
-  //    }
-  //  }
-  //  
-  //  if(minDrB1<.25){
-  //    vars.FillVar( "GenZ_B1_Idx",idxb1);
-  //  }
-  //  if(minDrB2<.25){
-  //    vars.FillVar( "GenZ_B2_Idx",idxb2);
-  //  }
-  //
-  //  // get mass of dijet system of B indices were found
-  //  if( minDrB1<.25 && minDrB2<.25 )
-  //  {
-  //      // get dijet
-  //      math::XYZTLorentzVector Z_vec = jetvecs[idxb1]+jetvecs[idxb2];
-  //      vars.FillVar("GenZMassFromMatchedJets", Z_vec.M());
-  //  }
-  //
-  //}
-
-
-  // fill semileptonic gen top event stuff
-  if(input.genTopEvt.IsFilled()&&input.genTopEvt.TTxIsFilled()&&input.genTopEvt.IsSemiLepton()){
-    std::vector<reco::GenJet> bhad_genjet=input.genTopEvt.GetAllTopHadBGenJets();
-    std::vector<reco::GenJet> blep_genjet=input.genTopEvt.GetAllTopLepBGenJets();
-    reco::GenJet b1_genjet=input.genTopEvt.GetHiggsBBarGenJet();
-    reco::GenJet b2_genjet=input.genTopEvt.GetHiggsBGenJet();
-
-    std::vector<reco::GenParticle> bhad_hadron=input.genTopEvt.GetAllTopHadBHadrons();
-    std::vector<reco::GenParticle> blep_hadron=input.genTopEvt.GetAllTopLepBHadrons();
-    reco::GenParticle b1_hadron=input.genTopEvt.GetHiggsBBarHadron();
-    reco::GenParticle b2_hadron=input.genTopEvt.GetHiggsBHadron();
-
-    vars.FillVar( "GenHiggs_B1_GenJet_Pt",b1_genjet.pt() );
-    vars.FillVar( "GenHiggs_B2_GenJet_Pt",b2_genjet.pt() );
-    vars.FillVar( "GenHiggs_B1_GenJet_Eta",b1_genjet.eta() );
-    vars.FillVar( "GenHiggs_B2_GenJet_Eta",b2_genjet.eta() );
-    vars.FillVar( "GenHiggs_B1_GenJet_Phi",b1_genjet.phi() );
-    vars.FillVar( "GenHiggs_B2_GenJet_Phi",b2_genjet.phi() );
-    vars.FillVar( "GenHiggs_B1_GenJet_E",b1_genjet.energy() );
-    vars.FillVar( "GenHiggs_B2_GenJet_E",b2_genjet.energy() );
-
-    vars.FillVar( "GenHiggs_B1_Hadron_Pt",b1_hadron.pt() );
-    vars.FillVar( "GenHiggs_B2_Hadron_Pt",b2_hadron.pt() );
-    vars.FillVar( "GenHiggs_B1_Hadron_Eta",b1_hadron.eta() );
-    vars.FillVar( "GenHiggs_B2_Hadron_Eta",b2_hadron.eta() );
-    vars.FillVar( "GenHiggs_B1_Hadron_Phi",b1_hadron.phi() );
-    vars.FillVar( "GenHiggs_B2_Hadron_Phi",b2_hadron.phi() );
-    vars.FillVar( "GenHiggs_B1_Hadron_E",b1_hadron.energy() );
-    vars.FillVar( "GenHiggs_B2_Hadron_E",b2_hadron.energy() );
-
-
-    for(uint i=0;i<bhad_genjet.size();i++){
-      if(bhad_genjet[i].pt()>1){
-              vars.FillVars( "GenTopHad_B_GenJet_Pt",i,bhad_genjet[i].pt() );
-              vars.FillVars( "GenTopHad_B_GenJet_Eta",i,bhad_genjet[i].eta() );
-              vars.FillVars( "GenTopHad_B_GenJet_Phi",i,bhad_genjet[i].phi());
-              vars.FillVars( "GenTopHad_B_GenJet_E",i,bhad_genjet[i].energy());
-      }
-      if(bhad_hadron[i].pt()>1){
-              vars.FillVars( "GenTopHad_B_Hadron_Pt",i,bhad_hadron[i].pt() );
-              vars.FillVars( "GenTopHad_B_Hadron_Eta",i,bhad_hadron[i].eta() );
-              vars.FillVars( "GenTopHad_B_Hadron_Phi",i,bhad_hadron[i].phi());
-              vars.FillVars( "GenTopHad_B_Hadron_E",i,bhad_hadron[i].energy());
-      }
-          }
+  if(Z.pt()>0.){
+    vars.FillVar( "GenZ_Pt",Z.pt());
+    vars.FillVar( "GenZ_Eta",Z.eta());
+    vars.FillVar( "GenZ_Phi",Z.phi());
+    vars.FillVar( "GenZ_E",Z.energy());
+    vars.FillVar( "GenZ_Y",Z.rapidity());
+  }
+  if(Zb1.pt()>0.){
+    vars.FillVar("GenZ_B1_Pt",Zb1.pt());
+    vars.FillVar("GenZ_B2_Pt",Zb2.pt());
+    vars.FillVar("GenZ_B1_Eta",Zb1.eta());
+    vars.FillVar("GenZ_B2_Eta",Zb2.eta());
+    vars.FillVar("GenZ_B1_Phi",Zb1.phi());
+    vars.FillVar("GenZ_B2_Phi",Zb2.phi());
+    vars.FillVar("GenZ_B1_E",Zb1.energy());
+    vars.FillVar("GenZ_B2_E",Zb2.energy());
     
-    for(uint i=0;i<blep_genjet.size();i++){
-      if(blep_genjet[i].pt()>1){
-              vars.FillVars( "GenTopLep_B_GenJet_Pt",i,blep_genjet[i].pt() );
-              vars.FillVars( "GenTopLep_B_GenJet_Eta",i,blep_genjet[i].eta());
-              vars.FillVars( "GenTopLep_B_GenJet_Phi",i,blep_genjet[i].phi());
-              vars.FillVars( "GenTopLep_B_GenJet_E",i,blep_genjet[i].energy());
+    int idxb1=-1;
+    int idxb2=-1;
+    
+    double minDrB1 = 999;
+    double minDrB2 = 999;
+   
+    for(std::vector<math::XYZTLorentzVector>::iterator itJetVec = jetvecs.begin() ; itJetVec != jetvecs.end(); ++itJetVec){
+      assert(itJetVec->pt()>0);
+      assert(Zb1.pt()>0);
+      assert(Zb2.pt()>0);
+      if(BoostedUtils::DeltaR(*itJetVec,Zb1.p4())<minDrB1){
+        idxb1 = itJetVec-jetvecs.begin();
+        minDrB1 = BoostedUtils::DeltaR(*itJetVec,Zb1.p4());
       }
-      if(blep_hadron[i].pt()>1){
-              vars.FillVars( "GenTopLep_B_Hadron_Pt",i,blep_hadron[i].pt() );
-              vars.FillVars( "GenTopLep_B_Hadron_Eta",i,blep_hadron[i].eta());
-              vars.FillVars( "GenTopLep_B_Hadron_Phi",i,blep_hadron[i].phi());
-              vars.FillVars( "GenTopLep_B_Hadron_E",i,blep_hadron[i].energy());
+      if(BoostedUtils::DeltaR(*itJetVec,Zb2.p4())<minDrB2){
+        idxb2 = itJetVec-jetvecs.begin();
+        minDrB2 = BoostedUtils::DeltaR(*itJetVec,Zb2.p4());
       }
     }
+   
+    if(minDrB1<.25){
+      vars.FillVar( "GenZ_B1_Idx",idxb1);
+    }
+    if(minDrB2<.25){
+     vars.FillVar( "GenZ_B2_Idx",idxb2);
+    }
+  
+    // get mass of dijet system of B indices were found
+    if( minDrB1<.25 && minDrB2<.25 )
+    {
+        // get dijet
+        math::XYZTLorentzVector Z_vec = jetvecs[idxb1]+jetvecs[idxb2];
+        vars.FillVar("GenZMassFromMatchedJets", Z_vec.M());
+    }
+  
   }
-  //fill m_ttH 
-  vars.FillVar( "Gen_ttH_M",ttH.mass() );
-  vars.FillVar( "Gen_ttH_Pt",ttH.pt() );
+    int n_add_genjets = additional_b_genjets.size();
+    //std::cout << n_add_genjets << std::endl;
+    vars.FillVar("N_AdditionalGenBJets", n_add_genjets);
+    for(uint i=0; i<additional_b_genjets.size(); i++)
+    {
+        vars.FillVars("AdditionalGenBJet_Pt",i,additional_b_genjets[i].pt());
+        vars.FillVars("AdditionalGenBJet_Eta",i,additional_b_genjets[i].eta());
+        vars.FillVars("AdditionalGenBJet_Phi",i,additional_b_genjets[i].phi());
+        vars.FillVars("AdditionalGenBJet_M",i,additional_b_genjets[i].mass());
+        vars.FillVars("AdditionalGenBJet_E",i,additional_b_genjets[i].energy());
 
-  //fill HT vars
-  vars.FillVar( "Gen_Ht_ttH", ttH_HT );
-  vars.FillVar( "Gen_Ht_Jets", Gen_Jets_HT );
+    }
 }

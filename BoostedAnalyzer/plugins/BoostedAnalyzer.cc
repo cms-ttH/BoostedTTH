@@ -93,10 +93,6 @@
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/DNNVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMVAVarProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/JABDTttbarProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/JABDTthqProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/JABDTthwProcessor.hpp"
-#include "BoostedTTH/BoostedAnalyzer/interface/JABDTtthProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialRecoVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedJetVarProcessor.hpp"
@@ -501,18 +497,6 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     }
     if(std::find(processorNames.begin(),processorNames.end(),"StdTopVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new StdTopVarProcessor(),"StdTopVarProcessor");
-    }
-    if(std::find(processorNames.begin(),processorNames.end(),"JABDTttbarProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new JABDTttbarProcessor(iConfig),"JABDTttbarProcessor");
-    }
-    if(std::find(processorNames.begin(),processorNames.end(),"JABDTthqProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new JABDTthqProcessor(iConfig),"JABDTthqProcessor");
-    }
-    if(std::find(processorNames.begin(),processorNames.end(),"JABDTthwProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new JABDTthwProcessor(iConfig),"JABDTthwProcessor");
-    }
-    if(std::find(processorNames.begin(),processorNames.end(),"JABDTtthProcessor")!=processorNames.end()) {
-        treewriter->AddTreeProcessor(new JABDTtthProcessor(iConfig),"JABDTtthProcessor");
     }
 
     //if(std::find(processorNames.begin(),processorNames.end(),"BoostedJetVarProcessor")!=processorNames.end()) {
@@ -991,7 +975,7 @@ std::map<string,float> BoostedAnalyzer::GetCSVWeights(const std::vector<pat::Jet
     std::map<string,float> weights;
     
     if(isData){
-        weights["Weight_CSV"]      = 1.0;
+        weights["Weight_btagSF"]      = 1.0;
         return weights;
     }
     
@@ -1015,25 +999,25 @@ std::map<string,float> BoostedAnalyzer::GetCSVWeights(const std::vector<pat::Jet
     // calculate the csv weight for the desired systematic
     csvweight= csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,systype, csvWgtHF, csvWgtLF, csvWgtCF);
     
-    weights["Weight_CSV"]      = csvweight;
+    weights["Weight_btagSF"]      = csvweight;
     
     if(systype == Systematics::NA) { // only do these for the nominal samples
-        weights["Weight_CSVLFup"]          = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFup, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVLFdown"]        = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFdown, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVHFup"]          = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFup, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVHFdown"]        = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFdown, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVHFStats1up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVHFStats1down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVLFStats1up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVLFStats1down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVHFStats2up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVHFStats2down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVLFStats2up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVLFStats2down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVCErr1up"]       = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVCErr1down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVCErr2up"]       = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
-        weights["Weight_CSVCErr2down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_LFup"]          = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFup, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_LFdown"]        = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFdown, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_HFup"]          = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFup, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_HFdown"]        = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFdown, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_HFStats1up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_HFStats1down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_LFStats1up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_LFStats1down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_HFStats2up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_HFStats2down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVHFStats2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_LFStats2up"]    = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_LFStats2down"]  = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVLFStats2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_CErr1up"]       = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_CErr1down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr1down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_CErr2up"]       = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2up, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
+        weights["Weight_btagSF_CErr2down"]     = csvReweighter.getCSVWeight(jetPts,jetEtas,jetCSVs,jetFlavors,Systematics::CSVCErr2down, csvWgtHF, csvWgtLF, csvWgtCF)/csvweight;
     }
     
     return weights;
