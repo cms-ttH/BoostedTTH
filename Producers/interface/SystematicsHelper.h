@@ -11,7 +11,41 @@ public:
 
     // total JEC uncertainties
     JESup,			
-    JESdown,			
+    JESdown,	
+
+    // JES grouping by JETMET recommendation: https://docs.google.com/spreadsheets/d/1Feuj1n0MdotcPq19Mht7SUIgvkXkA4hiB0BxEuBShLw/edit#gid=1345121349
+    JESAbsoluteup,
+    JESAbsolutedown,
+
+    JESAbsoluteyearup,    
+    JESAbsoluteyeardown,
+
+    // JESFlavorQCDup,
+    // JESFlavorQCDdown,
+
+    JESBBEC1up,
+    JESBBEC1down,
+
+    JESBBEC1yearup,
+    JESBBEC1yeardown,
+
+    JESEC2up,
+    JESEC2down,
+
+    JESEC2yearup,
+    JESEC2yeardown,
+
+    JESHFup,
+    JESHFdown,
+
+    JESHFyearup,
+    JESHFyeardown,
+
+    // JESRelativeBalup,
+    // JESRelativeBaldown,
+
+    JESRelativeSampleyearup,
+    JESRelativeSampleyeardown,
 
     // additional JES source for 2018 HEM issue
     JESHEMup,
@@ -134,6 +168,19 @@ public:
     JERup,			
     JERdown,
 
+    JEReta0up,
+    JEReta0down,
+    JEReta1up,
+    JEReta1down,
+    JERpt0eta2up,
+    JERpt0eta2down,
+    JERpt1eta2up,
+    JERpt1eta2down,
+    JERpt0eta3up,
+    JERpt0eta3down,
+    JERpt1eta3up,
+    JERpt1eta3down,
+
     hfSFup,
     hfSFdown,
     lfSFdown,
@@ -173,6 +220,8 @@ public:
   // true if type is one of the JEC-related uncertainties
   static bool isJECUncertainty(const Type type);
 
+  // true if type is one of the JER-related uncertainties
+  static bool isJERUncertainty(const Type type);
   // return the label that is used by JetCorrectorParametersCollection
   // to label the uncertainty type. See also:
   // https://cmssdt.cern.ch/SDT/doxygen/CMSSW_8_0_23/doc/html/dc/d33/classJetCorrectorParametersCollection.html#afb3d4c6fd711ca23d89e0625a22dc483 for a list of in principle valid labels. Whether the uncertainty
@@ -200,6 +249,27 @@ std::map<SystematicsHelper::Type,std::string> SystematicsHelper::typeLabelMap_  
 void SystematicsHelper::init() {
   add( JESup,JESdown,"JES","Uncertainty");
   add( JERup,JERdown,"JER","JER");
+
+  add( JEReta0up,JEReta0down,"JEReta0","JEReta0");
+  add( JEReta1up,JEReta1down,"JEReta1","JEReta1");
+  add( JERpt0eta2up,JERpt0eta2down,"JERpt0eta2","JERpt0eta2");
+  add( JERpt1eta2up,JERpt1eta2down,"JERpt1eta2","JERpt1eta2");
+  add( JERpt0eta3up,JERpt0eta3down,"JERpt0eta3","JERpt0eta3");
+  add( JERpt1eta3up,JERpt1eta3down,"JERpt1eta3","JERpt1eta3");
+
+
+  add(JESAbsoluteup,             JESAbsolutedown,            "JESAbsolute",              "Absolute"          );
+  add(JESAbsoluteyearup,         JESAbsoluteyeardown,        "JESAbsoluteyear",          "Absoluteyear"       );
+  // add(JESFlavorQCDup,            JESFlavorQCDdown,           "JESFlavorQCD",             "FlavorQCD"           );
+  add(JESBBEC1up,                JESBBEC1down,               "JESBBEC1",                 "BBEC1"               );
+  add(JESBBEC1yearup,            JESBBEC1yeardown,           "JESBBEC1year",             "BBEC1year"          );
+  add(JESEC2up,                  JESEC2down,                 "JESEC2",                   "EC2"                 );
+  add(JESEC2yearup,              JESEC2yeardown,             "JESEC2year",               "EC2year"            );
+  add(JESHFup,                   JESHFdown,                  "JESHF",                    "HF"                  );
+  add(JESHFyearup,               JESHFyeardown,              "JESHFyear",                "HFyear"             );
+  // add(JESRelativeBalup,          JESRelativeBaldown,         "JESRelativeBal",           "RelativeBal"         );
+  add(JESRelativeSampleyearup,   JESRelativeSampleyeardown,  "JESRelativeSampleyear",    "RelativeSampleyear" );
+
   add( JESHEMup,                 JESHEMdown,                 "JESHEM",                   "HEM"                 );             
   add( JESAbsoluteStatup,        JESAbsoluteStatdown,        "JESAbsoluteStat",          "AbsoluteStat"        );             
   add( JESAbsoluteScaleup,       JESAbsoluteScaledown,       "JESAbsoluteScale",         "AbsoluteScale"       );             
@@ -315,6 +385,11 @@ bool SystematicsHelper::isJECUncertaintyDown(const Type type) {
 
 bool SystematicsHelper::isJECUncertainty(const Type type) {
   return isJECUncertaintyUp(type) || isJECUncertaintyDown(type);
+}
+
+bool SystematicsHelper::isJERUncertainty(const Type type) {
+  const std::string str = toString(type);
+  return str.find("JER")==0;
 }
 
 std::string SystematicsHelper::GetJECUncertaintyLabel(const Type type) {

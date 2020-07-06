@@ -48,15 +48,13 @@ if options.isData:
         options.globalTag="102X_dataRun2_v12"
     elif "2018" in options.dataEra:
         options.globalTag="102X_dataRun2_v12"
-	if "D" in options.dataEra:
-		options.globalTag="102X_dataRun2_Prompt_v16"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 elif not options.isData:
     if "2016" in options.dataEra:
         options.globalTag="102X_mcRun2_asymptotic_v7"
     elif "2017" in options.dataEra:
-        options.globalTag="102X_mc2017_realistic_v7"
+        options.globalTag="102X_mcRun2_asymptotic_v7"
     elif "2018" in options.dataEra:
         options.globalTag="102X_upgrade2018_realistic_v20"
     else:
@@ -704,12 +702,12 @@ if options.isData:
   "WeightProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
-  "essentialRecoVarProcessor",
+  #"essentialRecoVarProcessor",
   "TriggerVarProcessor",
-  "JABDTttbarProcessor",
-  "JABDTthqProcessor",
-  "JABDTthwProcessor",
-  "JABDTtthProcessor",
+  #"JABDTttbarProcessor",
+  #"JABDTthqProcessor",
+  #"JABDTthwProcessor",
+  #"JABDTtthProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )
@@ -719,12 +717,12 @@ else:
   "MCMatchVarProcessor",
   "essentialBasicVarProcessor",
   "essentialMVAVarProcessor",
-  "essentialRecoVarProcessor",
+  #"essentialRecoVarProcessor",
   "TriggerVarProcessor",
-  "JABDTttbarProcessor",
-  "JABDTthqProcessor",
-  "JABDTthwProcessor",
-  "JABDTtthProcessor",
+  #"JABDTttbarProcessor",
+  #"JABDTthqProcessor",
+  #"JABDTthwProcessor",
+  #"JABDTtthProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )

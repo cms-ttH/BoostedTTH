@@ -28,6 +28,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVar( "N_LooseMuons" ,"I");
     vars.InitVar( "N_BTagsL" ,"I");
     vars.InitVar( "N_BTagsM" ,"I");
+    vars.InitVar( "N_BTagsM_DeepCSV" ,"I");
     vars.InitVar( "N_BTagsT","I" );
     vars.InitVar( "N_PrimaryVertices","I" );
     vars.InitVar( "N_GenPVs", "I");
@@ -82,6 +83,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     vars.InitVars( "Jet_GenJet_Pt","N_Jets" );
     vars.InitVars( "Jet_GenJet_Eta","N_Jets" );
     
+    vars.InitVars( "Jet_DeepCSV","N_Jets");
     vars.InitVars( "Jet_DeepCSV_b","N_Jets");
     vars.InitVars( "Jet_DeepCSV_bb","N_Jets");
     vars.InitVars( "Jet_DeepCSV_c","N_Jets");
@@ -212,6 +214,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     
     
     vars.InitVars( "CSV","N_Jets" );
+    vars.InitVars( "DeepCSV","N_Jets");
     vars.InitVar("N_HEM_Jets", "I");
     vars.InitVar("N_HEM_LooseElectrons", "I");
     vars.InitVar("N_HEM_LooseMuons", "I");
@@ -235,9 +238,15 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     
     const char* btagger="DeepJet";
     std::vector<pat::Jet> selectedTaggedJets;
+    std::vector<pat::Jet> selectedTaggedJetsDeepCSV;
     std::vector<pat::Jet> selectedTaggedJetsT;
     std::vector<pat::Jet> selectedTaggedJetsL;
     std::vector<pat::Jet> selectedUntaggedJets;
+    for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet)
+    {
+        if(CSVHelper::PassesCSV(*itJet, "DeepCSV", CSVHelper::CSVwp::Medium, era))
+            selectedTaggedJetsDeepCSV.push_back(*itJet);
+    }
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet)
     {
         if(CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Medium, era))
@@ -295,6 +304,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
             vars.FillVars( "Jet_GenJet_Eta",iJet,-9.0);
         }
 
+        
+        vars.FillVars( "Jet_DeepCSV",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"DeepCSV"));
         vars.FillVars( "Jet_DeepCSV_b",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probb"));
         vars.FillVars( "Jet_DeepCSV_bb",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probbb"));
         vars.FillVars( "Jet_DeepCSV_c",iJet,CSVHelper::GetJetCSV_DNN(*itJet,"pfDeepCSVJetTags:probc"));
@@ -569,6 +580,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     
     // Fill Number of b Tags
     vars.FillVar( "N_BTagsM",selectedTaggedJets.size() );    
+    vars.FillVar( "N_BTagsM_DeepCSV",selectedTaggedJetsDeepCSV.size() );    
     vars.FillVar( "N_BTagsL",selectedTaggedJetsL.size() );    
     vars.FillVar( "N_BTagsT",selectedTaggedJetsT.size() );
     
@@ -586,6 +598,22 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         int iCSV = itCSV - csvJetsSorted.begin();
         vars.FillVars("CSV" ,iCSV,*itCSV);
     }
+
+    // Fill deepCSV Variables
+    std::vector<double> deepcsvJets;
+    for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet)
+        deepcsvJets.push_back(CSVHelper::GetJetCSV(*itJet,"DeepCSV"));
+
+
+    std::vector<double> deepcsvJetsSorted=deepcsvJets;
+    std::sort(deepcsvJetsSorted.begin(),deepcsvJetsSorted.end(),std::greater<double>());
+    
+    for(std::vector<double>::iterator itCSV = deepcsvJetsSorted.begin() ; itCSV != deepcsvJetsSorted.end(); ++itCSV)
+    {
+        int iCSV = itCSV - deepcsvJetsSorted.begin();
+        vars.FillVars("DeepCSV" ,iCSV,*itCSV);
+    }
+
 
     // forward jet definition
     std::vector<pat::Jet> selectedForwardJets;

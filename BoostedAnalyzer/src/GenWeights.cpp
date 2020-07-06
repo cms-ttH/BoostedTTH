@@ -338,6 +338,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         if (!(line.Contains("weightid")
                 or (line.Contains("weight") and line.Contains("nnpdf31"))
                 or (line.Contains("weightmuf") and line.Contains("pdf306000")) // hacks for TH Samples
+                or (line.Contains("weightmuf") and line.Contains("pdf263400")) // hacks for TTH ctcvcp Samples
                 or (line.Contains("weightmuf") and line.Contains("pdf320900"))))
             continue;
 
@@ -346,6 +347,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         line.ReplaceAll("weight", "");
         if (!(line.Contains("mur") and line.Contains("muf") and is_pdf_var))
             line.ReplaceAll("id", "");
+        // cout << line << endl;
 
         split = 0;
         if (line.Contains("pdf"))
@@ -404,7 +406,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
             idIndex = line.Index("id");
             split = -1;
             special_shit = true;
-        } else if (line.Contains("mur") and line.Contains("muf") and is_scale_var) {
+        } else if (line.Contains("mur") and line.Contains("muf") and is_scale_var and (line.Contains("pdf") or line.Contains("hdamp"))) {
             special_shit = true;
 
             // cout << "-----------------------------------" << endl;
@@ -414,8 +416,14 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
             line.ReplaceAll(line(split, line.Length()), "");
             line.ReplaceAll("dyn-1", "");
             // line.ReplaceAll("pdf30600", "");
-            int pdfIndex = line.Index("pdf");
-            TString muRmuFString = line(pdfIndex + 9, line.Length());
+            TString muRmuFString;
+            if (line.Contains("pdf")){
+                int pdfIndex = line.Index("pdf");
+                muRmuFString = line(pdfIndex + 9, line.Length());
+            }
+            else {
+                muRmuFString = line;
+            }
             // cout << muRmuFString << endl;
 
             split = muRmuFString.Index("muf") + 3;
@@ -427,8 +435,14 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
             muf.ReplaceAll("muf", "");
             // cout << muf << endl;
             // cout << muRmuFString << endl;
-
-            muRmuFString = line(pdfIndex + 10, line.Length());
+            if (line.Contains("pdf")){
+                int pdfIndex = line.Index("pdf");
+                muRmuFString = line(pdfIndex + 10, line.Length());
+            }
+            else {
+                muRmuFString = line;
+            }
+            // muRmuFString = line(pdfIndex + 10, line.Length());
             split = muRmuFString.Index("mur");
             mur = muRmuFString(split, muRmuFString.Length());
             muRmuFString.ReplaceAll(mur, "");
@@ -446,10 +460,11 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
             muf = TString::Format("%.1f", muf_d);
             muf.ReplaceAll(".", "p");
             // cout << "mur: " << mur << "    muf: " << muf << endl;
-            split = line.Index("lhapdf");
-            line.ReplaceAll(line(split, line.Length()), "");
-            // cout << line << std::endl;
-
+            if (line.Contains("pdf")){
+                split = line.Index("lhapdf");
+                line.ReplaceAll(line(split, line.Length()), "");
+                // cout << line << std::endl;
+            }
             name_string = "scale_variation";
         } else if (is_cfcv_var) {
             special_shit = false;
