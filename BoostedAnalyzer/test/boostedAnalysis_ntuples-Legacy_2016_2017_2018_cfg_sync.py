@@ -118,14 +118,14 @@ options.register(
 )
 options.register(
     "useMuonRC",
-    True,
+    False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "use Rochester Correction for muons",
 )
 options.register(
     "recorrectMET",
-    True,
+    False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "recorrect MET using latest JES and e/g corrections",
