@@ -56,19 +56,19 @@ std::vector< float > SinglePhTriggerSFs::CalculateTriggerSFs(const InputCollecti
     if (input.era.find("2017") != std::string::npos) {
         sfs.at(0) = Sigmoid(pt, 0.335, 217.91, 0.065, 0.996) / Sigmoid(pt, 0.244, 212.34, 0.050, 1.000);
         sfs.at(1) = sfs.at(0) * 1.01;
-        sfs.at(2) = sfs.at(1) * 0.99;
+        sfs.at(2) = sfs.at(0) * 0.99;
     }
     else if (input.era.find("2018") != std::string::npos) {
         sfs.at(0) = Sigmoid(pt, 1.022, 218.39, 0.086, 0.999) / Sigmoid(pt, 0.301, 212.83, 0.062, 1.000);
         sfs.at(1) = sfs.at(0) * 1.01;
-        sfs.at(2) = sfs.at(1) * 0.99;
+        sfs.at(2) = sfs.at(0) * 0.99;
     }
     else if (input.era.find("2016") != std::string::npos) {
         pt        = std::max(float(xmin + 0.1), float(pt));
         pt        = std::min(float(xmax - 0.1), float(pt));
         sfs.at(0) = hist->GetBinContent(hist->FindBin(pt));
         sfs.at(1) = sfs.at(0) * 1.01;
-        sfs.at(2) = sfs.at(1) * 0.99;
+        sfs.at(2) = sfs.at(0) * 0.99;
     }
     if (std::isnan(sfs.at(0)) or std::isinf(sfs.at(0))) {
         sfs.at(0) = 1.;
