@@ -338,24 +338,24 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 # necessarily reflect actual corrections level
 from JetMETCorrections.Configuration.JetCorrectionServices_cff import *
 
-process.ak4PFPUPPIL1Fastjet = cms.ESProducer(
+process.ak4PFchsL1Fastjet = cms.ESProducer(
     "L1FastjetCorrectionESProducer",
     level=cms.string("L1FastJet"),
-    algorithm=cms.string("AK4PFPuppi"),
+    algorithm=cms.string("AK4PFchs"),
     srcRho=cms.InputTag("fixedGridRhoFastjetAll"),
 )
-process.ak4PFPuppiL2Relative = ak4CaloL2Relative.clone(algorithm="AK4PFPuppi")
-process.ak4PFPuppiL3Absolute = ak4CaloL3Absolute.clone(algorithm="AK4PFPuppi")
-process.ak4PFPuppiResidual = ak4CaloResidual.clone(algorithm="AK4PFPuppi")
-process.ak4PFPuppiL1L2L3 = cms.ESProducer(
+process.ak4PFchsL2Relative = ak4CaloL2Relative.clone(algorithm="AK4PFchs")
+process.ak4PFchsL3Absolute = ak4CaloL3Absolute.clone(algorithm="AK4PFchs")
+process.ak4PFchsResidual = ak4CaloResidual.clone(algorithm="AK4PFchs")
+process.ak4PFchsL1L2L3 = cms.ESProducer(
     "JetCorrectionESChain",
     correctors=cms.vstring(
-        "ak4PFPUPPIL1Fastjet", "ak4PFPuppiL2Relative", "ak4PFPuppiL3Absolute"
+        "ak4PFchsL1Fastjet", "ak4PFchsL2Relative", "ak4PFchsL3Absolute"
     ),
 )
 if options.isData:
-    process.ak4PFPuppiL1L2L3.correctors.append(
-        "ak4PFPuppiResidual"
+    process.ak4PFchsL1L2L3.correctors.append(
+        "ak4PFchsResidual"
     )  # add residual JEC for data
 
 
@@ -662,17 +662,17 @@ if "2017" or "2018" in options.dataEra:
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 from PhysicsTools.PatAlgos.patPuppiJetSpecificProducer_cfi import patPuppiJetSpecificProducer
 
-process.patPuppiJetSpecificProducerAK4 = patPuppiJetSpecificProducer.clone(
-  src=cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM"),
-)
-updateJetCollection(
-   process,
-   labelName = 'PuppiVarsAK4',
-   jetSource = cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM"),
-   )
-process.updatedPatJetsPuppiVarsAK4.userData.userFloats.src = ['patPuppiJetSpecificProducerAK4:puppiMultiplicity', 'patPuppiJetSpecificProducerAK4:neutralPuppiMultiplicity']
-process.updatedPatJetsPuppiVarsAK4.userData.userFunctions = ["userFloat(\"patPuppiJetSpecificProducerAK4:puppiMultiplicity\")","userFloat(\"patPuppiJetSpecificProducerAK4:neutralPuppiMultiplicity\")"]
-process.updatedPatJetsPuppiVarsAK4.userData.userFunctionLabels = ['patPuppiJetSpecificProducer:puppiMultiplicity','patPuppiJetSpecificProducer:neutralPuppiMultiplicity']
+#process.patPuppiJetSpecificProducerAK4 = patPuppiJetSpecificProducer.clone(
+  #src=cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM"),
+#)
+#updateJetCollection(
+   #process,
+   #labelName = 'PuppiVarsAK4',
+   #jetSource = cms.InputTag("selectedPatJetsAK4PFPuppi", "", "SKIM"),
+   #)
+#process.updatedPatJetsPuppiVarsAK4.userData.userFloats.src = ['patPuppiJetSpecificProducerAK4:puppiMultiplicity', 'patPuppiJetSpecificProducerAK4:neutralPuppiMultiplicity']
+#process.updatedPatJetsPuppiVarsAK4.userData.userFunctions = ["userFloat(\"patPuppiJetSpecificProducerAK4:puppiMultiplicity\")","userFloat(\"patPuppiJetSpecificProducerAK4:neutralPuppiMultiplicity\")"]
+#process.updatedPatJetsPuppiVarsAK4.userData.userFunctionLabels = ['patPuppiJetSpecificProducer:puppiMultiplicity','patPuppiJetSpecificProducer:neutralPuppiMultiplicity']
 
 process.patPuppiJetSpecificProducerAK8 = patPuppiJetSpecificProducer.clone(
   src=cms.InputTag("AK8PFPuppiComplete", "", "SKIM"),
@@ -738,7 +738,7 @@ muonCollection = cms.InputTag("slimmedMuons")
 tauCollection = cms.InputTag("slimmedTausNewID")
 METCollection = cms.InputTag("slimmedMETs", "", process.name_()) if options.recorrectMET else cms.InputTag("slimmedMETs", "", "SKIM")
 PuppiMETCollection = cms.InputTag("slimmedMETsPuppi", "", process.name_()) if options.recorrectMET else cms.InputTag("slimmedMETsPuppi", "", "SKIM")
-jetCollection = cms.InputTag("updatedPatJetsPuppiVarsAK4", "", process.name_())
+jetCollection = cms.InputTag("selectedPatJetsAK4PFCHS", "", "SKIM")
 AK8jetCollection = cms.InputTag(
     "updatedPatJetsPuppiVarsAK8","",process.name_()
 )
@@ -872,7 +872,7 @@ from BoostedTTH.Producers.SelectedJetProducer_cfi import *
 
 process.CorrectedJetProducerAK4 = SelectedJetProducer
 process.CorrectedJetProducerAK4.era = cms.string(options.dataEra)
-process.CorrectedJetProducerAK4.JetType = cms.string("AK4PFPUPPI")
+process.CorrectedJetProducerAK4.JetType = cms.string("AK4PFCHS")
 process.CorrectedJetProducerAK4.jets = jetCollection
 process.CorrectedJetProducerAK4.ptMins = cms.vdouble(-1.0)
 process.CorrectedJetProducerAK4.etaMaxs = cms.vdouble(999.0)
@@ -893,9 +893,12 @@ process.CorrectedJetProducerAK4.photons = cms.InputTag(
     "SelectedPhotonProducer:selectedPhotonsLoose"
 )
 process.CorrectedJetProducerAK4.leptonJetDr = cms.double(0.4)
+process.CorrectedJetProducerAK4.jecFileAK4_2016=cms.string("Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt")
+process.CorrectedJetProducerAK4.jecFileAK4_2017=cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt")
+process.CorrectedJetProducerAK4.jecFileAK4_2018=cms.string("Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt")
 
 process.CorrectedJetProducerLooseAK4 = process.CorrectedJetProducerAK4.clone(
-    jets=cms.InputTag("slimmedJetsPuppi"),
+    jets=cms.InputTag("slimmedJets"),
     JetID=["none"],
     leptonJetDr = -1.0,
     collectionNames = ["correctedJetsLooseAK4"],
@@ -1043,9 +1046,9 @@ process.patSmearedJetsAK4 = cms.EDProducer(
     skipGenMatching=cms.bool(
         False
     ),  # If True, always skip gen jet matching and smear jet with a random gaussian
-    algopt = cms.string('AK4PFPuppi_pt'),
-    algo = cms.string('AK4PFPuppi'),
-    genJets=cms.InputTag("selectedPatJetsAK4PFPuppi", "genJets", "SKIM"),
+    algopt = cms.string('AK4PFchs_pt'),
+    algo = cms.string('AK4PFchs'),
+    genJets=cms.InputTag("selectedPatJetsAK4PFCHS", "genJets", "SKIM"),
     dRMax=cms.double(0.2),  # = cone size (0.4) / 2
     dPtMaxFactor=cms.double(3),  # dPt < 3 * resolution
     variation=cms.int32(0),  # systematic +1 0 -1 sigma
@@ -1348,7 +1351,7 @@ process.BoostedAnalyzer.systematics = variations
 if "METUnclEn" in options.systematicVariations:
     process.BoostedAnalyzer.systematics += ["METUnclEnup","METUnclEndown"]
     process.BoostedAnalyzer.selectedJets += ["SelectedJetProducerAK4:selectedJetsAK4","SelectedJetProducerAK4:selectedJetsAK4"]
-    process.BoostedAnalyzer.selectedJetsLoose += ["slimmedJetsPuppi","slimmedJetsPuppi"]
+    process.BoostedAnalyzer.selectedJetsLoose += ["slimmedJets","slimmedJets"]
     process.BoostedAnalyzer.selectedJetsAK8 += ["SelectedJetProducerAK8:selectedJetsAK8","SelectedJetProducerAK8:selectedJetsAK8"]
     process.BoostedAnalyzer.selectedJetsAK15 += ["SelectedJetProducerAK15:selectedJetsAK15","SelectedJetProducerAK15:selectedJetsAK15"]
     process.BoostedAnalyzer.correctedMETs += [METCollection, METCollection]
@@ -1478,10 +1481,10 @@ process.final.associate(process.leptons_photons)
 
 process.taus = cms.Path(process.rerunMvaIsolationSequence * process.slimmedTausNewID)
 
-process.puppimults = cms.Path(process.patPuppiJetSpecificProducerAK4*process.patPuppiJetSpecificProducerAK8*process.patPuppiJetSpecificProducerAK15)
+process.puppimults = cms.Path(process.patPuppiJetSpecificProducerAK8*process.patPuppiJetSpecificProducerAK15)#process.patPuppiJetSpecificProducerAK4*
 
 process.jets = cms.Task()
-process.jets.add(process.updatedPatJetsPuppiVarsAK4)
+#process.jets.add(process.updatedPatJetsPuppiVarsAK4)
 process.jets.add(process.updatedPatJetsPuppiVarsAK8)
 process.jets.add(process.updatedPatJetsPuppiVarsAK15)
 # process.jets.add(process.MergeAK15FatjetsAndSubjets)
