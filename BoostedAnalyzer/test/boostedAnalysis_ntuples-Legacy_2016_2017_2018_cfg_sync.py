@@ -790,6 +790,7 @@ if "2016" in options.dataEra:
     process.SelectedMuonProducer.ptMins = [10.0, 20.0, 26.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2016
+    process.SelectedPhotonProducer.ptMins = [15.0, 200.0]
     ###
     process.SelectedTauProducer = SelectedTauProducer2016
 elif "2017" in options.dataEra:
@@ -800,6 +801,7 @@ elif "2017" in options.dataEra:
     process.SelectedMuonProducer.ptMins = [10.0, 20.0, 29.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2017
+    process.SelectedPhotonProducer.ptMins = [15.0, 230.0]
     ###
     process.SelectedTauProducer = SelectedTauProducer2017
 elif "2018" in options.dataEra:
@@ -810,6 +812,7 @@ elif "2018" in options.dataEra:
     process.SelectedMuonProducer.ptMins = [10.0, 20.0, 26.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2018
+    process.SelectedPhotonProducer.ptMins = [15.0, 230.0]
     ###
     process.SelectedTauProducer = SelectedTauProducer2018
 
@@ -847,8 +850,7 @@ process.SelectedMuonProducer.era = options.dataEra
 process.SelectedPhotonProducer.electrons = cms.InputTag(
     "SelectedElectronProducer:selectedElectronsLoose"
 )
-process.SelectedPhotonProducer.ptMins = [15.0, 175.0]
-process.SelectedPhotonProducer.etaMaxs = [2.4, 2.4]
+process.SelectedPhotonProducer.etaMaxs = [2.5, 2.5]
 process.SelectedPhotonProducer.IDs = ["loose", "tight"]
 process.SelectedPhotonProducer.collectionNames = [
     "selectedPhotonsLoose",
