@@ -72,8 +72,8 @@ std::vector< float > SinglePhTriggerSFs::CalculateTriggerSFs(const InputCollecti
     }
     if (std::isnan(sfs.at(0)) or std::isinf(sfs.at(0))) {
         sfs.at(0) = 1.;
-        sfs.at(1) = 1.;
-        sfs.at(2) = 1.;
+        sfs.at(1) = 1.01;
+        sfs.at(2) = 0.99;
     }
     return sfs;
 }
