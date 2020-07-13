@@ -25,6 +25,10 @@ SelectedPhotonProducer2017 = cms.EDProducer(
     file_PhoTightIDSF=cms.string(
         "BoostedTTH/Producers/data/photonSFs/2017_PhotonTight_Fall17V2.root"
     ),
+    file_PhoMediumIDSF_Monojet=cms.string(
+        "BoostedTTH/Producers/data/photonSFs/photon_medium_id_sf_v0.root"
+    ),
+    useMonojetSFs=cms.bool(False)
 )
 
 SelectedPhotonProducer2016 = SelectedPhotonProducer2017.clone(
@@ -38,6 +42,9 @@ SelectedPhotonProducer2016 = SelectedPhotonProducer2017.clone(
     file_PhoTightIDSF=cms.string(
         "BoostedTTH/Producers/data/photonSFs/2016_PhotonTight_Fall17V2.root"
     ),
+    file_PhoMediumIDSF_Monojet=cms.string(
+        "BoostedTTH/Producers/data/photonSFs/photon_medium_id_sf_v0.root"
+    ),
 )
 
 SelectedPhotonProducer2018 = SelectedPhotonProducer2017.clone(
@@ -50,5 +57,8 @@ SelectedPhotonProducer2018 = SelectedPhotonProducer2017.clone(
     ),
     file_PhoTightIDSF=cms.string(
         "BoostedTTH/Producers/data/photonSFs/2018_PhotonTight_Fall17V2.root"
+    ),
+    file_PhoMediumIDSF_Monojet=cms.string(
+        "BoostedTTH/Producers/data/photonSFs/photon_medium_id_sf_v0.root"
     ),
 )

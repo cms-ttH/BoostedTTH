@@ -7,6 +7,7 @@ SelectedPhotonProducer::SelectedPhotonProducer(const edm::ParameterSet& iConfig)
     etaMaxs_{iConfig.getParameter< std::vector< double > >("etaMaxs")},
     collectionNames_{iConfig.getParameter< std::vector< std::string > >("collectionNames")},
     ids_{iConfig.getParameter< std::vector< std::string > >("IDs")},
+    useMonojetSFs{iConfig.getParameter< bool >("useMonojetSFs")},
 
     // inputs
     EDMRhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))},
@@ -55,6 +56,19 @@ SelectedPhotonProducer::SelectedPhotonProducer(const edm::ParameterSet& iConfig)
     PhoID_SF_Tight = (TH2F*) TFile::Open(TString(std::string(getenv("CMSSW_BASE")) + "/src/" + iConfig.getParameter< std::string >("file_PhoTightIDSF")))
                          ->Get("EGamma_SF2D");
     PhoID_SF_Tight->SetDirectory(0);
+
+    if (useMonojetSFs and (era.find("2017") != std::string::npos)) {
+        PhoID_SF_Medium_Monojet =
+            (TH1F*) TFile::Open(TString(std::string(getenv("CMSSW_BASE")) + "/src/" + iConfig.getParameter< std::string >("file_PhoMediumIDSF_Monojet")))
+                ->Get("photon_medium_id_sf_2017");
+        PhoID_SF_Medium_Monojet->SetDirectory(0);
+    }
+    else if (useMonojetSFs and (era.find("2018") != std::string::npos)) {
+        PhoID_SF_Medium_Monojet =
+            (TH1F*) TFile::Open(TString(std::string(getenv("CMSSW_BASE")) + "/src/" + iConfig.getParameter< std::string >("file_PhoMediumIDSF_Monojet")))
+                ->Get("photon_medium_id_sf_2018");
+        PhoID_SF_Medium_Monojet->SetDirectory(0);
+    }
 }
 
 SelectedPhotonProducer::~SelectedPhotonProducer() {}
@@ -187,16 +201,22 @@ void SelectedPhotonProducer::AddPhotonSFs(std::vector< pat::Photon >& inputPhoto
 std::vector< float > SelectedPhotonProducer::GetPhotonIDSF(const pat::Photon& iPhoton, const PhotonID iPhotonID) const
 {
     // get pt and eta of the electron
-    auto                 pt      = iPhoton.hasUserFloat("ptBeforeRun2Calibration") ? iPhoton.userFloat("ptBeforeRun2Calibration") : iPhoton.pt();
-    auto                 eta     = iPhoton.superCluster().isAvailable() ? iPhoton.superCluster()->position().eta() : iPhoton.eta();
-    TH2F*                SF_hist = nullptr;
+    auto                 pt              = iPhoton.hasUserFloat("ptBeforeRun2Calibration") ? iPhoton.userFloat("ptBeforeRun2Calibration") : iPhoton.pt();
+    auto                 eta             = iPhoton.superCluster().isAvailable() ? iPhoton.superCluster()->position().eta() : iPhoton.eta();
+    TH2F*                SF_hist         = nullptr;
+    TH1F*                SF_hist_Monojet = nullptr;
     std::vector< float > SFs{1.0, 1.0, 1.0};
     // load the correct scale factor histogram
     switch (iPhotonID) {
         case PhotonID::None: break;
         case PhotonID::Veto: break;
         case PhotonID::Loose: SF_hist = PhoID_SF_Loose; break;
-        case PhotonID::Medium: SF_hist = PhoID_SF_Medium; break;
+        case PhotonID::Medium:
+            SF_hist = PhoID_SF_Medium;
+            if (useMonojetSFs and (era.find("2017") != std::string::npos || era.find("2018") != std::string::npos)) {
+                SF_hist_Monojet = PhoID_SF_Medium_Monojet;
+            }
+            break;
         case PhotonID::Tight: SF_hist = PhoID_SF_Tight; break;
         default: std::cerr << "\n\nERROR: InvalidPhotonID" << std::endl; throw std::exception();
     }
@@ -206,22 +226,34 @@ std::vector< float > SelectedPhotonProducer::GetPhotonIDSF(const pat::Photon& iP
         throw std::exception();
     }
 
-    // determine the ranges of the given TH2Fs
-    auto xmin = SF_hist->GetXaxis()->GetXmin();
-    auto xmax = SF_hist->GetXaxis()->GetXmax();
-    auto ymin = SF_hist->GetYaxis()->GetXmin();
-    auto ymax = SF_hist->GetYaxis()->GetXmax();
+    if (iPhotonID == PhotonID::Medium and useMonojetSFs and (era.find("2017") != std::string::npos || era.find("2018") != std::string::npos)) {
+        auto xmin = SF_hist_Monojet->GetXaxis()->GetXmin();
+        auto xmax = SF_hist_Monojet->GetXaxis()->GetXmax();
+        eta       = fabs(eta);
+        eta       = std::max(xmin + 0.1, eta);
+        eta       = std::min(xmax - 0.1, eta);
+        SFs.at(0) = SF_hist_Monojet->GetBinContent(SF_hist_Monojet->FindBin(eta));
+        SFs.at(1) = (SF_hist_Monojet->GetBinContent(SF_hist_Monojet->FindBin(eta))) + (SF_hist_Monojet->GetBinError(SF_hist_Monojet->FindBin(eta)));
+        SFs.at(2) = (SF_hist_Monojet->GetBinContent(SF_hist_Monojet->FindBin(eta))) - (SF_hist_Monojet->GetBinError(SF_hist_Monojet->FindBin(eta)));
+    }
+    else {
+        // determine the ranges of the given TH2Fs
+        auto xmin = SF_hist->GetXaxis()->GetXmin();
+        auto xmax = SF_hist->GetXaxis()->GetXmax();
+        auto ymin = SF_hist->GetYaxis()->GetXmin();
+        auto ymax = SF_hist->GetYaxis()->GetXmax();
 
-    // make sure to stay within the range ot the histograms
-    eta = std::max(xmin + 0.1, eta);
-    eta = std::min(xmax - 0.1, eta);
-    pt  = std::max(ymin + 0.1, pt);
-    pt  = std::min(ymax - 0.1, pt);
+        // make sure to stay within the range ot the histograms
+        eta = std::max(xmin + 0.1, eta);
+        eta = std::min(xmax - 0.1, eta);
+        pt  = std::max(ymin + 0.1, pt);
+        pt  = std::min(ymax - 0.1, pt);
 
-    // calculate the scale factors
-    SFs.at(0) = SF_hist->GetBinContent(SF_hist->FindBin(eta, pt));
-    SFs.at(1) = (SF_hist->GetBinContent(SF_hist->FindBin(eta, pt))) + (SF_hist->GetBinError(SF_hist->FindBin(eta, pt)));
-    SFs.at(2) = (SF_hist->GetBinContent(SF_hist->FindBin(eta, pt))) - (SF_hist->GetBinError(SF_hist->FindBin(eta, pt)));
+        // calculate the scale factors
+        SFs.at(0) = SF_hist->GetBinContent(SF_hist->FindBin(eta, pt));
+        SFs.at(1) = (SF_hist->GetBinContent(SF_hist->FindBin(eta, pt))) + (SF_hist->GetBinError(SF_hist->FindBin(eta, pt)));
+        SFs.at(2) = (SF_hist->GetBinContent(SF_hist->FindBin(eta, pt))) - (SF_hist->GetBinError(SF_hist->FindBin(eta, pt)));
+    }
 
     return SFs;
 }

@@ -858,6 +858,7 @@ process.SelectedPhotonProducer.collectionNames = [
 ]
 process.SelectedPhotonProducer.isData = options.isData
 process.SelectedPhotonProducer.era = options.dataEra
+process.SelectedPhotonProducer.useMonojetSFs = cms.bool(True)
 
 process.SelectedTauProducer.leptons = tauCollection
 process.SelectedTauProducer.ptMins = [18.]

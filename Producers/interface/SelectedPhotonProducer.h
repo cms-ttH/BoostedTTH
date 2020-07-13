@@ -53,6 +53,7 @@ class SelectedPhotonProducer : public edm::EDProducer {
     std::vector< double >      etaMaxs_;
     std::vector< std::string > collectionNames_;
     std::vector< std::string > ids_;
+    bool                       useMonojetSFs;
 
     // data access tokens
     // pileup density
@@ -75,4 +76,6 @@ class SelectedPhotonProducer : public edm::EDProducer {
     TH2F* PhoID_SF_Loose  = nullptr;
     TH2F* PhoID_SF_Medium = nullptr;
     TH2F* PhoID_SF_Tight  = nullptr;
+    // medium ID scale factors derived by monojet group for 2017 and 2018
+    TH1F* PhoID_SF_Medium_Monojet = nullptr;
 };
