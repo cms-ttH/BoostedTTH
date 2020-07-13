@@ -77,8 +77,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_Flav", "N_Jets");
     vars.InitVars("Jet_PartonFlav", "N_Jets");
     vars.InitVars("Jet_Charge", "N_Jets");
-    //vars.InitVars("Jet_PileUpID", "N_Jets");
-    //vars.InitVars("Jet_PileUpMVA", "N_Jets");
+    vars.InitVars("Jet_PileUpID", "N_Jets");
+    vars.InitVars("Jet_PileUpMVA", "N_Jets");
     vars.InitVars("Jet_CHF", "N_Jets");
     vars.InitVars("Jet_NHF", "N_Jets");
     vars.InitVars("Jet_NEMF", "N_Jets");
@@ -126,10 +126,10 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("UntaggedJet_Eta", "N_NoTags");
     vars.InitVars("UntaggedJet_CSV", "N_NoTags");
 
-    vars.InitVar("Evt_chsMET_Pt");
-    vars.InitVar("Evt_chsMET_Phi");
-    vars.InitVar("Gen_chsMET_Pt");
-    vars.InitVar("Gen_chsMET_Phi");
+    vars.InitVar("Evt_Pt_MET_Puppi");
+    vars.InitVar("Evt_Phi_MET_Puppi");
+    vars.InitVar("Gen_Pt_MET_Puppi");
+    vars.InitVar("Gen_Phi_MET_Puppi");
 
     vars.InitVars("CSV", "N_Jets");
 
@@ -229,9 +229,9 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
                 itJet->userFloat("patPuppiJetSpecificProducer:puppiMultiplicity") - itJet->userFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity"));
         }
 
-        //if (itJet->hasUserInt("pileupJetIdUpdated:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetIdUpdated:fullId"));
-        //if (itJet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant"))
-            //vars.FillVars("Jet_PileUpMVA", iJet, itJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
+        if (itJet->hasUserInt("pileupJetId:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetId:fullId"));
+        if (itJet->hasUserFloat("pileupJetId:fullDiscriminant"))
+            vars.FillVars("Jet_PileUpMVA", iJet, itJet->userFloat("pileupJetId:fullDiscriminant"));
 
         if (itJet->genJet() != NULL) {
             vars.FillVars("Jet_GenJet_Pt", iJet, itJet->genJet()->pt());
@@ -327,12 +327,12 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("UntaggedJet_CSV", iUntaggedJet, CSVHelper::GetJetCSV(*itUntaggedJet, btagger));
     }
 
-    vars.FillVar("Evt_chsMET_Pt", input.correctedMET.corPt(pat::MET::Type1));
-    vars.FillVar("Evt_chsMET_Phi", input.correctedMET.corPhi(pat::MET::Type1));
+    vars.FillVar("Evt_Pt_MET_Puppi", input.correctedMETPuppi.corPt(pat::MET::Type1));
+    vars.FillVar("Evt_Phi_MET_Puppi", input.correctedMETPuppi.corPhi(pat::MET::Type1));
 
-    if (input.correctedMET.genMET() != 0) {
-        vars.FillVar("Gen_chsMET_Pt", input.correctedMET.genMET()->pt());
-        vars.FillVar("Gen_chsMET_Phi", input.correctedMET.genMET()->phi());
+    if (input.correctedMETPuppi.genMET() != 0) {
+        vars.FillVar("Gen_Pt_MET_Puppi", input.correctedMETPuppi.genMET()->pt());
+        vars.FillVar("Gen_Phi_MET_Puppi", input.correctedMETPuppi.genMET()->phi());
     }
 
     // std::vector<math::XYZTLorentzVector> jetvecs =
