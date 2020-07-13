@@ -784,10 +784,10 @@ from BoostedTTH.Producers.SelectedPhotonProducers_cfi import *
 
 if "2016" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2016
-    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 30.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 29.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2016
-    process.SelectedMuonProducer.ptMins = [10.0, 20.0, 26.0]
+    process.SelectedMuonProducer.ptMins = [20.0, 20.0, 30.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2016
     process.SelectedPhotonProducer.ptMins = [15.0, 200.0]
@@ -798,7 +798,7 @@ elif "2017" in options.dataEra:
     process.SelectedElectronProducer.ptMins = [10.0, 20.0, 40.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2017
-    process.SelectedMuonProducer.ptMins = [10.0, 20.0, 29.0]
+    process.SelectedMuonProducer.ptMins = [20.0, 20.0, 30.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2017
     process.SelectedPhotonProducer.ptMins = [15.0, 230.0]
@@ -809,7 +809,7 @@ elif "2018" in options.dataEra:
     process.SelectedElectronProducer.ptMins = [10.0, 20.0, 40.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2018
-    process.SelectedMuonProducer.ptMins = [10.0, 20.0, 26.0]
+    process.SelectedMuonProducer.ptMins = [15.0, 20.0, 30.0]
     ###
     process.SelectedPhotonProducer = SelectedPhotonProducer2018
     process.SelectedPhotonProducer.ptMins = [15.0, 230.0]
@@ -850,8 +850,8 @@ process.SelectedMuonProducer.era = options.dataEra
 process.SelectedPhotonProducer.electrons = cms.InputTag(
     "SelectedElectronProducer:selectedElectronsLoose"
 )
-process.SelectedPhotonProducer.etaMaxs = [2.5, 2.5]
-process.SelectedPhotonProducer.IDs = ["loose", "tight"]
+process.SelectedPhotonProducer.etaMaxs = [2.5, 1.479]
+process.SelectedPhotonProducer.IDs = ["loose", "medium"]
 process.SelectedPhotonProducer.collectionNames = [
     "selectedPhotonsLoose",
     "selectedPhotons",
@@ -860,7 +860,7 @@ process.SelectedPhotonProducer.isData = options.isData
 process.SelectedPhotonProducer.era = options.dataEra
 
 process.SelectedTauProducer.leptons = tauCollection
-process.SelectedTauProducer.ptMins = [20.]
+process.SelectedTauProducer.ptMins = [18.]
 process.SelectedTauProducer.etaMaxs = [2.3]
 process.SelectedTauProducer.leptonIDs = ["loose"]
 process.SelectedTauProducer.isData = options.isData
@@ -914,7 +914,7 @@ process.SelectedJetProducerAK4 = process.CorrectedJetProducerAK4.clone(
     etaMaxs=[2.4],
     collectionNames=["selectedJetsAK4"],
     systematics=[""],
-    PUJetIDMins=["none"],
+    PUJetIDMins=["loose"],
     JetID=["none"],
 )
 
