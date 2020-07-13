@@ -18,6 +18,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     deterministicSeeds{iConfig.getParameter< bool >("useDeterministicSeeds")},
     rc{std::string(getenv("CMSSW_BASE")) + "/src/" + iConfig.getParameter< std::string >("rc_dir")},
     EA{std::string(getenv("CMSSW_BASE")) + "/src/" + iConfig.getParameter< std::string >("ea_dir")},
+    useDeepTau{iConfig.getParameter< bool >("useDeepTau")},
 
     // inputs
     EDMRhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))},
@@ -808,28 +809,52 @@ std::vector< float > SelectedLeptonProducer::GetMuonISOSF(const pat::Muon& iMuon
 bool SelectedLeptonProducer::isGoodTau(const pat::Tau& iTau, const double iMinPt, const double iMaxEta, const TauID iTauID) const
 {
     bool passesKinematics = (iMinPt <= iTau.pt()) and (iMaxEta >= fabs(iTau.eta()));
-    bool passesDM         = iTau.tauID("decayModeFindingNewDMs") >= 0.5;
+    bool passesDM         = useDeepTau ? iTau.tauID("decayModeFindingNewDMs") >= 0.5 : iTau.tauID("decayModeFinding");
     bool passesID         = false;
 
-    switch (iTauID) {
-        case TauID::None: passesID = true; break;
-        case TauID::Veto:
-            passesID = iTau.tauID("byVLooseDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byVLooseDeepTau2017v2p1VSe") >= 0.5 and
-                       iTau.tauID("byVLooseDeepTau2017v2p1VSmu") >= 0.5;
-            break;
-        case TauID::Loose:
-            passesID = iTau.tauID("byLooseDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byLooseDeepTau2017v2p1VSe") >= 0.5 and
-                       iTau.tauID("byLooseDeepTau2017v2p1VSmu") >= 0.5;
-            break;
-        case TauID::Medium:
-            passesID = iTau.tauID("byMediumDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byMediumDeepTau2017v2p1VSe") >= 0.5 and
-                       iTau.tauID("byMediumDeepTau2017v2p1VSmu") >= 0.5;
-            break;
-        case TauID::Tight:
-            passesID = iTau.tauID("byTightDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byTightDeepTau2017v2p1VSe") >= 0.5 and
-                       iTau.tauID("byTightDeepTau2017v2p1VSmu") >= 0.5;
-            break;
-        default: std::cerr << "\n\nERROR: InvalidTauID" << std::endl; throw std::exception();
+    if (useDeepTau) {
+        switch (iTauID) {
+            case TauID::None: passesID = true; break;
+            case TauID::Veto:
+                passesID = iTau.tauID("byVLooseDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byVLooseDeepTau2017v2p1VSe") >= 0.5 and
+                           iTau.tauID("byVLooseDeepTau2017v2p1VSmu") >= 0.5;
+                break;
+            case TauID::Loose:
+                passesID = iTau.tauID("byLooseDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byLooseDeepTau2017v2p1VSe") >= 0.5 and
+                           iTau.tauID("byLooseDeepTau2017v2p1VSmu") >= 0.5;
+                break;
+            case TauID::Medium:
+                passesID = iTau.tauID("byMediumDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byMediumDeepTau2017v2p1VSe") >= 0.5 and
+                           iTau.tauID("byMediumDeepTau2017v2p1VSmu") >= 0.5;
+                break;
+            case TauID::Tight:
+                passesID = iTau.tauID("byTightDeepTau2017v2p1VSjet") >= 0.5 and iTau.tauID("byTightDeepTau2017v2p1VSe") >= 0.5 and
+                           iTau.tauID("byTightDeepTau2017v2p1VSmu") >= 0.5;
+                break;
+            default: std::cerr << "\n\nERROR: InvalidTauID" << std::endl; throw std::exception();
+        }
+    }
+    else {
+        switch (iTauID) {
+            case TauID::None: passesID = true; break;
+            case TauID::Veto:
+                passesID = iTau.tauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017") >= 0.5 and iTau.tauID("againstElectronVLooseMVA6") >= 0.5 and
+                           iTau.tauID("againstMuonLoose3") >= 0.5;
+                break;
+            case TauID::Loose:
+                passesID = iTau.tauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") >= 0.5 and iTau.tauID("againstElectronLooseMVA6") >= 0.5 and
+                           iTau.tauID("againstMuonLoose3") >= 0.5;
+                break;
+            case TauID::Medium:
+                passesID = iTau.tauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017") >= 0.5 and iTau.tauID("againstElectronMediumMVA6") >= 0.5 and
+                           iTau.tauID("againstMuonLoose3") >= 0.5;
+                break;
+            case TauID::Tight:
+                passesID = iTau.tauID("byTightIsolationMVArun2017v2DBoldDMwLT2017") >= 0.5 and iTau.tauID("againstElectronTightMVA6") >= 0.5 and
+                           iTau.tauID("againstMuonTight3") >= 0.5;
+                break;
+            default: std::cerr << "\n\nERROR: InvalidTauID" << std::endl; throw std::exception();
+        }
     }
 
     return passesKinematics and passesDM and passesID;

@@ -720,7 +720,7 @@ updatedTauName = "slimmedTausNewID"
 import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
 tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     updatedTauName = updatedTauName,
-                    toKeep = ["deepTau2017v2p1"#,"2017v2"
+                    toKeep = ["2017v2"#,"deepTau2017v2p1"
                                ])
 tauIdEmbedder.runTauID()
 
@@ -863,7 +863,8 @@ process.SelectedPhotonProducer.useMonojetSFs = cms.bool(True)
 process.SelectedTauProducer.taus = tauCollection
 process.SelectedTauProducer.ptMins = [18.]
 process.SelectedTauProducer.etaMaxs = [2.3]
-process.SelectedTauProducer.leptonIDs = ["loose"]
+process.SelectedTauProducer.leptonIDs = ["veto"]
+process.SelectedTauProducer.useDeepTau = cms.bool(False)
 process.SelectedTauProducer.isData = options.isData
 process.SelectedTauProducer.collectionNames = ["selectedTausLoose"]
 process.SelectedTauProducer.electrons = cms.InputTag(

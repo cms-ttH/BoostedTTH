@@ -160,6 +160,8 @@ class SelectedLeptonProducer : public edm::EDProducer {
 
     // Object to get electron effective areas
     EffectiveAreas EA;
+    
+    bool useDeepTau;
 
     // data access tokens
     // pileup density

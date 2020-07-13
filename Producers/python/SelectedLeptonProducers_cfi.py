@@ -53,6 +53,7 @@ SelectedElectronProducer2017 = cms.EDProducer(
     file_MuonTightIDSF=cms.string(""),
     file_MuonIsoSF=cms.string(""),
     # file_MuonIsoSF_lowPt=cms.string("")
+    useDeepTau=cms.bool(False)
 )
 
 SelectedElectronProducer2016 = SelectedElectronProducer2017.clone(
@@ -156,6 +157,7 @@ SelectedMuonProducer2017 = cms.EDProducer(
     histname_MuonTightISO_TightIDSF=cms.string(
         "NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"
     ),
+    useDeepTau=cms.bool(False)
 )
 
 SelectedMuonProducer2016 = SelectedMuonProducer2017.clone(
@@ -249,6 +251,7 @@ SelectedTauProducer2017 = cms.EDProducer(
     file_MuonMediumIDSF=cms.string(""),
     file_MuonTightIDSF=cms.string(""),
     file_MuonIsoSF=cms.string(""),
+    useDeepTau=cms.bool(False)
 )
 
 SelectedTauProducer2018 = SelectedTauProducer2017.clone(
