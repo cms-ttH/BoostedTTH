@@ -22,9 +22,9 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     // inputs
     EDMRhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))},
     EDMVertexToken{consumes< reco::VertexCollection >(iConfig.getParameter< edm::InputTag >("vertices"))},
-    EDMMuonsToken{consumes< pat::MuonCollection >(iConfig.getParameter< edm::InputTag >("leptons"))},
-    EDMElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("leptons"))},
-    EDMTausToken{consumes< pat::TauCollection >(iConfig.getParameter< edm::InputTag >("leptons"))}
+    EDMMuonsToken{consumes< pat::MuonCollection >(iConfig.getParameter< edm::InputTag >("muons"))},
+    EDMElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("electrons"))},
+    EDMTausToken{consumes< pat::TauCollection >(iConfig.getParameter< edm::InputTag >("taus"))}
 
 {
     // setup of producer
@@ -158,7 +158,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     // load electron scale factor histograms from given files
     if (leptonType_ == LeptonType::Electron) {
         EleID_SF_Veto = (TH2F*) TFile::Open(TString(std::string(getenv("CMSSW_BASE")) + "/src/" + iConfig.getParameter< std::string >("file_EleVetoIDSF")))
-                             ->Get("EGamma_SF2D");
+                            ->Get("EGamma_SF2D");
         EleID_SF_Veto->SetDirectory(0);
         EleID_SF_Loose = (TH2F*) TFile::Open(TString(std::string(getenv("CMSSW_BASE")) + "/src/" + iConfig.getParameter< std::string >("file_EleLooseIDSF")))
                              ->Get("EGamma_SF2D");
@@ -337,8 +337,21 @@ void SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
             std::cerr << "\n\nERROR: retrieved tau collection is not valid" << std::endl;
             throw std::exception();
         }
+        edm::Handle< pat::ElectronCollection > inputElectrons;
+        iEvent.getByToken(EDMElectronsToken, inputElectrons);
+        if (not inputElectrons.isValid()) {
+            std::cerr << "\n\nERROR: retrieved electron collection is not valid" << std::endl;
+            throw std::exception();
+        }
+        edm::Handle< pat::MuonCollection > inputMuons;
+        iEvent.getByToken(EDMMuonsToken, inputMuons);
+        if (not inputMuons.isValid()) {
+            std::cerr << "\n\nERROR: retrieved muon collection is not valid" << std::endl;
+            throw std::exception();
+        }
         for (size_t i = 0; i < ptMins_.size(); i++) {
-            pat::TauCollection                    selectedTaus    = GetSortedByPt(GetSelectedTaus(*inputTaus, ptMins_.at(i), etaMaxs_.at(i), tauIDs_.at(i)));
+            pat::TauCollection                    cleaned_taus    = GetDeltaRCleanedTaus(*inputTaus, *inputElectrons, *inputMuons);
+            pat::TauCollection                    selectedTaus    = GetSortedByPt(GetSelectedTaus(cleaned_taus, ptMins_.at(i), etaMaxs_.at(i), tauIDs_.at(i)));
             std::unique_ptr< pat::TauCollection > selectedLeptons = std::make_unique< pat::TauCollection >(selectedTaus);
             iEvent.put(std::move(selectedLeptons), collectionNames_.at(i));
         }
@@ -832,6 +845,32 @@ std::vector< pat::Tau > SelectedLeptonProducer::GetSelectedTaus(const std::vecto
     }
 
     return selectedTaus;
+}
+
+std::vector< pat::Tau > SelectedLeptonProducer::GetDeltaRCleanedTaus(const std::vector< pat::Tau >&      inputTaus,
+                                                                     const std::vector< pat::Electron >& inputElectrons,
+                                                                     const std::vector< pat::Muon >& inputMuons, const float DeltaR) const
+{
+    std::vector< pat::Tau > cleaned_taus;
+    for (const auto& tau : inputTaus) {
+        bool overlap = false;
+        for (auto& el : inputElectrons) {
+            if (reco::deltaR(tau.p4(), el.p4()) < DeltaR) {
+                overlap = true;
+                break;
+            }
+        }
+        if (overlap) continue;
+        for (auto& mu : inputMuons) {
+            if (reco::deltaR(tau.p4(), mu.p4()) < DeltaR) {
+                overlap = true;
+                break;
+            }
+        }
+        if (overlap) continue;
+        cleaned_taus.push_back(tau);
+    }
+    return cleaned_taus;
 }
 
 // ------------ method called once each job just before starting event loop

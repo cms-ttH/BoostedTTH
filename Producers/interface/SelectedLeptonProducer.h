@@ -117,6 +117,8 @@ class SelectedLeptonProducer : public edm::EDProducer {
     std::vector< pat::Tau > GetSelectedTaus(const std::vector< pat::Tau >& inputTaus, const double iMinPt = 20., const double iMaxEta = 2.3,
                                             const TauID = TauID::Loose) const;
     bool                    isGoodTau(const pat::Tau& iTau, const double iMinPt = 20., const double iMaxEta = 2.3, const TauID iTauID = TauID::Loose) const;
+    std::vector< pat::Tau > GetDeltaRCleanedTaus(const std::vector< pat::Tau >& inputTaus, const std::vector< pat::Electron >& inputElectrons,
+                                                 const std::vector< pat::Muon >& inputMuons, const float DeltaR = 0.4) const;
 
    private:
     virtual void beginJob() override;
@@ -180,7 +182,7 @@ class SelectedLeptonProducer : public edm::EDProducer {
 
     // ptrs to 2D histograms which contain the electron scale factors for
     // reconstruction and identification
-    TH2F* EleID_SF_Veto    = nullptr;
+    TH2F* EleID_SF_Veto     = nullptr;
     TH2F* EleID_SF_Loose    = nullptr;
     TH2F* EleID_SF_Medium   = nullptr;
     TH2F* EleID_SF_Tight    = nullptr;

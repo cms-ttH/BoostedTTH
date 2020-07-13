@@ -8,7 +8,9 @@ SelectedElectronProducer2017 = cms.EDProducer(
     leptonType=cms.string("electron"),
     isData=cms.bool(False),
     era=cms.string("2017"),
-    leptons=cms.InputTag("slimmedElectrons"),
+    electrons=cms.InputTag("slimmedElectrons"),
+    muons=cms.InputTag("slimmedMuons"),
+    taus=cms.InputTag("slimmedTaus"),
     vertices=cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     # eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium","","boostedAnalysis"),
@@ -29,7 +31,7 @@ SelectedElectronProducer2017 = cms.EDProducer(
         "BoostedTTH/Producers/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt"
     ),
     file_EleVetoIDSF=cms.string(
-        "BoostedTTH/Producers/data/electronSFs/2017_ElectronVeto_Fall17V2.root"
+        "BoostedTTH/Producers/data/electronSFs/2017_ElectronWPVeto_Fall17V2_BU.root"
     ),
     file_EleLooseIDSF=cms.string(
         "BoostedTTH/Producers/data/electronSFs/2017_ElectronLoose_Fall17V2.root"
@@ -38,7 +40,7 @@ SelectedElectronProducer2017 = cms.EDProducer(
         "BoostedTTH/Producers/data/electronSFs/2017_ElectronMedium_Fall17V2.root"
     ),
     file_EleTightIDSF=cms.string(
-        "BoostedTTH/Producers/data/electronSFs/2017_ElectronTight_Fall17V2.root"
+        "BoostedTTH/Producers/data/electronSFs/2017_ElectronTight_Fall17V2_BU.root"
     ),
     file_EleRecoSF_highPt=cms.string(
         "BoostedTTH/Producers/data/electronSFs/2017_ElectronReco.root"
@@ -78,7 +80,7 @@ SelectedElectronProducer2016 = SelectedElectronProducer2017.clone(
 SelectedElectronProducer2018 = SelectedElectronProducer2017.clone(
     era=cms.string("2018"),
     file_EleVetoIDSF=cms.string(
-        "BoostedTTH/Producers/data/electronSFs/2018_ElectronVeto_Fall17V2.root"
+        "BoostedTTH/Producers/data/electronSFs/2018_ElectronWPVeto_Fall17V2_BU.root"
     ),
     file_EleLooseIDSF=cms.string(
         "BoostedTTH/Producers/data/electronSFs/2018_ElectronLoose_Fall17V2.root"
@@ -87,7 +89,7 @@ SelectedElectronProducer2018 = SelectedElectronProducer2017.clone(
         "BoostedTTH/Producers/data/electronSFs/2018_ElectronMedium_Fall17V2.root"
     ),
     file_EleTightIDSF=cms.string(
-        "BoostedTTH/Producers/data/electronSFs/2018_ElectronTight_Fall17V2.root"
+        "BoostedTTH/Producers/data/electronSFs/2018_ElectronTight_Fall17V2_BU.root"
     ),
     file_EleRecoSF_highPt=cms.string(
         "BoostedTTH/Producers/data/electronSFs/2018_ElectronReco.root"
@@ -102,7 +104,9 @@ SelectedMuonProducer2017 = cms.EDProducer(
     leptonType=cms.string("muon"),
     isData=cms.bool(False),
     era=cms.string("2017"),
-    leptons=cms.InputTag("slimmedMuons"),
+    electrons=cms.InputTag("slimmedElectrons"),
+    muons=cms.InputTag("slimmedMuons"),
+    taus=cms.InputTag("slimmedTaus"),
     vertices=cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     ptMins=cms.vdouble(15),
@@ -208,7 +212,9 @@ SelectedTauProducer2017 = cms.EDProducer(
     leptonType=cms.string("tau"),
     isData=cms.bool(False),
     era=cms.string("2017"),
-    leptons=cms.InputTag("slimmedTaus"),
+    electrons=cms.InputTag("slimmedElectrons"),
+    muons=cms.InputTag("slimmedMuons"),
+    taus=cms.InputTag("slimmedTaus"),
     vertices=cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     ptMins=cms.vdouble(20.),

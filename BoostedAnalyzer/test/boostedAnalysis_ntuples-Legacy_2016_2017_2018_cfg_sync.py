@@ -817,7 +817,7 @@ elif "2018" in options.dataEra:
     process.SelectedTauProducer = SelectedTauProducer2018
 
 
-process.SelectedElectronProducer.leptons = electronCollection
+process.SelectedElectronProducer.electrons = electronCollection
 process.SelectedElectronProducer.etaMaxs = [2.5, 2.5, 2.5]
 process.SelectedElectronProducer.leptonIDs = ["veto", "tight", "tight"]
 process.SelectedElectronProducer.isoConeSizes = ["R03"] * 3
@@ -831,7 +831,7 @@ process.SelectedElectronProducer.isData = options.isData
 process.SelectedElectronProducer.era = options.dataEra
 
 
-process.SelectedMuonProducer.leptons = muonCollection
+process.SelectedMuonProducer.muons = muonCollection
 process.SelectedMuonProducer.etaMaxs = [2.4, 2.4, 2.4]
 process.SelectedMuonProducer.leptonIDs = ["loose", "tight", "tight"]
 process.SelectedMuonProducer.isoConeSizes = ["R04"] * 3
@@ -860,12 +860,18 @@ process.SelectedPhotonProducer.isData = options.isData
 process.SelectedPhotonProducer.era = options.dataEra
 process.SelectedPhotonProducer.useMonojetSFs = cms.bool(True)
 
-process.SelectedTauProducer.leptons = tauCollection
+process.SelectedTauProducer.taus = tauCollection
 process.SelectedTauProducer.ptMins = [18.]
 process.SelectedTauProducer.etaMaxs = [2.3]
 process.SelectedTauProducer.leptonIDs = ["loose"]
 process.SelectedTauProducer.isData = options.isData
 process.SelectedTauProducer.collectionNames = ["selectedTausLoose"]
+process.SelectedTauProducer.electrons = cms.InputTag(
+    "SelectedElectronProducer:selectedElectronsLoose"
+)
+process.SelectedTauProducer.muons = cms.InputTag(
+    "SelectedMuonProducer:selectedMuonsLoose"
+)
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
 # apply JES correction to AK4 jets
