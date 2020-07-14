@@ -111,6 +111,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("TaggedJet_Phi", "N_BTagsM");
     vars.InitVars("TaggedJet_Eta", "N_BTagsM");
     vars.InitVars("TaggedJet_CSV", "N_BTagsM");
+    vars.InitVars("TaggedJet_Flav", "N_BTagsM");
+    vars.InitVars("TaggedJet_PartonFlav", "N_BTagsM");
     // vars.InitVars("TaggedJet_DeepJetCSV", "N_BTagsM");
     // vars.InitVars("TaggedJet_DeepJet_b", "N_BTagsM");
     // vars.InitVars("TaggedJet_DeepJet_bb", "N_BTagsM");
@@ -118,6 +120,15 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     // vars.InitVars("TaggedJet_DeepJet_c", "N_BTagsM");
     // vars.InitVars("TaggedJet_DeepJet_uds", "N_BTagsM");
     // vars.InitVars("TaggedJet_DeepJet_g", "N_BTagsM");
+    
+    vars.InitVars("LooseTaggedJet_E", "N_BTagsL");
+    vars.InitVars("LooseTaggedJet_M", "N_BTagsL");
+    vars.InitVars("LooseTaggedJet_Pt", "N_BTagsL");
+    vars.InitVars("LooseTaggedJet_Phi", "N_BTagsL");
+    vars.InitVars("LooseTaggedJet_Eta", "N_BTagsL");
+    vars.InitVars("LooseTaggedJet_CSV", "N_BTagsL");
+    vars.InitVars("LooseTaggedJet_Flav", "N_BTagsL");
+    vars.InitVars("LooseTaggedJet_PartonFlav", "N_BTagsL");
 
     vars.InitVars("UntaggedJet_E", "N_NoTags");
     vars.InitVars("UntaggedJet_M", "N_NoTags");
@@ -125,6 +136,8 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("UntaggedJet_Phi", "N_NoTags");
     vars.InitVars("UntaggedJet_Eta", "N_NoTags");
     vars.InitVars("UntaggedJet_CSV", "N_NoTags");
+    vars.InitVars("UntaggedJet_Flav", "N_NoTags");
+    vars.InitVars("UntaggedJet_PartonFlav", "N_NoTags");
 
     vars.InitVar("Evt_Pt_MET_Puppi");
     vars.InitVar("Evt_Phi_MET_Puppi");
@@ -188,6 +201,12 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_TightMuons", input.selectedMuons.size());
     vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
     vars.FillVar("N_Taus", input.selectedTaus.size());
+    
+     // Fill Number of b Tags
+    vars.FillVar("N_BTagsM", selectedTaggedJets.size());
+    vars.FillVar("N_BTagsL", selectedTaggedJetsL.size());
+    vars.FillVar("N_BTagsT", selectedTaggedJetsT.size());
+    vars.FillVar("N_NoTags", selectedUntaggedJets.size());
 
     int N_HEM_Jets = 0;
 
@@ -309,6 +328,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("TaggedJet_Eta", iTaggedJet, itTaggedJet->eta());
         vars.FillVars("TaggedJet_Phi", iTaggedJet, itTaggedJet->phi());
         vars.FillVars("TaggedJet_CSV", iTaggedJet, CSVHelper::GetJetCSV(*itTaggedJet, btagger));
+        vars.FillVars("TaggedJet_Flav", iTaggedJet, itTaggedJet->hadronFlavour());
+        vars.FillVars("TaggedJet_PartonFlav", iTaggedJet, itTaggedJet->partonFlavour());
         // vars.FillVars("TaggedJet_DeepJetCSV", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "DeepJet"));
         // vars.FillVars("TaggedJet_DeepJet_b", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probb"));
         // vars.FillVars("TaggedJet_DeepJet_bb", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probbb"));
@@ -317,6 +338,19 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         // vars.FillVars("TaggedJet_DeepJet_uds", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probuds"));
         // vars.FillVars("TaggedJet_DeepJet_g", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probg"));
     }
+    
+    for (std::vector< pat::Jet >::iterator itLooseTaggedJet = selectedTaggedJetsL.begin(); itLooseTaggedJet != selectedTaggedJetsL.end(); ++itLooseTaggedJet) {
+        int iLooseTaggedJet = itLooseTaggedJet - selectedTaggedJetsL.begin();
+        vars.FillVars("LooseTaggedJet_E", iLooseTaggedJet, itLooseTaggedJet->energy());
+        vars.FillVars("LooseTaggedJet_M", iLooseTaggedJet, itLooseTaggedJet->mass());
+        vars.FillVars("LooseTaggedJet_Pt", iLooseTaggedJet, itLooseTaggedJet->pt());
+        vars.FillVars("LooseTaggedJet_Eta", iLooseTaggedJet, itLooseTaggedJet->eta());
+        vars.FillVars("LooseTaggedJet_Phi", iLooseTaggedJet, itLooseTaggedJet->phi());
+        vars.FillVars("LooseTaggedJet_CSV", iLooseTaggedJet, CSVHelper::GetJetCSV(*itLooseTaggedJet, btagger));
+        vars.FillVars("LooseTaggedJet_Flav", iLooseTaggedJet, itLooseTaggedJet->hadronFlavour());
+        vars.FillVars("LooseTaggedJet_PartonFlav", iLooseTaggedJet, itLooseTaggedJet->partonFlavour());
+    }
+    
     for (std::vector< pat::Jet >::iterator itUntaggedJet = selectedUntaggedJets.begin(); itUntaggedJet != selectedUntaggedJets.end(); ++itUntaggedJet) {
         int iUntaggedJet = itUntaggedJet - selectedUntaggedJets.begin();
         vars.FillVars("UntaggedJet_E", iUntaggedJet, itUntaggedJet->energy());
@@ -325,6 +359,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("UntaggedJet_Eta", iUntaggedJet, itUntaggedJet->eta());
         vars.FillVars("UntaggedJet_Phi", iUntaggedJet, itUntaggedJet->phi());
         vars.FillVars("UntaggedJet_CSV", iUntaggedJet, CSVHelper::GetJetCSV(*itUntaggedJet, btagger));
+        vars.FillVars("UntaggedJet_Flav", iUntaggedJet, itUntaggedJet->hadronFlavour());
+        vars.FillVars("UntaggedJet_PartonFlav", iUntaggedJet, itUntaggedJet->partonFlavour());
     }
 
     vars.FillVar("Evt_Pt_MET_Puppi", input.correctedMETPuppi.corPt(pat::MET::Type1));
@@ -338,12 +374,6 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     // std::vector<math::XYZTLorentzVector> jetvecs =
     // BoostedUtils::GetJetVecs(input.selectedJets); math::XYZTLorentzVector metvec
     // = input.correctedMET.corP4(pat::MET::Type1);
-
-    // Fill Number of b Tags
-    vars.FillVar("N_BTagsM", selectedTaggedJets.size());
-    vars.FillVar("N_BTagsL", selectedTaggedJetsL.size());
-    vars.FillVar("N_BTagsT", selectedTaggedJetsT.size());
-    vars.FillVar("N_NoTags", selectedUntaggedJets.size());
 
     // Fill CSV Variables
     std::vector< double > csvJets;
