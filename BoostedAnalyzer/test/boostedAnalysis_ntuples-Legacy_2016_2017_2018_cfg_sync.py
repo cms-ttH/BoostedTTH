@@ -884,7 +884,7 @@ process.CorrectedJetProducerAK4.JetType = cms.string("AK4PFCHS")
 process.CorrectedJetProducerAK4.jets = jetCollection
 process.CorrectedJetProducerAK4.ptMins = cms.vdouble(-1.0)
 process.CorrectedJetProducerAK4.etaMaxs = cms.vdouble(999.0)
-process.CorrectedJetProducerAK4.applyCorrection = cms.bool(True)
+process.CorrectedJetProducerAK4.applyCorrection = cms.bool(False)
 process.CorrectedJetProducerAK4.collectionNames = cms.vstring("correctedJetsAK4")
 process.CorrectedJetProducerAK4.systematics = cms.vstring([""] + systsJES)
 process.CorrectedJetProducerAK4.JetID = cms.vstring("tight")
@@ -905,14 +905,14 @@ process.CorrectedJetProducerAK4.jecFileAK4_2016=cms.string("Summer16_07Aug2017_V
 process.CorrectedJetProducerAK4.jecFileAK4_2017=cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt")
 process.CorrectedJetProducerAK4.jecFileAK4_2018=cms.string("Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt")
 
-process.CorrectedJetProducerLooseAK4 = process.CorrectedJetProducerAK4.clone(
-    jets=cms.InputTag("slimmedJets"),
-    JetID=["none"],
-    leptonJetDr = -1.0,
-    collectionNames = ["correctedJetsLooseAK4"],
-    applyCorrection = True,
-    systematics = [""]
-)
+#process.CorrectedJetProducerLooseAK4 = process.CorrectedJetProducerAK4.clone(
+#    jets=cms.InputTag("slimmedJets"),
+#    JetID=["none"],
+#    leptonJetDr = -1.0,
+#    collectionNames = ["correctedJetsLooseAK4"],
+#    applyCorrection = False,
+#    systematics = [""]
+#)
 
 # nominal AK4 jet selection
 process.SelectedJetProducerAK4 = process.CorrectedJetProducerAK4.clone(
@@ -926,16 +926,16 @@ process.SelectedJetProducerAK4 = process.CorrectedJetProducerAK4.clone(
     JetID=["none"],
 )
 
-process.SelectedJetProducerLooseAK4 = process.CorrectedJetProducerLooseAK4.clone(
-    jets=cms.InputTag("patSmearedJetsLooseAK4", "", process.name_()),
-    applyCorrection=False,
-    ptMins=[10.],
-    etaMaxs=[4.7],
-    collectionNames=["selectedJetsLooseAK4"],
-    systematics=[""],
-    PUJetIDMins=["none"],
-    JetID=["none"],
-)
+#process.SelectedJetProducerLooseAK4 = process.CorrectedJetProducerLooseAK4.clone(
+#    jets=cms.InputTag("patSmearedJetsLooseAK4", "", process.name_()),
+#    applyCorrection=False,
+#    ptMins=[10.],
+#    etaMaxs=[4.7],
+#    collectionNames=["selectedJetsLooseAK4"],
+#    systematics=[""],
+#    PUJetIDMins=["none"],
+#    JetID=["none"],
+#)
 
 # selection of the systematically shifted (JES) AK4 jets
 for syst in systs:
@@ -1049,7 +1049,7 @@ for syst in systs:
 process.patSmearedJetsAK4 = cms.EDProducer(
     "SmearedPATJetProducer",
     src=cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4"),
-    enabled=cms.bool(True),  # If False, no smearing is performed
+    enabled=cms.bool(False),  # If False, no smearing is performed
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching=cms.bool(
         False
@@ -1072,16 +1072,16 @@ process.patSmearedJetsAK4 = cms.EDProducer(
     #),
 )
 
-process.patSmearedJetsLooseAK4 = process.patSmearedJetsAK4.clone(
-    src=cms.InputTag("CorrectedJetProducerLooseAK4:correctedJetsLooseAK4"),
-    genJets=cms.InputTag("slimmedGenJets")
-)
+#process.patSmearedJetsLooseAK4 = process.patSmearedJetsAK4.clone(
+#    src=cms.InputTag("CorrectedJetProducerLooseAK4:correctedJetsLooseAK4"),
+#    genJets=cms.InputTag("slimmedGenJets")
+#)
 
 
 process.patSmearedJetsAK8 = cms.EDProducer(
     "SmearedPATJetProducer",
     src=cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8"),
-    enabled=cms.bool(True),  # If False, no smearing is performed
+    enabled=cms.bool(False),  # If False, no smearing is performed
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching=cms.bool(
         False
@@ -1107,7 +1107,7 @@ process.patSmearedJetsAK8 = cms.EDProducer(
 process.patSmearedJetsAK15 = cms.EDProducer(
     "SmearedPATJetProducer",
     src=cms.InputTag("CorrectedJetProducerAK15:correctedJetsAK15"),
-    enabled=cms.bool(True),  # If False, no smearing is performed
+    enabled=cms.bool(False),  # If False, no smearing is performed
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching=cms.bool(
         False
@@ -1335,7 +1335,7 @@ process.BoostedAnalyzer.selectedJets = [
     for s in variations
 ]
 process.BoostedAnalyzer.selectedJetsLoose = [
-    cms.InputTag("slimmedJetsPuppi")
+    cms.InputTag("slimmedJets")
     for s in variations
 ]
 process.BoostedAnalyzer.selectedJetsAK8 = [
@@ -1498,7 +1498,7 @@ process.jets.add(process.updatedPatJetsPuppiVarsAK15)
 # process.jets.add(process.MergeAK15FatjetsAndSubjets)
 # process.jets.add(process.AK15PFPuppiWithDeepAK15WithSoftDropSubjetsWithDeepJet)
 process.jets.add(process.CorrectedJetProducerAK4)
-process.jets.add(process.CorrectedJetProducerLooseAK4)
+#process.jets.add(process.CorrectedJetProducerLooseAK4)
 process.jets.add(process.CorrectedJetProducerAK8)
 process.jets.add(process.CorrectedJetProducerAK15)
 # always produce (but not necessarily write to ntuple) nominal case as collections might be needed
@@ -1511,8 +1511,8 @@ for s in [""] + systs:
     #process.jets.add(getattr(process, "SelectedJetProducerLooseAK4" + s))
     process.jets.add(getattr(process, "SelectedJetProducerAK8" + s))
     process.jets.add(getattr(process, "SelectedJetProducerAK15" + s))
-process.jets.add(getattr(process, "patSmearedJetsLooseAK4"))
-process.jets.add(getattr(process, "SelectedJetProducerLooseAK4"))
+#process.jets.add(getattr(process, "patSmearedJetsLooseAK4"))
+#process.jets.add(getattr(process, "SelectedJetProducerLooseAK4"))
 # process.final.associate(process.patAlgosToolsTask)
 process.final.associate(process.jets)
 
