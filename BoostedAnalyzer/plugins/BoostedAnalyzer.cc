@@ -146,7 +146,7 @@ class BoostedAnalyzer : public edm::EDAnalyzer {
                                          const reco::VertexCollection& selectedPVs, const std::vector< pat::Electron >& selectedElectrons,
                                          const std::vector< pat::Muon >& selectedMuons, const GenTopEvent& genTopEvt);
 
-    std::map< string, float > GetCSVWeights(const std::vector< pat::Jet >& selectedJets, const Systematics::Type& systype = Systematics::NA);
+    std::map< string, float > GetCSVWeights(const std::vector< pat::Jet >& selectedJets, const Systematics::Type& systype = Systematics::NA, std::string id_string = "");
 
     static std::string outfileName(const std::string& basename, const Systematics::Type& sysType);
     static std::string systName(const Systematics::Type& sysType);
@@ -819,6 +819,17 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         auto weights    = eventweights;
         auto csvweights = GetCSVWeights(*(hs_selectedJets.at(isys)), jetSystematics.at(isys));
         weights.insert(csvweights.begin(), csvweights.end());
+        std::vector< pat::Jet > selectedJets_outside_leading_AK15Jet = *(hs_selectedJets.at(isys));
+        if(hs_selectedJetsAK15.at(isys)->size() > 0){
+            selectedJets_outside_leading_AK15Jet.erase(std::remove_if(selectedJets_outside_leading_AK15Jet.begin(), selectedJets_outside_leading_AK15Jet.end(),
+                [&](pat::Jet jet) {
+                    return reco::deltaR(jet.p4(), (hs_selectedJetsAK15.at(isys))->at(0).p4()) < 1.5;
+                }),
+                selectedJets_outside_leading_AK15Jet.end()
+            );
+        }
+        auto csvweights_isolated = GetCSVWeights(selectedJets_outside_leading_AK15Jet, jetSystematics.at(isys), "_iso");
+        weights.insert(csvweights_isolated.begin(), csvweights_isolated.end());
         inputs.emplace_back(eventInfo, triggerInfo, filterInfo, selectedPVs, *h_selectedMuons, *h_selectedMuonsDL, *h_selectedMuonsLoose, *h_selectedElectrons,
                             *h_selectedElectronsDL, *h_selectedElectronsLoose, *h_selectedTaus, *h_selectedPhotons, *h_selectedPhotonsLoose,
                             *(hs_selectedJets.at(isys)), *(hs_selectedJetsLoose.at(isys)), *(hs_selectedJetsAK8.at(isys)), *(hs_selectedJetsAK15.at(isys)),
@@ -926,12 +937,12 @@ std::map< string, float > BoostedAnalyzer::GetWeights(const GenEventInfoProduct&
     return weights;
 }
 
-std::map< string, float > BoostedAnalyzer::GetCSVWeights(const std::vector< pat::Jet >& selectedJets, const Systematics::Type& systype)
+std::map< string, float > BoostedAnalyzer::GetCSVWeights(const std::vector< pat::Jet >& selectedJets, const Systematics::Type& systype, std::string id_string)
 {
     std::map< string, float > weights;
 
     if (isData) {
-        weights["Weight_CSV"] = 1.0;
+        weights["Weight_CSV"+id_string] = 1.0;
         return weights;
     }
 
@@ -955,40 +966,40 @@ std::map< string, float > BoostedAnalyzer::GetCSVWeights(const std::vector< pat:
     // calculate the csv weight for the desired systematic
     csvweight = csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, systype, csvWgtHF, csvWgtLF, csvWgtCF);
 
-    weights["Weight_CSV"] = csvweight;
+    weights["Weight_CSV"+id_string] = csvweight;
 
     if (systype == Systematics::NA) {  // only do these for the nominal samples
-        weights["Weight_CSVLFup"] =
+        weights["Weight_CSVLFup"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFup, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVLFdown"] =
+        weights["Weight_CSVLFdown"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFdown, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVHFup"] =
+        weights["Weight_CSVHFup"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFup, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVHFdown"] =
+        weights["Weight_CSVHFdown"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFdown, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVHFStats1up"] =
+        weights["Weight_CSVHFStats1up"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFStats1up, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVHFStats1down"] =
+        weights["Weight_CSVHFStats1down"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFStats1down, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVLFStats1up"] =
+        weights["Weight_CSVLFStats1up"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFStats1up, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVLFStats1down"] =
+        weights["Weight_CSVLFStats1down"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFStats1down, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVHFStats2up"] =
+        weights["Weight_CSVHFStats2up"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFStats2up, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVHFStats2down"] =
+        weights["Weight_CSVHFStats2down"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVHFStats2down, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVLFStats2up"] =
+        weights["Weight_CSVLFStats2up"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFStats2up, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVLFStats2down"] =
+        weights["Weight_CSVLFStats2down"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVLFStats2down, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVCErr1up"] =
+        weights["Weight_CSVCErr1up"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVCErr1up, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVCErr1down"] =
+        weights["Weight_CSVCErr1down"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVCErr1down, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVCErr2up"] =
+        weights["Weight_CSVCErr2up"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVCErr2up, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
-        weights["Weight_CSVCErr2down"] =
+        weights["Weight_CSVCErr2down"+id_string] =
             csvReweighter.getCSVWeight(jetPts, jetEtas, jetCSVs, jetFlavors, Systematics::CSVCErr2down, csvWgtHF, csvWgtLF, csvWgtCF) / csvweight;
     }
 
