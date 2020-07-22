@@ -287,7 +287,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         vars.FillVars("LooseJet_Flav", iJet, itJet->hadronFlavour());
         vars.FillVars("LooseJet_PartonFlav", iJet, itJet->partonFlavour());
         vars.FillVars("LooseJet_Charge", iJet, itJet->jetCharge());
-        if (itJet->eta() < -1.3 && itJet->eta() > -3.2 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
+        if (itJet->pt() > 30. && itJet->eta() < -1.3 && itJet->eta() > -3.0 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
     }
     //         vars.FillVars("LooseJet_CSV", iJet, CSVHelper::GetJetCSV(*itJet, btagger));
     //         // vars.FillVars(
