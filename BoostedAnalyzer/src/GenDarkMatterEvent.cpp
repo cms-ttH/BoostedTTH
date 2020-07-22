@@ -44,7 +44,7 @@ void GenDarkMatterEvent::Fill()
         if ((abs(genparticle.pdgId()) == 23 or abs(genparticle.pdgId()) == 25 or abs(genparticle.pdgId()) == 55) and genparticle.isLastCopy()) {
             Mediator = genparticle;
         }
-        if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16) and genparticle.isPromptFinalState() == 1) {
+        if ((abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 14 or abs(genparticle.pdgId()) == 16) and genparticle.isPromptFinalState()) {
             Neutrinos.push_back(genparticle);
         }
         if (((abs(genparticle.pdgId()) == 11 or abs(genparticle.pdgId()) == 12 or abs(genparticle.pdgId()) == 13 or abs(genparticle.pdgId()) == 14 or
@@ -54,6 +54,8 @@ void GenDarkMatterEvent::Fill()
             Leptons.push_back(genparticle);
         }
         if (abs(genparticle.pdgId()) == 22 and genparticle.isPromptFinalState()) { Photons.push_back(genparticle); }
+        if (abs(genparticle.pdgId()) == 24 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {GenWBosons.push_back(genparticle); }
+        if (abs(genparticle.pdgId()) == 23 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {GenZBosons.push_back(genparticle); }
 
         // fill containers for fatjet gen matching regarding in-site DeepAK15 calibration
         // light flavor quarks with W+ as mother
@@ -109,6 +111,12 @@ void GenDarkMatterEvent::Fill()
     //     for (const auto& hadron : Hadrons) {
     //         std::cout << "Hadron: " << hadron.pdgId() << " " << hadron.status() << " " << hadron.pt() << " " << hadron.eta() << std::endl;
     //     }
+    if (GenWBosons.size() > 0) {
+        std::sort(GenWBosons.begin(), GenWBosons.end(), [](auto& a, auto& b) { return a.p4().pt() > b.p4().pt(); });
+    }
+    if (GenZBosons.size() > 0) {
+        std::sort(GenZBosons.begin(), GenZBosons.end(), [](auto& a, auto& b) { return a.p4().pt() > b.p4().pt(); });
+    }
 }
 
 // return the lightest neutralinos in a vector
@@ -319,6 +327,16 @@ math::XYZTLorentzVector GenDarkMatterEvent::ReturnPhoton() const
 {
     if (not PhotonisFilled) { std::cerr << "Attention: Photon is not filled!"; }
     return Photon;
+}
+
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenWBosons() const
+{
+    return GenWBosons;
+}
+
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenZBosons() const
+{
+    return GenZBosons;
 }
 
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnBQuarksFromTop() const { return BQuarksFromTop; }

@@ -43,6 +43,9 @@ class GenDarkMatterEvent {
     math::XYZTLorentzVector ReturnZBoson() const;
     math::XYZTLorentzVector ReturnWBoson() const;
     math::XYZTLorentzVector ReturnPhoton() const;
+    
+    std::vector< reco::GenParticle > ReturnGenWBosons() const;
+    std::vector< reco::GenParticle > ReturnGenZBosons() const;
 
     std::vector< reco::GenParticle > ReturnLightQuarksFromWPlus() const;
     std::vector< reco::GenParticle > ReturnLightQuarksFromWMinus() const;
@@ -77,6 +80,10 @@ class GenDarkMatterEvent {
     math::XYZTLorentzVector ZBoson;
     math::XYZTLorentzVector WBoson;
     math::XYZTLorentzVector Photon;
+    
+    // Gen bosons without reconstruction
+    std::vector< reco::GenParticle > GenZBosons;
+    std::vector< reco::GenParticle > GenWBosons;
 
     float epsilon_0_dyn = 0.1;
     int   n_dyn         = 1;

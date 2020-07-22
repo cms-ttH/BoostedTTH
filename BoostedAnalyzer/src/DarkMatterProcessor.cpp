@@ -143,6 +143,22 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Gamma_Eta");
     vars.InitVar("Gamma_Mass");
     vars.InitVar("Gamma_Energy");
+    
+    // gen-level quantities
+    vars.InitVar("N_GenWBosons","I");
+    vars.InitVar("N_GenZBosons","I");
+
+    vars.InitVars("GenW_Pt","N_GenWBosons");
+    vars.InitVars("GenW_Phi","N_GenWBosons");
+    vars.InitVars("GenW_Eta","N_GenWBosons");
+    vars.InitVars("GenW_Mass","N_GenWBosons");
+    vars.InitVars("GenW_Energy","N_GenWBosons");
+
+    vars.InitVars("GenZ_Pt","N_GenZBosons");
+    vars.InitVars("GenZ_Phi","N_GenZBosons");
+    vars.InitVars("GenZ_Eta","N_GenZBosons");
+    vars.InitVars("GenZ_Mass","N_GenZBosons");
+    vars.InitVars("GenZ_Energy","N_GenZBosons");
 
     //     vars.InitVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio");
 
@@ -406,6 +422,26 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
         vars.FillVar("Gamma_Eta", Gamma.Eta());
         vars.FillVar("Gamma_Energy", Gamma.E());
         vars.FillVar("Gamma_Mass", Gamma.M());
+    }
+    const auto& GenWBosons = input.genDarkMatterEvt.ReturnGenWBosons();
+    const auto& GenZBosons = input.genDarkMatterEvt.ReturnGenZBosons();
+    vars.FillVar("N_GenWBosons", GenWBosons.size());
+    vars.FillVar("N_GenZBosons", GenZBosons.size());
+    for(size_t i = 0;i<GenWBosons.size();i++){
+        const auto& GenWBoson_p4 = GenWBosons.at(i).p4();
+        vars.FillVars("GenW_Pt",i,GenWBoson_p4.pt());
+        vars.FillVars("GenW_Phi",i,GenWBoson_p4.phi());
+        vars.FillVars("GenW_Eta",i,GenWBoson_p4.eta());
+        vars.FillVars("GenW_Energy",i,GenWBoson_p4.energy());
+        vars.FillVars("GenW_Mass",i,GenWBoson_p4.mass());
+    }
+    for(size_t i = 0;i<GenZBosons.size();i++){
+        const auto& GenZBoson_p4 = GenZBosons.at(i).p4();
+        vars.FillVars("GenZ_Pt",i,GenZBoson_p4.pt());
+        vars.FillVars("GenZ_Phi",i,GenZBoson_p4.phi());
+        vars.FillVars("GenZ_Eta",i,GenZBoson_p4.eta());
+        vars.FillVars("GenZ_Energy",i,GenZBoson_p4.energy());
+        vars.FillVars("GenZ_Mass",i,GenZBoson_p4.mass());
     }
 
     //         vars.FillVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio", fabs(Zmumu.Pt() - hadr_recoil_p4.pt()) / hadr_recoil_p4.pt());
