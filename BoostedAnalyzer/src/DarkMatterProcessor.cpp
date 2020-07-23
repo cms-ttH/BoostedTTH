@@ -8,7 +8,7 @@ DarkMatterProcessor::~DarkMatterProcessor() {}
 void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer& vars)
 {
     era = input.era;
-    
+
     vars.InitVar("Evt_Pt_MET");
     vars.InitVar("Evt_Phi_MET");
     vars.InitVar("Evt_Pt_MET_T1XY");
@@ -63,18 +63,18 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("DeltaR_AK4Jet_LoosePhoton", "N_AK4Jets_x_N_LoosePhotons");
     vars.InitVars("DeltaR_AK8Jet_LoosePhoton", "N_AK8Jets_x_N_LoosePhotons");
     vars.InitVars("DeltaR_AK15Jet_LoosePhoton", "N_AK15Jets_x_N_LoosePhotons");
-    
-    vars.InitVar("N_AK4JetsTagged_x_N_LooseElectrons", "I");
-    vars.InitVar("N_AK4JetsUntagged_x_N_LooseElectrons", "I");
-    vars.InitVar("N_AK4JetsTagged_x_N_LooseMuons", "I");
-    vars.InitVar("N_AK4JetsUntagged_x_N_LooseMuons", "I");
-    
-    vars.InitVars("DeltaPhi_AK4JetTagged_MET", "N_BTagsM");
-    vars.InitVars("DeltaPhi_AK4JetUntagged_MET", "N_NoTags");
-    vars.InitVars("DeltaR_AK4JetTagged_LooseElectron", "N_AK4JetsTagged_x_N_LooseElectrons");
-    vars.InitVars("DeltaR_AK4JetUntagged_LooseElectron", "N_AK4JetsUntagged_x_N_LooseElectrons");
-    vars.InitVars("DeltaR_AK4JetTagged_LooseMuon", "N_AK4JetsTagged_x_N_LooseMuons");
-    vars.InitVars("DeltaR_AK4JetUntagged_LooseMuon", "N_AK4JetsUntagged_x_N_LooseMuons");
+
+    vars.InitVar("N_AK4JetsMediumTagged_x_N_LooseElectrons", "I");
+    vars.InitVar("N_AK4JetsMediumUntagged_x_N_LooseElectrons", "I");
+    vars.InitVar("N_AK4JetsMediumTagged_x_N_LooseMuons", "I");
+    vars.InitVar("N_AK4JetsMediumUntagged_x_N_LooseMuons", "I");
+
+    vars.InitVars("DeltaPhi_AK4JetMediumTagged_MET", "N_BTagsM");
+    vars.InitVars("DeltaPhi_AK4JetMediumUntagged_MET", "N_NoBTagsM");
+    vars.InitVars("DeltaR_AK4JetMediumTagged_LooseElectron", "N_AK4JetsMediumTagged_x_N_LooseElectrons");
+    vars.InitVars("DeltaR_AK4JetMediumUntagged_LooseElectron", "N_AK4JetsMediumUntagged_x_N_LooseElectrons");
+    vars.InitVars("DeltaR_AK4JetMediumTagged_LooseMuon", "N_AK4JetsMediumTagged_x_N_LooseMuons");
+    vars.InitVars("DeltaR_AK4JetMediumUntagged_LooseMuon", "N_AK4JetsMediumUntagged_x_N_LooseMuons");
 
     vars.InitVar("N_Neutralinos", "I");
     vars.InitVar("N_Neutrinos", "I");
@@ -143,22 +143,22 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Gamma_Eta");
     vars.InitVar("Gamma_Mass");
     vars.InitVar("Gamma_Energy");
-    
+
     // gen-level quantities
-    vars.InitVar("N_GenWBosons","I");
-    vars.InitVar("N_GenZBosons","I");
+    vars.InitVar("N_GenWBosons", "I");
+    vars.InitVar("N_GenZBosons", "I");
 
-    vars.InitVars("GenW_Pt","N_GenWBosons");
-    vars.InitVars("GenW_Phi","N_GenWBosons");
-    vars.InitVars("GenW_Eta","N_GenWBosons");
-    vars.InitVars("GenW_Mass","N_GenWBosons");
-    vars.InitVars("GenW_Energy","N_GenWBosons");
+    vars.InitVars("GenW_Pt", "N_GenWBosons");
+    vars.InitVars("GenW_Phi", "N_GenWBosons");
+    vars.InitVars("GenW_Eta", "N_GenWBosons");
+    vars.InitVars("GenW_Mass", "N_GenWBosons");
+    vars.InitVars("GenW_Energy", "N_GenWBosons");
 
-    vars.InitVars("GenZ_Pt","N_GenZBosons");
-    vars.InitVars("GenZ_Phi","N_GenZBosons");
-    vars.InitVars("GenZ_Eta","N_GenZBosons");
-    vars.InitVars("GenZ_Mass","N_GenZBosons");
-    vars.InitVars("GenZ_Energy","N_GenZBosons");
+    vars.InitVars("GenZ_Pt", "N_GenZBosons");
+    vars.InitVars("GenZ_Phi", "N_GenZBosons");
+    vars.InitVars("GenZ_Eta", "N_GenZBosons");
+    vars.InitVars("GenZ_Mass", "N_GenZBosons");
+    vars.InitVars("GenZ_Energy", "N_GenZBosons");
 
     //     vars.InitVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio");
 
@@ -352,42 +352,42 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     }
     vars.FillVar("N_HEM_METS", n_hem_mets);
     vars.FillVar("HT_AK4Jets", ht_ak4jets);
-    
+
     const char*             btagger = "DeepJet";
-    std::vector< pat::Jet > selectedTaggedJets;
-    std::vector< pat::Jet > selectedUntaggedJets;
+    std::vector< pat::Jet > selectedMediumTaggedJets;
+    std::vector< pat::Jet > selectedMediumUntaggedJets;
     for (std::vector< pat::Jet >::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet) {
         if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Medium, era))
-            selectedTaggedJets.push_back(*itJet);
+            selectedMediumTaggedJets.push_back(*itJet);
         else
-            selectedUntaggedJets.push_back(*itJet);
+            selectedMediumUntaggedJets.push_back(*itJet);
     }
-    
-    vars.FillVar("N_AK4JetsTagged_x_N_LooseElectrons", selectedTaggedJets.size()*input.selectedElectronsLoose.size());
-    vars.FillVar("N_AK4JetsUntagged_x_N_LooseElectrons", selectedUntaggedJets.size()*input.selectedElectronsLoose.size());
-    vars.FillVar("N_AK4JetsTagged_x_N_LooseMuons", selectedTaggedJets.size()*input.selectedMuonsLoose.size());
-    vars.FillVar("N_AK4JetsUntagged_x_N_LooseMuons", selectedUntaggedJets.size()*input.selectedMuonsLoose.size());
-    
-    for (size_t i = 0; i < selectedTaggedJets.size(); i++) {
-        vars.FillVars("DeltaPhi_AK4JetTagged_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - selectedTaggedJets.at(i).phi())));
+
+    vars.FillVar("N_AK4JetsMediumTagged_x_N_LooseElectrons", selectedMediumTaggedJets.size() * input.selectedElectronsLoose.size());
+    vars.FillVar("N_AK4JetsMediumUntagged_x_N_LooseElectrons", selectedMediumUntaggedJets.size() * input.selectedElectronsLoose.size());
+    vars.FillVar("N_AK4JetsMediumTagged_x_N_LooseMuons", selectedMediumTaggedJets.size() * input.selectedMuonsLoose.size());
+    vars.FillVar("N_AK4JetsMediumUntagged_x_N_LooseMuons", selectedMediumUntaggedJets.size() * input.selectedMuonsLoose.size());
+
+    for (size_t i = 0; i < selectedMediumTaggedJets.size(); i++) {
+        vars.FillVars("DeltaPhi_AK4JetMediumTagged_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - selectedMediumTaggedJets.at(i).phi())));
         for (size_t j = 0; j < input.selectedElectronsLoose.size(); j++) {
-            vars.FillVars("DeltaR_AK4JetTagged_LooseElectron", i * input.selectedElectronsLoose.size() + j,
-                          BoostedUtils::DeltaR(selectedTaggedJets.at(i).p4(), input.selectedElectronsLoose.at(j).p4()));
+            vars.FillVars("DeltaR_AK4JetMediumTagged_LooseElectron", i * input.selectedElectronsLoose.size() + j,
+                          BoostedUtils::DeltaR(selectedMediumTaggedJets.at(i).p4(), input.selectedElectronsLoose.at(j).p4()));
         }
         for (size_t j = 0; j < input.selectedMuonsLoose.size(); j++) {
-            vars.FillVars("DeltaR_AK4JetTagged_LooseMuon", i * input.selectedMuonsLoose.size() + j,
-                          BoostedUtils::DeltaR(selectedTaggedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
+            vars.FillVars("DeltaR_AK4JetMediumTagged_LooseMuon", i * input.selectedMuonsLoose.size() + j,
+                          BoostedUtils::DeltaR(selectedMediumTaggedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
         }
     }
-    for (size_t i = 0; i < selectedUntaggedJets.size(); i++) {
-        vars.FillVars("DeltaPhi_AK4JetUntagged_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - selectedUntaggedJets.at(i).phi())));
+    for (size_t i = 0; i < selectedMediumUntaggedJets.size(); i++) {
+        vars.FillVars("DeltaPhi_AK4JetMediumUntagged_MET", i, fabs(TVector2::Phi_mpi_pi(met_p4.phi() - selectedMediumUntaggedJets.at(i).phi())));
         for (size_t j = 0; j < input.selectedElectronsLoose.size(); j++) {
-            vars.FillVars("DeltaR_AK4JetUntagged_LooseElectron", i * input.selectedElectronsLoose.size() + j,
-                          BoostedUtils::DeltaR(selectedUntaggedJets.at(i).p4(), input.selectedElectronsLoose.at(j).p4()));
+            vars.FillVars("DeltaR_AK4JetMediumUntagged_LooseElectron", i * input.selectedElectronsLoose.size() + j,
+                          BoostedUtils::DeltaR(selectedMediumUntaggedJets.at(i).p4(), input.selectedElectronsLoose.at(j).p4()));
         }
         for (size_t j = 0; j < input.selectedMuonsLoose.size(); j++) {
-            vars.FillVars("DeltaR_AK4JetUntagged_LooseMuon", i * input.selectedMuonsLoose.size() + j,
-                          BoostedUtils::DeltaR(selectedUntaggedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
+            vars.FillVars("DeltaR_AK4JetMediumUntagged_LooseMuon", i * input.selectedMuonsLoose.size() + j,
+                          BoostedUtils::DeltaR(selectedMediumUntaggedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
         }
     }
 
@@ -427,21 +427,21 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     const auto& GenZBosons = input.genDarkMatterEvt.ReturnGenZBosons();
     vars.FillVar("N_GenWBosons", GenWBosons.size());
     vars.FillVar("N_GenZBosons", GenZBosons.size());
-    for(size_t i = 0;i<GenWBosons.size();i++){
+    for (size_t i = 0; i < GenWBosons.size(); i++) {
         const auto& GenWBoson_p4 = GenWBosons.at(i).p4();
-        vars.FillVars("GenW_Pt",i,GenWBoson_p4.pt());
-        vars.FillVars("GenW_Phi",i,GenWBoson_p4.phi());
-        vars.FillVars("GenW_Eta",i,GenWBoson_p4.eta());
-        vars.FillVars("GenW_Energy",i,GenWBoson_p4.energy());
-        vars.FillVars("GenW_Mass",i,GenWBoson_p4.mass());
+        vars.FillVars("GenW_Pt", i, GenWBoson_p4.pt());
+        vars.FillVars("GenW_Phi", i, GenWBoson_p4.phi());
+        vars.FillVars("GenW_Eta", i, GenWBoson_p4.eta());
+        vars.FillVars("GenW_Energy", i, GenWBoson_p4.energy());
+        vars.FillVars("GenW_Mass", i, GenWBoson_p4.mass());
     }
-    for(size_t i = 0;i<GenZBosons.size();i++){
+    for (size_t i = 0; i < GenZBosons.size(); i++) {
         const auto& GenZBoson_p4 = GenZBosons.at(i).p4();
-        vars.FillVars("GenZ_Pt",i,GenZBoson_p4.pt());
-        vars.FillVars("GenZ_Phi",i,GenZBoson_p4.phi());
-        vars.FillVars("GenZ_Eta",i,GenZBoson_p4.eta());
-        vars.FillVars("GenZ_Energy",i,GenZBoson_p4.energy());
-        vars.FillVars("GenZ_Mass",i,GenZBoson_p4.mass());
+        vars.FillVars("GenZ_Pt", i, GenZBoson_p4.pt());
+        vars.FillVars("GenZ_Phi", i, GenZBoson_p4.phi());
+        vars.FillVars("GenZ_Eta", i, GenZBoson_p4.eta());
+        vars.FillVars("GenZ_Energy", i, GenZBoson_p4.energy());
+        vars.FillVars("GenZ_Mass", i, GenZBoson_p4.mass());
     }
 
     //         vars.FillVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio", fabs(Zmumu.Pt() - hadr_recoil_p4.pt()) / hadr_recoil_p4.pt());
