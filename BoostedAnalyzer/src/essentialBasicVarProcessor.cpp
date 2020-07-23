@@ -23,9 +23,11 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVar("N_BTagsL", "I");
     vars.InitVar("N_BTagsM", "I");
     vars.InitVar("N_BTagsT", "I");
-    vars.InitVar("N_NoTags", "I");
+    vars.InitVar("N_NoBTagsL", "I");
+    vars.InitVar("N_NoBTagsM", "I");
     vars.InitVar("N_PrimaryVertices", "I");
     vars.InitVar("N_GenPVs", "I");
+
     vars.InitVar("fixedGridRhoAll");
     vars.InitVar("fixedGridRhoFastjetAll");
     vars.InitVar("fixedGridRhoFastjetAllCalo");
@@ -92,10 +94,10 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_GenJet_Pt", "N_Jets");
     vars.InitVars("Jet_GenJet_Eta", "N_Jets");
 
-    //vars.InitVars("Jet_DeepCSV_b", "N_Jets");
-    //vars.InitVars("Jet_DeepCSV_bb", "N_Jets");
-    //vars.InitVars("Jet_DeepCSV_c", "N_Jets");
-    //vars.InitVars("Jet_DeepCSV_udsg", "N_Jets");
+    // vars.InitVars("Jet_DeepCSV_b", "N_Jets");
+    // vars.InitVars("Jet_DeepCSV_bb", "N_Jets");
+    // vars.InitVars("Jet_DeepCSV_c", "N_Jets");
+    // vars.InitVars("Jet_DeepCSV_udsg", "N_Jets");
 
     vars.InitVars("Jet_DeepJetCSV", "N_Jets");
     vars.InitVars("Jet_DeepJet_b", "N_Jets");
@@ -105,39 +107,41 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_DeepJet_uds", "N_Jets");
     vars.InitVars("Jet_DeepJet_g", "N_Jets");
 
-    vars.InitVars("TaggedJet_E", "N_BTagsM");
-    vars.InitVars("TaggedJet_M", "N_BTagsM");
-    vars.InitVars("TaggedJet_Pt", "N_BTagsM");
-    vars.InitVars("TaggedJet_Phi", "N_BTagsM");
-    vars.InitVars("TaggedJet_Eta", "N_BTagsM");
-    vars.InitVars("TaggedJet_CSV", "N_BTagsM");
-    vars.InitVars("TaggedJet_Flav", "N_BTagsM");
-    vars.InitVars("TaggedJet_PartonFlav", "N_BTagsM");
-    // vars.InitVars("TaggedJet_DeepJetCSV", "N_BTagsM");
-    // vars.InitVars("TaggedJet_DeepJet_b", "N_BTagsM");
-    // vars.InitVars("TaggedJet_DeepJet_bb", "N_BTagsM");
-    // vars.InitVars("TaggedJet_DeepJet_lepb", "N_BTagsM");
-    // vars.InitVars("TaggedJet_DeepJet_c", "N_BTagsM");
-    // vars.InitVars("TaggedJet_DeepJet_uds", "N_BTagsM");
-    // vars.InitVars("TaggedJet_DeepJet_g", "N_BTagsM");
-    
-    vars.InitVars("LooseTaggedJet_E", "N_BTagsL");
-    vars.InitVars("LooseTaggedJet_M", "N_BTagsL");
+    // vars.InitVars("MediumTaggedJet_E", "N_BTagsM");
+    // vars.InitVars("MediumTaggedJet_M", "N_BTagsM");
+    vars.InitVars("MediumTaggedJet_Pt", "N_BTagsM");
+    vars.InitVars("MediumTaggedJet_Phi", "N_BTagsM");
+    vars.InitVars("MediumTaggedJet_Eta", "N_BTagsM");
+    // vars.InitVars("MediumTaggedJet_CSV", "N_BTagsM");
+    vars.InitVars("MediumTaggedJet_Flav", "N_BTagsM");
+    // vars.InitVars("MediumTaggedJet_PartonFlav", "N_BTagsM");
+
+    // vars.InitVars("LooseTaggedJet_E", "N_BTagsL");
+    // vars.InitVars("LooseTaggedJet_M", "N_BTagsL");
     vars.InitVars("LooseTaggedJet_Pt", "N_BTagsL");
     vars.InitVars("LooseTaggedJet_Phi", "N_BTagsL");
     vars.InitVars("LooseTaggedJet_Eta", "N_BTagsL");
-    vars.InitVars("LooseTaggedJet_CSV", "N_BTagsL");
+    // vars.InitVars("LooseTaggedJet_CSV", "N_BTagsL");
     vars.InitVars("LooseTaggedJet_Flav", "N_BTagsL");
-    vars.InitVars("LooseTaggedJet_PartonFlav", "N_BTagsL");
+    // vars.InitVars("LooseTaggedJet_PartonFlav", "N_BTagsL");
 
-    vars.InitVars("UntaggedJet_E", "N_NoTags");
-    vars.InitVars("UntaggedJet_M", "N_NoTags");
-    vars.InitVars("UntaggedJet_Pt", "N_NoTags");
-    vars.InitVars("UntaggedJet_Phi", "N_NoTags");
-    vars.InitVars("UntaggedJet_Eta", "N_NoTags");
-    vars.InitVars("UntaggedJet_CSV", "N_NoTags");
-    vars.InitVars("UntaggedJet_Flav", "N_NoTags");
-    vars.InitVars("UntaggedJet_PartonFlav", "N_NoTags");
+    // vars.InitVars("MediumUntaggedJet_E", "N_NoBTagsM");
+    // vars.InitVars("MediumUntaggedJet_M", "N_NoBTagsM");
+    vars.InitVars("MediumUntaggedJet_Pt", "N_NoBTagsM");
+    vars.InitVars("MediumUntaggedJet_Phi", "N_NoBTagsM");
+    vars.InitVars("MediumUntaggedJet_Eta", "N_NoBTagsM");
+    // vars.InitVars("MediumUntaggedJet_CSV", "N_NoBTagsM");
+    vars.InitVars("MediumUntaggedJet_Flav", "N_NoBTagsM");
+    // vars.InitVars("MediumUntaggedJet_PartonFlav", "N_NoBTagsM");
+
+    // vars.InitVars("LooseUntaggedJet_E", "N_NoBTagsL");
+    // vars.InitVars("LooseUntaggedJet_M", "N_NoBTagsL");
+    vars.InitVars("LooseUntaggedJet_Pt", "N_NoBTagsL");
+    vars.InitVars("LooseUntaggedJet_Phi", "N_NoBTagsL");
+    vars.InitVars("LooseUntaggedJet_Eta", "N_NoBTagsL");
+    // vars.InitVars("LooseUntaggedJet_CSV", "N_NoBTagsL");
+    vars.InitVars("LooseUntaggedJet_Flav", "N_NoBTagsL");
+    // vars.InitVars("LooseUntaggedJet_PartonFlav", "N_NoBTagsL");
 
     vars.InitVar("Evt_Pt_MET_Puppi");
     vars.InitVar("Evt_Phi_MET_Puppi");
@@ -166,6 +170,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillIntVar("Evt_Odd", evt_id % 2);
     vars.FillIntVar("Evt_Run", run_id);
     vars.FillIntVar("Evt_Lumi", lumi_section);
+
     vars.FillVar("fixedGridRhoAll", input.eventInfo.rhoAll);
     vars.FillVar("fixedGridRhoFastjetAll", input.eventInfo.rhoFastjetAll);
     vars.FillVar("fixedGridRhoFastjetAllCalo", input.eventInfo.rhoFastjetAllCalo);
@@ -175,17 +180,20 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("fixedGridRhoFastjetCentralChargedPileUp", input.eventInfo.rhoFastjetCentralChargedPileUp);
 
     const char*             btagger = "DeepJet";
-    std::vector< pat::Jet > selectedTaggedJets;
-    std::vector< pat::Jet > selectedTaggedJetsT;
     std::vector< pat::Jet > selectedTaggedJetsL;
-    std::vector< pat::Jet > selectedUntaggedJets;
+    std::vector< pat::Jet > selectedTaggedJetsM;
+    std::vector< pat::Jet > selectedTaggedJetsT;
+    std::vector< pat::Jet > selectedUntaggedJetsL;
+    std::vector< pat::Jet > selectedUntaggedJetsM;
     for (std::vector< pat::Jet >::const_iterator itJet = input.selectedJets.begin(); itJet != input.selectedJets.end(); ++itJet) {
-        if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Medium, era))
-            selectedTaggedJets.push_back(*itJet);
+        if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Loose, era))
+            selectedTaggedJetsL.push_back(*itJet);
         else
-            selectedUntaggedJets.push_back(*itJet);
-
-        if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Loose, era)) selectedTaggedJetsL.push_back(*itJet);
+            selectedUntaggedJetsL.push_back(*itJet);
+        if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Medium, era))
+            selectedTaggedJetsM.push_back(*itJet);
+        else
+            selectedUntaggedJetsM.push_back(*itJet);
         if (CSVHelper::PassesCSV(*itJet, btagger, CSVHelper::CSVwp::Tight, era)) selectedTaggedJetsT.push_back(*itJet);
     }
 
@@ -201,12 +209,13 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_TightMuons", input.selectedMuons.size());
     vars.FillVar("N_LooseMuons", input.selectedMuonsLoose.size());
     vars.FillVar("N_Taus", input.selectedTaus.size());
-    
-     // Fill Number of b Tags
-    vars.FillVar("N_BTagsM", selectedTaggedJets.size());
+
+    // Fill Number of b Tags
     vars.FillVar("N_BTagsL", selectedTaggedJetsL.size());
+    vars.FillVar("N_BTagsM", selectedTaggedJetsM.size());
     vars.FillVar("N_BTagsT", selectedTaggedJetsT.size());
-    vars.FillVar("N_NoTags", selectedUntaggedJets.size());
+    vars.FillVar("N_NoBTagsL", selectedUntaggedJetsL.size());
+    vars.FillVar("N_NoBTagsM", selectedUntaggedJetsM.size());
 
     int N_HEM_Jets = 0;
 
@@ -249,8 +258,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         }
 
         if (itJet->hasUserInt("pileupJetId:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetId:fullId"));
-        if (itJet->hasUserFloat("pileupJetId:fullDiscriminant"))
-            vars.FillVars("Jet_PileUpMVA", iJet, itJet->userFloat("pileupJetId:fullDiscriminant"));
+        if (itJet->hasUserFloat("pileupJetId:fullDiscriminant")) vars.FillVars("Jet_PileUpMVA", iJet, itJet->userFloat("pileupJetId:fullDiscriminant"));
 
         if (itJet->genJet() != NULL) {
             vars.FillVars("Jet_GenJet_Pt", iJet, itJet->genJet()->pt());
@@ -261,10 +269,10 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
             vars.FillVars("Jet_GenJet_Eta", iJet, -9.0);
         }
 
-        //vars.FillVars("Jet_DeepCSV_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probb"));
-        //vars.FillVars("Jet_DeepCSV_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probbb"));
-        //vars.FillVars("Jet_DeepCSV_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probc"));
-        //vars.FillVars("Jet_DeepCSV_udsg", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probudsg"));
+        // vars.FillVars("Jet_DeepCSV_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probb"));
+        // vars.FillVars("Jet_DeepCSV_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probbb"));
+        // vars.FillVars("Jet_DeepCSV_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probc"));
+        // vars.FillVars("Jet_DeepCSV_udsg", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probudsg"));
 
         vars.FillVars("Jet_DeepJetCSV", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "DeepJet"));
         vars.FillVars("Jet_DeepJet_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probb"));
@@ -320,47 +328,55 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     //     }
 
     // Tagged Jets
-    for (std::vector< pat::Jet >::iterator itTaggedJet = selectedTaggedJets.begin(); itTaggedJet != selectedTaggedJets.end(); ++itTaggedJet) {
-        int iTaggedJet = itTaggedJet - selectedTaggedJets.begin();
-        vars.FillVars("TaggedJet_E", iTaggedJet, itTaggedJet->energy());
-        vars.FillVars("TaggedJet_M", iTaggedJet, itTaggedJet->mass());
-        vars.FillVars("TaggedJet_Pt", iTaggedJet, itTaggedJet->pt());
-        vars.FillVars("TaggedJet_Eta", iTaggedJet, itTaggedJet->eta());
-        vars.FillVars("TaggedJet_Phi", iTaggedJet, itTaggedJet->phi());
-        vars.FillVars("TaggedJet_CSV", iTaggedJet, CSVHelper::GetJetCSV(*itTaggedJet, btagger));
-        vars.FillVars("TaggedJet_Flav", iTaggedJet, itTaggedJet->hadronFlavour());
-        vars.FillVars("TaggedJet_PartonFlav", iTaggedJet, itTaggedJet->partonFlavour());
-        // vars.FillVars("TaggedJet_DeepJetCSV", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "DeepJet"));
-        // vars.FillVars("TaggedJet_DeepJet_b", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probb"));
-        // vars.FillVars("TaggedJet_DeepJet_bb", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probbb"));
-        // vars.FillVars("TaggedJet_DeepJet_lepb", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:problepb"));
-        // vars.FillVars("TaggedJet_DeepJet_c", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probc"));
-        // vars.FillVars("TaggedJet_DeepJet_uds", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probuds"));
-        // vars.FillVars("TaggedJet_DeepJet_g", iTaggedJet, CSVHelper::GetJetCSV_DNN(*itTaggedJet, "pfDeepFlavourJetTags:probg"));
+    for (std::vector< pat::Jet >::iterator itMediumTaggedJet = selectedTaggedJetsM.begin(); itMediumTaggedJet != selectedTaggedJetsM.end();
+         ++itMediumTaggedJet) {
+        int iMediumTaggedJet = itMediumTaggedJet - selectedTaggedJetsM.begin();
+        // vars.FillVars("MediumTaggedJet_E", iMediumTaggedJet, itMediumTaggedJet->energy());
+        // vars.FillVars("MediumTaggedJet_M", iMediumTaggedJet, itMediumTaggedJet->mass());
+        vars.FillVars("MediumTaggedJet_Pt", iMediumTaggedJet, itMediumTaggedJet->pt());
+        vars.FillVars("MediumTaggedJet_Eta", iMediumTaggedJet, itMediumTaggedJet->eta());
+        vars.FillVars("MediumTaggedJet_Phi", iMediumTaggedJet, itMediumTaggedJet->phi());
+        // vars.FillVars("MediumTaggedJet_CSV", iMediumTaggedJet, CSVHelper::GetJetCSV(*itMediumTaggedJet, btagger));
+        vars.FillVars("MediumTaggedJet_Flav", iMediumTaggedJet, itMediumTaggedJet->hadronFlavour());
+        // vars.FillVars("MediumTaggedJet_PartonFlav", iMediumTaggedJet, itMediumTaggedJet->partonFlavour());
     }
-    
+
     for (std::vector< pat::Jet >::iterator itLooseTaggedJet = selectedTaggedJetsL.begin(); itLooseTaggedJet != selectedTaggedJetsL.end(); ++itLooseTaggedJet) {
         int iLooseTaggedJet = itLooseTaggedJet - selectedTaggedJetsL.begin();
-        vars.FillVars("LooseTaggedJet_E", iLooseTaggedJet, itLooseTaggedJet->energy());
-        vars.FillVars("LooseTaggedJet_M", iLooseTaggedJet, itLooseTaggedJet->mass());
+        // vars.FillVars("LooseTaggedJet_E", iLooseTaggedJet, itLooseTaggedJet->energy());
+        // vars.FillVars("LooseTaggedJet_M", iLooseTaggedJet, itLooseTaggedJet->mass());
         vars.FillVars("LooseTaggedJet_Pt", iLooseTaggedJet, itLooseTaggedJet->pt());
         vars.FillVars("LooseTaggedJet_Eta", iLooseTaggedJet, itLooseTaggedJet->eta());
         vars.FillVars("LooseTaggedJet_Phi", iLooseTaggedJet, itLooseTaggedJet->phi());
-        vars.FillVars("LooseTaggedJet_CSV", iLooseTaggedJet, CSVHelper::GetJetCSV(*itLooseTaggedJet, btagger));
+        // vars.FillVars("LooseTaggedJet_CSV", iLooseTaggedJet, CSVHelper::GetJetCSV(*itLooseTaggedJet, btagger));
         vars.FillVars("LooseTaggedJet_Flav", iLooseTaggedJet, itLooseTaggedJet->hadronFlavour());
-        vars.FillVars("LooseTaggedJet_PartonFlav", iLooseTaggedJet, itLooseTaggedJet->partonFlavour());
+        // vars.FillVars("LooseTaggedJet_PartonFlav", iLooseTaggedJet, itLooseTaggedJet->partonFlavour());
     }
-    
-    for (std::vector< pat::Jet >::iterator itUntaggedJet = selectedUntaggedJets.begin(); itUntaggedJet != selectedUntaggedJets.end(); ++itUntaggedJet) {
-        int iUntaggedJet = itUntaggedJet - selectedUntaggedJets.begin();
-        vars.FillVars("UntaggedJet_E", iUntaggedJet, itUntaggedJet->energy());
-        vars.FillVars("UntaggedJet_M", iUntaggedJet, itUntaggedJet->mass());
-        vars.FillVars("UntaggedJet_Pt", iUntaggedJet, itUntaggedJet->pt());
-        vars.FillVars("UntaggedJet_Eta", iUntaggedJet, itUntaggedJet->eta());
-        vars.FillVars("UntaggedJet_Phi", iUntaggedJet, itUntaggedJet->phi());
-        vars.FillVars("UntaggedJet_CSV", iUntaggedJet, CSVHelper::GetJetCSV(*itUntaggedJet, btagger));
-        vars.FillVars("UntaggedJet_Flav", iUntaggedJet, itUntaggedJet->hadronFlavour());
-        vars.FillVars("UntaggedJet_PartonFlav", iUntaggedJet, itUntaggedJet->partonFlavour());
+
+    for (std::vector< pat::Jet >::iterator itMediumUntaggedJet = selectedUntaggedJetsM.begin(); itMediumUntaggedJet != selectedUntaggedJetsM.end();
+         ++itMediumUntaggedJet) {
+        int iMediumUntaggedJet = itMediumUntaggedJet - selectedUntaggedJetsM.begin();
+        // vars.FillVars("MediumUntaggedJet_E", iMediumUntaggedJet, itMediumUntaggedJet->energy());
+        // vars.FillVars("MediumUntaggedJet_M", iMediumUntaggedJet, itMediumUntaggedJet->mass());
+        vars.FillVars("MediumUntaggedJet_Pt", iMediumUntaggedJet, itMediumUntaggedJet->pt());
+        vars.FillVars("MediumUntaggedJet_Eta", iMediumUntaggedJet, itMediumUntaggedJet->eta());
+        vars.FillVars("MediumUntaggedJet_Phi", iMediumUntaggedJet, itMediumUntaggedJet->phi());
+        // vars.FillVars("MediumUntaggedJet_CSV", iMediumUntaggedJet, CSVHelper::GetJetCSV(*itMediumUntaggedJet, btagger));
+        vars.FillVars("MediumUntaggedJet_Flav", iMediumUntaggedJet, itMediumUntaggedJet->hadronFlavour());
+        // vars.FillVars("MediumUntaggedJet_PartonFlav", iMediumUntaggedJet, itMediumUntaggedJet->partonFlavour());
+    }
+
+    for (std::vector< pat::Jet >::iterator itLooseUntaggedJet = selectedUntaggedJetsL.begin(); itLooseUntaggedJet != selectedUntaggedJetsL.end();
+         ++itLooseUntaggedJet) {
+        int iLooseUntaggedJet = itLooseUntaggedJet - selectedUntaggedJetsL.begin();
+        // vars.FillVars("LooseUntaggedJet_E", iLooseUntaggedJet, itLooseUntaggedJet->energy());
+        // vars.FillVars("LooseUntaggedJet_M", iLooseUntaggedJet, itLooseUntaggedJet->mass());
+        vars.FillVars("LooseUntaggedJet_Pt", iLooseUntaggedJet, itLooseUntaggedJet->pt());
+        vars.FillVars("LooseUntaggedJet_Eta", iLooseUntaggedJet, itLooseUntaggedJet->eta());
+        vars.FillVars("LooseUntaggedJet_Phi", iLooseUntaggedJet, itLooseUntaggedJet->phi());
+        // vars.FillVars("LooseUntaggedJet_CSV", iLooseUntaggedJet, CSVHelper::GetJetCSV(*itLooseUntaggedJet, btagger));
+        vars.FillVars("LooseUntaggedJet_Flav", iLooseUntaggedJet, itLooseUntaggedJet->hadronFlavour());
+        // vars.FillVars("LooseUntaggedJet_PartonFlav", iLooseUntaggedJet, itLooseUntaggedJet->partonFlavour());
     }
 
     vars.FillVar("Evt_Pt_MET_Puppi", input.correctedMETPuppi.corPt(pat::MET::Type1));
