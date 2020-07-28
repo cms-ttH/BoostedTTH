@@ -84,10 +84,12 @@
 
 #include "BoostedTTH/BoostedAnalyzer/interface/WeightProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MCMatchVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/microMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BoostedMCMatchVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/AdditionalJetProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BasicVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/essentialBasicVarProcessor.hpp"
+#include "BoostedTTH/BoostedAnalyzer/interface/microBasicVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/MVAVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/StdTopVarProcessor.hpp"
 #include "BoostedTTH/BoostedAnalyzer/interface/BDTVarProcessor.hpp"
@@ -488,6 +490,9 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
         if(std::find(processorNames.begin(),processorNames.end(),"essentialBasicVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new essentialBasicVarProcessor(),"essentialBasicVarProcessor");
         }
+        if(std::find(processorNames.begin(),processorNames.end(),"microBasicVarProcessor")!=processorNames.end()) {
+            treewriter->AddTreeProcessor(new microBasicVarProcessor(),"microBasicVarProcessor");
+        }
         if(std::find(processorNames.begin(),processorNames.end(),"essentialRecoVarProcessor")!=processorNames.end()) {
             treewriter->AddTreeProcessor(new essentialRecoVarProcessor(),"essentialRecoVarProcessor");
         }
@@ -536,11 +541,14 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig):
     //    if(std::find(processorNames.begin(),processorNames.end(),"BoostedTopAk4HiggsFromAk4CVarProcessor")!=processorNames.end()) {
     //        treewriter->AddTreeProcessor(new ttHVarProcessor(BoostedRecoType::BoostedTopAk4HiggsFromAk4C,&helper,TopTag::TMVA,TopTag::CSV,"BDTTopTagger_BDTG_Std.weights.xml",boosted::SubjetType::SF_Filter,HiggsTag::SecondCSV,"","BoostedTopAk4HiggsFromAk4Cluster_",doBoostedMEM),"BoostedTopAk4HiggsFromAk4CVarProcessor");
     //    }
-     if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
+    if(std::find(processorNames.begin(),processorNames.end(),"MCMatchVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new MCMatchVarProcessor(),"MCMatchVarProcessor");
     }
     if(std::find(processorNames.begin(),processorNames.end(),"essentialMCMatchVarProcessor")!=processorNames.end()) {
         treewriter->AddTreeProcessor(new essentialMCMatchVarProcessor(),"essentialMCMatchVarProcessor");
+    }
+    if(std::find(processorNames.begin(),processorNames.end(),"microMCMatchVarProcessor")!=processorNames.end()) {
+        treewriter->AddTreeProcessor(new microMCMatchVarProcessor(),"microMCMatchVarProcessor");
     }
     //if(std::find(processorNames.begin(),processorNames.end(),"BoostedMCMatchVarProcessor")!=processorNames.end()) {
     //    treewriter->AddTreeProcessor(new BoostedMCMatchVarProcessor(),"BoostedMCMatchVarProcessor");

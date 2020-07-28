@@ -212,6 +212,9 @@ void essentialBasicVarProcessor::Init(const InputCollections& input,VariableCont
     
     
     vars.InitVars( "CSV","N_Jets" );
+    vars.InitVar("Evt_HT");
+    vars.InitVar("Evt_HT_jets");
+    vars.InitVar("Evt_HT_wo_MET");
     vars.InitVar("N_HEM_Jets", "I");
     vars.InitVar("N_HEM_LooseElectrons", "I");
     vars.InitVar("N_HEM_LooseMuons", "I");
@@ -266,10 +269,16 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     
     // Fill Jet Variables
     int N_HEM_Jets = 0;
+    double ht = 0;
+    double ht_jets = 0;
+    double ht_woMET = 0;
     // All Jets
     for(std::vector<pat::Jet>::const_iterator itJet = input.selectedJets.begin() ; itJet != input.selectedJets.end(); ++itJet)
     {
         int iJet = itJet - input.selectedJets.begin();
+        ht+=itJet->pt();
+        ht_jets+=itJet->pt();
+        ht_woMET+=itJet->pt();
         vars.FillVars( "Jet_E",iJet,itJet->energy() );
         vars.FillVars( "Jet_M",iJet,itJet->mass() );
         vars.FillVars( "Jet_Pt",iJet,itJet->pt() );
@@ -385,6 +394,8 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
     for(auto itLep = tightLeptonVecs.begin(); itLep != tightLeptonVecs.end(); ++itLep)
     {
         int iLep = itLep - tightLeptonVecs.begin();
+        ht+=itLep->Pt();
+        ht_woMET+=itLep->Pt();
         vars.FillVars( "TightLepton_E",iLep,itLep->E() );
         vars.FillVars( "TightLepton_M",iLep,itLep->M() );
         vars.FillVars( "TightLepton_Pt",iLep,itLep->Pt() );
@@ -556,6 +567,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         }
     }
     
+    ht+=input.correctedMET.corPt(pat::MET::Type1XY);
     vars.FillVar( "Evt_MET_Pt",input.correctedMET.corPt(pat::MET::Type1XY) );
     vars.FillVar( "Evt_MET_Phi",input.correctedMET.corPhi(pat::MET::Type1XY) );
     if(input.correctedMET.genMET()!=0)
@@ -564,6 +576,9 @@ void essentialBasicVarProcessor::Process(const InputCollections& input,VariableC
         vars.FillVar( "Gen_MET_Phi",input.correctedMET.genMET()->phi() );
     }
     
+    vars.FillVar("Evt_HT", ht);
+    vars.FillVar("Evt_HT_jets", ht_jets);
+    vars.FillVar("Evt_HT_wo_MET", ht_woMET);
     //std::vector<math::XYZTLorentzVector> jetvecs = BoostedUtils::GetJetVecs(input.selectedJets);
     //math::XYZTLorentzVector metvec = input.correctedMET.corP4(pat::MET::Type1XY);
     
