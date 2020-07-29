@@ -512,8 +512,8 @@ std::vector< float > SelectedLeptonProducer::GetElectronIDSF(const pat::Electron
     auto ymax = SF_hist->GetYaxis()->GetXmax();
 
     // make sure to stay within the range ot the histograms
-    eta = std::max(xmin + 0.1, eta);
-    eta = std::min(xmax - 0.1, eta);
+    eta = std::max(xmin + 0.01, eta);
+    eta = std::min(xmax - 0.01, eta);
     pt  = std::max(ymin + 0.1, pt);
     pt  = std::min(ymax - 0.1, pt);
 
@@ -557,8 +557,8 @@ std::vector< float > SelectedLeptonProducer::GetElectronRecoSF(const pat::Electr
     auto ymax = SF_hist->GetYaxis()->GetXmax();
 
     // make sure to stay within the range ot the histograms
-    eta = std::max(xmin + 0.1, eta);
-    eta = std::min(xmax - 0.1, eta);
+    eta = std::max(xmin + 0.01, eta);
+    eta = std::min(xmax - 0.01, eta);
     pt  = std::max(ymin + 0.1, pt);
     pt  = std::min(ymax - 0.1, pt);
 
@@ -732,8 +732,8 @@ std::vector< float > SelectedLeptonProducer::GetMuonIDSF(const pat::Muon& iMuon,
     // make sure to stay within the range of the histograms
     pt  = std::max(xmin + 0.1, pt);
     pt  = std::min(xmax - 0.1, pt);
-    eta = std::max(ymin + 0.1, eta);
-    eta = std::min(ymax - 0.1, eta);
+    eta = std::max(ymin + 0.01, eta);
+    eta = std::min(ymax - 0.01, eta);
 
     // find bin in the scale factor histogram
     auto bin = SF_hist->FindBin(pt, eta);
@@ -792,8 +792,8 @@ std::vector< float > SelectedLeptonProducer::GetMuonISOSF(const pat::Muon& iMuon
     // make sure to stay within the range of the histograms
     pt  = std::max(xmin + 0.1, pt);
     pt  = std::min(xmax - 0.1, pt);
-    eta = std::max(ymin + 0.1, eta);
-    eta = std::min(ymax - 0.1, eta);
+    eta = std::max(ymin + 0.01, eta);
+    eta = std::min(ymax - 0.01, eta);
 
     // find bin in the scale factor histogram
     auto bin = SF_hist->FindBin(pt, eta);

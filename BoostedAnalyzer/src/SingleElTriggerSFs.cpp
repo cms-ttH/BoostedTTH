@@ -67,10 +67,10 @@ std::vector< float > SingleElTriggerSFs::CalculateTriggerSFs(const InputCollecti
         // make sure to stay within the range ot the histograms
         pt  = std::max(ymin + 0.1, input.selectedElectronsLoose.at(0).pt());
         pt  = std::min(float(ymax - 0.1), float(pt));
-        eta = std::max(xmin + 0.1, input.selectedElectronsLoose.at(0).superCluster().isAvailable()
+        eta = std::max(xmin + 0.01, input.selectedElectronsLoose.at(0).superCluster().isAvailable()
                                        ? input.selectedElectronsLoose.at(0).superCluster()->position().eta()
                                        : input.selectedElectronsLoose.at(0).eta());
-        eta = std::min(float(xmax - 0.1), float(eta));
+        eta = std::min(float(xmax - 0.01), float(eta));
         // std::cout << "Pt: " << pt << std::endl;
         // std::cout << "Eta: " << eta << std::endl;
         // calculate SFs here
@@ -82,10 +82,10 @@ std::vector< float > SingleElTriggerSFs::CalculateTriggerSFs(const InputCollecti
         // make sure to stay within the range ot the histograms
         pt  = std::max(xmin + 0.1, input.selectedElectronsLoose.at(0).pt());
         pt  = std::min(float(xmax - 0.1), float(pt));
-        eta = std::max(ymin + 0.1, input.selectedElectronsLoose.at(0).superCluster().isAvailable()
+        eta = std::max(ymin + 0.01, input.selectedElectronsLoose.at(0).superCluster().isAvailable()
                                        ? input.selectedElectronsLoose.at(0).superCluster()->position().eta()
                                        : input.selectedElectronsLoose.at(0).eta());
-        eta = std::min(float(ymax - 0.1), float(eta));
+        eta = std::min(float(ymax - 0.01), float(eta));
         // std::cout << "Pt: " << pt << std::endl;
         // std::cout << "Eta: " << eta << std::endl;
         // calculate SFs here

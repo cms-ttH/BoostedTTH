@@ -67,8 +67,8 @@ std::vector< float > SingleMuTriggerSFs::CalculateTriggerSFs(const InputCollecti
     // make sure to stay within the range ot the histograms
     pt  = std::max(xmin + 0.1, input.selectedMuonsLoose.at(0).pt());
     pt  = std::min(float(xmax - 0.1), float(pt));
-    eta = std::max(ymin + 0.1, fabs(input.selectedMuonsLoose.at(0).eta()));
-    eta = std::min(float(ymax - 0.1), float(eta));
+    eta = std::max(ymin + 0.01, fabs(input.selectedMuonsLoose.at(0).eta()));
+    eta = std::min(float(ymax - 0.01), float(eta));
     // std::cout << "Pt: " << pt << std::endl;
     // std::cout << "Eta: " << eta << std::endl;
     // calculate SFs here

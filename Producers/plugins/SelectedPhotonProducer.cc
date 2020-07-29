@@ -239,8 +239,8 @@ std::vector< float > SelectedPhotonProducer::GetPhotonIDSF(const pat::Photon& iP
         auto xmin = SF_hist_Monojet->GetXaxis()->GetXmin();
         auto xmax = SF_hist_Monojet->GetXaxis()->GetXmax();
         eta       = fabs(eta);
-        eta       = std::max(xmin + 0.1, eta);
-        eta       = std::min(xmax - 0.1, eta);
+        eta       = std::max(xmin + 0.01, eta);
+        eta       = std::min(xmax - 0.01, eta);
         SFs.at(0) = SF_hist_Monojet->GetBinContent(SF_hist_Monojet->FindBin(eta));
         SFs.at(1) = (SF_hist_Monojet->GetBinContent(SF_hist_Monojet->FindBin(eta))) + (SF_hist_Monojet->GetBinError(SF_hist_Monojet->FindBin(eta)));
         SFs.at(2) = (SF_hist_Monojet->GetBinContent(SF_hist_Monojet->FindBin(eta))) - (SF_hist_Monojet->GetBinError(SF_hist_Monojet->FindBin(eta)));
@@ -253,8 +253,8 @@ std::vector< float > SelectedPhotonProducer::GetPhotonIDSF(const pat::Photon& iP
         auto ymax = SF_hist->GetYaxis()->GetXmax();
 
         // make sure to stay within the range ot the histograms
-        eta = std::max(xmin + 0.1, eta);
-        eta = std::min(xmax - 0.1, eta);
+        eta = std::max(xmin + 0.01, eta);
+        eta = std::min(xmax - 0.01, eta);
         pt  = std::max(ymin + 0.1, pt);
         pt  = std::min(ymax - 0.1, pt);
 
