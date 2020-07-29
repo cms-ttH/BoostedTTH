@@ -198,7 +198,7 @@ if not options.inputFiles:
             ]
         elif "2017" in options.dataEra:
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_Monotop_skims_2017_102X_v1/191227_111420/0000/Skim_9.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/kelmorab/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/KIT_Monotop_skims_2017_102X_v2/200710_140534/0000/Skim_9.root"
             ]
         elif "2018" in options.dataEra:
             options.inputFiles = [
@@ -212,7 +212,7 @@ if not options.inputFiles:
             ]
         elif "2017" in options.dataEra:
             options.inputFiles = [
-                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_2017_102X_Run2017F_v1/191225_110902/0000/Skim_99.root"
+                "file:///pnfs/desy.de/cms/tier2/store/user/mwassmer/MET/KIT_Monotop_skims_2017_102X_Run2017F_v2/200710_140149/0000/Skim_99.root"
             ]
         elif "2018" in options.dataEra:
             options.inputFiles = [
