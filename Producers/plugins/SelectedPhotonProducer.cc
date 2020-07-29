@@ -13,7 +13,8 @@ SelectedPhotonProducer::SelectedPhotonProducer(const edm::ParameterSet& iConfig)
     EDMRhoToken{consumes< double >(iConfig.getParameter< edm::InputTag >("rho"))},
     EDMVertexToken{consumes< reco::VertexCollection >(iConfig.getParameter< edm::InputTag >("vertices"))},
     EDMPhotonsToken{consumes< pat::PhotonCollection >(iConfig.getParameter< edm::InputTag >("photons"))},
-    EDMElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("electrons"))}
+    EDMElectronsToken{consumes< pat::ElectronCollection >(iConfig.getParameter< edm::InputTag >("electrons"))},
+    EDMMuonsToken{consumes< pat::MuonCollection >(iConfig.getParameter< edm::InputTag >("muons"))}
 
 {
     if (era.find("2016") == std::string::npos and era.find("2017") == std::string::npos and era.find("2018") == std::string::npos) {
@@ -114,9 +115,17 @@ void SelectedPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
         std::cerr << "\n\nERROR: retrieved electron collection is not valid" << std::endl;
         throw std::exception();
     }
+    // get input muon collection
+    edm::Handle< pat::MuonCollection > inputMuons;
+    iEvent.getByToken(EDMMuonsToken, inputMuons);
+    if (not inputMuons.isValid()) {
+        std::cerr << "\n\nERROR: retrieved muon collection is not valid" << std::endl;
+        throw std::exception();
+    }
 
     for (size_t i = 0; i < ptMins_.size(); i++) {
         std::vector< pat::Photon > updatedPhotons  = GetDeltaRCleanedPhotons(*inputPhotons, *inputElectrons, 0.5);
+        updatedPhotons = GetDeltaRCleanedPhotons(updatedPhotons, *inputMuons, 0.5);
         std::vector< pat::Photon > selectedPhotons = GetSortedByPt(GetSelectedPhotons(updatedPhotons, ptMins_.at(i), etaMaxs_.at(i), photonIDs_.at(i)));
         if (not isData) AddPhotonSFs(selectedPhotons, photonIDs_.at(i));
         // produce the different photon collections and create a unique ptr to it
@@ -266,6 +275,24 @@ std::vector< pat::Photon > SelectedPhotonProducer::GetDeltaRCleanedPhotons(const
         bool overlap = false;
         for (auto& el : inputElectrons) {
             if (reco::deltaR(ph.p4(), el.p4()) < DeltaR) {
+                overlap = true;
+                break;
+            }
+        }
+        if (overlap) continue;
+        cleaned_photons.push_back(ph);
+    }
+    return cleaned_photons;
+}
+
+std::vector< pat::Photon > SelectedPhotonProducer::GetDeltaRCleanedPhotons(const std::vector< pat::Photon >&   inputPhotons,
+                                                                           const std::vector< pat::Muon >& inputMuons, const float DeltaR) const
+{
+    std::vector< pat::Photon > cleaned_photons;
+    for (const auto& ph : inputPhotons) {
+        bool overlap = false;
+        for (auto& mu : inputMuons) {
+            if (reco::deltaR(ph.p4(), mu.p4()) < DeltaR) {
                 overlap = true;
                 break;
             }

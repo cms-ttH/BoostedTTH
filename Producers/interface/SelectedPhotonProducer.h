@@ -18,6 +18,7 @@
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
 
 #include "TH2F.h"
 #include "TFile.h"
@@ -46,6 +47,8 @@ class SelectedPhotonProducer : public edm::EDProducer {
     std::vector< float >       GetPhotonIDSF(const pat::Photon& iPhoton, const PhotonID iPhotonID) const;
     std::vector< pat::Photon > GetDeltaRCleanedPhotons(const std::vector< pat::Photon >& inputPhotons, const std::vector< pat::Electron >& inputElectrons,
                                                        const float DeltaR) const;
+    std::vector< pat::Photon > GetDeltaRCleanedPhotons(const std::vector< pat::Photon >& inputPhotons, const std::vector< pat::Muon >& inputMuons,
+                                                       const float DeltaR) const;
     // ----------member data ---------------------------
     const std::string          era;
     const bool                 isData;
@@ -64,7 +67,8 @@ class SelectedPhotonProducer : public edm::EDProducer {
     edm::EDGetTokenT< pat::PhotonCollection > EDMPhotonsToken;
     // electrons
     edm::EDGetTokenT< pat::ElectronCollection > EDMElectronsToken;
-
+    // muons
+    edm::EDGetTokenT< pat::MuonCollection > EDMMuonsToken;
     std::vector< PhotonID > photonIDs_;
     // primary vertex
     reco::Vertex vertex;

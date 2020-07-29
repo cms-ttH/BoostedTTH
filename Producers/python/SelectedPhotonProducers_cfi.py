@@ -6,6 +6,7 @@ SelectedPhotonProducer2017 = cms.EDProducer(
     era=cms.string("2017"),
     photons=cms.InputTag("slimmedPhotons"),
     electrons=cms.InputTag("slimmedElectrons"),
+    muons=cms.InputTag("slimmedMuons"),
     vertices=cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     ptMins=cms.vdouble(15),

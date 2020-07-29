@@ -850,6 +850,9 @@ process.SelectedMuonProducer.era = options.dataEra
 process.SelectedPhotonProducer.electrons = cms.InputTag(
     "SelectedElectronProducer:selectedElectronsLoose"
 )
+process.SelectedPhotonProducer.muons = cms.InputTag(
+    "SelectedMuonProducer:selectedMuonsLoose"
+)
 process.SelectedPhotonProducer.etaMaxs = [2.5, 1.479]
 process.SelectedPhotonProducer.IDs = ["loose", "medium"]
 process.SelectedPhotonProducer.collectionNames = [
