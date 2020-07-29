@@ -222,6 +222,17 @@ bool SelectedJetProducer::isGoodJet(const pat::Jet &iJet, const float iMinPt, co
             else
                 passesID = passesID && (iJet.chargedEmEnergyFraction() < 0.80);
             break;
+        case JetID::Matteo:
+            // works for 2016 tight ID (CHS and Puppi), 2017 tight ID (CHS and Puppi), and 2018 tight ID (CHS and Puppi). Only take this for jets with
+            // |eta|<=2.4, otherwise recheck!
+            passesID = (iJet.neutralHadronEnergyFraction() < 0.80) && (iJet.neutralEmEnergyFraction() < 0.90) && (iJet.chargedHadronEnergyFraction() > 0.1) &&
+                       (multiplicity > 1);
+            if (fabs(iJet.eta()) < 2.4) { passesID = passesID && (iJet.chargedHadronEnergyFraction() > 0.0) && (charged_multiplicity > 0); }
+            if (era.find("2016") != std::string::npos)
+                passesID = passesID && (iJet.chargedEmEnergyFraction() < 0.90);
+            else
+                passesID = passesID && (iJet.chargedEmEnergyFraction() < 0.80);
+            break;
         case JetID::None: passesID = true; break;
         default:
             std::cerr << "\n\nERROR: Unknown Jet ID " << jetType << std::endl;
@@ -658,6 +669,8 @@ SelectedJetProducer::JetID SelectedJetProducer::TranslateJetIDStringToEnum(const
         jet_id_enum = JetID::Tight;
     else if (jet_id_str == "tightlepveto")
         jet_id_enum = JetID::TightLepVeto;
+    else if (jet_id_str == "matteo")
+        jet_id_enum = JetID::Matteo;
     else {
         std::cerr << "\n\nERROR: No matching JetID found for: " << jet_id_str << std::endl;
         throw std::exception();

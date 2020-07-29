@@ -77,7 +77,7 @@ class SelectedJetProducer : public edm::stream::EDProducer<> {
     static void fillDescriptions(edm::ConfigurationDescriptions &descriptions);
 
     // some enums to make things nicer
-    enum class JetID { None, Loose, Tight, TightLepVeto };
+    enum class JetID { None, Loose, Tight, TightLepVeto, Matteo };
     enum class PUJetIDWP { None, Loose, Medium, Tight };
     enum class JetType { AK4PFCHS, AK4PFPUPPI, AK8PFCHS, AK8PFPUPPI, AK15PFPUPPI };
 
