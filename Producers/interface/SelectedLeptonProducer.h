@@ -48,6 +48,8 @@
 #include "TH2F.h"
 #include "TFile.h"
 
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
+
 #include "BoostedTTH/Producers/interface/RoccoR.h"  // this is needed to calculate the correction factors of the rochester correction
 //
 // class declaration

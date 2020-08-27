@@ -592,16 +592,16 @@ bool SelectedLeptonProducer::isGoodMuon(const pat::Muon& iMuon, const double iMi
     bool passesIso        = false;
     switch (iMuonID) {
         case MuonID::None: passesID = true; break;
-        case MuonID::Loose: passesID = muon::isLooseMuon(iMuon); break;
-        case MuonID::Medium: passesID = muon::isMediumMuon(iMuon); break;
-        case MuonID::Tight: passesID = muon::isTightMuon(iMuon, vertex); break;
+        case MuonID::Loose: passesID = iMuon.passed(reco::Muon::CutBasedIdLoose); break;
+        case MuonID::Medium: passesID = iMuon.passed(reco::Muon::CutBasedIdMedium); break;
+        case MuonID::Tight: passesID = iMuon.passed(reco::Muon::CutBasedIdTight); break;
         default: std::cerr << "\n\nERROR: InvalidMuonID" << std::endl; throw std::exception();
     }
     switch (imuonIso) {
         case MuonIsolation::None: passesIso = true; break;
-        case MuonIsolation::Loose: passesIso = iMuon.passed(pat::Muon::PFIsoLoose); break;
-        case MuonIsolation::Medium: passesIso = iMuon.passed(pat::Muon::PFIsoMedium); break;
-        case MuonIsolation::Tight: passesIso = iMuon.passed(pat::Muon::PFIsoTight); break;
+        case MuonIsolation::Loose: passesIso = iMuon.passed(reco::Muon::PFIsoLoose); break;
+        case MuonIsolation::Medium: passesIso = iMuon.passed(reco::Muon::PFIsoMedium); break;
+        case MuonIsolation::Tight: passesIso = iMuon.passed(reco::Muon::PFIsoTight); break;
         default: std::cerr << "\n\nERROR: InvalidMuonIso" << std::endl; throw std::exception();
     }
     return passesKinematics and passesID and passesIso;
