@@ -37,7 +37,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
         leptonType_ = LeptonType::Tau;
     else {
         std::cerr << "\n\nERROR: Unknown lepton type " << leptonType << std::endl;
-        std::cerr << "Please select 'electron' or 'muon'\n" << std::endl;
+        std::cerr << "Please select 'electron' or 'muon' or 'tau'\n" << std::endl;
         throw std::exception();
     }
 
@@ -48,7 +48,7 @@ SelectedLeptonProducer::SelectedLeptonProducer(const edm::ParameterSet& iConfig)
     }
 
     // fill lepton selection criteria with default values
-    electronIDs_  = std::vector< ElectronID >(leptonIDs.size(), ElectronID::Loose);
+    electronIDs_  = std::vector< ElectronID >(leptonIDs.size(), ElectronID::Veto);
     muonIDs_      = std::vector< MuonID >(leptonIDs.size(), MuonID::Loose);
     tauIDs_       = std::vector< TauID >(leptonIDs.size(), TauID::Loose);
     IsoConeSizes_ = std::vector< IsoConeSize >(leptonIDs.size(), IsoConeSize::R03);
