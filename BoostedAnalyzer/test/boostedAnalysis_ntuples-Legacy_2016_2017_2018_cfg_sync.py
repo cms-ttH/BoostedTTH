@@ -589,6 +589,13 @@ if options.recorrectMET:
     runMetCorAndUncFromMiniAOD(
         process,
         isData=options.isData,
+        fixEE2017=True if "2017" in options.dataEra else False,
+        fixEE2017Params={
+            "userawPt": True,
+            "ptThreshold": 50.0,
+            "minEtaThreshold": 2.65,
+            "maxEtaThreshold": 3.139,
+        },
         metType="Puppi",
         postfix="Puppi",
         jetFlavor="AK4PFPuppi",
@@ -784,7 +791,7 @@ from BoostedTTH.Producers.SelectedPhotonProducers_cfi import *
 
 if "2016" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2016
-    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 29.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 30.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2016
     process.SelectedMuonProducer.ptMins = [20.0, 20.0, 30.0]
