@@ -117,7 +117,7 @@ SelectedMuonProducer2017 = cms.EDProducer(
     isoConeSizes=cms.vstring("R04"),
     isoCorrTypes=cms.vstring("deltaBeta"),
     muonIsoTypes=cms.vstring("loose"),
-    useMuonRC=cms.bool(True),
+    useMuonRC=cms.bool(False),
     useDeterministicSeeds=cms.bool(False),
     rc_dir=cms.string("BoostedTTH/Producers/data/muonSFs/RoccoR2017.txt"),
     # The following two parameters are dummies in case of muons
