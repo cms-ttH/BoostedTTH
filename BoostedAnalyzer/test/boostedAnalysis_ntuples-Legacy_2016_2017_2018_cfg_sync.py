@@ -565,6 +565,8 @@ process.GlobalTag.toGet = cms.VPSet(
 # )
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
+if "2017" in options.dataEra:
+    options.recorrectMET = True
 
 if options.recorrectMET:
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import (
