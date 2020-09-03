@@ -232,6 +232,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_isbbmatch", "N_AK15Jets");
     vars.InitVars("AK15Jet_iscmatch", "N_AK15Jets");
     vars.InitVars("AK15Jet_isccmatch", "N_AK15Jets");
+    vars.InitVars("AK15Jet_topmatch", "N_AK15Jets");
 
     // gentypes according to https://github.com/mcremone/decaf/blob/master/analysis/processors/darkhiggs.py#L1310-L1413
     // vars.InitVars("AK15Jet_match_xbb", "N_AK15Jets");
@@ -648,6 +649,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             BQuarksFromAntiTop    = input.genDarkMatterEvt.ReturnBQuarksFromAntiTop();
             BQuarks               = input.genDarkMatterEvt.ReturnBQuarks();
             CQuarks               = input.genDarkMatterEvt.ReturnCQuarks();
+            TQuarks               = input.genDarkMatterEvt.ReturnTQuarks();
 
             RemoveParticlesOutsideOfJet(ak15jet);
 
@@ -682,6 +684,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             bool isbbmatch_ = isbbmatch();
             bool iscmatch_  = iscmatch();
             bool isccmatch_ = isccmatch();
+            bool topmatch_  = istopmatch();
 
             vars.FillVars("AK15Jet_tbqqmatch", i, tbqqmatch_);
             vars.FillVars("AK15Jet_tbcqmatch", i, tbcqmatch_);
@@ -698,6 +701,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             vars.FillVars("AK15Jet_isbbmatch", i, isbbmatch_);
             vars.FillVars("AK15Jet_iscmatch", i, iscmatch_);
             vars.FillVars("AK15Jet_isccmatch", i, isccmatch_);
+            vars.FillVars("AK15Jet_topmatch", i, topmatch_);
 
             // gentypes according to  https://github.com/mcremone/decaf/blob/master/analysis/processors/darkhiggs.py#L1310-L1413
             // bool flag_xbb =
@@ -770,6 +774,10 @@ void JetVarProcessor::RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR)
     CQuarks.erase(
         std::remove_if(CQuarks.begin(), CQuarks.end(), [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
         CQuarks.end());
+    
+    TQuarks.erase(
+        std::remove_if(TQuarks.begin(), TQuarks.end(), [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
+        TQuarks.end());
 }
 
 bool JetVarProcessor::tbqqmatch()
@@ -914,6 +922,12 @@ bool JetVarProcessor::zccmatch()
 bool JetVarProcessor::zqqmatch()
 {  // not needed ?
     return false;
+}
+
+bool JetVarProcessor::istopmatch()
+{
+    bool flag = TQuarks.size() == 1;
+    return flag;
 }
 
 const reco::Candidate* JetVarProcessor::FindMother(reco::GenParticle particle)

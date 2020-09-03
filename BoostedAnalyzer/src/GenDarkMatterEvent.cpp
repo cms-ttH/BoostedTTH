@@ -96,6 +96,10 @@ void GenDarkMatterEvent::Fill()
         if (abs(genparticle.pdgId()) == 4 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
             CQuarks.push_back(genparticle);
         }
+        // top quarks
+        if (abs(genparticle.pdgId()) == 6 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
+            TQuarks.push_back(genparticle);
+        }
     }
     // find all final state hadrons in the event from the the packedGenParticles collection
     for (const pat::PackedGenParticle& genparticle : packedGenParticles) {
@@ -347,3 +351,4 @@ std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnLightQuarksFromWMinus
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnCQuarksFromWMinus() const { return CQuarksFromWMinus; }
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnBQuarks() const { return BQuarks; }
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnCQuarks() const { return CQuarks; }
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnTQuarks() const { return TQuarks; }

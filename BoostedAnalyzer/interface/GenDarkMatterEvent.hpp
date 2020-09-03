@@ -55,6 +55,7 @@ class GenDarkMatterEvent {
     std::vector< reco::GenParticle > ReturnBQuarksFromAntiTop() const;
     std::vector< reco::GenParticle > ReturnBQuarks() const;
     std::vector< reco::GenParticle > ReturnCQuarks() const;
+    std::vector< reco::GenParticle > ReturnTQuarks() const;
 
    private:
     bool hasDarkMatter = false;
@@ -98,6 +99,7 @@ class GenDarkMatterEvent {
     std::vector< reco::GenParticle > BQuarksFromAntiTop;
     std::vector< reco::GenParticle > BQuarks;
     std::vector< reco::GenParticle > CQuarks;
+    std::vector< reco::GenParticle > TQuarks;
 };
 
 #endif
