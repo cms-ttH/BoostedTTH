@@ -23,6 +23,8 @@ void LeptonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     vars.InitVars("LooseMuon_RelIso", "N_LooseMuons");
     vars.InitVars("LooseMuon_Charge", "N_LooseMuons");
     vars.InitVars("LooseMuon_Pt_BeForeRC", "N_LooseMuons");
+    vars.InitVars("LooseMuon_IP_dz", "N_LooseMuons");
+    vars.InitVars("LooseMuon_IP_dxy", "N_LooseMuons");
     vars.InitVars("LooseMuon_roccorSF", "N_LooseMuons");
     vars.InitVars("LooseMuon_roccorSFUp", "N_LooseMuons");
     vars.InitVars("LooseMuon_roccorSFDown", "N_LooseMuons");
@@ -41,6 +43,8 @@ void LeptonVarProcessor::Init(const InputCollections& input, VariableContainer& 
     vars.InitVars("Muon_RelIso", "N_TightMuons");
     vars.InitVars("Muon_Charge", "N_TightMuons");
     vars.InitVars("Muon_Pt_BeForeRC", "N_TightMuons");
+    vars.InitVars("Muon_IP_dz", "N_TightMuons");
+    vars.InitVars("Muon_IP_dxy", "N_TightMuons");
     vars.InitVars("Muon_roccorSF", "N_TightMuons");
     vars.InitVars("Muon_roccorSFUp", "N_TightMuons");
     vars.InitVars("Muon_roccorSFDown", "N_TightMuons");
@@ -230,6 +234,9 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
 
         vars.FillVars("LooseMuon_Charge", iMu, itMu->charge());
         if (itMu->hasUserFloat("PtbeforeRC")) vars.FillVars("LooseMuon_Pt_BeForeRC", iMu, itMu->userFloat("PtbeforeRC"));
+        
+        if (itMu->hasUserFloat("IP_dz")) vars.FillVars("LooseMuon_IP_dz", iMu, itMu->userFloat("IP_dz"));
+        if (itMu->hasUserFloat("IP_dxy")) vars.FillVars("LooseMuon_IP_dxy", iMu, itMu->userFloat("IP_dxy"));
 
         if (itMu->hasUserFloat("roccorSF")) vars.FillVars("LooseMuon_roccorSF", iMu, itMu->userFloat("roccorSF"));
 
@@ -260,6 +267,9 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
 
         vars.FillVars("Muon_Charge", iMu, itMu->charge());
         if (itMu->hasUserFloat("PtbeforeRC")) vars.FillVars("Muon_Pt_BeForeRC", iMu, itMu->userFloat("PtbeforeRC"));
+        
+        if (itMu->hasUserFloat("IP_dz")) vars.FillVars("Muon_IP_dz", iMu, itMu->userFloat("IP_dz"));
+        if (itMu->hasUserFloat("IP_dxy")) vars.FillVars("Muon_IP_dxy", iMu, itMu->userFloat("IP_dxy"));
 
         if (itMu->hasUserFloat("roccorSF")) vars.FillVars("Muon_roccorSF", iMu, itMu->userFloat("roccorSF"));
 

@@ -324,6 +324,10 @@ void SelectedLeptonProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
 
             std::vector< pat::Muon > selectedMuons = GetSortedByPt(
                 GetSelectedMuons(updatedMuons, ptMins_.at(i), muonIDs_.at(i), IsoConeSizes_.at(i), IsoCorrTypes_.at(i), etaMaxs_.at(i), muonIsos_.at(i)));
+            for(auto& muon : selectedMuons){
+                muon.addUserFloat("IP_dz",fabs(muon.muonBestTrack()->dz(vertex.position())));
+                muon.addUserFloat("IP_dxy",fabs(muon.muonBestTrack()->dxy(vertex.position())));
+            }
             if (not isData) AddMuonSFs(selectedMuons, muonIDs_.at(i), muonIsos_.at(i));
             // produce the different muon collections and create a unique ptr to it
             std::unique_ptr< pat::MuonCollection > selectedLeptons = std::make_unique< pat::MuonCollection >(selectedMuons);
