@@ -793,7 +793,7 @@ from BoostedTTH.Producers.SelectedPhotonProducers_cfi import *
 
 if "2016" in options.dataEra:
     process.SelectedElectronProducer = SelectedElectronProducer2016
-    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 30.0]
+    process.SelectedElectronProducer.ptMins = [10.0, 20.0, 40.0]
     ###
     process.SelectedMuonProducer = SelectedMuonProducer2016
     process.SelectedMuonProducer.ptMins = [20.0, 20.0, 30.0]
