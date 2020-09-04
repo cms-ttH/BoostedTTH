@@ -177,8 +177,8 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     math::XYZTLorentzVector gen_hadr_recoil_p4(0., 0., 0., 0.);
 
     // GenMET
-    if (input.correctedMETPuppi.genMET() != 0) {
-        if (input.correctedMETPuppi.genMET()->pt() < 1) {  // fix for broken GenMET in MadGraphMonoJetSamples
+    if (input.correctedMET.genMET() != 0) {
+        if (input.correctedMET.genMET()->pt() < 1) {  // fix for broken GenMET in MadGraphMonoJetSamples
             if (input.genDarkMatterEvt.IsFilled()) {
                 const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
                 vars.FillVar("Evt_Pt_GenMET", DM_Evt.ReturnNaiveMET4Vector().Pt());
@@ -187,9 +187,9 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
             }
         }
         else {
-            vars.FillVar("Evt_Pt_GenMET", input.correctedMETPuppi.genMET()->pt());
-            vars.FillVar("Evt_Phi_GenMET", input.correctedMETPuppi.genMET()->phi());
-            gen_hadr_recoil_p4 = input.correctedMETPuppi.genMET()->p4();
+            vars.FillVar("Evt_Pt_GenMET", input.correctedMET.genMET()->pt());
+            vars.FillVar("Evt_Phi_GenMET", input.correctedMET.genMET()->phi());
+            gen_hadr_recoil_p4 = input.correctedMET.genMET()->p4();
         }
 
         // calculate gen hadronic recoil from gen MET
@@ -207,44 +207,44 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     math::XYZTLorentzVector hadr_recoil_p4(0., 0., 0., 0.);
 
     // get reco MET
-    if (input.systematic == Systematics::JESup) { met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetEnUp, pat::MET::Type1); }
+    if (input.systematic == Systematics::JESup) { met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnUp, pat::MET::Type1); }
     else if (input.systematic == Systematics::JESdown) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetEnDown, pat::MET::Type1);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetEnDown, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::JERup) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResUp, pat::MET::Type1);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResUp, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::JERdown) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::JetResDown, pat::MET::Type1);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::JetResDown, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::METUnclEnup) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnUp, pat::MET::Type1);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::UnclusteredEnUp, pat::MET::Type1);
     }
     else if (input.systematic == Systematics::METUnclEndown) {
-        met_p4 = input.correctedMETPuppi.shiftedP4(pat::MET::UnclusteredEnDown, pat::MET::Type1);
+        met_p4 = input.correctedMET.shiftedP4(pat::MET::UnclusteredEnDown, pat::MET::Type1);
     }
     else {
-        met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
+        met_p4 = input.correctedMET.corP4(pat::MET::Type1);
     }
 
     if (std::isnan(met_p4.pt())) {
         vars.FillVar("Problematic_MET", 1);
-        met_p4 = input.correctedMETPuppi.corP4(pat::MET::Type1);
+        met_p4 = input.correctedMET.corP4(pat::MET::Type1);
     }
     else {
         vars.FillVar("Problematic_MET", 0);
     }
 
-    math::XYZTLorentzVector calomet_p4(input.correctedMETPuppi.caloMETP2().px, input.correctedMETPuppi.caloMETP2().py, 0., 0.);
+    math::XYZTLorentzVector calomet_p4(input.correctedMET.caloMETP2().px, input.correctedMET.caloMETP2().py, 0., 0.);
 
     vars.FillVar("Evt_Pt_MET", met_p4.pt());
     vars.FillVar("Evt_Phi_MET", met_p4.phi());
-    vars.FillVar("Evt_Pt_MET_T1XY", input.correctedMETPuppi.corPt(pat::MET::Type1XY));
-    vars.FillVar("Evt_Phi_MET_T1XY", input.correctedMETPuppi.corPhi(pat::MET::Type1XY));
-    vars.FillVar("Evt_Pt_MET_UnclEnUp", input.correctedMETPuppi.shiftedPt(pat::MET::UnclusteredEnUp, pat::MET::Type1));
-    vars.FillVar("Evt_Pt_MET_UnclEnDown", input.correctedMETPuppi.shiftedPt(pat::MET::UnclusteredEnDown, pat::MET::Type1));
-    vars.FillVar("CaloMET", input.correctedMETPuppi.caloMETPt());
-    vars.FillVar("CaloMET_PFMET_ratio", fabs(met_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
+    vars.FillVar("Evt_Pt_MET_T1XY", input.correctedMET.corPt(pat::MET::Type1XY));
+    vars.FillVar("Evt_Phi_MET_T1XY", input.correctedMET.corPhi(pat::MET::Type1XY));
+    vars.FillVar("Evt_Pt_MET_UnclEnUp", input.correctedMET.shiftedPt(pat::MET::UnclusteredEnUp, pat::MET::Type1));
+    vars.FillVar("Evt_Pt_MET_UnclEnDown", input.correctedMET.shiftedPt(pat::MET::UnclusteredEnDown, pat::MET::Type1));
+    vars.FillVar("CaloMET", input.correctedMET.caloMETPt());
+    vars.FillVar("CaloMET_PFMET_ratio", fabs(met_p4.pt() - input.correctedMET.caloMETPt()) / input.correctedMET.caloMETPt());
     vars.FillVar("CaloMET_PFMET_vec_ratio", (met_p4 - calomet_p4).pt() / calomet_p4.pt());
 
     // transverse W mass
@@ -286,8 +286,8 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
 
     vars.FillVar("Hadr_Recoil_Pt", hadr_recoil_p4.pt());
     vars.FillVar("Hadr_Recoil_Phi", hadr_recoil_p4.phi());
-    vars.FillVar("CaloMET_Hadr_Recoil_ratio", fabs(hadr_recoil_p4.pt() - input.correctedMETPuppi.caloMETPt()) / input.correctedMETPuppi.caloMETPt());
-    vars.FillVar("CaloMET_PFMET_Recoil_ratio", fabs(met_p4.pt() - input.correctedMETPuppi.caloMETPt()) / hadr_recoil_p4.pt());
+    vars.FillVar("CaloMET_Hadr_Recoil_ratio", fabs(hadr_recoil_p4.pt() - input.correctedMET.caloMETPt()) / input.correctedMET.caloMETPt());
+    vars.FillVar("CaloMET_PFMET_Recoil_ratio", fabs(met_p4.pt() - input.correctedMET.caloMETPt()) / hadr_recoil_p4.pt());
     vars.FillVar("CaloMET_PFMET_Recoil_vec_ratio", (met_p4 - calomet_p4).pt() / hadr_recoil_p4.pt());
 
     vars.FillVar("N_AK15Jets_x_N_LooseElectrons", input.selectedJetsAK15.size() * input.selectedElectronsLoose.size());
