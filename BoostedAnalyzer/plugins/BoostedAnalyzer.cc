@@ -402,15 +402,15 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     helper.SetUp("2015_74x", isData ? -1 : 1, analysisType::LJ, isData);
 
     // initialize CSV reweighter
-    if (iConfig.existsAs< edm::ParameterSet >("bTagSFs", true)) {
-        const edm::ParameterSet bTagSFsPS = iConfig.getParameter< edm::ParameterSet >("bTagSFs");
-        csvReweighter.init(bTagSFsPS.getParameter< std::string >("fileNameHF"), bTagSFsPS.getParameter< std::string >("fileNameLF"),
-                           bTagSFsPS.getParameter< int >("nHFPtBins"), bTagSFsPS.getParameter< int >("nLFPtBins"), bTagSFsPS.getParameter< int >("nLFEtaBins"),
-                           jetSystematics);
-        if (bTagSFsPS.existsAs< bool >("AllowJetsOutOfBinning", true)) {
-            csvReweighter.allowJetsOutOfBinning(bTagSFsPS.getParameter< bool >("AllowJetsOutOfBinning"));
-        }
-    }
+    //if (iConfig.existsAs< edm::ParameterSet >("bTagSFs", true)) {
+        //const edm::ParameterSet bTagSFsPS = iConfig.getParameter< edm::ParameterSet >("bTagSFs");
+        //csvReweighter.init(bTagSFsPS.getParameter< std::string >("fileNameHF"), bTagSFsPS.getParameter< std::string >("fileNameLF"),
+                           //bTagSFsPS.getParameter< int >("nHFPtBins"), bTagSFsPS.getParameter< int >("nLFPtBins"), bTagSFsPS.getParameter< int >("nLFEtaBins"),
+                           //jetSystematics);
+        //if (bTagSFsPS.existsAs< bool >("AllowJetsOutOfBinning", true)) {
+            //csvReweighter.allowJetsOutOfBinning(bTagSFsPS.getParameter< bool >("AllowJetsOutOfBinning"));
+        //}
+    //}
 
     // INITIALIZE PU WEIGHTS
     puWeights.init(iConfig);
@@ -817,19 +817,19 @@ void BoostedAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     const auto eventweights = GetWeights(*h_genInfo, *h_lheInfo, eventInfo, selectedPVs, *h_selectedElectronsLoose, *h_selectedMuonsLoose, genTopEvt);
     for (size_t isys = 0; isys < jetSystematics.size(); isys++) {
         auto weights    = eventweights;
-        auto csvweights = GetCSVWeights(*(hs_selectedJets.at(isys)), jetSystematics.at(isys));
-        weights.insert(csvweights.begin(), csvweights.end());
-        std::vector< pat::Jet > selectedJets_outside_leading_AK15Jet = *(hs_selectedJets.at(isys));
-        if(hs_selectedJetsAK15.at(isys)->size() > 0){
-            selectedJets_outside_leading_AK15Jet.erase(std::remove_if(selectedJets_outside_leading_AK15Jet.begin(), selectedJets_outside_leading_AK15Jet.end(),
-                [&](pat::Jet jet) {
-                    return reco::deltaR(jet.p4(), (hs_selectedJetsAK15.at(isys))->at(0).p4()) < 1.5;
-                }),
-                selectedJets_outside_leading_AK15Jet.end()
-            );
-        }
-        auto csvweights_isolated = GetCSVWeights(selectedJets_outside_leading_AK15Jet, jetSystematics.at(isys), "_iso");
-        weights.insert(csvweights_isolated.begin(), csvweights_isolated.end());
+        //auto csvweights = GetCSVWeights(*(hs_selectedJets.at(isys)), jetSystematics.at(isys));
+        //weights.insert(csvweights.begin(), csvweights.end());
+        //std::vector< pat::Jet > selectedJets_outside_leading_AK15Jet = *(hs_selectedJets.at(isys));
+        //if(hs_selectedJetsAK15.at(isys)->size() > 0){
+            //selectedJets_outside_leading_AK15Jet.erase(std::remove_if(selectedJets_outside_leading_AK15Jet.begin(), selectedJets_outside_leading_AK15Jet.end(),
+                //[&](pat::Jet jet) {
+                    //return reco::deltaR(jet.p4(), (hs_selectedJetsAK15.at(isys))->at(0).p4()) < 1.5;
+                //}),
+                //selectedJets_outside_leading_AK15Jet.end()
+            //);
+        //}
+        //auto csvweights_isolated = GetCSVWeights(selectedJets_outside_leading_AK15Jet, jetSystematics.at(isys), "_iso");
+        //weights.insert(csvweights_isolated.begin(), csvweights_isolated.end());
         inputs.emplace_back(eventInfo, triggerInfo, filterInfo, selectedPVs, *h_selectedMuons, *h_selectedMuonsDL, *h_selectedMuonsLoose, *h_selectedElectrons,
                             *h_selectedElectronsDL, *h_selectedElectronsLoose, *h_selectedTaus, *h_selectedPhotons, *h_selectedPhotonsLoose,
                             *(hs_selectedJets.at(isys)), *(hs_selectedJetsLoose.at(isys)), *(hs_selectedJetsAK8.at(isys)), *(hs_selectedJetsAK15.at(isys)),
