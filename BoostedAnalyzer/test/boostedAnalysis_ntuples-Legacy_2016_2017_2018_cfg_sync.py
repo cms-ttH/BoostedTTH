@@ -565,8 +565,8 @@ process.GlobalTag.toGet = cms.VPSet(
 # )
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------- #
-if "2017" in options.dataEra:
-    options.recorrectMET = True
+#if "2017" in options.dataEra:
+    #options.recorrectMET = True
 
 if options.recorrectMET:
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import (
@@ -896,7 +896,7 @@ process.CorrectedJetProducerAK4.JetType = cms.string("AK4PFCHS")
 process.CorrectedJetProducerAK4.jets = jetCollection
 process.CorrectedJetProducerAK4.ptMins = cms.vdouble(-1.0)
 process.CorrectedJetProducerAK4.etaMaxs = cms.vdouble(999.0)
-process.CorrectedJetProducerAK4.applyCorrection = cms.bool(False)
+process.CorrectedJetProducerAK4.applyCorrection = cms.bool(True)
 process.CorrectedJetProducerAK4.collectionNames = cms.vstring("correctedJetsAK4")
 process.CorrectedJetProducerAK4.systematics = cms.vstring([""] + systsJES)
 process.CorrectedJetProducerAK4.JetID = cms.vstring("tight")
@@ -1061,7 +1061,7 @@ for syst in systs:
 process.patSmearedJetsAK4 = cms.EDProducer(
     "SmearedPATJetProducer",
     src=cms.InputTag("CorrectedJetProducerAK4:correctedJetsAK4"),
-    enabled=cms.bool(False),  # If False, no smearing is performed
+    enabled=cms.bool(True),  # If False, no smearing is performed
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching=cms.bool(
         False
@@ -1093,7 +1093,7 @@ process.patSmearedJetsAK4 = cms.EDProducer(
 process.patSmearedJetsAK8 = cms.EDProducer(
     "SmearedPATJetProducer",
     src=cms.InputTag("CorrectedJetProducerAK8:correctedJetsAK8"),
-    enabled=cms.bool(False),  # If False, no smearing is performed
+    enabled=cms.bool(True),  # If False, no smearing is performed
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching=cms.bool(
         False
@@ -1119,7 +1119,7 @@ process.patSmearedJetsAK8 = cms.EDProducer(
 process.patSmearedJetsAK15 = cms.EDProducer(
     "SmearedPATJetProducer",
     src=cms.InputTag("CorrectedJetProducerAK15:correctedJetsAK15"),
-    enabled=cms.bool(False),  # If False, no smearing is performed
+    enabled=cms.bool(True),  # If False, no smearing is performed
     rho=cms.InputTag("fixedGridRhoFastjetAll"),
     skipGenMatching=cms.bool(
         False
