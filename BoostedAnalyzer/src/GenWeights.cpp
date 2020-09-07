@@ -32,38 +32,38 @@ GenWeights::GenWeights()
     // and
     // https://indico.cern.ch/event/746817/contributions/3101385/attachments/1702410/2742087/psweights_mseidel.pdf
     // 32
-    psweightsNameMap[13] = "fsr_G2GG_muR_down";
-    psweightsNameMap[14] = "fsr_G2GG_muR_up";
+    psweightsNameMap[14] = "fsr_G2GG_muR_down";
+    psweightsNameMap[15] = "fsr_G2GG_muR_up";
     psweightsNameMap[16] = "fsr_G2QQ_muR_down";
-    psweightsNameMap[16] = "fsr_G2QQ_muR_up";
-    psweightsNameMap[17] = "fsr_Q2QG_muR_down";
-    psweightsNameMap[18] = "fsr_Q2QG_muR_up";
-    psweightsNameMap[19] = "fsr_X2XG_muR_down";
-    psweightsNameMap[20] = "fsr_X2XG_muR_up";
-    psweightsNameMap[21] = "fsr_G2GG_cNS_down";
-    psweightsNameMap[22] = "fsr_G2GG_cNS_up";
-    psweightsNameMap[23] = "fsr_G2QQ_cNS_down";
-    psweightsNameMap[24] = "fsr_G2QQ_cNS_up";
-    psweightsNameMap[25] = "fsr_Q2QG_cNS_down";
-    psweightsNameMap[26] = "fsr_Q2QG_cNS_up";
-    psweightsNameMap[27] = "fsr_X2XG_cNS_down";
-    psweightsNameMap[28] = "fsr_X2XG_cNS_up";
-    psweightsNameMap[29] = "isr_G2GG_muR_down";
-    psweightsNameMap[30] = "isr_G2GG_muR_up";
-    psweightsNameMap[31] = "isr_G2QQ_muR_down";
-    psweightsNameMap[32] = "isr_G2QQ_muR_up";
-    psweightsNameMap[33] = "isr_Q2QG_muR_down";
-    psweightsNameMap[34] = "isr_Q2QG_muR_up";
-    psweightsNameMap[35] = "isr_X2XG_muR_down";
-    psweightsNameMap[36] = "isr_X2XG_muR_up";
-    psweightsNameMap[37] = "isr_G2GG_cNS_down";
-    psweightsNameMap[38] = "isr_G2GG_cNS_up";
-    psweightsNameMap[39] = "isr_G2QQ_cNS_down";
-    psweightsNameMap[40] = "isr_G2QQ_cNS_up";
-    psweightsNameMap[41] = "isr_Q2QG_cNS_down";
-    psweightsNameMap[42] = "isr_Q2QG_cNS_up";
-    psweightsNameMap[43] = "isr_X2XG_cNS_down";
-    psweightsNameMap[44] = "isr_X2XG_cNS_up";
+    psweightsNameMap[17] = "fsr_G2QQ_muR_up";
+    psweightsNameMap[18] = "fsr_Q2QG_muR_down";
+    psweightsNameMap[19] = "fsr_Q2QG_muR_up";
+    psweightsNameMap[20] = "fsr_X2XG_muR_down";
+    psweightsNameMap[21] = "fsr_X2XG_muR_up";
+    psweightsNameMap[22] = "fsr_G2GG_cNS_down";
+    psweightsNameMap[23] = "fsr_G2GG_cNS_up";
+    psweightsNameMap[24] = "fsr_G2QQ_cNS_down";
+    psweightsNameMap[25] = "fsr_G2QQ_cNS_up";
+    psweightsNameMap[26] = "fsr_Q2QG_cNS_down";
+    psweightsNameMap[27] = "fsr_Q2QG_cNS_up";
+    psweightsNameMap[28] = "fsr_X2XG_cNS_down";
+    psweightsNameMap[29] = "fsr_X2XG_cNS_up";
+    psweightsNameMap[30] = "isr_G2GG_muR_down";
+    psweightsNameMap[31] = "isr_G2GG_muR_up";
+    psweightsNameMap[32] = "isr_G2QQ_muR_down";
+    psweightsNameMap[33] = "isr_G2QQ_muR_up";
+    psweightsNameMap[34] = "isr_Q2QG_muR_down";
+    psweightsNameMap[35] = "isr_Q2QG_muR_up";
+    psweightsNameMap[36] = "isr_X2XG_muR_down";
+    psweightsNameMap[37] = "isr_X2XG_muR_up";
+    psweightsNameMap[38] = "isr_G2GG_cNS_down";
+    psweightsNameMap[39] = "isr_G2GG_cNS_up";
+    psweightsNameMap[40] = "isr_G2QQ_cNS_down";
+    psweightsNameMap[41] = "isr_G2QQ_cNS_up";
+    psweightsNameMap[42] = "isr_Q2QG_cNS_down";
+    psweightsNameMap[43] = "isr_Q2QG_cNS_up";
+    psweightsNameMap[44] = "isr_X2XG_cNS_down";
+    psweightsNameMap[45] = "isr_X2XG_cNS_up";
 }
 
 void GenWeights::GetGenWeights(std::map< string, float >& weights, const LHEEventProduct& LHEEvent) const
