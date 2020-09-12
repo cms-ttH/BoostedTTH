@@ -46,6 +46,7 @@ class GenDarkMatterEvent {
     
     std::vector< reco::GenParticle > ReturnGenWBosons() const;
     std::vector< reco::GenParticle > ReturnGenZBosons() const;
+    std::vector< reco::GenParticle > ReturnGenPhotons() const;
 
     std::vector< reco::GenParticle > ReturnLightQuarksFromWPlus() const;
     std::vector< reco::GenParticle > ReturnLightQuarksFromWMinus() const;

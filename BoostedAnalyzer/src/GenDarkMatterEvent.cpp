@@ -343,6 +343,11 @@ std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenZBosons() const
     return GenZBosons;
 }
 
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenPhotons() const
+{
+    return Photons;
+}
+
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnBQuarksFromTop() const { return BQuarksFromTop; }
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnLightQuarksFromWPlus() const { return LightQuarksFromWPlus; }
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnCQuarksFromWPlus() const { return CQuarksFromWPlus; }

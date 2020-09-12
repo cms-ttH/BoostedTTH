@@ -147,6 +147,7 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     // gen-level quantities
     vars.InitVar("N_GenWBosons", "I");
     vars.InitVar("N_GenZBosons", "I");
+    vars.InitVar("N_GenPhotons", "I");
 
     vars.InitVars("GenW_Pt", "N_GenWBosons");
     vars.InitVars("GenW_Phi", "N_GenWBosons");
@@ -159,6 +160,12 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("GenZ_Eta", "N_GenZBosons");
     vars.InitVars("GenZ_Mass", "N_GenZBosons");
     vars.InitVars("GenZ_Energy", "N_GenZBosons");
+    
+    vars.InitVars("GenPhoton_Pt", "N_GenPhotons");
+    vars.InitVars("GenPhoton_Phi", "N_GenPhotons");
+    vars.InitVars("GenPhoton_Eta", "N_GenPhotons");
+    vars.InitVars("GenPhoton_Mass", "N_GenPhotons");
+    vars.InitVars("GenPhoton_Energy", "N_GenPhotons");
 
     //     vars.InitVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio");
 
@@ -390,65 +397,74 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
                           BoostedUtils::DeltaR(selectedMediumUntaggedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
         }
     }
-
-    // get particle-level W/Z pt for later usage in V boson reweighting
-    if (input.genDarkMatterEvt.WBosonIsFilled()) {
-        // std::cout << "W boson!" << std::endl;
-        const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
-        math::XYZTLorentzVector   WBoson = DM_Evt.ReturnWBoson();
-        vars.FillVar("W_Pt", WBoson.Pt());
-        vars.FillVar("W_Phi", WBoson.Phi());
-        vars.FillVar("W_Eta", WBoson.Eta());
-        vars.FillVar("W_Energy", WBoson.E());
-        vars.FillVar("W_Mass", WBoson.M());
-    }
-
-    if (input.genDarkMatterEvt.ZBosonIsFilled()) {
-        // std::cout << "Z boson!" << std::endl;
-        const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
-        math::XYZTLorentzVector   ZBoson = DM_Evt.ReturnZBoson();
-        vars.FillVar("Z_Pt", ZBoson.Pt());
-        vars.FillVar("Z_Phi", ZBoson.Phi());
-        vars.FillVar("Z_Eta", ZBoson.Eta());
-        vars.FillVar("Z_Energy", ZBoson.E());
-        vars.FillVar("Z_Mass", ZBoson.M());
-    }
-
-    if (input.genDarkMatterEvt.PhotonIsFilled()) {
-        const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
-        math::XYZTLorentzVector   Gamma  = DM_Evt.ReturnPhoton();
-        vars.FillVar("Gamma_Pt", Gamma.Pt());
-        vars.FillVar("Gamma_Phi", Gamma.Phi());
-        vars.FillVar("Gamma_Eta", Gamma.Eta());
-        vars.FillVar("Gamma_Energy", Gamma.E());
-        vars.FillVar("Gamma_Mass", Gamma.M());
-    }
-    const auto& GenWBosons = input.genDarkMatterEvt.ReturnGenWBosons();
-    const auto& GenZBosons = input.genDarkMatterEvt.ReturnGenZBosons();
-    vars.FillVar("N_GenWBosons", GenWBosons.size());
-    vars.FillVar("N_GenZBosons", GenZBosons.size());
-    for (size_t i = 0; i < GenWBosons.size(); i++) {
-        const auto& GenWBoson_p4 = GenWBosons.at(i).p4();
-        vars.FillVars("GenW_Pt", i, GenWBoson_p4.pt());
-        vars.FillVars("GenW_Phi", i, GenWBoson_p4.phi());
-        vars.FillVars("GenW_Eta", i, GenWBoson_p4.eta());
-        vars.FillVars("GenW_Energy", i, GenWBoson_p4.energy());
-        vars.FillVars("GenW_Mass", i, GenWBoson_p4.mass());
-    }
-    for (size_t i = 0; i < GenZBosons.size(); i++) {
-        const auto& GenZBoson_p4 = GenZBosons.at(i).p4();
-        vars.FillVars("GenZ_Pt", i, GenZBoson_p4.pt());
-        vars.FillVars("GenZ_Phi", i, GenZBoson_p4.phi());
-        vars.FillVars("GenZ_Eta", i, GenZBoson_p4.eta());
-        vars.FillVars("GenZ_Energy", i, GenZBoson_p4.energy());
-        vars.FillVars("GenZ_Mass", i, GenZBoson_p4.mass());
-    }
+    
 
     //         vars.FillVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio", fabs(Zmumu.Pt() - hadr_recoil_p4.pt()) / hadr_recoil_p4.pt());
 
     // get and fill some gen level information
     if (input.genDarkMatterEvt.IsFilled()) {
         const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
+
+        // get particle-level W/Z pt for later usage in V boson reweighting
+        if (DM_Evt.WBosonIsFilled()) {
+            // std::cout << "W boson!" << std::endl;
+            math::XYZTLorentzVector   WBoson = DM_Evt.ReturnWBoson();
+            vars.FillVar("W_Pt", WBoson.Pt());
+            vars.FillVar("W_Phi", WBoson.Phi());
+            vars.FillVar("W_Eta", WBoson.Eta());
+            vars.FillVar("W_Energy", WBoson.E());
+            vars.FillVar("W_Mass", WBoson.M());
+        }
+
+        if (DM_Evt.ZBosonIsFilled()) {
+            // std::cout << "Z boson!" << std::endl;
+            math::XYZTLorentzVector   ZBoson = DM_Evt.ReturnZBoson();
+            vars.FillVar("Z_Pt", ZBoson.Pt());
+            vars.FillVar("Z_Phi", ZBoson.Phi());
+            vars.FillVar("Z_Eta", ZBoson.Eta());
+            vars.FillVar("Z_Energy", ZBoson.E());
+            vars.FillVar("Z_Mass", ZBoson.M());
+        }
+
+        if (DM_Evt.PhotonIsFilled()) {
+            math::XYZTLorentzVector   Gamma  = DM_Evt.ReturnPhoton();
+            vars.FillVar("Gamma_Pt", Gamma.Pt());
+            vars.FillVar("Gamma_Phi", Gamma.Phi());
+            vars.FillVar("Gamma_Eta", Gamma.Eta());
+            vars.FillVar("Gamma_Energy", Gamma.E());
+            vars.FillVar("Gamma_Mass", Gamma.M());
+        }
+
+        const auto& GenWBosons = DM_Evt.ReturnGenWBosons();
+        const auto& GenZBosons = DM_Evt.ReturnGenZBosons();
+        const auto& GenPhotons = DM_Evt.ReturnGenPhotons();
+        vars.FillVar("N_GenWBosons", GenWBosons.size());
+        vars.FillVar("N_GenZBosons", GenZBosons.size());
+        vars.FillVar("N_GenPhotons", GenPhotons.size());
+        for (size_t i = 0; i < GenWBosons.size(); i++) {
+            const auto& GenWBoson_p4 = GenWBosons.at(i).p4();
+            vars.FillVars("GenW_Pt", i, GenWBoson_p4.pt());
+            vars.FillVars("GenW_Phi", i, GenWBoson_p4.phi());
+            vars.FillVars("GenW_Eta", i, GenWBoson_p4.eta());
+            vars.FillVars("GenW_Energy", i, GenWBoson_p4.energy());
+            vars.FillVars("GenW_Mass", i, GenWBoson_p4.mass());
+        }
+        for (size_t i = 0; i < GenZBosons.size(); i++) {
+            const auto& GenZBoson_p4 = GenZBosons.at(i).p4();
+            vars.FillVars("GenZ_Pt", i, GenZBoson_p4.pt());
+            vars.FillVars("GenZ_Phi", i, GenZBoson_p4.phi());
+            vars.FillVars("GenZ_Eta", i, GenZBoson_p4.eta());
+            vars.FillVars("GenZ_Energy", i, GenZBoson_p4.energy());
+            vars.FillVars("GenZ_Mass", i, GenZBoson_p4.mass());
+        }
+        for (size_t i = 0; i < GenPhotons.size(); i++) {
+            const auto& GenPhoton_p4 = GenPhotons.at(i).p4();
+            vars.FillVars("GenPhoton_Pt", i, GenPhoton_p4.pt());
+            vars.FillVars("GenPhoton_Phi", i, GenPhoton_p4.phi());
+            vars.FillVars("GenPhoton_Eta", i, GenPhoton_p4.eta());
+            vars.FillVars("GenPhoton_Energy", i, GenPhoton_p4.energy());
+            vars.FillVars("GenPhoton_Mass", i, GenPhoton_p4.mass());
+        }
 
         TLorentzVector                Mediator_p4    = DM_Evt.ReturnMediator4Vector();
         TLorentzVector                NaiveMET_p4    = DM_Evt.ReturnNaiveMET4Vector();
