@@ -153,6 +153,10 @@ void MCMatchVarProcessor::Init(const InputCollections& input, VariableContainer&
     //     vars.InitVar("GenForwardQuark_PDGID", -999);
     
     // flags to identify V+jets samples as V + heavy flavor or V + light flavor
+    vars.InitVar("N_CQuarks", "I");
+    vars.InitVar("N_BQuarks", "I");
+    vars.InitVar("N_CQuarksHard", "I");
+    vars.InitVar("N_BQuarksHard", "I");
     vars.InitVar("isHF", -1, "I");
     vars.InitVar("isLF", -1, "I");
 
@@ -479,10 +483,24 @@ void MCMatchVarProcessor::Process(const InputCollections& input, VariableContain
     
     // flags to identify V+jets samples as V + heavy flavor or V + light flavor
     if (input.genDarkMatterEvt.IsFilled()) {
-        bool isHF_ = (input.genDarkMatterEvt.ReturnBQuarks().size() > 0) || (input.genDarkMatterEvt.ReturnCQuarks().size() > 0);
+        auto bquarks = input.genDarkMatterEvt.ReturnBQuarks();
+        auto cquarks = input.genDarkMatterEvt.ReturnCQuarks();
+        bool isHF_ = (bquarks.size() > 0) || (cquarks.size() > 0);
         int isHF = isHF_;
-        int isLF = !isHF;
+        int isLF = !isHF_;
         vars.FillVar("isHF", isHF);
         vars.FillVar("isLF", isLF);
+        vars.FillVar("N_CQuarks", cquarks.size());
+        vars.FillVar("N_BQuarks", bquarks.size());
+        int n_bquarks_hard = 0;
+        int n_cquarks_hard = 0;
+        for(const auto& bquark : bquarks){
+            if(bquark.statusFlags().fromHardProcess()) n_bquarks_hard+=1;
+        }
+        for(const auto& cquark : cquarks){
+            if(cquark.statusFlags().fromHardProcess()) n_cquarks_hard+=1;
+        }
+        vars.FillVar("N_CQuarksHard", n_cquarks_hard);
+        vars.FillVar("N_BQuarksHard", n_bquarks_hard);
     }
 }

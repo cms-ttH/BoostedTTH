@@ -89,11 +89,11 @@ void GenDarkMatterEvent::Fill()
             BQuarksFromAntiTop.push_back(genparticle);
         }
         // b quarks in general
-        if (abs(genparticle.pdgId()) == 5 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
+        if (abs(genparticle.pdgId()) == 5 and genparticle.statusFlags().isLastCopy()) {
             BQuarks.push_back(genparticle);
         }
         // c quarks in general
-        if (abs(genparticle.pdgId()) == 4 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
+        if (abs(genparticle.pdgId()) == 4 and genparticle.statusFlags().isLastCopy()) {
             CQuarks.push_back(genparticle);
         }
         // top quarks
