@@ -64,8 +64,8 @@ if options.ntuple:
 print outname
 os.system("mkdir -p " + outname)
 
-release = "CMSSW_9_4_13"
-rel = "94X"
+release = "CMSSW_10_2_18"
+rel = "102X"
 
 def repl(old,new,filename):
     cmd=" ".join(["sed","-i","'s|"+old+"|"+new+"|g'",filename])
@@ -118,17 +118,26 @@ for row in reader:
         if ntuple and not slimmed:
             src='common/template_cfg_ntuple.py'
             datasets=row['boosted_dataset'].split(",")
-            variation_list = get_list_of_systematics("common/systematicVariations_new.txt")
-            print("Creating crab configs to Ntuple, therefore using common/systematicVariations.txt and skimmed datasets")
+            if "2018" in row["run"]:
+                variation_list = get_list_of_systematics("common/systematicVariations_new_2018.txt")
+                print("Creating crab configs for ntuple for 2018, therefore using common/systematicVariations_new_2018.txt a")
+            else:
+                variation_list = get_list_of_systematics("common/systematicVariations_new.txt")
+                print("Creating crab configs for ntuple, therefore using common/systematicVariations_new.txt")
         elif slimmed:
             src='common/template_cfg_ntuple.py'
             datasets=row['dataset'].split(",")
-            variation_list = get_list_of_systematics("common/systematicVariations_new.txt")
-            print("Creating crab configs to Ntuple, therefore using common/systematicVariations.txt and unskimmed dataset")
+            if "2018" in row["run"]:
+                variation_list = get_list_of_systematics("common/systematicVariations_new_2018.txt")
+                print("Creating crab configs for slimmed ntuples for 2018, therefore using common/systematicVariations_new_2018.txt and unskimmed dataset")
+            else:
+                variation_list = get_list_of_systematics("common/systematicVariations_new.txt")
+                print("Creating crab configs for ntuple, therefore using common/systematicVariations_new.txt and unskimmed dataset")
         else:
             src='common/template_cfg.py'
             datasets=row['dataset'].split(",")
             variation_list = get_list_of_systematics("common/systematicVariationsNone.txt")
+            print("NOT USING SYSTEMATICS!")
 
         variations_list = split_for_systematic_variations(variation_list,options.nsysts)
         if row['isData']=='True':
@@ -154,18 +163,18 @@ for row in reader:
                     filenames.append("MEM_slimmed_ntuples_Tree.root")
                 shutil.copy(src,out)
                 
-                if "2018" in row["run"]:
-                    release = "CMSSW_10_2_13"
-                    rel = "102X"
+                # if "2018" in row["run"]:
+                    # release = "CMSSW_10_2_13"
+                    # rel = "102X"
 
-                if row['isData']=='TRUE':
-                    dataSetTag = 'KIT_tthbb_sl_skims_DATA_'+rel+'_LEG_DATAERA'
-                    splitting = 'EventAwattHTobb_M125_TuneCP5_13TeV-powheg-pythia8_0_0_crab.pyLumiBased'
-                    units = '80000'
-                else:
-                    dataSetTag = 'KIT_tthbb_sl_skims_MC_'+rel+'_LEG_DATAERA'
-                    splitting = 'FileBased'
-                    units = '2'
+                # if row['isData']=='TRUE':
+                    # dataSetTag = 'KIT_tthbb_sl_skims_DATA_'+rel+'_LEG_DATAERA'
+                    # splitting = 'LumiBased'
+                    # units = '80000'
+                # else:
+                    # dataSetTag = 'KIT_tthbb_sl_skims_MC_'+rel+'_LEG_DATAERA'
+                    # splitting = 'FileBased'
+                    # units = '2'
 
                 if ntuple and not slimmed:
                     requestName = row['name']+"_"+row["run"]+"_ntuple_"+str(i)+"_"+str(l)
@@ -175,14 +184,14 @@ for row in reader:
                     requestName = row['name']+"_"+row["run"]+"_skim_"+str(i)+"_"+str(l)
 
                 repl('THEREQUESTNAME',requestName,out)
-                repl('OUTPUTDATASETTAG',dataSetTag,out)
+                # repl('OUTPUTDATASETTAG',dataSetTag,out)
                 repl('THEINPUTDATASET',dataset,out)
                 repl('NTUPLETAG',ntupletag,out)
                 repl('DATAERA',row['run'],out)
                 repl('GLOBALTAG',row['globalTag'],out)
                 repl('ISDATA',row['isData'],out)
-                repl('SPLITTING',splitting,out)
-                repl('UNITSPERJOB',units,out)
+                # repl('SPLITTING',splitting,out)
+                # repl('UNITSPERJOB',units,out)
                 repl('SLIMMED',str(slimmed),out)
                 repl('SEEDS',str(slimmed),out)
                 #repl('GENERATORNAME',row['generator'],out)
