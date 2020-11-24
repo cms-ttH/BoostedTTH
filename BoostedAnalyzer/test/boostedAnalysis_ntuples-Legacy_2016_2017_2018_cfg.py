@@ -43,11 +43,13 @@ if options.maxEvents is -1: # maxEvents is set in VarParsing class by default to
 
 if options.isData:
     if "2016" in options.dataEra:
-        options.globalTag="94X_dataRun2_v12"
+        options.globalTag="102X_dataRun2_v12"
     elif "2017" in options.dataEra:
-        options.globalTag="94X_dataRun2_v12"
+        options.globalTag="102X_dataRun2_v12"
     elif "2018" in options.dataEra:
         options.globalTag="102X_dataRun2_v12"
+	if "D" in options.dataEra:
+		options.globalTag="102X_dataRun2_Prompt_v16"
     else:
         raise Exception( "dataEra "+options.dataEra+" not supported for this config: USE dataEra=2016/2017")
 elif not options.isData:
@@ -677,11 +679,11 @@ process.BoostedAnalyzer.generatorName=options.generatorName
 if options.isData and options.useJson:
     import FWCore.PythonUtilities.LumiList as LumiList
     if "2016" in options.dataEra:
-        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt").getVLuminosityBlockRange()
+        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt").getVLuminosityBlockRange()
     elif "2017" in options.dataEra:
-        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt").getVLuminosityBlockRange()
+        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt").getVLuminosityBlockRange()
     elif "2018" in options.dataEra:
-        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt").getVLuminosityBlockRange()
+        process.source.lumisToProcess = LumiList.LumiList(filename = os.getenv('CMSSW_BASE')+"/src/BoostedTTH/BoostedAnalyzer/data/lumi_jsons/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt").getVLuminosityBlockRange()
 
 if options.isData:
   process.BoostedAnalyzer.dataset=cms.string(options.dataset)
@@ -714,15 +716,15 @@ if options.isData:
 else:
   process.BoostedAnalyzer.processorNames=cms.vstring(
   "WeightProcessor",
-#   "MCMatchVarProcessor",
-#   "essentialBasicVarProcessor",
-#   "essentialMVAVarProcessor",
-#   "essentialRecoVarProcessor",
-#   "TriggerVarProcessor",
-#   "JABDTttbarProcessor",
-#   "JABDTthqProcessor",
-#   "JABDTthwProcessor",
-#   "JABDTtthProcessor",
+  "MCMatchVarProcessor",
+  "essentialBasicVarProcessor",
+  "essentialMVAVarProcessor",
+  "essentialRecoVarProcessor",
+  "TriggerVarProcessor",
+  "JABDTttbarProcessor",
+  "JABDTthqProcessor",
+  "JABDTthwProcessor",
+  "JABDTtthProcessor",
   #"ReconstructionMEvarProcessor",
   #"AK8JetProcessor"
   )
