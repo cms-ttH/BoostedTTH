@@ -1,4 +1,5 @@
-from CRABClient.UserUtilities import config, getUsernameFromSiteDB
+# from CRABClient.UserUtilities import config, getUsernameFromSiteDB
+from CRABClient.UserUtilities import config
 config = config()
 
 config.General.requestName = 'THEREQUESTNAME'
