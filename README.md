@@ -47,7 +47,7 @@ Do for example:
     # install common classifier (currently work in progress)
     mkdir TTH
     cd TTH
-    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git CommonClassifier -b 10_2X_KIT_MEMproduction
+    git clone https://gitlab.cern.ch/ttH/CommonClassifier.git CommonClassifier -b 10_2X_MVAvars
     git clone https://gitlab.cern.ch/algomez/MEIntegratorStandalone.git MEIntegratorStandalone -b 10_2_X
 
     mkdir -p $CMSSW_BASE/lib/$SCRAM_ARCH/
