@@ -585,8 +585,8 @@ BoostedAnalyzer::BoostedAnalyzer(const edm::ParameterSet& iConfig) :
     }
 
     std::vector< std::string > pdfs;
-    if (era.find("2016")!=std::string::npos) pdfs.push_back("NNPDF30_lo_as_0130");
-    else pdfs.push_back("NNPDF31_nnlo_hessian_pdfas");
+    pdfs.push_back("NNPDF30_lo_as_0130");
+    pdfs.push_back("NNPDF31_nnlo_hessian_pdfas");
     genweights.initLHAPDF(pdfs);
 
     assert(selectedJetsTokens.size() == selectedJetsLooseTokens.size());
