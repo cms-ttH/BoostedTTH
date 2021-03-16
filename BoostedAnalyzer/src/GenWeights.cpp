@@ -32,38 +32,38 @@ GenWeights::GenWeights()
     // and
     // https://indico.cern.ch/event/746817/contributions/3101385/attachments/1702410/2742087/psweights_mseidel.pdf
     // 32
-    psweightsNameMap[14] = "fsr_G2GG_muR_down";
-    psweightsNameMap[15] = "fsr_G2GG_muR_up";
-    psweightsNameMap[16] = "fsr_G2QQ_muR_down";
-    psweightsNameMap[17] = "fsr_G2QQ_muR_up";
-    psweightsNameMap[18] = "fsr_Q2QG_muR_down";
-    psweightsNameMap[19] = "fsr_Q2QG_muR_up";
-    psweightsNameMap[20] = "fsr_X2XG_muR_down";
-    psweightsNameMap[21] = "fsr_X2XG_muR_up";
-    psweightsNameMap[22] = "fsr_G2GG_cNS_down";
-    psweightsNameMap[23] = "fsr_G2GG_cNS_up";
-    psweightsNameMap[24] = "fsr_G2QQ_cNS_down";
-    psweightsNameMap[25] = "fsr_G2QQ_cNS_up";
-    psweightsNameMap[26] = "fsr_Q2QG_cNS_down";
-    psweightsNameMap[27] = "fsr_Q2QG_cNS_up";
-    psweightsNameMap[28] = "fsr_X2XG_cNS_down";
-    psweightsNameMap[29] = "fsr_X2XG_cNS_up";
-    psweightsNameMap[30] = "isr_G2GG_muR_down";
-    psweightsNameMap[31] = "isr_G2GG_muR_up";
-    psweightsNameMap[32] = "isr_G2QQ_muR_down";
-    psweightsNameMap[33] = "isr_G2QQ_muR_up";
-    psweightsNameMap[34] = "isr_Q2QG_muR_down";
-    psweightsNameMap[35] = "isr_Q2QG_muR_up";
-    psweightsNameMap[36] = "isr_X2XG_muR_down";
-    psweightsNameMap[37] = "isr_X2XG_muR_up";
-    psweightsNameMap[38] = "isr_G2GG_cNS_down";
-    psweightsNameMap[39] = "isr_G2GG_cNS_up";
-    psweightsNameMap[40] = "isr_G2QQ_cNS_down";
-    psweightsNameMap[41] = "isr_G2QQ_cNS_up";
-    psweightsNameMap[42] = "isr_Q2QG_cNS_down";
-    psweightsNameMap[43] = "isr_Q2QG_cNS_up";
-    psweightsNameMap[44] = "isr_X2XG_cNS_down";
-    psweightsNameMap[45] = "isr_X2XG_cNS_up";
+    //psweightsNameMap[14] = "fsr_G2GG_muR_down";
+    //psweightsNameMap[15] = "fsr_G2GG_muR_up";
+    //psweightsNameMap[16] = "fsr_G2QQ_muR_down";
+    //psweightsNameMap[17] = "fsr_G2QQ_muR_up";
+    //psweightsNameMap[18] = "fsr_Q2QG_muR_down";
+    //psweightsNameMap[19] = "fsr_Q2QG_muR_up";
+    //psweightsNameMap[20] = "fsr_X2XG_muR_down";
+    //psweightsNameMap[21] = "fsr_X2XG_muR_up";
+    //psweightsNameMap[22] = "fsr_G2GG_cNS_down";
+    //psweightsNameMap[23] = "fsr_G2GG_cNS_up";
+    //psweightsNameMap[24] = "fsr_G2QQ_cNS_down";
+    //psweightsNameMap[25] = "fsr_G2QQ_cNS_up";
+    //psweightsNameMap[26] = "fsr_Q2QG_cNS_down";
+    //psweightsNameMap[27] = "fsr_Q2QG_cNS_up";
+    //psweightsNameMap[28] = "fsr_X2XG_cNS_down";
+    //psweightsNameMap[29] = "fsr_X2XG_cNS_up";
+    //psweightsNameMap[30] = "isr_G2GG_muR_down";
+    //psweightsNameMap[31] = "isr_G2GG_muR_up";
+    //psweightsNameMap[32] = "isr_G2QQ_muR_down";
+    //psweightsNameMap[33] = "isr_G2QQ_muR_up";
+    //psweightsNameMap[34] = "isr_Q2QG_muR_down";
+    //psweightsNameMap[35] = "isr_Q2QG_muR_up";
+    //psweightsNameMap[36] = "isr_X2XG_muR_down";
+    //psweightsNameMap[37] = "isr_X2XG_muR_up";
+    //psweightsNameMap[38] = "isr_G2GG_cNS_down";
+    //psweightsNameMap[39] = "isr_G2GG_cNS_up";
+    //psweightsNameMap[40] = "isr_G2QQ_cNS_down";
+    //psweightsNameMap[41] = "isr_G2QQ_cNS_up";
+    //psweightsNameMap[42] = "isr_Q2QG_cNS_down";
+    //psweightsNameMap[43] = "isr_Q2QG_cNS_up";
+    //psweightsNameMap[44] = "isr_X2XG_cNS_down";
+    //psweightsNameMap[45] = "isr_X2XG_cNS_up";
 }
 
 void GenWeights::GetGenWeights(std::map< string, float >& weights, const LHEEventProduct& LHEEvent) const
@@ -205,7 +205,7 @@ bool GenWeights::GetLHAPDFWeight(std::map< string, float >& weights, const GenEv
         }
     }
     
-    for (uint k = 0; k < genInfos.weights().size(); k++) {
+    for (uint k = 0; (k < genInfos.weights().size()) && (k < 14); k++) {
         auto index = std::to_string(k);
         // weights["GenWeight_"+index] = genInfos.weights().at(k)/gen_weight;
         weights["GenWeight_" + psweightsNameMap[k]] = genInfos.weights().at(k) / gen_weight;
@@ -254,6 +254,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
     bool    is_pdf_var   = false;
     bool    is_scale_var = false;
     bool    is_hdamp_var = false;
+    bool    is_lhapdf_id = false;
     TString mur          = "";
     TString muf          = "";
     TString pdf_member   = "";
@@ -263,15 +264,16 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
     TString muf_keyword  = "";
     TString pdf_keyword  = "";
     TString id_keyword   = "";
-    double  mur_d        = 0;
-    double  muf_d        = 0;
-    int     pdf_member_i = 0;
-    int     id_i         = 0;
+    double  mur_d        = -1;
+    double  muf_d        = -1;
+    int     pdf_member_i = -1;
+    int     lhapdf_id    = -1;
+    int     id_i         = -1;
 
     // loop over lines of LHE header
     for (auto iter = myLHERunInfoProduct.begin(); iter != myLHERunInfoProduct.end(); iter++) {
         TString line = *iter;
-        //         std::cout << "LHE HEADER:  " << line << std::endl;
+        //std::cout << "LHE HEADER:  " << line << std::endl;
 
         // first remove some characters which complicate everything
         line.ToLower();
@@ -291,6 +293,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
 
         // check if a new weighgroup begins
         if (line.Contains("weightgroup") && line.Contains("combine")) {
+            //std::cout << "LHE HEADER:  " << line << std::endl;
             // matrix element weights?
             if (line.Contains("scale")) {
                 is_pdf_var   = false;
@@ -298,20 +301,30 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
                 is_hdamp_var = false;
             }
             // pdf weights?
-            else if (line.Contains("lhgrid")) {
+            else if (line.Contains("nnpdf30_lo_as_0130.lhgrid")) {
                 is_pdf_var   = true;
+                is_lhapdf_id = false;
+                lhapdf_id    = 263000;
                 is_scale_var = false;
                 is_hdamp_var = false;
             }
             // pdf weights?
-            else if (line.Contains("pdf")) {
+            else if (line.Contains("nnpdf31_nnlo_hessian_pdfas")) {
                 is_pdf_var   = true;
+                is_lhapdf_id = true;
+                is_scale_var = false;
+                is_hdamp_var = false;
+            }
+            else if (line.Contains("pdf_variation")) {
+                is_pdf_var   = true;
+                is_lhapdf_id = true;
                 is_scale_var = false;
                 is_hdamp_var = false;
             }
             // hdamp weights?
             else if (line.Contains("hdamp")) {
                 is_pdf_var   = false;
+                is_lhapdf_id = false;
                 is_scale_var = false;
                 is_hdamp_var = true;
             }
@@ -319,6 +332,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
             // anything else?
             else {
                 is_pdf_var   = false;
+                is_lhapdf_id = false;
                 is_scale_var = false;
                 is_hdamp_var = false;
             }
@@ -331,17 +345,17 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
 
         // only use lines which have something to do with actual weights
         if (not(line.Contains("weight") and line.Contains("id"))) continue;
-
+        //std::cout << "LHE HEADER:  " << line << std::endl;
         // reset some defaults
         mur          = "";
         muf          = "";
         pdf_member   = "";
         id           = "";
         name         = "";
-        mur_d        = 0;
-        muf_d        = 0;
-        pdf_member_i = 0;
-        id_i         = 0;
+        mur_d        = -1;
+        muf_d        = -1;
+        pdf_member_i = -1;
+        id_i         = -1;
         mur_keyword  = "";
         muf_keyword  = "";
         pdf_keyword  = "";
@@ -369,6 +383,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         }
         else if (is_pdf_var) {
             if (line.Contains("pdf")) { pdf_keyword = "pdf"; }
+            else if (line.Contains("member")) { pdf_keyword = "member"; }
             else {
                 continue;
                 std::cerr << "no known keyword for pdf variations" << std::endl;
@@ -394,7 +409,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         id_i = GetNumber(line, id_keyword).Atoi();
 
         // fail-safe
-        if (((mur_d == 0. or muf_d == 0.) and is_scale_var) or (pdf_member_i == 0 and is_pdf_var) or id_i == 0) {
+        if (((mur_d == -1 or muf_d == -1) and is_scale_var) or (pdf_member_i == -1 and is_pdf_var) or id_i == -1) {
             std::cerr << "something went wrong with reading the values for the matrix element scale or pdf variation IDs" << std::endl;
             std::cerr << "This should never happen!" << std::endl;
             std::cerr << "Don't trust the generator weights unless this problem is fixed!" << std::endl;
@@ -407,7 +422,10 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         muf = TString::Format("%.1f", muf_d);
         muf.ReplaceAll(".", "p");
         id         = TString::Format("%i", id_i);
-        pdf_member = TString::Format("%i", pdf_member_i);
+        if (is_lhapdf_id) {pdf_member = TString::Format("%i", pdf_member_i);}
+        else {
+            pdf_member = TString::Format("%i",pdf_member_i+lhapdf_id);
+        }
 
         //         std::cout << "weightid: " << id << std::endl;
         //         std::cout << "muf: " << muf << std::endl;
@@ -427,7 +445,7 @@ void GenWeights::GetNamesFromLHE(const LHERunInfoProduct& myLHERunInfoProduct)
         }
 
         // put the weight ids and their corresponding names in the map
-        if (name.Contains("pdf_variation") && !name.Contains("_306")) continue;
+        if (name.Contains("pdf_variation") && (!name.Contains("_306") && !name.Contains("_263"))) continue;
         lhe_weights[std::string(id)] = name;
     }
 
