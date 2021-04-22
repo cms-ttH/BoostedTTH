@@ -125,7 +125,7 @@ void SelectedPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
 
     for (size_t i = 0; i < ptMins_.size(); i++) {
         std::vector< pat::Photon > updatedPhotons  = GetDeltaRCleanedPhotons(*inputPhotons, *inputElectrons, 0.5);
-        updatedPhotons = GetDeltaRCleanedPhotons(updatedPhotons, *inputMuons, 0.5);
+        updatedPhotons                             = GetDeltaRCleanedPhotons(updatedPhotons, *inputMuons, 0.5);
         std::vector< pat::Photon > selectedPhotons = GetSortedByPt(GetSelectedPhotons(updatedPhotons, ptMins_.at(i), etaMaxs_.at(i), photonIDs_.at(i)));
         if (not isData) AddPhotonSFs(selectedPhotons, photonIDs_.at(i));
         // produce the different photon collections and create a unique ptr to it
@@ -285,7 +285,7 @@ std::vector< pat::Photon > SelectedPhotonProducer::GetDeltaRCleanedPhotons(const
     return cleaned_photons;
 }
 
-std::vector< pat::Photon > SelectedPhotonProducer::GetDeltaRCleanedPhotons(const std::vector< pat::Photon >&   inputPhotons,
+std::vector< pat::Photon > SelectedPhotonProducer::GetDeltaRCleanedPhotons(const std::vector< pat::Photon >& inputPhotons,
                                                                            const std::vector< pat::Muon >& inputMuons, const float DeltaR) const
 {
     std::vector< pat::Photon > cleaned_photons;

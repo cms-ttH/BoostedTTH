@@ -69,7 +69,7 @@ class SelectedPhotonProducer : public edm::EDProducer {
     edm::EDGetTokenT< pat::ElectronCollection > EDMElectronsToken;
     // muons
     edm::EDGetTokenT< pat::MuonCollection > EDMMuonsToken;
-    std::vector< PhotonID > photonIDs_;
+    std::vector< PhotonID >                 photonIDs_;
     // primary vertex
     reco::Vertex vertex;
 
