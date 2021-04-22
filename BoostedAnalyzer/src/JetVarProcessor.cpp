@@ -122,13 +122,13 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_Njettiness_tau2", "N_AK15Jets");
     vars.InitVars("AK15Jet_Njettiness_tau3", "N_AK15Jets");
     // vars.InitVars("AK15Jet_Njettiness_tau4", "N_AK15Jets");
-    
+
     vars.InitVars("AK15Jet_PuppiSoftDropMass", "N_AK15Jets");
-    
+
     vars.InitVars("AK15Jet_DeepAK15_TvsQCD", "N_AK15Jets");
     // vars.InitVars("AK15Jet_DeepAK15_WvsQCD", "N_AK15Jets");
     // vars.InitVars("AK15Jet_DeepAK15_ZvsQCD", "N_AK15Jets");
-    
+
     vars.InitVars("AK15Jet_DeepAK15_probTbcq", "N_AK15Jets");
     vars.InitVars("AK15Jet_DeepAK15_probTbqq", "N_AK15Jets");
     vars.InitVars("AK15Jet_DeepAK15_probTbc", "N_AK15Jets");
@@ -139,7 +139,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     // vars.InitVars("AK15Jet_DeepAK15_probZbb", "N_AK15Jets");
     // vars.InitVars("AK15Jet_DeepAK15_probZcc", "N_AK15Jets");
     // vars.InitVars("AK15Jet_DeepAK15_probZqq", "N_AK15Jets");
-    
+
     vars.InitVars("AK15Jet_DeepAK15_probQCDbb", "N_AK15Jets");
     vars.InitVars("AK15Jet_DeepAK15_probQCDcc", "N_AK15Jets");
     vars.InitVars("AK15Jet_DeepAK15_probQCDc", "N_AK15Jets");
@@ -510,7 +510,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         vars.FillVars("AK15Jet_DeepAK15_probQCDc", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDc"));
         vars.FillVars("AK15Jet_DeepAK15_probQCDb", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDb"));
         vars.FillVars("AK15Jet_DeepAK15_probQCDothers", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDothers"));
-        
+
         vars.FillVars("AK15Jet_DeepAK15_MD_TvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD"));
         // vars.FillVars("AK15Jet_DeepAK15_MD_WvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD"));
         // vars.FillVars("AK15Jet_DeepAK15_MD_ZvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZvsQCD"));
@@ -813,7 +813,7 @@ void JetVarProcessor::RemoveParticlesOutsideOfJet(const pat::Jet& jet, float dR)
     CQuarks.erase(
         std::remove_if(CQuarks.begin(), CQuarks.end(), [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
         CQuarks.end());
-    
+
     TQuarks.erase(
         std::remove_if(TQuarks.begin(), TQuarks.end(), [&](reco::GenParticle particle) { return BoostedUtils::DeltaR(particle.p4(), jet.p4()) > dR; }),
         TQuarks.end());

@@ -54,8 +54,12 @@ void GenDarkMatterEvent::Fill()
             Leptons.push_back(genparticle);
         }
         if (abs(genparticle.pdgId()) == 22 and genparticle.isPromptFinalState()) { Photons.push_back(genparticle); }
-        if (abs(genparticle.pdgId()) == 24 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {GenWBosons.push_back(genparticle); }
-        if (abs(genparticle.pdgId()) == 23 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {GenZBosons.push_back(genparticle); }
+        if (abs(genparticle.pdgId()) == 24 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
+            GenWBosons.push_back(genparticle);
+        }
+        if (abs(genparticle.pdgId()) == 23 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
+            GenZBosons.push_back(genparticle);
+        }
 
         // fill containers for fatjet gen matching regarding in-site DeepAK15 calibration
         // light flavor quarks with W+ as mother
@@ -89,13 +93,9 @@ void GenDarkMatterEvent::Fill()
             BQuarksFromAntiTop.push_back(genparticle);
         }
         // b quarks in general
-        if (abs(genparticle.pdgId()) == 5 and genparticle.statusFlags().isLastCopy()) {
-            BQuarks.push_back(genparticle);
-        }
+        if (abs(genparticle.pdgId()) == 5 and genparticle.statusFlags().isLastCopy()) { BQuarks.push_back(genparticle); }
         // c quarks in general
-        if (abs(genparticle.pdgId()) == 4 and genparticle.statusFlags().isLastCopy()) {
-            CQuarks.push_back(genparticle);
-        }
+        if (abs(genparticle.pdgId()) == 4 and genparticle.statusFlags().isLastCopy()) { CQuarks.push_back(genparticle); }
         // top quarks
         if (abs(genparticle.pdgId()) == 6 and genparticle.statusFlags().fromHardProcess() and genparticle.statusFlags().isLastCopy()) {
             TQuarks.push_back(genparticle);
@@ -333,20 +333,11 @@ math::XYZTLorentzVector GenDarkMatterEvent::ReturnPhoton() const
     return Photon;
 }
 
-std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenWBosons() const
-{
-    return GenWBosons;
-}
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenWBosons() const { return GenWBosons; }
 
-std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenZBosons() const
-{
-    return GenZBosons;
-}
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenZBosons() const { return GenZBosons; }
 
-std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenPhotons() const
-{
-    return Photons;
-}
+std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnGenPhotons() const { return Photons; }
 
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnBQuarksFromTop() const { return BQuarksFromTop; }
 std::vector< reco::GenParticle > GenDarkMatterEvent::ReturnLightQuarksFromWPlus() const { return LightQuarksFromWPlus; }

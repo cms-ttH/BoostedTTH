@@ -160,7 +160,7 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVars("GenZ_Eta", "N_GenZBosons");
     vars.InitVars("GenZ_Mass", "N_GenZBosons");
     vars.InitVars("GenZ_Energy", "N_GenZBosons");
-    
+
     vars.InitVars("GenPhoton_Pt", "N_GenPhotons");
     vars.InitVars("GenPhoton_Phi", "N_GenPhotons");
     vars.InitVars("GenPhoton_Eta", "N_GenPhotons");
@@ -397,7 +397,6 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
                           BoostedUtils::DeltaR(selectedMediumUntaggedJets.at(i).p4(), input.selectedMuonsLoose.at(j).p4()));
         }
     }
-    
 
     //         vars.FillVar("Zmumu_Pt_Hadr_Recoil_Pt_ratio", fabs(Zmumu.Pt() - hadr_recoil_p4.pt()) / hadr_recoil_p4.pt());
 
@@ -408,7 +407,7 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
         // get particle-level W/Z pt for later usage in V boson reweighting
         if (DM_Evt.WBosonIsFilled()) {
             // std::cout << "W boson!" << std::endl;
-            math::XYZTLorentzVector   WBoson = DM_Evt.ReturnWBoson();
+            math::XYZTLorentzVector WBoson = DM_Evt.ReturnWBoson();
             vars.FillVar("W_Pt", WBoson.Pt());
             vars.FillVar("W_Phi", WBoson.Phi());
             vars.FillVar("W_Eta", WBoson.Eta());
@@ -418,7 +417,7 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
 
         if (DM_Evt.ZBosonIsFilled()) {
             // std::cout << "Z boson!" << std::endl;
-            math::XYZTLorentzVector   ZBoson = DM_Evt.ReturnZBoson();
+            math::XYZTLorentzVector ZBoson = DM_Evt.ReturnZBoson();
             vars.FillVar("Z_Pt", ZBoson.Pt());
             vars.FillVar("Z_Phi", ZBoson.Phi());
             vars.FillVar("Z_Eta", ZBoson.Eta());
@@ -427,7 +426,7 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
         }
 
         if (DM_Evt.PhotonIsFilled()) {
-            math::XYZTLorentzVector   Gamma  = DM_Evt.ReturnPhoton();
+            math::XYZTLorentzVector Gamma = DM_Evt.ReturnPhoton();
             vars.FillVar("Gamma_Pt", Gamma.Pt());
             vars.FillVar("Gamma_Phi", Gamma.Phi());
             vars.FillVar("Gamma_Eta", Gamma.Eta());

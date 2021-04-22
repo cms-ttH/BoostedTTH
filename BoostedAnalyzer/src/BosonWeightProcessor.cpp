@@ -195,7 +195,7 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
 
     if (DM_Evt.WBosonIsFilled() && DM_Evt.ReturnWBoson().Pt() > 0.) {
         // lower x axis range is 30 GeV -> use first bin if pt is smaller than 30 GeV
-        const auto W_Pt       = std::max(30.1,DM_Evt.ReturnWBoson().Pt());
+        const auto W_Pt       = std::max(30.1, DM_Evt.ReturnWBoson().Pt());
         BosonWeight_nominal   = hWbosonWeight_nominal->GetBinContent(hWbosonWeight_nominal->FindBin(W_Pt));
         BosonWeight_QCD1Up    = hWbosonWeight_QCD1Up->GetBinContent(hWbosonWeight_QCD1Up->FindBin(W_Pt));
         BosonWeight_QCD1Down  = hWbosonWeight_QCD1Down->GetBinContent(hWbosonWeight_QCD1Down->FindBin(W_Pt));
@@ -223,7 +223,7 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
 
     else if (DM_Evt.ZBosonIsFilled() && DM_Evt.ReturnZBoson().Pt() > 0.) {
         // lower x axis range is 30 GeV -> use first bin if pt is smaller than 30 GeV
-        const auto Z_Pt = std::max(30.1,DM_Evt.ReturnZBoson().Pt());
+        const auto Z_Pt = std::max(30.1, DM_Evt.ReturnZBoson().Pt());
         if (DM_Evt.IsZnunu()) {
             BosonWeight_nominal   = hZvvbosonWeight_nominal->GetBinContent(hZvvbosonWeight_nominal->FindBin(Z_Pt));
             BosonWeight_QCD1Up    = hZvvbosonWeight_QCD1Up->GetBinContent(hZvvbosonWeight_QCD1Up->FindBin(Z_Pt));
@@ -278,7 +278,7 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
 
     else if (DM_Evt.PhotonIsFilled() && DM_Evt.ReturnPhoton().Pt() > 0.) {
         // lower x axis range is 30 GeV -> use first bin if pt is smaller than 30 GeV
-        const auto Photon_Pt  = std::max(30.1,DM_Evt.ReturnPhoton().Pt());
+        const auto Photon_Pt  = std::max(30.1, DM_Evt.ReturnPhoton().Pt());
         BosonWeight_nominal   = hPhotonWeight_nominal->GetBinContent(hPhotonWeight_nominal->FindBin(Photon_Pt));
         BosonWeight_QCD1Up    = hPhotonWeight_QCD1Up->GetBinContent(hPhotonWeight_QCD1Up->FindBin(Photon_Pt));
         BosonWeight_QCD1Down  = hPhotonWeight_QCD1Down->GetBinContent(hPhotonWeight_QCD1Down->FindBin(Photon_Pt));

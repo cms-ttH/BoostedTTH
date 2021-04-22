@@ -234,7 +234,7 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
 
         vars.FillVars("LooseMuon_Charge", iMu, itMu->charge());
         if (itMu->hasUserFloat("PtbeforeRC")) vars.FillVars("LooseMuon_Pt_BeForeRC", iMu, itMu->userFloat("PtbeforeRC"));
-        
+
         if (itMu->hasUserFloat("IP_dz")) vars.FillVars("LooseMuon_IP_dz", iMu, itMu->userFloat("IP_dz"));
         if (itMu->hasUserFloat("IP_dxy")) vars.FillVars("LooseMuon_IP_dxy", iMu, itMu->userFloat("IP_dxy"));
 
@@ -267,7 +267,7 @@ void LeptonVarProcessor::Process(const InputCollections& input, VariableContaine
 
         vars.FillVars("Muon_Charge", iMu, itMu->charge());
         if (itMu->hasUserFloat("PtbeforeRC")) vars.FillVars("Muon_Pt_BeForeRC", iMu, itMu->userFloat("PtbeforeRC"));
-        
+
         if (itMu->hasUserFloat("IP_dz")) vars.FillVars("Muon_IP_dz", iMu, itMu->userFloat("IP_dz"));
         if (itMu->hasUserFloat("IP_dxy")) vars.FillVars("Muon_IP_dxy", iMu, itMu->userFloat("IP_dxy"));
 
