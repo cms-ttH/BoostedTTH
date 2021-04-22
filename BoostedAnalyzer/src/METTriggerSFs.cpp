@@ -70,8 +70,8 @@ std::vector< float > METTriggerSFs::CalculateTriggerSFs(const InputCollections& 
     // std::cout << "Eta: " << eta << std::endl;
     // calculate SFs here
     sfs.at(0) = hist->GetBinContent(hist->FindBin(recoil));
-    sfs.at(1) = (hist->GetBinContent(hist->FindBin(recoil))) * (1 + std::max(0.01 * input.selectedMuonsLoose.size(),0.01));
-    sfs.at(2) = (hist->GetBinContent(hist->FindBin(recoil))) * (1 - std::max(0.01 * input.selectedMuonsLoose.size(),0.01));
+    sfs.at(1) = (hist->GetBinContent(hist->FindBin(recoil))) * (1 + std::max(0.01 * input.selectedMuonsLoose.size(), 0.01));
+    sfs.at(2) = (hist->GetBinContent(hist->FindBin(recoil))) * (1 - std::max(0.01 * input.selectedMuonsLoose.size(), 0.01));
 
     return sfs;
 }

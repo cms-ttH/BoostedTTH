@@ -15,7 +15,7 @@ void TriggerVarProcessor::Init(const InputCollections& input, VariableContainer&
 {
     for (auto it = relevantTriggers.begin(); it != relevantTriggers.end(); ++it) {
         vars.InitVar("Triggered_" + replaceAsterix(*it), "I");
-        //vars.InitVar("Prescale_" + replaceAsterix(*it), "F");
+        // vars.InitVar("Prescale_" + replaceAsterix(*it), "F");
     }
     if (not input.iEvent.isRealData()) {
         for (auto& triggerSF : availableTriggerScaleFactors) {
@@ -37,7 +37,7 @@ void TriggerVarProcessor::Process(const InputCollections& input, VariableContain
     if (!initialized) cerr << "tree processor not initialized" << endl;
     for (auto it = relevantTriggers.begin(); it != relevantTriggers.end(); ++it) {
         vars.FillVar("Triggered_" + replaceAsterix(*it), int(input.triggerInfo.IsTriggered(*it)));
-        //vars.FillVar("Prescale_" + replaceAsterix(*it), float(input.triggerInfo.GetPrescale(*it)));
+        // vars.FillVar("Prescale_" + replaceAsterix(*it), float(input.triggerInfo.GetPrescale(*it)));
     }
     if (not input.iEvent.isRealData()) {
         for (auto& triggerSF : availableTriggerScaleFactors) {
