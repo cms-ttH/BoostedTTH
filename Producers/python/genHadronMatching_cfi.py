@@ -8,9 +8,7 @@ genJetInputParticleCollection = "packedGenParticles"
 ## producing a subset of particles to be used for jet clustering
 from RecoJets.Configuration.GenJetParticles_cff import genParticlesForJetsNoNu
 
-genParticlesForJetsNoNu = genParticlesForJetsNoNu.clone(
-    src=genJetInputParticleCollection
-)
+genParticlesForJetsNoNu = genParticlesForJetsNoNu.clone(src=genJetInputParticleCollection)
 
 # Producing own jets for testing purposes
 from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
@@ -24,13 +22,9 @@ ak4GenJetsCustom = ak4GenJets.clone(
 
 # Ghost particle collection used for Hadron-Jet association
 # MUST use proper input particle collection
-from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import (
-    selectedHadronsAndPartons,
-)
+from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
 
-selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
-    particles=genParticleCollection
-)
+selectedHadronsAndPartons = selectedHadronsAndPartons.clone(particles=genParticleCollection)
 
 ## Input particle collection for matching to gen jets (partons + leptons)
 # MUST use use proper input jet collection: the jets to which hadrons should be associated
@@ -45,23 +39,17 @@ genJetFlavourInfos = ak4JetFlavourInfos.clone(jets=genJetCollection)
 # MUST use the same particle collection as in selectedHadronsAndPartons
 from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
 
-matchGenBHadron = matchGenBHadron.clone(
-    genParticles=genParticleCollection, jetFlavourInfos="genJetFlavourInfos"
-)
+matchGenBHadron = matchGenBHadron.clone(genParticles=genParticleCollection, jetFlavourInfos="genJetFlavourInfos")
 
 ## Plugin for analysing C hadrons
 # MUST use the same particle collection as in selectedHadronsAndPartons
 from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
 
-matchGenCHadron = matchGenCHadron.clone(
-    genParticles=genParticleCollection, jetFlavourInfos="genJetFlavourInfos"
-)
+matchGenCHadron = matchGenCHadron.clone(genParticles=genParticleCollection, jetFlavourInfos="genJetFlavourInfos")
 
 
 ## Producer for ttbar categorisation ID
 # MUST use same genJetCollection as used for tools above
 from TopQuarkAnalysis.TopTools.GenTtbarCategorizer_cfi import categorizeGenTtbar
 
-categorizeGenTtbar = categorizeGenTtbar.clone(
-    genJetPtMin=20.0, genJetAbsEtaMax=2.4, genJets=genJetCollection
-)
+categorizeGenTtbar = categorizeGenTtbar.clone(genJetPtMin=20.0, genJetAbsEtaMax=2.4, genJets=genJetCollection)

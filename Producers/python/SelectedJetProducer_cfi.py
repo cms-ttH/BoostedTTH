@@ -19,24 +19,12 @@ SelectedJetProducer = cms.EDProducer(
     systematics=cms.vstring(""),
     JetID=cms.vstring("none"),
     JetType=cms.string("AK4PFCHS"),
-    jecFileAK4_2016=cms.string(
-        "Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFPuppi.txt"
-    ),
-    jecFileAK8_2016=cms.string(
-        "Summer16_07Aug2017_V11_MC_UncertaintySources_AK8PFPuppi.txt"
-    ),
-    jecFileAK15_2016=cms.string(
-        "Summer16_07Aug2017_V11_MC_UncertaintySources_AK8PFPuppi.txt"
-    ),
-    jecFileAK4_2017=cms.string(
-        "Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFPuppi.txt"
-    ),
-    jecFileAK8_2017=cms.string(
-        "Fall17_17Nov2017_V32_MC_UncertaintySources_AK8PFPuppi.txt"
-    ),
-    jecFileAK15_2017=cms.string(
-        "Fall17_17Nov2017_V32_MC_UncertaintySources_AK8PFPuppi.txt"
-    ),
+    jecFileAK4_2016=cms.string("Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFPuppi.txt"),
+    jecFileAK8_2016=cms.string("Summer16_07Aug2017_V11_MC_UncertaintySources_AK8PFPuppi.txt"),
+    jecFileAK15_2016=cms.string("Summer16_07Aug2017_V11_MC_UncertaintySources_AK8PFPuppi.txt"),
+    jecFileAK4_2017=cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFPuppi.txt"),
+    jecFileAK8_2017=cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK8PFPuppi.txt"),
+    jecFileAK15_2017=cms.string("Fall17_17Nov2017_V32_MC_UncertaintySources_AK8PFPuppi.txt"),
     jecFileAK4_2018=cms.string("Autumn18_V19_MC_UncertaintySources_AK4PFPuppi.txt"),
     jecFileAK8_2018=cms.string("Autumn18_V19_MC_UncertaintySources_AK8PFPuppi.txt"),
     jecFileAK15_2018=cms.string("Autumn18_V19_MC_UncertaintySources_AK8PFPuppi.txt"),

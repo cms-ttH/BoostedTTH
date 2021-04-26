@@ -512,14 +512,14 @@ process.jets_from_skims.add(process.AK15PFPuppiComplete)
 
 # -------------- MET corrections and uncertainties -------------- #
 
-# Puppi stuff currently not used, so everything regarding Puppi MET is commented
+# Puppi stuff currently not used, however the (puppi-related) used lines are needed to be in sync with the separated skimming and ntupling workflow
 
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import (
     runMetCorAndUncFromMiniAOD,
 )
-#from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
 
-#makePuppiesFromMiniAOD(process, False)
+makePuppiesFromMiniAOD(process, False)
 
 runMetCorAndUncFromMiniAOD(
     process,
@@ -541,8 +541,8 @@ runMetCorAndUncFromMiniAOD(
     #jetFlavor="AK4PFPuppi",
 #)
 
-#process.puppiNoLep.useExistingWeights = True
-#process.puppi.useExistingWeights = True
+process.puppiNoLep.useExistingWeights = True
+process.puppi.useExistingWeights = True
 
 # -------------- MET filters -------------- #
 
