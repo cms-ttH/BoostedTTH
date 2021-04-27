@@ -150,10 +150,10 @@ void BosonWeightProcessor::Init(const InputCollections& input, VariableContainer
 
     vars.InitVar("BosonWeight_MixedUp");
     vars.InitVar("BosonWeight_MixedDown");
-    vars.InitVar("BosonWeight_AlphaUp");
-    vars.InitVar("BosonWeight_AlphaDown");
-    vars.InitVar("BosonWeight_StatsUp");
-    vars.InitVar("BosonWeight_StatsDown");
+    // vars.InitVar("BosonWeight_AlphaUp");
+    // vars.InitVar("BosonWeight_AlphaDown");
+    // vars.InitVar("BosonWeight_StatsUp");
+    // vars.InitVar("BosonWeight_StatsDown");
 
     vars.InitVar("BosonWeight_muRUp");
     vars.InitVar("BosonWeight_muRDown");
@@ -322,10 +322,10 @@ void BosonWeightProcessor::Process(const InputCollections& input, VariableContai
 
     vars.FillVar("BosonWeight_MixedUp", BosonWeight_MixedUp);
     vars.FillVar("BosonWeight_MixedDown", BosonWeight_MixedDown);
-    vars.FillVar("BosonWeight_AlphaUp", BosonWeight_AlphaUp);
-    vars.FillVar("BosonWeight_AlphaDown", BosonWeight_AlphaDown);
-    vars.FillVar("BosonWeight_StatsUp", BosonWeight_StatsUp);
-    vars.FillVar("BosonWeight_StatsDown", BosonWeight_StatsDown);
+    // vars.FillVar("BosonWeight_AlphaUp", BosonWeight_AlphaUp);
+    // vars.FillVar("BosonWeight_AlphaDown", BosonWeight_AlphaDown);
+    // vars.FillVar("BosonWeight_StatsUp", BosonWeight_StatsUp);
+    // vars.FillVar("BosonWeight_StatsDown", BosonWeight_StatsDown);
 
     vars.FillVar("BosonWeight_muRUp", BosonWeight_muRUp);
     vars.FillVar("BosonWeight_muRDown", BosonWeight_muRDown);

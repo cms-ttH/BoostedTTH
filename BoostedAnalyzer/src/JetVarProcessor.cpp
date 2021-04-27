@@ -118,9 +118,9 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_Puppi_ChargedMultiplicity", "N_AK15Jets");
     vars.InitVars("AK15Jet_N_Daughters", "N_AK15Jets");
 
-    vars.InitVars("AK15Jet_Njettiness_tau1", "N_AK15Jets");
-    vars.InitVars("AK15Jet_Njettiness_tau2", "N_AK15Jets");
-    vars.InitVars("AK15Jet_Njettiness_tau3", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_Njettiness_tau1", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_Njettiness_tau2", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_Njettiness_tau3", "N_AK15Jets");
     // vars.InitVars("AK15Jet_Njettiness_tau4", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_PuppiSoftDropMass", "N_AK15Jets");
@@ -129,10 +129,10 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     // vars.InitVars("AK15Jet_DeepAK15_WvsQCD", "N_AK15Jets");
     // vars.InitVars("AK15Jet_DeepAK15_ZvsQCD", "N_AK15Jets");
 
-    vars.InitVars("AK15Jet_DeepAK15_probTbcq", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_probTbqq", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_probTbc", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_probTbq", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_probTbcq", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_probTbqq", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_probTbc", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_probTbq", "N_AK15Jets");
 
     // vars.InitVars("AK15Jet_DeepAK15_probWcq", "N_AK15Jets");
     // vars.InitVars("AK15Jet_DeepAK15_probWqq", "N_AK15Jets");
@@ -140,46 +140,46 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     // vars.InitVars("AK15Jet_DeepAK15_probZcc", "N_AK15Jets");
     // vars.InitVars("AK15Jet_DeepAK15_probZqq", "N_AK15Jets");
 
-    vars.InitVars("AK15Jet_DeepAK15_probQCDbb", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_probQCDcc", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_probQCDc", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_probQCDb", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_probQCDothers", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_probQCDbb", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_probQCDcc", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_probQCDc", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_probQCDb", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_probQCDothers", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_DeepAK15_MD_TvsQCD", "N_AK15Jets");
     // vars.InitVars("AK15Jet_DeepAK15_MD_WvsQCD", "N_AK15Jets");
     // vars.InitVars("AK15Jet_DeepAK15_MD_ZvsQCD", "N_AK15Jets");
 
-    vars.InitVars("AK15Jet_DeepAK15_MD_probTbcq", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_MD_probTbqq", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_MD_probTbc", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_MD_probTbq", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_MD_probTbcq", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_MD_probTbqq", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_MD_probTbc", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_MD_probTbq", "N_AK15Jets");
 
-    vars.InitVars("AK15Jet_DeepAK15_MD_probQCDbb", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_MD_probQCDcc", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_MD_probQCDc", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_MD_probQCDb", "N_AK15Jets");
-    vars.InitVars("AK15Jet_DeepAK15_MD_probQCDothers", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_MD_probQCDbb", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_MD_probQCDcc", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_MD_probQCDc", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_MD_probQCDb", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_DeepAK15_MD_probQCDothers", "N_AK15Jets");
 
     vars.InitVar("N_AK15Jets_SoftDrop", "I");
     vars.InitVars("AK15Jet_N_SoftDropSubjets", "N_AK15Jets");
-    vars.InitVars("AK15Jet_N_MediumBTaggedSoftDropSubjets", "N_AK15Jets");
-    vars.InitVars("AK15Jet_N_LooseBTaggedSoftDropSubjets", "N_AK15Jets");
-    vars.InitVars("AK15Jet_N_TightBTaggedSoftDropSubjets", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_N_MediumBTaggedSoftDropSubjets", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_N_LooseBTaggedSoftDropSubjets", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_N_TightBTaggedSoftDropSubjets", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_SoftDropJet1_Pt", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet1_Eta", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet1_Phi", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet1_E", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet1_M", "N_AK15Jets");
-    vars.InitVars("AK15Jet_SoftDropJet1_DeepJetCSV", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_SoftDropJet1_DeepJetCSV", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_SoftDropJet2_Pt", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet2_Eta", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet2_Phi", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet2_E", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet2_M", "N_AK15Jets");
-    vars.InitVars("AK15Jet_SoftDropJet2_DeepJetCSV", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_SoftDropJet2_DeepJetCSV", "N_AK15Jets");
 
     vars.InitVars("AK15Jet_SoftDrop_Pt", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDrop_Eta", "N_AK15Jets");
@@ -193,7 +193,7 @@ void JetVarProcessor::Init(const InputCollections& input, VariableContainer& var
     vars.InitVars("AK15Jet_SoftDropJet3_Phi", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet3_E", "N_AK15Jets");
     vars.InitVars("AK15Jet_SoftDropJet3_M", "N_AK15Jets");
-    vars.InitVars("AK15Jet_SoftDropJet3_DeepJetCSV", "N_AK15Jets");
+    // vars.InitVars("AK15Jet_SoftDropJet3_DeepJetCSV", "N_AK15Jets");
 
     vars.InitVar("N_AK15Jets_x_N_Jets", "I");
     vars.InitVar("N_AK15Jets_x_N_JetsMediumTagged", "I");
@@ -467,6 +467,7 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
             vars.FillVars("AK15Jet_CEMF", i, ak15jet.userFloat("chargedElectromagneticEnergyFraction"));
         }
         if (ak15jet.hasUserFloat("muonEnergyFraction")) { vars.FillVars("AK15Jet_MF", i, ak15jet.userFloat("muonEnergyFraction")); }
+
         if (ak15jet.hasUserFloat("patPuppiJetSpecificProducer:puppiMultiplicity")) {
             vars.FillVars("AK15Jet_Puppi_Multiplicity", i, ak15jet.userFloat("patPuppiJetSpecificProducer:puppiMultiplicity"));
         }
@@ -481,9 +482,9 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         }
         vars.FillVars("AK15Jet_N_Daughters", i, ak15jet.numberOfDaughters());
 
-        if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau1")) { vars.FillVars("AK15Jet_Njettiness_tau1", i, ak15jet.userFloat("NjettinessAK15Puppi:tau1")); }
-        if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau2")) { vars.FillVars("AK15Jet_Njettiness_tau2", i, ak15jet.userFloat("NjettinessAK15Puppi:tau2")); }
-        if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau3")) { vars.FillVars("AK15Jet_Njettiness_tau3", i, ak15jet.userFloat("NjettinessAK15Puppi:tau3")); }
+        // if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau1")) { vars.FillVars("AK15Jet_Njettiness_tau1", i, ak15jet.userFloat("NjettinessAK15Puppi:tau1")); }
+        // if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau2")) { vars.FillVars("AK15Jet_Njettiness_tau2", i, ak15jet.userFloat("NjettinessAK15Puppi:tau2")); }
+        // if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau3")) { vars.FillVars("AK15Jet_Njettiness_tau3", i, ak15jet.userFloat("NjettinessAK15Puppi:tau3")); }
         // if (ak15jet.hasUserFloat("NjettinessAK15Puppi:tau4")) { vars.FillVars("AK15Jet_Njettiness_tau4", i, ak15jet.userFloat("NjettinessAK15Puppi:tau4")); }
 
         if (ak15jet.hasUserFloat("ak15PFJetsPuppiSoftDropMass")) {
@@ -494,10 +495,10 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         // vars.FillVars("AK15Jet_DeepAK15_WvsQCD", i, ak15jet.bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:WvsQCD"));
         // vars.FillVars("AK15Jet_DeepAK15_ZvsQCD", i, ak15jet.bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:ZvsQCD"));
 
-        vars.FillVars("AK15Jet_DeepAK15_probTbcq", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probTbcq"));
-        vars.FillVars("AK15Jet_DeepAK15_probTbqq", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probTbqq"));
-        vars.FillVars("AK15Jet_DeepAK15_probTbc", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probTbc"));
-        vars.FillVars("AK15Jet_DeepAK15_probTbq", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probTbq"));
+        // vars.FillVars("AK15Jet_DeepAK15_probTbcq", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probTbcq"));
+        // vars.FillVars("AK15Jet_DeepAK15_probTbqq", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probTbqq"));
+        // vars.FillVars("AK15Jet_DeepAK15_probTbc", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probTbc"));
+        // vars.FillVars("AK15Jet_DeepAK15_probTbq", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probTbq"));
 
         // vars.FillVars("AK15Jet_DeepAK15_probWcq", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probWcq"));
         // vars.FillVars("AK15Jet_DeepAK15_probWqq", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probWqq"));
@@ -505,26 +506,26 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
         // vars.FillVars("AK15Jet_DeepAK15_probZcc", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probZcc"));
         // vars.FillVars("AK15Jet_DeepAK15_probZqq", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:propZqq"));
 
-        vars.FillVars("AK15Jet_DeepAK15_probQCDbb", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDbb"));
-        vars.FillVars("AK15Jet_DeepAK15_probQCDcc", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDcc"));
-        vars.FillVars("AK15Jet_DeepAK15_probQCDc", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDc"));
-        vars.FillVars("AK15Jet_DeepAK15_probQCDb", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDb"));
-        vars.FillVars("AK15Jet_DeepAK15_probQCDothers", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDothers"));
+        // vars.FillVars("AK15Jet_DeepAK15_probQCDbb", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDbb"));
+        // vars.FillVars("AK15Jet_DeepAK15_probQCDcc", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDcc"));
+        // vars.FillVars("AK15Jet_DeepAK15_probQCDc", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDc"));
+        // vars.FillVars("AK15Jet_DeepAK15_probQCDb", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDb"));
+        // vars.FillVars("AK15Jet_DeepAK15_probQCDothers", i, ak15jet.bDiscriminator("pfDeepBoostedJetTags:probQCDothers"));
 
         vars.FillVars("AK15Jet_DeepAK15_MD_TvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD"));
         // vars.FillVars("AK15Jet_DeepAK15_MD_WvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD"));
         // vars.FillVars("AK15Jet_DeepAK15_MD_ZvsQCD", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZvsQCD"));
 
-        vars.FillVars("AK15Jet_DeepAK15_MD_probTbcq", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbcq"));
-        vars.FillVars("AK15Jet_DeepAK15_MD_probTbqq", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbqq"));
-        vars.FillVars("AK15Jet_DeepAK15_MD_probTbc", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbc"));
-        vars.FillVars("AK15Jet_DeepAK15_MD_probTbq", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbq"));
+        // vars.FillVars("AK15Jet_DeepAK15_MD_probTbcq", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbcq"));
+        // vars.FillVars("AK15Jet_DeepAK15_MD_probTbqq", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbqq"));
+        // vars.FillVars("AK15Jet_DeepAK15_MD_probTbc", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbc"));
+        // vars.FillVars("AK15Jet_DeepAK15_MD_probTbq", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbq"));
 
-        vars.FillVars("AK15Jet_DeepAK15_MD_probQCDbb", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDbb"));
-        vars.FillVars("AK15Jet_DeepAK15_MD_probQCDcc", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDcc"));
-        vars.FillVars("AK15Jet_DeepAK15_MD_probQCDc", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDc"));
-        vars.FillVars("AK15Jet_DeepAK15_MD_probQCDb", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDb"));
-        vars.FillVars("AK15Jet_DeepAK15_MD_probQCDothers", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDothers"));
+        // vars.FillVars("AK15Jet_DeepAK15_MD_probQCDbb", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDbb"));
+        // vars.FillVars("AK15Jet_DeepAK15_MD_probQCDcc", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDcc"));
+        // vars.FillVars("AK15Jet_DeepAK15_MD_probQCDc", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDc"));
+        // vars.FillVars("AK15Jet_DeepAK15_MD_probQCDb", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDb"));
+        // vars.FillVars("AK15Jet_DeepAK15_MD_probQCDothers", i, ak15jet.bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDothers"));
 
         if (ak15jet.hasSubjets("SoftDropWithBtagInfo")) {
             const auto& ak15jet_subjets = ak15jet.subjets("SoftDropWithBtagInfo");
@@ -533,9 +534,9 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
 
             if (ak15jet_subjets.size() > 0) n_AK15_SoftDrop_Jets += 1;
 
-            int n_mediumbtagged_softdropsubjets = 0;
-            int n_loosebtagged_softdropsubjets  = 0;
-            int n_tightbtagged_softdropsubjets  = 0;
+            // int n_mediumbtagged_softdropsubjets = 0;
+            // int n_loosebtagged_softdropsubjets  = 0;
+            // int n_tightbtagged_softdropsubjets  = 0;
 
             math::XYZTLorentzVector ak15jet_softdrop(0., 0., 0., 0.);
 
@@ -546,16 +547,16 @@ void JetVarProcessor::Process(const InputCollections& input, VariableContainer& 
                 vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_Phi", i, ak15jet_subjet.phi());
                 vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_E", i, ak15jet_subjet.energy());
                 vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_M", i, ak15jet_subjet.mass());
-                vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_DeepJetCSV", i, CSVHelper::GetJetCSV_DNN(ak15jet_subjet, "DeepJet"));
-                if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Medium, era)) n_mediumbtagged_softdropsubjets += 1;
-                if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Loose, era)) n_loosebtagged_softdropsubjets += 1;
-                if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Tight, era)) n_tightbtagged_softdropsubjets += 1;
+                // vars.FillVars("AK15Jet_SoftDropJet" + std::to_string(j + 1) + "_DeepJetCSV", i, CSVHelper::GetJetCSV_DNN(ak15jet_subjet, "DeepJet"));
+                // if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Medium, era)) n_mediumbtagged_softdropsubjets += 1;
+                // if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Loose, era)) n_loosebtagged_softdropsubjets += 1;
+                // if (CSVHelper::PassesCSV(ak15jet_subjet, "DeepJet", CSVHelper::CSVwp::Tight, era)) n_tightbtagged_softdropsubjets += 1;
                 ak15jet_softdrop += ak15jet_subjet.p4();
             }
 
-            vars.FillVars("AK15Jet_N_MediumBTaggedSoftDropSubjets", i, n_mediumbtagged_softdropsubjets);
-            vars.FillVars("AK15Jet_N_LooseBTaggedSoftDropSubjets", i, n_loosebtagged_softdropsubjets);
-            vars.FillVars("AK15Jet_N_TightBTaggedSoftDropSubjets", i, n_tightbtagged_softdropsubjets);
+            // vars.FillVars("AK15Jet_N_MediumBTaggedSoftDropSubjets", i, n_mediumbtagged_softdropsubjets);
+            // vars.FillVars("AK15Jet_N_LooseBTaggedSoftDropSubjets", i, n_loosebtagged_softdropsubjets);
+            // vars.FillVars("AK15Jet_N_TightBTaggedSoftDropSubjets", i, n_tightbtagged_softdropsubjets);
 
             vars.FillVars("AK15Jet_SoftDrop_Pt", i, ak15jet_softdrop.pt());
             vars.FillVars("AK15Jet_SoftDrop_Eta", i, ak15jet_softdrop.eta());

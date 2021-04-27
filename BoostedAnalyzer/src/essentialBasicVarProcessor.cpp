@@ -30,11 +30,11 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
 
     vars.InitVar("fixedGridRhoAll");
     vars.InitVar("fixedGridRhoFastjetAll");
-    vars.InitVar("fixedGridRhoFastjetAllCalo");
-    vars.InitVar("fixedGridRhoFastjetCentral");
-    vars.InitVar("fixedGridRhoFastjetCentralCalo");
-    vars.InitVar("fixedGridRhoFastjetCentralNeutral");
-    vars.InitVar("fixedGridRhoFastjetCentralChargedPileUp");
+    // vars.InitVar("fixedGridRhoFastjetAllCalo");
+    // vars.InitVar("fixedGridRhoFastjetCentral");
+    // vars.InitVar("fixedGridRhoFastjetCentralCalo");
+    // vars.InitVar("fixedGridRhoFastjetCentralNeutral");
+    // vars.InitVar("fixedGridRhoFastjetCentralChargedPileUp");
 
     vars.InitVar("N_TightElectrons", "I");
     vars.InitVar("N_LooseElectrons", "I");
@@ -86,9 +86,9 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     vars.InitVars("Jet_NEMF", "N_Jets");
     vars.InitVars("Jet_CEMF", "N_Jets");
     vars.InitVars("Jet_MF", "N_Jets");
-    vars.InitVars("Jet_Puppi_Multiplicity", "N_Jets");
-    vars.InitVars("Jet_Puppi_NeutralMultiplicity", "N_Jets");
-    vars.InitVars("Jet_Puppi_ChargedMultiplicity", "N_Jets");
+    // vars.InitVars("Jet_Puppi_Multiplicity", "N_Jets");
+    // vars.InitVars("Jet_Puppi_NeutralMultiplicity", "N_Jets");
+    // vars.InitVars("Jet_Puppi_ChargedMultiplicity", "N_Jets");
     vars.InitVars("Jet_N_Daughters", "N_Jets");
 
     vars.InitVars("Jet_GenJet_Pt", "N_Jets");
@@ -100,12 +100,12 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
     // vars.InitVars("Jet_DeepCSV_udsg", "N_Jets");
 
     vars.InitVars("Jet_DeepJetCSV", "N_Jets");
-    vars.InitVars("Jet_DeepJet_b", "N_Jets");
-    vars.InitVars("Jet_DeepJet_bb", "N_Jets");
-    vars.InitVars("Jet_DeepJet_lepb", "N_Jets");
-    vars.InitVars("Jet_DeepJet_c", "N_Jets");
-    vars.InitVars("Jet_DeepJet_uds", "N_Jets");
-    vars.InitVars("Jet_DeepJet_g", "N_Jets");
+    // vars.InitVars("Jet_DeepJet_b", "N_Jets");
+    // vars.InitVars("Jet_DeepJet_bb", "N_Jets");
+    // vars.InitVars("Jet_DeepJet_lepb", "N_Jets");
+    // vars.InitVars("Jet_DeepJet_c", "N_Jets");
+    // vars.InitVars("Jet_DeepJet_uds", "N_Jets");
+    // vars.InitVars("Jet_DeepJet_g", "N_Jets");
 
     // vars.InitVars("MediumTaggedJet_E", "N_BTagsM");
     // vars.InitVars("MediumTaggedJet_M", "N_BTagsM");
@@ -173,11 +173,11 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
 
     vars.FillVar("fixedGridRhoAll", input.eventInfo.rhoAll);
     vars.FillVar("fixedGridRhoFastjetAll", input.eventInfo.rhoFastjetAll);
-    vars.FillVar("fixedGridRhoFastjetAllCalo", input.eventInfo.rhoFastjetAllCalo);
-    vars.FillVar("fixedGridRhoFastjetCentral", input.eventInfo.rhoFastjetCentral);
-    vars.FillVar("fixedGridRhoFastjetCentralCalo", input.eventInfo.rhoFastjetCentralCalo);
-    vars.FillVar("fixedGridRhoFastjetCentralNeutral", input.eventInfo.rhoFastjetCentralNeutral);
-    vars.FillVar("fixedGridRhoFastjetCentralChargedPileUp", input.eventInfo.rhoFastjetCentralChargedPileUp);
+    // vars.FillVar("fixedGridRhoFastjetAllCalo", input.eventInfo.rhoFastjetAllCalo);
+    // vars.FillVar("fixedGridRhoFastjetCentral", input.eventInfo.rhoFastjetCentral);
+    // vars.FillVar("fixedGridRhoFastjetCentralCalo", input.eventInfo.rhoFastjetCentralCalo);
+    // vars.FillVar("fixedGridRhoFastjetCentralNeutral", input.eventInfo.rhoFastjetCentralNeutral);
+    // vars.FillVar("fixedGridRhoFastjetCentralChargedPileUp", input.eventInfo.rhoFastjetCentralChargedPileUp);
 
     const char*             btagger = "DeepJet";
     std::vector< pat::Jet > selectedTaggedJetsL;
@@ -243,7 +243,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
             vars.FillVars("Jet_NEMF", iJet, itJet->userFloat("neutralElectromagneticEnergyFraction"));
         }
         if (itJet->hasUserFloat("muonEnergyFraction")) { vars.FillVars("Jet_MF", iJet, itJet->userFloat("muonEnergyFraction")); }
-
+        /*
         if (itJet->hasUserFloat("patPuppiJetSpecificProducer:puppiMultiplicity")) {
             vars.FillVars("Jet_Puppi_Multiplicity", iJet, itJet->userFloat("patPuppiJetSpecificProducer:puppiMultiplicity"));
         }
@@ -256,7 +256,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
                 "Jet_Puppi_ChargedMultiplicity", iJet,
                 itJet->userFloat("patPuppiJetSpecificProducer:puppiMultiplicity") - itJet->userFloat("patPuppiJetSpecificProducer:neutralPuppiMultiplicity"));
         }
-
+        */
         if (itJet->hasUserInt("pileupJetId:fullId")) vars.FillVars("Jet_PileUpID", iJet, itJet->userInt("pileupJetId:fullId"));
         if (itJet->hasUserFloat("pileupJetId:fullDiscriminant")) vars.FillVars("Jet_PileUpMVA", iJet, itJet->userFloat("pileupJetId:fullDiscriminant"));
 
@@ -275,12 +275,12 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
         // vars.FillVars("Jet_DeepCSV_udsg", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepCSVJetTags:probudsg"));
 
         vars.FillVars("Jet_DeepJetCSV", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "DeepJet"));
-        vars.FillVars("Jet_DeepJet_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probb"));
-        vars.FillVars("Jet_DeepJet_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probbb"));
-        vars.FillVars("Jet_DeepJet_lepb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:problepb"));
-        vars.FillVars("Jet_DeepJet_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probc"));
-        vars.FillVars("Jet_DeepJet_uds", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probuds"));
-        vars.FillVars("Jet_DeepJet_g", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probg"));
+        // vars.FillVars("Jet_DeepJet_b", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probb"));
+        // vars.FillVars("Jet_DeepJet_bb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probbb"));
+        // vars.FillVars("Jet_DeepJet_lepb", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:problepb"));
+        // vars.FillVars("Jet_DeepJet_c", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probc"));
+        // vars.FillVars("Jet_DeepJet_uds", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probuds"));
+        // vars.FillVars("Jet_DeepJet_g", iJet, CSVHelper::GetJetCSV_DNN(*itJet, "pfDeepFlavourJetTags:probg"));
 
         // if (itJet->eta() < -1.4 && itJet->eta() > -3.0 && itJet->phi() < -0.87 && itJet->phi() > -1.57) N_HEM_Jets += 1;
     }

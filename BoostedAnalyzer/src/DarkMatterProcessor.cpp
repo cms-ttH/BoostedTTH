@@ -25,8 +25,8 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("NaiveMET");
     vars.InitVar("Hadr_Recoil_Pt");
     vars.InitVar("Hadr_Recoil_Phi");
-    vars.InitVar("Gen_Hadr_Recoil_Pt");
-    vars.InitVar("Gen_Hadr_Recoil_Phi");
+    // vars.InitVar("Gen_Hadr_Recoil_Pt");
+    // vars.InitVar("Gen_Hadr_Recoil_Phi");
     vars.InitVar("CaloMET_Hadr_Recoil_ratio");
 
     vars.InitVar("HT_AK4Jets");
@@ -84,48 +84,48 @@ void DarkMatterProcessor::Init(const InputCollections& input, VariableContainer&
     vars.InitVar("Mediator_Phi");
     vars.InitVar("Mediator_Eta");
     vars.InitVar("Mediator_Energy");
-    vars.InitVar("Mediator_Px");
-    vars.InitVar("Mediator_Py");
-    vars.InitVar("Mediator_Pz");
+    // vars.InitVar("Mediator_Px");
+    // vars.InitVar("Mediator_Py");
+    // vars.InitVar("Mediator_Pz");
 
     vars.InitVars("Neutralino_Mass", "N_Neutralinos");
     vars.InitVars("Neutralino_Pt", "N_Neutralinos");
     vars.InitVars("Neutralino_Phi", "N_Neutralinos");
     vars.InitVars("Neutralino_Eta", "N_Neutralinos");
     vars.InitVars("Neutralino_Energy", "N_Neutralinos");
-    vars.InitVars("Neutralino_Px", "N_Neutralinos");
-    vars.InitVars("Neutralino_Py", "N_Neutralinos");
-    vars.InitVars("Neutralino_Pz", "N_Neutralinos");
+    // vars.InitVars("Neutralino_Px", "N_Neutralinos");
+    // vars.InitVars("Neutralino_Py", "N_Neutralinos");
+    // vars.InitVars("Neutralino_Pz", "N_Neutralinos");
 
-    vars.InitVar("N1_N2_Mass");
-    vars.InitVar("N1_N2_Pt");
-    vars.InitVar("N1_N2_Phi");
-    vars.InitVar("N1_N2_Eta");
-    vars.InitVar("N1_N2_Energy");
-    vars.InitVar("N1_N2_Px");
-    vars.InitVar("N1_N2_Py");
-    vars.InitVar("N1_N2_Pz");
+    // vars.InitVar("N1_N2_Mass");
+    // vars.InitVar("N1_N2_Pt");
+    // vars.InitVar("N1_N2_Phi");
+    // vars.InitVar("N1_N2_Eta");
+    // vars.InitVar("N1_N2_Energy");
+    // vars.InitVar("N1_N2_Px");
+    // vars.InitVar("N1_N2_Py");
+    // vars.InitVar("N1_N2_Pz");
 
-    vars.InitVar("cos_theta_N1_N2");
-    vars.InitVar("cos_theta_Med_N1");
-    vars.InitVar("cos_theta_Med_N2");
+    // vars.InitVar("cos_theta_N1_N2");
+    // vars.InitVar("cos_theta_Med_N1");
+    // vars.InitVar("cos_theta_Med_N2");
 
-    vars.InitVar("delta_phi_N1_N2");
-    vars.InitVar("delta_phi_Med_N1");
-    vars.InitVar("delta_phi_Med_N2");
+    // vars.InitVar("delta_phi_N1_N2");
+    // vars.InitVar("delta_phi_Med_N1");
+    // vars.InitVar("delta_phi_Med_N2");
 
-    vars.InitVar("delta_R_N1_N2");
-    vars.InitVar("delta_R_Med_N1");
-    vars.InitVar("delta_R_Med_N2");
+    // vars.InitVar("delta_R_N1_N2");
+    // vars.InitVar("delta_R_Med_N1");
+    // vars.InitVar("delta_R_Med_N2");
 
     vars.InitVars("Neutrino_Mass", "N_Neutrinos");
     vars.InitVars("Neutrino_Pt", "N_Neutrinos");
     vars.InitVars("Neutrino_Phi", "N_Neutrinos");
     vars.InitVars("Neutrino_Eta", "N_Neutrinos");
     vars.InitVars("Neutrino_Energy", "N_Neutrinos");
-    vars.InitVars("Neutrino_Px", "N_Neutrinos");
-    vars.InitVars("Neutrino_Py", "N_Neutrinos");
-    vars.InitVars("Neutrino_Pz", "N_Neutrinos");
+    // vars.InitVars("Neutrino_Px", "N_Neutrinos");
+    // vars.InitVars("Neutrino_Py", "N_Neutrinos");
+    // vars.InitVars("Neutrino_Pz", "N_Neutrinos");
 
     // particle-level quantities!
     vars.InitVar("W_Pt");
@@ -181,7 +181,7 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     if (!initialized) cerr << "tree processor not initialized" << endl;
 
     // 4-vector for hadronic recoil on gen level
-    math::XYZTLorentzVector gen_hadr_recoil_p4(0., 0., 0., 0.);
+    // math::XYZTLorentzVector gen_hadr_recoil_p4(0., 0., 0., 0.);
 
     // GenMET
     if (input.correctedMET.genMET() != 0) {
@@ -190,13 +190,13 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
                 const GenDarkMatterEvent& DM_Evt = input.genDarkMatterEvt;
                 vars.FillVar("Evt_Pt_GenMET", DM_Evt.ReturnNaiveMET4Vector().Pt());
                 vars.FillVar("Evt_Phi_GenMET", DM_Evt.ReturnNaiveMET4Vector().Phi());
-                gen_hadr_recoil_p4 = BoostedUtils::GetXYZTLorentzVector(DM_Evt.ReturnNaiveMET4Vector());
+                // gen_hadr_recoil_p4 = BoostedUtils::GetXYZTLorentzVector(DM_Evt.ReturnNaiveMET4Vector());
             }
         }
         else {
             vars.FillVar("Evt_Pt_GenMET", input.correctedMET.genMET()->pt());
             vars.FillVar("Evt_Phi_GenMET", input.correctedMET.genMET()->phi());
-            gen_hadr_recoil_p4 = input.correctedMET.genMET()->p4();
+            // gen_hadr_recoil_p4 = input.correctedMET.genMET()->p4();
         }
 
         // calculate gen hadronic recoil from gen MET
@@ -206,8 +206,8 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
     }
 
     // fill hadronic recoil pt and phi on gen level
-    vars.FillVar("Gen_Hadr_Recoil_Pt", gen_hadr_recoil_p4.pt());
-    vars.FillVar("Gen_Hadr_Recoil_Phi", gen_hadr_recoil_p4.phi());
+    // vars.FillVar("Gen_Hadr_Recoil_Pt", gen_hadr_recoil_p4.pt());
+    // vars.FillVar("Gen_Hadr_Recoil_Phi", gen_hadr_recoil_p4.phi());
 
     // 4-vectors to contain MET and hadronic recoil
     math::XYZTLorentzVector met_p4(0., 0., 0., 0.);
@@ -480,9 +480,9 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
         vars.FillVar("Mediator_Phi", Mediator_p4.Phi());
         vars.FillVar("Mediator_Eta", Mediator_p4.Eta());
         vars.FillVar("Mediator_Energy", Mediator_p4.E());
-        vars.FillVar("Mediator_Px", Mediator_p4.Px());
-        vars.FillVar("Mediator_Py", Mediator_p4.Py());
-        vars.FillVar("Mediator_Pz", Mediator_p4.Pz());
+        // vars.FillVar("Mediator_Px", Mediator_p4.Px());
+        // vars.FillVar("Mediator_Py", Mediator_p4.Py());
+        // vars.FillVar("Mediator_Pz", Mediator_p4.Pz());
 
         for (std::vector< TLorentzVector >::const_iterator itNeutralino = Neutralinos_p4.begin(); itNeutralino != Neutralinos_p4.end(); ++itNeutralino) {
             int iNeutralino = itNeutralino - Neutralinos_p4.begin();
@@ -491,33 +491,33 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
             vars.FillVars("Neutralino_Phi", iNeutralino, itNeutralino->Phi());
             vars.FillVars("Neutralino_Eta", iNeutralino, itNeutralino->Eta());
             vars.FillVars("Neutralino_Energy", iNeutralino, itNeutralino->E());
-            vars.FillVars("Neutralino_Px", iNeutralino, itNeutralino->Px());
-            vars.FillVars("Neutralino_Py", iNeutralino, itNeutralino->Py());
-            vars.FillVars("Neutralino_Pz", iNeutralino, itNeutralino->Pz());
+            // vars.FillVars("Neutralino_Px", iNeutralino, itNeutralino->Px());
+            // vars.FillVars("Neutralino_Py", iNeutralino, itNeutralino->Py());
+            // vars.FillVars("Neutralino_Pz", iNeutralino, itNeutralino->Pz());
         }
 
-        if (Neutralinos_p4.size() >= 2) {
-            vars.FillVar("N1_N2_Mass", (Neutralinos_p4[0] + Neutralinos_p4[1]).M());
-            vars.FillVar("N1_N2_Pt", (Neutralinos_p4[0] + Neutralinos_p4[1]).Pt());
-            vars.FillVar("N1_N2_Phi", (Neutralinos_p4[0] + Neutralinos_p4[1]).Phi());
-            vars.FillVar("N1_N2_Eta", (Neutralinos_p4[0] + Neutralinos_p4[1]).Eta());
-            vars.FillVar("N1_N2_Energy", (Neutralinos_p4[0] + Neutralinos_p4[1]).E());
-            vars.FillVar("N1_N2_Px", (Neutralinos_p4[0] + Neutralinos_p4[1]).Px());
-            vars.FillVar("N1_N2_Py", (Neutralinos_p4[0] + Neutralinos_p4[1]).Py());
-            vars.FillVar("N1_N2_Pz", (Neutralinos_p4[0] + Neutralinos_p4[1]).Pz());
+        // if (Neutralinos_p4.size() >= 2) {
+        // vars.FillVar("N1_N2_Mass", (Neutralinos_p4[0] + Neutralinos_p4[1]).M());
+        // vars.FillVar("N1_N2_Pt", (Neutralinos_p4[0] + Neutralinos_p4[1]).Pt());
+        // vars.FillVar("N1_N2_Phi", (Neutralinos_p4[0] + Neutralinos_p4[1]).Phi());
+        // vars.FillVar("N1_N2_Eta", (Neutralinos_p4[0] + Neutralinos_p4[1]).Eta());
+        // vars.FillVar("N1_N2_Energy", (Neutralinos_p4[0] + Neutralinos_p4[1]).E());
+        // vars.FillVar("N1_N2_Px", (Neutralinos_p4[0] + Neutralinos_p4[1]).Px());
+        // vars.FillVar("N1_N2_Py", (Neutralinos_p4[0] + Neutralinos_p4[1]).Py());
+        // vars.FillVar("N1_N2_Pz", (Neutralinos_p4[0] + Neutralinos_p4[1]).Pz());
 
-            vars.FillVar("cos_theta_N1_N2", TMath::Cos((Neutralinos_p4[0].Vect()).Angle(Neutralinos_p4[1].Vect())));
-            vars.FillVar("cos_theta_Med_N1", TMath::Cos((Neutralinos_p4[0].Vect()).Angle(Mediator_p4.Vect())));
-            vars.FillVar("cos_theta_Med_N2", TMath::Cos((Neutralinos_p4[1].Vect()).Angle(Mediator_p4.Vect())));
+        // vars.FillVar("cos_theta_N1_N2", TMath::Cos((Neutralinos_p4[0].Vect()).Angle(Neutralinos_p4[1].Vect())));
+        // vars.FillVar("cos_theta_Med_N1", TMath::Cos((Neutralinos_p4[0].Vect()).Angle(Mediator_p4.Vect())));
+        // vars.FillVar("cos_theta_Med_N2", TMath::Cos((Neutralinos_p4[1].Vect()).Angle(Mediator_p4.Vect())));
 
-            vars.FillVar("delta_phi_N1_N2", Neutralinos_p4[0].DeltaPhi(Neutralinos_p4[1]));
-            vars.FillVar("delta_phi_Med_N1", Mediator_p4.DeltaPhi(Neutralinos_p4[0]));
-            vars.FillVar("delta_phi_Med_N2", Mediator_p4.DeltaPhi(Neutralinos_p4[1]));
+        // vars.FillVar("delta_phi_N1_N2", Neutralinos_p4[0].DeltaPhi(Neutralinos_p4[1]));
+        // vars.FillVar("delta_phi_Med_N1", Mediator_p4.DeltaPhi(Neutralinos_p4[0]));
+        // vars.FillVar("delta_phi_Med_N2", Mediator_p4.DeltaPhi(Neutralinos_p4[1]));
 
-            vars.FillVar("delta_R_N1_N2", Neutralinos_p4[0].DeltaR(Neutralinos_p4[1]));
-            vars.FillVar("delta_R_Med_N1", Mediator_p4.DeltaR(Neutralinos_p4[0]));
-            vars.FillVar("delta_R_Med_N2", Mediator_p4.DeltaR(Neutralinos_p4[1]));
-        }
+        // vars.FillVar("delta_R_N1_N2", Neutralinos_p4[0].DeltaR(Neutralinos_p4[1]));
+        // vars.FillVar("delta_R_Med_N1", Mediator_p4.DeltaR(Neutralinos_p4[0]));
+        // vars.FillVar("delta_R_Med_N2", Mediator_p4.DeltaR(Neutralinos_p4[1]));
+        // }
 
         for (std::vector< TLorentzVector >::const_iterator itNeutrino = Neutrinos_p4.begin(); itNeutrino != Neutrinos_p4.end(); ++itNeutrino) {
             int iNeutrino = itNeutrino - Neutrinos_p4.begin();
@@ -526,9 +526,9 @@ void DarkMatterProcessor::Process(const InputCollections& input, VariableContain
             vars.FillVars("Neutrino_Phi", iNeutrino, itNeutrino->Phi());
             vars.FillVars("Neutrino_Eta", iNeutrino, itNeutrino->Eta());
             vars.FillVars("Neutrino_Energy", iNeutrino, itNeutrino->E());
-            vars.FillVars("Neutrino_Px", iNeutrino, itNeutrino->Px());
-            vars.FillVars("Neutrino_Py", iNeutrino, itNeutrino->Py());
-            vars.FillVars("Neutrino_Pz", iNeutrino, itNeutrino->Pz());
+            // vars.FillVars("Neutrino_Px", iNeutrino, itNeutrino->Px());
+            // vars.FillVars("Neutrino_Py", iNeutrino, itNeutrino->Py());
+            // vars.FillVars("Neutrino_Pz", iNeutrino, itNeutrino->Pz());
         }
     }
 }
