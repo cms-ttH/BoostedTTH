@@ -273,7 +273,7 @@ jetToolbox(
     addFiltering=False,
     addSoftDropSubjets=True,
     addPrunedSubjets=False,
-    addNsub=True,
+    addNsub=False,
     maxTau=3,  # add Nsubjettiness tau1, tau2, tau3, tau4
     JETCorrPayload="AK8PFPuppi",
     JETCorrLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'],
@@ -284,6 +284,7 @@ jetToolbox(
     Cut="pt > 150. && abs(rapidity()) < 2.4",
     GetJetMCFlavour=not options.isData,
     bTagDiscriminators=["None"],
+    subjetBTagDiscriminators=["None"],
     # GetSubJetMCFlavour=True,
     addHEPTopTagger=False
 )
@@ -309,8 +310,9 @@ updateJetCollection(
     svSource=cms.InputTag('slimmedSecondaryVertices'),
     rParam=1.5,
     jetCorrections=("AK8PFPuppi", cms.vstring(["L1FastJet", "L2Relative", "L3Absolute", "L2L3Residual"]), "None"),
-    btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs
-    + pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs + pfDeepBoostedJetTagsProbs + pfDeepBoostedJetTagsMetaDiscrs,
+    #btagDiscriminators=pfMassDecorrelatedDeepBoostedJetTagsProbs
+    #+ pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs + pfDeepBoostedJetTagsProbs + pfDeepBoostedJetTagsMetaDiscrs,
+    btagDiscriminators=['pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD','pfDeepBoostedDiscriminatorsJetTags:TvsQCD'],
     postfix="AK15WithPuppiDaughters",
 )
 # since DeepAK15 is not standard, preprocessing parameters have to be provided -> from LPC-DM colleagues
@@ -350,16 +352,17 @@ updateJetCollection(
         "None"
     ),  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
     btagDiscriminators=[
-        "pfDeepFlavourJetTags:probb",
-        "pfDeepFlavourJetTags:probbb",
-        "pfDeepFlavourJetTags:problepb",
-        "pfDeepFlavourJetTags:probc",
-        "pfDeepFlavourJetTags:probuds",
-        "pfDeepFlavourJetTags:probg",
-        "pfDeepCSVJetTags:probb",
-        "pfDeepCSVJetTags:probc",
-        "pfDeepCSVJetTags:probudsg",
-        "pfDeepCSVJetTags:probbb",
+        "None",
+        #"pfDeepFlavourJetTags:probb",
+        #"pfDeepFlavourJetTags:probbb",
+        #"pfDeepFlavourJetTags:problepb",
+        #"pfDeepFlavourJetTags:probc",
+        #"pfDeepFlavourJetTags:probuds",
+        #"pfDeepFlavourJetTags:probg",
+        #"pfDeepCSVJetTags:probb",
+        #"pfDeepCSVJetTags:probc",
+        #"pfDeepCSVJetTags:probudsg",
+        #"pfDeepCSVJetTags:probbb",
     ],
     explicitJTA=True,  # needed for subjet b tagging
     svClustering=False,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
@@ -596,8 +599,6 @@ process.MonoTopSkim.photons = cms.InputTag("slimmedPhotons", "", process.name_()
 process.MonoTopSkim.met = cms.InputTag("slimmedMETs", "", process.name_())
 # next lines only needed because of combined skim-ntuple workflow with deactivated AK8 and Puppi stuff
 process.MonoTopSkim.met_puppi = cms.InputTag("slimmedMETsPuppi")#, "", process.name_())
-process.MonoTopSkim.AK4jets_puppi = cms.InputTag("slimmedJetsPuppi")
-process.MonoTopSkim.AK8jets = cms.InputTag("slimmedJetsAK8")
 
 if "2016" in options.dataEra:
     if options.isData:
@@ -627,6 +628,13 @@ else:
         + " not supported: USE dataEra=2016/2017/2018"
     )
 
+process.load("MonoTop.MonoTopSkim.JetSkim_cfi")
+process.JetSkim.isData = cms.bool(options.isData)
+process.JetSkim.era = cms.string(options.dataEra)
+process.JetSkim.AK8jets = cms.InputTag("slimmedJetsAK8")
+process.JetSkim.AK4jets_puppi = cms.InputTag("slimmedJetsPuppi")
+process.JetSkim.hadronic_selection = cms.InputTag("MonoTopSkim","HadronicSelection")
+process.JetSkim.leptonic_selection = cms.InputTag("MonoTopSkim","LeptonicSelection")
 
 ############################### second, ntupling stuff ###############################
 
@@ -1387,7 +1395,7 @@ if "2017" in options.dataEra:
 #)
 
 # final process consists of the following steps: test metfilters -> test skimming selection -> run boostedAnalyzer
-process.final = cms.Path(process.METFilter*process.MonoTopSkim*process.BoostedAnalyzer)
+process.final = cms.Path(process.METFilter*process.MonoTopSkim*process.JetSkim*process.rerunMvaIsolationSequence*process.slimmedTausNewID*process.patPuppiJetSpecificProducerAK15*process.BoostedAnalyzer)
 
 # jets during skimming task
 process.final.associate(process.jets_from_skims)
@@ -1412,10 +1420,10 @@ process.leptons_photons.add(
 process.final.associate(process.leptons_photons)
 
 # run tau IDs
-process.taus = cms.Path(process.rerunMvaIsolationSequence * process.slimmedTausNewID)
+# process.taus = cms.Path(process.rerunMvaIsolationSequence * process.slimmedTausNewID)
 
 # calculate puppi quantities
-process.puppimults = cms.Path(process.patPuppiJetSpecificProducerAK15)#process.patPuppiJetSpecificProducerAK4*process.patPuppiJetSpecificProducerAK8*
+# process.puppimults = cms.Path(process.patPuppiJetSpecificProducerAK15)#process.patPuppiJetSpecificProducerAK4*process.patPuppiJetSpecificProducerAK8*
 
 # run jet collection producers
 process.jets = cms.Task()
