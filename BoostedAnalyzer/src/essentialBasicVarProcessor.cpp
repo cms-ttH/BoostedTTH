@@ -17,7 +17,7 @@ void essentialBasicVarProcessor::Init(const InputCollections& input, VariableCon
 
     vars.InitVar("N_Jets", "I");
     vars.InitVar("N_LooseJets", "I");
-    vars.InitVar("N_AK8Jets", "I");
+    // vars.InitVar("N_AK8Jets", "I");
     vars.InitVar("N_AK15Jets", "I");
 
     vars.InitVar("N_BTagsL", "I");
@@ -202,7 +202,7 @@ void essentialBasicVarProcessor::Process(const InputCollections& input, Variable
     vars.FillVar("N_PrimaryVertices", input.selectedPVs.size());
     vars.FillVar("N_Jets", input.selectedJets.size());
     vars.FillVar("N_LooseJets", input.selectedJetsLoose.size());
-    vars.FillVar("N_AK8Jets", input.selectedJetsAK8.size());
+    // vars.FillVar("N_AK8Jets", input.selectedJetsAK8.size());
     vars.FillVar("N_AK15Jets", input.selectedJetsAK15.size());
     vars.FillVar("N_TightElectrons", input.selectedElectrons.size());
     vars.FillVar("N_LooseElectrons", input.selectedElectronsLoose.size());
