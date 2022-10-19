@@ -654,6 +654,7 @@ else:
         process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
         # Needed to determine tt+x category -- is usually run when producing boosted jets in miniAOD
         process.load("BoostedTTH.Producers.genHadronMatching_cfi")
+        process.load("BoostedTTH.Producers.GenHFJetMatcher_cfi")
 
 # which systematic variations to store in the ntuple?
 variations = systs
@@ -797,7 +798,7 @@ for s in [""]+systs:
 
 
 if not options.isData and not options.isBoostedMiniAOD:
-    process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
+    process.p *= process.genParticlesForJetsNoNu*process.ak4GenJetsCustom*process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.genHFJetMatcher*process.matchGenBHadron*process.matchGenCHadron*process.categorizeGenTtbar
 
 if "2018" not in options.dataEra:
     process.p += process.prefiringweight
